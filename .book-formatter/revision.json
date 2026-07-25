@@ -24,5 +24,17 @@
       "blobSha": "130ff02259a726d4f3f35e943188a894288e7ea6"
     }
   },
-  "note": "Phase 0 pins the source revision. Component synchronization and Jekyll build remain required before Issue #1 can close."
+  "note": "Phase 0 pins the source revision. Component synchronization and Jekyll build remain required before Issue #1 can close.",
+  "shared": {
+    "path": "shared/version.json",
+    "blobSha": "fdf70965323ae2a78e8dcbe5df88aa4a6ce8b16e",
+    "version": "3.2.2",
+    "componentVersions": {
+      "layouts": "3.2.0",
+      "includes": "3.2.0",
+      "assets": "3.2.2",
+      "templates": "1.0.0",
+      "schemas": "1.0.0"
+    }
+  }
 }

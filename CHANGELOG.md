@@ -17,6 +17,7 @@
 - 9種類の実務成果物テンプレートを追加
 - Python標準ライブラリだけで実行できるPhase 0契約検査を追加
 - `book-formatter` revision `69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c`を固定
+- 同revisionのshared component version `3.2.2`とcomponent別versionを固定し、設定との整合検査を追加
 
 ### Pending
 

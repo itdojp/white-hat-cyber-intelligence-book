@@ -10,9 +10,10 @@
   },
   "scripts": {
     "check:contract": "python3 scripts/check_contract.py",
+    "check:shared-version": "python3 scripts/check_shared_version.py",
     "render:sources": "python3 scripts/render_reference_baseline.py",
     "check:sources": "python3 scripts/render_reference_baseline.py --check",
-    "test": "npm run check:contract && npm run check:sources"
+    "test": "npm run check:contract && npm run check:shared-version && npm run check:sources"
   },
   "repository": {
     "type": "git",
