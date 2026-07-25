@@ -1,0 +1,405 @@
+{
+  "title": "ホワイトハッカーとサイバーインテリジェンス実践体系",
+  "subtitle": "攻撃者の行動を理解し、検証・検知・対応・経営判断につなげる",
+  "description": "攻撃評価、検知、インシデント対応、OSINT、サイバー脅威インテリジェンスを経営判断まで接続する実践的な日本語セキュリティ書籍",
+  "author": "ITDO Inc.（株式会社アイティードゥ）",
+  "version": "0.1.0",
+  "language": "ja",
+  "license": "CC BY-NC-SA 4.0",
+  "repository": {
+    "url": "https://github.com/itdojp/white-hat-cyber-intelligence-book",
+    "branch": "main"
+  },
+  "publicUrl": "https://itdojp.github.io/white-hat-cyber-intelligence-book/",
+  "ux": {
+    "profile": "B",
+    "modules": {
+      "quickStart": true,
+      "readingGuide": true,
+      "checklistPack": true,
+      "troubleshootingFlow": true,
+      "conceptMap": true,
+      "figureIndex": true,
+      "legalNotice": true,
+      "glossary": true
+    }
+  },
+  "structure": {
+    "chapters": [
+      {
+        "id": "ch00-reading-guide",
+        "title": "第0章 本書の読み方",
+        "description": "読者別ルート、安全境界、成果物ベースの学習方法を定義する",
+        "objectives": [
+          "自分の役割に合う読書ルートを選べる",
+          "安全境界と禁止事項を説明できる",
+          "Learning Route Planを作成できる"
+        ]
+      },
+      {
+        "id": "ch01-integrated-discipline",
+        "title": "第1章 攻撃・防御・インテリジェンスを一つの業務として捉える",
+        "description": "分断された活動をThreat-Informed Decision Loopとして接続する",
+        "objectives": [
+          "主要な業務機能を区別できる",
+          "四つの視点を接続できる",
+          "Integrated Security Workflow Mapを作成できる"
+        ]
+      },
+      {
+        "id": "ch02-law-ethics-authorization",
+        "title": "第2章 法、倫理、許可、責任ある開示",
+        "description": "権限、対象、証拠、個人情報、開示の事前条件を定義する",
+        "objectives": [
+          "許可とスコープを文書化できる",
+          "停止条件を定義できる",
+          "責任ある開示の流れを説明できる"
+        ]
+      },
+      {
+        "id": "ch03-capability-evidence",
+        "title": "第3章 能力を分解し、証拠で学習する",
+        "description": "職種名ではなくTask、Knowledge、Skill、成果物で能力を評価する",
+        "objectives": [
+          "能力を分解できる",
+          "学習証拠を定義できる",
+          "Capability Evidence Matrixを作成できる"
+        ]
+      },
+      {
+        "id": "ch04-assets-boundaries-threat-model",
+        "title": "第4章 資産、信頼境界、攻撃面、脅威モデル",
+        "description": "業務資産、Identity、Data、Control Planeを脅威モデルへ落とす",
+        "objectives": [
+          "資産と信頼境界を特定できる",
+          "Attack Surfaceを整理できる",
+          "Threat Modelを作成できる"
+        ]
+      },
+      {
+        "id": "ch05-attack-behavior",
+        "title": "第5章 攻撃者の行動をATT&CKで記述する",
+        "description": "ATT&CKを脅威行動の共通言語として正しく利用する",
+        "objectives": [
+          "ATT&CKのオブジェクトを区別できる",
+          "Coverageの限界を説明できる",
+          "ATT&CK Behavior Mapを作成できる"
+        ]
+      },
+      {
+        "id": "ch06-observable-systems",
+        "title": "第6章 通信、Identity、Cloudを観測可能なシステムとして読む",
+        "description": "主要技術領域の操作とログをSignal Flowとして接続する",
+        "objectives": [
+          "操作とログを対応付けられる",
+          "観測不能点を識別できる",
+          "Signal Flow Diagramを作成できる"
+        ]
+      },
+      {
+        "id": "ch07-vulnerability-prioritization",
+        "title": "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+        "description": "CVSS、EPSS、KEV、資産文脈を分離して優先順位を決める",
+        "objectives": [
+          "各指標の役割を区別できる",
+          "事業文脈を含めて優先順位を決められる",
+          "Vulnerability Prioritization Recordを作成できる"
+        ]
+      },
+      {
+        "id": "ch08-safe-lab-evidence",
+        "title": "第8章 安全で再現可能なラボと証拠管理",
+        "description": "隔離、合成データ、ハッシュ、停止、復旧を設計する",
+        "objectives": [
+          "安全なラボ境界を設計できる",
+          "証拠manifestを作成できる",
+          "Lab Safety and Evidence Planを作成できる"
+        ]
+      },
+      {
+        "id": "ch09-engagement-roe",
+        "title": "第9章 Engagement DesignとRules of Engagement",
+        "description": "判断目的から許可された検査範囲を設計する",
+        "objectives": [
+          "対象と対象外を定義できる",
+          "禁止操作と停止条件を定義できる",
+          "Rules of Engagementを作成できる"
+        ]
+      },
+      {
+        "id": "ch10-recon-osint-boundary",
+        "title": "第10章 ReconnaissanceとOSINTの境界",
+        "description": "Passive、Active、Authenticatedを区分し承認ゲートを設ける",
+        "objectives": [
+          "収集方法を分類できる",
+          "第三者情報の取扱いを判断できる",
+          "Attack Surface Registerを作成できる"
+        ]
+      },
+      {
+        "id": "ch11-web-api-hypothesis",
+        "title": "第11章 Web・APIを仮説駆動で評価する",
+        "description": "認証、認可、状態、データ境界、Business Logicを仮説で評価する",
+        "objectives": [
+          "評価仮説を作成できる",
+          "証拠を最小化できる",
+          "Web/API Assessment Hypothesis Packを作成できる"
+        ]
+      },
+      {
+        "id": "ch12-enterprise-identity",
+        "title": "第12章 Enterprise Identityとアクセス経路を評価する",
+        "description": "人、端末、サービス、Workloadの権限関係を評価する",
+        "objectives": [
+          "Identityと権限関係を図示できる",
+          "安全な成立性確認を設計できる",
+          "Identity Attack Path Reviewを作成できる"
+        ]
+      },
+      {
+        "id": "ch13-platform-supply-chain",
+        "title": "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+        "description": "Control Plane、Secret、Artifact、Dependency、Provenanceを評価する",
+        "objectives": [
+          "Platformの信頼境界を識別できる",
+          "Supply Chainの攻撃面を整理できる",
+          "Platform and Supply Chain Assessmentを作成できる"
+        ]
+      },
+      {
+        "id": "ch14-minimal-impact-validation",
+        "title": "第14章 最小影響で成立性を確認し、止め、戻す",
+        "description": "Proof of VulnerabilityとProof of Impactを分け、安全に停止する",
+        "objectives": [
+          "最小影響の確認方法を設計できる",
+          "十分な証拠と過剰な侵害を区別できる",
+          "Minimal-Impact Validation Recordを作成できる"
+        ]
+      },
+      {
+        "id": "ch15-findings-retest-risk",
+        "title": "第15章 Finding、改修、再評価、リスク受容",
+        "description": "根本原因、影響、対策、再テスト、残存リスクを記録する",
+        "objectives": [
+          "Findingを構造化できる",
+          "対策の種類を分けられる",
+          "Finding ReportとRetest Recordを作成できる"
+        ]
+      },
+      {
+        "id": "ch16-telemetry-evidence-readiness",
+        "title": "第16章 Telemetry ArchitectureとEvidence Readiness",
+        "description": "観測目的からログ、保持、完全性、プライバシーを設計する",
+        "objectives": [
+          "必要Telemetryを定義できる",
+          "未観測と不存在を区別できる",
+          "Telemetry Coverage Mapを作成できる"
+        ]
+      },
+      {
+        "id": "ch17-detection-engineering",
+        "title": "第17章 Detection Engineering",
+        "description": "Threat BehaviorをSignal、Rule、Test、Regressionへ変換する",
+        "objectives": [
+          "Detection Hypothesisを作成できる",
+          "Data Requirementを定義できる",
+          "Detection Validation Recordを作成できる"
+        ]
+      },
+      {
+        "id": "ch18-threat-hunting",
+        "title": "第18章 Threat Hunting",
+        "description": "仮説、探索、Pivot、Negative Findingを検知改善へ還元する",
+        "objectives": [
+          "Hunt Hypothesisを作成できる",
+          "異常と悪意を区別できる",
+          "Hunt Plan and Findingsを作成できる"
+        ]
+      },
+      {
+        "id": "ch19-incident-response",
+        "title": "第19章 CSF 2.0に接続したIncident Response",
+        "description": "GovernからRecoverまでのリスク管理としてIRを扱う",
+        "objectives": [
+          "IRをCSF 2.0へ接続できる",
+          "初動から復旧までの役割を定義できる",
+          "Incident Action Planを作成できる"
+        ]
+      },
+      {
+        "id": "ch20-dfir-timeline-causality",
+        "title": "第20章 DFIRとタイムライン・因果再構成",
+        "description": "複数証拠から侵入経路、影響範囲、原因、不確実性を再構成する",
+        "objectives": [
+          "Evidence Questionを定義できる",
+          "タイムラインを構成できる",
+          "Root Cause Analysisを作成できる"
+        ]
+      },
+      {
+        "id": "ch21-purple-team-validation",
+        "title": "第21章 Purple TeamとControl Validation",
+        "description": "攻撃操作、観測、検知、対応を一つの検証計画にする",
+        "objectives": [
+          "シナリオを分解できる",
+          "コントロール失敗を分類できる",
+          "Control Validation Planを作成できる"
+        ]
+      },
+      {
+        "id": "ch22-measurement-improvement",
+        "title": "第22章 測定、優先順位、継続改善",
+        "description": "Coverage、品質、対応時間、残存リスクを改善Backlogへ変換する",
+        "objectives": [
+          "有効な測定項目を選べる",
+          "見せかけのCoverageを避けられる",
+          "Security Improvement Backlogを作成できる"
+        ]
+      },
+      {
+        "id": "ch23-intelligence-requirements",
+        "title": "第23章 Intelligence Requirementsと収集計画",
+        "description": "判断主体、期限、情報ギャップから収集と分析を設計する",
+        "objectives": [
+          "Intelligence Requirementを定義できる",
+          "収集計画を作成できる",
+          "Collection Planを作成できる"
+        ]
+      },
+      {
+        "id": "ch24-osint-provenance-sources",
+        "title": "第24章 OSINT、Provenance、情報源評価",
+        "description": "公開情報を再現可能に収集し、出典と確からしさを評価する",
+        "objectives": [
+          "一次情報へ遡及できる",
+          "Provenanceを記録できる",
+          "Evidence and Source Tableを作成できる"
+        ]
+      },
+      {
+        "id": "ch25-structured-analysis-attribution",
+        "title": "第25章 構造化分析、不確実性、アトリビューション",
+        "description": "代替仮説、確信度、情報ギャップ、欺瞞可能性を扱う",
+        "objectives": [
+          "事実と判断を分離できる",
+          "競合仮説を比較できる",
+          "Analytic Judgment Recordを作成できる"
+        ]
+      },
+      {
+        "id": "ch26-cti-structure-distribution",
+        "title": "第26章 CTIを構造化し、技術・経営へ配布する",
+        "description": "STIX/TAXIIと分析文書を用途別成果物へ変換する",
+        "objectives": [
+          "CTIオブジェクトを関係付けられる",
+          "対象読者別に配布物を作れる",
+          "CTI Reportを作成できる"
+        ]
+      },
+      {
+        "id": "ch27-ai-agent-security",
+        "title": "第27章 AI・LLM・Agent Security",
+        "description": "Prompt Injection、RAG、Memory、Tool、Agency、Supply Chainを評価する",
+        "objectives": [
+          "AI固有の信頼境界を識別できる",
+          "Agentの権限を評価できる",
+          "AI Threat Modelを作成できる"
+        ]
+      },
+      {
+        "id": "ch28-ai-assisted-analysis",
+        "title": "第28章 AIを使って分析するときの検証と汚染対策",
+        "description": "出典消失、Injection、誤帰属、過剰確信を制御する",
+        "objectives": [
+          "AI支援分析の失敗モードを説明できる",
+          "検証ゲートを設計できる",
+          "AI-Assisted Analysis Recordを作成できる"
+        ]
+      },
+      {
+        "id": "ch29-capstone",
+        "title": "第29章 統合ケーススタディ",
+        "description": "評価、検知、対応、CTI、経営判断を一つの事案で接続する",
+        "objectives": [
+          "統合ワークフローを実行できる",
+          "成果物間の追跡性を示せる",
+          "最終ポートフォリオを完成できる"
+        ]
+      }
+    ],
+    "appendices": [
+      {
+        "id": "appendix-a-legal-safety",
+        "title": "付録A 法・倫理・安全上の注意"
+      },
+      {
+        "id": "appendix-b-templates",
+        "title": "付録B 実務テンプレート集"
+      },
+      {
+        "id": "appendix-c-checklists",
+        "title": "付録C チェックリスト集"
+      },
+      {
+        "id": "appendix-d-troubleshooting",
+        "title": "付録D 停止・切り分けフロー"
+      },
+      {
+        "id": "appendix-e-glossary",
+        "title": "付録E 用語集"
+      },
+      {
+        "id": "appendix-f-figure-index",
+        "title": "付録F 図表索引"
+      },
+      {
+        "id": "appendix-g-source-baseline",
+        "title": "付録G Source Baseline"
+      },
+      {
+        "id": "appendix-h-lab-guide",
+        "title": "付録H ラボ運用ガイド"
+      },
+      {
+        "id": "appendix-i-rubric",
+        "title": "付録I 成果物評価ルーブリック"
+      },
+      {
+        "id": "appendix-j-cross-book-map",
+        "title": "付録J 既存書籍との学習導線"
+      }
+    ]
+  },
+  "output": {
+    "formats": [
+      "html",
+      "pdf",
+      "epub"
+    ],
+    "theme": "default"
+  },
+  "shared": {
+    "version": "1.0.0",
+    "components": {
+      "layouts": true,
+      "includes": true,
+      "assets": {
+        "css": true,
+        "js": true
+      },
+      "templates": false
+    }
+  },
+  "build": {
+    "outputDir": "_site",
+    "jekyll": {
+      "plugins": [
+        "jekyll-feed",
+        "jekyll-sitemap",
+        "jekyll-seo-tag",
+        "jekyll-relative-links",
+        "jekyll-optional-front-matter"
+      ]
+    }
+  }
+}

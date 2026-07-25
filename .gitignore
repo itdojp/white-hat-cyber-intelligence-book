@@ -1,0 +1,15 @@
+_site/
+dist/
+build/
+.tmp/
+tmp/
+*.log
+node_modules/
+vendor/
+.bundle/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+.DS_Store

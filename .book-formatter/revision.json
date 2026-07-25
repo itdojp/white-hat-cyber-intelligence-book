@@ -1,0 +1,28 @@
+{
+  "repository": "itdojp/book-formatter",
+  "commit": "69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c",
+  "checkedAt": "2026-07-25",
+  "schema": {
+    "path": "shared/schemas/book-config.schema.json",
+    "blobSha": "87dcb44b0d4b543ba43ae3a8ebc27d2f3cfda3cd"
+  },
+  "components": {
+    "bookLayout": {
+      "path": "shared/layouts/book.html",
+      "blobSha": "c9e31a0e6bfb594310da04f74ea96f57b32e3121"
+    },
+    "sidebarNavigation": {
+      "path": "shared/includes/sidebar-nav.html",
+      "blobSha": "007edb903f6b62f00c83691ef1db7de9460328f7"
+    },
+    "pageNavigation": {
+      "path": "shared/includes/page-navigation.html",
+      "blobSha": "7a0b1e84cd77cd423aba2dba340d879f4e1e65d9"
+    },
+    "mainCss": {
+      "path": "shared/assets/css/main.css",
+      "blobSha": "130ff02259a726d4f3f35e943188a894288e7ea6"
+    }
+  },
+  "note": "Phase 0 pins the source revision. Component synchronization and Jekyll build remain required before Issue #1 can close."
+}

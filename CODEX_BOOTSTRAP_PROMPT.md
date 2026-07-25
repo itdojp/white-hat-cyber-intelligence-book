@@ -1,69 +1,35 @@
 # Codex CLI Bootstrap Prompt
 
-以下をCodex CLIの新規セッションへ渡す。
+このチャットでEditorial Foundationまで実装済みである。Codex CLIを使う場合は、既存Draft PR #2を継続し、未完了のSeries UX同期とbuild検証だけを実施する。
 
 ```text
-/goal Resume GitHub Issue #1 in itdojp/white-hat-cyber-intelligence-book and execute Phase 0 only: build the current Series UX and book-formatter foundation on branch bootstrap/book-foundation, update the existing Draft PR, and leave a verified handoff for Phase 1.
+/goal Resume GitHub Issue #1 in itdojp/white-hat-cyber-intelligence-book. Continue the existing Draft PR #2 on bootstrap/book-foundation. Do not recreate the repository, branch, editorial contract, or planning files. Complete only the remaining Phase 0 Series UX synchronization, generated docs, Book QA, Jekyll build, drift checks, and verified handoff.
 
-Authoritative issues:
-- Repository Phase 0: https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/1
-- Parent book proposal: https://github.com/itdojp/it-engineer-knowledge-architecture/issues/280
+Known fixed state:
+- main root commit: 346e838ec619214249e674b9669cbebc9cbf7891
+- working branch: bootstrap/book-foundation
+- Draft PR: #2
+- book-formatter pinned revision: 69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c
+- canonical authoring contract: CANONICAL_SOURCE.md
+- Series UX: Profile B; exactly 8 defined modules in book-config.json
 
-Known repository state:
-- Repository already exists and is public.
-- Root commit on main: 346e838ec619214249e674b9669cbebc9cbf7891
-- Working branch already exists: bootstrap/book-foundation
-- The root commit contains only the minimum README required to materialize main.
-- Do not create another repository or another bootstrap branch.
+Before changing files:
+1. Read Issue #1, parent Issue #280, PR #2, CANONICAL_SOURCE.md, book-config.json, and .book-formatter/revision.json.
+2. Confirm the branch head descends from main root commit and inspect the entire current diff.
+3. Re-check that the pinned book-formatter revision is still the intended audited revision; do not silently change it.
 
-Local starter packet, if available:
-white-hat-cyber-intelligence-book-starter/
-
-Scope for this run:
-1. Read Issue #1 and parent Issue #280 in full.
-2. Inspect the current, not historical, publishing contracts in itdojp/it-engineer-knowledge-architecture, including:
-   - docs/publishing/new-book-quickstart.md
-   - docs/publishing/book-structure.md
-   - docs/publishing/ux-profiles.md
-   - docs/publishing/ux-modules.md
-   - docs/publishing/review-checklist.md
-   - templates/book/
-   - current catalog, schema, canonical-source, build, QA, and Pages rules
-3. Inspect and pin the exact current main SHA of itdojp/book-formatter used for generation.
-4. Work only on bootstrap/book-foundation. Confirm it descends from the documented root commit before changing files.
-5. Generate the book skeleton from the current book-formatter and Series UX contracts. Do not invent a separate publishing stack.
-6. Use Series UX Profile B and only these currently defined modules:
-   quickStart, readingGuide, checklistPack, troubleshootingFlow,
-   conceptMap, figureIndex, legalNotice, glossary.
-7. Establish one canonical authoring source and a non-destructive build contract.
-8. Add the minimum governance and publication files:
-   README, LICENSE, CHANGELOG, SECURITY, CONTRIBUTING, book-config,
-   standard QA/workflows, and initial site/navigation files required by the current template.
-9. Import the planning and bootstrap material needed for Phase 0. Do not bulk-write all chapters. Keep chapter content to the minimum needed to validate navigation and the editorial contract.
-10. Run all applicable local validation, build, drift, link, metadata, Markdown, Unicode, and safety checks.
-11. Push only to bootstrap/book-foundation and update the existing Draft PR. If no Draft PR exists, create one.
-12. Record fixed SHAs, commands, results, review findings, and remaining admin/operator actions in Issue #1. Add a concise status update to parent Issue #280.
+Remaining scope:
+- Synchronize current shared layouts/includes/assets from the pinned revision and record provenance.
+- Generate docs/ from canonical sources without modifying canonical files.
+- Add deterministic sync --check / drift checks.
+- Add minimal package/Gem/Python dependencies and lockfiles required by the current series contract.
+- Add Book QA and, if repository settings permit, Pages workflow using the current series pattern.
+- Run config, metadata, links, Markdown structure, Unicode, source registry, safety, docs-sync, Jekyll build, and non-destructive build checks.
+- Update PR #2 and Issue #1 with exact commands, SHAs, results, and remaining admin actions.
 
 Hard constraints:
-- Do not push directly to main. The documented root commit is the only exception and is already complete.
-- Do not merge, enable auto-merge, alter branch protection, change repository settings, or use admin bypass.
-- Do not modify existing book repositories or the portfolio catalog in this run.
-- Do not perform network scanning, authentication attempts, or testing against any external or production target.
-- Do not introduce real credentials, tokens, cookies, personal data, malware, C2, persistence, evasion, destructive operations, or third-party target strings.
-- Keep sample domains and addresses in reserved documentation ranges.
-- Pin versions or digests where the current series contract requires them; do not use latest implicitly.
-- Do not mark Issue #1 or parent Issue #280 complete until the stated gates and handoff conditions are satisfied.
-
-Safety-stop conditions:
-- The current template, book-formatter, canonical-source, or build contract is ambiguous or conflicting.
-- A same-purpose repository or duplicate implementation issue is discovered.
-- The only path requires direct main changes, admin bypass, or changes to existing books.
-- A build or example requires external target access or real credentials.
-- The existing bootstrap branch does not descend from the documented root commit.
-
-On safety stop, do not improvise. Post an operator packet containing:
-- exact completed checks and fixed SHAs,
-- exact missing permission or decision,
-- the smallest required human action,
-- exact resume command and next safe step.
+- no direct push to main, merge, auto-merge, admin bypass, or repository settings changes
+- no changes to existing books or parent catalog
+- no external target testing, credentials, personal data, malware, persistence, evasion, or destructive operations
+- do not mark Issue #1 complete until sync, build, QA, and independent review gates pass
 ```
