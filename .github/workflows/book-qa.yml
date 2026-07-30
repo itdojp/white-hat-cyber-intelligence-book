@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout book
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
 
       - name: Checkout pinned book-formatter
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -26,6 +28,7 @@ jobs:
           repository: itdojp/book-formatter
           ref: 69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c
           path: .work/book-formatter
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
@@ -40,7 +43,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Install pinned book-formatter dependencies
-        run: npm ci --prefix .work/book-formatter
+        run: npm ci --prefix .work/book-formatter --ignore-scripts
 
       - name: Set up Python
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
