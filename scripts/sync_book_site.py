@@ -95,15 +95,20 @@ def validate_canonical_tree(root: Path, directory: Path, label: str) -> None:
             )
 
 
+def schema_markdown_path(value: object, label: str) -> str:
+    if not isinstance(value, str):
+        raise SitePageRegistryError(f"{label} must be a string")
+    path = base.safe_relative_path(value, label).as_posix()
+    if not path.endswith(".md"):
+        raise SitePageRegistryError(f"{label} must end in .md: {path}")
+    return path
+
+
 def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
+    """Enforce every constraint declared by schemas/site-pages.schema.json."""
     if not isinstance(value, dict):
         raise SitePageRegistryError(f"{label} root must be a JSON object")
     registry = value
-
-    if registry.get("schemaVersion") != SCHEMA_VERSION:
-        raise SitePageRegistryError(
-            f"{label} schemaVersion must be {SCHEMA_VERSION}"
-        )
 
     expected_keys = {
         "schemaVersion",
@@ -121,13 +126,71 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
         raise SitePageRegistryError(
             f"{label} is missing keys: {sorted(missing)}"
         )
+    if registry.get("schemaVersion") != SCHEMA_VERSION:
+        raise SitePageRegistryError(
+            f"{label} schemaVersion must be {SCHEMA_VERSION}"
+        )
 
-    if not isinstance(registry["canonicalDirectories"], list):
+    canonical_directories = registry["canonicalDirectories"]
+    if not isinstance(canonical_directories, list):
         raise SitePageRegistryError("canonicalDirectories must be an array")
-    if not isinstance(registry["pages"], list):
+    seen_directories: set[str] = set()
+    for index, directory in enumerate(canonical_directories):
+        if not isinstance(directory, str) or not DIRECTORY_RE.fullmatch(directory):
+            raise SitePageRegistryError(
+                f"canonicalDirectories[{index}] is invalid: {directory!r}"
+            )
+        if directory in seen_directories:
+            raise SitePageRegistryError(
+                f"canonicalDirectories contains duplicate value: {directory}"
+            )
+        seen_directories.add(directory)
+
+    pages = registry["pages"]
+    if not isinstance(pages, list):
         raise SitePageRegistryError("pages must be an array")
-    if not isinstance(registry["directoryRoutes"], dict):
+    allowed_page_keys = {"source", "destination", "section", "order", "title"}
+    required_page_keys = {"source", "destination", "section", "order"}
+    for index, item in enumerate(pages):
+        if not isinstance(item, dict):
+            raise SitePageRegistryError(f"pages[{index}] must be an object")
+        unknown_page_keys = set(item) - allowed_page_keys
+        if unknown_page_keys:
+            raise SitePageRegistryError(
+                f"pages[{index}] has unknown keys: {sorted(unknown_page_keys)}"
+            )
+        missing_page_keys = required_page_keys - set(item)
+        if missing_page_keys:
+            raise SitePageRegistryError(
+                f"pages[{index}] is missing keys: {sorted(missing_page_keys)}"
+            )
+        schema_markdown_path(item["source"], f"pages[{index}].source")
+        schema_markdown_path(item["destination"], f"pages[{index}].destination")
+        if item["section"] not in ALLOWED_SECTIONS:
+            raise SitePageRegistryError(
+                f"pages[{index}].section is invalid: {item['section']!r}"
+            )
+        order = item["order"]
+        if not isinstance(order, int) or isinstance(order, bool) or order < 0:
+            raise SitePageRegistryError(
+                f"pages[{index}].order must be a non-negative integer"
+            )
+        title = item.get("title")
+        if title is not None and (not isinstance(title, str) or not title):
+            raise SitePageRegistryError(
+                f"pages[{index}].title must be a non-empty string when present"
+            )
+
+    directory_routes = registry["directoryRoutes"]
+    if not isinstance(directory_routes, dict):
         raise SitePageRegistryError("directoryRoutes must be an object")
+    for directory, destination in directory_routes.items():
+        if not isinstance(directory, str) or not DIRECTORY_RE.fullmatch(directory):
+            raise SitePageRegistryError(
+                f"directoryRoutes key is invalid: {directory!r}"
+            )
+        schema_markdown_path(destination, f"directoryRoutes.{directory}")
+
     return registry
 
 
@@ -146,7 +209,7 @@ def load_registry() -> dict:
 
 
 def validate_destination(raw: str, label: str) -> str:
-    destination = base.safe_relative_path(raw, label).as_posix()
+    destination = schema_markdown_path(raw, label)
     path = Path(destination)
     if not destination.endswith("/index.md"):
         raise SitePageRegistryError(
@@ -183,12 +246,12 @@ def validated_canonical_source_paths() -> list[Path]:
         validate_canonical_tree(ROOT, directory, directory_name)
         paths.update(path for path in directory.rglob("*") if path.is_file())
 
-    for path, label in (
+    for path, path_label in (
         (base.CONFIG_PATH, "book-config.json"),
         (base.REVISION_PATH, ".book-formatter/revision.json"),
         (REGISTRY_PATH, "site-pages.json"),
     ):
-        require_repository_path(ROOT, path, label, kind="file")
+        require_repository_path(ROOT, path, path_label, kind="file")
         paths.add(path)
 
     return sorted(paths, key=lambda path: path.relative_to(ROOT).as_posix())
@@ -196,11 +259,7 @@ def validated_canonical_source_paths() -> list[Path]:
 
 def apply_registry(registry: dict) -> None:
     canonical_directories = list(base.CANONICAL_DIRECTORIES)
-    for index, raw in enumerate(registry["canonicalDirectories"]):
-        if not isinstance(raw, str) or not DIRECTORY_RE.fullmatch(raw):
-            raise SitePageRegistryError(
-                f"canonicalDirectories[{index}] is invalid: {raw!r}"
-            )
+    for raw in registry["canonicalDirectories"]:
         directory = ROOT / raw
         validate_canonical_tree(ROOT, directory, raw)
         if raw not in canonical_directories:
@@ -219,20 +278,7 @@ def apply_registry(registry: dict) -> None:
     allowed_source_roots = set(base.CANONICAL_DIRECTORIES)
 
     for index, item in enumerate(registry["pages"]):
-        if not isinstance(item, dict):
-            raise SitePageRegistryError(f"pages[{index}] must be an object")
-        unknown = set(item) - {"source", "destination", "section", "order", "title"}
-        if unknown:
-            raise SitePageRegistryError(
-                f"pages[{index}] has unknown keys: {sorted(unknown)}"
-            )
-        for key in ("source", "destination", "section", "order"):
-            if key not in item:
-                raise SitePageRegistryError(f"pages[{index}] is missing {key}")
-
-        source = base.safe_relative_path(
-            str(item["source"]), f"pages[{index}].source"
-        ).as_posix()
+        source = schema_markdown_path(item["source"], f"pages[{index}].source")
         source_parts = Path(source).parts
         if len(source_parts) < 2 or source_parts[0] not in allowed_source_roots:
             raise SitePageRegistryError(
@@ -246,30 +292,14 @@ def apply_registry(registry: dict) -> None:
             f"pages[{index}].source",
             kind="file",
         )
-        if not source.endswith(".md"):
-            raise SitePageRegistryError(
-                f"pages[{index}].source must identify a Markdown file: {source}"
-            )
 
         destination = validate_destination(
-            str(item["destination"]), f"pages[{index}].destination"
+            item["destination"], f"pages[{index}].destination"
         )
         section = item["section"]
         order = item["order"]
         title = item.get("title")
 
-        if section not in ALLOWED_SECTIONS:
-            raise SitePageRegistryError(
-                f"pages[{index}].section is invalid: {section!r}"
-            )
-        if not isinstance(order, int) or isinstance(order, bool) or order < 0:
-            raise SitePageRegistryError(
-                f"pages[{index}].order must be a non-negative integer"
-            )
-        if title is not None and (not isinstance(title, str) or not title.strip()):
-            raise SitePageRegistryError(
-                f"pages[{index}].title must be a non-empty string when present"
-            )
         if source in sources:
             raise SitePageRegistryError(f"duplicate page source: {source}")
         if destination in destinations:
@@ -299,12 +329,8 @@ def apply_registry(registry: dict) -> None:
 
     routes = dict(base.DIRECTORY_ROUTES)
     for raw_directory, raw_destination in registry["directoryRoutes"].items():
-        if not isinstance(raw_directory, str) or not DIRECTORY_RE.fullmatch(raw_directory):
-            raise SitePageRegistryError(
-                f"invalid directoryRoutes key: {raw_directory!r}"
-            )
         destination = validate_destination(
-            str(raw_destination), f"directoryRoutes.{raw_directory}"
+            raw_destination, f"directoryRoutes.{raw_directory}"
         )
         if destination not in destinations:
             raise SitePageRegistryError(
@@ -316,20 +342,71 @@ def apply_registry(registry: dict) -> None:
     base.canonical_source_paths = validated_canonical_source_paths
 
 
+def expect_invalid_registry(
+    failures: list[str],
+    name: str,
+    value: object,
+) -> None:
+    try:
+        parse_registry_data(value, f"fixture {name}")
+    except SitePageRegistryError:
+        return
+    failures.append(f"registry parser accepted {name}")
+
+
 def run_registry_security_regressions() -> list[str]:
     failures: list[str] = []
 
-    for label, value in (
+    for name, value in (
         ("array root", []),
         ("string root", "not-an-object"),
         ("null root", None),
+        (
+            "unknown top-level property",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [],
+                "directoryRoutes": {},
+                "unexpected": True,
+            },
+        ),
+        (
+            "duplicate canonical directory",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": ["cases", "cases"],
+                "pages": [],
+                "directoryRoutes": {},
+            },
+        ),
+        (
+            "non-string page source",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [
+                    {
+                        "source": 7,
+                        "destination": "cases/example/index.md",
+                        "section": "additional",
+                        "order": 1,
+                    }
+                ],
+                "directoryRoutes": {},
+            },
+        ),
+        (
+            "non-string directory route",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [],
+                "directoryRoutes": {"cases": 7},
+            },
+        ),
     ):
-        try:
-            parse_registry_data(value, f"fixture {label}")
-        except SitePageRegistryError:
-            pass
-        else:
-            failures.append(f"registry parser accepted {label}")
+        expect_invalid_registry(failures, name, value)
 
     valid_registry = {
         "schemaVersion": SCHEMA_VERSION,
