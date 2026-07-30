@@ -1,0 +1,106 @@
+name: Book QA
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  BOOK_FORMATTER_DIR: .work/book-formatter
+
+jobs:
+  qa:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout book
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Checkout pinned book-formatter
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: itdojp/book-formatter
+          ref: 69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c
+          path: .work/book-formatter
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            .work/book-formatter/package-lock.json
+
+      - name: Install repository metadata
+        run: npm ci --ignore-scripts
+
+      - name: Install pinned book-formatter dependencies
+        run: npm ci --prefix .work/book-formatter
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+
+      - name: Run repository contract tests
+        run: npm test
+
+      - name: Generate deterministic site source
+        run: npm run sync:docs
+
+      - name: Validate book configuration with pinned formatter
+        working-directory: .work/book-formatter
+        run: npm start -- validate-config --config ../../book-config.json
+
+      - name: Unicode check
+        run: node .work/book-formatter/scripts/check-unicode.js docs --fail-on error
+
+      - name: Textlint
+        run: node .work/book-formatter/scripts/check-textlint.js docs --fail-on error
+
+      - name: Internal link and anchor check
+        run: node .work/book-formatter/scripts/check-links.js docs
+
+      - name: Layout risk scan
+        run: node .work/book-formatter/scripts/check-layout-risk.js docs --fail-on error --output "${{ runner.temp }}/layout-risk-report.json"
+
+      - name: Markdown structure check
+        run: node .work/book-formatter/scripts/check-markdown-structure.js docs --fail-on error --output "${{ runner.temp }}/markdown-structure-report.json"
+
+      - name: Upload static analysis reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: book-qa-static-reports
+          path: |
+            ${{ runner.temp }}/layout-risk-report.json
+            ${{ runner.temp }}/markdown-structure-report.json
+          if-no-files-found: ignore
+
+      - name: Set up Ruby and install locked gems
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Build Jekyll site
+        run: bundle exec jekyll build --source docs --config docs/_config.yml --destination _site --trace
+        env:
+          JEKYLL_ENV: production
+          PAGES_REPO_NWO: itdojp/white-hat-cyber-intelligence-book
+
+      - name: Smoke check built site
+        run: python3 scripts/check_built_site.py --source docs --site _site
+
+      - name: Upload built site
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: book-site-preview
+          path: _site
+          if-no-files-found: error
