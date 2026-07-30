@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "White Hat Cyber Intelligence Source Registry",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "checkedAt",
+    "sources"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+    "checkedAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "publisher",
+          "title",
+          "kind",
+          "status",
+          "version",
+          "url",
+          "publishedAt",
+          "checkedAt",
+          "nextReviewAt",
+          "reviewTriggers",
+          "chapters",
+          "notes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^SRC-[A-Z0-9-]+$"
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "publishedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "checkedAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "nextReviewAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "reviewTriggers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "chapters": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 29
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

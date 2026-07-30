@@ -1,0 +1,53 @@
+name: Source freshness
+description: 標準、法令、Framework、Guide、継続更新Dataの変更を報告する
+title: "[Source] "
+body:
+  - type: input
+    id: source_id
+    attributes:
+      label: Source Note ID
+      description: `references/sources.json`の`SRC-*` ID。未登録の場合は`new`と記載する
+    validations:
+      required: true
+  - type: input
+    id: canonical_url
+    attributes:
+      label: Canonical URL
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 新しいVersion・Revision・Status
+    validations:
+      required: true
+  - type: input
+    id: checked_at
+    attributes:
+      label: 確認日
+      placeholder: YYYY-MM-DD
+    validations:
+      required: true
+  - type: textarea
+    id: semantic_change
+    attributes:
+      label: 意味上の変更
+      description: Link更新だけか、本文・図・Lab・Template・判断基準へ影響するか
+    validations:
+      required: true
+  - type: textarea
+    id: affected
+    attributes:
+      label: 影響する章・成果物
+      description: Registryのchapter mappingと実際の引用箇所を列挙する
+    validations:
+      required: true
+  - type: checkboxes
+    id: provenance
+    attributes:
+      label: 出典確認
+      options:
+        - label: 公式または一次資料で確認した
+          required: true
+        - label: AI生成文を出典として使用していない
+          required: true

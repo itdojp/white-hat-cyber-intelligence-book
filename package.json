@@ -1,0 +1,41 @@
+{
+  "name": "white-hat-cyber-intelligence-book",
+  "version": "0.1.0",
+  "private": true,
+  "description": "攻撃評価、検知、インシデント対応、OSINT、脅威インテリジェンスを経営判断まで接続する実践的な日本語セキュリティ書籍",
+  "author": "ITDO Inc.（株式会社アイティードゥ）",
+  "license": "(CC-BY-NC-SA-4.0 AND Apache-2.0)",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "check:contract": "python3 scripts/check_contract.py",
+    "check:shared-version": "python3 scripts/check_shared_version.py",
+    "check:workflows": "python3 scripts/check_workflows.py",
+    "render:sources": "python3 scripts/render_reference_baseline.py",
+    "check:sources": "python3 scripts/render_reference_baseline.py --check",
+    "copy:notices": "python3 scripts/copy_public_notices.py",
+    "check:notices": "python3 scripts/copy_public_notices.py --check",
+    "sync:docs": "python3 scripts/sync_site_source.py --output docs && npm run copy:notices",
+    "check:docs-sync": "python3 scripts/sync_site_source.py --check",
+    "build": "npm run sync:docs && bundle exec jekyll build --source docs --config docs/_config.yml --destination _site",
+    "serve": "npm run sync:docs && bundle exec jekyll serve --source docs --config docs/_config.yml --destination _site --livereload",
+    "test": "npm run check:contract && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itdojp/white-hat-cyber-intelligence-book.git"
+  },
+  "bugs": {
+    "url": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues"
+  },
+  "homepage": "https://itdojp.github.io/white-hat-cyber-intelligence-book/",
+  "keywords": [
+    "cybersecurity",
+    "threat-intelligence",
+    "detection-engineering",
+    "incident-response",
+    "osint",
+    "security-education"
+  ]
+}
