@@ -18,11 +18,18 @@ USES_RE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 
 
 def top_level_block(text: str, key: str) -> str | None:
-    pattern = re.compile(
-        rf"(?ms)^{re.escape(key)}:\s*\n(?P<body>(?:[ ]{{2}}.*(?:\n|$)|\s*\n)*)"
-    )
-    match = pattern.search(text)
-    return match.group("body") if match else None
+    lines = text.splitlines()
+    marker = f"{key}:"
+    for index, line in enumerate(lines):
+        if line != marker:
+            continue
+        block: list[str] = []
+        for candidate in lines[index + 1 :]:
+            if candidate and not candidate.startswith((" ", "\t")):
+                break
+            block.append(candidate)
+        return "\n".join(block)
+    return None
 
 
 def job_block(text: str, job: str) -> str | None:
