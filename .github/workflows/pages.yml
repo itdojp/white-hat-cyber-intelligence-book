@@ -77,10 +77,9 @@ jobs:
       - name: Smoke check built site
         run: python3 scripts/check_built_site.py --source docs --site _site
 
+      # Repository Pages enablement is an explicit operator action tracked in Issue #9.
       - name: Configure GitHub Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
-        with:
-          enablement: true
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
