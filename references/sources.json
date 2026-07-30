@@ -17,6 +17,7 @@
         "ATT&CK major or minor release"
       ],
       "chapters": [
+        0,
         1,
         5,
         16,
@@ -41,6 +42,7 @@
         "NIST revision or errata"
       ],
       "chapters": [
+        0,
         1,
         3
       ],
@@ -82,6 +84,7 @@
         "NIST revision or supplemental guidance change"
       ],
       "chapters": [
+        1,
         19,
         20,
         22
@@ -262,6 +265,7 @@
         "ICD 203 revision"
       ],
       "chapters": [
+        1,
         23,
         24,
         25,
