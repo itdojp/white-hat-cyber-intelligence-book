@@ -1,0 +1,59 @@
+name: Lab reproducibility or safety
+description: 隔離演習、fixture、evidence、destroy、cleanupの問題を報告する
+title: "[Lab] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        自己所有または明示的許可を得た隔離環境だけを対象にしてください。実Credential、個人情報、外部Targetの情報は投稿しないでください。
+  - type: input
+    id: lab
+    attributes:
+      label: Lab ID・path
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Commit・Version
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 環境
+      description: OS、WSL、Podman/Docker、architecture、rootless状態。Secretは除外する
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 最小再現手順
+      description: Preflightから問題発生まで。危険な操作は公開しない
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: 観測結果とEvidence
+      description: 期待結果との差、無害化したLog、Artifact ID、Hash
+    validations:
+      required: true
+  - type: textarea
+    id: cleanup
+    attributes:
+      label: 停止・Destroy・Cleanup状態
+      description: 残存Resource、外向き通信、Data、Portを確認する
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: 安全確認
+      options:
+        - label: 実Credential、個人情報、第三者Targetを含めていない
+          required: true
+        - label: 想定外の外部通信または影響があった場合は演習を停止した
+          required: true
+        - label: `SAFETY_SCOPE.md`の範囲内である
+          required: true
