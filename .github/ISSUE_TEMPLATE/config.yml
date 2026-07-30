@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security report
+    url: https://github.com/itdojp/white-hat-cyber-intelligence-book/security
+    about: 未修正脆弱性、Secret、個人情報、第三者Targetを含む内容は公開Issueへ投稿しないでください
