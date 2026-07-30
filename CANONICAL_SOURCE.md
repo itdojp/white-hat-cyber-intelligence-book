@@ -9,8 +9,11 @@
 - 読者向け入口・モジュール: ルート直下の`index.md`、`title.md`、`preface.md`、`quickstart.md`、`concept-map.md`等
 - 企画・編集・安全・出典契約: ルート直下の大文字Markdownと`references/`
 - 実務成果物テンプレート: `templates/`
+- 合成Caseと記入例: `cases/`
 - 演習定義・合成データ: 将来の`lab/`
+- 機械可読Schema: `schemas/`
 - 機械可読な書籍構造: `book-config.json`
+- 公開ページ追加Registry: `site-pages.json`
 - 共通出版部品の固定情報: `.book-formatter/revision.json`
 
 `docs/`はGitHub Pages向けの一時生成物であり、直接編集もGit管理もしない。CIとローカルbuildは、正本から毎回`docs/`を再生成する。
@@ -25,8 +28,8 @@ bundle install
 npm run build
 ```
 
-- `npm run check:docs-sync`: 一時ディレクトリへ2回生成し、全生成ファイルのSHA-256一致と全追跡ファイルの非変更を確認する
-- `npm run sync:docs`: 許可された生成先`docs/`だけを削除し、正本から再生成する
+- `npm run check:docs-sync`: `scripts/sync_book_site.py`を使用して一時ディレクトリへ2回生成し、全生成ファイルのSHA-256一致と全追跡ファイルの非変更を確認する
+- `npm run sync:docs`: 許可された生成先`docs/`だけを削除し、正本と`site-pages.json`から再生成する
 - `npm run build`: `docs/`を生成し、Jekyllで`_site/`へbuildする
 
 固定済み`book-formatter` checkoutを使う場合は、`BOOK_FORMATTER_DIR`へpathを指定する。
@@ -38,6 +41,19 @@ BOOK_FORMATTER_DIR=../book-formatter npm run build
 
 未指定時は、固定commitの個別ファイルを取得し、Git blob SHAを検証してから使用する。可変branchや`latest`は参照しない。
 
+## 公開ページRegistry
+
+`scripts/sync_site_source.py`は、Phase 0で監査した共通生成器である。`scripts/sync_book_site.py`は、この生成器を置換せず、`site-pages.json`に登録した追加ページとCanonical Directoryを検証して注入する薄い拡張層である。
+
+`site-pages.json`には次だけを置く。
+
+- Canonical Directoryの追加
+- 正本Sourceと生成先Destinationの対応
+- Navigation sectionとorder
+- Directory route
+
+RegistryのSchemaは`schemas/site-pages.schema.json`で管理する。新しい章や成果物を公開するPRは、本文、TemplateまたはCase、Registry、検査を同じPRで更新する。
+
 ## 非破壊build契約
 
 1. 同期・build前後で追跡ファイルのSHA-256が変化してはならない。
@@ -45,9 +61,9 @@ BOOK_FORMATTER_DIR=../book-formatter npm run build
 3. Jekyll buildは`_site/`、その他の将来の配布処理は明示された生成Directoryだけへ書き込む。
 4. `docs/`は毎回作り直し、孤立した旧生成物を残さない。
 5. `--check`はRepository内のファイルを書き換えず、同じ入力から異なる出力が生じた場合に失敗する。
-6. 生成物の`_data/build-manifest.json`は、正本SHA-256、formatter commit、上流Git blob SHA、適用した局所変換を記録する。
+6. 生成物の`_data/build-manifest.json`は、正本SHA-256、`site-pages.json`のSHA-256、formatter commit、上流Git blob SHA、適用した局所変換を記録する。
 7. CIは契約、出典、決定性、リンク、構造、Unicode、文章、layout risk、Jekyll build、built-site smoke testを分離して表示する。
-8. 同じ本文を`manuscript/`と`docs/`の両方で手編集しない。
+8. 同じ本文を`manuscript/`、`cases/`、`templates/`と`docs/`の両方で手編集しない。
 
 ## book-formatter
 
@@ -68,4 +84,4 @@ BOOK_FORMATTER_DIR=../book-formatter npm run build
 - GitHub Pages: `.github/workflows/pages.yml`がartifactをdeployする
 - Repositoryには`docs/`や`_site/`をcommitしない
 
-Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設定の状態を確認した上で完了判定する。
+Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設定の状態を確認した上で完了判定する。代表章はPhase 0完了前にDraftとして開始できるが、mergeはPhase 0のOperator Gate完了後とする。
