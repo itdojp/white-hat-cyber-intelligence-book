@@ -8,6 +8,7 @@
 
 本書を通じて、読者は次の成果物を一貫した証拠と判断の流れで作成できるようになります。
 
+- Integrated Security Case Map
 - Rules of Engagement
 - Threat ModelとAttack Path
 - Finding ReportとRetest Record
@@ -34,6 +35,13 @@
 3. [Quick Start](quickstart.md)
 4. [Concept Map](concept-map.md)
 5. [詳細目次](TOC.md)
+
+## 第1章の成果物
+
+- [Integrated Security Case Mapテンプレート](templates/integrated-security-case-map.md)
+- [合成記入例：請求書連携OAuthアプリの権限見直し](cases/ch01-integrated-security-case-example.md)
+
+この成果物は、Assessment、Detection、Hunting、IR / DFIR、CTI、経営判断、再評価を、共通Case IDとEvidence IDで接続します。
 
 ## 実務参照
 
