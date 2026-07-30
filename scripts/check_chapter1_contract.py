@@ -7,6 +7,14 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.sync_book_site import (  # noqa: E402
+    SitePageRegistryError,
+    parse_registry_data,
+)
+
 ERRORS: list[str] = []
 
 
@@ -51,6 +59,7 @@ def main() -> int:
         "site-pages.json",
         "schemas/site-pages.schema.json",
         "scripts/sync_book_site.py",
+        "scripts/check_site_pages_security.py",
         "artifact-index.md",
         "figure-index.md",
         "glossary.md",
@@ -136,7 +145,9 @@ def main() -> int:
             "Negative Finding",
             "Telemetry Requirements",
             "Detection Validation",
+            "Related hypothesis",
             "Analytic Judgment",
+            "Confidence | 高 / 中 / 低",
             "Decision Record",
             "Reassessment",
             "Handoff Contracts",
@@ -144,6 +155,8 @@ def main() -> int:
             "Traceability Check",
         ),
     )
+    if "Confidence | High / Moderate / Low" in template:
+        error(f"{template_path}: confidence vocabulary must use 高 / 中 / 低")
 
     example_path = "cases/ch01-integrated-security-case-example.md"
     example = read_text(example_path)
@@ -169,8 +182,14 @@ def main() -> int:
             "MET-2026-001",
             "billing-bridge.example",
             "侵害不存在は断定しない",
+            "| Status | Reassessment Due |",
+            "| Confidence | 中 |",
+            "| `HUNT-2026-001` | Hunt | `TH-2026-003` |",
         ),
     )
+    if re.search(r"^\| Confidence \| (?:High|Moderate|Low) \|$", example, re.MULTILINE):
+        error(f"{example_path}: confidence vocabulary must use 高 / 中 / 低")
+
     secret_patterns = (
         re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
         re.compile(r"AKIA[0-9A-Z]{16}"),
@@ -181,8 +200,12 @@ def main() -> int:
             error(f"{example_path}: possible secret pattern detected")
 
     registry = load_json("site-pages.json")
-    if registry.get("schemaVersion") != "1.0.0":
-        error("site-pages.json: schemaVersion must be 1.0.0")
+    try:
+        registry = parse_registry_data(registry)
+    except SitePageRegistryError as exc:
+        error(f"site-pages.json: schema contract violation: {exc}")
+        registry = {}
+
     expected_pages = {
         (
             "templates/integrated-security-case-map.md",
@@ -268,12 +291,18 @@ def main() -> int:
     scripts = package.get("scripts", {})
     if scripts.get("check:chapter1") != "python3 scripts/check_chapter1_contract.py":
         error("package.json: check:chapter1 command mismatch")
+    if scripts.get("check:site-pages-security") != (
+        "python3 scripts/check_site_pages_security.py"
+    ):
+        error("package.json: check:site-pages-security command mismatch")
     if "scripts/sync_book_site.py" not in scripts.get("sync:docs", ""):
         error("package.json: sync:docs must use sync_book_site.py")
     if "scripts/sync_book_site.py" not in scripts.get("check:docs-sync", ""):
         error("package.json: check:docs-sync must use sync_book_site.py")
     if "npm run check:chapter1" not in scripts.get("test", ""):
         error("package.json: test must run check:chapter1")
+    if "npm run check:site-pages-security" not in scripts.get("test", ""):
+        error("package.json: test must run check:site-pages-security")
 
     for message in ERRORS:
         print(f"ERROR: {message}")
@@ -282,7 +311,8 @@ def main() -> int:
 
     print(
         "chapter 1 contract passed: integrated case template, synthetic example, "
-        "source IDs, traceability IDs, page registry, and publication extension"
+        "source IDs, traceability IDs, schema-enforced page registry, and "
+        "publication extension"
     )
     return 0
 
