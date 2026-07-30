@@ -6,6 +6,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,28 +19,108 @@ REGISTRY_PATH = ROOT / "site-pages.json"
 SCHEMA_VERSION = "1.0.0"
 DIRECTORY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 ALLOWED_SECTIONS = set(base.SECTION_ORDER)
+RESERVED_DESTINATION_ROOTS = {
+    "_data",
+    "_includes",
+    "_layouts",
+    "assets",
+}
 
 
 class SitePageRegistryError(base.SiteGenerationError):
     pass
 
 
-def load_registry() -> dict:
+def lexical_absolute(path: Path) -> Path:
+    return Path(os.path.abspath(path))
+
+
+def require_repository_path(
+    root: Path,
+    path: Path,
+    label: str,
+    *,
+    kind: str,
+) -> Path:
+    """Validate an existing repository path without following symlinks outside root."""
+    lexical_root = lexical_absolute(root)
+    lexical_path = lexical_absolute(path)
     try:
-        registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
-    except FileNotFoundError as exc:
-        raise SitePageRegistryError(f"missing page registry: {REGISTRY_PATH}") from exc
-    except json.JSONDecodeError as exc:
-        raise SitePageRegistryError(f"invalid page registry JSON: {exc}") from exc
+        relative = lexical_path.relative_to(lexical_root)
+    except ValueError as exc:
+        raise SitePageRegistryError(
+            f"{label} is outside the repository root: {lexical_path}"
+        ) from exc
+
+    current = lexical_root
+    for component in relative.parts:
+        current = current / component
+        if current.is_symlink():
+            raise SitePageRegistryError(
+                f"{label} must not contain a symbolic-link component: {current}"
+            )
+
+    if kind == "file" and not lexical_path.is_file():
+        raise SitePageRegistryError(f"{label} is not a regular file: {lexical_path}")
+    if kind == "directory" and not lexical_path.is_dir():
+        raise SitePageRegistryError(f"{label} is not a directory: {lexical_path}")
+
+    try:
+        resolved_root = lexical_root.resolve(strict=True)
+        resolved_path = lexical_path.resolve(strict=True)
+    except OSError as exc:
+        raise SitePageRegistryError(f"cannot resolve {label}: {exc}") from exc
+    if resolved_path != resolved_root and resolved_root not in resolved_path.parents:
+        raise SitePageRegistryError(
+            f"{label} resolves outside the repository root: {resolved_path}"
+        )
+    return resolved_path
+
+
+def validate_canonical_tree(root: Path, directory: Path, label: str) -> None:
+    require_repository_path(root, directory, label, kind="directory")
+    for candidate in sorted(directory.rglob("*")):
+        candidate_label = f"{label}/{candidate.relative_to(directory).as_posix()}"
+        if candidate.is_symlink():
+            raise SitePageRegistryError(
+                f"{candidate_label} must not be a symbolic link"
+            )
+        if candidate.is_dir():
+            require_repository_path(root, candidate, candidate_label, kind="directory")
+        elif candidate.is_file():
+            require_repository_path(root, candidate, candidate_label, kind="file")
+        else:
+            raise SitePageRegistryError(
+                f"{candidate_label} must be a regular file or directory"
+            )
+
+
+def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
+    if not isinstance(value, dict):
+        raise SitePageRegistryError(f"{label} root must be a JSON object")
+    registry = value
 
     if registry.get("schemaVersion") != SCHEMA_VERSION:
         raise SitePageRegistryError(
-            f"site-pages.json schemaVersion must be {SCHEMA_VERSION}"
+            f"{label} schemaVersion must be {SCHEMA_VERSION}"
         )
 
-    for key in ("canonicalDirectories", "pages", "directoryRoutes"):
-        if key not in registry:
-            raise SitePageRegistryError(f"site-pages.json is missing {key}")
+    expected_keys = {
+        "schemaVersion",
+        "canonicalDirectories",
+        "pages",
+        "directoryRoutes",
+    }
+    unknown = set(registry) - expected_keys
+    if unknown:
+        raise SitePageRegistryError(
+            f"{label} has unknown keys: {sorted(unknown)}"
+        )
+    missing = expected_keys - set(registry)
+    if missing:
+        raise SitePageRegistryError(
+            f"{label} is missing keys: {sorted(missing)}"
+        )
 
     if not isinstance(registry["canonicalDirectories"], list):
         raise SitePageRegistryError("canonicalDirectories must be an array")
@@ -50,26 +131,92 @@ def load_registry() -> dict:
     return registry
 
 
+def load_registry() -> dict:
+    require_repository_path(
+        ROOT,
+        REGISTRY_PATH,
+        "site-pages.json",
+        kind="file",
+    )
+    try:
+        decoded = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise SitePageRegistryError(f"invalid page registry JSON: {exc}") from exc
+    return parse_registry_data(decoded)
+
+
+def validate_destination(raw: str, label: str) -> str:
+    destination = base.safe_relative_path(raw, label).as_posix()
+    path = Path(destination)
+    if not destination.endswith("/index.md"):
+        raise SitePageRegistryError(
+            f"{label} must be a pretty-route Markdown destination ending in /index.md: "
+            f"{destination}"
+        )
+    if any(part.startswith((".", "_")) for part in path.parts):
+        raise SitePageRegistryError(
+            f"{label} must not use hidden or Jekyll-reserved path components: "
+            f"{destination}"
+        )
+    if path.parts[0] in RESERVED_DESTINATION_ROOTS:
+        raise SitePageRegistryError(
+            f"{label} must not overwrite generated publication internals: {destination}"
+        )
+    return destination
+
+
+def validated_canonical_source_paths() -> list[Path]:
+    paths: set[Path] = set()
+    for path in ROOT.glob("*.md"):
+        if path.is_symlink():
+            raise SitePageRegistryError(
+                f"root canonical Markdown must not be a symbolic link: {path.name}"
+            )
+        if path.is_file():
+            require_repository_path(ROOT, path, path.name, kind="file")
+            paths.add(path)
+
+    for directory_name in base.CANONICAL_DIRECTORIES:
+        directory = ROOT / directory_name
+        if not directory.exists():
+            continue
+        validate_canonical_tree(ROOT, directory, directory_name)
+        paths.update(path for path in directory.rglob("*") if path.is_file())
+
+    for path, label in (
+        (base.CONFIG_PATH, "book-config.json"),
+        (base.REVISION_PATH, ".book-formatter/revision.json"),
+        (REGISTRY_PATH, "site-pages.json"),
+    ):
+        require_repository_path(ROOT, path, label, kind="file")
+        paths.add(path)
+
+    return sorted(paths, key=lambda path: path.relative_to(ROOT).as_posix())
+
+
 def apply_registry(registry: dict) -> None:
     canonical_directories = list(base.CANONICAL_DIRECTORIES)
-    for raw in registry["canonicalDirectories"]:
+    for index, raw in enumerate(registry["canonicalDirectories"]):
         if not isinstance(raw, str) or not DIRECTORY_RE.fullmatch(raw):
             raise SitePageRegistryError(
-                f"invalid canonical directory name: {raw!r}"
+                f"canonicalDirectories[{index}] is invalid: {raw!r}"
             )
         directory = ROOT / raw
-        if not directory.is_dir():
-            raise SitePageRegistryError(
-                f"canonical directory does not exist: {raw}"
-            )
+        validate_canonical_tree(ROOT, directory, raw)
         if raw not in canonical_directories:
             canonical_directories.append(raw)
     base.CANONICAL_DIRECTORIES = tuple(canonical_directories)
+
+    for directory_name in base.CANONICAL_DIRECTORIES:
+        directory = ROOT / directory_name
+        if directory.exists():
+            validate_canonical_tree(ROOT, directory, directory_name)
 
     pages = list(base.PAGES)
     sources = {page.source for page in pages}
     destinations = {page.destination for page in pages}
     section_orders = {(page.section, page.order) for page in pages}
+    allowed_source_roots = set(base.CANONICAL_DIRECTORIES)
 
     for index, item in enumerate(registry["pages"]):
         if not isinstance(item, dict):
@@ -86,21 +233,31 @@ def apply_registry(registry: dict) -> None:
         source = base.safe_relative_path(
             str(item["source"]), f"pages[{index}].source"
         ).as_posix()
-        destination = base.safe_relative_path(
+        source_parts = Path(source).parts
+        if len(source_parts) < 2 or source_parts[0] not in allowed_source_roots:
+            raise SitePageRegistryError(
+                f"pages[{index}].source must be inside a declared canonical directory: "
+                f"{source}"
+            )
+        source_path = ROOT / source
+        require_repository_path(
+            ROOT,
+            source_path,
+            f"pages[{index}].source",
+            kind="file",
+        )
+        if not source.endswith(".md"):
+            raise SitePageRegistryError(
+                f"pages[{index}].source must identify a Markdown file: {source}"
+            )
+
+        destination = validate_destination(
             str(item["destination"]), f"pages[{index}].destination"
-        ).as_posix()
+        )
         section = item["section"]
         order = item["order"]
         title = item.get("title")
 
-        if not source.endswith(".md") or not (ROOT / source).is_file():
-            raise SitePageRegistryError(
-                f"pages[{index}].source must identify an existing Markdown file: {source}"
-            )
-        if not destination.endswith(".md"):
-            raise SitePageRegistryError(
-                f"pages[{index}].destination must end in .md: {destination}"
-            )
         if section not in ALLOWED_SECTIONS:
             raise SitePageRegistryError(
                 f"pages[{index}].section is invalid: {section!r}"
@@ -146,9 +303,9 @@ def apply_registry(registry: dict) -> None:
             raise SitePageRegistryError(
                 f"invalid directoryRoutes key: {raw_directory!r}"
             )
-        destination = base.safe_relative_path(
+        destination = validate_destination(
             str(raw_destination), f"directoryRoutes.{raw_directory}"
-        ).as_posix()
+        )
         if destination not in destinations:
             raise SitePageRegistryError(
                 f"directory route target is not a registered page: {destination}"
@@ -156,14 +313,81 @@ def apply_registry(registry: dict) -> None:
         routes[raw_directory] = destination
     base.DIRECTORY_ROUTES = routes
 
-    original_canonical_source_paths = base.canonical_source_paths
+    base.canonical_source_paths = validated_canonical_source_paths
 
-    def canonical_source_paths() -> list[Path]:
-        paths = set(original_canonical_source_paths())
-        paths.add(REGISTRY_PATH)
-        return sorted(paths, key=lambda path: path.relative_to(ROOT).as_posix())
 
-    base.canonical_source_paths = canonical_source_paths
+def run_registry_security_regressions() -> list[str]:
+    failures: list[str] = []
+
+    for label, value in (
+        ("array root", []),
+        ("string root", "not-an-object"),
+        ("null root", None),
+    ):
+        try:
+            parse_registry_data(value, f"fixture {label}")
+        except SitePageRegistryError:
+            pass
+        else:
+            failures.append(f"registry parser accepted {label}")
+
+    valid_registry = {
+        "schemaVersion": SCHEMA_VERSION,
+        "canonicalDirectories": [],
+        "pages": [],
+        "directoryRoutes": {},
+    }
+    try:
+        parse_registry_data(valid_registry, "valid fixture")
+    except SitePageRegistryError as exc:
+        failures.append(f"registry parser rejected valid object: {exc}")
+
+    for destination in (
+        "_data/injected/index.md",
+        "assets/injected/index.md",
+        "hidden/.private/index.md",
+        "not-pretty.md",
+    ):
+        try:
+            validate_destination(destination, "destination fixture")
+        except SitePageRegistryError:
+            pass
+        else:
+            failures.append(f"destination validator accepted {destination}")
+
+    try:
+        validate_destination("cases/example/index.md", "valid destination")
+    except SitePageRegistryError as exc:
+        failures.append(f"destination validator rejected valid route: {exc}")
+
+    with tempfile.TemporaryDirectory(prefix="site-registry-root-") as root_tmp, tempfile.TemporaryDirectory(
+        prefix="site-registry-outside-"
+    ) as outside_tmp:
+        fixture_root = Path(root_tmp)
+        canonical = fixture_root / "cases"
+        canonical.mkdir()
+        (canonical / "safe.md").write_text("# Safe\n", encoding="utf-8")
+        try:
+            validate_canonical_tree(fixture_root, canonical, "safe fixture")
+        except SitePageRegistryError as exc:
+            failures.append(f"canonical validator rejected safe tree: {exc}")
+
+        outside_file = Path(outside_tmp) / "outside.md"
+        outside_file.write_text("# Outside\n", encoding="utf-8")
+        link = canonical / "escape.md"
+        try:
+            link.symlink_to(outside_file)
+        except OSError:
+            pass
+        else:
+            try:
+                validate_canonical_tree(fixture_root, canonical, "symlink fixture")
+            except SitePageRegistryError:
+                pass
+            else:
+                failures.append("canonical validator accepted an external symlink")
+
+    return failures
 
 
 def main() -> int:
