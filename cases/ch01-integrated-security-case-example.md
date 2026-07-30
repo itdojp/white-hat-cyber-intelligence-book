@@ -19,12 +19,12 @@
 | Artifact ID | `ART-10` |
 | Case ID | `CASE-2026-001` |
 | Title | 請求書連携OAuthアプリの権限見直し |
-| Status | Decision Recorded |
+| Status | Reassessment Due |
 | Owner | Security Program Lead |
 | Contributors | Platform、SOC、CSIRT、CTI、業務システム担当 |
 | Classification | Internal |
 | Created at | 2026-07-20T09:00:00+09:00 |
-| Updated at | 2026-07-22T17:30:00+09:00 |
+| Updated at | 2026-07-30T18:00:00+09:00 |
 | Review deadline | 2026-08-21T17:00:00+09:00 |
 | Related Issue / Ticket | `SYNTH-SEC-1042` |
 
@@ -174,9 +174,9 @@
 
 ### 8.3 Hunt or Incident Records
 
-| Record ID | Type | Question | Time range | Result | Evidence IDs | Next action |
-|---|---|---|---|---|---|---|
-| `HUNT-2026-001` | Hunt | 未承認同意変更または不自然なApp sign-inはあるか | 過去90日 | 確認範囲では該当なし | `EVD-2026-004`, `NEG-2026-001` | Telemetry Gap解消後に再実施 |
+| Record ID | Type | Related hypothesis | Question | Time range | Result | Evidence IDs | Next action |
+|---|---|---|---|---|---|---|---|
+| `HUNT-2026-001` | Hunt | `TH-2026-003` | 未承認同意変更または不自然なApp sign-inはあるか | 過去90日 | 確認範囲では該当なし | `EVD-2026-004`, `NEG-2026-001` | Telemetry Gap解消後に再実施 |
 
 ## 9. Analytic Judgment
 
@@ -184,7 +184,7 @@
 |---|---|
 | Analytic Judgment ID | `AJ-2026-001` |
 | Key judgment | 外部報告の攻撃Campaignが当社を直接標的にしている証拠はない。一方、報告された行動と同型の過大権限経路が存在し、現在のTelemetryでは過去利用を完全に評価できない。標的判断とは独立に権限縮小と観測改善が必要である |
-| Confidence | Moderate |
+| Confidence | 中 |
 | Basis for confidence | 現行設定と業務要件の差分は直接確認した。過去利用はTelemetry Gapにより限定的である |
 | Confirmed facts | 過大scope、Credential有効、同意Event取得可能、API利用Telemetry不完全 |
 | Assumptions | 業務要件表が現行運用を正しく反映している |
@@ -268,8 +268,8 @@
 
 | Review area | Reviewer / role | Result | Date | Notes |
 |---|---|---|---|---|
-| Technical correctness | Platform reviewer | Pass | 2026-07-22 | scopeとTelemetryの関係を確認 |
-| Safety / authorization | Engagement owner | Pass | 2026-07-22 | 合成環境・最小操作を確認 |
-| Evidence / source quality | Evidence reviewer | Pass | 2026-07-22 | Negative Findingの限界を確認 |
-| Analytic quality | CTI reviewer | Pass | 2026-07-22 | Actor帰属へ依存しない判断を確認 |
-| Decision usefulness | CTO delegate | Pass | 2026-07-22 | 選択肢、期限、残存Riskを確認 |
+| Technical correctness | Platform reviewer | Pass | 2026-07-30 | scopeとTelemetryの関係を確認 |
+| Safety / authorization | Engagement owner | Pass | 2026-07-30 | 合成環境・最小操作を確認 |
+| Evidence / source quality | Evidence reviewer | Pass | 2026-07-30 | Negative Findingの限界を確認 |
+| Analytic quality | CTI reviewer | Pass | 2026-07-30 | Actor帰属へ依存しない判断を確認 |
+| Decision usefulness | CTO delegate | Pass | 2026-07-30 | 選択肢、期限、残存Riskを確認 |
