@@ -5,10 +5,11 @@
 本リポジトリは、IT Engineer Knowledge Architectureシリーズの書籍制作リポジトリです。攻撃技術の習得自体を目的にせず、脅威を理解し、許可された範囲で安全に検証し、観測・検知・対応・サイバー脅威インテリジェンス・経営判断へ変換する方法を体系化します。
 
 - Repository: <https://github.com/itdojp/white-hat-cyber-intelligence-book>
+- Public site: <https://itdojp.github.io/white-hat-cyber-intelligence-book/>
 - Phase 0 Runbook: <https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/1>
-- Bootstrap Draft PR: <https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/2>
+- Bootstrap PR: <https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/2>
 - Parent proposal: <https://github.com/itdojp/it-engineer-knowledge-architecture/issues/280>
-- Status: `0.1.0` editorial foundation / Phase 0 in progress
+- Status: `0.1.0` editorial and publication foundation / Phase 0 in progress
 
 ## 中心となるループ
 
@@ -38,8 +39,9 @@
 | 章本文 | `manuscript/` |
 | 実務成果物 | `templates/` |
 | 出版設定 | `book-config.json` |
+| 共通部品固定 | `.book-formatter/revision.json` |
 
-`docs/`は将来、固定した`book-formatter`と同期スクリプトから生成する公開成果物とします。編集元と生成物を混在させない契約は`CANONICAL_SOURCE.md`を参照してください。
+`docs/`は正本から生成する一時的なGitHub Pages sourceです。直接編集もcommitもしません。生成と非破壊buildの契約は`CANONICAL_SOURCE.md`を参照してください。
 
 ## 安全上の原則
 
@@ -49,13 +51,39 @@
 
 ## ローカル検証
 
-現在のPhase 0で実行できる契約検査はPython標準ライブラリだけで完結します。
+前提:
+
+- Node.js 24
+- Python 3.11以上
+- Ruby 3.3 / Bundler
+- Git
+
+固定済み`book-formatter`のcheckoutを利用する場合:
 
 ```bash
-python3 scripts/check_contract.py
+git clone https://github.com/itdojp/book-formatter.git ../book-formatter
+git -C ../book-formatter checkout 69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c
+
+npm ci
+bundle install
+BOOK_FORMATTER_DIR=../book-formatter npm test
+BOOK_FORMATTER_DIR=../book-formatter npm run build
+python3 scripts/check_built_site.py --source docs --site _site
 ```
 
-Jekyllサイト、Book QA、Pagesは、`book-formatter`固定revisionから共通コンポーネントを同期した後に有効化します。未生成の公開サイトを完成扱いにしません。
+`BOOK_FORMATTER_DIR`を省略した場合、生成スクリプトは固定commitの共通部品を取得し、Git blob SHAを検証します。
+
+主要コマンド:
+
+| コマンド | 内容 |
+|---|---|
+| `npm test` | 編集・安全・出典・部品固定・生成決定性を検証 |
+| `npm run sync:docs` | 正本から`docs/`を再生成 |
+| `npm run check:docs-sync` | 2回生成の一致と正本非変更を検証 |
+| `npm run build` | `docs/`生成後にJekyll build |
+| `npm run serve` | ローカルpreview |
+
+CIでは`Book Contract`と`Book QA`を実行し、`main`では同じ生成契約を使ってGitHub Pagesへdeployします。
 
 ## ライセンス
 
