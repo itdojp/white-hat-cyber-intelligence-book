@@ -15,11 +15,6 @@ EXPECTED_WORKFLOWS = {
 PINNED_FORMATTER = "69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c"
 FULL_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 USES_RE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
-CHECKOUT_RE = re.compile(
-    r"(?ms)^\s*- name: (?P<name>Checkout[^\n]*)\n"
-    r"\s+uses: actions/checkout@[0-9a-f]{40}[^\n]*\n"
-    r"(?P<with>\s+with:\n(?:\s{10}.*(?:\n|$))*)?"
-)
 
 
 def top_level_block(text: str, key: str) -> str | None:
@@ -45,21 +40,55 @@ def job_block(text: str, job: str) -> str | None:
     return match.group("body") if match else None
 
 
+def indentation(line: str) -> int:
+    return len(line) - len(line.lstrip(" "))
+
+
 def check_checkout_credentials(path: Path, text: str, errors: list[str]) -> None:
-    checkout_uses = [
-        action for action in USES_RE.findall(text) if action.startswith("actions/checkout@")
+    lines = text.splitlines()
+    checkout_indexes = [
+        index
+        for index, line in enumerate(lines)
+        if re.match(r"^\s+uses:\s+actions/checkout@[0-9a-f]{40}(?:\s+#.*)?$", line)
     ]
-    checkout_steps = list(CHECKOUT_RE.finditer(text))
-    if len(checkout_steps) != len(checkout_uses):
+    expected_checkout_count = sum(
+        1 for action in USES_RE.findall(text) if action.startswith("actions/checkout@")
+    )
+    if len(checkout_indexes) != expected_checkout_count:
         errors.append(
-            f"{path.relative_to(ROOT)}: could not structurally inspect every checkout step"
+            f"{path.relative_to(ROOT)}: could not locate every checkout step"
         )
         return
-    for match in checkout_steps:
-        with_block = match.group("with") or ""
-        if "persist-credentials: false" not in with_block:
+
+    for index in checkout_indexes:
+        uses_indent = indentation(lines[index])
+        step_start = index
+        while step_start > 0:
+            previous = lines[step_start - 1]
+            if re.match(r"^\s*- name:", previous) and indentation(previous) < uses_indent:
+                step_start -= 1
+                break
+            step_start -= 1
+
+        step_end = len(lines)
+        for candidate_index in range(index + 1, len(lines)):
+            candidate = lines[candidate_index]
+            if re.match(r"^\s*- name:", candidate) and indentation(candidate) < uses_indent:
+                step_end = candidate_index
+                break
+
+        step_text = "\n".join(lines[step_start:step_end])
+        step_name = next(
+            (
+                line.strip().removeprefix("- name:").strip()
+                for line in lines[step_start : index + 1]
+                if re.match(r"^\s*- name:", line)
+            ),
+            "checkout step",
+        )
+        if "persist-credentials: false" not in step_text:
             errors.append(
-                f"{path.relative_to(ROOT)}: {match.group('name')} must set "
+                f"{path.relative_to(ROOT)}: {step_name} must set "
                 "persist-credentials: false"
             )
 
