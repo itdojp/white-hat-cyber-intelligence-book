@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import subprocess
 import sys
 from datetime import date
 from pathlib import Path
@@ -12,6 +13,28 @@ from urllib.parse import unquote, urlparse
 ROOT = Path(__file__).resolve().parents[1]
 ERRORS: list[str] = []
 WARNINGS: list[str] = []
+
+TEXT_SUFFIXES = {'.md', '.json', '.py', '.yml', '.yaml', '.txt'}
+EXCLUDED_DIRECTORY_NAMES = {
+    '.bundle',
+    '.cache',
+    '.git',
+    '.jekyll-cache',
+    '.sass-cache',
+    '.tmp',
+    '.venv',
+    '__pycache__',
+    '_site',
+    'build',
+    'coverage',
+    'dist',
+    'node_modules',
+    'tmp',
+    'vendor',
+    'venv',
+}
+SOURCE_ID_RE = re.compile(r'\bSRC-[A-Z0-9-]+\b')
+CHAPTER_FILENAME_RE = re.compile(r'^(?:ch)?(?P<number>\d{2})(?:[-_].*)?$')
 
 
 def error(message: str) -> None:
@@ -71,13 +94,68 @@ def check_local_links(markdown_files: list[Path]) -> None:
                     error(f'{path.relative_to(ROOT)}:{line_no}: missing local link target: {token}')
 
 
+def is_excluded_repository_path(relative_path: Path) -> bool:
+    return any(part in EXCLUDED_DIRECTORY_NAMES for part in relative_path.parts)
+
+
+def repository_files() -> list[Path]:
+    """Return tracked and non-ignored worktree files without installed/generated trees."""
+    try:
+        result = subprocess.run(
+            [
+                'git',
+                '-C',
+                str(ROOT),
+                'ls-files',
+                '-z',
+                '--cached',
+                '--others',
+                '--exclude-standard',
+            ],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        relative_paths = result.stdout.decode('utf-8').split('\0')
+    except (OSError, subprocess.CalledProcessError, UnicodeDecodeError) as exc:
+        warning(f'git file enumeration unavailable; using filesystem fallback: {exc}')
+        relative_paths = [
+            path.relative_to(ROOT).as_posix()
+            for path in ROOT.rglob('*')
+            if path.is_file()
+        ]
+
+    files: list[Path] = []
+    seen: set[str] = set()
+    for raw in relative_paths:
+        if not raw or raw in seen:
+            continue
+        seen.add(raw)
+        relative = Path(raw)
+        if is_excluded_repository_path(relative):
+            continue
+        candidate = ROOT / relative
+        if candidate.is_file():
+            files.append(candidate)
+    return sorted(files, key=lambda path: path.relative_to(ROOT).as_posix())
+
+
+def chapter_number_from_path(path: Path) -> int | None:
+    match = CHAPTER_FILENAME_RE.fullmatch(path.stem)
+    if not match:
+        return None
+    return int(match.group('number'))
+
+
 required_files = [
     'README.md', 'index.md', 'title.md', 'copyright.md', 'preface.md', 'afterword.md', 'colophon.md',
     'BOOK_PROPOSAL.md', 'TOC.md', 'CROSS_BOOK_MAP.md', 'WRITING_GUIDE.md',
     'SOURCE_POLICY.md', 'SAFETY_SCOPE.md', 'LAB_ARCHITECTURE.md', 'CANONICAL_SOURCE.md',
     'LICENSE.md', 'SECURITY.md', 'CONTRIBUTING.md', 'book-config.json',
-    '.book-formatter/revision.json', 'references/sources.json',
-    'references/source-note-schema.json', 'references/reference-baseline.md',
+    'package.json', 'package-lock.json', 'REPRESENTATIVE_CHAPTER_PLAN.md',
+    '.book-formatter/revision.json', '.github/workflows/contract.yml',
+    'references/sources.json', 'references/source-note-schema.json',
+    'references/reference-baseline.md',
     'manuscript/00-reading-guide.md', 'manuscript/01-integrated-discipline.md',
 ]
 for rel in required_files:
@@ -120,6 +198,17 @@ if config:
         if not item.get('objectives'):
             error(f'book-config.json: chapter {item.get("id")} has no objectives')
 
+expected_package_license = '(CC-BY-NC-SA-4.0 AND Apache-2.0)'
+package = load_json(ROOT / 'package.json')
+if package and package.get('license') != expected_package_license:
+    error(f'package.json: license must be {expected_package_license}')
+
+package_lock = load_json(ROOT / 'package-lock.json')
+if package_lock:
+    lock_license = package_lock.get('packages', {}).get('', {}).get('license')
+    if lock_license != expected_package_license:
+        error(f'package-lock.json: root package license must be {expected_package_license}')
+
 revision = load_json(ROOT / '.book-formatter/revision.json')
 if revision:
     if revision.get('commit') != '69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c':
@@ -128,6 +217,7 @@ if revision:
         error('.book-formatter/revision.json: unexpected schema blob SHA')
 
 registry = load_json(ROOT / 'references/sources.json')
+source_chapters: dict[str, set[int]] = {}
 if registry:
     ids: set[str] = set()
     check_date_raw = os.environ.get('CHECK_DATE')
@@ -161,17 +251,28 @@ if registry:
         if review and today and review < today:
             warning(f'{sid}: source review is overdue')
         chapters = source.get('chapters')
-        if not isinstance(chapters, list) or any(not isinstance(ch, int) or not 0 <= ch <= 29 for ch in chapters):
+        valid_chapters = (
+            isinstance(chapters, list)
+            and all(isinstance(ch, int) and 0 <= ch <= 29 for ch in chapters)
+        )
+        if not valid_chapters:
             error(f'{sid}: chapters must contain integers from 0 through 29')
+        else:
+            source_chapters[sid] = set(chapters)
         if not isinstance(source.get('reviewTriggers'), list) or not source.get('reviewTriggers'):
             error(f'{sid}: reviewTriggers must be a non-empty list')
 
-text_files = [
-    path for path in ROOT.rglob('*')
-    if path.is_file()
-    and not any(part.startswith('.') and part != '.book-formatter' for part in path.relative_to(ROOT).parts)
-    and path.suffix.lower() in {'.md', '.json', '.py', '.yml', '.yaml', '.txt'}
-]
+repository_file_list = repository_files()
+text_files = [path for path in repository_file_list if path.suffix.lower() in TEXT_SUFFIXES]
+
+workflow_contract = ROOT / '.github' / 'workflows' / 'contract.yml'
+if workflow_contract.is_file() and workflow_contract not in text_files:
+    error('.github/workflows/contract.yml: workflow is not included in repository text scanning')
+for path in text_files:
+    relative = path.relative_to(ROOT)
+    if is_excluded_repository_path(relative):
+        error(f'{relative}: installed or generated path was included in repository text scanning')
+
 secret_patterns = [
     re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----'),
     re.compile(r'AKIA[0-9A-Z]{16}'),
@@ -210,11 +311,32 @@ for path in markdown_files:
         error(f'{path.relative_to(ROOT)}: unbalanced code fence')
 check_local_links(markdown_files)
 
-for chapter in (ROOT / 'manuscript').glob('*.md'):
+for chapter in sorted((ROOT / 'manuscript').glob('*.md')):
     text = chapter.read_text(encoding='utf-8')
-    for heading in ('この章の位置付け', '学習目標', '前提知識', '章のまとめ', '次に学ぶこと', '参考文献・Source Note ID'):
+    for heading in (
+        'この章の位置付け',
+        '学習目標',
+        '前提知識',
+        '章のまとめ',
+        '次に学ぶこと',
+        '参考文献・Source Note ID',
+    ):
         if f'## {heading}' not in text:
             error(f'{chapter.relative_to(ROOT)}: missing standard heading: {heading}')
+
+    chapter_number = chapter_number_from_path(chapter)
+    if chapter_number is None:
+        warning(f'{chapter.relative_to(ROOT)}: cannot derive chapter number for source mapping validation')
+        continue
+    for source_id in sorted(set(SOURCE_ID_RE.findall(text))):
+        registered_chapters = source_chapters.get(source_id)
+        if registered_chapters is None:
+            error(f'{chapter.relative_to(ROOT)}: unknown Source Note ID {source_id}')
+        elif chapter_number not in registered_chapters:
+            error(
+                f'{chapter.relative_to(ROOT)}: {source_id} cites chapter {chapter_number}, '
+                'but references/sources.json does not register that chapter'
+            )
 
 print(
     f'checked repository contract: {len(required_files)} required files, '
