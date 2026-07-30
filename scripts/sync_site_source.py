@@ -23,6 +23,7 @@ REPOSITORY_URL = "https://github.com/itdojp/white-hat-cyber-intelligence-book"
 CODE_FENCE_RE = re.compile(r"^\s*```")
 LINK_RE = re.compile(r"(!?\[[^\]]*\]\()([^)]+)(\))")
 IGNORE_SCHEMES = {"http", "https", "mailto", "tel", "data"}
+CANONICAL_DIRECTORIES = ("manuscript", "appendices", "references", "templates")
 
 
 @dataclass(frozen=True)
@@ -83,6 +84,10 @@ SECTION_ORDER = (
 )
 
 
+class SiteGenerationError(RuntimeError):
+    pass
+
+
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -96,9 +101,15 @@ def git_blob_sha(data: bytes) -> str:
     return hashlib.sha1(header + data).hexdigest()
 
 
+def safe_relative_path(raw: str, label: str) -> Path:
+    path = Path(raw)
+    if path.is_absolute() or not path.parts or ".." in path.parts:
+        raise SiteGenerationError(f"{label} must be a safe relative path: {raw!r}")
+    return path
+
+
 def verify_formatter_checkout(path: Path, expected_commit: str) -> None:
-    git_dir = path / ".git"
-    if not git_dir.exists():
+    if not (path / ".git").exists():
         return
     result = subprocess.run(
         ["git", "-C", str(path), "rev-parse", "HEAD"],
@@ -108,7 +119,7 @@ def verify_formatter_checkout(path: Path, expected_commit: str) -> None:
     )
     actual = result.stdout.strip()
     if actual != expected_commit:
-        raise RuntimeError(
+        raise SiteGenerationError(
             f"book-formatter checkout is {actual}; expected {expected_commit}"
         )
 
@@ -116,6 +127,9 @@ def verify_formatter_checkout(path: Path, expected_commit: str) -> None:
 def read_shared_components(formatter_dir: Path | None) -> tuple[dict[str, bytes], dict]:
     revision = load_json(REVISION_PATH)
     expected_commit = revision["commit"]
+    if not re.fullmatch(r"[0-9a-f]{40}", expected_commit):
+        raise SiteGenerationError("book-formatter commit must be a full SHA")
+
     if formatter_dir is not None:
         formatter_dir = formatter_dir.resolve()
         if not formatter_dir.is_dir():
@@ -124,14 +138,21 @@ def read_shared_components(formatter_dir: Path | None) -> tuple[dict[str, bytes]
 
     output: dict[str, bytes] = {}
     for name, component in sorted(revision["components"].items()):
-        source_path = component["path"]
+        source_path = safe_relative_path(component["path"], f"{name}.path")
         expected_blob = component["blobSha"]
+        if not re.fullmatch(r"[0-9a-f]{40}", expected_blob):
+            raise SiteGenerationError(f"{name}: blobSha must be a full Git blob SHA")
+
         if formatter_dir is not None:
-            data = (formatter_dir / source_path).read_bytes()
+            source_file = (formatter_dir / source_path).resolve()
+            if formatter_dir not in source_file.parents:
+                raise SiteGenerationError(f"{name}: source path escapes formatter checkout")
+            data = source_file.read_bytes()
         else:
+            encoded_path = quote(source_path.as_posix(), safe="/")
             url = (
                 "https://raw.githubusercontent.com/itdojp/book-formatter/"
-                f"{expected_commit}/{quote(source_path, safe='/')}"
+                f"{expected_commit}/{encoded_path}"
             )
             request = urllib.request.Request(
                 url,
@@ -139,9 +160,10 @@ def read_shared_components(formatter_dir: Path | None) -> tuple[dict[str, bytes]
             )
             with urllib.request.urlopen(request, timeout=30) as response:
                 data = response.read()
+
         actual_blob = git_blob_sha(data)
         if actual_blob != expected_blob:
-            raise RuntimeError(
+            raise SiteGenerationError(
                 f"{name}: Git blob SHA mismatch: {actual_blob} != {expected_blob}"
             )
         output[name] = data
@@ -155,7 +177,7 @@ def strip_front_matter(text: str) -> str:
     for index in range(1, len(lines)):
         if lines[index].strip() == "---":
             return "".join(lines[index + 1 :]).lstrip("\n")
-    raise ValueError("front matter start found without closing delimiter")
+    raise SiteGenerationError("front matter start found without closing delimiter")
 
 
 def extract_title(text: str, fallback: str) -> str:
@@ -180,6 +202,7 @@ def parse_link_target(raw: str) -> tuple[str, str, str, str] | None:
         suffix = " " + parts[1] if len(parts) > 1 else ""
         prefix = ""
         closing = ""
+
     parsed = urlparse(url)
     if parsed.scheme in IGNORE_SCHEMES or parsed.scheme or url.startswith("//"):
         return None
@@ -199,7 +222,11 @@ def site_dir(destination: str) -> str:
     return destination.rsplit("/", 1)[0]
 
 
-def relative_site_link(current_destination: str, target_destination: str, fragment: str = "") -> str:
+def relative_site_link(
+    current_destination: str,
+    target_destination: str,
+    fragment: str = "",
+) -> str:
     current_dir = site_dir(current_destination)
     target_dir = site_dir(target_destination)
     relative = posixpath.relpath(target_dir, current_dir)
@@ -223,6 +250,7 @@ def rewrite_links(
     source_path = (ROOT / source).resolve()
     lines: list[str] = []
     in_code = False
+
     for line in markdown.splitlines():
         if CODE_FENCE_RE.match(line):
             in_code = not in_code
@@ -240,6 +268,7 @@ def rewrite_links(
             path, fragment, query, formatter = parsed
             if query:
                 return match.group(0)
+
             target = (source_path.parent / path).resolve()
             try:
                 target_relative = target.relative_to(ROOT).as_posix()
@@ -264,14 +293,22 @@ def rewrite_links(
                 return before + formatter.format(url=url) + after
 
             if target.exists():
-                return before + formatter.format(url=repository_link(target, fragment)) + after
+                return before + formatter.format(
+                    url=repository_link(target, fragment)
+                ) + after
             return match.group(0)
 
         lines.append(LINK_RE.sub(replace, line))
+
+    if in_code:
+        raise SiteGenerationError(f"{source}: unbalanced code fence during link rewrite")
     return "\n".join(lines).rstrip() + "\n"
 
 
-def render_page(page: Page, source_to_destination: dict[str, str]) -> tuple[str, str]:
+def render_page(
+    page: Page,
+    source_to_destination: dict[str, str],
+) -> tuple[str, str]:
     source_path = ROOT / page.source
     if not source_path.is_file():
         raise FileNotFoundError(f"missing canonical source: {page.source}")
@@ -308,8 +345,12 @@ def render_navigation(titles: dict[str, str]) -> str:
             continue
         lines.append(f"{section}:")
         for page in entries:
-            lines.append(f"  - title: {json.dumps(titles[page.source], ensure_ascii=False)}")
-            lines.append(f"    path: {json.dumps(destination_url(page.destination))}")
+            lines.append(
+                f"  - title: {json.dumps(titles[page.source], ensure_ascii=False)}"
+            )
+            lines.append(
+                f"    path: {json.dumps(destination_url(page.destination))}"
+            )
     return "\n".join(lines) + "\n"
 
 
@@ -366,35 +407,100 @@ defaults:
 
 def transform_shared_component(target: str, data: bytes) -> tuple[bytes, list[str]]:
     transforms: list[str] = []
-    if target == "_layouts/book.html":
-        text = data.decode("utf-8")
-        old_condition = "{% if repo_url and page.path %}"
-        new_condition = "{% if site.show_edit_link and repo_url and page.source_path %}"
-        if text.count(old_condition) != 1 or text.count("{{ page.path }}") != 1:
-            raise RuntimeError("unexpected upstream book layout edit-link contract")
-        text = text.replace(old_condition, new_condition)
-        text = text.replace("{{ page.path }}", "{{ page.source_path }}")
-        data = text.encode("utf-8")
-        transforms.append("edit-link-targets-canonical-source")
-    return data, transforms
+    if target != "_layouts/book.html":
+        return data, transforms
+
+    text = data.decode("utf-8")
+    old_condition = "{% if repo_url and page.path %}"
+    new_condition = "{% if site.show_edit_link and repo_url and page.source_path %}"
+    if text.count(old_condition) != 1 or text.count("{{ page.path }}") != 1:
+        raise SiteGenerationError("unexpected upstream book layout edit-link contract")
+    text = text.replace(old_condition, new_condition)
+    text = text.replace("{{ page.path }}", "{{ page.source_path }}")
+    transforms.append("edit-link-targets-canonical-source")
+
+    removable_markers = {
+        "<!-- Preconnect to external domains -->",
+        "fonts.googleapis.com",
+        "fonts.gstatic.com",
+        "<!-- Favicon -->",
+        "assets/favicon.ico",
+        "assets/apple-touch-icon.png",
+    }
+    for marker in removable_markers:
+        if text.count(marker) != 1:
+            raise SiteGenerationError(
+                f"unexpected upstream book layout marker count for {marker!r}"
+            )
+    text = "\n".join(
+        line
+        for line in text.splitlines()
+        if not any(marker in line for marker in removable_markers)
+    ) + "\n"
+    transforms.extend(
+        (
+            "remove-unused-external-font-preconnects",
+            "remove-missing-favicon-links",
+        )
+    )
+    return text.encode("utf-8"), transforms
 
 
-def canonical_hashes() -> dict[str, str]:
-    paths = [ROOT / page.source for page in PAGES]
-    paths.extend((CONFIG_PATH, REVISION_PATH))
+def canonical_source_paths() -> list[Path]:
+    paths = {path for path in ROOT.glob("*.md") if path.is_file()}
+    for directory_name in CANONICAL_DIRECTORIES:
+        directory = ROOT / directory_name
+        if directory.is_dir():
+            paths.update(path for path in directory.rglob("*") if path.is_file())
+    paths.update((CONFIG_PATH, REVISION_PATH))
+    return sorted(paths, key=lambda path: path.relative_to(ROOT).as_posix())
+
+
+def repository_state_hashes() -> dict[str, str]:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(ROOT), "ls-files", "-z"],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        relative_paths = [item for item in result.stdout.decode("utf-8").split("\0") if item]
+        paths = [ROOT / relative for relative in relative_paths]
+    except (OSError, subprocess.CalledProcessError, UnicodeDecodeError):
+        paths = canonical_source_paths()
+
     return {
         path.relative_to(ROOT).as_posix(): sha256_bytes(path.read_bytes())
-        for path in sorted(set(paths))
+        for path in paths
+        if path.is_file()
     }
 
 
+def validate_generated_output_path(output: Path) -> Path:
+    lexical_output = Path(os.path.abspath(output))
+    lexical_expected = Path(os.path.abspath(DEFAULT_OUTPUT))
+    if lexical_output != lexical_expected:
+        raise SiteGenerationError(
+            f"generated site output is restricted to {lexical_expected}; got {lexical_output}"
+        )
+    if output.is_symlink():
+        raise SiteGenerationError("generated site output must not be a symbolic link")
+    return lexical_output
+
+
 def write_bytes(root: Path, relative: str, data: bytes) -> None:
-    path = root / relative
+    relative_path = safe_relative_path(relative, "generated target")
+    root_resolved = root.resolve()
+    path = (root / relative_path).resolve()
+    if root_resolved not in path.parents:
+        raise SiteGenerationError(f"generated target escapes output root: {relative}")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(data)
 
 
 def generate(output: Path, components: dict[str, bytes], revision: dict) -> dict[str, str]:
+    if output.is_symlink():
+        raise SiteGenerationError(f"refusing to replace symlink output: {output}")
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
@@ -416,7 +522,11 @@ def generate(output: Path, components: dict[str, bytes], revision: dict) -> dict
 
     config = load_json(CONFIG_PATH)
     write_bytes(output, "_config.yml", render_config(config).encode("utf-8"))
-    write_bytes(output, "_data/navigation.yml", render_navigation(titles).encode("utf-8"))
+    write_bytes(
+        output,
+        "_data/navigation.yml",
+        render_navigation(titles).encode("utf-8"),
+    )
 
     component_manifest: list[dict] = []
     for name, metadata in sorted(revision["components"].items()):
@@ -434,6 +544,13 @@ def generate(output: Path, components: dict[str, bytes], revision: dict) -> dict
             }
         )
 
+    canonical_manifest = [
+        {
+            "path": path.relative_to(ROOT).as_posix(),
+            "sha256": sha256_bytes(path.read_bytes()),
+        }
+        for path in canonical_source_paths()
+    ]
     manifest = {
         "schemaVersion": "1.0.0",
         "bookFormatter": {
@@ -442,6 +559,7 @@ def generate(output: Path, components: dict[str, bytes], revision: dict) -> dict
             "sharedVersion": revision["shared"]["version"],
         },
         "configSha256": sha256_bytes(CONFIG_PATH.read_bytes()),
+        "canonicalSources": canonical_manifest,
         "pages": page_manifest,
         "components": component_manifest,
     }
@@ -462,20 +580,41 @@ def tree_hashes(root: Path) -> dict[str, str]:
 
 
 def check_determinism(components: dict[str, bytes], revision: dict) -> None:
-    before = canonical_hashes()
-    with tempfile.TemporaryDirectory(prefix="book-site-source-a-") as first_tmp, tempfile.TemporaryDirectory(
+    before = repository_state_hashes()
+    with tempfile.TemporaryDirectory(
+        prefix="book-site-source-a-"
+    ) as first_tmp, tempfile.TemporaryDirectory(
         prefix="book-site-source-b-"
     ) as second_tmp:
         first = generate(Path(first_tmp), components, revision)
         second = generate(Path(second_tmp), components, revision)
         if first != second:
-            differing = sorted(set(first) ^ set(second) | {key for key in set(first) & set(second) if first[key] != second[key]})
-            raise RuntimeError(f"site source generation is not deterministic: {differing}")
-    after = canonical_hashes()
+            differing = sorted(
+                set(first) ^ set(second)
+                | {
+                    key
+                    for key in set(first) & set(second)
+                    if first[key] != second[key]
+                }
+            )
+            raise SiteGenerationError(
+                f"site source generation is not deterministic: {differing}"
+            )
+
+    after = repository_state_hashes()
     if before != after:
-        changed = sorted(key for key in set(before) | set(after) if before.get(key) != after.get(key))
-        raise RuntimeError(f"canonical sources changed during generation: {changed}")
-    print(f"site source is deterministic: {len(first)} generated files; canonical sources unchanged")
+        changed = sorted(
+            key
+            for key in set(before) | set(after)
+            if before.get(key) != after.get(key)
+        )
+        raise SiteGenerationError(
+            f"tracked repository files changed during generation: {changed}"
+        )
+    print(
+        f"site source is deterministic: {len(first)} generated files; "
+        f"{len(before)} tracked repository files unchanged"
+    )
 
 
 def main() -> int:
@@ -485,7 +624,10 @@ def main() -> int:
     parser.add_argument(
         "--book-formatter-dir",
         default=os.environ.get("BOOK_FORMATTER_DIR"),
-        help="Pinned itdojp/book-formatter checkout. If omitted, exact files are downloaded by commit and verified by Git blob SHA.",
+        help=(
+            "Pinned itdojp/book-formatter checkout. If omitted, exact files "
+            "are downloaded by commit and verified by Git blob SHA."
+        ),
     )
     args = parser.parse_args()
 
@@ -498,9 +640,7 @@ def main() -> int:
     output = Path(args.output)
     if not output.is_absolute():
         output = ROOT / output
-    output = output.resolve()
-    if output == ROOT or ROOT not in output.parents:
-        raise ValueError(f"output must be a repository subdirectory: {output}")
+    output = validate_generated_output_path(output)
     hashes = generate(output, components, revision)
     print(f"generated {len(hashes)} site-source files in {output.relative_to(ROOT)}")
     return 0
