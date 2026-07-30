@@ -3,9 +3,18 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+NOTICE_SOURCE = ROOT / "THIRD_PARTY_NOTICES.md"
+NOTICE_DESTINATION = "THIRD_PARTY_NOTICES.txt"
+NOTICE_MARKERS = (
+    "MIT License",
+    "Copyright (c) ITDO Inc.",
+    "Permission is hereby granted, free of charge",
+    "THE SOFTWARE IS PROVIDED \"AS IS\"",
+    "69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c",
+)
 REQUIRED_ASSETS = (
     "assets/css/main.css",
     "assets/css/mobile-responsive.css",
@@ -56,6 +65,26 @@ def main() -> int:
         if not path.is_file() or path.stat().st_size == 0:
             errors.append(f"missing or empty asset: {asset}")
 
+    notice_path = site / NOTICE_DESTINATION
+    if not NOTICE_SOURCE.is_file():
+        errors.append(f"missing canonical third-party notice: {NOTICE_SOURCE}")
+    elif not notice_path.is_file() or notice_path.stat().st_size == 0:
+        errors.append(f"missing or empty third-party notice: {NOTICE_DESTINATION}")
+    else:
+        source_bytes = NOTICE_SOURCE.read_bytes()
+        published_bytes = notice_path.read_bytes()
+        if published_bytes != source_bytes:
+            errors.append(
+                f"{NOTICE_DESTINATION}: published notice differs from canonical source"
+            )
+        else:
+            notice_text = published_bytes.decode("utf-8")
+            for marker in NOTICE_MARKERS:
+                if marker not in notice_text:
+                    errors.append(
+                        f"{NOTICE_DESTINATION}: missing required marker {marker!r}"
+                    )
+
     index_path = site / "index.html"
     if index_path.is_file():
         index = index_path.read_text(encoding="utf-8")
@@ -72,7 +101,10 @@ def main() -> int:
     if generated_markdown:
         errors.append(
             "built site contains unrendered Markdown: "
-            + ", ".join(path.relative_to(site).as_posix() for path in generated_markdown[:10])
+            + ", ".join(
+                path.relative_to(site).as_posix()
+                for path in generated_markdown[:10]
+            )
         )
 
     for message in errors:
@@ -82,7 +114,7 @@ def main() -> int:
 
     print(
         f"built site smoke check passed: {len(expected_pages)} pages, "
-        f"{len(REQUIRED_ASSETS)} assets"
+        f"{len(REQUIRED_ASSETS)} assets, 1 third-party notice"
     )
     return 0
 
