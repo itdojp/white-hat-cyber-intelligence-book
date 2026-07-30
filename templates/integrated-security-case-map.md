@@ -28,7 +28,7 @@
 | Artifact ID | `ART-10` |
 | Case ID | `CASE-YYYY-NNN` |
 | Title |  |
-| Status | Draft / Active / Decision Recorded / Reassessment Due / Closed |
+| Status | Draft / Active / Decision Recorded / Control Verification / Reassessment Due / Closed |
 | Owner |  |
 | Contributors |  |
 | Classification | Public / Internal / Confidential / Restricted |
@@ -102,7 +102,7 @@
 
 | Hypothesis ID | Statement | Preconditions | Expected impact | Priority | Status |
 |---|---|---|---|---|---|
-| `TH-CASE-001` |  |  |  |  | Proposed / Testable / Supported / Weakened / Rejected |
+| `TH-CASE-001` |  |  |  |  | Proposed / Testable / Supported / Partially supported / Weakened / Inconclusive / Rejected |
 
 ### 4.2 Observation Hypotheses
 
@@ -164,9 +164,9 @@
 
 ### 8.3 Hunt or Incident Records
 
-| Record ID | Type | Question | Time range | Result | Evidence IDs | Next action |
-|---|---|---|---|---|---|---|
-| `HUNT-CASE-001` | Hunt / Incident |  |  |  |  |  |
+| Record ID | Type | Related hypothesis | Question | Time range | Result | Evidence IDs | Next action |
+|---|---|---|---|---|---|---|---|
+| `HUNT-CASE-001` | Hunt / Incident | `TH-CASE-001` |  |  |  |  |  |
 
 ## 9. Analytic Judgment
 
@@ -174,7 +174,7 @@
 |---|---|
 | Analytic Judgment ID | `AJ-CASE-001` |
 | Key judgment |  |
-| Confidence | High / Moderate / Low |
+| Confidence | 高 / 中 / 低 |
 | Basis for confidence |  |
 | Confirmed facts |  |
 | Assumptions |  |
