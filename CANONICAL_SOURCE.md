@@ -25,8 +25,8 @@ bundle install
 npm run build
 ```
 
-- `npm run check:docs-sync`: 一時ディレクトリへ2回生成し、全生成ファイルのSHA-256一致と正本の非変更を確認する
-- `npm run sync:docs`: `docs/`を削除して正本から再生成する
+- `npm run check:docs-sync`: 一時ディレクトリへ2回生成し、全生成ファイルのSHA-256一致と全追跡ファイルの非変更を確認する
+- `npm run sync:docs`: 許可された生成先`docs/`だけを削除し、正本から再生成する
 - `npm run build`: `docs/`を生成し、Jekyllで`_site/`へbuildする
 
 固定済み`book-formatter` checkoutを使う場合は、`BOOK_FORMATTER_DIR`へpathを指定する。
@@ -40,19 +40,26 @@ BOOK_FORMATTER_DIR=../book-formatter npm run build
 
 ## 非破壊build契約
 
-1. 同期・build前後で正本ファイルのSHA-256が変化してはならない。
-2. 生成処理は`docs/`、`_site/`、`dist/`、`build/`、一時ディレクトリだけへ書き込む。
-3. `docs/`は毎回作り直し、孤立した旧生成物を残さない。
-4. `--check`はRepository内のファイルを書き換えず、同じ入力から異なる出力が生じた場合に失敗する。
-5. 生成物の`_data/build-manifest.json`は、正本SHA-256、formatter commit、上流Git blob SHA、適用した局所変換を記録する。
-6. CIは契約、出典、決定性、リンク、構造、Unicode、文章、layout risk、Jekyll build、built-site smoke testを分離して表示する。
-7. 同じ本文を`manuscript/`と`docs/`の両方で手編集しない。
+1. 同期・build前後で追跡ファイルのSHA-256が変化してはならない。
+2. Site-source生成処理の出力先はRepository直下の`docs/`だけとし、それ以外のpathやsymlinkを拒否する。
+3. Jekyll buildは`_site/`、その他の将来の配布処理は明示された生成Directoryだけへ書き込む。
+4. `docs/`は毎回作り直し、孤立した旧生成物を残さない。
+5. `--check`はRepository内のファイルを書き換えず、同じ入力から異なる出力が生じた場合に失敗する。
+6. 生成物の`_data/build-manifest.json`は、正本SHA-256、formatter commit、上流Git blob SHA、適用した局所変換を記録する。
+7. CIは契約、出典、決定性、リンク、構造、Unicode、文章、layout risk、Jekyll build、built-site smoke testを分離して表示する。
+8. 同じ本文を`manuscript/`と`docs/`の両方で手編集しない。
 
 ## book-formatter
 
 共通layout、include、asset、schemaは、`.book-formatter/revision.json`に固定したrevisionから同期する。全対象ファイルについてGit blob SHAを検証する。
 
-現在の局所変換は、共有`book.html`の「GitHubで編集」リンクを生成済み`docs/`ではなく`page.source_path`の正本へ向け、`site.show_edit_link`で表示制御できるようにする変更だけである。変換前の上流blobと変換後SHA-256はbuild manifestに残す。
+共有`book.html`には、次の3つの決定的な局所変換を適用する。
+
+1. 「GitHubで編集」リンクを生成済み`docs/`ではなく`page.source_path`の正本へ向け、`site.show_edit_link`で表示制御する。
+2. 実際には外部Fontを読み込んでいないため、不要なGoogle Fontsのpreconnect hintを除去する。
+3. Repository所有のfaviconをまだ配置していないため、404になるfaviconとapple-touch-iconのLinkを除去する。
+
+`.book-formatter/revision.json`を局所変換一覧の機械可読な正本とし、変換前の上流Git blob SHA、変換名、変換後SHA-256を生成時の`_data/build-manifest.json`へ記録する。局所変換を追加・変更する場合は、本契約、revision manifest、generator、Book QA、第三者通知を同じPRで更新する。
 
 ## 公開方式
 
