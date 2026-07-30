@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "canonicalDirectories": [
+    "cases",
+    "schemas"
+  ],
+  "pages": [
+    {
+      "source": "templates/integrated-security-case-map.md",
+      "destination": "templates/integrated-security-case-map/index.md",
+      "section": "additional",
+      "order": 220,
+      "title": "Integrated Security Case Map"
+    },
+    {
+      "source": "cases/ch01-integrated-security-case-example.md",
+      "destination": "cases/chapter-01-integrated-security-case/index.md",
+      "section": "additional",
+      "order": 230,
+      "title": "第1章 合成記入例：請求書連携OAuthアプリの権限見直し"
+    }
+  ],
+  "directoryRoutes": {
+    "cases": "cases/chapter-01-integrated-security-case/index.md"
+  }
+}
