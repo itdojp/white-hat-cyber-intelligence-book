@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itdojp.github.io/white-hat-cyber-intelligence-book/schemas/site-pages.schema.json",
+  "title": "Book Site Page Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "canonicalDirectories",
+    "pages",
+    "directoryRoutes"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "canonicalDirectories": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]+$"
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "destination",
+          "section",
+          "order"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.md$"
+          },
+          "destination": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.md$"
+          },
+          "section": {
+            "enum": [
+              "introduction",
+              "chapters",
+              "additional",
+              "resources",
+              "appendices",
+              "afterword"
+            ]
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "directoryRoutes": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9_-]+$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.md$"
+      }
+    }
+  }
+}
