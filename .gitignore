@@ -1,12 +1,16 @@
 _site/
+docs/
 dist/
 build/
+.work/
 .tmp/
 tmp/
 *.log
 node_modules/
 vendor/
 .bundle/
+.jekyll-cache/
+.sass-cache/
 __pycache__/
 *.py[cod]
 .env
