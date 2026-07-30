@@ -1,0 +1,43 @@
+name: Content improvement
+description: 本文、図表、用語、出典、学習導線の改善を提案する
+title: "[Content] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        実Credential、個人情報、第三者Target、未調整の脆弱性詳細は記載しないでください。Security上の問題は`SECURITY.md`に従って非公開で報告してください。
+  - type: input
+    id: location
+    attributes:
+      label: 対象箇所
+      description: 章、節、path、commit、公開URLのいずれか
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 問題
+      description: 不正確、不明確、古い、重複、または再現不能な点
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 根拠
+      description: Canonical source、version、確認日、再現結果。推測は推測と明示する
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 改善案
+      description: 変更範囲、非目標、既存書籍へ委譲すべき内容
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: 安全確認
+      options:
+        - label: 実Credential、個人情報、第三者Targetを含めていない
+          required: true
+        - label: 未調整の脆弱性を悪用できる詳細ではない
+          required: true
