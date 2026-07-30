@@ -27,7 +27,33 @@ License text: <https://www.apache.org/licenses/LICENSE-2.0>
 
 第三者の文章、図、データ、コード、標準文書は本ライセンスへ再許諾されません。適用条件は`THIRD_PARTY_NOTICES.md`および各ファイルの表示に従います。
 
-生成されたWebサイトに含まれる`itdojp/book-formatter`のlayout、include、CSS、JavaScriptはMIT Licenseのまま再配布します。固定commit、元ファイル、配置、局所変更、完全なMIT noticeは`THIRD_PARTY_NOTICES.md`に記録しています。
+生成されたWebサイトに含まれる`itdojp/book-formatter`のlayout、include、CSS、JavaScriptはMIT Licenseのまま再配布します。固定commit、元ファイル、配置、局所変更、検証方法は`THIRD_PARTY_NOTICES.md`に記録しています。
+
+Offline配布されるWeb artifactにも必要なnoticeを含めるため、MIT License全文を次に再掲します。
+
+```text
+MIT License
+
+Copyright (c) ITDO Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 ## 4. 商標・免責
 
