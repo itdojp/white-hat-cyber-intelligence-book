@@ -15,6 +15,11 @@ EXPECTED_WORKFLOWS = {
 PINNED_FORMATTER = "69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c"
 FULL_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 USES_RE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
+CHECKOUT_RE = re.compile(
+    r"(?ms)^\s*- name: (?P<name>Checkout[^\n]*)\n"
+    r"\s+uses: actions/checkout@[0-9a-f]{40}[^\n]*\n"
+    r"(?P<with>\s+with:\n(?:\s{10}.*(?:\n|$))*)?"
+)
 
 
 def top_level_block(text: str, key: str) -> str | None:
@@ -38,6 +43,25 @@ def job_block(text: str, job: str) -> str | None:
     )
     match = pattern.search(text)
     return match.group("body") if match else None
+
+
+def check_checkout_credentials(path: Path, text: str, errors: list[str]) -> None:
+    checkout_uses = [
+        action for action in USES_RE.findall(text) if action.startswith("actions/checkout@")
+    ]
+    checkout_steps = list(CHECKOUT_RE.finditer(text))
+    if len(checkout_steps) != len(checkout_uses):
+        errors.append(
+            f"{path.relative_to(ROOT)}: could not structurally inspect every checkout step"
+        )
+        return
+    for match in checkout_steps:
+        with_block = match.group("with") or ""
+        if "persist-credentials: false" not in with_block:
+            errors.append(
+                f"{path.relative_to(ROOT)}: {match.group('name')} must set "
+                "persist-credentials: false"
+            )
 
 
 def main() -> int:
@@ -64,6 +88,7 @@ def main() -> int:
                 errors.append(
                     f"{path.relative_to(ROOT)}: action must use a full immutable SHA: {action}"
                 )
+        check_checkout_credentials(path, text, errors)
 
     for name in ("contract.yml", "book-qa.yml", "pages.yml"):
         path = workflows.get(name)
@@ -76,6 +101,8 @@ def main() -> int:
         for required in ("npm test", "BOOK_FORMATTER_DIR", "contents: read"):
             if required not in text:
                 errors.append(f"contract.yml: missing {required!r}")
+        if "npm ci --ignore-scripts" not in text:
+            errors.append("contract.yml: repository npm install must ignore lifecycle scripts")
 
     book_qa = workflows.get("book-qa.yml")
     if book_qa:
@@ -89,6 +116,7 @@ def main() -> int:
             "check-markdown-structure.js",
             "bundle exec jekyll build",
             "scripts/check_built_site.py",
+            "npm ci --prefix .work/book-formatter --ignore-scripts",
         ):
             if required not in text:
                 errors.append(f"book-qa.yml: missing {required!r}")
@@ -103,6 +131,7 @@ def main() -> int:
             "actions/configure-pages@",
             "actions/upload-pages-artifact@",
             "actions/deploy-pages@",
+            "npm ci --prefix .work/book-formatter --ignore-scripts",
         ):
             if required not in text:
                 errors.append(f"pages.yml: missing {required!r}")
@@ -151,6 +180,7 @@ def main() -> int:
 
     print(
         f"workflow contract passed: {len(workflows)} workflows, immutable action refs, "
+        "non-persistent checkout credentials, ignored npm lifecycle scripts, "
         "least-privilege Pages jobs, pinned formatter, generated output untracked"
     )
     return 0
