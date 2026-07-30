@@ -17,6 +17,22 @@ FULL_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 USES_RE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 
 
+def top_level_block(text: str, key: str) -> str | None:
+    pattern = re.compile(
+        rf"(?ms)^{re.escape(key)}:\s*\n(?P<body>(?:[ ]{{2}}.*(?:\n|$)|\s*\n)*)"
+    )
+    match = pattern.search(text)
+    return match.group("body") if match else None
+
+
+def job_block(text: str, job: str) -> str | None:
+    pattern = re.compile(
+        rf"(?ms)^  {re.escape(job)}:\s*\n(?P<body>.*?)(?=^  [A-Za-z0-9_-]+:\s*\n|\Z)"
+    )
+    match = pattern.search(text)
+    return match.group("body") if match else None
+
+
 def main() -> int:
     errors: list[str] = []
     workflows = {path.name: path for path in WORKFLOW_DIR.glob("*.yml")}
@@ -26,7 +42,7 @@ def main() -> int:
     if missing:
         errors.append(f"missing workflows: {sorted(missing)}")
 
-    for name, path in sorted(workflows.items()):
+    for _, path in sorted(workflows.items()):
         text = path.read_text(encoding="utf-8")
         if "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24" not in text:
             errors.append(f"{path.relative_to(ROOT)}: missing Node 24 action guard")
@@ -76,8 +92,6 @@ def main() -> int:
         if re.search(r"^\s*pull_request\s*:", text, re.MULTILINE):
             errors.append("pages.yml: deployment workflow must not run on pull_request")
         for required in (
-            "pages: write",
-            "id-token: write",
             "branches: [main]",
             "actions/configure-pages@",
             "actions/upload-pages-artifact@",
@@ -85,6 +99,31 @@ def main() -> int:
         ):
             if required not in text:
                 errors.append(f"pages.yml: missing {required!r}")
+
+        workflow_permissions = top_level_block(text, "permissions")
+        if workflow_permissions is None or "contents: read" not in workflow_permissions:
+            errors.append("pages.yml: top-level permissions must default to contents: read")
+        if workflow_permissions and "id-token:" in workflow_permissions:
+            errors.append("pages.yml: top-level permissions must not grant id-token")
+        if workflow_permissions and "pages:" in workflow_permissions:
+            errors.append("pages.yml: top-level permissions must not grant pages write")
+
+        build = job_block(text, "build")
+        deploy = job_block(text, "deploy")
+        if build is None:
+            errors.append("pages.yml: missing build job")
+        else:
+            if "contents: read" not in build or "pages: write" not in build:
+                errors.append("pages.yml: build job must have contents: read and pages: write")
+            if "id-token:" in build:
+                errors.append("pages.yml: build job must not receive id-token permission")
+        if deploy is None:
+            errors.append("pages.yml: missing deploy job")
+        else:
+            if "pages: write" not in deploy or "id-token: write" not in deploy:
+                errors.append("pages.yml: deploy job must have pages: write and id-token: write")
+            if "contents:" in deploy:
+                errors.append("pages.yml: deploy job does not require contents permission")
 
     result = subprocess.run(
         ["git", "-C", str(ROOT), "ls-files", "docs", "_site", "build"],
@@ -105,7 +144,7 @@ def main() -> int:
 
     print(
         f"workflow contract passed: {len(workflows)} workflows, immutable action refs, "
-        "pinned formatter, generated output untracked"
+        "least-privilege Pages jobs, pinned formatter, generated output untracked"
     )
     return 0
 
