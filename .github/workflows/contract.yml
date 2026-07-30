@@ -10,27 +10,35 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  BOOK_FORMATTER_DIR: .work/book-formatter
 
 jobs:
   contract:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Checkout book
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Checkout pinned book-formatter
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: itdojp/book-formatter
+          ref: 69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c
+          path: .work/book-formatter
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
-          node-version: '22'
+          node-version: '24'
           cache: npm
 
       - name: Install Node metadata
         run: npm ci --ignore-scripts
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
 
-      - name: Validate editorial, safety, source, and repository contracts
+      - name: Validate editorial, safety, source, and generation contracts
         run: npm test
