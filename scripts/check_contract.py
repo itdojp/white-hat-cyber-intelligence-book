@@ -14,7 +14,6 @@ ROOT = Path(__file__).resolve().parents[1]
 ERRORS: list[str] = []
 WARNINGS: list[str] = []
 
-TEXT_SUFFIXES = {'.md', '.json', '.py', '.yml', '.yaml', '.txt'}
 EXCLUDED_DIRECTORY_NAMES = {
     '.bundle',
     '.cache',
@@ -23,15 +22,55 @@ EXCLUDED_DIRECTORY_NAMES = {
     '.sass-cache',
     '.tmp',
     '.venv',
+    '.work',
     '__pycache__',
     '_site',
     'build',
     'coverage',
     'dist',
+    'docs',
     'node_modules',
     'tmp',
     'vendor',
     'venv',
+}
+BINARY_SUFFIXES = {
+    '.7z',
+    '.avi',
+    '.bin',
+    '.bmp',
+    '.class',
+    '.db',
+    '.dll',
+    '.dylib',
+    '.eot',
+    '.exe',
+    '.gif',
+    '.gz',
+    '.ico',
+    '.jar',
+    '.jpeg',
+    '.jpg',
+    '.mov',
+    '.mp3',
+    '.mp4',
+    '.o',
+    '.otf',
+    '.pcap',
+    '.pcapng',
+    '.pdf',
+    '.png',
+    '.so',
+    '.sqlite',
+    '.tar',
+    '.ttf',
+    '.wav',
+    '.webm',
+    '.webp',
+    '.woff',
+    '.woff2',
+    '.xz',
+    '.zip',
 }
 SOURCE_ID_RE = re.compile(r'\bSRC-[A-Z0-9-]+\b')
 CHAPTER_FILENAME_RE = re.compile(r'^(?:ch)?(?P<number>\d{2})(?:[-_].*)?$')
@@ -140,6 +179,24 @@ def repository_files() -> list[Path]:
     return sorted(files, key=lambda path: path.relative_to(ROOT).as_posix())
 
 
+def read_plausibly_textual_files(paths: list[Path]) -> dict[Path, str]:
+    """Decode every tracked, non-binary file, including scripts without extensions."""
+    output: dict[Path, str] = {}
+    for path in paths:
+        relative = path.relative_to(ROOT).as_posix()
+        if path.suffix.lower() in BINARY_SUFFIXES:
+            continue
+        data = path.read_bytes()
+        if b'\x00' in data:
+            error(f'{relative}: NUL character detected in non-binary tracked file')
+            continue
+        try:
+            output[path] = data.decode('utf-8')
+        except UnicodeDecodeError:
+            warning(f'{relative}: skipped non-UTF-8 tracked file; classify it explicitly if textual')
+    return output
+
+
 def chapter_number_from_path(path: Path) -> int | None:
     match = CHAPTER_FILENAME_RE.fullmatch(path.stem)
     if not match:
@@ -148,15 +205,46 @@ def chapter_number_from_path(path: Path) -> int | None:
 
 
 required_files = [
-    'README.md', 'index.md', 'title.md', 'copyright.md', 'preface.md', 'afterword.md', 'colophon.md',
-    'BOOK_PROPOSAL.md', 'TOC.md', 'CROSS_BOOK_MAP.md', 'WRITING_GUIDE.md',
-    'SOURCE_POLICY.md', 'SAFETY_SCOPE.md', 'LAB_ARCHITECTURE.md', 'CANONICAL_SOURCE.md',
-    'LICENSE.md', 'SECURITY.md', 'CONTRIBUTING.md', 'book-config.json',
-    'package.json', 'package-lock.json', 'REPRESENTATIVE_CHAPTER_PLAN.md',
-    '.book-formatter/revision.json', '.github/workflows/contract.yml',
-    'references/sources.json', 'references/source-note-schema.json',
+    'README.md',
+    'AGENTS.md',
+    'MAINTENANCE.md',
+    'index.md',
+    'title.md',
+    'copyright.md',
+    'preface.md',
+    'afterword.md',
+    'colophon.md',
+    'BOOK_PROPOSAL.md',
+    'TOC.md',
+    'CROSS_BOOK_MAP.md',
+    'WRITING_GUIDE.md',
+    'SOURCE_POLICY.md',
+    'SAFETY_SCOPE.md',
+    'LAB_ARCHITECTURE.md',
+    'CANONICAL_SOURCE.md',
+    'LICENSE.md',
+    'SECURITY.md',
+    'CONTRIBUTING.md',
+    'THIRD_PARTY_NOTICES.md',
+    'book-config.json',
+    'package.json',
+    'package-lock.json',
+    'Gemfile',
+    'Gemfile.lock',
+    'REPRESENTATIVE_CHAPTER_PLAN.md',
+    '.book-formatter/revision.json',
+    '.github/workflows/contract.yml',
+    '.github/workflows/book-qa.yml',
+    '.github/workflows/pages.yml',
+    'references/sources.json',
+    'references/source-note-schema.json',
     'references/reference-baseline.md',
-    'manuscript/00-reading-guide.md', 'manuscript/01-integrated-discipline.md',
+    'scripts/sync_site_source.py',
+    'scripts/check_built_site.py',
+    'scripts/check_shared_version.py',
+    'scripts/check_workflows.py',
+    'manuscript/00-reading-guide.md',
+    'manuscript/01-integrated-discipline.md',
 ]
 for rel in required_files:
     if not (ROOT / rel).is_file():
@@ -263,11 +351,12 @@ if registry:
             error(f'{sid}: reviewTriggers must be a non-empty list')
 
 repository_file_list = repository_files()
-text_files = [path for path in repository_file_list if path.suffix.lower() in TEXT_SUFFIXES]
+text_by_path = read_plausibly_textual_files(repository_file_list)
+text_files = sorted(text_by_path, key=lambda path: path.relative_to(ROOT).as_posix())
 
-workflow_contract = ROOT / '.github' / 'workflows' / 'contract.yml'
-if workflow_contract.is_file() and workflow_contract not in text_files:
-    error('.github/workflows/contract.yml: workflow is not included in repository text scanning')
+for workflow in sorted((ROOT / '.github' / 'workflows').glob('*.y*ml')):
+    if workflow.is_file() and workflow not in text_by_path:
+        error(f'{workflow.relative_to(ROOT)}: workflow is not included in repository text scanning')
 for path in text_files:
     relative = path.relative_to(ROOT)
     if is_excluded_repository_path(relative):
@@ -276,15 +365,16 @@ for path in text_files:
 secret_patterns = [
     re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----'),
     re.compile(r'AKIA[0-9A-Z]{16}'),
+    re.compile(r'ASIA[0-9A-Z]{16}'),
     re.compile(r'gh[pousr]_[A-Za-z0-9_]{20,}'),
+    re.compile(r'github_pat_[A-Za-z0-9_]{20,}'),
 ]
 private_ipv4 = re.compile(
     r'\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|'
     r'172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})\b'
 )
 allowed_private_paths = {'LAB_ARCHITECTURE.md'}
-for path in text_files:
-    text = path.read_text(encoding='utf-8')
+for path, text in text_by_path.items():
     rel = path.relative_to(ROOT).as_posix()
     for pattern in secret_patterns:
         if pattern.search(text):
@@ -294,15 +384,13 @@ for path in text_files:
     stale_config_name = 'book-config' + '.draft.json'
     if stale_config_name in text:
         error(f'{rel}: stale draft config reference')
-    if '\x00' in text:
-        error(f'{rel}: NUL character detected')
     for line_no, line in enumerate(text.splitlines(), 1):
         if line.endswith((' ', '\t')):
             error(f'{rel}:{line_no}: trailing whitespace detected')
 
 markdown_files = [path for path in text_files if path.suffix.lower() == '.md']
 for path in markdown_files:
-    text = path.read_text(encoding='utf-8')
+    text = text_by_path[path]
     headings = [line for line in text.splitlines() if line.startswith('#')]
     if not headings:
         error(f'{path.relative_to(ROOT)}: no Markdown heading')
@@ -340,7 +428,8 @@ for chapter in sorted((ROOT / 'manuscript').glob('*.md')):
 
 print(
     f'checked repository contract: {len(required_files)} required files, '
-    f'{len(registry.get("sources", []))} sources, {len(markdown_files)} Markdown files'
+    f'{len(registry.get("sources", []))} sources, '
+    f'{len(text_files)} textual tracked files, {len(markdown_files)} Markdown files'
 )
 for item in WARNINGS:
     print(f'WARNING: {item}')
