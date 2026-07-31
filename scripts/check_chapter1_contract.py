@@ -118,6 +118,17 @@ def main() -> int:
             "../cases/ch01-integrated-security-case-example.md",
         ),
     )
+    for forbidden in (
+        "High confidence",
+        "Low confidence",
+        "Moderate confidence",
+        "LowまたはModerate confidence",
+    ):
+        if forbidden in chapter:
+            error(
+                f"{chapter_path}: confidence vocabulary must use 高 / 中 / 低; "
+                f"found {forbidden!r}"
+            )
     for source_id in (
         "SRC-NICE-001",
         "SRC-ATTACK-001",
@@ -147,6 +158,9 @@ def main() -> int:
             "Detection Validation",
             "Related hypothesis",
             "Analytic Judgment",
+            "Related Evidence / Negative Finding IDs",
+            "Related Finding IDs",
+            "Related Detection / Hunt / Incident IDs",
             "Confidence | 高 / 中 / 低",
             "Decision Record",
             "Reassessment",
@@ -185,6 +199,9 @@ def main() -> int:
             "| Status | Reassessment Due |",
             "| Confidence | 中 |",
             "| `HUNT-2026-001` | Hunt | `TH-2026-003` |",
+            "| Related Evidence / Negative Finding IDs | `EVD-2026-001`, `EVD-2026-002`, `EVD-2026-003`, `EVD-2026-004`, `NEG-2026-001` |",
+            "| Related Finding IDs | `FIND-2026-001`, `FIND-2026-002`, `FIND-2026-003` |",
+            "| Related Detection / Hunt / Incident IDs | `DET-2026-001`, `DET-2026-002`, `HUNT-2026-001` |",
         ),
     )
     if re.search(r"^\| Confidence \| (?:High|Moderate|Low) \|$", example, re.MULTILINE):
@@ -311,8 +328,8 @@ def main() -> int:
 
     print(
         "chapter 1 contract passed: integrated case template, synthetic example, "
-        "source IDs, traceability IDs, schema-enforced page registry, and "
-        "publication extension"
+        "direct judgment traceability, source IDs, schema-enforced page registry, "
+        "and publication extension"
     )
     return 0
 
