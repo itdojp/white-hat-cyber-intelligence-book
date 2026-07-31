@@ -173,6 +173,9 @@
 | Field | Value |
 |---|---|
 | Analytic Judgment ID | `AJ-CASE-001` |
+| Related Evidence / Negative Finding IDs | `EVD-CASE-001`, `NEG-CASE-001` |
+| Related Finding IDs | `FIND-CASE-001` |
+| Related Detection / Hunt / Incident IDs | `DET-CASE-001`, `HUNT-CASE-001` |
 | Key judgment |  |
 | Confidence | 高 / 中 / 低 |
 | Basis for confidence |  |
@@ -241,6 +244,7 @@
 - [ ] 各HypothesisにObservationまたは明示的な情報ギャップがある
 - [ ] 各FindingにEvidence IDがある
 - [ ] 各Detection / Hunt / Incident recordが対象Hypothesisへ接続している
+- [ ] Analytic Judgmentが関連Evidence、Finding、Detection / Hunt / Incident IDへ直接接続している
 - [ ] Analytic Judgmentが事実、仮定、代替仮説、確信度を分離している
 - [ ] Decision Recordが選択肢、残存リスク、責任者、期限を持つ
 - [ ] 改善後のRetestとReassessmentが定義されている
