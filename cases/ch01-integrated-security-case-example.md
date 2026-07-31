@@ -183,6 +183,9 @@
 | Field | Value |
 |---|---|
 | Analytic Judgment ID | `AJ-2026-001` |
+| Related Evidence / Negative Finding IDs | `EVD-2026-001`, `EVD-2026-002`, `EVD-2026-003`, `EVD-2026-004`, `NEG-2026-001` |
+| Related Finding IDs | `FIND-2026-001`, `FIND-2026-002`, `FIND-2026-003` |
+| Related Detection / Hunt / Incident IDs | `DET-2026-001`, `DET-2026-002`, `HUNT-2026-001` |
 | Key judgment | 外部報告の攻撃Campaignが当社を直接標的にしている証拠はない。一方、報告された行動と同型の過大権限経路が存在し、現在のTelemetryでは過去利用を完全に評価できない。標的判断とは独立に権限縮小と観測改善が必要である |
 | Confidence | 中 |
 | Basis for confidence | 現行設定と業務要件の差分は直接確認した。過去利用はTelemetry Gapにより限定的である |
@@ -259,6 +262,7 @@
 - [x] 各Threat HypothesisにObservationまたは情報ギャップがある
 - [x] 各FindingにEvidence IDがある
 - [x] DetectionとHuntが対象Hypothesisへ接続している
+- [x] Analytic Judgmentが関連Evidence、Finding、Detection / Hunt / Incident IDへ直接接続している
 - [x] Analytic Judgmentが事実、仮定、代替仮説、確信度を分離している
 - [x] Decision Recordが選択肢、残存Risk、責任者、期限を持つ
 - [x] RetestとReassessmentが定義されている
