@@ -18,6 +18,7 @@ from scripts import sync_site_source as base  # noqa: E402
 REGISTRY_PATH = ROOT / "site-pages.json"
 SCHEMA_VERSION = "1.0.0"
 DIRECTORY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+LINE_TERMINATOR_RE = re.compile(r"[\r\n\u2028\u2029]")
 ALLOWED_SECTIONS = set(base.SECTION_ORDER)
 RESERVED_DESTINATION_ROOTS = {
     "_data",
@@ -96,8 +97,13 @@ def validate_canonical_tree(root: Path, directory: Path, label: str) -> None:
 
 
 def schema_markdown_path(value: object, label: str) -> str:
+    """Enforce the schema pattern and the repository's safe relative-path policy."""
     if not isinstance(value, str):
         raise SitePageRegistryError(f"{label} must be a string")
+    if LINE_TERMINATOR_RE.search(value):
+        raise SitePageRegistryError(
+            f"{label} must not contain CR, LF, U+2028, or U+2029"
+        )
     path = base.safe_relative_path(value, label).as_posix()
     if not path.endswith(".md"):
         raise SitePageRegistryError(f"{label} must end in .md: {path}")
@@ -389,6 +395,38 @@ def run_registry_security_regressions() -> list[str]:
                     {
                         "source": 7,
                         "destination": "cases/example/index.md",
+                        "section": "additional",
+                        "order": 1,
+                    }
+                ],
+                "directoryRoutes": {},
+            },
+        ),
+        (
+            "line break in page source",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [
+                    {
+                        "source": "cases/foo\nbar.md",
+                        "destination": "cases/example/index.md",
+                        "section": "additional",
+                        "order": 1,
+                    }
+                ],
+                "directoryRoutes": {},
+            },
+        ),
+        (
+            "unicode line separator in destination",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [
+                    {
+                        "source": "cases/example.md",
+                        "destination": "cases/foo\u2028bar/index.md",
                         "section": "additional",
                         "order": 1,
                     }
