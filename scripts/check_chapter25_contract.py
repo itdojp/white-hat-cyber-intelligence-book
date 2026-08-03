@@ -879,8 +879,28 @@ def reference_integrity_violations(dataset: object) -> list[str]:
         *FIXTURE_REFERENCE_TARGETS.keys(),
     }
 
+    def allowed_reference_fields(path: str, record: dict) -> set[str]:
+        allowed = set(FIXTURE_REQUIRED_SINGLETON_REFERENCE_FIELDS.get(path, ()))
+        collection_item = re.fullmatch(r"(?P<collection>.+)\[\d+\]", path)
+        if collection_item is None:
+            return allowed
+        collection_path = collection_item.group("collection")
+        allowed.update(
+            FIXTURE_REQUIRED_RECORD_REFERENCE_FIELDS.get(collection_path, ())
+        )
+        allowed.update(
+            FIXTURE_REQUIRED_ONE_OF_REFERENCE_FIELDS.get(collection_path, ())
+        )
+        record_id = record.get("id")
+        if isinstance(record_id, str):
+            allowed.update(
+                FIXTURE_REQUIRED_REFERENCE_FIELDS_BY_ID.get(record_id, ())
+            )
+        return allowed
+
     def walk(value: object, path: str) -> None:
         if isinstance(value, dict):
+            allowed_fields = allowed_reference_fields(path, value)
             for key, child in value.items():
                 child_path = f"{path}.{key}" if path else key
                 if (
@@ -892,6 +912,11 @@ def reference_integrity_violations(dataset: object) -> list[str]:
                     )
                 target_paths = FIXTURE_REFERENCE_TARGETS.get(key)
                 if target_paths is not None:
+                    if key not in allowed_fields:
+                        violations.append(
+                            f"{child_path}: relationship field is not declared for "
+                            f"record path {path or '<root>'}"
+                        )
                     expected_ids = (
                         all_owner_ids
                         if target_paths == ("__all_owners__",)
@@ -909,11 +934,17 @@ def reference_integrity_violations(dataset: object) -> list[str]:
                         )
                 if (
                     key in {"from", "to"}
-                    and re.fullmatch(r"lineage\.edges\[\d+\]\.(?:from|to)", child_path)
-                    and (
-                        not isinstance(child, str)
-                        or child not in target_ids.get("sourceNotes", set())
+                    and not re.fullmatch(
+                        r"lineage\.edges\[\d+\]\.(?:from|to)", child_path
                     )
+                ):
+                    violations.append(
+                        f"{child_path}: lineage relationship field is not declared "
+                        f"for record path {path or '<root>'}"
+                    )
+                elif key in {"from", "to"} and (
+                    not isinstance(child, str)
+                    or child not in target_ids.get("sourceNotes", set())
                 ):
                     violations.append(
                         f"{child_path}: lineage endpoint must resolve to sourceNotes"
