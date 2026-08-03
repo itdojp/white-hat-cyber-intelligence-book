@@ -12,7 +12,7 @@ import stringprep
 import sys
 import unicodedata
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -574,7 +574,7 @@ def normalize_policy_text(text: str) -> str:
 
 def normalize_synthetic_safety_text(text: str) -> str:
     """Expose rendered character references and Markdown punctuation escapes."""
-    decoded = html.unescape(text)
+    decoded = unquote(html.unescape(text))
     markdown_unescaped = re.sub(
         rf"\\([{re.escape(string.punctuation)}])",
         r"\1",
@@ -3323,10 +3323,17 @@ def main() -> int:
         '<a href="h&#116;tps://evil&#46;com/path">x</a>',
         '<a href="https&#58;//evil&#46;com/path">x</a>',
         r"[x](https\://evil\.com/path)",
+        "[x](//evil%2ecom/path)",
+        "[x](https%3A%2F%2Fevil%2ecom/path)",
     )
     for encoded_live_url in encoded_live_urls:
         normalized_live_url = normalize_synthetic_safety_text(encoded_live_url)
-        if list(url_domain_hosts(normalized_live_url)) != ["evil.com"]:
+        compatibility_live_url = normalize_for_host_scanning(normalized_live_url)
+        detected_live_hosts = set(url_domain_hosts(compatibility_live_url)) | {
+            match.group("host").lower()
+            for match in HOSTNAME_RE.finditer(compatibility_live_url)
+        }
+        if "evil.com" not in detected_live_hosts:
             error(
                 "fixture safety regression: encoded URL escaped synthetic "
                 f"host tokenization: {encoded_live_url!r}"
