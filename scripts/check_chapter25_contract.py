@@ -211,10 +211,17 @@ def post_idna_ascii_compatibility_chars() -> frozenset[str]:
 
 
 POST_IDNA_ASCII_COMPATIBILITY_CHARS = post_idna_ascii_compatibility_chars()
-POST_IDNA_ASCII_COMPATIBILITY_PATTERN = re.escape(
-    "".join(sorted(POST_IDNA_ASCII_COMPATIBILITY_CHARS))
+POST_IDNA_NON_WORD_COMPATIBILITY_CHARS = frozenset(
+    character
+    for character in POST_IDNA_ASCII_COMPATIBILITY_CHARS
+    if re.fullmatch(r"[^\W_]", character, re.UNICODE) is None
 )
-DOMAIN_LABEL_CHAR_PATTERN = rf"(?:[^\W_]|-|[{POST_IDNA_ASCII_COMPATIBILITY_PATTERN}])"
+POST_IDNA_NON_WORD_COMPATIBILITY_PATTERN = re.escape(
+    "".join(sorted(POST_IDNA_NON_WORD_COMPATIBILITY_CHARS))
+)
+DOMAIN_LABEL_CHAR_PATTERN = (
+    rf"(?:[^\W_]|-|[{POST_IDNA_NON_WORD_COMPATIBILITY_PATTERN}])"
+)
 DOMAIN_CANDIDATE_RE = re.compile(
     rf"(?<![\w@-])(?P<host>{DOMAIN_LABEL_CHAR_PATTERN}{{1,63}}"
     rf"(?:[.。．｡]{DOMAIN_LABEL_CHAR_PATTERN}{{1,63}}){{1,9}})(?![\w-])",
@@ -330,10 +337,19 @@ KNOWN_SECRET_RE = re.compile(
 )
 PHONE_RE = re.compile(
     r"(?<!\d)(?!(?:0[1-9]|1[0-2])-[0-3]\d-(?:19|20)\d{2})"
-    r"(?:(?!\+81[ .-]?(?:19|20)\d{2}[ .-]?\d{4}[ .-]?\d{4})"
-    r"\+\d{1,3}(?:[ .-]\d{1,4}){2,3}|0\d{1,3}[ .-]\d{2,4}[ .-]\d{3,4}|"
+    r"(?:(?!\+81[ ./-]?(?:19|20)\d{2}[ ./-]?\d{4}[ ./-]?\d{4})"
+    r"\+\d{1,3}(?:[ ./-]\d{1,4}){2,3}|0\d{1,3}[ ./-]\d{2,4}[ ./-]\d{3,4}|"
     r"\+\d{10,15}|81[1-9]\d{8,9}|1[2-9]\d{2}[2-9]\d{6}|"
-    r"[2-9]\d{2}[ .-][2-9]\d{2}[ .-]\d{4}|0[1-9]\d{8,9})(?!\d)"
+    r"[2-9]\d{2}[ ./-][2-9]\d{2}[ ./-]\d{4}|0[1-9]\d{8,9})(?!\d)"
+)
+PHONE_DATE_TIME_RE = re.compile(
+    r"(?<!\d)(?:"
+    r"(?:19|20)\d{2}\s*(?:[./-]\s*|\(\s*)"
+    r"(?:0[1-9]|1[0-2])\s*\)?\s*[ ./-]\s*"
+    r"(?:0[1-9]|[12]\d|3[01])|"
+    r"(?:0[1-9]|1[0-2])[./-](?:0[1-9]|[12]\d|3[01])"
+    r"[./-](?:19|20)\d{2}"
+    r")(?:[ T](?:[01]\d|2[0-3]):?\d{2}(?::?\d{2})?)?(?!\d)"
 )
 SYNTHETIC_CONTENT_FILES = (
     "manuscript/25-structured-analysis-attribution.md",
@@ -530,8 +546,20 @@ def normalize_for_host_scanning(text: str) -> str:
 
 
 def normalize_phone_parentheses(text: str) -> str:
-    normalized = re.sub(r"\(\s*(\d{1,4})\s*\)", r"-\1-", text)
-    return re.sub(r"(?<=\d)[ .-]+(?=\d)", "-", normalized)
+    without_dates = PHONE_DATE_TIME_RE.sub(
+        lambda match: " " * len(match.group(0)), text
+    )
+    sentinel = "\ufdd0"
+    marked = re.sub(
+        r"\(\s*(\+\d{1,3}|\d{1,4})\s*\)",
+        rf"{sentinel}\1{sentinel}",
+        without_dates,
+    )
+    return re.sub(
+        rf"[ ./-]*{sentinel}(\+?\d{{1,4}}){sentinel}[ ./-]*",
+        r"-\1-",
+        marked,
+    )
 
 
 def general_host_from_match(match: re.Match[str]) -> str:
@@ -597,11 +625,14 @@ def is_unicode_domain_candidate(raw: str) -> bool:
     ):
         return False
 
-    # A host-like token with an ASCII label and ASCII dot remains a domain
-    # candidate even when its final label is private, malformed, or was added
-    # after IDNA 2003. This keeps compatibility lookalikes from bypassing the
-    # reserved-suffix validator without classifying Japanese dotted prose.
-    if "." in raw and any(label.isascii() for label in labels[:-1]):
+    # Characters introduced after IDNA 2003 can acquire an ASCII compatibility
+    # mapping under a newer Unicode database. Treat the raw token as a host
+    # candidate when such a character is present, regardless of the preceding
+    # label, without classifying ordinary ASCII-plus-Japanese dotted prose.
+    if "." in raw and any(
+        character in POST_IDNA_ASCII_COMPATIBILITY_CHARS
+        for character in raw
+    ):
         return True
 
     # An IANA snapshot/reserved final label distinguishes a bare IDN from
@@ -610,10 +641,17 @@ def is_unicode_domain_candidate(raw: str) -> bool:
     return ascii_final_label in RECOGNIZED_ASCII_TLDS
 
 
+def strip_url_trailing_punctuation(raw_url: str) -> str:
+    stripped = raw_url.rstrip(".,;:")
+    while stripped.endswith(")") and stripped.count(")") > stripped.count("("):
+        stripped = stripped[:-1]
+    return stripped
+
+
 def url_domain_hosts(text: str):
     """Extract URL hosts without consuming adjacent Japanese prose."""
     for raw_url in URL_RE.findall(text):
-        stripped_url = raw_url.rstrip(".,;:")
+        stripped_url = strip_url_trailing_punctuation(raw_url)
         parsed_url = urlparse(stripped_url)
         parsed_host = parsed_url.hostname
         if not parsed_host:
@@ -630,9 +668,18 @@ def url_domain_hosts(text: str):
         if known_suffix_match is not None:
             matched_host = general_host_from_match(known_suffix_match)
             remainder = parsed_host[known_suffix_match.end() :]
+            try:
+                has_explicit_port = parsed_url.port is not None
+            except ValueError:
+                has_explicit_port = True
             if (
                 remainder.startswith((".", "。", "．", "｡"))
-                and (parsed_url.path or parsed_url.query or parsed_url.fragment)
+                and (
+                    has_explicit_port
+                    or parsed_url.path
+                    or parsed_url.query
+                    or parsed_url.fragment
+                )
             ):
                 yield parsed_host
             else:
@@ -660,11 +707,10 @@ def contextual_domain_hosts(text: str):
     """Extract complete host values from explicit Japanese/English host contexts."""
     for match in HOST_CONTEXT_VALUE_RE.finditer(text):
         value = HOST_VALUE_TRAILING_PUNCTUATION_RE.sub("", match.group("value"))
-        if value.lower().startswith(("http://", "https://")):
-            extracted_hosts = list(url_domain_hosts(value))
-            if extracted_hosts:
-                yield extracted_hosts[0]
-                continue
+        extracted_hosts = list(url_domain_hosts(value))
+        if extracted_hosts:
+            yield extracted_hosts[0]
+            continue
         known_suffix_match = GENERAL_HOST_CANDIDATE_RE.search(value)
         if known_suffix_match is not None:
             yield general_host_from_match(known_suffix_match)
@@ -1435,16 +1481,21 @@ def main() -> int:
     )
 
     dataset = load_json("cases/fixtures/ch25-structured-analysis-attribution-dataset.json")
+    structural_error_count = len(ERRORS)
     require_declared_identity_collection_paths(dataset)
     require_declared_identity_singletons(dataset)
-    if not isinstance(dataset, dict):
-        dataset = {}
-    if dataset.get("synthetic") is not True:
-        error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: synthetic must be true")
     require_unique_ids_recursively(
         dataset,
         "cases/fixtures/ch25-structured-analysis-attribution-dataset.json",
     )
+    if len(ERRORS) > structural_error_count:
+        for message in ERRORS:
+            print(f"ERROR: {message}")
+        return 1
+    if not isinstance(dataset, dict):
+        dataset = {}
+    if dataset.get("synthetic") is not True:
+        error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: synthetic must be true")
     require_globally_unique_owner_ids(dataset)
     require_reference_integrity(dataset)
     for key, expected in (
@@ -2110,12 +2161,21 @@ def main() -> int:
         "+81 (90) 1234-5678",
         "+81(90)1234-5678",
         "+81-(90)-1234-5678",
+        "(+81) 90 1234 5678",
+        "03/1234/5678",
     )
     for mutation in phone_mutations:
         if not PHONE_RE.search(normalize_phone_parentheses(mutation)):
             error(f"fixture safety regression: compact telephone mutation was accepted: {mutation!r}")
-    for non_phone in ("20260729101500", "0000000000", "+81-2026-0729-1015"):
-        if PHONE_RE.search(non_phone):
+    for non_phone in (
+        "20260729101500",
+        "0000000000",
+        "+81-2026-0729-1015",
+        "2026-07-29 1015",
+        "2026.07.29 1015",
+        "2026 (07) 29 1015",
+    ):
+        if PHONE_RE.search(normalize_phone_parentheses(non_phone)):
             error(f"fixture safety regression: non-telephone numeric value was rejected: {non_phone!r}")
     for mutation in ("例え.テスト", "real。com"):
         if not is_unicode_domain_candidate(mutation):
@@ -2153,6 +2213,11 @@ def main() -> int:
         "URL: https://safe.example。悪意/path": ["safe.example。悪意"],
         "URL: https://safe.example．悪意/path": ["safe.example．悪意"],
         "URL: https://safe.example｡悪意/path": ["safe.example｡悪意"],
+        "URL: https://safe.example。悪意:443": ["safe.example。悪意"],
+        "URL: https://user@safe.example。悪意:443": ["safe.example。悪意"],
+        "URL: (http://192.0.2.1)": ["192.0.2.1"],
+        "URL: http://192.0.2.1)": ["192.0.2.1"],
+        "URL: (http://192.0.2.1/path)": ["192.0.2.1"],
     }
     for mutation, expected_hosts in contextual_domain_regressions.items():
         if list(contextual_domain_hosts(mutation)) != expected_hosts:
@@ -2219,20 +2284,41 @@ def main() -> int:
                     + compatibility_character
                     + reserved_label[offset + len(current_mapping) :]
                 )
-                candidate = f"safe.{mutated_label}"
-                match = DOMAIN_CANDIDATE_RE.search(candidate)
-                if match is None or not is_unicode_domain_candidate(
-                    match.group("host")
-                ):
-                    error(
-                        "fixture safety regression: post-IDNA compatibility "
-                        f"domain mutation was accepted: {candidate!r}"
-                    )
+                for prefix in ("safe", "例え"):
+                    candidate = f"{prefix}.{mutated_label}"
+                    match = DOMAIN_CANDIDATE_RE.search(candidate)
+                    if match is None or not is_unicode_domain_candidate(
+                        match.group("host")
+                    ):
+                        error(
+                            "fixture safety regression: post-IDNA compatibility "
+                            f"domain mutation was accepted: {candidate!r}"
+                        )
                 start = offset + 1
+    if any(
+        re.fullmatch(r"[^\W_]", character, re.UNICODE) is not None
+        for character in POST_IDNA_NON_WORD_COMPATIBILITY_CHARS
+    ):
+        error(
+            "fixture safety regression: post-IDNA regex alternatives are not "
+            "disjoint"
+        )
     if is_unicode_domain_candidate("これは。テスト"):
         error("fixture safety regression: Japanese prose was treated as a Unicode/IDN domain")
     if is_unicode_domain_candidate("検証.テストケースを実施する"):
         error("fixture safety regression: ordinary dotted Japanese prose was treated as an IDN")
+    for prose in (
+        "API.仕様を確認する",
+        "API.テストを実施する",
+        "Section.説明を追加する",
+        "v2.仕様を確認する",
+        "SYNTH.運用手順を確認する",
+    ):
+        if is_unicode_domain_candidate(prose):
+            error(
+                "fixture safety regression: ASCII-plus-Japanese dotted prose "
+                f"was treated as a host: {prose!r}"
+            )
     for prose in ("検証.テストを実施する", "検証。テストです"):
         if GENERAL_HOST_CANDIDATE_RE.search(prose):
             error(
