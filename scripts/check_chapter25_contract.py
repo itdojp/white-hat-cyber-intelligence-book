@@ -906,36 +906,73 @@ def contextual_domain_hosts(text: str):
             yield value
 
 
-def markdown_table_cells(markdown: str):
-    """Yield visible Kramdown table-like rows outside code contexts."""
+def markdown_pipe_lines(markdown: str) -> list[list[str] | None]:
+    """Parse visible pipe-delimited lines while preserving line boundaries."""
+    parsed_lines: list[list[str] | None] = []
     for _, line_end, content_start, inside_code_context in (
         markdown_line_contexts(markdown)
     ):
         if inside_code_context:
+            parsed_lines.append(None)
             continue
         line = markdown[content_start:line_end].rstrip("\r\n")
         leading_spaces = len(line) - len(line.lstrip(" "))
         if leading_spaces > 3 or line.startswith("\t"):
+            parsed_lines.append(None)
             continue
         table_line = line[leading_spaces:].strip()
         if "|" not in table_line:
+            parsed_lines.append(None)
             continue
         cells = [cell.strip() for cell in table_line.strip("|").split("|")]
-        if not cells:
+        parsed_lines.append(cells if cells else None)
+    return parsed_lines
+
+
+def is_markdown_table_delimiter(cells: list[str] | None) -> bool:
+    return bool(
+        cells
+        and all(re.fullmatch(r":?-{3,}:?", cell) is not None for cell in cells)
+    )
+
+
+def markdown_tables(markdown: str):
+    """Yield header/data rows from structurally valid Kramdown pipe tables."""
+    lines = markdown_pipe_lines(markdown)
+    index = 0
+    while index + 1 < len(lines):
+        header = lines[index]
+        delimiter = lines[index + 1]
+        if (
+            header is None
+            or not is_markdown_table_delimiter(delimiter)
+            or len(header) != len(delimiter or [])
+        ):
+            index += 1
             continue
-        yield cells
+        rows: list[list[str]] = []
+        row_index = index + 2
+        while row_index < len(lines):
+            row = lines[row_index]
+            if row is None or is_markdown_table_delimiter(row):
+                break
+            rows.append(row)
+            row_index += 1
+        yield header, rows
+        index = row_index
 
 
 def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, list[str]]:
     rows: dict[str, list[str]] = {}
-    for cells in markdown_table_cells(markdown):
-        row_id = cells[0].strip("`")
-        if not row_id.startswith(prefix):
-            continue
-        if row_id in rows:
-            error(f"{label}: duplicate Markdown row ID {row_id}")
-            continue
-        rows[row_id] = cells
+    for _, table_rows in markdown_tables(markdown):
+        for cells in table_rows:
+            row_id = cells[0].strip("`")
+            if not row_id.startswith(prefix):
+                continue
+            if row_id in rows:
+                error(f"{label}: duplicate Markdown row ID {row_id}")
+                continue
+            rows[row_id] = cells
     return rows
 
 
@@ -2223,16 +2260,30 @@ def main() -> int:
             "Confidence",
             "Indicators / Signposts",
         ]
-        actual_forecast_headers = [
-            [normalized_markdown_cell(cell) for cell in cells]
-            for cells in markdown_table_cells(forecast_body)
-            if cells and normalized_markdown_cell(cells[0]) == "Forecast ID"
+        forecast_tables = [
+            (header, rows)
+            for header, rows in markdown_tables(forecast_body)
+            if any(
+                cells
+                and normalized_markdown_cell(cells[0]).startswith(
+                    "FOR-2026-025-"
+                )
+                for cells in rows
+            )
         ]
-        if actual_forecast_headers != [expected_forecast_header]:
+        if (
+            len(forecast_tables) != 1
+            or [
+                normalized_markdown_cell(cell)
+                for cell in forecast_tables[0][0]
+            ]
+            != expected_forecast_header
+        ):
             error(
                 "cases/ch25-structured-analysis-attribution-example.md: "
-                "Forecast table header must exactly preserve Forecast ID / "
-                "Statement / Time horizon / Confidence / Indicators / Signposts"
+                "Forecast rows must belong to exactly one table whose header "
+                "preserves Forecast ID / Statement / Time horizon / Confidence / "
+                "Indicators / Signposts"
             )
         markdown_forecast_rows = markdown_rows_by_id(
             forecast_body,
@@ -2617,8 +2668,11 @@ def main() -> int:
                 f"{mutation!r}"
             )
     for indentation in range(4):
+        indent = " " * indentation
         table = (
-            f"{' ' * indentation}| FOR-2026-025-999 | statement | 7日 | 中 | x |"
+            f"{indent}| Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+            f"{indent}| --- | --- | --- | --- | --- |\n"
+            f"{indent}| FOR-2026-025-999 | statement | 7日 | 中 | x |"
         )
         if "FOR-2026-025-999" not in markdown_rows_by_id(
             table,
@@ -2630,6 +2684,8 @@ def main() -> int:
                 f"not recognized: {indentation}"
             )
     if markdown_rows_by_id(
+        "    | Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+        "    | --- | --- | --- | --- | --- |\n"
         "    | FOR-2026-025-999 | statement | 7日 | 中 | x |",
         "FOR-2026-025-",
         "fixture safety regression",
@@ -2639,7 +2695,11 @@ def main() -> int:
             "Kramdown table"
         )
     for rendered_table in (
+        "> | Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+        "> | --- | --- | --- | --- | --- |\n"
         "> | FOR-2026-025-999 | statement | 7日 | 中 | x |",
+        "Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts\n"
+        "--- | --- | --- | --- | ---\n"
         "FOR-2026-025-999 | statement | 7日 | 中 | x",
     ):
         if "FOR-2026-025-999" not in markdown_rows_by_id(
@@ -2652,8 +2712,14 @@ def main() -> int:
                 f"not recognized: {rendered_table!r}"
             )
     for code_table in (
-        "```text\n| FOR-2026-025-999 | statement | 7日 | 中 | x |\n```",
-        "> ```text\n> | FOR-2026-025-999 | statement | 7日 | 中 | x |\n> ```",
+        "```text\n| Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| FOR-2026-025-999 | statement | 7日 | 中 | x |\n```",
+        "> ```text\n> | Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+        "> | --- | --- | --- | --- | --- |\n"
+        "> | FOR-2026-025-999 | statement | 7日 | 中 | x |\n> ```",
+        "    | Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+        "    | --- | --- | --- | --- | --- |\n"
         "    | FOR-2026-025-999 | statement | 7日 | 中 | x |",
     ):
         if markdown_rows_by_id(
