@@ -612,13 +612,15 @@
     ],
     "analyticJudgment": {
       "id": "AJ-2026-025",
-      "statement": "The observed activity supports a credential-relay technical cluster but does not justify campaign or operator attribution.",
+      "statement": "観測事象はPartner administratorを狙うcredential-relay型Technical clusterと整合するが、外部報告の独立性不足とshared toolingの可能性があるため、CampaignやOperatorまでの表現は支持しない",
       "confidence": "中",
+      "basis": "ALT-2026-025-001はquarantine mail、外部redirect chain、近接登録した合成Domainにより弱まる。一方、ALT-2026-025-002 / 003はexcerptとL2超の帰属境界として残り、成功したfollow-on accessも未確認である",
       "relatedAlternativeHypothesisIds": [
         "ALT-2026-025-001",
         "ALT-2026-025-002",
         "ALT-2026-025-003"
       ],
+      "changeCondition": "承認済みSSO保守ticketがtechnical event全体を説明する、独立Partner telemetryで同一lureとfollow-on accessが確認される、またはkit再利用を示す強い証拠が出る",
       "alternativeAssessments": [
         {
           "alternativeHypothesisId": "ALT-2026-025-001",

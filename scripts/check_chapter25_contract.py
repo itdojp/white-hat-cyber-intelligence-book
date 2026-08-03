@@ -5,7 +5,9 @@ import hashlib
 import json
 import ipaddress
 import re
+import stringprep
 import sys
+import unicodedata
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -81,9 +83,15 @@ FIXTURE_IDENTITY_COLLECTIONS = {
     "sourceEvaluationHypotheses": "id",
     "sourceEvaluationJudgments": "id",
 }
+FIXTURE_IDENTITY_SINGLETONS = {
+    "attributionAssessment": "id",
+    "judgments.analyticJudgment": "id",
+    "decision": "id",
+    "reassessment": "id",
+}
 IDENTITY_RE = re.compile(r"[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+\Z")
 ANALYTIC_ID_RE = re.compile(
-    r"\b(?:TH|OBS|SEH|GAP|ALT|SN|EVD|NEG|CR|DECPT|ATTR|CF|ASM|AJ|FOR|REC|IND|DEC|REA|LIN|UNC|SEJ)-2026-025(?:-\d{3})?\b"
+    r"(?<![A-Z0-9-])(?:TH|OBS|SEH|GAP|ALT|SN|EVD|NEG|CR|DECPT|ATTR|CF|ASM|AJ|FOR|REC|IND|DEC|REA|LIN|UNC|SEJ)-2026-025(?:-\d{3})?(?![A-Z0-9-])"
 )
 INDEPENDENCE_EVALUATION_TOKENS = (
     "independence",
@@ -150,22 +158,22 @@ DOCUMENTATION_ONLY_IDN_TLD_PATTERN = "|".join(
     for tld in sorted(DOCUMENTATION_ONLY_IDN_TLDS, key=len, reverse=True)
 )
 HOSTNAME_RE = re.compile(
-    r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]+\.)+(?:"
+    r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]{1,63}\.)+(?:"
     + ASCII_TLD_PATTERN
     + r"))(?![A-Za-z0-9_-])",
     re.IGNORECASE,
 )
 GENERAL_HOST_CANDIDATE_RE = re.compile(
-    r"(?P<host>(?:(?:[^\W_@]|-)+[.。．｡])+(?:"
+    r"(?P<host>(?:(?:[^\W_@]|-){1,63}[.。．｡])+(?:"
     + IANA_UNICODE_TLD_PATTERN
     + "|"
     + ASCII_TLD_PATTERN
     + r"))"
     r"(?=$|[^\x00-\x7f]|[/?:#]|[.,;:!?)\]])"
-    r"|(?P<documentation_host>(?:(?:[^\W_@]|-)+[.。．｡])+(?:"
+    r"|(?P<documentation_host>(?:(?:[^\W_@]|-){1,63}[.。．｡])+(?:"
     + DOCUMENTATION_ONLY_IDN_TLD_PATTERN
     + r"))"
-    r"(?=$|[ぁ-ゖ]|[/?:#]|[。．｡、,;；:：!！?？)\]」』])",
+    r"(?=$|[/?:#]|[。．｡、,;；:：!！?？)\]」』])",
     re.IGNORECASE | re.UNICODE,
 )
 HOST_CONTEXT_VALUE_RE = re.compile(
@@ -364,12 +372,10 @@ def normalize_unicode_host(raw: str) -> str:
     return raw.translate(str.maketrans({"。": ".", "．": ".", "｡": "."}))
 
 
-def is_plausible_tld(label: str) -> bool:
-    lowered = label.lower()
-    return (
-        lowered in RECOGNIZED_ASCII_TLDS
-        or lowered in RECOGNIZED_IDN_TLDS
-    )
+def normalize_for_host_scanning(text: str) -> str:
+    """Apply the same compatibility/ignored-character mapping as Python IDNA."""
+    normalized = unicodedata.normalize("NFKC", text)
+    return "".join(char for char in normalized if not stringprep.in_table_b1(char))
 
 
 def general_host_from_match(match: re.Match[str]) -> str:
@@ -393,13 +399,13 @@ def is_unicode_domain_candidate(raw: str) -> bool:
         return False
 
     has_non_ascii = any(any(ord(char) > 127 for char in label) for label in labels)
-    final_label = labels[-1].lower()
+    ascii_final_label = ascii_labels[-1].lower()
     if not has_non_ascii:
         # Unicode full stops are punctuation in ordinary prose too. For all-ASCII
         # labels, only treat an IANA snapshot/reserved TLD as a domain candidate.
-        return any(separator in raw for separator in "。．｡") and (
-            is_plausible_tld(final_label)
-            or f".{final_label}" in ALLOWED_DOMAIN_SUFFIXES
+        return (
+            any(separator in raw for separator in "。．｡")
+            and ascii_final_label in RECOGNIZED_ASCII_TLDS
         )
 
     # Treat an all-Unicode string separated only by a Japanese full stop as
@@ -416,10 +422,21 @@ def is_unicode_domain_candidate(raw: str) -> bool:
     # An IANA snapshot/reserved final label distinguishes a bare IDN from
     # ordinary sentence fragments without claiming to be a general PII or
     # public-suffix detector.
-    return (
-        is_plausible_tld(final_label)
-        or f".{final_label}" in ALLOWED_DOMAIN_SUFFIXES
-    )
+    return ascii_final_label in RECOGNIZED_ASCII_TLDS
+
+
+def url_domain_hosts(text: str):
+    """Extract URL hosts without consuming adjacent Japanese prose."""
+    for raw_url in URL_RE.findall(text):
+        stripped_url = raw_url.rstrip(".,;:")
+        after_scheme = stripped_url.split("://", 1)[1]
+        known_suffix_match = GENERAL_HOST_CANDIDATE_RE.match(after_scheme)
+        if known_suffix_match is not None:
+            yield general_host_from_match(known_suffix_match)
+            continue
+        parsed_host = urlparse(stripped_url).hostname
+        if parsed_host:
+            yield parsed_host
 
 
 def contextual_domain_hosts(text: str):
@@ -427,9 +444,9 @@ def contextual_domain_hosts(text: str):
     for match in HOST_CONTEXT_VALUE_RE.finditer(text):
         value = HOST_VALUE_TRAILING_PUNCTUATION_RE.sub("", match.group("value"))
         if value.lower().startswith(("http://", "https://")):
-            parsed_host = urlparse(value).hostname
-            if parsed_host:
-                yield parsed_host
+            extracted_hosts = list(url_domain_hosts(value))
+            if extracted_hosts:
+                yield extracted_hosts[0]
                 continue
         known_suffix_match = GENERAL_HOST_CANDIDATE_RE.search(value)
         if known_suffix_match is not None:
@@ -516,6 +533,30 @@ def require_declared_identity_collection_paths(dataset: object) -> None:
             current = current[key]
 
 
+def declared_identity_key_for_object_path(relative_path: str) -> str | None:
+    singleton_key = FIXTURE_IDENTITY_SINGLETONS.get(relative_path)
+    if singleton_key is not None:
+        return singleton_key
+    collection_item = re.fullmatch(r"(?P<collection>.+)\[\d+\]", relative_path)
+    if collection_item is None:
+        return None
+    return FIXTURE_IDENTITY_COLLECTIONS.get(collection_item.group("collection"))
+
+
+def require_declared_identity_singletons(dataset: object) -> None:
+    """Require each canonical singleton owner to be an object with a valid ID."""
+    for relative_path, identity_key in FIXTURE_IDENTITY_SINGLETONS.items():
+        singleton = nested_value(dataset, relative_path)
+        if not isinstance(singleton, dict):
+            error(f"{FIXTURE_LABEL}.{relative_path}: identity singleton must be an object")
+            continue
+        if not is_valid_identity(singleton.get(identity_key)):
+            error(
+                f"{FIXTURE_LABEL}.{relative_path}.{identity_key}: singleton identity "
+                "must use canonical uppercase ASCII hyphenated form"
+            )
+
+
 def require_unique_ids_recursively(value: object, label: str) -> None:
     """Reject duplicate record identities in every nested fixture collection."""
     prefix = f"{FIXTURE_LABEL}."
@@ -525,6 +566,15 @@ def require_unique_ids_recursively(value: object, label: str) -> None:
         error(f"{label}: declared identity collection must be an array")
         return
     if isinstance(value, dict):
+        object_identity_key = declared_identity_key_for_object_path(relative_path)
+        present_identity_keys = {
+            key for key in ("id", "alternativeHypothesisId") if key in value
+        }
+        if present_identity_keys and object_identity_key is None:
+            error(
+                f"{label}: identity-bearing object path must be declared; "
+                f"detected keys={sorted(present_identity_keys)}"
+            )
         for record_identity_key in ("id", "alternativeHypothesisId"):
             if record_identity_key in value and not is_valid_identity(
                 value[record_identity_key]
@@ -556,36 +606,89 @@ def require_unique_ids_recursively(value: object, label: str) -> None:
         require_unique_ids_recursively(child, f"{label}[{index}]")
 
 
+def nested_value(value: object, relative_path: str) -> object | None:
+    current = value
+    for key in relative_path.split("."):
+        if not isinstance(current, dict) or key not in current:
+            return None
+        current = current[key]
+    return current
+
+
+def global_owner_identity_collisions(dataset: object) -> dict[str, list[str]]:
+    """Find IDs reused by distinct canonical owning records.
+
+    Markdown projections and alternativeHypothesisId values are references, not
+    identity owners, and are intentionally excluded.
+    """
+    locations: dict[str, list[str]] = {}
+    for relative_path, identity_key in FIXTURE_IDENTITY_COLLECTIONS.items():
+        if relative_path.startswith("markdownProjection.") or identity_key != "id":
+            continue
+        collection = nested_value(dataset, relative_path)
+        if not isinstance(collection, list):
+            continue
+        for index, item in enumerate(collection):
+            if not isinstance(item, dict):
+                continue
+            identifier = item.get(identity_key)
+            if not is_valid_identity(identifier):
+                continue
+            locations.setdefault(identifier, []).append(f"{relative_path}[{index}]")
+    for relative_path, identity_key in FIXTURE_IDENTITY_SINGLETONS.items():
+        singleton = nested_value(dataset, relative_path)
+        if not isinstance(singleton, dict):
+            continue
+        identifier = singleton.get(identity_key)
+        if not is_valid_identity(identifier):
+            continue
+        locations.setdefault(identifier, []).append(relative_path)
+    return {
+        identifier: owner_locations
+        for identifier, owner_locations in locations.items()
+        if len(owner_locations) > 1
+    }
+
+
+def require_globally_unique_owner_ids(dataset: object) -> None:
+    collisions = global_owner_identity_collisions(dataset)
+    if collisions:
+        error(
+            f"{FIXTURE_LABEL}: canonical owning-record IDs must be globally unique: "
+            f"{collisions}"
+        )
+
+
 def check_synthetic_content_safety(relative: str, text: str) -> None:
     """Check synthetic teaching content only; official Source Note URLs use SOURCE_POLICY."""
-    for raw_url in URL_RE.findall(text):
-        host = urlparse(raw_url.rstrip(".,;:")).hostname or ""
+    compatibility_text = normalize_for_host_scanning(text)
+    for host in url_domain_hosts(compatibility_text):
         assert_synthetic_domain(host, f"{relative}: URL")
-    for match in HOSTNAME_RE.finditer(text):
+    for match in HOSTNAME_RE.finditer(compatibility_text):
         host = match.group("host").lower()
         if is_repository_file_reference(host):
             continue
         assert_synthetic_domain(host, f"{relative}: host/URL")
     checked_unicode_hosts: set[str] = set()
-    for match in GENERAL_HOST_CANDIDATE_RE.finditer(text):
+    for match in GENERAL_HOST_CANDIDATE_RE.finditer(compatibility_text):
         candidate = general_host_from_match(match)
         if not is_unicode_domain_candidate(candidate):
             continue
         normalized = normalize_unicode_host(candidate).lower()
         checked_unicode_hosts.add(normalized)
         assert_synthetic_domain(normalized, f"{relative}: host/IDN")
-    for candidate in contextual_domain_hosts(text):
+    for candidate in contextual_domain_hosts(compatibility_text):
         normalized = normalize_unicode_host(candidate).lower()
         checked_unicode_hosts.add(normalized)
         assert_synthetic_domain(normalized, f"{relative}: contextual host/IDN")
-    for match in UNICODE_SEPARATOR_ASCII_HOST_RE.finditer(text):
+    for match in UNICODE_SEPARATOR_ASCII_HOST_RE.finditer(compatibility_text):
         candidate = match.group("host")
         if not is_unicode_domain_candidate(candidate):
             continue
         normalized = normalize_unicode_host(candidate).lower()
         checked_unicode_hosts.add(normalized)
         assert_synthetic_domain(normalized, f"{relative}: Unicode/IDN host")
-    for match in DOMAIN_CANDIDATE_RE.finditer(text):
+    for match in DOMAIN_CANDIDATE_RE.finditer(compatibility_text):
         candidate = match.group("host")
         if not is_unicode_domain_candidate(candidate):
             continue
@@ -597,7 +700,7 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
             normalized,
             f"{relative}: Unicode/IDN host",
         )
-    for match in EMAIL_RE.finditer(text):
+    for match in EMAIL_RE.finditer(compatibility_text):
         assert_synthetic_domain(match.group("host").lower(), f"{relative}: email")
     for match in IPV4_RE.finditer(text):
         assert_doc_ip(match.group(0), f"{relative}: IP")
@@ -881,6 +984,7 @@ def main() -> int:
 
     dataset = load_json("cases/fixtures/ch25-structured-analysis-attribution-dataset.json")
     require_declared_identity_collection_paths(dataset)
+    require_declared_identity_singletons(dataset)
     if not isinstance(dataset, dict):
         dataset = {}
     if dataset.get("synthetic") is not True:
@@ -889,6 +993,7 @@ def main() -> int:
         dataset,
         "cases/fixtures/ch25-structured-analysis-attribution-dataset.json",
     )
+    require_globally_unique_owner_ids(dataset)
     for key, expected in (
         ("artifactId", "ART-11"),
         ("caseId", "CASE-2026-025"),
@@ -1323,7 +1428,8 @@ def main() -> int:
         if not any(item.get("sameOriginRepublication") and item.get("doNotCountAsIndependent") for item in circular):
             error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: same-origin republication must be marked as non-independent corroboration")
 
-    attribution = dataset.get("attributionAssessment", {})
+    attribution_value = dataset.get("attributionAssessment", {})
+    attribution = attribution_value if isinstance(attribution_value, dict) else {}
     if attribution.get("ladderLevel") != "L2":
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: expected L2 attribution stopping point")
     if "Technical cluster" not in " ".join(attribution.get("permittedLanguage", [])):
@@ -1350,7 +1456,9 @@ def main() -> int:
             f"missing_from_markdown={missing_from_markdown}, missing_from_fixture={missing_from_fixture}"
         )
 
-    confirmed_facts = dataset.get("judgments", {}).get("confirmedFacts", [])
+    judgments_value = dataset.get("judgments", {})
+    judgments = judgments_value if isinstance(judgments_value, dict) else {}
+    confirmed_facts = judgments.get("confirmedFacts", [])
     if any(isinstance(fact, dict) and fact.get("id") == "CF-2026-025-004" for fact in confirmed_facts):
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: CF-2026-025-004 must be a source-evaluation judgment, not a Confirmed Fact")
     for fact in confirmed_facts:
@@ -1383,7 +1491,7 @@ def main() -> int:
         "ASM-2026-025-003": ["GAP-2026-025-003"],
         "ASM-2026-025-004": ["GAP-2026-025-001"],
     }
-    assumptions = dataset.get("judgments", {}).get("assumptions", [])
+    assumptions = judgments.get("assumptions", [])
     actual_assumptions = {
         item.get("id"): item.get("relatedGapIds")
         for item in assumptions
@@ -1401,7 +1509,53 @@ def main() -> int:
     ):
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: assumptions require whyNeeded and failureTrigger")
 
-    analytic_judgment = dataset.get("judgments", {}).get("analyticJudgment", {})
+    analytic_judgment_value = judgments.get("analyticJudgment", {})
+    analytic_judgment = (
+        analytic_judgment_value
+        if isinstance(analytic_judgment_value, dict)
+        else {}
+    )
+    judgment_body = subsection_body(case, "10.3 Judgments")
+    if judgment_body is None:
+        error("cases/ch25-structured-analysis-attribution-example.md: missing 10.3 Judgments subsection")
+        markdown_judgment_rows: dict[str, list[str]] = {}
+    else:
+        markdown_judgment_rows = markdown_rows_by_id(
+            judgment_body,
+            "AJ-2026-025",
+            f"{case_path}:10.3 Judgments",
+        )
+    actual_markdown_judgments = {
+        judgment_id: {
+            "id": judgment_id,
+            "statement": normalized_markdown_cell(cells[1]) if len(cells) > 1 else None,
+            "confidence": normalized_markdown_cell(cells[2]) if len(cells) > 2 else None,
+            "basis": normalized_markdown_cell(cells[3]) if len(cells) > 3 else None,
+            "relatedAlternativeHypothesisIds": re.findall(
+                r"ALT-2026-025-\d{3}", cells[4]
+            ) if len(cells) > 4 else [],
+            "changeCondition": normalized_markdown_cell(cells[5]) if len(cells) > 5 else None,
+        }
+        for judgment_id, cells in markdown_judgment_rows.items()
+    }
+    expected_markdown_judgments = {
+        analytic_judgment.get("id"): {
+            key: analytic_judgment.get(key)
+            for key in (
+                "id",
+                "statement",
+                "confidence",
+                "basis",
+                "relatedAlternativeHypothesisIds",
+                "changeCondition",
+            )
+        }
+    }
+    if actual_markdown_judgments != expected_markdown_judgments:
+        error(
+            "cases/ch25-structured-analysis-attribution-example.md: central "
+            "Analytic Judgment rendering differs from the canonical fixture"
+        )
     if analytic_judgment.get("relatedAlternativeHypothesisIds") != expected_judgment_alternatives:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: central judgment must assess all three alternative hypotheses")
     expected_alternative_assessments = {
@@ -1490,6 +1644,8 @@ def main() -> int:
         "参照先はhttps://xn--r8jz45g.example/a?b=1です": [
             "xn--r8jz45g.example"
         ],
+        "接続先はhttps://例え.exampleです": ["例え.example"],
+        "URL: https://例え.example、確認する": ["例え.example"],
     }
     for mutation, expected_hosts in contextual_domain_regressions.items():
         if list(contextual_domain_hosts(mutation)) != expected_hosts:
@@ -1514,9 +1670,13 @@ def main() -> int:
         "観測値は例え.comも応答した",
         "観測値は例え.comより取得した",
         "観測値は例え.comまで到達した",
+        "観測値は例え.ｃｏｍ経由で取得した",
+        "観測値は例え.c\u200bom経由で取得した",
+        "観測値は例え.vermo\u0308gensberater経由で取得した",
     )
     for mutation in general_host_regressions:
-        match = GENERAL_HOST_CANDIDATE_RE.search(mutation)
+        compatibility_mutation = normalize_for_host_scanning(mutation)
+        match = GENERAL_HOST_CANDIDATE_RE.search(compatibility_mutation)
         if match is None or not is_unicode_domain_candidate(
             general_host_from_match(match)
         ):
@@ -1524,13 +1684,19 @@ def main() -> int:
                 "fixture safety regression: Japanese-adjacent IDN was not tokenized: "
                 f"{mutation!r}"
             )
-    for mutation in ("例え.テスト", "例え.世界"):
+    for mutation in ("例え.テスト", "例え.世界", "例え.ｃｏｍ"):
         if not is_unicode_domain_candidate(mutation):
             error(f"fixture safety regression: bare IDN was not recognized: {mutation!r}")
     if is_unicode_domain_candidate("これは。テスト"):
         error("fixture safety regression: Japanese prose was treated as a Unicode/IDN domain")
     if is_unicode_domain_candidate("検証.テストケースを実施する"):
         error("fixture safety regression: ordinary dotted Japanese prose was treated as an IDN")
+    for prose in ("検証.テストを実施する", "検証。テストです"):
+        if GENERAL_HOST_CANDIDATE_RE.search(prose):
+            error(
+                "fixture safety regression: documentation-only IDN tokenization "
+                f"treated ordinary prose as a host: {prose!r}"
+            )
     for mutation in ("\u200b", "\ufeff", "ROLE-2026-025-001\u200b", "role-001"):
         if is_valid_identity(mutation):
             error(f"fixture identity regression: unsafe identity was accepted: {mutation!r}")
@@ -1540,6 +1706,35 @@ def main() -> int:
                 "fixture identity regression: canonical identity was rejected: "
                 f"{canonical_identity!r}"
             )
+    identity_collision_dataset = {
+        "syntheticEntities": {
+            "organizations": [{"id": "ORG-2026-025-001"}],
+            "roles": [{"id": "ORG-2026-025-001"}],
+        }
+    }
+    if global_owner_identity_collisions(identity_collision_dataset) != {
+        "ORG-2026-025-001": [
+            "syntheticEntities.organizations[0]",
+            "syntheticEntities.roles[0]",
+        ]
+    }:
+        error(
+            "fixture identity regression: cross-collection owning-record "
+            "collision was not detected"
+        )
+    singleton_collision_dataset = {
+        "decision": {"id": "DEC-2026-025"},
+        "reassessment": {"id": "DEC-2026-025"},
+    }
+    if global_owner_identity_collisions(singleton_collision_dataset) != {
+        "DEC-2026-025": ["decision", "reassessment"]
+    }:
+        error(
+            "fixture identity regression: singleton owning-record collision "
+            "was not detected"
+        )
+    if declared_identity_key_for_object_path("undeclaredIdentityObject") is not None:
+        error("fixture identity regression: undeclared identity object path was accepted")
 
     package = load_json("package.json")
     scripts = package.get("scripts", {})
