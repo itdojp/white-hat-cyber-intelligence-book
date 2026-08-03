@@ -1,0 +1,247 @@
+{
+  "schemaVersion": "1.0.0",
+  "fixtureId": "FIXTURE-CH11-001",
+  "title": "Chapter 11 synthetic Web/API assessment dataset",
+  "synthetic": true,
+  "readOnly": true,
+  "networkRequired": false,
+  "authority": {
+    "id": "ROE-2026-011",
+    "permittedDomains": [
+      "api.orders.example",
+      "orders-fixture.test",
+      "control-plane.service.test"
+    ],
+    "maximumReplayCount": 3,
+    "prohibited": [
+      "external network access",
+      "real credentials",
+      "real tenant data",
+      "load testing",
+      "lateral movement"
+    ]
+  },
+  "exerciseRecords": [
+    {
+      "recordId": "REC-11-001",
+      "validationId": "VAL-2026-011",
+      "summary": "Analyst reads an own-tenant completed export job.",
+      "observedStatus": 200,
+      "observedSideEffect": "metadata only; no queue access"
+    },
+    {
+      "recordId": "REC-11-002",
+      "validationId": "VAL-2026-011",
+      "summary": "Analyst requests another tenant's completed export job.",
+      "observedStatus": 404,
+      "observedSideEffect": "no queue access"
+    },
+    {
+      "recordId": "REC-11-003",
+      "validationId": "VAL-2026-012",
+      "summary": "Analyst requests the deprecated admin export route.",
+      "observedStatus": 202,
+      "observedSideEffect": "one synthetic job created"
+    },
+    {
+      "recordId": "REC-11-004",
+      "validationId": "VAL-2026-013",
+      "summary": "Analyst submits an export with includeInternalNotes enabled.",
+      "observedStatus": 202,
+      "observedSideEffect": "synthetic property retained; state normalized to queued"
+    },
+    {
+      "recordId": "REC-11-005",
+      "validationId": "VAL-2026-014",
+      "summary": "Admin registers a reserved internal-style callback hostname.",
+      "observedStatus": 400,
+      "observedSideEffect": "internal_host_denied; no dispatch task"
+    },
+    {
+      "recordId": "REC-11-006",
+      "validationId": "VAL-2026-015",
+      "summary": "Analyst replays one idempotency key three times.",
+      "observedStatus": 202,
+      "observedSideEffect": "two synthetic jobs; quota delta two"
+    }
+  ],
+  "validations": [
+    {
+      "validationId": "VAL-2026-011",
+      "recordIds": [
+        "REC-11-001",
+        "REC-11-002"
+      ],
+      "observationId": "OBS-2026-011",
+      "evidenceId": "EVD-2026-011",
+      "request": {
+        "method": "GET",
+        "host": "api.orders.example",
+        "path": "/api/v2/export-jobs/job-red-synthetic",
+        "credentialClass": "analyst-invalid / tenant-blue.example"
+      },
+      "expectedDeniedResult": {
+        "status": 404,
+        "responseFields": [],
+        "queueAccessEvent": false
+      },
+      "observedResult": {
+        "status": 404,
+        "responseFields": [],
+        "queueAccessEvent": false
+      },
+      "limitation": "Only the v2 completed-state path is represented."
+    },
+    {
+      "validationId": "VAL-2026-012",
+      "recordIds": [
+        "REC-11-003"
+      ],
+      "observationId": "OBS-2026-012",
+      "evidenceId": "EVD-2026-012",
+      "request": {
+        "method": "POST",
+        "host": "api.orders.example",
+        "path": "/api/v1/admin/report-export",
+        "credentialClass": "analyst-invalid / tenant-blue.example"
+      },
+      "expectedDeniedResult": {
+        "status": 403,
+        "jobCreated": false
+      },
+      "observedResult": {
+        "status": 202,
+        "jobCreated": true,
+        "jobId": "job-admin-synthetic-001"
+      },
+      "configurationEvidence": {
+        "authorizationPolicy": "admin-only",
+        "routeMiddleware": "legacy-route-without-shared-authz"
+      },
+      "limitation": "Only the registered v1 route is represented."
+    },
+    {
+      "validationId": "VAL-2026-013",
+      "recordIds": [
+        "REC-11-004"
+      ],
+      "observationId": "OBS-2026-013",
+      "evidenceId": "EVD-2026-013",
+      "request": {
+        "method": "POST",
+        "host": "api.orders.example",
+        "path": "/api/v2/exports",
+        "credentialClass": "analyst-invalid / tenant-blue.example",
+        "syntheticFields": {
+          "includeInternalNotes": true,
+          "status": "approved"
+        }
+      },
+      "expectedDeniedResult": {
+        "includeInternalNotesStored": false,
+        "storedState": "queued"
+      },
+      "observedResult": {
+        "status": 202,
+        "includeInternalNotesStored": true,
+        "storedState": "queued"
+      },
+      "limitation": "No exported note content is included in this dataset."
+    },
+    {
+      "validationId": "VAL-2026-014",
+      "recordIds": [
+        "REC-11-005"
+      ],
+      "observationId": "OBS-2026-014",
+      "evidenceId": "EVD-2026-014",
+      "request": {
+        "method": "POST",
+        "host": "api.orders.example",
+        "path": "/api/v2/webhooks",
+        "credentialClass": "admin-invalid / tenant-blue.example",
+        "syntheticFields": {
+          "callbackUrl": "https://control-plane.service.test/internal-status"
+        }
+      },
+      "expectedDeniedResult": {
+        "status": 400,
+        "reason": "internal_host_denied",
+        "dispatchTaskCreated": false
+      },
+      "observedResult": {
+        "status": 400,
+        "reason": "internal_host_denied",
+        "dispatchTaskCreated": false
+      },
+      "limitation": "Only registration-time validation of one reserved hostname is represented."
+    },
+    {
+      "validationId": "VAL-2026-015",
+      "recordIds": [
+        "REC-11-006"
+      ],
+      "observationId": "OBS-2026-015",
+      "evidenceId": "EVD-2026-015",
+      "request": {
+        "method": "POST",
+        "host": "api.orders.example",
+        "path": "/api/v2/exports/retry",
+        "credentialClass": "analyst-invalid / tenant-blue.example",
+        "syntheticFields": {
+          "idempotencyKey": "idem-synthetic-001",
+          "replayCount": 3
+        }
+      },
+      "expectedDeniedResult": {
+        "uniqueJobCount": 1,
+        "quotaCounterDelta": 1
+      },
+      "observedResult": {
+        "uniqueJobCount": 2,
+        "quotaCounterDelta": 2
+      },
+      "limitation": "The dataset represents three low-count replays only."
+    }
+  ],
+  "detectionEvents": [
+    {
+      "fixtureEventId": "FIX-2026-011",
+      "detectionId": "DET-2026-011",
+      "event": {
+        "path": "/api/v1/admin/report-export",
+        "actorRole": "analyst",
+        "status": 202,
+        "jobCreated": true
+      }
+    },
+    {
+      "fixtureEventId": "FIX-2026-012",
+      "detectionId": "DET-2026-012",
+      "event": {
+        "actorRole": "analyst",
+        "field": "includeInternalNotes",
+        "storedValue": true
+      }
+    },
+    {
+      "fixtureEventId": "FIX-2026-013",
+      "detectionId": "DET-2026-013",
+      "event": {
+        "idempotencyKey": "idem-synthetic-001",
+        "uniqueJobCount": 2,
+        "quotaCounterDelta": 2
+      }
+    },
+    {
+      "fixtureEventId": "FIX-2026-014",
+      "detectionId": "DET-2026-014",
+      "event": {
+        "host": "control-plane.service.test",
+        "status": 400,
+        "reason": "internal_host_denied",
+        "dispatchTaskCreated": false
+      }
+    }
+  ]
+}

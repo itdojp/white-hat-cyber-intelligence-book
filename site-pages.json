@@ -6,6 +6,13 @@
   ],
   "pages": [
     {
+      "source": "manuscript/11-web-api-hypothesis.md",
+      "destination": "chapters/chapter-11/index.md",
+      "section": "chapters",
+      "order": 50,
+      "title": "第11章 Web・APIを仮説駆動で評価する"
+    },
+    {
       "source": "templates/integrated-security-case-map.md",
       "destination": "templates/integrated-security-case-map/index.md",
       "section": "additional",
@@ -18,6 +25,20 @@
       "section": "additional",
       "order": 230,
       "title": "第1章 合成記入例：請求書連携OAuthアプリの権限見直し"
+    },
+    {
+      "source": "templates/web-api-assessment-hypothesis-pack.md",
+      "destination": "templates/web-api-assessment-hypothesis-pack/index.md",
+      "section": "additional",
+      "order": 240,
+      "title": "Web/API Assessment Hypothesis Pack"
+    },
+    {
+      "source": "cases/ch11-web-api-assessment-example.md",
+      "destination": "cases/chapter-11-web-api-assessment/index.md",
+      "section": "additional",
+      "order": 250,
+      "title": "第11章 合成記入例：マルチテナント受注Export APIとWebhook登録の評価"
     }
   ],
   "directoryRoutes": {
