@@ -117,6 +117,15 @@ RECOGNIZED_IDN_TLDS = frozenset(
         "परीक्षा",
     }
 )
+IDN_ASCII_DOT_HOST_RE = re.compile(
+    r"(?P<host>(?:[^\W_]|-)+\.(?:"
+    + "|".join(
+        re.escape(tld)
+        for tld in sorted(RECOGNIZED_IDN_TLDS, key=len, reverse=True)
+    )
+    + r"))",
+    re.UNICODE,
+)
 EMAIL_RE = re.compile(r"\b[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?P<host>[\w-]+(?:\.[\w-]+)+)\b", re.UNICODE)
 IPV4_RE = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])")
 IPV6_RE = re.compile(r"(?<![\w:])(?:[0-9A-Fa-f]{0,4}:){2,}[0-9A-Fa-f]{0,4}(?![\w:])")
@@ -401,9 +410,14 @@ def require_unique_object_identities(
         error(f"{label}: must be an array")
         return
     identifiers = [item.get(identity_key) for item in items if isinstance(item, dict)]
-    if len(identifiers) != len(items) or any(not identifier for identifier in identifiers):
+    if len(identifiers) != len(items) or any(
+        not isinstance(identifier, str)
+        or not identifier.strip()
+        or identifier != identifier.strip()
+        for identifier in identifiers
+    ):
         error(
-            f"{label}: every entry must be an object with a non-empty {identity_key}"
+            f"{label}: every entry must be an object with a non-empty, trimmed string {identity_key}"
         )
         return
     duplicates = sorted({identifier for identifier in identifiers if identifiers.count(identifier) > 1})
@@ -415,6 +429,12 @@ def require_unique_object_identities(
 
 def require_unique_ids_recursively(value: object, label: str) -> None:
     """Reject duplicate record identities in every nested fixture collection."""
+    prefix = f"{FIXTURE_LABEL}."
+    relative_path = label[len(prefix) :] if label.startswith(prefix) else label
+    identity_key = FIXTURE_IDENTITY_COLLECTIONS.get(relative_path)
+    if identity_key is not None and not isinstance(value, list):
+        error(f"{label}: declared identity collection must be an array")
+        return
     if isinstance(value, dict):
         for key, child in value.items():
             require_unique_ids_recursively(child, f"{label}.{key}")
@@ -422,9 +442,6 @@ def require_unique_ids_recursively(value: object, label: str) -> None:
     if not isinstance(value, list):
         return
 
-    prefix = f"{FIXTURE_LABEL}."
-    relative_path = label[len(prefix) :] if label.startswith(prefix) else label
-    identity_key = FIXTURE_IDENTITY_COLLECTIONS.get(relative_path)
     objects = [item for item in value if isinstance(item, dict)]
     detected_identity_keys = {
         key
@@ -453,6 +470,10 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
             continue
         assert_synthetic_domain(host, f"{relative}: host/URL")
     checked_unicode_hosts: set[str] = set()
+    for match in IDN_ASCII_DOT_HOST_RE.finditer(text):
+        normalized = normalize_unicode_host(match.group("host")).lower()
+        checked_unicode_hosts.add(normalized)
+        assert_synthetic_domain(normalized, f"{relative}: Unicode/IDN host")
     for candidate in contextual_unicode_hosts(text):
         normalized = normalize_unicode_host(candidate).lower()
         checked_unicode_hosts.add(normalized)
