@@ -299,7 +299,8 @@ KNOWN_SECRET_RE = re.compile(
 PHONE_RE = re.compile(
     r"(?<![\d-])(?:(?!\+81[ .-]?(?:19|20)\d{2}[ .-]?\d{4}[ .-]?\d{4})"
     r"\+\d{1,3}(?:[ .-]\d{1,4}){2,3}|0\d{1,3}[ .-]\d{2,4}[ .-]\d{3,4}|"
-    r"\+\d{10,15}|81[1-9]\d{8,9}|1[2-9]\d{2}[2-9]\d{6}|0[1-9]\d{8,9})(?!\d)"
+    r"\+\d{10,15}|81[1-9]\d{8,9}|1[2-9]\d{2}[2-9]\d{6}|"
+    r"[2-9]\d{2}[ .-][2-9]\d{2}[ .-]\d{4}|0[1-9]\d{8,9})(?!\d)"
 )
 SYNTHETIC_CONTENT_FILES = (
     "manuscript/25-structured-analysis-attribution.md",
@@ -493,6 +494,10 @@ def normalize_for_host_scanning(text: str) -> str:
     return normalized.translate(
         str.maketrans({sentinel: separator for separator, sentinel in separator_sentinels.items()})
     )
+
+
+def normalize_phone_parentheses(text: str) -> str:
+    return re.sub(r"\(\s*(\d{1,4})\s*\)\s*", r"\1-", text)
 
 
 def general_host_from_match(match: re.Match[str]) -> str:
@@ -865,8 +870,7 @@ def reference_integrity_violations(dataset: object) -> list[str]:
                     f"{record_path}.{required_field}: declared relationship field is missing"
                 )
 
-    declared_id_like_fields = {
-        "id",
+    root_metadata_id_fields = {
         "datasetId",
         "caseId",
         "artifactId",
@@ -875,8 +879,6 @@ def reference_integrity_violations(dataset: object) -> list[str]:
         "analyticJudgmentId",
         "decisionId",
         "reassessmentId",
-        "independenceGroupId",
-        *FIXTURE_REFERENCE_TARGETS.keys(),
     }
 
     def allowed_reference_fields(path: str, record: dict) -> set[str]:
@@ -898,14 +900,30 @@ def reference_integrity_violations(dataset: object) -> list[str]:
             )
         return allowed
 
+    def allowed_id_like_fields(path: str, record: dict) -> set[str]:
+        allowed = allowed_reference_fields(path, record)
+        if not path:
+            allowed.update(root_metadata_id_fields)
+        declared_identity_key = declared_identity_key_for_object_path(path)
+        if declared_identity_key is not None:
+            allowed.add(declared_identity_key)
+        collection_item = re.fullmatch(r"(?P<collection>.+)\[\d+\]", path)
+        if (
+            collection_item is not None
+            and collection_item.group("collection") == "sourceNotes"
+        ):
+            allowed.add("independenceGroupId")
+        return allowed
+
     def walk(value: object, path: str) -> None:
         if isinstance(value, dict):
             allowed_fields = allowed_reference_fields(path, value)
+            allowed_identity_fields = allowed_id_like_fields(path, value)
             for key, child in value.items():
                 child_path = f"{path}.{key}" if path else key
                 if (
-                    re.search(r"(?:Id|Ids|ID|IDs)$", key)
-                    and key not in declared_id_like_fields
+                    (key == "id" or re.search(r"(?:Id|Ids|ID|IDs)$", key))
+                    and key not in allowed_identity_fields
                 ):
                     violations.append(
                         f"{child_path}: undeclared identity/reference-like field"
@@ -931,6 +949,10 @@ def reference_integrity_violations(dataset: object) -> list[str]:
                         violations.append(
                             f"{child_path}: references must resolve to "
                             f"{list(target_paths)}"
+                        )
+                    elif isinstance(child, list) and len(child) != len(set(child)):
+                        violations.append(
+                            f"{child_path}: duplicate relationship values are not allowed"
                         )
                 if (
                     key in {"from", "to"}
@@ -1066,7 +1088,7 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         error(f"{relative}: contains a known secret/token format")
     if PRIVATE_KEY_RE.search(text):
         error(f"{relative}: contains a private-key block")
-    if PHONE_RE.search(text):
+    if PHONE_RE.search(normalize_phone_parentheses(compatibility_text)):
         error(f"{relative}: contains a telephone-number-like value")
 
 
@@ -1350,6 +1372,7 @@ def main() -> int:
     require_globally_unique_owner_ids(dataset)
     require_reference_integrity(dataset)
     for key, expected in (
+        ("datasetId", "FIX-CH25-2026-001"),
         ("artifactId", "ART-11"),
         ("caseId", "CASE-2026-025"),
         ("decisionRequirementId", "DR-2026-025"),
@@ -1967,9 +1990,17 @@ def main() -> int:
     for mutation in secret_mutations:
         if not KNOWN_SECRET_RE.search(mutation):
             error(f"fixture safety regression: known secret mutation was accepted: {mutation[:12]!r}")
-    phone_mutations = ("0312345678", "+819012345678", "819012345678", "14155552671")
+    phone_mutations = (
+        "0312345678",
+        "+819012345678",
+        "819012345678",
+        "14155552671",
+        "(03)1234-5678",
+        "(415) 555-2671",
+        "+81 (90) 1234-5678",
+    )
     for mutation in phone_mutations:
-        if not PHONE_RE.search(mutation):
+        if not PHONE_RE.search(normalize_phone_parentheses(mutation)):
             error(f"fixture safety regression: compact telephone mutation was accepted: {mutation!r}")
     for non_phone in ("20260729101500", "0000000000", "+81-2026-0729-1015"):
         if PHONE_RE.search(non_phone):
