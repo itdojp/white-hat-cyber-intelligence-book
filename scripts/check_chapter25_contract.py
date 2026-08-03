@@ -17,6 +17,35 @@ from scripts.sync_book_site import SitePageRegistryError, parse_registry_data  #
 ERRORS: list[str] = []
 ALLOWED_DOMAIN_SUFFIXES = (".example", ".test", ".invalid")
 SYNTHETIC_NAME_ALLOWLIST: frozenset[str] = frozenset()
+FIXTURE_LABEL = "cases/fixtures/ch25-structured-analysis-attribution-dataset.json"
+FIXTURE_IDENTITY_COLLECTIONS = {
+    "markdownProjection.negativeFindings": "id",
+    "markdownProjection.sourceEvaluationJudgments": "id",
+    "markdownProjection.attributionAssessments": "id",
+    "markdownProjection.judgmentAssumptions": "id",
+    "syntheticEntities.organizations": "id",
+    "syntheticEntities.media": "id",
+    "syntheticEntities.roles": "id",
+    "threatHypotheses": "id",
+    "observationHypotheses": "id",
+    "collectionGaps": "id",
+    "alternativeHypotheses": "id",
+    "sourceNotes": "id",
+    "evidence": "id",
+    "negativeFindings": "id",
+    "uncertainties": "id",
+    "lineage.edges": "id",
+    "lineage.circularReportingCandidates": "id",
+    "deceptionCandidates": "id",
+    "judgments.confirmedFacts": "id",
+    "judgments.assumptions": "id",
+    "judgments.analyticJudgment.alternativeAssessments": "alternativeHypothesisId",
+    "judgments.forecasts": "id",
+    "judgments.recommendations": "id",
+    "indicators": "id",
+    "sourceEvaluationHypotheses": "id",
+    "sourceEvaluationJudgments": "id",
+}
 ANALYTIC_ID_RE = re.compile(
     r"\b(?:TH|OBS|SEH|GAP|ALT|SN|EVD|NEG|CR|DECPT|ATTR|CF|ASM|AJ|FOR|REC|IND|DEC|REA|LIN|UNC|SEJ)-2026-025(?:-\d{3})?\b"
 )
@@ -363,17 +392,25 @@ def subsection_body(markdown: str, heading: str) -> str | None:
     return match.group("body") if match is not None else None
 
 
-def require_unique_object_ids(items: object, label: str) -> None:
+def require_unique_object_identities(
+    items: object,
+    label: str,
+    identity_key: str,
+) -> None:
     if not isinstance(items, list):
         error(f"{label}: must be an array")
         return
-    identifiers = [item.get("id") for item in items if isinstance(item, dict)]
+    identifiers = [item.get(identity_key) for item in items if isinstance(item, dict)]
     if len(identifiers) != len(items) or any(not identifier for identifier in identifiers):
-        error(f"{label}: every entry must be an object with a non-empty ID")
+        error(
+            f"{label}: every entry must be an object with a non-empty {identity_key}"
+        )
         return
     duplicates = sorted({identifier for identifier in identifiers if identifiers.count(identifier) > 1})
     if duplicates:
-        error(f"{label}: duplicate IDs are not allowed: {duplicates}")
+        error(
+            f"{label}: duplicate {identity_key} values are not allowed: {duplicates}"
+        )
 
 
 def require_unique_ids_recursively(value: object, label: str) -> None:
@@ -385,24 +422,22 @@ def require_unique_ids_recursively(value: object, label: str) -> None:
     if not isinstance(value, list):
         return
 
+    prefix = f"{FIXTURE_LABEL}."
+    relative_path = label[len(prefix) :] if label.startswith(prefix) else label
+    identity_key = FIXTURE_IDENTITY_COLLECTIONS.get(relative_path)
     objects = [item for item in value if isinstance(item, dict)]
-    if label.endswith(".judgments.analyticJudgment.alternativeAssessments"):
-        identity_key = "alternativeHypothesisId"
-        if len(objects) != len(value):
-            error(f"{label}: every entry must be an object with {identity_key}")
-        else:
-            identifiers = [item.get(identity_key) for item in objects]
-            if any(not identifier for identifier in identifiers):
-                error(f"{label}: every entry must have a non-empty {identity_key}")
-            duplicates = sorted(
-                {identifier for identifier in identifiers if identifiers.count(identifier) > 1}
-            )
-            if duplicates:
-                error(
-                    f"{label}: duplicate {identity_key} values are not allowed: {duplicates}"
-                )
-    elif any("id" in item for item in objects):
-        require_unique_object_ids(value, label)
+    detected_identity_keys = {
+        key
+        for key in ("id", "alternativeHypothesisId")
+        if any(key in item for item in objects)
+    }
+    if identity_key is not None:
+        require_unique_object_identities(value, label, identity_key)
+    elif detected_identity_keys:
+        error(
+            f"{label}: identity-bearing collection path must be declared; "
+            f"detected keys={sorted(detected_identity_keys)}"
+        )
     for index, child in enumerate(value):
         require_unique_ids_recursively(child, f"{label}[{index}]")
 
