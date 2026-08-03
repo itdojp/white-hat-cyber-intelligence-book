@@ -659,51 +659,6 @@ def strip_url_trailing_punctuation(raw_url: str) -> str:
     return stripped
 
 
-def has_unambiguous_url_context(
-    text: str,
-    url_match: re.Match[str],
-    raw_url: str,
-    *,
-    line_start: int,
-    inside_code_context: bool = False,
-) -> bool:
-    url_start = url_match.start()
-    preceding_character = text[url_start - 1] if url_start > 0 else ""
-    if (
-        url_match.end() < len(text)
-        and preceding_character == "<"
-        and text[url_match.end()] == ">"
-    ):
-        return True
-    if inside_code_context:
-        return True
-
-    # Skip arbitrary Markdown whitespace before a destination. This keeps long
-    # and multiline Kramdown destinations in scope without repeatedly scanning
-    # a whole document prefix for every URL.
-    context_end = url_start
-    while context_end > 0 and text[context_end - 1].isspace():
-        context_end -= 1
-    if context_end > 0 and text[context_end - 1] == "<":
-        context_end -= 1
-    preceding_nonspace = text[context_end - 1] if context_end > 0 else ""
-    if preceding_nonspace in {'"', "'", "`"}:
-        return True
-    syntax_prefix = text[max(0, context_end - 192) : context_end]
-    if syntax_prefix.endswith(("](", "]:")):
-        return True
-
-    # Raw HTML permits quoted values with leading whitespace and unquoted
-    # values after arbitrary horizontal whitespace.
-    html_prefix = text[max(line_start, context_end - 192) : context_end]
-    if re.search(
-        r"(?:^|\s)[A-Za-z_:][A-Za-z0-9_.:-]*\s*=\s*\Z",
-        html_prefix,
-    ):
-        return True
-    return preceding_character == "(" and raw_url.endswith(")")
-
-
 def blockquote_content_offset(line: str) -> int:
     """Return the offset after any Kramdown blockquote container markers."""
     offset = 0
@@ -801,20 +756,8 @@ def raw_url_authority(stripped_url: str) -> str:
 
 
 def url_domain_hosts(text: str):
-    """Extract URL hosts without consuming adjacent Japanese prose."""
-    line_contexts = markdown_line_contexts(text)
-    line_index = 0
+    """Extract URL hosts and fail closed on Unicode-label extensions."""
     for url_match in URL_RE.finditer(text):
-        while (
-            line_index < len(line_contexts)
-            and line_contexts[line_index][1] <= url_match.start()
-        ):
-            line_index += 1
-        if line_index < len(line_contexts):
-            line_start, _, _, inside_code_context = line_contexts[line_index]
-        else:
-            line_start = 0
-            inside_code_context = False
         raw_url = url_match.group(0)
         stripped_url = strip_url_trailing_punctuation(raw_url)
         try:
@@ -825,31 +768,11 @@ def url_domain_hosts(text: str):
             continue
         if not parsed_host:
             continue
-        try:
-            has_explicit_port = parsed_url.port is not None
-        except ValueError:
-            has_explicit_port = True
-        has_structural_boundary = bool(
-            has_explicit_port
-            or has_unambiguous_url_context(
-                text,
-                url_match,
-                raw_url,
-                line_start=line_start,
-                inside_code_context=inside_code_context,
-            )
-            or parsed_url.path
-            or parsed_url.query
-            or parsed_url.fragment
-        )
         ipv4_authority_match = URL_IPV4_AUTHORITY_RE.match(parsed_host)
         if ipv4_authority_match is not None:
             matched_ipv4 = ipv4_authority_match.group("host")
             remainder = parsed_host[ipv4_authority_match.end() :]
-            if (
-                remainder.startswith((".", "。", "．", "｡"))
-                and has_structural_boundary
-            ):
+            if remainder.startswith((".", "。", "．", "｡")):
                 yield parsed_host
             else:
                 yield matched_ipv4
@@ -862,10 +785,7 @@ def url_domain_hosts(text: str):
         if known_suffix_match is not None:
             matched_host = general_host_from_match(known_suffix_match)
             remainder = parsed_host[known_suffix_match.end() :]
-            if (
-                remainder.startswith((".", "。", "．", "｡"))
-                and has_structural_boundary
-            ):
+            if remainder.startswith((".", "。", "．", "｡")):
                 yield parsed_host
             else:
                 yield matched_host
@@ -904,6 +824,19 @@ def contextual_domain_hosts(text: str):
             # An explicitly labelled host with an unknown suffix is still a host
             # candidate. Passing it to the reserved-suffix validator fails closed.
             yield value
+
+
+def strip_html_comments_preserving_lines(markdown: str) -> str:
+    """Remove non-rendered HTML comments without changing line offsets."""
+    return re.sub(
+        r"<!--.*?(?:-->|\Z)",
+        lambda match: "".join(
+            character if character in "\r\n" else " "
+            for character in match.group(0)
+        ),
+        markdown,
+        flags=re.DOTALL,
+    )
 
 
 def markdown_pipe_lines(markdown: str) -> list[list[str] | None]:
@@ -966,9 +899,14 @@ def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, lis
     rows: dict[str, list[str]] = {}
     for _, table_rows in markdown_tables(markdown):
         for cells in table_rows:
-            row_id = cells[0].strip("`")
-            if not row_id.startswith(prefix):
+            matching_ids = [
+                identifier
+                for identifier in ANALYTIC_ID_RE.findall(cells[0])
+                if identifier.startswith(prefix)
+            ]
+            if len(matching_ids) != 1:
                 continue
+            row_id = matching_ids[0]
             if row_id in rows:
                 error(f"{label}: duplicate Markdown row ID {row_id}")
                 continue
@@ -1630,9 +1568,10 @@ def main() -> int:
     )
 
     case_path = "cases/ch25-structured-analysis-attribution-example.md"
-    case = read_text(case_path)
-    check_no_forbidden_confidence(case_path, case)
-    check_structured_synthetic_people(case_path, case)
+    case_raw = read_text(case_path)
+    check_no_forbidden_confidence(case_path, case_raw)
+    check_structured_synthetic_people(case_path, case_raw)
+    case = strip_html_comments_preserving_lines(case_raw)
     require_tokens(
         case_path,
         case,
@@ -2242,6 +2181,21 @@ def main() -> int:
                     f"judgments.forecasts[{index}].{required_field} must be a "
                     "non-empty string"
                 )
+    expected_forecast_ids = [
+        forecast.get("id")
+        for forecast in forecasts
+        if isinstance(forecast, dict) and isinstance(forecast.get("id"), str)
+    ]
+    visible_forecast_occurrences = [
+        identifier
+        for identifier in ANALYTIC_ID_RE.findall(case)
+        if identifier.startswith("FOR-2026-025-")
+    ]
+    if sorted(visible_forecast_occurrences) != sorted(expected_forecast_ids):
+        error(
+            "cases/ch25-structured-analysis-attribution-example.md: each "
+            "canonical Forecast ID must appear exactly once in rendered content"
+        )
     all_markdown_forecast_rows = markdown_rows_by_id(
         case, "FOR-2026-025-", case_path
     )
@@ -2654,6 +2608,18 @@ def main() -> int:
         "1. ```text\n   https://safe.example。悪意\n   ```": [
             "safe.example。悪意"
         ],
+        "Term\n: ```text\n  https://safe.example。悪意\n  ```": [
+            "safe.example。悪意"
+        ],
+        "- [ ] ```text\n  https://safe.example。悪意\n  ```": [
+            "safe.example。悪意"
+        ],
+        "`code starts\nhttps://safe.example。悪意\nends`": [
+            "safe.example。悪意"
+        ],
+        "<pre><code>https://safe.example。悪意</code></pre>": [
+            "safe.example。悪意"
+        ],
         "[x](" + " " * 300 + 'https://safe.example。悪意 "t")': [
             "safe.example。悪意"
         ],
@@ -2731,6 +2697,36 @@ def main() -> int:
                 "fixture safety regression: code content was treated as a "
                 f"Kramdown table row: {code_table!r}"
             )
+    hidden_table = strip_html_comments_preserving_lines(
+        "<!--\n"
+        "| Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| FOR-2026-025-999 | statement | 7日 | 中 | x |\n"
+        "-->"
+    )
+    if markdown_rows_by_id(
+        hidden_table,
+        "FOR-2026-025-",
+        "fixture safety regression",
+    ):
+        error(
+            "fixture safety regression: HTML-commented table was treated as "
+            "rendered content"
+        )
+    formatted_id_table = (
+        "| Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| **FOR-2026-025-999** | statement | 7日 | 中 | x |"
+    )
+    if "FOR-2026-025-999" not in markdown_rows_by_id(
+        formatted_id_table,
+        "FOR-2026-025-",
+        "fixture safety regression",
+    ):
+        error(
+            "fixture safety regression: formatted rendered Forecast ID was "
+            "not recognized"
+        )
     email_domain_regressions = {
         "連絡先はuser@safe.exampleです": ["safe.example"],
         "連絡先はuser@evil.comです": ["evil.com"],
