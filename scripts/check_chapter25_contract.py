@@ -885,6 +885,7 @@ def strip_html_comments_for_rendered_text(markdown: str) -> str:
         r"\1",
         rendered_text,
     )
+    rendered_text = re.sub(r"!?\[([^\]]+)\]", r"\1", rendered_text)
     return rendered_text.translate(str.maketrans("", "", "*_~`"))
 
 
