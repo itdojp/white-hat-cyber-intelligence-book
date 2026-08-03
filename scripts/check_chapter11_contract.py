@@ -223,6 +223,7 @@ def main() -> int:
             "| `REA-2026-011` | `DEC-2026-011` | `FIND-2026-011`, `FIND-2026-012`, `FIND-2026-013` |",
             "この条件ではcross-tenant参照を観測しなかった",
             "この合成Host入力は400で拒否され、dispatch taskも作成されなかった",
+            "確認した合成Host入力1件は400で拒否され、dispatch taskも作成されなかった。別encoding、scheme、port、redirect、hostname normalization、DNS rebinding、worker pathは未評価",
             "登録時validation全体や別Bypass pathの有効性は結論しない",
             "Admin sessionでは`includeInternalNotes=true`を許可できる",
             "外部通信、Data大量取得、負荷試験、横展開、Credential reuseは行わない",
@@ -236,6 +237,8 @@ def main() -> int:
     )
     if "CASE-2026-001" in example:
         error(f"{example_path}: chapter 11 must not reuse the chapter 1 Case ID")
+    if "登録時validationは機能している可能性が高い" in example:
+        error(f"{example_path}: webhook conclusion exceeds the observed synthetic input")
 
     secret_patterns = (
         re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),

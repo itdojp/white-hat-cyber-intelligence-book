@@ -166,7 +166,7 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 | Validation ID | Boundary checked | Low-impact rejected input or action | Expected denied result | Permitted conclusion |
 |---|---|---|---|---|
 | `VAL-2026-011` | Tenant / Object | 他Tenant `jobId`参照 | 404または403、queue accessなし | 確認したStateとVersionではcross-tenant参照を観測しなかった |
-| `VAL-2026-014` | Server-side / Network | `control-plane.service.test` callback登録 | 400 / `internal_host_denied` | 登録時validationは機能している可能性が高いが、別Bypass pathは未評価 |
+| `VAL-2026-014` | Server-side / Network | `control-plane.service.test` callback登録 | 400 / `internal_host_denied` | 確認した合成Host入力1件は400で拒否され、dispatch taskも作成されなかった。別encoding、scheme、port、redirect、hostname normalization、DNS rebinding、worker pathは未評価 |
 
 ### 実施しない検証
 
