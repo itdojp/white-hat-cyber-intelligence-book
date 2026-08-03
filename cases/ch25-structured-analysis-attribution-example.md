@@ -200,9 +200,9 @@ Missing evidenceとevidence of absenceを分離する。
 
 ## 9. Attribution Ladder Assessment
 
-| Attribution Assessment ID | Ladder level | Evidence threshold met | Related Evidence IDs | Related Alternative Hypothesis IDs | Permitted language | Prohibited jump |
-|---|---|---|---|---|---|---|
-| `ATTR-2026-025-001` | L2 | 誘導mail、redirect chain、近接登録DomainによりTechnical clusterの関連は示せるが、独立外部裏付けとOperator固有癖は不足 | `EVD-2026-025-001`, `EVD-2026-025-002`, `EVD-2026-025-003`, `EVD-2026-025-004` | `ALT-2026-025-001`, `ALT-2026-025-002`, `ALT-2026-025-003` | 「同一Technical clusterの可能性がある」「Partner administratorを狙うcredential-relay型の挙動と整合する」 | Campaign、Operator、組織、国家の断定 |
+| Attribution Assessment ID | Ladder level | Confidence | Evidence threshold met | Related Evidence IDs | Related Alternative Hypothesis IDs | Permitted language | Prohibited jump |
+|---|---|---|---|---|---|---|---|
+| `ATTR-2026-025-001` | L2 | 中 | 誘導mail、redirect chain、近接登録DomainによりTechnical clusterの関連は示せるが、独立外部裏付けとOperator固有癖は不足 | `EVD-2026-025-001`, `EVD-2026-025-002`, `EVD-2026-025-003`, `EVD-2026-025-004` | `ALT-2026-025-001`, `ALT-2026-025-002`, `ALT-2026-025-003` | 「同一Technical clusterの可能性がある」「Partner administratorを狙うcredential-relay型の挙動と整合する」 | Campaign、Operator、組織、国家の断定 |
 
 ## 10. Structured Analytic Judgment
 

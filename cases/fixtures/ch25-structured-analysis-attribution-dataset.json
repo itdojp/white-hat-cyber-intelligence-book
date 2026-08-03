@@ -40,6 +40,7 @@
         "searchedBehavior": "成功したfollow-on accessまたはtoken replay",
         "searchWindow": "2026-07-21〜2026-07-29",
         "availableCoverage": "IdP sign-in summary 2026-07-23〜2026-07-29",
+        "gapId": "GAP-2026-025-001",
         "gap": "GAP-2026-025-001 によりtoken issuance詳細と対象期間前半2日分が欠落",
         "permittedConclusion": "観測範囲では成功痕跡を確認していない。侵害不存在や未遂確定は断定しない"
       }
@@ -56,6 +57,7 @@
       {
         "id": "ATTR-2026-025-001",
         "ladderLevel": "L2",
+        "confidence": "中",
         "evidenceThresholdMet": "誘導mail、redirect chain、近接登録DomainによりTechnical clusterの関連は示せるが、独立外部裏付けとOperator固有癖は不足",
         "relatedEvidenceIds": [
           "EVD-2026-025-001",
@@ -537,6 +539,12 @@
     "id": "ATTR-2026-025-001",
     "ladderLevel": "L2",
     "confidence": "中",
+    "relatedEvidenceIds": [
+      "EVD-2026-025-001",
+      "EVD-2026-025-002",
+      "EVD-2026-025-003",
+      "EVD-2026-025-004"
+    ],
     "permittedLanguage": [
       "同一Technical clusterの可能性がある",
       "Partner administratorを狙うcredential-relay型の挙動と整合する"

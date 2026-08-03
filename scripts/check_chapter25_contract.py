@@ -122,6 +122,7 @@ FIXTURE_REQUIRED_RECORD_REFERENCE_FIELDS = {
     "markdownProjection.negativeFindings": (
         "relatedEvidenceIds",
         "observationHypothesisId",
+        "gapId",
     ),
     "markdownProjection.attributionAssessments": (
         "relatedEvidenceIds",
@@ -166,7 +167,10 @@ FIXTURE_LIST_REFERENCE_FIELDS = frozenset(
     }
 )
 FIXTURE_REQUIRED_SINGLETON_REFERENCE_FIELDS = {
-    "attributionAssessment": ("relatedAlternativeHypothesisIds",),
+    "attributionAssessment": (
+        "relatedEvidenceIds",
+        "relatedAlternativeHypothesisIds",
+    ),
     "judgments.analyticJudgment": ("relatedAlternativeHypothesisIds",),
     "reassessment": ("triggeringIndicatorIds",),
 }
@@ -839,6 +843,11 @@ def strip_html_comments_preserving_lines(markdown: str) -> str:
     )
 
 
+def strip_html_comments_for_rendered_text(markdown: str) -> str:
+    """Join text separated only by non-rendered HTML comments."""
+    return re.sub(r"<!--.*?(?:-->|\Z)", "", markdown, flags=re.DOTALL)
+
+
 def markdown_pipe_lines(
     markdown: str,
 ) -> list[tuple[str, list[str]] | None]:
@@ -928,6 +937,30 @@ def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, lis
 
 def normalized_markdown_cell(value: str) -> str:
     return value.strip().replace("`", "")
+
+
+def require_table_header_for_id_prefix(
+    markdown: str,
+    prefix: str,
+    expected_header: list[str],
+    label: str,
+) -> None:
+    matching_headers = [
+        [normalized_markdown_cell(cell) for cell in header]
+        for header, rows in markdown_tables(markdown)
+        if any(
+            any(
+                identifier.startswith(prefix)
+                for identifier in ANALYTIC_ID_RE.findall(cells[0])
+            )
+            for cells in rows
+        )
+    ]
+    if matching_headers != [expected_header]:
+        error(
+            f"{label}: rows must belong to exactly one table with canonical "
+            f"header {expected_header!r}"
+        )
 
 
 def subsection_body(markdown: str, heading: str) -> str | None:
@@ -1909,6 +1942,21 @@ def main() -> int:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: markdownProjection must be an object")
         markdown_projection = {}
 
+    require_table_header_for_id_prefix(
+        case,
+        "NEG-2026-025-",
+        [
+            "Negative Finding ID",
+            "Related Evidence IDs",
+            "Related Observation Hypothesis ID",
+            "Searched behavior",
+            "Search window",
+            "Available coverage",
+            "Gap",
+            "Permitted conclusion",
+        ],
+        case_path,
+    )
     markdown_negative_rows = markdown_rows_by_id(case, "NEG-2026-025-", case_path)
     actual_markdown_negative_findings = {
         finding_id: {
@@ -1918,6 +1966,12 @@ def main() -> int:
             "searchedBehavior": normalized_markdown_cell(cells[3]) if len(cells) > 3 else None,
             "searchWindow": normalized_markdown_cell(cells[4]) if len(cells) > 4 else None,
             "availableCoverage": normalized_markdown_cell(cells[5]) if len(cells) > 5 else None,
+            "gapId": next(
+                iter(re.findall(r"GAP-2026-025-\d{3}", cells[6])),
+                None,
+            )
+            if len(cells) > 6
+            else None,
             "gap": normalized_markdown_cell(cells[6]) if len(cells) > 6 else None,
             "permittedConclusion": normalized_markdown_cell(cells[7]) if len(cells) > 7 else None,
         }
@@ -1934,6 +1988,7 @@ def main() -> int:
         item.get("id"): (
             item.get("relatedEvidenceIds"),
             item.get("observationHypothesisId"),
+            item.get("gapId"),
         )
         for item in markdown_projection.get("negativeFindings", [])
         if isinstance(item, dict)
@@ -1942,6 +1997,7 @@ def main() -> int:
         item.get("id"): (
             item.get("relatedEvidenceIds"),
             item.get("observationHypothesisId"),
+            item.get("gapId"),
         )
         for item in dataset.get("negativeFindings", [])
         if isinstance(item, dict)
@@ -1953,6 +2009,17 @@ def main() -> int:
             "Evidence and Observation Hypothesis links by ID"
         )
 
+    require_table_header_for_id_prefix(
+        case,
+        "SEJ-2026-025-",
+        [
+            "Source-evaluation Judgment ID",
+            "Statement",
+            "Basis",
+            "What would change it",
+        ],
+        case_path,
+    )
     markdown_source_judgment_rows = markdown_rows_by_id(case, "SEJ-2026-025-", case_path)
     actual_markdown_source_judgments = {
         judgment_id: {
@@ -1995,16 +2062,32 @@ def main() -> int:
             "canonical hypothesis, lineage, and circular-reporting links by ID"
         )
 
+    require_table_header_for_id_prefix(
+        case,
+        "ATTR-2026-025-",
+        [
+            "Attribution Assessment ID",
+            "Ladder level",
+            "Confidence",
+            "Evidence threshold met",
+            "Related Evidence IDs",
+            "Related Alternative Hypothesis IDs",
+            "Permitted language",
+            "Prohibited jump",
+        ],
+        case_path,
+    )
     markdown_attribution_rows = markdown_rows_by_id(case, "ATTR-2026-025-", case_path)
     actual_markdown_attribution = {
         assessment_id: {
             "id": assessment_id,
             "ladderLevel": normalized_markdown_cell(cells[1]) if len(cells) > 1 else None,
-            "evidenceThresholdMet": normalized_markdown_cell(cells[2]) if len(cells) > 2 else None,
-            "relatedEvidenceIds": re.findall(r"EVD-2026-025-\d{3}", cells[3]) if len(cells) > 3 else [],
-            "relatedAlternativeHypothesisIds": re.findall(r"ALT-2026-025-\d{3}", cells[4]) if len(cells) > 4 else [],
-            "permittedLanguage": normalized_markdown_cell(cells[5]) if len(cells) > 5 else None,
-            "prohibitedJump": normalized_markdown_cell(cells[6]) if len(cells) > 6 else None,
+            "confidence": normalized_markdown_cell(cells[2]) if len(cells) > 2 else None,
+            "evidenceThresholdMet": normalized_markdown_cell(cells[3]) if len(cells) > 3 else None,
+            "relatedEvidenceIds": re.findall(r"EVD-2026-025-\d{3}", cells[4]) if len(cells) > 4 else [],
+            "relatedAlternativeHypothesisIds": re.findall(r"ALT-2026-025-\d{3}", cells[5]) if len(cells) > 5 else [],
+            "permittedLanguage": normalized_markdown_cell(cells[6]) if len(cells) > 6 else None,
+            "prohibitedJump": normalized_markdown_cell(cells[7]) if len(cells) > 7 else None,
         }
         for assessment_id, cells in markdown_attribution_rows.items()
     }
@@ -2018,6 +2101,8 @@ def main() -> int:
     projected_attribution_semantics = {
         item.get("id"): (
             item.get("ladderLevel"),
+            item.get("confidence"),
+            item.get("relatedEvidenceIds"),
             item.get("relatedAlternativeHypothesisIds"),
             re.findall(r"「([^」]+)」", str(item.get("permittedLanguage", ""))),
             item.get("prohibitedJump"),
@@ -2034,6 +2119,8 @@ def main() -> int:
     canonical_attribution_semantics = {
         canonical_attribution.get("id"): (
             canonical_attribution.get("ladderLevel"),
+            canonical_attribution.get("confidence"),
+            canonical_attribution.get("relatedEvidenceIds"),
             canonical_attribution.get("relatedAlternativeHypothesisIds"),
             canonical_attribution.get("permittedLanguage"),
             canonical_attribution.get("prohibitedJump"),
@@ -2051,6 +2138,18 @@ def main() -> int:
         error("cases/ch25-structured-analysis-attribution-example.md: missing 10.2 Assumptions subsection")
         markdown_assumption_rows: dict[str, list[str]] = {}
     else:
+        require_table_header_for_id_prefix(
+            judgment_assumption_body,
+            "ASM-2026-025-",
+            [
+                "Assumption ID",
+                "Statement",
+                "Why needed",
+                "Failure trigger",
+                "Related Gap IDs",
+            ],
+            f"{case_path}:10.2 Assumptions",
+        )
         markdown_assumption_rows = markdown_rows_by_id(
             judgment_assumption_body,
             "ASM-2026-025-",
@@ -2295,10 +2394,22 @@ def main() -> int:
         for identifier in ANALYTIC_ID_RE.findall(case_raw)
         if identifier.startswith("FOR-2026-025-")
     ]
-    if sorted(source_forecast_occurrences) != sorted(expected_forecast_ids):
+    rendered_forecast_occurrences = [
+        identifier
+        for identifier in ANALYTIC_ID_RE.findall(
+            strip_html_comments_for_rendered_text(case_raw)
+        )
+        if identifier.startswith("FOR-2026-025-")
+    ]
+    if (
+        sorted(source_forecast_occurrences) != sorted(expected_forecast_ids)
+        or sorted(rendered_forecast_occurrences)
+        != sorted(expected_forecast_ids)
+    ):
         error(
             "cases/ch25-structured-analysis-attribution-example.md: each "
-            "canonical Forecast ID must appear exactly once in source content"
+            "canonical Forecast ID must appear exactly once in both source and "
+            "rendered-comment views"
         )
     all_markdown_forecast_rows = markdown_rows_by_id(
         case, "FOR-2026-025-", case_path
