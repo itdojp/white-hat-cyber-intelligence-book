@@ -460,7 +460,7 @@ Findingが「認可不備あり」だけで終わると、SOCやDetection Engine
 
 ## 8. 安全な演習
 
-演習では、[読み取り専用の合成Request / Response dataset](../cases/fixtures/ch11-web-api-assessment-dataset.json)を使用する。このDatasetはServerを起動せず、外部通信も行わない。記録済みのRequest、Response、side effect、Detection eventを比較し、Hypothesis Packを作成するための教材である。
+演習では、[読み取り専用の合成Request / Response dataset](../cases/fixtures/ch11-web-api-assessment-dataset.json)を使用する。このDatasetはServerを起動せず、外部通信も行わない。記録済みのRequest、期待結果、観測結果、side effect、Detection eventをRecord ID単位で比較し、Hypothesis Packを作成するための教材である。演習者はRequestを再送せず、Capture時に適用されたStop conditionと完了済みCleanupを記録として確認する。
 
 ### 課題
 
@@ -483,7 +483,7 @@ Findingが「認可不備あり」だけで終わると、SOCやDetection Engine
 2. Asset、Actor、Boundary、Stateを整理する
 3. 3つ以上のThreat Hypothesisを書く
 4. 各Threat HypothesisにObservation Hypothesisを付ける
-5. Validation IDごとにStop conditionとCleanupを書く
+5. Validation IDごとにCapture時のStop conditionと完了済みCleanupを書く（演習では操作を再実行しない）
 6. Evidence IDとFinding IDを接続する
 7. 1つ以上のDetection Hypothesisを作る
 8. 1つ以上のNegative Findingを記録する

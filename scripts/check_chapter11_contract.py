@@ -258,15 +258,65 @@ def main() -> int:
         for host in domains
     ):
         error(f"{fixture_path}: permittedDomains must contain reserved domains only")
+    capture_provenance = fixture.get("captureProvenance", {})
+    if capture_provenance != {
+        "captureComplete": True,
+        "exerciseAction": "inspect-recorded-data-only",
+        "externalNetworkUsed": False,
+        "cleanupComplete": True,
+    }:
+        error(f"{fixture_path}: capture provenance must make the exercise read-only")
+    exercise_records = fixture.get("exerciseRecords", [])
     validations = fixture.get("validations", [])
     record_ids = {
         item.get("recordId")
-        for item in fixture.get("exerciseRecords", [])
+        for item in exercise_records
         if isinstance(item, dict)
     }
     expected_record_ids = {f"REC-11-{number:03d}" for number in range(1, 7)}
     if record_ids != expected_record_ids:
         error(f"{fixture_path}: expected REC-11-001 through REC-11-006")
+    expected_record_validation = {
+        "REC-11-001": "VAL-2026-011",
+        "REC-11-002": "VAL-2026-011",
+        "REC-11-003": "VAL-2026-012",
+        "REC-11-004": "VAL-2026-013",
+        "REC-11-005": "VAL-2026-014",
+        "REC-11-006": "VAL-2026-015",
+    }
+    records_by_id = {
+        item.get("recordId"): item
+        for item in exercise_records
+        if isinstance(item, dict)
+    }
+    for record_id, validation_id in expected_record_validation.items():
+        record = records_by_id.get(record_id, {})
+        if record.get("validationId") != validation_id:
+            error(f"{fixture_path}: {record_id} must map to {validation_id}")
+        for key in ("request", "expectedResult", "observedResult"):
+            if not isinstance(record.get(key), dict):
+                error(f"{fixture_path}: {record_id} must contain structured {key}")
+        observed = record.get("observedResult", {})
+        if isinstance(observed, dict) and observed.get("status") != record.get(
+            "observedStatus"
+        ):
+            error(f"{fixture_path}: {record_id} observed status fields must agree")
+        request = record.get("request", {})
+        host = request.get("host") if isinstance(request, dict) else None
+        if not isinstance(host, str) or not host.endswith(
+            (".example", ".test", ".invalid")
+        ):
+            error(f"{fixture_path}: {record_id} request host must be reserved")
+    own_tenant_record = records_by_id.get("REC-11-001", {})
+    denied_tenant_record = records_by_id.get("REC-11-002", {})
+    if own_tenant_record.get("expectedResult") != own_tenant_record.get(
+        "observedResult"
+    ) or own_tenant_record.get("observedStatus") != 200:
+        error(f"{fixture_path}: REC-11-001 must directly record the authorized result")
+    if denied_tenant_record.get("expectedResult") != denied_tenant_record.get(
+        "observedResult"
+    ) or denied_tenant_record.get("observedStatus") != 404:
+        error(f"{fixture_path}: REC-11-002 must directly record the denied result")
     validation_ids = {
         item.get("validationId")
         for item in validations
@@ -283,10 +333,8 @@ def main() -> int:
             error(f"{fixture_path}: validation/observation ID mismatch for {suffix}")
         if item.get("evidenceId") != f"EVD-{suffix}":
             error(f"{fixture_path}: validation/evidence ID mismatch for {suffix}")
-        if not isinstance(item.get("expectedDeniedResult"), dict):
-            error(f"{fixture_path}: missing expectedDeniedResult for {suffix}")
-        if not isinstance(item.get("observedResult"), dict):
-            error(f"{fixture_path}: missing observedResult for {suffix}")
+        if not isinstance(item.get("limitation"), str) or not item["limitation"].strip():
+            error(f"{fixture_path}: missing validation limitation for {suffix}")
     record_mapping = {
         item.get("validationId"): item.get("recordIds")
         for item in validations
@@ -300,6 +348,14 @@ def main() -> int:
         "VAL-2026-015": ["REC-11-006"],
     }:
         error(f"{fixture_path}: exercise records must map directly to validations")
+    mapped_record_ids = {
+        record_id
+        for item_record_ids in record_mapping.values()
+        if isinstance(item_record_ids, list)
+        for record_id in item_record_ids
+    }
+    if mapped_record_ids != expected_record_ids:
+        error(f"{fixture_path}: every exercise record must be referenced by a validation")
     event_ids = {
         item.get("fixtureEventId")
         for item in fixture.get("detectionEvents", [])
@@ -307,6 +363,22 @@ def main() -> int:
     }
     if event_ids != {f"FIX-2026-{number:03d}" for number in range(11, 15)}:
         error(f"{fixture_path}: expected four synthetic detection events")
+    detection_mapping = {
+        item.get("fixtureEventId"): (
+            item.get("detectionId"),
+            item.get("validationId"),
+            item.get("recordIds"),
+        )
+        for item in fixture.get("detectionEvents", [])
+        if isinstance(item, dict)
+    }
+    if detection_mapping != {
+        "FIX-2026-011": ("DET-2026-011", "VAL-2026-012", ["REC-11-003"]),
+        "FIX-2026-012": ("DET-2026-012", "VAL-2026-013", ["REC-11-004"]),
+        "FIX-2026-013": ("DET-2026-013", "VAL-2026-015", ["REC-11-006"]),
+        "FIX-2026-014": ("DET-2026-014", "VAL-2026-014", ["REC-11-005"]),
+    }:
+        error(f"{fixture_path}: detection events must map to validation records")
     fixture_text = json.dumps(fixture, ensure_ascii=False)
     for pattern in secret_patterns:
         if pattern.search(fixture_text):

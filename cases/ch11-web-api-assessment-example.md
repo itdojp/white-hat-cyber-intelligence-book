@@ -149,13 +149,15 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 
 ## 4. Safe Validation Design
 
-| Validation ID | Related Threat Hypothesis ID | Related Observation Hypothesis ID | Minimal authorized operation | Synthetic fixture / dataset | Expected evidence | Stop condition | Cleanup |
+以下の表は、合成Datasetを作成した隔離Capture時の設計と完了記録である。本章の演習では記録済みJSONを読み取るだけで、Requestの再送、Job作成、Webhook登録、retryを実行しない。Stop conditionとCleanupはCapture時に適用済みであり、演習時の追加Cleanupは不要である。
+
+| Validation ID | Related Threat Hypothesis ID | Related Observation Hypothesis ID | Recorded low-impact operation | Synthetic fixture / dataset | Expected evidence | Capture-time stop condition | Capture-time cleanup record |
 |---|---|---|---|---|---|---|---|
-| `VAL-2026-011` | `TH-2026-011` | `OBS-2026-011` | 合成Analyst tokenで自Tenant / 他Tenant job metadata比較 | 読み取り専用の合成Dataset | response code差分、job metadata redaction、queue accessなし | 他Tenant本文取得が必要になった時点 | 比較用job snapshotを破棄 |
-| `VAL-2026-012` | `TH-2026-012` | `OBS-2026-012` | v1 endpointへAnalyst tokenで1回だけexport作成Request | 合成Route inventoryとread-only replay dataset | 202または403、job ID生成有無、route middleware設定 | 1件目でjob IDが作成された時点 | 生成された合成jobを削除 |
-| `VAL-2026-013` | `TH-2026-013` | `OBS-2026-013` | Analyst sessionで`includeInternalNotes=true`と`status=approved`を含む1回のExport作成 | 合成request/response dataset | 応答body、保存済みjob property、workflow audit | 内部メモ本文取得が必要になった時点 | 合成jobとqueue entryを削除 |
-| `VAL-2026-014` | `TH-2026-014` | `OBS-2026-014` | 内部向け合成Host名を含むWebhook登録を1回実行 | egress無効の読み取り専用合成Dataset | 400、deny reason、dispatch task未作成 | 送信workerが起動しそうになった時点 | 登録候補を削除 |
-| `VAL-2026-015` | `TH-2026-015` | `OBS-2026-015` | 同一`Idempotency-Key`で最大3回再試行 | 読み取り専用の合成Dataset | job count差分、quota counter差分 | 2件目の重複jobが作成された時点 | 合成retry jobを削除 |
+| `VAL-2026-011` | `TH-2026-011` | `OBS-2026-011` | Capture時に合成Analyst tokenで自Tenant / 他Tenant job metadataを比較 | 読み取り専用の合成Dataset | response code差分、job metadata redaction、queue accessなし | 他Tenant本文取得が必要になった時点 | 完了済み。比較用job snapshotを破棄 |
+| `VAL-2026-012` | `TH-2026-012` | `OBS-2026-012` | Capture時にv1 endpointへのexport作成Requestを1回記録 | 合成Route inventoryとread-only replay dataset | 202または403、job ID生成有無、route middleware設定 | 1件目でjob IDが作成された時点 | 完了済み。生成された合成jobを削除 |
+| `VAL-2026-013` | `TH-2026-013` | `OBS-2026-013` | Capture時に合成fieldを含むExport作成を1回記録 | 合成request/response dataset | 応答body、保存済みjob property、workflow audit | 内部メモ本文取得が必要になった時点 | 完了済み。合成jobとqueue entryを削除 |
+| `VAL-2026-014` | `TH-2026-014` | `OBS-2026-014` | Capture時に内部向け合成Host名を含むWebhook登録を1回記録 | egress無効の読み取り専用合成Dataset | 400、deny reason、dispatch task未作成 | 送信workerが起動しそうになった時点 | 完了済み。登録候補を削除 |
+| `VAL-2026-015` | `TH-2026-015` | `OBS-2026-015` | Capture時に同一`Idempotency-Key`の最大3回再試行を記録 | 読み取り専用の合成Dataset | job count差分、quota counter差分 | 2件目の重複jobが作成された時点 | 完了済み。合成retry jobを削除 |
 
 ### 拒否系の確認
 
