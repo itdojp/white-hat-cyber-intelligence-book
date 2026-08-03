@@ -650,7 +650,8 @@ def strip_url_trailing_punctuation(raw_url: str) -> str:
 
 def url_domain_hosts(text: str):
     """Extract URL hosts without consuming adjacent Japanese prose."""
-    for raw_url in URL_RE.findall(text):
+    for url_match in URL_RE.finditer(text):
+        raw_url = url_match.group(0)
         stripped_url = strip_url_trailing_punctuation(raw_url)
         parsed_url = urlparse(stripped_url)
         parsed_host = parsed_url.hostname
@@ -672,10 +673,21 @@ def url_domain_hosts(text: str):
                 has_explicit_port = parsed_url.port is not None
             except ValueError:
                 has_explicit_port = True
+            has_unambiguous_wrapper = (
+                url_match.start() > 0
+                and url_match.end() < len(text)
+                and text[url_match.start() - 1] == "<"
+                and text[url_match.end()] == ">"
+            ) or (
+                url_match.start() > 0
+                and text[url_match.start() - 1] == "("
+                and raw_url.endswith(")")
+            )
             if (
                 remainder.startswith((".", "。", "．", "｡"))
                 and (
                     has_explicit_port
+                    or has_unambiguous_wrapper
                     or parsed_url.path
                     or parsed_url.query
                     or parsed_url.fragment
@@ -1986,6 +1998,28 @@ def main() -> int:
                     f"judgments.forecasts[{index}].{required_field} must be a "
                     "non-empty string"
                 )
+    markdown_forecast_rows = markdown_rows_by_id(
+        case, "FOR-2026-025-", case_path
+    )
+    actual_markdown_forecast_confidence = {
+        forecast_id: (
+            normalized_markdown_cell(cells[3]) if len(cells) > 3 else None
+        )
+        for forecast_id, cells in markdown_forecast_rows.items()
+    }
+    expected_markdown_forecast_confidence = {
+        forecast.get("id"): forecast.get("confidence")
+        for forecast in forecasts
+        if isinstance(forecast, dict)
+    }
+    if (
+        actual_markdown_forecast_confidence
+        != expected_markdown_forecast_confidence
+    ):
+        error(
+            "cases/ch25-structured-analysis-attribution-example.md: Forecast "
+            "confidence rendering differs from the canonical fixture"
+        )
     confirmed_facts = judgments.get("confirmedFacts", [])
     if any(isinstance(fact, dict) and fact.get("id") == "CF-2026-025-004" for fact in confirmed_facts):
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: CF-2026-025-004 must be a source-evaluation judgment, not a Confirmed Fact")
@@ -2223,6 +2257,18 @@ def main() -> int:
         if list(contextual_domain_hosts(mutation)) != expected_hosts:
             error(
                 "fixture safety regression: contextual host tokenization drifted: "
+                f"{mutation!r}"
+            )
+    url_domain_regressions = {
+        "<https://safe.example。悪意>": ["safe.example。悪意"],
+        "(https://safe.example。悪意)": ["safe.example。悪意"],
+        "<https://safe.example>": ["safe.example"],
+        "(http://192.0.2.1)": ["192.0.2.1"],
+    }
+    for mutation, expected_hosts in url_domain_regressions.items():
+        if list(url_domain_hosts(mutation)) != expected_hosts:
+            error(
+                "fixture safety regression: URL wrapper tokenization drifted: "
                 f"{mutation!r}"
             )
     email_domain_regressions = {
