@@ -195,7 +195,7 @@ INDEPENDENCE_EVALUATION_TOKENS = (
     "独立",
     "裏付け",
 )
-URL_RE = re.compile(r"https?://[^\s<>\"'`]+", re.IGNORECASE)
+URL_RE = re.compile(r"https?://[^\s<>\"'`、]+", re.IGNORECASE)
 
 
 def post_idna_ascii_compatibility_chars() -> frozenset[str]:
@@ -772,7 +772,7 @@ def url_domain_hosts(text: str):
         if ipv4_authority_match is not None:
             matched_ipv4 = ipv4_authority_match.group("host")
             remainder = parsed_host[ipv4_authority_match.end() :]
-            if remainder.startswith((".", "。", "．", "｡")):
+            if remainder:
                 yield parsed_host
             else:
                 yield matched_ipv4
@@ -785,7 +785,7 @@ def url_domain_hosts(text: str):
         if known_suffix_match is not None:
             matched_host = general_host_from_match(known_suffix_match)
             remainder = parsed_host[known_suffix_match.end() :]
-            if remainder.startswith((".", "。", "．", "｡")):
+            if remainder:
                 yield parsed_host
             else:
                 yield matched_host
@@ -839,10 +839,12 @@ def strip_html_comments_preserving_lines(markdown: str) -> str:
     )
 
 
-def markdown_pipe_lines(markdown: str) -> list[list[str] | None]:
+def markdown_pipe_lines(
+    markdown: str,
+) -> list[tuple[str, list[str]] | None]:
     """Parse visible pipe-delimited lines while preserving line boundaries."""
-    parsed_lines: list[list[str] | None] = []
-    for _, line_end, content_start, inside_code_context in (
+    parsed_lines: list[tuple[str, list[str]] | None] = []
+    for line_start, line_end, content_start, inside_code_context in (
         markdown_line_contexts(markdown)
     ):
         if inside_code_context:
@@ -858,7 +860,10 @@ def markdown_pipe_lines(markdown: str) -> list[list[str] | None]:
             parsed_lines.append(None)
             continue
         cells = [cell.strip() for cell in table_line.strip("|").split("|")]
-        parsed_lines.append(cells if cells else None)
+        container_signature = (
+            markdown[line_start:content_start] + " " * leading_spaces
+        )
+        parsed_lines.append((container_signature, cells) if cells else None)
     return parsed_lines
 
 
@@ -874,22 +879,29 @@ def markdown_tables(markdown: str):
     lines = markdown_pipe_lines(markdown)
     index = 0
     while index + 1 < len(lines):
-        header = lines[index]
-        delimiter = lines[index + 1]
+        header_entry = lines[index]
+        delimiter_entry = lines[index + 1]
         if (
-            header is None
-            or not is_markdown_table_delimiter(delimiter)
-            or len(header) != len(delimiter or [])
+            header_entry is None
+            or delimiter_entry is None
+            or header_entry[0] != delimiter_entry[0]
+            or not is_markdown_table_delimiter(delimiter_entry[1])
+            or len(header_entry[1]) != len(delimiter_entry[1])
         ):
             index += 1
             continue
+        container_signature, header = header_entry
         rows: list[list[str]] = []
         row_index = index + 2
         while row_index < len(lines):
-            row = lines[row_index]
-            if row is None or is_markdown_table_delimiter(row):
+            row_entry = lines[row_index]
+            if (
+                row_entry is None
+                or row_entry[0] != container_signature
+                or is_markdown_table_delimiter(row_entry[1])
+            ):
                 break
-            rows.append(row)
+            rows.append(row_entry[1])
             row_index += 1
         yield header, rows
         index = row_index
@@ -1918,6 +1930,28 @@ def main() -> int:
     }
     if actual_markdown_negative_findings != expected_markdown_negative_findings:
         error("cases/ch25-structured-analysis-attribution-example.md: Negative Finding rendering differs from markdownProjection")
+    projected_negative_links = {
+        item.get("id"): (
+            item.get("relatedEvidenceIds"),
+            item.get("observationHypothesisId"),
+        )
+        for item in markdown_projection.get("negativeFindings", [])
+        if isinstance(item, dict)
+    }
+    canonical_negative_links = {
+        item.get("id"): (
+            item.get("relatedEvidenceIds"),
+            item.get("observationHypothesisId"),
+        )
+        for item in dataset.get("negativeFindings", [])
+        if isinstance(item, dict)
+    }
+    if projected_negative_links != canonical_negative_links:
+        error(
+            "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
+            "markdownProjection negativeFindings must preserve canonical "
+            "Evidence and Observation Hypothesis links by ID"
+        )
 
     markdown_source_judgment_rows = markdown_rows_by_id(case, "SEJ-2026-025-", case_path)
     actual_markdown_source_judgments = {
@@ -1936,6 +1970,30 @@ def main() -> int:
     }
     if actual_markdown_source_judgments != expected_markdown_source_judgments:
         error("cases/ch25-structured-analysis-attribution-example.md: Source-evaluation Judgment rendering differs from markdownProjection")
+    projected_source_judgment_links = {
+        item.get("id"): (
+            re.findall(r"SEH-2026-025-\d{3}", str(item.get("basis", ""))),
+            re.findall(r"LIN-2026-025-\d{3}", str(item.get("basis", ""))),
+            re.findall(r"CR-2026-025-\d{3}", str(item.get("basis", ""))),
+        )
+        for item in markdown_projection.get("sourceEvaluationJudgments", [])
+        if isinstance(item, dict)
+    }
+    canonical_source_judgment_links = {
+        item.get("id"): (
+            [item.get("sourceEvaluationHypothesisId")],
+            item.get("lineageEdgeIds"),
+            [item.get("circularReportingCandidateId")],
+        )
+        for item in dataset.get("sourceEvaluationJudgments", [])
+        if isinstance(item, dict)
+    }
+    if projected_source_judgment_links != canonical_source_judgment_links:
+        error(
+            "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
+            "markdownProjection sourceEvaluationJudgments basis must preserve "
+            "canonical hypothesis, lineage, and circular-reporting links by ID"
+        )
 
     markdown_attribution_rows = markdown_rows_by_id(case, "ATTR-2026-025-", case_path)
     actual_markdown_attribution = {
@@ -1957,6 +2015,36 @@ def main() -> int:
     }
     if actual_markdown_attribution != expected_markdown_attribution:
         error("cases/ch25-structured-analysis-attribution-example.md: Attribution Assessment rendering differs from markdownProjection")
+    projected_attribution_semantics = {
+        item.get("id"): (
+            item.get("ladderLevel"),
+            item.get("relatedAlternativeHypothesisIds"),
+            re.findall(r"「([^」]+)」", str(item.get("permittedLanguage", ""))),
+            item.get("prohibitedJump"),
+        )
+        for item in markdown_projection.get("attributionAssessments", [])
+        if isinstance(item, dict)
+    }
+    canonical_attribution_value = dataset.get("attributionAssessment", {})
+    canonical_attribution = (
+        canonical_attribution_value
+        if isinstance(canonical_attribution_value, dict)
+        else {}
+    )
+    canonical_attribution_semantics = {
+        canonical_attribution.get("id"): (
+            canonical_attribution.get("ladderLevel"),
+            canonical_attribution.get("relatedAlternativeHypothesisIds"),
+            canonical_attribution.get("permittedLanguage"),
+            canonical_attribution.get("prohibitedJump"),
+        )
+    }
+    if projected_attribution_semantics != canonical_attribution_semantics:
+        error(
+            "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
+            "markdownProjection attributionAssessments must preserve canonical "
+            "ladder, alternatives, permitted language, and prohibited jump"
+        )
 
     judgment_assumption_body = subsection_body(case, "10.2 Assumptions")
     if judgment_assumption_body is None:
@@ -1985,6 +2073,22 @@ def main() -> int:
     }
     if actual_markdown_assumptions != expected_markdown_assumptions:
         error("cases/ch25-structured-analysis-attribution-example.md: Judgment Assumption rendering differs from markdownProjection")
+    projected_assumption_gap_links = {
+        item.get("id"): item.get("relatedGapIds")
+        for item in markdown_projection.get("judgmentAssumptions", [])
+        if isinstance(item, dict)
+    }
+    canonical_assumption_gap_links = {
+        item.get("id"): item.get("relatedGapIds")
+        for item in nested_value(dataset, "judgments.assumptions") or []
+        if isinstance(item, dict)
+    }
+    if projected_assumption_gap_links != canonical_assumption_gap_links:
+        error(
+            "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
+            "markdownProjection judgmentAssumptions relatedGapIds must match "
+            "canonical judgments.assumptions by ID"
+        )
     for observation in dataset.get("observationHypotheses", []):
         if not isinstance(observation, dict):
             continue
@@ -2186,15 +2290,15 @@ def main() -> int:
         for forecast in forecasts
         if isinstance(forecast, dict) and isinstance(forecast.get("id"), str)
     ]
-    visible_forecast_occurrences = [
+    source_forecast_occurrences = [
         identifier
-        for identifier in ANALYTIC_ID_RE.findall(case)
+        for identifier in ANALYTIC_ID_RE.findall(case_raw)
         if identifier.startswith("FOR-2026-025-")
     ]
-    if sorted(visible_forecast_occurrences) != sorted(expected_forecast_ids):
+    if sorted(source_forecast_occurrences) != sorted(expected_forecast_ids):
         error(
             "cases/ch25-structured-analysis-attribution-example.md: each "
-            "canonical Forecast ID must appear exactly once in rendered content"
+            "canonical Forecast ID must appear exactly once in source content"
         )
     all_markdown_forecast_rows = markdown_rows_by_id(
         case, "FOR-2026-025-", case_path
@@ -2515,10 +2619,10 @@ def main() -> int:
         "参照先はhttps://xn--r8jz45g.example/a?b=1です": [
             "xn--r8jz45g.example"
         ],
-        "接続先はhttps://例え.exampleです": ["例え.example"],
+        "接続先はhttps://例え.exampleです": ["例え.exampleです"],
         "URL: https://例え.example、確認する": ["例え.example"],
         "URL: http://192.0.2.1/path": ["192.0.2.1"],
-        "接続先はhttp://192.0.2.1です": ["192.0.2.1"],
+        "接続先はhttp://192.0.2.1です": ["192.0.2.1です"],
         "URL: http://192.0.2.1、確認する": ["192.0.2.1"],
         "接続先は例え.example。次に確認する": ["例え.example"],
         "URL: https://safe.example名@evil.com/path": ["evil.com"],
@@ -2540,6 +2644,7 @@ def main() -> int:
             )
     url_domain_regressions = {
         "<https://safe.example。悪意>": ["safe.example。悪意"],
+        "<https://safe.example悪意>": ["safe.example悪意"],
         "(https://safe.example。悪意)": ["safe.example。悪意"],
         '[x](https://safe.example。悪意 "title")': ["safe.example。悪意"],
         "[x](https://safe.example。悪意 'title')": ["safe.example。悪意"],
@@ -2697,6 +2802,20 @@ def main() -> int:
                 "fixture safety regression: code content was treated as a "
                 f"Kramdown table row: {code_table!r}"
             )
+    mixed_container_table = (
+        "| Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "> | FOR-2026-025-999 | statement | 7日 | 中 | x |"
+    )
+    if markdown_rows_by_id(
+        mixed_container_table,
+        "FOR-2026-025-",
+        "fixture safety regression",
+    ):
+        error(
+            "fixture safety regression: table rows crossed a Markdown "
+            "container boundary"
+        )
     hidden_table = strip_html_comments_preserving_lines(
         "<!--\n"
         "| Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"

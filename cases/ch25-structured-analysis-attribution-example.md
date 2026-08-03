@@ -188,7 +188,7 @@ Missing evidenceとevidence of absenceを分離する。
 
 | Source-evaluation Judgment ID | Statement | Basis | What would change it |
 |---|---|---|---|
-| `SEJ-2026-025-001` | Vendor bulletin、repost、recapの三件は独立外部観測とは言えない | `SEH-2026-025-001`、`LIN-2026-025-001`〜`LIN-2026-025-003`、同一independence group、`CR-2026-025-001` | 各媒体が別原典または独自観測を提示する |
+| `SEJ-2026-025-001` | Vendor bulletin、repost、recapの三件は独立外部観測とは言えない | `SEH-2026-025-001`、`LIN-2026-025-001`、`LIN-2026-025-002`、`LIN-2026-025-003`、同一independence group、`CR-2026-025-001` | 各媒体が別原典または独自観測を提示する |
 
 ### 8.4 Deception / False Flag / Shared Tooling / Infrastructure Reuse
 
