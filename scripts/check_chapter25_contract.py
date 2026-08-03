@@ -476,6 +476,14 @@ def require_unique_ids_recursively(value: object, label: str) -> None:
         error(f"{label}: declared identity collection must be an array")
         return
     if isinstance(value, dict):
+        for record_identity_key in ("id", "alternativeHypothesisId"):
+            if record_identity_key in value and not is_valid_identity(
+                value[record_identity_key]
+            ):
+                error(
+                    f"{label}.{record_identity_key}: record identity must use "
+                    "canonical uppercase ASCII hyphenated form"
+                )
         for key, child in value.items():
             require_unique_ids_recursively(child, f"{label}.{key}")
         return
