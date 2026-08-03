@@ -38,6 +38,10 @@ DOMAIN_CANDIDATE_RE = re.compile(
     r"(?<![\w@-])(?P<host>(?:[^\W_]|-)+(?:[.。．｡](?:[^\W_]|-)+)+)(?![\w-])",
     re.UNICODE,
 )
+UNICODE_SEPARATOR_ASCII_HOST_RE = re.compile(
+    r"(?<![A-Za-z0-9@-])(?P<host>(?:[A-Za-z0-9-]+[。．｡])+[A-Za-z0-9-]+)"
+    r"(?![A-Za-z0-9-])"
+)
 COMMON_PUBLIC_TLDS = frozenset(
     {
         "app",
@@ -339,6 +343,37 @@ def require_unique_object_ids(items: object, label: str) -> None:
         error(f"{label}: duplicate IDs are not allowed: {duplicates}")
 
 
+def require_unique_ids_recursively(value: object, label: str) -> None:
+    """Reject duplicate record identities in every nested fixture collection."""
+    if isinstance(value, dict):
+        for key, child in value.items():
+            require_unique_ids_recursively(child, f"{label}.{key}")
+        return
+    if not isinstance(value, list):
+        return
+
+    objects = [item for item in value if isinstance(item, dict)]
+    if objects and len(objects) == len(value):
+        if all("id" in item for item in objects):
+            require_unique_object_ids(value, label)
+        elif label.endswith(".judgments.analyticJudgment.alternativeAssessments") and all(
+            "alternativeHypothesisId" in item for item in objects
+        ):
+            identity_key = "alternativeHypothesisId"
+            identifiers = [item.get(identity_key) for item in objects]
+            if any(not identifier for identifier in identifiers):
+                error(f"{label}: every entry must have a non-empty {identity_key}")
+            duplicates = sorted(
+                {identifier for identifier in identifiers if identifiers.count(identifier) > 1}
+            )
+            if duplicates:
+                error(
+                    f"{label}: duplicate {identity_key} values are not allowed: {duplicates}"
+                )
+    for index, child in enumerate(value):
+        require_unique_ids_recursively(child, f"{label}[{index}]")
+
+
 def check_synthetic_content_safety(relative: str, text: str) -> None:
     """Check synthetic teaching content only; official Source Note URLs use SOURCE_POLICY."""
     for raw_url in URL_RE.findall(text):
@@ -349,12 +384,24 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         if is_repository_file_reference(host):
             continue
         assert_synthetic_domain(host, f"{relative}: host/URL")
+    checked_unicode_hosts: set[str] = set()
+    for match in UNICODE_SEPARATOR_ASCII_HOST_RE.finditer(text):
+        candidate = match.group("host")
+        if not is_unicode_domain_candidate(candidate):
+            continue
+        normalized = normalize_unicode_host(candidate).lower()
+        checked_unicode_hosts.add(normalized)
+        assert_synthetic_domain(normalized, f"{relative}: Unicode/IDN host")
     for match in DOMAIN_CANDIDATE_RE.finditer(text):
         candidate = match.group("host")
         if not is_unicode_domain_candidate(candidate):
             continue
+        normalized = normalize_unicode_host(candidate).lower()
+        if normalized in checked_unicode_hosts:
+            continue
+        checked_unicode_hosts.add(normalized)
         assert_synthetic_domain(
-            normalize_unicode_host(candidate).lower(),
+            normalized,
             f"{relative}: Unicode/IDN host",
         )
     for match in EMAIL_RE.finditer(text):
@@ -642,19 +689,10 @@ def main() -> int:
     dataset = load_json("cases/fixtures/ch25-structured-analysis-attribution-dataset.json")
     if dataset.get("synthetic") is not True:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: synthetic must be true")
-    for collection_name in (
-        "threatHypotheses",
-        "sourceEvaluationHypotheses",
-        "alternativeHypotheses",
-        "observationHypotheses",
-        "sourceNotes",
-        "evidence",
-        "collectionGaps",
-    ):
-        require_unique_object_ids(
-            dataset.get(collection_name),
-            f"cases/fixtures/ch25-structured-analysis-attribution-dataset.json:{collection_name}",
-        )
+    require_unique_ids_recursively(
+        dataset,
+        "cases/fixtures/ch25-structured-analysis-attribution-dataset.json",
+    )
     for key, expected in (
         ("artifactId", "ART-11"),
         ("caseId", "CASE-2026-025"),
@@ -1114,6 +1152,9 @@ def main() -> int:
     for mutation in ("例え.テスト", "real。com"):
         if not is_unicode_domain_candidate(mutation):
             error(f"fixture safety regression: Unicode/IDN domain mutation was accepted: {mutation!r}")
+    adjacent_match = UNICODE_SEPARATOR_ASCII_HOST_RE.search("接続先はreal。comです")
+    if adjacent_match is None or adjacent_match.group("host") != "real。com":
+        error("fixture safety regression: adjacent Unicode-separator host was not tokenized")
     if is_unicode_domain_candidate("これは。テスト"):
         error("fixture safety regression: Japanese prose was treated as a Unicode/IDN domain")
 
