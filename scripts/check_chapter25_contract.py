@@ -906,8 +906,8 @@ def contextual_domain_hosts(text: str):
             yield value
 
 
-def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, list[str]]:
-    rows: dict[str, list[str]] = {}
+def markdown_table_cells(markdown: str):
+    """Yield visible Kramdown table-like rows outside code contexts."""
     for _, line_end, content_start, inside_code_context in (
         markdown_line_contexts(markdown)
     ):
@@ -923,6 +923,12 @@ def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, lis
         cells = [cell.strip() for cell in table_line.strip("|").split("|")]
         if not cells:
             continue
+        yield cells
+
+
+def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, list[str]]:
+    rows: dict[str, list[str]] = {}
+    for cells in markdown_table_cells(markdown):
         row_id = cells[0].strip("`")
         if not row_id.startswith(prefix):
             continue
@@ -2210,6 +2216,24 @@ def main() -> int:
         )
         markdown_forecast_rows: dict[str, list[str]] = {}
     else:
+        expected_forecast_header = [
+            "Forecast ID",
+            "Statement",
+            "Time horizon",
+            "Confidence",
+            "Indicators / Signposts",
+        ]
+        actual_forecast_headers = [
+            [normalized_markdown_cell(cell) for cell in cells]
+            for cells in markdown_table_cells(forecast_body)
+            if cells and normalized_markdown_cell(cells[0]) == "Forecast ID"
+        ]
+        if actual_forecast_headers != [expected_forecast_header]:
+            error(
+                "cases/ch25-structured-analysis-attribution-example.md: "
+                "Forecast table header must exactly preserve Forecast ID / "
+                "Statement / Time horizon / Confidence / Indicators / Signposts"
+            )
         markdown_forecast_rows = markdown_rows_by_id(
             forecast_body,
             "FOR-2026-025-",
