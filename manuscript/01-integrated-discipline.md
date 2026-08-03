@@ -683,7 +683,7 @@ Decision Requirementが登録されてからDecision Recordが承認されるま
 - 単一Metricを個人評価へ直結させない。
 - Coverageを増やすために低価値Hypothesisを追加しない。
 - Decision latencyを短くするためにEvidence品質を下げない。
-- High confidenceを目標値にしない。Low confidenceでも、期限内にGapとOptionを示せることがある。
+- 確信度「高」を目標値にしない。確信度「低」でも、期限内にGapとOptionを示せることがある。
 - 数値とともにScope、期間、Data qualityを記録する。
 
 ## 9. 合成Caseで全体を確認する
@@ -907,9 +907,9 @@ Case Mapは各専門成果物を置き換えない。Finding Report、Detection 
 
 違う。Negative Findingは、検索範囲で対象事象を観測しなかったという結果であり、CoverageとGapを伴う。
 
-### High confidenceになるまでDecisionしてはいけない
+### 確信度「高」になるまでDecisionしてはいけない
 
-違う。期限と損失を考慮し、LowまたはModerate confidenceでも、Option、Gap、Residual Riskを明示してDecisionする場合がある。
+違う。期限と損失を考慮し、確信度「低」または「中」でも、Option、Gap、Residual Riskを明示してDecisionする場合がある。
 
 ### Controlを実装すればCaseを閉じられる
 
