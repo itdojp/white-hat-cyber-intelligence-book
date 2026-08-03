@@ -134,6 +134,7 @@ DOCUMENTATION_IDN_ASCII_TLDS = frozenset(
     tld.encode("idna").decode("ascii") for tld in DOCUMENTATION_IDN_TLDS
 )
 RECOGNIZED_IDN_TLDS = IANA_UNICODE_TLDS | DOCUMENTATION_IDN_TLDS
+DOCUMENTATION_ONLY_IDN_TLDS = DOCUMENTATION_IDN_TLDS - IANA_UNICODE_TLDS
 RECOGNIZED_ASCII_TLDS = (
     IANA_ASCII_TLDS | RESERVED_ASCII_TLDS | DOCUMENTATION_IDN_ASCII_TLDS
 )
@@ -141,9 +142,12 @@ ASCII_TLD_PATTERN = "|".join(
     re.escape(tld)
     for tld in sorted(RECOGNIZED_ASCII_TLDS, key=len, reverse=True)
 )
-RECOGNIZED_IDN_TLD_PATTERN = "|".join(
+IANA_UNICODE_TLD_PATTERN = "|".join(
+    re.escape(tld) for tld in sorted(IANA_UNICODE_TLDS, key=len, reverse=True)
+)
+DOCUMENTATION_ONLY_IDN_TLD_PATTERN = "|".join(
     re.escape(tld)
-    for tld in sorted(RECOGNIZED_IDN_TLDS, key=len, reverse=True)
+    for tld in sorted(DOCUMENTATION_ONLY_IDN_TLDS, key=len, reverse=True)
 )
 HOSTNAME_RE = re.compile(
     r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]+\.)+(?:"
@@ -153,9 +157,13 @@ HOSTNAME_RE = re.compile(
 )
 GENERAL_HOST_CANDIDATE_RE = re.compile(
     r"(?P<host>(?:(?:[^\W_@]|-)+[.。．｡])+(?:"
-    + RECOGNIZED_IDN_TLD_PATTERN
+    + IANA_UNICODE_TLD_PATTERN
     + "|"
     + ASCII_TLD_PATTERN
+    + r"))"
+    r"(?=$|[^\x00-\x7f]|[/?:#]|[.,;:!?)\]])"
+    r"|(?P<documentation_host>(?:(?:[^\W_@]|-)+[.。．｡])+(?:"
+    + DOCUMENTATION_ONLY_IDN_TLD_PATTERN
     + r"))"
     r"(?=$|[ぁ-ゖ]|[/?:#]|[。．｡、,;；:：!！?？)\]」』])",
     re.IGNORECASE | re.UNICODE,
@@ -364,6 +372,13 @@ def is_plausible_tld(label: str) -> bool:
     )
 
 
+def general_host_from_match(match: re.Match[str]) -> str:
+    host = match.group("host") or match.group("documentation_host")
+    if not host:
+        raise ValueError("general host candidate match did not contain a host")
+    return host
+
+
 def is_unicode_domain_candidate(raw: str) -> bool:
     """Recognize bare IDN or Unicode-separator hosts without treating prose as a host."""
     normalized = normalize_unicode_host(raw).rstrip(".")
@@ -418,7 +433,7 @@ def contextual_domain_hosts(text: str):
                 continue
         known_suffix_match = GENERAL_HOST_CANDIDATE_RE.search(value)
         if known_suffix_match is not None:
-            yield known_suffix_match.group("host")
+            yield general_host_from_match(known_suffix_match)
             continue
         if any(separator in value for separator in ".。．｡"):
             # An explicitly labelled host with an unknown suffix is still a host
@@ -553,7 +568,7 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         assert_synthetic_domain(host, f"{relative}: host/URL")
     checked_unicode_hosts: set[str] = set()
     for match in GENERAL_HOST_CANDIDATE_RE.finditer(text):
-        candidate = match.group("host")
+        candidate = general_host_from_match(match)
         if not is_unicode_domain_candidate(candidate):
             continue
         normalized = normalize_unicode_host(candidate).lower()
@@ -1502,7 +1517,9 @@ def main() -> int:
     )
     for mutation in general_host_regressions:
         match = GENERAL_HOST_CANDIDATE_RE.search(mutation)
-        if match is None or not is_unicode_domain_candidate(match.group("host")):
+        if match is None or not is_unicode_domain_candidate(
+            general_host_from_match(match)
+        ):
             error(
                 "fixture safety regression: Japanese-adjacent IDN was not tokenized: "
                 f"{mutation!r}"
