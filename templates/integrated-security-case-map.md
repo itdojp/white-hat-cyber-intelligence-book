@@ -100,9 +100,9 @@
 
 ### 4.1 Threat Hypotheses
 
-| Hypothesis ID | Statement | Preconditions | Expected impact | Priority | Status |
-|---|---|---|---|---|---|
-| `TH-CASE-001` |  |  |  |  | Proposed / Testable / Supported / Partially supported / Weakened / Inconclusive / Rejected |
+| Hypothesis ID | Related Decision Requirement ID | Related Asset IDs | Related Boundary IDs | Statement | Preconditions | Expected impact | Priority | Status |
+|---|---|---|---|---|---|---|---|---|
+| `TH-CASE-001` | `DR-CASE-001` | `ASSET-CASE-001` | `TB-CASE-001` |  |  |  |  | Proposed / Testable / Supported / Partially supported / Weakened / Inconclusive / Rejected |
 
 ### 4.2 Observation Hypotheses
 
@@ -138,9 +138,9 @@
 
 観測されなかったことを「不存在」と同一視しない。
 
-| Negative Finding ID | Searched behavior | Search window | Available coverage | Gaps | Permitted conclusion |
-|---|---|---|---|---|---|
-| `NEG-CASE-001` |  |  |  |  |  |
+| Negative Finding ID | Related Evidence IDs | Searched behavior | Search window | Available coverage | Gaps | Permitted conclusion |
+|---|---|---|---|---|---|---|
+| `NEG-CASE-001` | `EVD-CASE-001` |  |  |  |  |  |
 
 ## 7. Findings and Control Gaps
 
@@ -152,15 +152,15 @@
 
 ### 8.1 Telemetry Requirements
 
-| Telemetry ID | Behavior / question | Required event and fields | Retention | Current state | Gap owner |
-|---|---|---|---|---|---|
-| `TEL-CASE-001` |  |  |  | Available / Partial / Missing |  |
+| Telemetry ID | Related Evidence IDs | Behavior / question | Required event and fields | Retention | Current state | Gap owner |
+|---|---|---|---|---|---|---|
+| `TEL-CASE-001` | `EVD-CASE-001` |  |  |  | Available / Partial / Missing |  |
 
 ### 8.2 Detection Validation
 
-| Detection ID | Related hypothesis | Logic / query reference | Test fixture | Expected result | Actual result | Limitations |
-|---|---|---|---|---|---|---|
-| `DET-CASE-001` | `TH-CASE-001` |  |  |  |  |  |
+| Detection ID | Related hypothesis | Related Telemetry IDs | Logic / query reference | Test fixture | Expected result | Actual result | Limitations |
+|---|---|---|---|---|---|---|---|
+| `DET-CASE-001` | `TH-CASE-001` | `TEL-CASE-001` |  |  |  |  |  |
 
 ### 8.3 Hunt or Incident Records
 
@@ -216,6 +216,7 @@
 |---|---|
 | Reassessment ID | `REA-CASE-001` |
 | Related Control IDs | `CTRL-CASE-001` |
+| Related Decision Requirement ID | `DR-CASE-001` |
 | Scheduled date |  |
 | Trigger conditions |  |
 | Evidence to recollect |  |

@@ -97,11 +97,11 @@
 
 ### 4.1 Threat Hypotheses
 
-| Hypothesis ID | Statement | Preconditions | Expected impact | Priority | Status |
-|---|---|---|---|---|---|
-| `TH-2026-001` | 請求書連携アプリの権限が業務要件を超えており、Credentialが不正利用された場合に顧客Dataへ広範にAccessできる | 過大scope、利用可能なCredential、API到達性 | 顧客Dataの閲覧・変更可能性 | High | Supported |
-| `TH-2026-002` | 管理者同意の変更を監視できず、未承認のscope追加を早期検知できない | 同意Eventの未収集またはRule欠落 | 攻撃面拡大の見逃し | High | Partially supported |
-| `TH-2026-003` | 既に同型の不正利用が発生した | 過去の不正Credential利用 | 過去侵害 | High | Inconclusive |
+| Hypothesis ID | Related Decision Requirement ID | Related Asset IDs | Related Boundary IDs | Statement | Preconditions | Expected impact | Priority | Status |
+|---|---|---|---|---|---|---|---|---|
+| `TH-2026-001` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-002` | `TB-2026-001`, `TB-2026-002` | 請求書連携アプリの権限が業務要件を超えており、Credentialが不正利用された場合に顧客Dataへ広範にAccessできる | 過大scope、利用可能なCredential、API到達性 | 顧客Dataの閲覧・変更可能性 | High | Supported |
+| `TH-2026-002` | `DR-2026-001` | `ASSET-2026-002`, `ASSET-2026-003` | `TB-2026-001`, `TB-2026-003` | 管理者同意の変更を監視できず、未承認のscope追加を早期検知できない | 同意Eventの未収集またはRule欠落 | 攻撃面拡大の見逃し | High | Partially supported |
+| `TH-2026-003` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-003` | `TB-2026-002`, `TB-2026-003` | 既に同型の不正利用が発生した | 過去の不正Credential利用 | 過去侵害 | High | Inconclusive |
 
 ### 4.2 Observation Hypotheses
 
@@ -143,9 +143,9 @@
 
 ### Negative Finding
 
-| Negative Finding ID | Searched behavior | Search window | Available coverage | Gaps | Permitted conclusion |
-|---|---|---|---|---|---|
-| `NEG-2026-001` | 未承認同意変更と異常なApp sign-in | 過去90日 | 同意変更とsign-inは72日分。API利用は一部のみ | 18日分の保持不足、API利用Field不足 | 取得できた範囲では該当Eventを確認していない。侵害不存在は断定しない |
+| Negative Finding ID | Related Evidence IDs | Searched behavior | Search window | Available coverage | Gaps | Permitted conclusion |
+|---|---|---|---|---|---|---|
+| `NEG-2026-001` | `EVD-2026-004` | 未承認同意変更と異常なApp sign-in | 過去90日 | 同意変更とsign-inは72日分。API利用は一部のみ | 18日分の保持不足、API利用Field不足 | 取得できた範囲では該当Eventを確認していない。侵害不存在は断定しない |
 
 ## 7. Findings and Control Gaps
 
@@ -159,18 +159,18 @@
 
 ### 8.1 Telemetry Requirements
 
-| Telemetry ID | Behavior / question | Required event and fields | Retention | Current state | Gap owner |
-|---|---|---|---|---|---|
-| `TEL-2026-001` | Admin consent変更 | actor、app ID、scope、target tenant、timestamp | 180日 | Available | SOC |
-| `TEL-2026-002` | App credential変更 | actor、credential ID、operation、timestamp | 180日 | Available | Platform |
-| `TEL-2026-003` | AppによるData API利用 | app ID、resource、operation、result、timestamp | 180日 | Partial | Platform |
+| Telemetry ID | Related Evidence IDs | Behavior / question | Required event and fields | Retention | Current state | Gap owner |
+|---|---|---|---|---|---|---|
+| `TEL-2026-001` | `EVD-2026-003` | Admin consent変更 | actor、app ID、scope、target tenant、timestamp | 180日 | Available | SOC |
+| `TEL-2026-002` | `EVD-2026-001` | App credential変更 | actor、credential ID、operation、timestamp | 180日 | Available | Platform |
+| `TEL-2026-003` | `EVD-2026-004` | AppによるData API利用 | app ID、resource、operation、result、timestamp | 180日 | Partial | Platform |
 
 ### 8.2 Detection Validation
 
-| Detection ID | Related hypothesis | Logic / query reference | Test fixture | Expected result | Actual result | Limitations |
-|---|---|---|---|---|---|---|
-| `DET-2026-001` | `TH-2026-002` | 許可List外scopeを含むAdmin consent変更 | 合成同意Event `FIX-CONSENT-001` | High severity alert 1件 | Pass | 許可Listの保守が必要 |
-| `DET-2026-002` | `TH-2026-001` | App credential変更後の高権限利用 | 合成Event chain `FIX-APP-002` | Correlated alert 1件 | Partial | API利用Telemetry不足 |
+| Detection ID | Related hypothesis | Related Telemetry IDs | Logic / query reference | Test fixture | Expected result | Actual result | Limitations |
+|---|---|---|---|---|---|---|---|
+| `DET-2026-001` | `TH-2026-002` | `TEL-2026-001` | 許可List外scopeを含むAdmin consent変更 | 合成同意Event `FIX-CONSENT-001` | High severity alert 1件 | Pass | 許可Listの保守が必要 |
+| `DET-2026-002` | `TH-2026-001` | `TEL-2026-002`, `TEL-2026-003` | App credential変更後の高権限利用 | 合成Event chain `FIX-APP-002` | Correlated alert 1件 | Partial | API利用Telemetry不足 |
 
 ### 8.3 Hunt or Incident Records
 
@@ -229,6 +229,7 @@
 |---|---|
 | Reassessment ID | `REA-2026-001` |
 | Related Control IDs | `CTRL-2026-001`, `CTRL-2026-002`, `CTRL-2026-003`, `CTRL-2026-004` |
+| Related Decision Requirement ID | `DR-2026-001` |
 | Scheduled date | 2026-08-21 |
 | Trigger conditions | scope変更、Credential追加、Vendor仕様変更、関連Alert、重大な外部報告 |
 | Evidence to recollect | 設定Export、Rule test、Telemetry Coverage、30日Hunt結果 |
