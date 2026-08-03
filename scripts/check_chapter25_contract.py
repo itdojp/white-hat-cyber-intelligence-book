@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import html
 import json
 import ipaddress
 import re
@@ -844,8 +845,15 @@ def strip_html_comments_preserving_lines(markdown: str) -> str:
 
 
 def strip_html_comments_for_rendered_text(markdown: str) -> str:
-    """Join text separated only by non-rendered HTML comments."""
-    return re.sub(r"<!--.*?(?:-->|\Z)", "", markdown, flags=re.DOTALL)
+    """Approximate rendered text for source-level ID collision checks."""
+    without_comments = re.sub(
+        r"<!--.*?(?:-->|\Z)",
+        "",
+        markdown,
+        flags=re.DOTALL,
+    )
+    without_tags = re.sub(r"</?[A-Za-z][^>]*>", "", without_comments)
+    return html.unescape(without_tags)
 
 
 def markdown_pipe_lines(
@@ -2104,7 +2112,7 @@ def main() -> int:
             item.get("confidence"),
             item.get("relatedEvidenceIds"),
             item.get("relatedAlternativeHypothesisIds"),
-            re.findall(r"「([^」]+)」", str(item.get("permittedLanguage", ""))),
+            item.get("permittedLanguage"),
             item.get("prohibitedJump"),
         )
         for item in markdown_projection.get("attributionAssessments", [])
@@ -2116,13 +2124,28 @@ def main() -> int:
         if isinstance(canonical_attribution_value, dict)
         else {}
     )
+    canonical_permitted_value = canonical_attribution.get("permittedLanguage")
+    canonical_permitted_language = (
+        canonical_permitted_value
+        if isinstance(canonical_permitted_value, list)
+        and all(isinstance(phrase, str) for phrase in canonical_permitted_value)
+        else []
+    )
+    if not canonical_permitted_language:
+        error(
+            "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
+            "attributionAssessment.permittedLanguage must be a non-empty string array"
+        )
     canonical_attribution_semantics = {
         canonical_attribution.get("id"): (
             canonical_attribution.get("ladderLevel"),
             canonical_attribution.get("confidence"),
             canonical_attribution.get("relatedEvidenceIds"),
             canonical_attribution.get("relatedAlternativeHypothesisIds"),
-            canonical_attribution.get("permittedLanguage"),
+            "".join(
+                f"「{phrase}」"
+                for phrase in canonical_permitted_language
+            ),
             canonical_attribution.get("prohibitedJump"),
         )
     }
@@ -2340,7 +2363,14 @@ def main() -> int:
             "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
             "attributionAssessment.confidence must be 高 / 中 / 低"
         )
-    if "Technical cluster" not in " ".join(attribution.get("permittedLanguage", [])):
+    attribution_permitted_value = attribution.get("permittedLanguage")
+    attribution_permitted_language = (
+        attribution_permitted_value
+        if isinstance(attribution_permitted_value, list)
+        and all(isinstance(phrase, str) for phrase in attribution_permitted_value)
+        else []
+    )
+    if "Technical cluster" not in " ".join(attribution_permitted_language):
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: permittedLanguage must preserve technical-cluster wording")
     if "Campaign" not in attribution.get("prohibitedJump", ""):
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: prohibitedJump must block over-attribution")
