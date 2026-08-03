@@ -187,10 +187,16 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
                 f"pages[{index}].section is invalid: {item['section']!r}"
             )
         order = item["order"]
-        if not isinstance(order, int) or isinstance(order, bool) or order < 0:
+        if (
+            isinstance(order, bool)
+            or not isinstance(order, (int, float))
+            or order < 0
+            or (isinstance(order, float) and not order.is_integer())
+        ):
             raise SitePageRegistryError(
                 f"pages[{index}].order must be a non-negative integer"
             )
+        item["order"] = int(order)
         title = item.get("title")
         if title is not None and (not isinstance(title, str) or not title):
             raise SitePageRegistryError(
@@ -456,6 +462,70 @@ def run_registry_security_regressions() -> list[str]:
             },
         ),
         (
+            "boolean page order",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [
+                    {
+                        "source": "cases/example.md",
+                        "destination": "cases/example/index.md",
+                        "section": "additional",
+                        "order": True,
+                    }
+                ],
+                "directoryRoutes": {},
+            },
+        ),
+        (
+            "negative page order",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [
+                    {
+                        "source": "cases/example.md",
+                        "destination": "cases/example/index.md",
+                        "section": "additional",
+                        "order": -1,
+                    }
+                ],
+                "directoryRoutes": {},
+            },
+        ),
+        (
+            "fractional page order",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [
+                    {
+                        "source": "cases/example.md",
+                        "destination": "cases/example/index.md",
+                        "section": "additional",
+                        "order": 220.5,
+                    }
+                ],
+                "directoryRoutes": {},
+            },
+        ),
+        (
+            "non-finite page order",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [
+                    {
+                        "source": "cases/example.md",
+                        "destination": "cases/example/index.md",
+                        "section": "additional",
+                        "order": float("nan"),
+                    }
+                ],
+                "directoryRoutes": {},
+            },
+        ),
+        (
             "trailing slash after markdown source",
             {
                 "schemaVersion": SCHEMA_VERSION,
@@ -520,6 +590,30 @@ def run_registry_security_regressions() -> list[str]:
         parse_registry_data(valid_registry, "valid fixture")
     except SitePageRegistryError as exc:
         failures.append(f"registry parser rejected valid object: {exc}")
+
+    integral_order_registry = {
+        "schemaVersion": SCHEMA_VERSION,
+        "canonicalDirectories": [],
+        "pages": [
+            {
+                "source": "cases/example.md",
+                "destination": "cases/example/index.md",
+                "section": "additional",
+                "order": 220.0,
+            }
+        ],
+        "directoryRoutes": {},
+    }
+    try:
+        parsed_integral_order = parse_registry_data(
+            integral_order_registry,
+            "integral numeric order fixture",
+        )
+        normalized_order = parsed_integral_order["pages"][0]["order"]
+        if normalized_order != 220 or isinstance(normalized_order, bool):
+            failures.append("registry parser did not normalize integral numeric order")
+    except SitePageRegistryError as exc:
+        failures.append(f"registry parser rejected integral numeric order: {exc}")
 
     for destination in (
         "_data/injected/index.md",

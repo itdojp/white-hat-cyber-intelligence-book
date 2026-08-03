@@ -145,7 +145,7 @@
 
 | Negative Finding ID | Related Evidence IDs | Searched behavior | Search window | Available coverage | Gaps | Permitted conclusion |
 |---|---|---|---|---|---|---|
-| `NEG-2026-001` | `EVD-2026-004` | 未承認同意変更と異常なApp sign-in | 過去90日 | 同意変更とsign-inは72日分。API利用は一部のみ | 18日分の保持不足、API利用Field不足 | 取得できた範囲では該当Eventを確認していない。侵害不存在は断定しない |
+| `NEG-2026-001` | `EVD-2026-004` | 未承認同意変更、異常なApp sign-in、Data API利用 | 過去90日 | 同意変更とsign-inは72日分。API利用は一部のみ | 18日分の保持不足、API利用Field不足 | 取得できた範囲では3つの対象Behaviorに該当するEventを確認していない。侵害不存在は断定しない |
 
 ## 7. Findings and Control Gaps
 
@@ -253,7 +253,7 @@
 | Metric ID | Metric | Baseline | Target | Measurement window | Owner |
 |---|---|---:|---:|---|---|
 | `MET-2026-001` | Decision latency | 47時間30分 | 48時間以内 | Case開始からDecisionまで | Security Program Lead |
-| `MET-2026-002` | Critical hypothesis evidence coverage | 2 / 3 | 3 / 3、またはGapの責任者と期限を明示 | Reassessment時 | Case owner |
+| `MET-2026-002` | Critical hypothesis evidence coverage | 3 / 3 | 3 / 3を維持し、Gapの責任者と期限を明示 | Reassessment時 | Case owner |
 | `MET-2026-003` | Verified control improvement rate | 0 / 4 | 4 / 4 | 30日 | Control owners |
 | `MET-2026-004` | Reassessment completed by due date | 未計測 | 100% | 四半期 | Security Program Lead |
 
