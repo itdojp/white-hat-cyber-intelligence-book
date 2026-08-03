@@ -193,7 +193,7 @@ INDEPENDENCE_EVALUATION_TOKENS = (
     "独立",
     "裏付け",
 )
-URL_RE = re.compile(r"https?://[^\s<>\]\[\"']+", re.IGNORECASE)
+URL_RE = re.compile(r"https?://[^\s<>\"']+", re.IGNORECASE)
 
 
 def post_idna_ascii_compatibility_chars() -> frozenset[str]:
@@ -338,7 +338,9 @@ KNOWN_SECRET_RE = re.compile(
 PHONE_RE = re.compile(
     r"(?<!\d)(?!(?:0[1-9]|1[0-2])-[0-3]\d-(?:19|20)\d{2})"
     r"(?:(?!\+81[ ./-]?(?:19|20)\d{2}[ ./-]?\d{4}[ ./-]?\d{4})"
-    r"\+\d{1,3}(?:[ ./-]\d{1,4}){2,3}|0\d{1,3}[ ./-]\d{2,4}[ ./-]\d{3,4}|"
+    r"\+\d{1,3}(?:[ ./-]\d{1,4}){2,4}|"
+    r"\+\d{1,3}[ ./-]\d{1,4}[ ./-]?\d{6,10}|"
+    r"0\d{1,3}[ ./-]\d{2,4}[ ./-]\d{3,4}|"
     r"\+\d{10,15}|81[1-9]\d{8,9}|1[2-9]\d{2}[2-9]\d{6}|"
     r"[2-9]\d{2}[ ./-][2-9]\d{2}[ ./-]\d{4}|0[1-9]\d{8,9})(?!\d)"
 )
@@ -555,11 +557,12 @@ def normalize_phone_parentheses(text: str) -> str:
         rf"{sentinel}\1{sentinel}",
         without_dates,
     )
-    return re.sub(
+    normalized = re.sub(
         rf"[ ./-]*{sentinel}(\+?\d{{1,4}}){sentinel}[ ./-]*",
         r"-\1-",
         marked,
     )
+    return re.sub(r"-{2,}", "-", normalized)
 
 
 def general_host_from_match(match: re.Match[str]) -> str:
@@ -648,18 +651,64 @@ def strip_url_trailing_punctuation(raw_url: str) -> str:
     return stripped
 
 
+def has_unambiguous_url_context(
+    text: str, url_match: re.Match[str], raw_url: str
+) -> bool:
+    prefix = text[: url_match.start()]
+    if (
+        url_match.end() < len(text)
+        and prefix.endswith("<")
+        and text[url_match.end()] == ">"
+    ):
+        return True
+    if re.search(r"\]\(\s*<?\Z", prefix):
+        return True
+    line_prefix = prefix.rsplit("\n", 1)[-1]
+    if re.fullmatch(r"[ \t]{0,3}\[[^\]\n]+\]:[ \t]*<?", line_prefix):
+        return True
+    return prefix.endswith("(") and raw_url.endswith(")")
+
+
+def raw_url_authority(stripped_url: str) -> str:
+    remainder = stripped_url.partition("://")[2]
+    return re.split(r"[/?#]", remainder, maxsplit=1)[0]
+
+
 def url_domain_hosts(text: str):
     """Extract URL hosts without consuming adjacent Japanese prose."""
     for url_match in URL_RE.finditer(text):
         raw_url = url_match.group(0)
         stripped_url = strip_url_trailing_punctuation(raw_url)
-        parsed_url = urlparse(stripped_url)
-        parsed_host = parsed_url.hostname
+        try:
+            parsed_url = urlparse(stripped_url)
+            parsed_host = parsed_url.hostname
+        except ValueError:
+            yield raw_url_authority(stripped_url)
+            continue
         if not parsed_host:
             continue
+        try:
+            has_explicit_port = parsed_url.port is not None
+        except ValueError:
+            has_explicit_port = True
+        has_structural_boundary = bool(
+            has_explicit_port
+            or has_unambiguous_url_context(text, url_match, raw_url)
+            or parsed_url.path
+            or parsed_url.query
+            or parsed_url.fragment
+        )
         ipv4_authority_match = URL_IPV4_AUTHORITY_RE.match(parsed_host)
         if ipv4_authority_match is not None:
-            yield ipv4_authority_match.group("host")
+            matched_ipv4 = ipv4_authority_match.group("host")
+            remainder = parsed_host[ipv4_authority_match.end() :]
+            if (
+                remainder.startswith((".", "。", "．", "｡"))
+                and has_structural_boundary
+            ):
+                yield parsed_host
+            else:
+                yield matched_ipv4
             continue
         reserved_extension_match = RESERVED_SUFFIX_EXTENSION_RE.match(parsed_host)
         if reserved_extension_match is not None:
@@ -669,29 +718,9 @@ def url_domain_hosts(text: str):
         if known_suffix_match is not None:
             matched_host = general_host_from_match(known_suffix_match)
             remainder = parsed_host[known_suffix_match.end() :]
-            try:
-                has_explicit_port = parsed_url.port is not None
-            except ValueError:
-                has_explicit_port = True
-            has_unambiguous_wrapper = (
-                url_match.start() > 0
-                and url_match.end() < len(text)
-                and text[url_match.start() - 1] == "<"
-                and text[url_match.end()] == ">"
-            ) or (
-                url_match.start() > 0
-                and text[url_match.start() - 1] == "("
-                and raw_url.endswith(")")
-            )
             if (
                 remainder.startswith((".", "。", "．", "｡"))
-                and (
-                    has_explicit_port
-                    or has_unambiguous_wrapper
-                    or parsed_url.path
-                    or parsed_url.query
-                    or parsed_url.fragment
-                )
+                and has_structural_boundary
             ):
                 yield parsed_host
             else:
@@ -1509,7 +1538,12 @@ def main() -> int:
     if dataset.get("synthetic") is not True:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: synthetic must be true")
     require_globally_unique_owner_ids(dataset)
+    reference_error_count = len(ERRORS)
     require_reference_integrity(dataset)
+    if len(ERRORS) > reference_error_count:
+        for message in ERRORS:
+            print(f"ERROR: {message}")
+        return 1
     for key, expected in (
         ("datasetId", "FIX-CH25-2026-001"),
         ("artifactId", "ART-11"),
@@ -1998,9 +2032,19 @@ def main() -> int:
                     f"judgments.forecasts[{index}].{required_field} must be a "
                     "non-empty string"
                 )
-    markdown_forecast_rows = markdown_rows_by_id(
-        case, "FOR-2026-025-", case_path
-    )
+    forecast_body = subsection_body(case, "10.4 Forecasts")
+    if forecast_body is None:
+        error(
+            "cases/ch25-structured-analysis-attribution-example.md: missing "
+            "10.4 Forecasts subsection"
+        )
+        markdown_forecast_rows: dict[str, list[str]] = {}
+    else:
+        markdown_forecast_rows = markdown_rows_by_id(
+            forecast_body,
+            "FOR-2026-025-",
+            f"{case_path}:10.4 Forecasts",
+        )
     actual_markdown_forecast_confidence = {
         forecast_id: (
             normalized_markdown_cell(cells[3]) if len(cells) > 3 else None
@@ -2197,6 +2241,10 @@ def main() -> int:
         "+81-(90)-1234-5678",
         "(+81) 90 1234 5678",
         "03/1234/5678",
+        "(+81) (0)3 1234 5678",
+        "(+81)-(0)3-1234-5678",
+        "(+44) (0)20 7946 0958",
+        "(+81)(90)12345678",
     )
     for mutation in phone_mutations:
         if not PHONE_RE.search(normalize_phone_parentheses(mutation)):
@@ -2262,8 +2310,24 @@ def main() -> int:
     url_domain_regressions = {
         "<https://safe.example。悪意>": ["safe.example。悪意"],
         "(https://safe.example。悪意)": ["safe.example。悪意"],
+        '[x](https://safe.example。悪意 "title")': ["safe.example。悪意"],
+        "[x](https://safe.example。悪意 'title')": ["safe.example。悪意"],
+        "[x]( https://safe.example。悪意 )": ["safe.example。悪意"],
+        '[x](https://safe.example。悪意\n  "title")': [
+            "safe.example。悪意"
+        ],
+        '[x]: https://safe.example。悪意 "title"': ["safe.example。悪意"],
+        "http://192.0.2.1。local/path": ["192.0.2.1。local"],
+        "<http://192.0.2.1。local>": ["192.0.2.1。local"],
+        "[x](http://192.0.2.1。local)": ["192.0.2.1。local"],
+        "URL: http://192.0.2.1。internal:443": [
+            "192.0.2.1。internal"
+        ],
+        "http://[2001:db8::1]。悪意/path": ["[2001:db8::1]。悪意"],
+        "<http://[2001:db8::1]。悪意>": ["[2001:db8::1]。悪意"],
         "<https://safe.example>": ["safe.example"],
         "(http://192.0.2.1)": ["192.0.2.1"],
+        "<http://[2001:db8::1]>": ["2001:db8::1"],
     }
     for mutation, expected_hosts in url_domain_regressions.items():
         if list(url_domain_hosts(mutation)) != expected_hosts:
