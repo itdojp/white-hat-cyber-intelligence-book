@@ -157,8 +157,7 @@ GENERAL_HOST_CANDIDATE_RE = re.compile(
     + "|"
     + ASCII_TLD_PATTERN
     + r"))"
-    r"(?=$|です|でした|である|となる|を|が|は|の|へ|から|に|で|と|"
-    r"[/?:#]|[。．｡、,;；:：!！?？)\]」』])",
+    r"(?=$|[ぁ-ゖ]|[/?:#]|[。．｡、,;；:：!！?？)\]」』])",
     re.IGNORECASE | re.UNICODE,
 )
 HOST_CONTEXT_VALUE_RE = re.compile(
@@ -1497,6 +1496,9 @@ def main() -> int:
         "通信先は例え.frです",
         "観測した例え.comが応答した",
         "観測値は例え.com。次へ進む",
+        "観測値は例え.comも応答した",
+        "観測値は例え.comより取得した",
+        "観測値は例え.comまで到達した",
     )
     for mutation in general_host_regressions:
         match = GENERAL_HOST_CANDIDATE_RE.search(mutation)
