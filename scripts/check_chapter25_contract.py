@@ -804,11 +804,19 @@ def email_domain_hosts(text: str):
         raw_host = match.group("host")
         reserved_extension_match = RESERVED_SUFFIX_EXTENSION_RE.match(raw_host)
         if reserved_extension_match is not None:
-            yield reserved_extension_match.group("host")
+            yield (
+                raw_host
+                if reserved_extension_match.end() < len(raw_host)
+                else reserved_extension_match.group("host")
+            )
             continue
         known_suffix_match = GENERAL_HOST_CANDIDATE_RE.match(raw_host)
         if known_suffix_match is not None:
-            yield general_host_from_match(known_suffix_match)
+            yield (
+                raw_host
+                if known_suffix_match.end() < len(raw_host)
+                else general_host_from_match(known_suffix_match)
+            )
             continue
         yield raw_host
 
@@ -823,7 +831,13 @@ def contextual_domain_hosts(text: str):
             continue
         known_suffix_match = GENERAL_HOST_CANDIDATE_RE.search(value)
         if known_suffix_match is not None:
-            yield general_host_from_match(known_suffix_match)
+            remainder = value[known_suffix_match.end() :]
+            if remainder and not remainder.startswith(
+                ("/", "?", "#", ":", "、", ",", ";", "；")
+            ):
+                yield value
+            else:
+                yield general_host_from_match(known_suffix_match)
             continue
         if any(separator in value for separator in ".。．｡"):
             # An explicitly labelled host with an unknown suffix is still a host
@@ -860,7 +874,18 @@ def strip_html_comments_for_rendered_text(markdown: str) -> str:
     parser = RenderedTextExtractor()
     parser.feed(markdown)
     parser.close()
-    return "".join(parser.fragments)
+    rendered_text = "".join(parser.fragments)
+    rendered_text = re.sub(
+        r"!?\[([^\]]*)\]\([^)]*\)",
+        r"\1",
+        rendered_text,
+    )
+    rendered_text = re.sub(
+        r"!?\[([^\]]*)\]\[[^\]]*\]",
+        r"\1",
+        rendered_text,
+    )
+    return rendered_text.translate(str.maketrans("", "", "*_~`"))
 
 
 def markdown_pipe_lines(
@@ -2142,6 +2167,7 @@ def main() -> int:
         not canonical_permitted_language
         or any(
             not phrase.strip()
+            or strip_html_comments_for_rendered_text(phrase) != phrase
             or any(delimiter in phrase for delimiter in ("「", "」"))
             or any(
                 forbidden in phrase
@@ -2767,13 +2793,13 @@ def main() -> int:
     if punycode_match is None or punycode_match.group("host") != "xn--r8jz45g.xn--zckzah":
         error("fixture safety regression: adjacent punycode host was not tokenized")
     contextual_domain_regressions = {
-        "接続先は例え.comです": ["例え.com"],
-        "接続先は例え。世界です": ["例え。世界"],
-        "接続先はпример.РФです": ["пример.РФ"],
+        "接続先は例え.comです": ["例え.comです"],
+        "接続先は例え。世界です": ["例え。世界です"],
+        "接続先はпример.РФです": ["пример.РФです"],
         "接続先: 例え。テスト": ["例え。テスト"],
         "ドメインは 例え。テスト": ["例え。テスト"],
-        "合成接続先は例え.テスト.exampleです": ["例え.テスト.example"],
-        "接続先は例え.exampleを使用する": ["例え.example"],
+        "合成接続先は例え.テスト.exampleです": ["例え.テスト.exampleです"],
+        "接続先は例え.exampleを使用する": ["例え.exampleを使用する"],
         "接続先は例え.example/pathです": ["例え.example"],
         "URL: https://例え.example/path": ["例え.example"],
         "参照先はhttps://xn--r8jz45g.example/a?b=1です": [
@@ -2784,7 +2810,8 @@ def main() -> int:
         "URL: http://192.0.2.1/path": ["192.0.2.1"],
         "接続先はhttp://192.0.2.1です": ["192.0.2.1です"],
         "URL: http://192.0.2.1、確認する": ["192.0.2.1"],
-        "接続先は例え.example。次に確認する": ["例え.example"],
+        "接続先は例え.example。次に確認する": ["例え.example。次に確認する"],
+        "接続先はsafe.example悪意": ["safe.example悪意"],
         "URL: https://safe.example名@evil.com/path": ["evil.com"],
         "URL: https://safe.example(user)@evil.com/path": ["evil.com"],
         "URL: https://safe.example。悪意/path": ["safe.example。悪意"],
@@ -3007,9 +3034,10 @@ def main() -> int:
             "not recognized"
         )
     email_domain_regressions = {
-        "連絡先はuser@safe.exampleです": ["safe.example"],
-        "連絡先はuser@evil.comです": ["evil.com"],
-        "連絡先はuser@safe.example.localです": ["safe.example.local"],
+        "連絡先はuser@safe.exampleです": ["safe.exampleです"],
+        "連絡先はuser@evil.comです": ["evil.comです"],
+        "連絡先はuser@safe.example.localです": ["safe.example.localです"],
+        "連絡先はuser@safe.example悪意": ["safe.example悪意"],
     }
     for mutation, expected_hosts in email_domain_regressions.items():
         normalized_mutation = normalize_for_host_scanning(mutation)
