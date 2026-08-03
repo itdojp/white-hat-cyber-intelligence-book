@@ -460,6 +460,11 @@ def recursive_confidence_values(value, label: str = "root") -> None:
                     for idx, item in enumerate(child):
                         if item not in {"高", "中", "低"}:
                             error(f"cases/fixtures/ch25-structured-analysis-attribution-dataset.json: {child_label}[{idx}] must be 高 / 中 / 低")
+                else:
+                    error(
+                        "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
+                        f"{child_label} must be 高 / 中 / 低"
+                    )
             recursive_confidence_values(child, child_label)
     elif isinstance(value, list):
         for idx, item in enumerate(value):
@@ -669,7 +674,12 @@ def has_unambiguous_url_context(
     line_prefix = text[context_start:url_start]
     if re.search(r"\]\(\s*<?\Z", line_prefix):
         return True
-    if re.search(r"\[[^\]\n]+\]:[ \t]*<?\Z", line_prefix):
+    if re.search(r"\]:[ \t]*<?\Z", line_prefix):
+        return True
+    if re.search(
+        r"(?:^|\s)[A-Za-z_:][A-Za-z0-9_.:-]*\s*=\s*\Z",
+        line_prefix,
+    ):
         return True
     return preceding_character == "(" and raw_url.endswith(")")
 
@@ -1998,6 +2008,11 @@ def main() -> int:
     attribution = attribution_value if isinstance(attribution_value, dict) else {}
     if attribution.get("ladderLevel") != "L2":
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: expected L2 attribution stopping point")
+    if attribution.get("confidence") not in {"高", "中", "低"}:
+        error(
+            "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
+            "attributionAssessment.confidence must be 高 / 中 / 低"
+        )
     if "Technical cluster" not in " ".join(attribution.get("permittedLanguage", [])):
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: permittedLanguage must preserve technical-cluster wording")
     if "Campaign" not in attribution.get("prohibitedJump", ""):
@@ -2029,7 +2044,7 @@ def main() -> int:
     for index, forecast in enumerate(forecasts):
         if not isinstance(forecast, dict):
             continue
-        for required_field in ("statement", "confidence"):
+        for required_field in ("statement", "statementJa", "confidence"):
             field_value = forecast.get(required_field)
             if not isinstance(field_value, str) or not field_value.strip():
                 error(
@@ -2058,24 +2073,28 @@ def main() -> int:
             "cases/ch25-structured-analysis-attribution-example.md: Forecast "
             "rows must appear only in subsection 10.4 Forecasts"
         )
-    actual_markdown_forecast_confidence = {
+    actual_markdown_forecast_projection = {
         forecast_id: (
-            normalized_markdown_cell(cells[3]) if len(cells) > 3 else None
+            normalized_markdown_cell(cells[1]) if len(cells) > 1 else None,
+            normalized_markdown_cell(cells[3]) if len(cells) > 3 else None,
         )
         for forecast_id, cells in markdown_forecast_rows.items()
     }
-    expected_markdown_forecast_confidence = {
-        forecast.get("id"): forecast.get("confidence")
+    expected_markdown_forecast_projection = {
+        forecast.get("id"): (
+            forecast.get("statementJa"),
+            forecast.get("confidence"),
+        )
         for forecast in forecasts
         if isinstance(forecast, dict)
     }
     if (
-        actual_markdown_forecast_confidence
-        != expected_markdown_forecast_confidence
+        actual_markdown_forecast_projection
+        != expected_markdown_forecast_projection
     ):
         error(
             "cases/ch25-structured-analysis-attribution-example.md: Forecast "
-            "confidence rendering differs from the canonical fixture"
+            "statement/confidence rendering differs from the canonical fixture"
         )
     confirmed_facts = judgments.get("confirmedFacts", [])
     if any(isinstance(fact, dict) and fact.get("id") == "CF-2026-025-004" for fact in confirmed_facts):
@@ -2341,6 +2360,9 @@ def main() -> int:
         '> [x]: http://192.0.2.1。local "title"\n> [use][x]': [
             "192.0.2.1。local"
         ],
+        '[foo\\]]: https://192.0.2.1。悪意.com "title"': [
+            "192.0.2.1。悪意.com"
+        ],
         '<a href="https://safe.example。悪意">use</a>': [
             "safe.example。悪意"
         ],
@@ -2349,6 +2371,9 @@ def main() -> int:
         '`https://safe.example。悪意`': ["safe.example。悪意"],
         '<a href="http://192.0.2.1。local">x</a>': [
             "192.0.2.1。local"
+        ],
+        '<a href=https://192.0.2.1。中国>use</a>': [
+            "192.0.2.1。中国"
         ],
         "http://192.0.2.1。local/path": ["192.0.2.1。local"],
         "<http://192.0.2.1。local>": ["192.0.2.1。local"],
