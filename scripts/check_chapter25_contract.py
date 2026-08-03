@@ -203,6 +203,10 @@ INDEPENDENCE_EVALUATION_TOKENS = (
     "裏付け",
 )
 URL_RE = re.compile(r"https?://[^\s<>\"'`、]+", re.IGNORECASE)
+PROTOCOL_RELATIVE_URL_RE = re.compile(
+    r"(?<![:/])//[^\s<>\"'`、]+",
+    re.IGNORECASE,
+)
 
 
 def post_idna_ascii_compatibility_chars() -> frozenset[str]:
@@ -836,6 +840,18 @@ def url_domain_hosts(text: str):
                 yield matched_host
             continue
         yield parsed_host
+
+
+def protocol_relative_hosts(text: str):
+    """Extract protocol-relative authorities, including numeric host forms."""
+    for match in PROTOCOL_RELATIVE_URL_RE.finditer(text):
+        candidate = strip_url_trailing_punctuation(match.group(0))
+        try:
+            host = urlparse(f"https:{candidate}").hostname
+        except ValueError:
+            host = raw_url_authority(f"https:{candidate}")
+        if host:
+            yield host
 
 
 def email_domain_hosts(text: str):
@@ -1658,6 +1674,8 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     compatibility_text = normalize_for_host_scanning(rendered_safety_text)
     for host in url_domain_hosts(compatibility_text):
         assert_synthetic_host(host, f"{relative}: URL")
+    for host in protocol_relative_hosts(compatibility_text):
+        assert_synthetic_host(host, f"{relative}: protocol-relative URL")
     for match in HOSTNAME_RE.finditer(compatibility_text):
         host = match.group("host").lower()
         if is_repository_file_reference(host):
@@ -3325,15 +3343,20 @@ def main() -> int:
         r"[x](https\://evil\.com/path)",
         "[x](//evil%2ecom/path)",
         "[x](https%3A%2F%2Fevil%2ecom/path)",
+        "[x](//%31%33%34%37%34%34%30%37%32/path)",
     )
     for encoded_live_url in encoded_live_urls:
         normalized_live_url = normalize_synthetic_safety_text(encoded_live_url)
         compatibility_live_url = normalize_for_host_scanning(normalized_live_url)
-        detected_live_hosts = set(url_domain_hosts(compatibility_live_url)) | {
+        detected_live_hosts = (
+            set(url_domain_hosts(compatibility_live_url))
+            | set(protocol_relative_hosts(compatibility_live_url))
+            | {
             match.group("host").lower()
             for match in HOSTNAME_RE.finditer(compatibility_live_url)
-        }
-        if "evil.com" not in detected_live_hosts:
+            }
+        )
+        if not detected_live_hosts:
             error(
                 "fixture safety regression: encoded URL escaped synthetic "
                 f"host tokenization: {encoded_live_url!r}"
