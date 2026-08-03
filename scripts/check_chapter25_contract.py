@@ -32,7 +32,8 @@ INDEPENDENCE_EVALUATION_TOKENS = (
 )
 URL_RE = re.compile(r"https?://[^\s<>()\]\[\"']+", re.IGNORECASE)
 HOSTNAME_RE = re.compile(
-    r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,63})"
+    r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]+\.)+"
+    r"(?:[A-Za-z]{2,63}|[Xx][Nn]--[A-Za-z0-9-]{1,59}))"
     r"(?![A-Za-z0-9_-])",
 )
 DOMAIN_CANDIDATE_RE = re.compile(
@@ -102,8 +103,9 @@ KNOWN_SECRET_RE = re.compile(
     r"\bBearer\s+[A-Za-z0-9._~+/=-]{16,})"
 )
 PHONE_RE = re.compile(
-    r"(?<![\d-])(?:\+\d{1,3}(?:[ .-]\d{1,4}){2,3}|0\d{1,3}[ .-]\d{2,4}[ .-]\d{3,4}|"
-    r"\+\d{10,15}|1[2-9]\d{2}[2-9]\d{6}|0[1-9]\d{8,9})(?!\d)"
+    r"(?<![\d-])(?:(?!\+81[ .-]?(?:19|20)\d{2}[ .-]?\d{4}[ .-]?\d{4})"
+    r"\+\d{1,3}(?:[ .-]\d{1,4}){2,3}|0\d{1,3}[ .-]\d{2,4}[ .-]\d{3,4}|"
+    r"\+\d{10,15}|81[1-9]\d{8,9}|1[2-9]\d{2}[2-9]\d{6}|0[1-9]\d{8,9})(?!\d)"
 )
 SYNTHETIC_CONTENT_FILES = (
     "manuscript/25-structured-analysis-attribution.md",
@@ -313,6 +315,23 @@ def is_unicode_domain_candidate(raw: str) -> bool:
     )
 
 
+def contextual_unicode_hosts(text: str):
+    """Extract all-Unicode IDNs only when prose explicitly labels a host context."""
+    context_re = re.compile(
+        r"(?:接続先|ドメイン|[Dd]omain|[Hh]ost|URL)(?P<value>[^\s`\"'<>|]{1,96})"
+    )
+    particles = "はがを:："
+    for match in context_re.finditer(text):
+        value = match.group("value").lstrip(particles)
+        for separator in "。．｡":
+            for tld in RECOGNIZED_IDN_TLDS:
+                marker = f"{separator}{tld}"
+                marker_index = value.find(marker)
+                if marker_index <= 0:
+                    continue
+                yield value[: marker_index + len(marker)]
+
+
 def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, list[str]]:
     rows: dict[str, list[str]] = {}
     for line in markdown.splitlines():
@@ -329,6 +348,19 @@ def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, lis
             continue
         rows[row_id] = cells
     return rows
+
+
+def normalized_markdown_cell(value: str) -> str:
+    return value.strip().replace("`", "")
+
+
+def subsection_body(markdown: str, heading: str) -> str | None:
+    pattern = re.compile(
+        rf"^### {re.escape(heading)}\n(?P<body>.*?)(?=^### |^## |\Z)",
+        re.MULTILINE | re.DOTALL,
+    )
+    match = pattern.search(markdown)
+    return match.group("body") if match is not None else None
 
 
 def require_unique_object_ids(items: object, label: str) -> None:
@@ -354,13 +386,11 @@ def require_unique_ids_recursively(value: object, label: str) -> None:
         return
 
     objects = [item for item in value if isinstance(item, dict)]
-    if objects and len(objects) == len(value):
-        if any("id" in item for item in objects):
-            require_unique_object_ids(value, label)
-        elif label.endswith(".judgments.analyticJudgment.alternativeAssessments") and any(
-            "alternativeHypothesisId" in item for item in objects
-        ):
-            identity_key = "alternativeHypothesisId"
+    if label.endswith(".judgments.analyticJudgment.alternativeAssessments"):
+        identity_key = "alternativeHypothesisId"
+        if len(objects) != len(value):
+            error(f"{label}: every entry must be an object with {identity_key}")
+        else:
             identifiers = [item.get(identity_key) for item in objects]
             if any(not identifier for identifier in identifiers):
                 error(f"{label}: every entry must have a non-empty {identity_key}")
@@ -371,6 +401,8 @@ def require_unique_ids_recursively(value: object, label: str) -> None:
                 error(
                     f"{label}: duplicate {identity_key} values are not allowed: {duplicates}"
                 )
+    elif any("id" in item for item in objects):
+        require_unique_object_ids(value, label)
     for index, child in enumerate(value):
         require_unique_ids_recursively(child, f"{label}[{index}]")
 
@@ -386,6 +418,10 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
             continue
         assert_synthetic_domain(host, f"{relative}: host/URL")
     checked_unicode_hosts: set[str] = set()
+    for candidate in contextual_unicode_hosts(text):
+        normalized = normalize_unicode_host(candidate).lower()
+        checked_unicode_hosts.add(normalized)
+        assert_synthetic_domain(normalized, f"{relative}: contextual Unicode/IDN host")
     for match in UNICODE_SEPARATOR_ASCII_HOST_RE.finditer(text):
         candidate = match.group("host")
         if not is_unicode_domain_candidate(candidate):
@@ -879,6 +915,126 @@ def main() -> int:
     }
     if actual_markdown_source_origins != expected_markdown_source_origins:
         error("cases/ch25-structured-analysis-attribution-example.md: Source Note origin mappings differ from the canonical fixture")
+    actual_markdown_source_details = {
+        source_note_id: (
+            actual_markdown_source_origins.get(source_note_id),
+            normalized_markdown_cell(cells[2]) if len(cells) > 2 else None,
+            normalized_markdown_cell(cells[3]) if len(cells) > 3 else None,
+            normalized_markdown_cell(cells[4]) if len(cells) > 4 else None,
+            normalized_markdown_cell(cells[5]) if len(cells) > 5 else None,
+        )
+        for source_note_id, cells in markdown_source_rows.items()
+    }
+    expected_markdown_source_details = {
+        item.get("id"): (
+            item.get("origin"),
+            item.get("reliability"),
+            item.get("credibility"),
+            item.get("independenceGroupId"),
+            item.get("collectedAt"),
+        )
+        for item in dataset.get("sourceNotes", [])
+        if isinstance(item, dict)
+    }
+    if actual_markdown_source_details != expected_markdown_source_details:
+        error(
+            "cases/ch25-structured-analysis-attribution-example.md: Source Note "
+            "reliability/credibility/independence/collection details differ from the canonical fixture"
+        )
+
+    markdown_projection = dataset.get("markdownProjection", {})
+    if not isinstance(markdown_projection, dict):
+        error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: markdownProjection must be an object")
+        markdown_projection = {}
+
+    markdown_negative_rows = markdown_rows_by_id(case, "NEG-2026-025-", case_path)
+    actual_markdown_negative_findings = {
+        finding_id: {
+            "id": finding_id,
+            "relatedEvidenceIds": re.findall(r"EVD-2026-025-\d{3}", cells[1]) if len(cells) > 1 else [],
+            "observationHypothesisId": normalized_markdown_cell(cells[2]) if len(cells) > 2 else None,
+            "searchedBehavior": normalized_markdown_cell(cells[3]) if len(cells) > 3 else None,
+            "searchWindow": normalized_markdown_cell(cells[4]) if len(cells) > 4 else None,
+            "availableCoverage": normalized_markdown_cell(cells[5]) if len(cells) > 5 else None,
+            "gap": normalized_markdown_cell(cells[6]) if len(cells) > 6 else None,
+            "permittedConclusion": normalized_markdown_cell(cells[7]) if len(cells) > 7 else None,
+        }
+        for finding_id, cells in markdown_negative_rows.items()
+    }
+    expected_markdown_negative_findings = {
+        item.get("id"): item
+        for item in markdown_projection.get("negativeFindings", [])
+        if isinstance(item, dict)
+    }
+    if actual_markdown_negative_findings != expected_markdown_negative_findings:
+        error("cases/ch25-structured-analysis-attribution-example.md: Negative Finding rendering differs from markdownProjection")
+
+    markdown_source_judgment_rows = markdown_rows_by_id(case, "SEJ-2026-025-", case_path)
+    actual_markdown_source_judgments = {
+        judgment_id: {
+            "id": judgment_id,
+            "statement": normalized_markdown_cell(cells[1]) if len(cells) > 1 else None,
+            "basis": normalized_markdown_cell(cells[2]) if len(cells) > 2 else None,
+            "changeCondition": normalized_markdown_cell(cells[3]) if len(cells) > 3 else None,
+        }
+        for judgment_id, cells in markdown_source_judgment_rows.items()
+    }
+    expected_markdown_source_judgments = {
+        item.get("id"): item
+        for item in markdown_projection.get("sourceEvaluationJudgments", [])
+        if isinstance(item, dict)
+    }
+    if actual_markdown_source_judgments != expected_markdown_source_judgments:
+        error("cases/ch25-structured-analysis-attribution-example.md: Source-evaluation Judgment rendering differs from markdownProjection")
+
+    markdown_attribution_rows = markdown_rows_by_id(case, "ATTR-2026-025-", case_path)
+    actual_markdown_attribution = {
+        assessment_id: {
+            "id": assessment_id,
+            "ladderLevel": normalized_markdown_cell(cells[1]) if len(cells) > 1 else None,
+            "evidenceThresholdMet": normalized_markdown_cell(cells[2]) if len(cells) > 2 else None,
+            "relatedEvidenceIds": re.findall(r"EVD-2026-025-\d{3}", cells[3]) if len(cells) > 3 else [],
+            "relatedAlternativeHypothesisIds": re.findall(r"ALT-2026-025-\d{3}", cells[4]) if len(cells) > 4 else [],
+            "permittedLanguage": normalized_markdown_cell(cells[5]) if len(cells) > 5 else None,
+            "prohibitedJump": normalized_markdown_cell(cells[6]) if len(cells) > 6 else None,
+        }
+        for assessment_id, cells in markdown_attribution_rows.items()
+    }
+    expected_markdown_attribution = {
+        item.get("id"): item
+        for item in markdown_projection.get("attributionAssessments", [])
+        if isinstance(item, dict)
+    }
+    if actual_markdown_attribution != expected_markdown_attribution:
+        error("cases/ch25-structured-analysis-attribution-example.md: Attribution Assessment rendering differs from markdownProjection")
+
+    judgment_assumption_body = subsection_body(case, "10.2 Assumptions")
+    if judgment_assumption_body is None:
+        error("cases/ch25-structured-analysis-attribution-example.md: missing 10.2 Assumptions subsection")
+        markdown_assumption_rows: dict[str, list[str]] = {}
+    else:
+        markdown_assumption_rows = markdown_rows_by_id(
+            judgment_assumption_body,
+            "ASM-2026-025-",
+            f"{case_path}:10.2 Assumptions",
+        )
+    actual_markdown_assumptions = {
+        assumption_id: {
+            "id": assumption_id,
+            "statement": normalized_markdown_cell(cells[1]) if len(cells) > 1 else None,
+            "whyNeeded": normalized_markdown_cell(cells[2]) if len(cells) > 2 else None,
+            "failureTrigger": normalized_markdown_cell(cells[3]) if len(cells) > 3 else None,
+            "relatedGapIds": re.findall(r"GAP-2026-025-\d{3}", cells[4]) if len(cells) > 4 else [],
+        }
+        for assumption_id, cells in markdown_assumption_rows.items()
+    }
+    expected_markdown_assumptions = {
+        item.get("id"): item
+        for item in markdown_projection.get("judgmentAssumptions", [])
+        if isinstance(item, dict)
+    }
+    if actual_markdown_assumptions != expected_markdown_assumptions:
+        error("cases/ch25-structured-analysis-attribution-example.md: Judgment Assumption rendering differs from markdownProjection")
     for observation in dataset.get("observationHypotheses", []):
         if not isinstance(observation, dict):
             continue
@@ -1143,11 +1299,11 @@ def main() -> int:
     for mutation in secret_mutations:
         if not KNOWN_SECRET_RE.search(mutation):
             error(f"fixture safety regression: known secret mutation was accepted: {mutation[:12]!r}")
-    phone_mutations = ("0312345678", "+819012345678", "14155552671")
+    phone_mutations = ("0312345678", "+819012345678", "819012345678", "14155552671")
     for mutation in phone_mutations:
         if not PHONE_RE.search(mutation):
             error(f"fixture safety regression: compact telephone mutation was accepted: {mutation!r}")
-    for non_phone in ("20260729101500", "0000000000"):
+    for non_phone in ("20260729101500", "0000000000", "+81-2026-0729-1015"):
         if PHONE_RE.search(non_phone):
             error(f"fixture safety regression: non-telephone numeric value was rejected: {non_phone!r}")
     for mutation in ("例え.テスト", "real。com"):
@@ -1159,6 +1315,11 @@ def main() -> int:
     adjacent_ascii_match = HOSTNAME_RE.search("接続先はreal.comです")
     if adjacent_ascii_match is None or adjacent_ascii_match.group("host") != "real.com":
         error("fixture safety regression: adjacent ASCII-dot host was not tokenized")
+    punycode_match = HOSTNAME_RE.search("接続先はxn--r8jz45g.xn--zckzahです")
+    if punycode_match is None or punycode_match.group("host") != "xn--r8jz45g.xn--zckzah":
+        error("fixture safety regression: adjacent punycode host was not tokenized")
+    if list(contextual_unicode_hosts("接続先は例え。テストです")) != ["例え。テスト"]:
+        error("fixture safety regression: contextual all-Unicode IDN host was not tokenized")
     if is_unicode_domain_candidate("これは。テスト"):
         error("fixture safety regression: Japanese prose was treated as a Unicode/IDN domain")
 

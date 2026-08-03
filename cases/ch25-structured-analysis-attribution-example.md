@@ -158,7 +158,7 @@ Missing evidenceとevidence of absenceを分離する。
 
 | Negative Finding ID | Related Evidence IDs | Related Observation Hypothesis ID | Searched behavior | Search window | Available coverage | Gap | Permitted conclusion |
 |---|---|---|---|---|---|---|---|
-| `NEG-2026-025-001` | `EVD-2026-025-008` | `OBS-2026-025-004` | 成功したfollow-on accessまたはtoken replay | 2026-07-21〜2026-07-29 | IdP sign-in summary 2026-07-23〜2026-07-29 | `GAP-2026-025-001`によりtoken issuance詳細と対象期間前半2日分が欠落 | 観測範囲では成功痕跡を確認していない。侵害不存在や未遂確定は断定しない |
+| `NEG-2026-025-001` | `EVD-2026-025-008` | `OBS-2026-025-004` | 成功したfollow-on accessまたはtoken replay | 2026-07-21〜2026-07-29 | IdP sign-in summary 2026-07-23〜2026-07-29 | `GAP-2026-025-001` によりtoken issuance詳細と対象期間前半2日分が欠落 | 観測範囲では成功痕跡を確認していない。侵害不存在や未遂確定は断定しない |
 
 ## 7. Uncertainty Register
 

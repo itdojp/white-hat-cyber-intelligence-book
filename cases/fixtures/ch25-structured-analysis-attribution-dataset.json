@@ -29,6 +29,88 @@
       "real-third-party-data"
     ]
   },
+  "markdownProjection": {
+    "negativeFindings": [
+      {
+        "id": "NEG-2026-025-001",
+        "relatedEvidenceIds": [
+          "EVD-2026-025-008"
+        ],
+        "observationHypothesisId": "OBS-2026-025-004",
+        "searchedBehavior": "成功したfollow-on accessまたはtoken replay",
+        "searchWindow": "2026-07-21〜2026-07-29",
+        "availableCoverage": "IdP sign-in summary 2026-07-23〜2026-07-29",
+        "gap": "GAP-2026-025-001 によりtoken issuance詳細と対象期間前半2日分が欠落",
+        "permittedConclusion": "観測範囲では成功痕跡を確認していない。侵害不存在や未遂確定は断定しない"
+      }
+    ],
+    "sourceEvaluationJudgments": [
+      {
+        "id": "SEJ-2026-025-001",
+        "statement": "Vendor bulletin、repost、recapの三件は独立外部観測とは言えない",
+        "basis": "SEH-2026-025-001、LIN-2026-025-001〜LIN-2026-025-003、同一independence group、CR-2026-025-001",
+        "changeCondition": "各媒体が別原典または独自観測を提示する"
+      }
+    ],
+    "attributionAssessments": [
+      {
+        "id": "ATTR-2026-025-001",
+        "ladderLevel": "L2",
+        "evidenceThresholdMet": "誘導mail、redirect chain、近接登録DomainによりTechnical clusterの関連は示せるが、独立外部裏付けとOperator固有癖は不足",
+        "relatedEvidenceIds": [
+          "EVD-2026-025-001",
+          "EVD-2026-025-002",
+          "EVD-2026-025-003",
+          "EVD-2026-025-004"
+        ],
+        "relatedAlternativeHypothesisIds": [
+          "ALT-2026-025-001",
+          "ALT-2026-025-002",
+          "ALT-2026-025-003"
+        ],
+        "permittedLanguage": "「同一Technical clusterの可能性がある」「Partner administratorを狙うcredential-relay型の挙動と整合する」",
+        "prohibitedJump": "Campaign、Operator、組織、国家の断定"
+      }
+    ],
+    "judgmentAssumptions": [
+      {
+        "id": "ASM-2026-025-001",
+        "statement": "quarantine exportが対象期間の誘導mail評価に対して実質的に完全である",
+        "whyNeeded": "lure観測の有無を評価するため",
+        "failureTrigger": "archive欠落やfilter bypassが判明した場合",
+        "relatedGapIds": [
+          "GAP-2026-025-004"
+        ]
+      },
+      {
+        "id": "ASM-2026-025-002",
+        "statement": "Vendor bulletinのscreen shotは撮影後に編集されていない",
+        "whyNeeded": "lineage評価のため",
+        "failureTrigger": "bulletin revision差分が見つかった場合",
+        "relatedGapIds": [
+          "GAP-2026-025-002"
+        ]
+      },
+      {
+        "id": "ASM-2026-025-003",
+        "statement": "translated excerptの訳語は攻撃意図を過度に誇張していない",
+        "whyNeeded": "意図推定のため",
+        "failureTrigger": "原文全文で別義が優勢と分かった場合",
+        "relatedGapIds": [
+          "GAP-2026-025-003"
+        ]
+      },
+      {
+        "id": "ASM-2026-025-004",
+        "statement": "IdP sign-in summaryは明示した2026-07-23〜2026-07-29のCoverage内で実質的に完全である",
+        "whyNeeded": "Coverage内のNegative Findingを解釈するため",
+        "failureTrigger": "summary欠落またはsummary外のtoken issuance recordが判明した場合",
+        "relatedGapIds": [
+          "GAP-2026-025-001"
+        ]
+      }
+    ]
+  },
   "syntheticEntities": {
     "organizations": [
       {
