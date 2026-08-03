@@ -2,9 +2,9 @@
 from __future__ import annotations
 
 import hashlib
-import html
-import json
+from html.parser import HTMLParser
 import ipaddress
+import json
 import re
 import stringprep
 import sys
@@ -844,16 +844,23 @@ def strip_html_comments_preserving_lines(markdown: str) -> str:
     )
 
 
+class RenderedTextExtractor(HTMLParser):
+    """Collect text with quote-aware HTML parsing and decoded character refs."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.fragments: list[str] = []
+
+    def handle_data(self, data: str) -> None:
+        self.fragments.append(data)
+
+
 def strip_html_comments_for_rendered_text(markdown: str) -> str:
     """Approximate rendered text for source-level ID collision checks."""
-    without_comments = re.sub(
-        r"<!--.*?(?:-->|\Z)",
-        "",
-        markdown,
-        flags=re.DOTALL,
-    )
-    without_tags = re.sub(r"</?[A-Za-z][^>]*>", "", without_comments)
-    return html.unescape(without_tags)
+    parser = RenderedTextExtractor()
+    parser.feed(markdown)
+    parser.close()
+    return "".join(parser.fragments)
 
 
 def markdown_pipe_lines(
@@ -2131,10 +2138,22 @@ def main() -> int:
         and all(isinstance(phrase, str) for phrase in canonical_permitted_value)
         else []
     )
-    if not canonical_permitted_language:
+    if (
+        not canonical_permitted_language
+        or any(
+            not phrase.strip()
+            or any(delimiter in phrase for delimiter in ("「", "」"))
+            or any(
+                forbidden in phrase
+                for forbidden in ("Campaign", "Operator", "組織", "国家")
+            )
+            for phrase in canonical_permitted_language
+        )
+    ):
         error(
             "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
-            "attributionAssessment.permittedLanguage must be a non-empty string array"
+            "attributionAssessment.permittedLanguage must contain only non-empty "
+            "L2-safe phrases without quote delimiters or prohibited attribution levels"
         )
     canonical_attribution_semantics = {
         canonical_attribution.get("id"): (
