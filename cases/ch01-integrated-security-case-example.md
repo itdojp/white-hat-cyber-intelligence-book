@@ -164,6 +164,7 @@
 | `TEL-2026-001` | `EVD-2026-003` | Admin consent変更 | actor、app ID、scope、target tenant、timestamp | 180日 | Available | SOC |
 | `TEL-2026-002` | `EVD-2026-001` | App credential変更 | actor、credential ID、operation、timestamp | 180日 | Available | Platform |
 | `TEL-2026-003` | `EVD-2026-004` | AppによるData API利用 | app ID、resource、operation、result、timestamp | 180日 | Partial | Platform |
+| `TEL-2026-004` | `EVD-2026-004` | App sign-in / Token利用 | app ID、credential ID、source、result、timestamp | 90日 | Available | Platform |
 
 ### 8.2 Detection Validation
 
@@ -176,7 +177,7 @@
 
 | Record ID | Type | Related hypothesis | Related Telemetry IDs | Question | Time range | Result | Evidence IDs | Next action |
 |---|---|---|---|---|---|---|---|---|
-| `HUNT-2026-001` | Hunt | `TH-2026-003` | `TEL-2026-003` | 未承認同意変更または不自然なApp sign-inはあるか | 過去90日 | 確認範囲では該当なし | `EVD-2026-004`, `NEG-2026-001` | Telemetry Gap解消後に再実施 |
+| `HUNT-2026-001` | Hunt | `TH-2026-003` | `TEL-2026-001`, `TEL-2026-003`, `TEL-2026-004` | 未承認同意変更、不自然なApp sign-in、またはData API利用はあるか | 過去90日 | 確認範囲では該当なし | `EVD-2026-004`, `NEG-2026-001` | Telemetry Gap解消後に再実施 |
 
 ## 9. Analytic Judgment
 

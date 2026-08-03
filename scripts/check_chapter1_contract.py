@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from datetime import datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -49,6 +50,16 @@ def require_tokens(relative: str, text: str, tokens: tuple[str, ...]) -> None:
     for token in tokens:
         if token not in text:
             error(f"{relative}: missing required token {token!r}")
+
+
+def table_value(relative: str, text: str, field: str) -> str | None:
+    match = re.search(
+        rf"^\| {re.escape(field)} \| (?P<value>[^|]+?) \|$", text, re.MULTILINE
+    )
+    if match is None:
+        error(f"{relative}: missing table field {field!r}")
+        return None
+    return match.group("value").strip()
 
 
 def main() -> int:
@@ -210,7 +221,8 @@ def main() -> int:
             "侵害不存在は断定しない",
             "| Status | Reassessment Due |",
             "| Confidence | 中 |",
-            "| `HUNT-2026-001` | Hunt | `TH-2026-003` | `TEL-2026-003` |",
+            "| `TEL-2026-004` | `EVD-2026-004` | App sign-in / Token利用 |",
+            "| `HUNT-2026-001` | Hunt | `TH-2026-003` | `TEL-2026-001`, `TEL-2026-003`, `TEL-2026-004` |",
             "| Related Evidence / Negative Finding IDs | `EVD-2026-001`, `EVD-2026-002`, `EVD-2026-003`, `EVD-2026-004`, `NEG-2026-001` |",
             "| Related Finding IDs | `FIND-2026-001`, `FIND-2026-002`, `FIND-2026-003` |",
             "| Related Detection / Hunt / Incident IDs | `DET-2026-001`, `DET-2026-002`, `HUNT-2026-001` |",
@@ -234,6 +246,31 @@ def main() -> int:
         error(f"{example_path}: alternative evidence contradicts validated telemetry")
     if re.search(r"^\| Confidence \| (?:High|Moderate|Low) \|$", example, re.MULTILINE):
         error(f"{example_path}: confidence vocabulary must use 高 / 中 / 低")
+
+    case_times: dict[str, datetime] = {}
+    for field in ("Created at", "Decision deadline", "Decision time"):
+        raw_value = table_value(example_path, example, field)
+        if raw_value is None:
+            continue
+        try:
+            case_times[field] = datetime.fromisoformat(raw_value)
+        except ValueError:
+            error(f"{example_path}: {field} must be an ISO 8601 timestamp")
+    if len(case_times) == 3:
+        created_at = case_times["Created at"]
+        deadline = case_times["Decision deadline"]
+        decision_time = case_times["Decision time"]
+        if deadline - created_at != timedelta(hours=48):
+            error(f"{example_path}: decision deadline must be exactly 48 hours after case creation")
+        if not created_at <= decision_time <= deadline:
+            error(f"{example_path}: decision time must fall within the 48-hour decision window")
+        decision_minutes = int((decision_time - created_at).total_seconds() // 60)
+        expected_latency = f"{decision_minutes // 60}時間{decision_minutes % 60:02d}分"
+        if f"| `MET-2026-001` | Decision latency | {expected_latency} |" not in example:
+            error(
+                f"{example_path}: MET-2026-001 must report calculated latency "
+                f"{expected_latency}"
+            )
 
     secret_patterns = (
         re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
