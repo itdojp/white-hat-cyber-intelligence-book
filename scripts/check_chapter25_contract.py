@@ -32,15 +32,16 @@ INDEPENDENCE_EVALUATION_TOKENS = (
 )
 URL_RE = re.compile(r"https?://[^\s<>()\]\[\"']+", re.IGNORECASE)
 HOSTNAME_RE = re.compile(
-    r"(?<![\w@-])(?P<host>(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,63})(?![\w-])",
+    r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,63})"
+    r"(?![A-Za-z0-9_-])",
 )
 DOMAIN_CANDIDATE_RE = re.compile(
     r"(?<![\w@-])(?P<host>(?:[^\W_]|-)+(?:[.。．｡](?:[^\W_]|-)+)+)(?![\w-])",
     re.UNICODE,
 )
 UNICODE_SEPARATOR_ASCII_HOST_RE = re.compile(
-    r"(?<![A-Za-z0-9@-])(?P<host>(?:[A-Za-z0-9-]+[。．｡])+[A-Za-z0-9-]+)"
-    r"(?![A-Za-z0-9-])"
+    r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]+[。．｡])+[A-Za-z0-9-]+)"
+    r"(?![A-Za-z0-9_-])"
 )
 COMMON_PUBLIC_TLDS = frozenset(
     {
@@ -354,9 +355,9 @@ def require_unique_ids_recursively(value: object, label: str) -> None:
 
     objects = [item for item in value if isinstance(item, dict)]
     if objects and len(objects) == len(value):
-        if all("id" in item for item in objects):
+        if any("id" in item for item in objects):
             require_unique_object_ids(value, label)
-        elif label.endswith(".judgments.analyticJudgment.alternativeAssessments") and all(
+        elif label.endswith(".judgments.analyticJudgment.alternativeAssessments") and any(
             "alternativeHypothesisId" in item for item in objects
         ):
             identity_key = "alternativeHypothesisId"
@@ -1155,6 +1156,9 @@ def main() -> int:
     adjacent_match = UNICODE_SEPARATOR_ASCII_HOST_RE.search("接続先はreal。comです")
     if adjacent_match is None or adjacent_match.group("host") != "real。com":
         error("fixture safety regression: adjacent Unicode-separator host was not tokenized")
+    adjacent_ascii_match = HOSTNAME_RE.search("接続先はreal.comです")
+    if adjacent_ascii_match is None or adjacent_ascii_match.group("host") != "real.com":
+        error("fixture safety regression: adjacent ASCII-dot host was not tokenized")
     if is_unicode_domain_candidate("これは。テスト"):
         error("fixture safety regression: Japanese prose was treated as a Unicode/IDN domain")
 
