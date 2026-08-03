@@ -182,10 +182,14 @@ GENERAL_HOST_CANDIDATE_RE = re.compile(
     r"(?=$|[/?:#]|[。．｡、,;；:：!！?？)\]」』])",
     re.IGNORECASE | re.UNICODE,
 )
+URL_IPV4_AUTHORITY_RE = re.compile(
+    r"(?P<host>(?:\d{1,3}\.){3}\d{1,3})(?=$|[^\x00-\x7f]|[/?:#])"
+)
 RESERVED_SUFFIX_EXTENSION_RE = re.compile(
     r"(?P<host>(?:(?:[^\W_@]|-){1,63}[.。．｡]){1,9}"
-    r"(?:example|test|invalid)(?:[.。．｡](?:[^\W_@]|-){1,63}){1,9})"
-    r"(?=$|[^\w-])",
+    r"(?:example|test|invalid)(?:\.(?:[^\W_@]|-){1,63}|"
+    r"[。．｡][A-Za-z0-9-]{1,63}))"
+    r"(?=$|[^\x00-\x7f]|[/?:#]|[,;:!?)\]])",
     re.IGNORECASE | re.UNICODE,
 )
 HOST_CONTEXT_VALUE_RE = re.compile(
@@ -395,11 +399,20 @@ def normalize_unicode_host(raw: str) -> str:
 
 def normalize_for_host_scanning(text: str) -> str:
     """Apply Python IDNA's Stringprep B.1/B.2 mapping before tokenization."""
+    separator_sentinels = {
+        "。": "\ue000",
+        "．": "\ue001",
+        "｡": "\ue002",
+    }
+    protected_text = text.translate(str.maketrans(separator_sentinels))
     mapped = "".join(
         "" if stringprep.in_table_b1(char) else stringprep.map_table_b2(char)
-        for char in text
+        for char in protected_text
     )
-    return unicodedata.normalize("NFKC", mapped)
+    normalized = unicodedata.normalize("NFKC", mapped)
+    return normalized.translate(
+        str.maketrans({sentinel: separator for separator, sentinel in separator_sentinels.items()})
+    )
 
 
 def general_host_from_match(match: re.Match[str]) -> str:
@@ -454,6 +467,10 @@ def url_domain_hosts(text: str):
     for raw_url in URL_RE.findall(text):
         stripped_url = raw_url.rstrip(".,;:")
         after_scheme = stripped_url.split("://", 1)[1]
+        ipv4_authority_match = URL_IPV4_AUTHORITY_RE.match(after_scheme)
+        if ipv4_authority_match is not None:
+            yield ipv4_authority_match.group("host")
+            continue
         known_suffix_match = GENERAL_HOST_CANDIDATE_RE.match(after_scheme)
         if known_suffix_match is not None:
             yield general_host_from_match(known_suffix_match)
@@ -1684,6 +1701,9 @@ def main() -> int:
         "接続先はhttps://例え.exampleです": ["例え.example"],
         "URL: https://例え.example、確認する": ["例え.example"],
         "URL: http://192.0.2.1/path": ["192.0.2.1"],
+        "接続先はhttp://192.0.2.1です": ["192.0.2.1"],
+        "URL: http://192.0.2.1、確認する": ["192.0.2.1"],
+        "接続先は例え.example。次に確認する": ["例え.example"],
     }
     for mutation, expected_hosts in contextual_domain_regressions.items():
         if list(contextual_domain_hosts(mutation)) != expected_hosts:
@@ -1748,6 +1768,16 @@ def main() -> int:
             error(
                 "fixture safety regression: reserved suffix extension was not "
                 f"tokenized as a complete invalid host: {extended_reserved_host!r}"
+            )
+    for sentence_terminated_host in (
+        "例え.example。次に確認する",
+        "例え.example．次に確認する",
+        "例え.example｡次に確認する",
+    ):
+        if RESERVED_SUFFIX_EXTENSION_RE.search(sentence_terminated_host):
+            error(
+                "fixture safety regression: Japanese sentence text after a "
+                f"reserved host was treated as an additional label: {sentence_terminated_host!r}"
             )
     for mutation in ("\u200b", "\ufeff", "ROLE-2026-025-001\u200b", "role-001"):
         if is_valid_identity(mutation):
