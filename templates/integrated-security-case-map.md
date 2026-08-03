@@ -130,9 +130,9 @@
 
 ## 6. Evidence Register
 
-| Evidence ID | Question supported | Source / collector | Collected at | Integrity / hash | Limitation | Classification |
-|---|---|---|---|---|---|---|
-| `EVD-CASE-001` |  |  |  |  |  |  |
+| Evidence ID | Observation ID | Validation ID | Authority / RoE ID | Question supported | Source / collector | Collected at | Integrity / hash | Limitation | Classification |
+|---|---|---|---|---|---|---|---|---|---|
+| `EVD-CASE-001` | `OBS-CASE-001` | `VAL-CASE-001` | `ROE-CASE-001` |  |  |  |  |  |  |
 
 ### Negative Finding
 
@@ -192,6 +192,7 @@
 | Field | Value |
 |---|---|
 | Decision ID | `DEC-CASE-001` |
+| Related Analytic Judgment ID | `AJ-CASE-001` |
 | Decision owner |  |
 | Decision time |  |
 | Selected option |  |
@@ -205,15 +206,16 @@
 
 ## 11. Control Improvement and Retest
 
-| Control ID | Improvement | Owner | Due date | Verification method | Result |
-|---|---|---|---|---|---|
-| `CTRL-CASE-001` |  |  |  |  | Planned / Passed / Failed / Partial |
+| Control ID | Related Decision ID | Related Finding IDs | Improvement | Owner | Due date | Verification method | Result |
+|---|---|---|---|---|---|---|---|
+| `CTRL-CASE-001` | `DEC-CASE-001` | `FIND-CASE-001` |  |  |  |  | Planned / Passed / Failed / Partial |
 
 ## 12. Reassessment
 
 | Field | Value |
 |---|---|
 | Reassessment ID | `REA-CASE-001` |
+| Related Control IDs | `CTRL-CASE-001` |
 | Scheduled date |  |
 | Trigger conditions |  |
 | Evidence to recollect |  |

@@ -116,7 +116,7 @@
 | Alternative ID | Explanation | Supporting evidence | Contradicting evidence | What would distinguish it |
 |---|---|---|---|---|
 | `ALT-2026-001` | 広いscopeは初期導入時の暫定設定が残っただけで、悪用はない | 変更履歴に導入時の設定がある | 現行要件に不要でありCredentialは有効 | Token利用の完全なTelemetry |
-| `ALT-2026-002` | 同意Eventの不足は収集設定ではなく保持期間外である | 90日より前のLogはない | 合成同意Eventは現行Pipelineでも欠落した | Pipeline設定Review |
+| `ALT-2026-002` | 同意Eventの不足は収集設定ではなく保持期間外である | 90日より前のLogはない | 合成同意Eventは現行Pipelineで取得でき、Rule testも成功した | Historical retentionとExport設定のReview |
 
 ## 5. Authorized Validation Plan
 
@@ -134,12 +134,12 @@
 
 ## 6. Evidence Register
 
-| Evidence ID | Question supported | Source / collector | Collected at | Integrity / hash | Limitation | Classification |
-|---|---|---|---|---|---|---|
-| `EVD-2026-001` | 現行scopeは何か | App registration export | 2026-07-20T13:20:00+09:00 | SHA-256をEvidence manifestへ記録 | 取得時点のSnapshot | Internal |
-| `EVD-2026-002` | 必要scopeは何か | 業務要件とAPI仕様のReview | 2026-07-20T14:10:00+09:00 | Review承認記録 | 将来要件変更は含まない | Internal |
-| `EVD-2026-003` | 同意Eventを観測できるか | 合成Tenant audit export | 2026-07-21T10:05:00+09:00 | SHA-256を記録 | Production Pipelineとの差異がある | Internal |
-| `EVD-2026-004` | 過去不正利用を評価できるか | 90日分の無害化Log集計 | 2026-07-21T15:40:00+09:00 | Query versionとHashを記録 | API利用Eventの一部が未収集 | Confidential |
+| Evidence ID | Observation ID | Validation ID | Authority / RoE ID | Question supported | Source / collector | Collected at | Integrity / hash | Limitation | Classification |
+|---|---|---|---|---|---|---|---|---|---|
+| `EVD-2026-001` | `OBS-2026-001` | `VAL-2026-001` | `ROE-2026-001` | 現行scopeは何か | App registration export | 2026-07-20T13:20:00+09:00 | SHA-256をEvidence manifestへ記録 | 取得時点のSnapshot | Internal |
+| `EVD-2026-002` | `OBS-2026-001` | `VAL-2026-001` | `ROE-2026-001` | 必要scopeは何か | 業務要件とAPI仕様のReview | 2026-07-20T14:10:00+09:00 | Review承認記録 | 将来要件変更は含まない | Internal |
+| `EVD-2026-003` | `OBS-2026-002` | `VAL-2026-002` | `ROE-2026-001` | 同意Eventを観測できるか | 合成Tenant audit export | 2026-07-21T10:05:00+09:00 | SHA-256を記録 | Production Pipelineとの差異がある | Internal |
+| `EVD-2026-004` | `OBS-2026-003` | `VAL-2026-003` | `ROE-2026-001` | 過去不正利用を評価できるか | 90日分の無害化Log集計 | 2026-07-21T15:40:00+09:00 | Query versionとHashを記録 | API利用Eventの一部が未収集 | Confidential |
 
 ### Negative Finding
 
@@ -202,6 +202,7 @@
 | Field | Value |
 |---|---|
 | Decision ID | `DEC-2026-001` |
+| Related Analytic Judgment ID | `AJ-2026-001` |
 | Decision owner | CTO |
 | Decision time | 2026-07-22T16:30:00+09:00 |
 | Selected option | 権限縮小と監視強化で継続。縮小完了まで新規同意を停止 |
@@ -215,18 +216,19 @@
 
 ## 11. Control Improvement and Retest
 
-| Control ID | Improvement | Owner | Due date | Verification method | Result |
-|---|---|---|---|---|---|
-| `CTRL-2026-001` | 必要scopeだけへ縮小 | Platform | 2026-07-25 | 設定Export差分と合成業務テスト | Passed |
-| `CTRL-2026-002` | Credential更新と旧Credential失効 | Platform | 2026-07-25 | Credential inventoryと利用確認 | Passed |
-| `CTRL-2026-003` | 許可List外Admin consent検知 | SOC | 2026-07-27 | `FIX-CONSENT-001`でRule test | Passed |
-| `CTRL-2026-004` | API利用Telemetry追加 | Platform | 2026-07-29 | Required fieldの欠落率測定 | Partial |
+| Control ID | Related Decision ID | Related Finding IDs | Improvement | Owner | Due date | Verification method | Result |
+|---|---|---|---|---|---|---|---|
+| `CTRL-2026-001` | `DEC-2026-001` | `FIND-2026-001` | 必要scopeだけへ縮小 | Platform | 2026-07-25 | 設定Export差分と合成業務テスト | Passed |
+| `CTRL-2026-002` | `DEC-2026-001` | `FIND-2026-001` | Credential更新と旧Credential失効 | Platform | 2026-07-25 | Credential inventoryと利用確認 | Passed |
+| `CTRL-2026-003` | `DEC-2026-001` | `FIND-2026-002` | 許可List外Admin consent検知 | SOC | 2026-07-27 | `FIX-CONSENT-001`でRule test | Passed |
+| `CTRL-2026-004` | `DEC-2026-001` | `FIND-2026-003` | API利用Telemetry追加 | Platform | 2026-07-29 | Required fieldの欠落率測定 | Partial |
 
 ## 12. Reassessment
 
 | Field | Value |
 |---|---|
 | Reassessment ID | `REA-2026-001` |
+| Related Control IDs | `CTRL-2026-001`, `CTRL-2026-002`, `CTRL-2026-003`, `CTRL-2026-004` |
 | Scheduled date | 2026-08-21 |
 | Trigger conditions | scope変更、Credential追加、Vendor仕様変更、関連Alert、重大な外部報告 |
 | Evidence to recollect | 設定Export、Rule test、Telemetry Coverage、30日Hunt結果 |

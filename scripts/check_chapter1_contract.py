@@ -153,6 +153,9 @@ def main() -> int:
             "Observation Hypotheses",
             "Alternative Explanations",
             "Evidence Register",
+            "Observation ID",
+            "Validation ID",
+            "Authority / RoE ID",
             "Negative Finding",
             "Telemetry Requirements",
             "Detection Validation",
@@ -163,6 +166,9 @@ def main() -> int:
             "Related Detection / Hunt / Incident IDs",
             "Confidence | 高 / 中 / 低",
             "Decision Record",
+            "Related Analytic Judgment ID",
+            "Related Decision ID",
+            "Related Control IDs",
             "Reassessment",
             "Handoff Contracts",
             "Outcome Metrics",
@@ -202,8 +208,15 @@ def main() -> int:
             "| Related Evidence / Negative Finding IDs | `EVD-2026-001`, `EVD-2026-002`, `EVD-2026-003`, `EVD-2026-004`, `NEG-2026-001` |",
             "| Related Finding IDs | `FIND-2026-001`, `FIND-2026-002`, `FIND-2026-003` |",
             "| Related Detection / Hunt / Incident IDs | `DET-2026-001`, `DET-2026-002`, `HUNT-2026-001` |",
+            "| Related Analytic Judgment ID | `AJ-2026-001` |",
+            "| Related Control IDs | `CTRL-2026-001`, `CTRL-2026-002`, `CTRL-2026-003`, `CTRL-2026-004` |",
+            "| `EVD-2026-003` | `OBS-2026-002` | `VAL-2026-002` | `ROE-2026-001` |",
+            "| `CTRL-2026-003` | `DEC-2026-001` | `FIND-2026-002` |",
+            "合成同意Eventは現行Pipelineで取得でき、Rule testも成功した",
         ),
     )
+    if "合成同意Eventは現行Pipelineでも欠落した" in example:
+        error(f"{example_path}: alternative evidence contradicts validated telemetry")
     if re.search(r"^\| Confidence \| (?:High|Moderate|Low) \|$", example, re.MULTILINE):
         error(f"{example_path}: confidence vocabulary must use 高 / 中 / 低")
 

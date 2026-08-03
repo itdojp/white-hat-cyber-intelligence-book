@@ -105,6 +105,10 @@ def schema_markdown_path(value: object, label: str) -> str:
         raise SitePageRegistryError(
             f"{label} must not contain CR, LF, U+2028, or U+2029"
         )
+    # Validate the raw JSON value before pathlib normalizes a trailing slash.
+    # For example, Path("cases/example.md/") becomes "cases/example.md".
+    if not value.endswith(".md"):
+        raise SitePageRegistryError(f"{label} must end in .md: {value}")
     path = base.safe_relative_path(value, label).as_posix()
     if not path.endswith(".md"):
         raise SitePageRegistryError(f"{label} must end in .md: {path}")
@@ -443,6 +447,22 @@ def run_registry_security_regressions() -> list[str]:
                 "pages": [
                     {
                         "source": "cases/foo\nbar.md",
+                        "destination": "cases/example/index.md",
+                        "section": "additional",
+                        "order": 1,
+                    }
+                ],
+                "directoryRoutes": {},
+            },
+        ),
+        (
+            "trailing slash after markdown source",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": ["cases"],
+                "pages": [
+                    {
+                        "source": "cases/example.md/",
                         "destination": "cases/example/index.md",
                         "section": "additional",
                         "order": 1,
