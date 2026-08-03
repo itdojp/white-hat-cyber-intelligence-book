@@ -580,7 +580,7 @@ def normalize_synthetic_safety_text(text: str) -> str:
         r"\1",
         decoded,
     )
-    return normalize_for_host_scanning(markdown_unescaped)
+    return markdown_unescaped
 
 
 def normalize_phone_parentheses(text: str) -> str:
@@ -625,29 +625,18 @@ def is_reserved_host_followed_by_japanese_sentence(raw: str) -> bool:
 
 def is_japanese_sentence_continuation(remainder: str) -> bool:
     """Recognize common prose immediately following a reserved example host."""
-    if any(
-        character.isascii()
-        and (character.isalnum() or character in ".-_@")
-        for character in remainder
-    ):
-        return False
-    return remainder.startswith(
-        (
-            "です",
-            "でした",
-            "である",
-            "では",
-            "を",
-            "は",
-            "が",
-            "に",
-            "へ",
-            "と",
-            "の",
-            "から",
-            "まで",
-            "より",
-        )
+    normalized = remainder.rstrip("。．｡！!？?」』")
+    return normalized in (
+        "です",
+        "でした",
+        "である",
+        "ではない",
+        "を使用する",
+        "を使用します",
+        "を参照する",
+        "を参照します",
+        "へ接続する",
+        "へ接続します",
     )
 
 
@@ -944,34 +933,66 @@ def protect_markdown_code(markdown: str) -> tuple[str, dict[str, str]]:
             line_body = line[: -len(line_ending)] if line_ending else line
             protected_lines.append(placeholder(line_body) + line_ending)
             continue
+        protected_lines.append(line)
 
-        output: list[str] = []
-        index = 0
-        while index < len(line):
-            if line[index] != "`":
-                output.append(line[index])
-                index += 1
-                continue
-            run_end = index + 1
-            while run_end < len(line) and line[run_end] == "`":
-                run_end += 1
-            delimiter = line[index:run_end]
-            closing = line.find(delimiter, run_end)
-            if closing < 0:
-                output.append(delimiter)
-                index = run_end
-                continue
-            code = line[run_end:closing].replace("\r", " ").replace("\n", " ")
-            if code.startswith(" ") and code.endswith(" ") and code.strip():
-                code = code[1:-1]
-            output.append(placeholder(code))
-            index = closing + len(delimiter)
-        protected_lines.append("".join(output))
-    return "".join(protected_lines), replacements
+    block_protected = "".join(protected_lines)
+    output: list[str] = []
+    index = 0
+    while index < len(block_protected):
+        if block_protected[index] != "`":
+            output.append(block_protected[index])
+            index += 1
+            continue
+        run_end = index + 1
+        while run_end < len(block_protected) and block_protected[run_end] == "`":
+            run_end += 1
+        delimiter = block_protected[index:run_end]
+        search_from = run_end
+        closing = -1
+        while True:
+            candidate = block_protected.find(delimiter, search_from)
+            if candidate < 0:
+                break
+            before_is_tick = candidate > 0 and block_protected[candidate - 1] == "`"
+            after = candidate + len(delimiter)
+            after_is_tick = (
+                after < len(block_protected) and block_protected[after] == "`"
+            )
+            if not before_is_tick and not after_is_tick:
+                closing = candidate
+                break
+            search_from = candidate + 1
+        if closing < 0:
+            output.append(delimiter)
+            index = run_end
+            continue
+        code = re.sub(r"\r\n?|\n", " ", block_protected[run_end:closing])
+        if code.startswith(" ") and code.endswith(" ") and code.strip():
+            code = code[1:-1]
+        output.append(placeholder(code))
+        index = closing + len(delimiter)
+    return "".join(output), replacements
 
 
 def normalized_reference_label(label: str) -> str:
     return " ".join(label.split()).casefold()
+
+
+def markdown_bracket_pairs(text: str) -> dict[int, int]:
+    """Map unescaped square-bracket pairs in one pass."""
+    stack: list[int] = []
+    pairs: dict[int, int] = {}
+    index = 0
+    while index < len(text):
+        if text[index] == "\\":
+            index += 2
+            continue
+        if text[index] == "[":
+            stack.append(index)
+        elif text[index] == "]" and stack:
+            pairs[stack.pop()] = index
+        index += 1
+    return pairs
 
 
 def matching_delimiter_end(
@@ -1018,17 +1039,20 @@ def matching_delimiter_end(
 
 def markdown_visible_links(text: str) -> str:
     """Project Markdown links to visible labels without rewriting undefined refs."""
+    definition_pattern = (
+        r"(?m)^(?: {0,3}>[ \t]?)* {0,3}"
+        r"\[(?P<label>[^\]\n]+)\]:[^\n]*(?:\n|$)"
+    )
     definitions = {
         normalized_reference_label(match.group("label"))
-        for match in re.finditer(
-            r"(?m)^ {0,3}\[(?P<label>[^\]\n]+)\]:[^\n]*(?:\n|$)", text
-        )
+        for match in re.finditer(definition_pattern, text)
     }
     text = re.sub(
-        r"(?m)^ {0,3}\[[^\]\n]+\]:[^\n]*(?:\n|$)",
+        definition_pattern,
         "",
         text,
     )
+    bracket_pairs = markdown_bracket_pairs(text)
     output: list[str] = []
     index = 0
     while index < len(text):
@@ -1038,7 +1062,7 @@ def markdown_visible_links(text: str) -> str:
             output.append(text[index])
             index += 1
             continue
-        label_end = matching_delimiter_end(text, label_start, "[", "]")
+        label_end = bracket_pairs.get(label_start)
         if label_end is None:
             output.append(text[index])
             index += 1
@@ -1058,9 +1082,7 @@ def markdown_visible_links(text: str) -> str:
                 index = destination_end + 1
                 continue
         if suffix_start < len(text) and text[suffix_start] == "[":
-            reference_end = matching_delimiter_end(
-                text, suffix_start, "[", "]"
-            )
+            reference_end = bracket_pairs.get(suffix_start)
             if reference_end is not None:
                 reference = text[suffix_start + 1 : reference_end] or label
                 if normalized_reference_label(reference) in definitions:
@@ -1120,7 +1142,7 @@ def markdown_pipe_lines(
         # Kramdown accepts independently varying 0--3 spaces on table lines.
         # Preserve structural containers such as blockquotes, but do not make
         # optional top-level indentation part of the table identity.
-        container_signature = markdown[line_start:content_start]
+        container_signature = ">" * markdown[line_start:content_start].count(">")
         parsed_lines.append((container_signature, cells) if cells else None)
     return parsed_lines
 
@@ -1632,7 +1654,8 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     """Check synthetic teaching content only; official Source Note URLs use SOURCE_POLICY."""
     # Decode character references before scanning so an HTML attribute cannot
     # disguise a live URL or hostname from the synthetic-content policy.
-    compatibility_text = normalize_synthetic_safety_text(text)
+    rendered_safety_text = normalize_synthetic_safety_text(text)
+    compatibility_text = normalize_for_host_scanning(rendered_safety_text)
     for host in url_domain_hosts(compatibility_text):
         assert_synthetic_host(host, f"{relative}: URL")
     for match in HOSTNAME_RE.finditer(compatibility_text):
@@ -1683,18 +1706,18 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         )
     for host in email_domain_hosts(compatibility_text):
         assert_synthetic_domain(host.lower(), f"{relative}: email")
-    for match in IPV4_RE.finditer(text):
+    for match in IPV4_RE.finditer(rendered_safety_text):
         assert_doc_ip(match.group(0), f"{relative}: IP")
-    for match in IPV6_RE.finditer(text):
+    for match in IPV6_RE.finditer(rendered_safety_text):
         candidate = match.group(0)
         if not is_ipv6_literal_candidate(candidate):
             continue
         assert_doc_ip(candidate, f"{relative}: IPv6")
-    if SECRET_VALUE_RE.search(text):
+    if SECRET_VALUE_RE.search(rendered_safety_text):
         error(f"{relative}: contains a secret/token/private-key value assignment")
-    if KNOWN_SECRET_RE.search(text):
+    if KNOWN_SECRET_RE.search(rendered_safety_text):
         error(f"{relative}: contains a known secret/token format")
-    if PRIVATE_KEY_RE.search(text):
+    if PRIVATE_KEY_RE.search(rendered_safety_text):
         error(f"{relative}: contains a private-key block")
     if PHONE_RE.search(normalize_phone_parentheses(compatibility_text)):
         error(f"{relative}: contains a telephone-number-like value")
@@ -3199,6 +3222,9 @@ def main() -> int:
         " Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts\n"
         "  --- | --- | --- | --- | ---\n"
         "   FOR-2026-025-999 | statement | 7日 | 中 | x",
+        " > Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+        "  > --- | --- | --- | --- | ---\n"
+        "   > FOR-2026-025-999 | statement | 7日 | 中 | x",
     ):
         if "FOR-2026-025-999" not in markdown_rows_by_id(
             rendered_table,
@@ -3278,7 +3304,10 @@ def main() -> int:
         "[FOR-2026-025-](https://safe.example/a_(b_(c)))999": True,
         '[FOR-2026-025-](https://safe.example "x)y")999': True,
         "[FOR-2026-025-][ref]999\n[ref]: https://safe.example": True,
+        "> [FOR-2026-025-][ref]999\n>\n> [ref]: https://safe.example": True,
+        "> [FOR-2026-025-]999\n>\n> [FOR-2026-025-]: https://safe.example": True,
         "`FOR-2026-025-<!--x-->999`": False,
+        "`FOR-2026-025-<!--x-->999\n`": False,
         "`FOR\\-2026-025-999`": False,
         "[FOR-2026-025-]999": False,
     }
@@ -3301,6 +3330,27 @@ def main() -> int:
             error(
                 "fixture safety regression: encoded URL escaped synthetic "
                 f"host tokenization: {encoded_live_url!r}"
+            )
+    encoded_safety_values = {
+        "192&#46;168&#46;1&#46;1": IPV4_RE,
+        r"192\.168\.1\.1": IPV4_RE,
+        "2001&#58;4860&#58;4860&#58;&#58;8888": IPV6_RE,
+        "AWS_SECRET_ACCESS_KEY&#61;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": KNOWN_SECRET_RE,
+        "AKI&#65;AAAAAAAAAAAAAAAA": KNOWN_SECRET_RE,
+        "&#45;&#45;&#45;&#45;&#45;BEGIN PRIVATE KEY&#45;&#45;&#45;&#45;&#45;": PRIVATE_KEY_RE,
+    }
+    for encoded_value, expected_pattern in encoded_safety_values.items():
+        normalized_value = normalize_synthetic_safety_text(encoded_value)
+        if expected_pattern.search(normalized_value) is None:
+            error(
+                "fixture safety regression: encoded IP/secret/private-key "
+                f"escaped normalization: {encoded_value!r}"
+            )
+    for ambiguous_remainder in ("の悪意", "です悪意"):
+        if is_japanese_sentence_continuation(ambiguous_remainder):
+            error(
+                "fixture safety regression: arbitrary Japanese host suffix "
+                f"was accepted as prose: {ambiguous_remainder!r}"
             )
     for disguised_policy_value in (
         "campaign断定",
