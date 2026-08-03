@@ -116,6 +116,59 @@ FIXTURE_REFERENCE_TARGETS = {
     "circularReportingCandidateId": ("lineage.circularReportingCandidates",),
     "affectedIds": ("__all_owners__",),
 }
+FIXTURE_REQUIRED_RECORD_REFERENCE_FIELDS = {
+    "markdownProjection.negativeFindings": (
+        "relatedEvidenceIds",
+        "observationHypothesisId",
+    ),
+    "markdownProjection.attributionAssessments": (
+        "relatedEvidenceIds",
+        "relatedAlternativeHypothesisIds",
+    ),
+    "markdownProjection.judgmentAssumptions": ("relatedGapIds",),
+    "evidence": ("sourceNoteId", "observationHypothesisId"),
+    "negativeFindings": (
+        "relatedEvidenceIds",
+        "gapId",
+        "observationHypothesisId",
+    ),
+    "uncertainties": ("affectedIds",),
+    "lineage.edges": ("from", "to"),
+    "lineage.circularReportingCandidates": ("sourceNoteIds",),
+    "deceptionCandidates": (
+        "evidenceIds",
+        "supportedAlternativeHypothesisIds",
+    ),
+    "judgments.confirmedFacts": ("evidenceIds",),
+    "judgments.assumptions": ("relatedGapIds",),
+    "judgments.analyticJudgment.alternativeAssessments": (
+        "alternativeHypothesisId",
+        "relatedEvidenceIds",
+    ),
+    "judgments.recommendations": ("relatedDecisionId",),
+    "indicators": ("relatedThreatHypothesisId",),
+    "sourceEvaluationJudgments": (
+        "sourceEvaluationHypothesisId",
+        "lineageEdgeIds",
+        "circularReportingCandidateId",
+    ),
+}
+FIXTURE_REQUIRED_SINGLETON_REFERENCE_FIELDS = {
+    "attributionAssessment": ("relatedAlternativeHypothesisIds",),
+    "judgments.analyticJudgment": ("relatedAlternativeHypothesisIds",),
+    "reassessment": ("triggeringIndicatorIds",),
+}
+FIXTURE_REQUIRED_ONE_OF_REFERENCE_FIELDS = {
+    "observationHypotheses": (
+        "relatedThreatHypothesisId",
+        "relatedSourceEvaluationHypothesisId",
+        "relatedAlternativeHypothesisId",
+    )
+}
+FIXTURE_REQUIRED_REFERENCE_FIELDS_BY_ID = {
+    "GAP-2026-025-001": ("relatedThreatHypothesisId",),
+    "GAP-2026-025-004": ("relatedThreatHypothesisId",),
+}
 IDENTITY_RE = re.compile(r"[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+\Z")
 ANALYTIC_ID_RE = re.compile(
     r"(?<![A-Z0-9-])(?:TH|OBS|SEH|GAP|ALT|SN|EVD|NEG|CR|DECPT|ATTR|CF|ASM|AJ|FOR|REC|IND|DEC|REA|LIN|UNC|SEJ)-2026-025(?:-\d{3})?(?![A-Z0-9-])"
@@ -746,10 +799,97 @@ def reference_integrity_violations(dataset: object) -> list[str]:
     )
     violations: list[str] = []
 
+    for collection_path, required_fields in (
+        FIXTURE_REQUIRED_RECORD_REFERENCE_FIELDS.items()
+    ):
+        collection = nested_value(dataset, collection_path)
+        if not isinstance(collection, list):
+            continue
+        for index, record in enumerate(collection):
+            if not isinstance(record, dict):
+                continue
+            for required_field in required_fields:
+                if required_field not in record:
+                    violations.append(
+                        f"{collection_path}[{index}].{required_field}: "
+                        "declared relationship field is missing"
+                    )
+    for singleton_path, required_fields in (
+        FIXTURE_REQUIRED_SINGLETON_REFERENCE_FIELDS.items()
+    ):
+        singleton = nested_value(dataset, singleton_path)
+        if not isinstance(singleton, dict):
+            continue
+        for required_field in required_fields:
+            if required_field not in singleton:
+                violations.append(
+                    f"{singleton_path}.{required_field}: "
+                    "declared relationship field is missing"
+                )
+    for collection_path, one_of_fields in (
+        FIXTURE_REQUIRED_ONE_OF_REFERENCE_FIELDS.items()
+    ):
+        collection = nested_value(dataset, collection_path)
+        if not isinstance(collection, list):
+            continue
+        for index, record in enumerate(collection):
+            if not isinstance(record, dict):
+                continue
+            present_fields = [field for field in one_of_fields if field in record]
+            if len(present_fields) != 1:
+                violations.append(
+                    f"{collection_path}[{index}]: exactly one declared relationship "
+                    f"field is required from {list(one_of_fields)}"
+                )
+    records_by_id: dict[str, tuple[str, dict]] = {}
+    for collection_path, identity_key in FIXTURE_IDENTITY_COLLECTIONS.items():
+        if identity_key != "id" or collection_path.startswith("markdownProjection."):
+            continue
+        collection = nested_value(dataset, collection_path)
+        if not isinstance(collection, list):
+            continue
+        for index, record in enumerate(collection):
+            if isinstance(record, dict) and isinstance(record.get("id"), str):
+                records_by_id[record["id"]] = (
+                    f"{collection_path}[{index}]",
+                    record,
+                )
+    for record_id, required_fields in FIXTURE_REQUIRED_REFERENCE_FIELDS_BY_ID.items():
+        record_entry = records_by_id.get(record_id)
+        if record_entry is None:
+            continue
+        record_path, record = record_entry
+        for required_field in required_fields:
+            if required_field not in record:
+                violations.append(
+                    f"{record_path}.{required_field}: declared relationship field is missing"
+                )
+
+    declared_id_like_fields = {
+        "id",
+        "datasetId",
+        "caseId",
+        "artifactId",
+        "decisionRequirementId",
+        "intelligenceRequirementId",
+        "analyticJudgmentId",
+        "decisionId",
+        "reassessmentId",
+        "independenceGroupId",
+        *FIXTURE_REFERENCE_TARGETS.keys(),
+    }
+
     def walk(value: object, path: str) -> None:
         if isinstance(value, dict):
             for key, child in value.items():
                 child_path = f"{path}.{key}" if path else key
+                if (
+                    re.search(r"(?:Id|Ids|ID|IDs)$", key)
+                    and key not in declared_id_like_fields
+                ):
+                    violations.append(
+                        f"{child_path}: undeclared identity/reference-like field"
+                    )
                 target_paths = FIXTURE_REFERENCE_TARGETS.get(key)
                 if target_paths is not None:
                     expected_ids = (
