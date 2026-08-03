@@ -584,7 +584,11 @@ def normalize_synthetic_safety_text(text: str) -> str:
         r"\1",
         decoded,
     )
-    return markdown_unescaped
+    return re.sub(
+        r"(?i)(?<![A-Za-z0-9])(?P<scheme>https?):[\\/]+",
+        lambda match: f"{match.group('scheme')}://",
+        markdown_unescaped,
+    )
 
 
 def normalize_phone_parentheses(text: str) -> str:
@@ -734,6 +738,7 @@ def markdown_line_contexts(
     fence_character = ""
     minimum_length = 0
     list_continuation_indent = 0
+    active_list_indent = 0
     offset = 0
     for line in text.splitlines(keepends=True):
         line_without_ending = line.rstrip("\r\n")
@@ -758,21 +763,36 @@ def markdown_line_contexts(
                 minimum_length = 0
                 list_continuation_indent = 0
         else:
-            opening_candidate = container_content
-            leading = re.match(r" {0,3}", opening_candidate)
+            leading = re.match(r" {0,3}", container_content)
             leading_length = len(leading.group(0)) if leading is not None else 0
-            after_leading = opening_candidate[leading_length:]
-            list_marker = re.match(
-                r"(?:[-+*]|\d{1,9}[.)])(?P<spacing>[ \t]+)",
-                after_leading,
-            )
-            if list_marker is not None:
-                marker_length = list_marker.end()
-                opening_candidate = after_leading[marker_length:]
-                candidate_list_indent = leading_length + marker_length
+            marker_cursor = leading_length
+            while True:
+                list_marker = re.match(
+                    r"(?:[-+*]|\d{1,9}[.)]|:)(?P<spacing>[ \t]+)",
+                    container_content[marker_cursor:],
+                )
+                if list_marker is None:
+                    break
+                marker_cursor += list_marker.end()
+            if marker_cursor > leading_length:
+                active_list_indent = marker_cursor
+                opening_candidate = container_content[marker_cursor:]
+                candidate_list_indent = marker_cursor
             else:
-                opening_candidate = after_leading
-                candidate_list_indent = 0
+                current_indent = len(container_content) - len(
+                    container_content.lstrip(" ")
+                )
+                if (
+                    active_list_indent
+                    and current_indent >= active_list_indent
+                ):
+                    opening_candidate = container_content[active_list_indent:]
+                    candidate_list_indent = active_list_indent
+                else:
+                    if container_content.strip() and current_indent < active_list_indent:
+                        active_list_indent = 0
+                    opening_candidate = container_content[leading_length:]
+                    candidate_list_indent = 0
             opening = re.match(
                 r"(?P<fence>`{3,}|~{3,})",
                 opening_candidate,
@@ -784,7 +804,7 @@ def markdown_line_contexts(
                 minimum_length = len(fence)
                 list_continuation_indent = candidate_list_indent
                 inside_code_context = True
-            elif container_content.startswith(("    ", "\t")):
+            elif opening_candidate.startswith(("    ", "\t")):
                 inside_code_context = True
 
         contexts.append(
@@ -868,8 +888,14 @@ def protocol_relative_hosts(text: str):
             host = urlparse(f"https:{candidate}").hostname
         except ValueError:
             host = raw_url_authority(f"https:{candidate}")
+        boundary = text[match.start() : match.start("url")]
+        structured_context = (
+            match.start("url") == 0
+            or bool(boundary and boundary[-1] in "(=[{'\"")
+        )
         if host and (
-            any(separator in host for separator in ".:")
+            structured_context
+            or any(separator in host for separator in ".:")
             or host.isdigit()
         ):
             yield host
@@ -1046,18 +1072,45 @@ def markdown_bracket_pairs(text: str) -> dict[int, int]:
 
 
 def markdown_parenthesis_pairs(text: str) -> dict[int, int]:
-    """Map unescaped parenthesis pairs with Markdown title quote handling."""
+    """Map structural unescaped parenthesis pairs in one pass."""
     stack: list[int] = []
     pairs: dict[int, int] = {}
-    quote: str | None = None
     index = 0
     while index < len(text):
         character = text[index]
         if character == "\\":
             index += 2
             continue
-        if stack and character in "\"'" and (
-            quote is not None or (index > stack[-1] + 1 and text[index - 1].isspace())
+        if character == "(":
+            stack.append(index)
+        elif character == ")" and stack:
+            pairs[stack.pop()] = index
+        index += 1
+    return pairs
+
+
+def markdown_link_destination_end(
+    text: str,
+    start: int,
+    structural_pairs: dict[int, int],
+) -> int | None:
+    """Resolve one link destination, localizing optional title quote state."""
+    structural_end = structural_pairs.get(start)
+    if structural_end is None:
+        return None
+    if re.search(r"\s[\"']", text[start + 1 : structural_end]) is None:
+        return structural_end
+
+    depth = 1
+    quote: str | None = None
+    index = start + 1
+    while index < len(text):
+        character = text[index]
+        if character == "\\":
+            index += 2
+            continue
+        if character in "\"'" and (
+            quote is not None or (index > start + 1 and text[index - 1].isspace())
         ):
             if quote == character:
                 quote = None
@@ -1069,20 +1122,20 @@ def markdown_parenthesis_pairs(text: str) -> dict[int, int]:
             index += 1
             continue
         if character == "(":
-            stack.append(index)
-        elif character == ")" and stack:
-            pairs[stack.pop()] = index
-            if not stack:
-                quote = None
+            depth += 1
+        elif character == ")":
+            depth -= 1
+            if depth == 0:
+                return index
         index += 1
-    return pairs
+    return None
 
 
 def markdown_visible_links(text: str) -> str:
     """Project Markdown links to visible labels without rewriting undefined refs."""
     definition_pattern = (
         r"(?m)^(?: {0,3}>[ \t]?)* {0,3}"
-        r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+)? {0,3}"
+        r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+ {0,3})*"
         r"\[(?P<label>[^\]\n]+)\]:[^\n]*(?:\n|$)"
     )
     definitions = {
@@ -1113,7 +1166,11 @@ def markdown_visible_links(text: str) -> str:
         label = text[label_start + 1 : label_end]
         suffix_start = label_end + 1
         if suffix_start < len(text) and text[suffix_start] == "(":
-            destination_end = parenthesis_pairs.get(suffix_start)
+            destination_end = markdown_link_destination_end(
+                text,
+                suffix_start,
+                parenthesis_pairs,
+            )
             if destination_end is not None:
                 output.append(label)
                 index = destination_end + 1
@@ -3361,7 +3418,9 @@ def main() -> int:
         "> [FOR-2026-025-][ref]999\n>\n> [ref]: https://safe.example": True,
         "> [FOR-2026-025-]999\n>\n> [FOR-2026-025-]: https://safe.example": True,
         "- [ref]: https://safe.example\n  [FOR-2026-025-][ref]999": True,
+        "- - [ref]: https://safe.example\n    [FOR-2026-025-][ref]999": True,
         "Term\n: [ref]: https://safe.example\n  [FOR-2026-025-][ref]999": True,
+        '( "unclosed\n[FOR-2026-025-](/x)999': True,
         "\\`FOR-2026-025-<!--x-->999\\`": True,
         "`FOR-2026-025-<!--x-->999`": False,
         "`FOR-2026-025-<!--x-->999\n`": False,
@@ -3381,11 +3440,16 @@ def main() -> int:
         '<a href="https&#58;//evil&#46;com/path">x</a>',
         r"[x](https\://evil\.com/path)",
         "[x](//evil%2ecom/path)",
+        "[x](//evil/path)",
+        "[x](//evil:443/path)",
+        "[x](//悪意/path)",
         "[x](https%3A%2F%2Fevil%2ecom/path)",
         "[x](//%31%33%34%37%34%34%30%37%32/path)",
         "[x](https:///evil/path)",
         "[x](https:////2130706433/path)",
         "[x](http:////127.1/path)",
+        r"[x](https:\\evil/path)",
+        r"[x](https:\\2130706433/path)",
     )
     for encoded_live_url in encoded_live_urls:
         normalized_live_url = normalize_synthetic_safety_text(encoded_live_url)
