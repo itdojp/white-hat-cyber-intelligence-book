@@ -70,8 +70,8 @@
 
 | Observation Hypothesis ID | Related Threat Hypothesis ID | Expected signal | Data source | Time window | Disconfirming observation |
 |---|---|---|---|---|---|
-| `OBS-2026-025-001` | `TH-2026-025-001` | `portal-reset.example`への誘導mailと`signin-bridge.example`経由のredirect chainが同一Case内に現れる | Mail gateway quarantine export、Decoy reverse-proxy log | 2026-07-21〜2026-07-29 | 誘導mailはあるがredirect chainが別Domain群で完結する |
-| `OBS-2026-025-002` | `TH-2026-025-002` | 同型lureの再送、近接登録Domain、同じredirect sequenceが見つかる | Mail gateway、Decoy capture、Domain registration export | 2026-07-21〜2026-07-29 | 同型lureが再送されず、redirect sequenceも再現しない |
+| `OBS-2026-025-001` | `TH-2026-025-001` | `portal-reset.example`への誘導mailと`signin-bridge.example`経由のredirect chainが同一Case内に現れる | `SN-2026-025-001` Mail gateway quarantine export、`SN-2026-025-002` Decoy reverse-proxy log | 2026-07-21〜2026-07-29 | 誘導mailはあるがredirect chainが別Domain群で完結する |
+| `OBS-2026-025-002` | `TH-2026-025-002` | 同型lureの再送、近接登録Domain、同じredirect sequenceが見つかる | `SN-2026-025-001` Mail gateway、`SN-2026-025-002` Decoy capture、`SN-2026-025-003` Domain registration export | 2026-07-21〜2026-07-29 | 同型lureが再送されず、redirect sequenceも再現しない |
 | `OBS-2026-025-004` | `TH-2026-025-003` | 成功したfollow-on accessを示すIdP telemetryまたはtoken replay痕跡がある | `SN-2026-025-008` IdP sign-in summary | 2026-07-21〜2026-07-29 | 十分なCoverageで成功痕跡がない |
 
 ### 4.2 Source-evaluation hypotheses
@@ -80,7 +80,7 @@ Source-evaluation hypothesisは、脅威行動ではなく報告の来歴・独�
 
 | Observation Hypothesis ID | Source-evaluation hypothesis ID | Statement | Expected signal | Data source | Disconfirming observation |
 |---|---|---|---|---|---|
-| `OBS-2026-025-003` | `SEH-2026-025-001` | 外部報告は同一原典から派生し、独立したcorroborationを構成しない | 同一screen shot、同一hash、引用連鎖 | SYNTH-MEDIA-RESEARCH-001 bulletin、SYNTH-MEDIA-WEEKLY-001 repost、SYNTH-MEDIA-WEEKLY-001 recap | 各媒体が別原典または独自観測を提示する |
+| `OBS-2026-025-003` | `SEH-2026-025-001` | 外部報告は同一原典から派生し、独立したcorroborationを構成しない | 同一screen shot、同一hash、引用連鎖 | `SN-2026-025-004` SYNTH-MEDIA-RESEARCH-001 bulletin、`SN-2026-025-005` SYNTH-MEDIA-WEEKLY-001 repost、`SN-2026-025-007` SYNTH-MEDIA-WEEKLY-001 recap | 各媒体が別原典または独自観測を提示する |
 
 ### 4.3 Alternative-hypothesis test observations
 
@@ -130,14 +130,14 @@ Source-evaluation hypothesisは、脅威行動ではなく報告の来歴・独�
 
 | Source Note ID | Origin | Reliability | Credibility | Independence group | Collected at | Provenance note | Limitation |
 |---|---|---|---|---|---|---|---|
-| `SN-2026-025-001` | Synthetic mail gateway quarantine export | 高 | 中 | `IG-INT-001` | 2026-07-27T08:40:00+09:00 | Internal synthetic control-plane export。取得経路は固定 | mail bodyは要約保持のみ |
-| `SN-2026-025-002` | Synthetic decoy reverse-proxy log | 高 | 高 | `IG-INT-002` | 2026-07-27T09:10:00+09:00 | Decoy tenantの直接観測。hash固定 | follow-on accessの成否は含まない |
-| `SN-2026-025-003` | Synthetic domain registration export | 中 | 中 | `IG-EXT-001` | 2026-07-27T10:05:00+09:00 | registrar snapshotを無害化して保存 | privacy registrationのため登録者は判定不能 |
-| `SN-2026-025-004` | SYNTH-MEDIA-RESEARCH-001 bulletin | 中 | 中 | `IG-EXT-002` | 2026-07-28T07:50:00+09:00 | screenshotと要約を掲載。原典扱い候補 | revision履歴なし |
-| `SN-2026-025-005` | SYNTH-MEDIA-WEEKLY-001 repost | 低 | 低 | `IG-EXT-002` | 2026-07-28T12:00:00+09:00 | `SN-2026-025-004`の引用が主 | 独自観測なし |
-| `SN-2026-025-006` | SYNTH-Translated chat excerpt | 低 | 低 | `IG-EXT-003` | 2026-07-29T08:20:00+09:00 | 抜粋のみ。訳文付与済み | 原文全文なし、発言者確認不能 |
-| `SN-2026-025-007` | SYNTH-MEDIA-WEEKLY-001 recap | 低 | 低 | `IG-EXT-002` | 2026-07-29T09:45:00+09:00 | repostとbulletinを再要約 | same-origin republicationの可能性 |
-| `SN-2026-025-008` | Synthetic IdP sign-in summary | 高 | 中 | `IG-INT-003` | 2026-07-29T10:15:00+09:00 | 2026-07-23〜2026-07-29の合成sign-in summary。取得経路とhashを固定 | token issuance詳細と対象期間前半2日分は保持外 |
+| `SN-2026-025-001` | `synthetic-mail-gateway` — Synthetic mail gateway quarantine export | 高 | 中 | `IG-INT-001` | 2026-07-27T08:40:00+09:00 | Internal synthetic control-plane export。取得経路は固定 | mail bodyは要約保持のみ |
+| `SN-2026-025-002` | `synthetic-decoy-proxy` — Synthetic decoy reverse-proxy log | 高 | 高 | `IG-INT-002` | 2026-07-27T09:10:00+09:00 | Decoy tenantの直接観測。hash固定 | follow-on accessの成否は含まない |
+| `SN-2026-025-003` | `synthetic-registrar-export` — Synthetic domain registration export | 中 | 中 | `IG-EXT-001` | 2026-07-27T10:05:00+09:00 | registrar snapshotを無害化して保存 | privacy registrationのため登録者は判定不能 |
+| `SN-2026-025-004` | `synthetic-vendor-bulletin` — SYNTH-MEDIA-RESEARCH-001 bulletin | 中 | 中 | `IG-EXT-002` | 2026-07-28T07:50:00+09:00 | screenshotと要約を掲載。原典扱い候補 | revision履歴なし |
+| `SN-2026-025-005` | `synthetic-blog-repost` — SYNTH-MEDIA-WEEKLY-001 repost | 低 | 低 | `IG-EXT-002` | 2026-07-28T12:00:00+09:00 | `SN-2026-025-004`の引用が主 | 独自観測なし |
+| `SN-2026-025-006` | `synthetic-translated-excerpt` — SYNTH-Translated chat excerpt | 低 | 低 | `IG-EXT-003` | 2026-07-29T08:20:00+09:00 | 抜粋のみ。訳文付与済み | 原文全文なし、発言者確認不能 |
+| `SN-2026-025-007` | `synthetic-newsletter-recap` — SYNTH-MEDIA-WEEKLY-001 recap | 低 | 低 | `IG-EXT-002` | 2026-07-29T09:45:00+09:00 | repostとbulletinを再要約 | same-origin republicationの可能性 |
+| `SN-2026-025-008` | `synthetic-idp-sign-in-summary` — Synthetic IdP sign-in summary | 高 | 中 | `IG-INT-003` | 2026-07-29T10:15:00+09:00 | 2026-07-23〜2026-07-29の合成sign-in summary。取得経路とhashを固定 | token issuance詳細と対象期間前半2日分は保持外 |
 
 ### 6.2 Evidence Register
 

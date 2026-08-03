@@ -34,6 +34,54 @@ URL_RE = re.compile(r"https?://[^\s<>()\]\[\"']+", re.IGNORECASE)
 HOSTNAME_RE = re.compile(
     r"(?<![\w@-])(?P<host>(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,63})(?![\w-])",
 )
+DOMAIN_CANDIDATE_RE = re.compile(
+    r"(?<![\w@-])(?P<host>(?:[^\W_]|-)+(?:[.。．｡](?:[^\W_]|-)+)+)(?![\w-])",
+    re.UNICODE,
+)
+COMMON_PUBLIC_TLDS = frozenset(
+    {
+        "app",
+        "biz",
+        "cloud",
+        "co",
+        "com",
+        "dev",
+        "edu",
+        "gov",
+        "info",
+        "io",
+        "jp",
+        "me",
+        "mil",
+        "net",
+        "org",
+        "site",
+        "tech",
+        "uk",
+        "us",
+        "xyz",
+    }
+)
+RECOGNIZED_IDN_TLDS = frozenset(
+    {
+        "भारत",
+        "испытание",
+        "рф",
+        "テスト",
+        "みんな",
+        "中国",
+        "中國",
+        "公司",
+        "测试",
+        "測試",
+        "网络",
+        "網絡",
+        "한국",
+        "δοκιμή",
+        "시험",
+        "परीक्षा",
+    }
+)
 EMAIL_RE = re.compile(r"\b[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?P<host>[\w-]+(?:\.[\w-]+)+)\b", re.UNICODE)
 IPV4_RE = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])")
 IPV6_RE = re.compile(r"(?<![\w:])(?:[0-9A-Fa-f]{0,4}:){2,}[0-9A-Fa-f]{0,4}(?![\w:])")
@@ -49,7 +97,8 @@ KNOWN_SECRET_RE = re.compile(
     r"\bBearer\s+[A-Za-z0-9._~+/=-]{16,})"
 )
 PHONE_RE = re.compile(
-    r"(?<![\d-])(?:\+\d{1,3}(?:[ .-]\d{1,4}){2,3}|0\d{1,3}[ .-]\d{2,4}[ .-]\d{3,4}|0\d{9,10})(?!\d)"
+    r"(?<![\d-])(?:\+\d{1,3}(?:[ .-]\d{1,4}){2,3}|0\d{1,3}[ .-]\d{2,4}[ .-]\d{3,4}|"
+    r"\+\d{10,15}|1[2-9]\d{2}[2-9]\d{6}|0[1-9]\d{8,9})(?!\d)"
 )
 SYNTHETIC_CONTENT_FILES = (
     "manuscript/25-structured-analysis-attribution.md",
@@ -212,6 +261,84 @@ def is_repository_file_reference(host: str) -> bool:
     return any(path.is_file() for path in ROOT.rglob(host))
 
 
+def normalize_unicode_host(raw: str) -> str:
+    return raw.translate(str.maketrans({"。": ".", "．": ".", "｡": "."}))
+
+
+def is_unicode_domain_candidate(raw: str) -> bool:
+    """Recognize bare IDN or Unicode-separator hosts without treating prose as a host."""
+    normalized = normalize_unicode_host(raw).rstrip(".")
+    labels = normalized.split(".")
+    if len(labels) < 2 or any(not label or "_" in label for label in labels):
+        return False
+    try:
+        ascii_labels = [label.encode("idna").decode("ascii") for label in labels]
+    except UnicodeError:
+        return False
+    if any(len(label) > 63 for label in ascii_labels):
+        return False
+
+    has_non_ascii = any(any(ord(char) > 127 for char in label) for label in labels)
+    final_label = labels[-1].lower()
+    if not has_non_ascii:
+        # Unicode full stops are punctuation in ordinary prose too. For all-ASCII
+        # labels, only treat a common public/reserved TLD as a domain candidate.
+        return any(separator in raw for separator in "。．｡") and (
+            final_label in COMMON_PUBLIC_TLDS
+            or f".{final_label}" in ALLOWED_DOMAIN_SUFFIXES
+        )
+
+    # Treat an all-Unicode string separated only by a Japanese full stop as
+    # prose, not a hostname (for example, "これは。テスト"). A bare IDN such
+    # as 例え.テスト still uses an ASCII dot, while real。com is covered by the
+    # all-ASCII branch above.
+    if "." not in raw and all(
+        all(not char.isascii() for char in label if char.isalnum())
+        for label in labels
+    ):
+        return False
+
+    # A recognized public/reserved final label distinguishes a bare IDN from
+    # ordinary sentence fragments without claiming to be a general PII or
+    # public-suffix detector.
+    return (
+        final_label in COMMON_PUBLIC_TLDS
+        or f".{final_label}" in ALLOWED_DOMAIN_SUFFIXES
+        or final_label in RECOGNIZED_IDN_TLDS
+    )
+
+
+def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, list[str]]:
+    rows: dict[str, list[str]] = {}
+    for line in markdown.splitlines():
+        if not line.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in line.strip("|").split("|")]
+        if not cells:
+            continue
+        row_id = cells[0].strip("`")
+        if not row_id.startswith(prefix):
+            continue
+        if row_id in rows:
+            error(f"{label}: duplicate Markdown row ID {row_id}")
+            continue
+        rows[row_id] = cells
+    return rows
+
+
+def require_unique_object_ids(items: object, label: str) -> None:
+    if not isinstance(items, list):
+        error(f"{label}: must be an array")
+        return
+    identifiers = [item.get("id") for item in items if isinstance(item, dict)]
+    if len(identifiers) != len(items) or any(not identifier for identifier in identifiers):
+        error(f"{label}: every entry must be an object with a non-empty ID")
+        return
+    duplicates = sorted({identifier for identifier in identifiers if identifiers.count(identifier) > 1})
+    if duplicates:
+        error(f"{label}: duplicate IDs are not allowed: {duplicates}")
+
+
 def check_synthetic_content_safety(relative: str, text: str) -> None:
     """Check synthetic teaching content only; official Source Note URLs use SOURCE_POLICY."""
     for raw_url in URL_RE.findall(text):
@@ -222,9 +349,14 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         if is_repository_file_reference(host):
             continue
         assert_synthetic_domain(host, f"{relative}: host/URL")
-    for inline in re.findall(r"(?<!`)`([^`\n]+)`(?!`)", text):
-        if "." in inline and any(ord(char) > 127 for char in inline):
-            assert_synthetic_domain(inline, f"{relative}: IDN host")
+    for match in DOMAIN_CANDIDATE_RE.finditer(text):
+        candidate = match.group("host")
+        if not is_unicode_domain_candidate(candidate):
+            continue
+        assert_synthetic_domain(
+            normalize_unicode_host(candidate).lower(),
+            f"{relative}: Unicode/IDN host",
+        )
     for match in EMAIL_RE.finditer(text):
         assert_synthetic_domain(match.group("host").lower(), f"{relative}: email")
     for match in IPV4_RE.finditer(text):
@@ -510,6 +642,19 @@ def main() -> int:
     dataset = load_json("cases/fixtures/ch25-structured-analysis-attribution-dataset.json")
     if dataset.get("synthetic") is not True:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: synthetic must be true")
+    for collection_name in (
+        "threatHypotheses",
+        "sourceEvaluationHypotheses",
+        "alternativeHypotheses",
+        "observationHypotheses",
+        "sourceNotes",
+        "evidence",
+        "collectionGaps",
+    ):
+        require_unique_object_ids(
+            dataset.get(collection_name),
+            f"cases/fixtures/ch25-structured-analysis-attribution-dataset.json:{collection_name}",
+        )
     for key, expected in (
         ("artifactId", "ART-11"),
         ("caseId", "CASE-2026-025"),
@@ -657,6 +802,44 @@ def main() -> int:
         for item in dataset.get("observationHypotheses", [])
         if isinstance(item, dict)
     }
+    markdown_observation_rows = markdown_rows_by_id(case, "OBS-2026-025-", case_path)
+    expected_markdown_observation_relations = {
+        observation_id: (
+            observation.get("relatedThreatHypothesisId")
+            or observation.get("relatedSourceEvaluationHypothesisId")
+            or observation.get("relatedAlternativeHypothesisId")
+        )
+        for observation_id, observation in observation_by_id.items()
+    }
+    actual_markdown_observation_relations = {
+        observation_id: cells[1].strip("`") if len(cells) > 1 else None
+        for observation_id, cells in markdown_observation_rows.items()
+    }
+    if actual_markdown_observation_relations != expected_markdown_observation_relations:
+        error("cases/ch25-structured-analysis-attribution-example.md: Observation-to-hypothesis mappings differ from the canonical fixture")
+    expected_markdown_observation_sources = {
+        observation_id: observation.get("dataSource", [])
+        for observation_id, observation in observation_by_id.items()
+    }
+    actual_markdown_observation_sources = {
+        observation_id: re.findall(r"SN-2026-025-\d{3}", " | ".join(cells))
+        for observation_id, cells in markdown_observation_rows.items()
+    }
+    if actual_markdown_observation_sources != expected_markdown_observation_sources:
+        error("cases/ch25-structured-analysis-attribution-example.md: Observation data-source mappings differ from the canonical fixture")
+
+    markdown_source_rows = markdown_rows_by_id(case, "SN-2026-025-", case_path)
+    actual_markdown_source_origins: dict[str, str | None] = {}
+    for source_note_id, cells in markdown_source_rows.items():
+        origin_match = re.search(r"`([^`]+)`", cells[1]) if len(cells) > 1 else None
+        actual_markdown_source_origins[source_note_id] = origin_match.group(1) if origin_match else None
+    expected_markdown_source_origins = {
+        item.get("id"): item.get("origin")
+        for item in dataset.get("sourceNotes", [])
+        if isinstance(item, dict)
+    }
+    if actual_markdown_source_origins != expected_markdown_source_origins:
+        error("cases/ch25-structured-analysis-attribution-example.md: Source Note origin mappings differ from the canonical fixture")
     for observation in dataset.get("observationHypotheses", []):
         if not isinstance(observation, dict):
             continue
@@ -693,6 +876,16 @@ def main() -> int:
     }
     if actual_evidence_links != expected_evidence_links:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: Evidence to Source Note / Observation links drifted")
+    markdown_evidence_rows = markdown_rows_by_id(case, "EVD-2026-025-", case_path)
+    actual_markdown_evidence_links = {
+        evidence_id: (
+            cells[1].strip("`") if len(cells) > 1 else None,
+            cells[2].strip("`") if len(cells) > 2 else None,
+        )
+        for evidence_id, cells in markdown_evidence_rows.items()
+    }
+    if actual_markdown_evidence_links != actual_evidence_links:
+        error("cases/ch25-structured-analysis-attribution-example.md: Evidence mappings differ from the canonical fixture")
     if not all(source_id in source_note_ids for source_id, _ in actual_evidence_links.values()):
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: Evidence references an unknown Source Note")
     for evidence_id, (source_note_id, observation_id) in actual_evidence_links.items():
@@ -911,8 +1104,18 @@ def main() -> int:
     for mutation in secret_mutations:
         if not KNOWN_SECRET_RE.search(mutation):
             error(f"fixture safety regression: known secret mutation was accepted: {mutation[:12]!r}")
-    if not PHONE_RE.search("0312345678"):
-        error("fixture safety regression: compact fixed-line telephone mutation was accepted")
+    phone_mutations = ("0312345678", "+819012345678", "14155552671")
+    for mutation in phone_mutations:
+        if not PHONE_RE.search(mutation):
+            error(f"fixture safety regression: compact telephone mutation was accepted: {mutation!r}")
+    for non_phone in ("20260729101500", "0000000000"):
+        if PHONE_RE.search(non_phone):
+            error(f"fixture safety regression: non-telephone numeric value was rejected: {non_phone!r}")
+    for mutation in ("例え.テスト", "real。com"):
+        if not is_unicode_domain_candidate(mutation):
+            error(f"fixture safety regression: Unicode/IDN domain mutation was accepted: {mutation!r}")
+    if is_unicode_domain_candidate("これは。テスト"):
+        error("fixture safety regression: Japanese prose was treated as a Unicode/IDN domain")
 
     package = load_json("package.json")
     scripts = package.get("scripts", {})
