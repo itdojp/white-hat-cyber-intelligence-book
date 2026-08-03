@@ -7,6 +7,7 @@
 Assessment結果だけを残すのではなく、次を追跡可能にする。
 
 - 何を判断するための評価か
+- どのCase MapのDecisionへ結果を返すか
 - どのAsset、Actor、Boundary、Stateを評価するか
 - どのThreat Hypothesisを、どのObservationとValidationで支持または反証するか
 - どこで停止し、何をCleanupするか
@@ -39,6 +40,8 @@ Assessment結果だけを残すのではなく、次を追跡可能にする。
 | Review deadline | ISO 8601 |
 | Related Issue / Ticket |  |
 | Related Case Map Artifact | `ART-10` |
+| Related Case Map Case ID | `CASE-YYYY-NNN` |
+| Related Case Map Decision ID | `DEC-CASE-001` |
 
 ## 1. Decision Requirement and Scope
 
@@ -186,13 +189,13 @@ Evidenceごとに、公開・共有前の無害化と廃棄責任を定義する
 
 ## 7. Reassessment Plan
 
-| Reassessment ID | Related Finding IDs | Related Detection IDs | Trigger conditions | Hypotheses to retest | Evidence to recollect | Owner | Due date |
-|---|---|---|---|---|---|---|---|
-| `REA-CASE-001` | `FIND-CASE-001` | `DET-CASE-001` |  |  |  |  |  |
+| Reassessment ID | Related Decision ID | Related Finding IDs | Related Detection IDs | Trigger conditions | Hypotheses to retest | Evidence to recollect | Owner | Due date |
+|---|---|---|---|---|---|---|---|---|
+| `REA-CASE-001` | `DEC-CASE-001` | `FIND-CASE-001` | `DET-CASE-001` |  |  |  |  |  |
 
 ## 8. Traceability Check
 
-- [ ] Case IDとDecision Requirement IDが明記されている
+- [ ] Case ID、Decision Requirement ID、関連Case MapのDecision IDが明記されている
 - [ ] 各AssetにActor、Boundary、Stateの説明がある
 - [ ] 各Threat HypothesisにObservation Hypothesisがある
 - [ ] 各Threat HypothesisにValidation IDがある
@@ -202,7 +205,7 @@ Evidenceごとに、公開・共有前の無害化と廃棄責任を定義する
 - [ ] 各Detection IDがThreat HypothesisまたはTelemetry IDへ接続している
 - [ ] Negative FindingがCoverageとGapを持つ
 - [ ] EvidenceのRedaction、Classification、Access、Retention / disposal、Ownerが定義されている
-- [ ] Reassessment IDが定義されている
+- [ ] Reassessment IDがDecision IDへ接続している
 
 ## 9. Artifact Rubric
 

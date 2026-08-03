@@ -131,6 +131,10 @@ def main() -> int:
             "SRC-WSTG-001",
             "SRC-OWASP-TOP10-001",
             "SRC-API-001",
+            "job-blue-synthetic",
+            "job-red-synthetic",
+            "REC-11-007",
+            "関連Case MapのCase IDとDecision IDが明確である",
             "https://itdojp.github.io/pentest-learning-book/part4_api/41_api_basics_and_attack_surface/",
             "https://itdojp.github.io/practical-auth-book/",
             "## 章のまとめ",
@@ -154,6 +158,8 @@ def main() -> int:
         (
             "Artifact ID | `ART-11`",
             "Case ID",
+            "Related Case Map Case ID",
+            "Related Case Map Decision ID",
             "Decision Requirement ID",
             "Asset ID",
             "Actor and Credential Classes",
@@ -178,11 +184,13 @@ def main() -> int:
             "Reassessment ID",
             "Related Finding IDs",
             "Related Detection IDs",
+            "Related Decision ID",
             "Evidence Handling",
             "Redaction status",
             "Retention / disposal date",
             "Disposal owner",
             "Negative Testの不成立をSystem全体の安全性証明として扱わない",
+            "どのCase MapのDecisionへ結果を返すか",
         ),
     )
 
@@ -204,14 +212,19 @@ def main() -> int:
             "TEL-2026-011",
             "DET-2026-011",
             "REA-2026-011",
+            "DEC-2026-011",
+            "| Related Case Map Case ID | `CASE-2026-011` |",
+            "| Related Case Map Decision ID | `DEC-2026-011` |",
             "悪い仮説から良い仮説へ",
             "| `EVD-2026-012` | `OBS-2026-012` | `VAL-2026-012` | `ROE-2026-011` |",
             "| `VAL-2026-012` | `TH-2026-012` | `OBS-2026-012` |",
             "| `FIND-2026-011` | `TH-2026-012` |",
             "| `TEL-2026-011` | `DET-2026-011` |",
-            "| `REA-2026-011` | `FIND-2026-011`, `FIND-2026-012`, `FIND-2026-013` |",
+            "| `REA-2026-011` | `DEC-2026-011` | `FIND-2026-011`, `FIND-2026-012`, `FIND-2026-013` |",
             "この条件ではcross-tenant参照を観測しなかった",
-            "全Bypass不在は証明しない",
+            "この合成Host入力は400で拒否され、dispatch taskも作成されなかった",
+            "登録時validation全体や別Bypass pathの有効性は結論しない",
+            "Admin sessionでは`includeInternalNotes=true`を許可できる",
             "外部通信、Data大量取得、負荷試験、横展開、Credential reuseは行わない",
             "3回以下の再試行確認",
             "tok-analyst-invalid",
@@ -273,9 +286,9 @@ def main() -> int:
         for item in exercise_records
         if isinstance(item, dict)
     }
-    expected_record_ids = {f"REC-11-{number:03d}" for number in range(1, 7)}
+    expected_record_ids = {f"REC-11-{number:03d}" for number in range(1, 8)}
     if record_ids != expected_record_ids:
-        error(f"{fixture_path}: expected REC-11-001 through REC-11-006")
+        error(f"{fixture_path}: expected REC-11-001 through REC-11-007")
     expected_record_validation = {
         "REC-11-001": "VAL-2026-011",
         "REC-11-002": "VAL-2026-011",
@@ -283,6 +296,7 @@ def main() -> int:
         "REC-11-004": "VAL-2026-013",
         "REC-11-005": "VAL-2026-014",
         "REC-11-006": "VAL-2026-015",
+        "REC-11-007": "VAL-2026-013",
     }
     records_by_id = {
         item.get("recordId"): item
@@ -317,6 +331,21 @@ def main() -> int:
         "observedResult"
     ) or denied_tenant_record.get("observedStatus") != 404:
         error(f"{fixture_path}: REC-11-002 must directly record the denied result")
+    authorized_property_record = records_by_id.get("REC-11-007", {})
+    authorized_property_request = authorized_property_record.get("request", {})
+    authorized_property_result = authorized_property_record.get("observedResult", {})
+    if (
+        authorized_property_record.get("expectedResult")
+        != authorized_property_result
+        or authorized_property_request.get("credentialClass")
+        != "admin-invalid / tenant-blue.example"
+        or authorized_property_result.get("includeInternalNotesStored") is not True
+        or authorized_property_result.get("storedState") != "queued"
+    ):
+        error(
+            f"{fixture_path}: REC-11-007 must directly record the authorized "
+            "Admin property result"
+        )
     validation_ids = {
         item.get("validationId")
         for item in validations
@@ -335,6 +364,20 @@ def main() -> int:
             error(f"{fixture_path}: validation/evidence ID mismatch for {suffix}")
         if not isinstance(item.get("limitation"), str) or not item["limitation"].strip():
             error(f"{fixture_path}: missing validation limitation for {suffix}")
+        capture_record = item.get("captureRecord", {})
+        if not isinstance(capture_record, dict):
+            error(f"{fixture_path}: missing capture record for {suffix}")
+            continue
+        for key in ("stopCondition", "stopOutcome"):
+            if not isinstance(capture_record.get(key), str) or not capture_record[
+                key
+            ].strip():
+                error(f"{fixture_path}: missing capture {key} for {suffix}")
+        cleanup = capture_record.get("cleanup", {})
+        if not isinstance(cleanup, dict) or cleanup.get("status") != "complete":
+            error(f"{fixture_path}: cleanup must be complete for {suffix}")
+        elif not isinstance(cleanup.get("action"), str) or not cleanup["action"].strip():
+            error(f"{fixture_path}: cleanup action must be recorded for {suffix}")
     record_mapping = {
         item.get("validationId"): item.get("recordIds")
         for item in validations
@@ -343,7 +386,7 @@ def main() -> int:
     if record_mapping != {
         "VAL-2026-011": ["REC-11-001", "REC-11-002"],
         "VAL-2026-012": ["REC-11-003"],
-        "VAL-2026-013": ["REC-11-004"],
+        "VAL-2026-013": ["REC-11-004", "REC-11-007"],
         "VAL-2026-014": ["REC-11-005"],
         "VAL-2026-015": ["REC-11-006"],
     }:

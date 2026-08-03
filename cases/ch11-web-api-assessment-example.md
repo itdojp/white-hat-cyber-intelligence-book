@@ -39,6 +39,8 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 | Review deadline | 2026-08-05T18:00:00+09:00 |
 | Related Issue / Ticket | Feature Gate FG-2026-08 / API Launch Review |
 | Related Case Map Artifact | `ART-10` |
+| Related Case Map Case ID | `CASE-2026-011` |
+| Related Case Map Decision ID | `DEC-2026-011` |
 
 ## 1. Decision Requirement and Scope
 
@@ -136,7 +138,7 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 |---|---|---|---|---|---|
 | `OBS-2026-011` | `TH-2026-011` | 自Tenant jobは200でmetadataのみ返る | 他Tenant jobは404または403で、download準備情報を返さない | queue access eventなし | 他Tenant job参照で200またはmetadata差分がある |
 | `OBS-2026-012` | `TH-2026-012` | Admin tokenだけが202でjob作成される | Analyst tokenは403でjob作成されない | audit logに`authorization_denied` | Analyst tokenで202かつjob IDが発行される |
-| `OBS-2026-013` | `TH-2026-013` | Analyst sessionの`includeInternalNotes`と`status=approved`は拒否または強制上書きされる | 202でもserver側でpropertyを除去し、queued stateのみになる | auditにfield normalizationが残る | Analyst sessionで内部メモが残る、またはapproved stateでqueue投入される |
+| `OBS-2026-013` | `TH-2026-013` | Admin sessionでは`includeInternalNotes=true`を許可できるが、client指定の`status=approved`は別の承認条件を満たさない限り受理しない | Analyst sessionでは`includeInternalNotes`を除去し、client指定stateにかかわらずqueued stateだけを許可する | auditにactor role、property filter、state normalizationが残る | Analyst sessionで内部メモが残る、またはapproved stateでqueue投入される |
 | `OBS-2026-014` | `TH-2026-014` | Public allowlist hostだけが登録可能 | `control-plane.service.test`は400で拒否 | dispatch task未作成、deny reason記録 | 400でもdispatch taskが作成される、またはactive状態になる |
 | `OBS-2026-015` | `TH-2026-015` | 1回目だけが新規job作成、残りは同一job再利用または429 | 重複job countが増えない | quota counterは1件分だけ増える | 2件以上のjob IDが作成される |
 
@@ -155,7 +157,7 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 |---|---|---|---|---|---|---|---|
 | `VAL-2026-011` | `TH-2026-011` | `OBS-2026-011` | Capture時に合成Analyst tokenで自Tenant / 他Tenant job metadataを比較 | 読み取り専用の合成Dataset | response code差分、job metadata redaction、queue accessなし | 他Tenant本文取得が必要になった時点 | 完了済み。比較用job snapshotを破棄 |
 | `VAL-2026-012` | `TH-2026-012` | `OBS-2026-012` | Capture時にv1 endpointへのexport作成Requestを1回記録 | 合成Route inventoryとread-only replay dataset | 202または403、job ID生成有無、route middleware設定 | 1件目でjob IDが作成された時点 | 完了済み。生成された合成jobを削除 |
-| `VAL-2026-013` | `TH-2026-013` | `OBS-2026-013` | Capture時に合成fieldを含むExport作成を1回記録 | 合成request/response dataset | 応答body、保存済みjob property、workflow audit | 内部メモ本文取得が必要になった時点 | 完了済み。合成jobとqueue entryを削除 |
+| `VAL-2026-013` | `TH-2026-013` | `OBS-2026-013` | Capture時にAdmin / Analystの合成field付きExport作成を各1回記録 | 合成request/response dataset | role別応答、保存済みjob property、workflow audit | 内部メモ本文取得が必要になった時点 | 完了済み。2件の合成jobとqueue entryを削除 |
 | `VAL-2026-014` | `TH-2026-014` | `OBS-2026-014` | Capture時に内部向け合成Host名を含むWebhook登録を1回記録 | egress無効の読み取り専用合成Dataset | 400、deny reason、dispatch task未作成 | 送信workerが起動しそうになった時点 | 完了済み。登録候補を削除 |
 | `VAL-2026-015` | `TH-2026-015` | `OBS-2026-015` | Capture時に同一`Idempotency-Key`の最大3回再試行を記録 | 読み取り専用の合成Dataset | job count差分、quota counter差分 | 2件目の重複jobが作成された時点 | 完了済み。合成retry jobを削除 |
 
@@ -181,7 +183,7 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 |---|---|---|---|---|---|---|---|---|
 | `EVD-2026-011` | `OBS-2026-011` | `VAL-2026-011` | `ROE-2026-011` | 他Tenant job参照が拒否されるか | Fixture response pair collector | 2026-07-29T11:10:00+09:00 | 合成Dataset record `EVD-2026-011`（Gitで版管理） | Completed stateのv2 pathだけを確認 |
 | `EVD-2026-012` | `OBS-2026-012` | `VAL-2026-012` | `ROE-2026-011` | Deprecated admin exportがAnalystで成功しないか | Route replay collector | 2026-07-29T14:20:00+09:00 | 合成Dataset record `EVD-2026-012`（Gitで版管理） | v1 endpoint以外のlegacy pathは未確認 |
-| `EVD-2026-013` | `OBS-2026-013` | `VAL-2026-013` | `ROE-2026-011` | Analystが内部メモ付きExportを作れないか | Fixture response + stored job diff | 2026-07-30T10:05:00+09:00 | 合成Dataset record `EVD-2026-013`（Gitで版管理） | 実本文は取得せずproperty flagのみ確認 |
+| `EVD-2026-013` | `OBS-2026-013` | `VAL-2026-013` | `ROE-2026-011` | Adminの許可結果とAnalystの拒否結果をrole境界として比較できるか | Fixture response pair + stored job diff | 2026-07-30T10:05:00+09:00 | 合成Dataset records `REC-11-004`, `REC-11-007`（Gitで版管理） | 実本文は取得せずproperty flagのみ確認 |
 | `EVD-2026-014` | `OBS-2026-014` | `VAL-2026-014` | `ROE-2026-011` | 内部向けWebhook hostが拒否されるか | Validation log collector | 2026-07-30T15:30:00+09:00 | 合成Dataset record `EVD-2026-014`（Gitで版管理） | 登録時validationだけを確認 |
 | `EVD-2026-015` | `OBS-2026-015` | `VAL-2026-015` | `ROE-2026-011` | Retry pathで重複jobが生成されないか | Queue counter collector | 2026-07-31T09:40:00+09:00 | 合成Dataset record `EVD-2026-015`（Gitで版管理） | 3回までの低回数確認のみ |
 
@@ -200,7 +202,7 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 | Negative Finding ID | Related Threat Hypothesis ID | Searched behavior | Search window | Available coverage | Remaining gaps | Permitted conclusion |
 |---|---|---|---|---|---|---|
 | `NEG-2026-011` | `TH-2026-011` | Completed stateの他Tenant export job metadata参照 | 2026-07-29T11:00:00+09:00 〜 11:15:00+09:00 | v2 path、completed state、Analyst token | draft state、別Version、cache pathは未確認 | この条件ではcross-tenant参照を観測しなかった |
-| `NEG-2026-012` | `TH-2026-014` | 内部向けHost名Webhookの登録成功とdispatch task作成 | 2026-07-30T15:20:00+09:00 〜 15:35:00+09:00 | 登録API、deny reason、dispatch queue不作成 | DNS rebinding相当や別worker pathは未確認 | 登録時validationは有効だが、全Bypass不在は証明しない |
+| `NEG-2026-012` | `TH-2026-014` | 内部向けHost名Webhookの登録成功とdispatch task作成 | 2026-07-30T15:20:00+09:00 〜 15:35:00+09:00 | 合成Host入力1件、登録API、deny reason、dispatch queue不作成 | 別encoding、scheme、port、redirect、hostname normalization、DNS rebinding、別worker pathは未確認 | この合成Host入力は400で拒否され、dispatch taskも作成されなかった。登録時validation全体や別Bypass pathの有効性は結論しない |
 
 ### 5.4 Findings and Retest Handoff
 
@@ -232,13 +234,13 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 
 ## 7. Reassessment Plan
 
-| Reassessment ID | Related Finding IDs | Related Detection IDs | Trigger conditions | Hypotheses to retest | Evidence to recollect | Owner | Due date |
-|---|---|---|---|---|---|---|---|
-| `REA-2026-011` | `FIND-2026-011`, `FIND-2026-012`, `FIND-2026-013` | `DET-2026-011`, `DET-2026-012`, `DET-2026-013`, `DET-2026-014` | v1 endpoint停止、property filter実装、idempotency store改修、Webhook validator変更、新規Tenant 20社追加 | `TH-2026-012`, `TH-2026-013`, `TH-2026-015`, `TH-2026-014` | route inventory、property diff log、retry counter、detection test結果 | Product Security Manager | 2026-08-26 |
+| Reassessment ID | Related Decision ID | Related Finding IDs | Related Detection IDs | Trigger conditions | Hypotheses to retest | Evidence to recollect | Owner | Due date |
+|---|---|---|---|---|---|---|---|---|
+| `REA-2026-011` | `DEC-2026-011` | `FIND-2026-011`, `FIND-2026-012`, `FIND-2026-013` | `DET-2026-011`, `DET-2026-012`, `DET-2026-013`, `DET-2026-014` | v1 endpoint停止、property filter実装、idempotency store改修、Webhook validator変更、新規Tenant 20社追加 | `TH-2026-012`, `TH-2026-013`, `TH-2026-015`, `TH-2026-014` | route inventory、property diff log、retry counter、detection test結果 | Product Security Manager | 2026-08-26 |
 
 ## 8. Traceability Check
 
-- [x] Case IDとDecision Requirement IDが明記されている
+- [x] Case ID、Decision Requirement ID、関連Case MapのDecision IDが明記されている
 - [x] 各AssetにActor、Boundary、Stateの説明がある
 - [x] 各Threat HypothesisにObservation Hypothesisがある
 - [x] 各Threat HypothesisにValidation IDがある
@@ -248,7 +250,7 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 - [x] 各Detection IDがThreat HypothesisまたはTelemetry IDへ接続している
 - [x] Negative FindingがCoverageとGapを持つ
 - [x] EvidenceのRedaction、Classification、Access、Retention / disposal、Ownerが定義されている
-- [x] Reassessment IDが定義されている
+- [x] Reassessment IDが`DEC-2026-011`へ接続している
 
 ## 9. Artifact Rubric
 
@@ -264,6 +266,6 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 ## 10. 補足判断
 
 - `TH-2026-011`はRejectedだが、「安全である」とは書かない。v2 completed stateに限定したNegative Findingである。
-- `TH-2026-014`はWeakenedであり、Webhook登録時validationの有効性を示す。別worker pathや別URL正規化経路の不在は証明していない。
+- `TH-2026-014`はWeakenedであり、確認した合成Host入力が拒否されdispatch taskも作成されなかったことだけを示す。別encoding、scheme、port、redirect、hostname normalization、DNS rebinding、別worker pathは未評価である。
 - 主要な公開阻害要因は、Deprecated APIのFunction authz gap、Property authz gap、Retry pathのIdempotency gapである。
 - 条件付き公開を選ぶなら、少なくとも`FIND-2026-011`と`FIND-2026-013`の解消と`DET-2026-011`の有効化が先行条件になる。

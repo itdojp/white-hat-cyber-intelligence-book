@@ -24,7 +24,7 @@ Web ApplicationとAPIの評価は、脆弱性名の暗記やTool順の実行だ�
 
 目的は、脆弱性名を増やすことではない。許可された範囲で、**成立条件、否定条件、最小証拠、必要Telemetry、修正後の再評価条件**を定義し、修正可能なFindingへ変換することである。
 
-本章は、第1章で定義した`ART-10 Integrated Security Case Map`を、第11章向けの`ART-11 Web/API Assessment Hypothesis Pack`へ具体化する。Case ID、Decision Requirement ID、Asset ID、Threat Hypothesis ID、Observation Hypothesis ID、Authority / RoE ID、Validation ID、Evidence ID、Finding ID、Telemetry ID、Detection ID、Reassessment IDの接続を、この章で固定する。
+本章は、第1章で定義した`ART-10 Integrated Security Case Map`を、第11章向けの`ART-11 Web/API Assessment Hypothesis Pack`へ具体化する。Case ID、Decision Requirement ID、Decision ID、Asset ID、Threat Hypothesis ID、Observation Hypothesis ID、Authority / RoE ID、Validation ID、Evidence ID、Finding ID、Telemetry ID、Detection ID、Reassessment IDの接続を、この章で固定する。
 
 ## 学習目標
 
@@ -470,12 +470,13 @@ Findingが「認可不備あり」だけで終わると、SOCやDetection Engine
 
 | Record ID | Asset | Actor / credential | Request or event summary | Observed result |
 |---|---|---|---|---|
-| `REC-11-001` | `api.orders.example /api/v2/export-jobs/JOB-blue-0007` | Analyst token / tenant-blue.example | 自Tenantの完了済みExport job metadata取得 | 200 / metadataのみ返却 |
-| `REC-11-002` | `api.orders.example /api/v2/export-jobs/JOB-red-0003` | Analyst token / tenant-blue.example | 他Tenant job IDを指定 | 404 / queue accessなし |
+| `REC-11-001` | `api.orders.example /api/v2/export-jobs/job-blue-synthetic` | Analyst token / tenant-blue.example | 自Tenantの完了済みExport job metadata取得 | 200 / metadataのみ返却 |
+| `REC-11-002` | `api.orders.example /api/v2/export-jobs/job-red-synthetic` | Analyst token / tenant-blue.example | 他Tenant job IDを指定 | 404 / queue accessなし |
 | `REC-11-003` | `api.orders.example /api/v1/admin/report-export` | Analyst token / tenant-blue.example | Deprecated endpointへCSV export作成 | 202 / job作成あり |
 | `REC-11-004` | `api.orders.example /api/v2/exports` | Analyst session / tenant-blue.example | `includeInternalNotes=true`を含むExport作成 | 202 / 応答に拒否なし |
 | `REC-11-005` | `api.orders.example /api/v2/webhooks` | Admin token / tenant-blue.example | `callbackUrl=https://control-plane.service.test/internal-status`で登録 | 400 / `internal_host_denied` |
 | `REC-11-006` | `api.orders.example /api/v2/exports/retry` | Analyst token / tenant-blue.example | 同一`Idempotency-Key`で3回再試行 | job countが2件増加 |
+| `REC-11-007` | `api.orders.example /api/v2/exports` | Admin token / tenant-blue.example | `includeInternalNotes=true`、`status=queued`でExport作成 | 202 / property保持、queued state |
 
 ### 作業
 
@@ -523,6 +524,7 @@ Hypothesis Packは、Finding ReportやDetection Validation Recordを置き換え
 ### 最小完成条件
 
 - Decision Requirementが明確である
+- 関連Case MapのCase IDとDecision IDが明確である
 - Asset、Actor、Boundary、Stateが定義されている
 - Threat HypothesisとObservation Hypothesisが対になっている
 - Authority / RoE、Stop、Cleanupがある
