@@ -27,6 +27,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-AISVS-001 | OWASP | [Artificial Intelligence Security Verification Standard](https://owasp.org/www-project-artificial-intelligence-security-verification-standard-aisvs-docs/) | 1.0 / live | 2026-07-25 | 2026-10-25 | 27 |
 | SRC-JP-LAW-001 | e-Gov | [不正アクセス行為の禁止等に関する法律](https://laws.e-gov.go.jp/law/411AC0000000128) | current-law | 2026-07-25 | 2026-10-25 | 2, 9 |
 | SRC-IPA-VDP-001 | IPA / JPCERT/CC | [情報セキュリティ早期警戒パートナーシップガイドライン](https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html) | current-guidance | 2026-07-25 | 2026-10-25 | 2, 15 |
+| SRC-IANA-TLD-001 | Internet Assigned Numbers Authority (IANA) | [Root Zone Database — TLDs alpha by domain](https://data.iana.org/TLD/tlds-alpha-by-domain.txt) | 2026080300 / current-snapshot | 2026-08-03 | 2026-11-03 | 25 |
 
 ## 運用
 

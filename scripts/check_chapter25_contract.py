@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import json
 import ipaddress
 import re
@@ -14,8 +15,42 @@ if str(ROOT) not in sys.path:
 
 from scripts.sync_book_site import SitePageRegistryError, parse_registry_data  # noqa: E402
 
+IANA_TLD_SNAPSHOT = ROOT / "references/iana-tlds-alpha-by-domain.txt"
+IANA_TLD_SNAPSHOT_VERSION = "2026080300"
+IANA_TLD_SNAPSHOT_SHA256 = (
+    "1a5b42ef79e837556bce63981f79591808237cb42f9fafb1c110783ddf0fcb95"
+)
+
+
+def load_iana_tld_snapshot() -> frozenset[str]:
+    raw = IANA_TLD_SNAPSHOT.read_bytes()
+    actual_sha256 = hashlib.sha256(raw).hexdigest()
+    if actual_sha256 != IANA_TLD_SNAPSHOT_SHA256:
+        raise RuntimeError(
+            "IANA TLD snapshot digest mismatch: "
+            f"expected {IANA_TLD_SNAPSHOT_SHA256}, got {actual_sha256}"
+        )
+    lines = raw.decode("ascii").splitlines()
+    expected_header = f"# Version {IANA_TLD_SNAPSHOT_VERSION},"
+    if not lines or not lines[0].startswith(expected_header):
+        raise RuntimeError("IANA TLD snapshot version header mismatch")
+    entries = lines[1:]
+    if not entries or any(
+        re.fullmatch(r"(?:[A-Z0-9-]{2,63})", entry) is None for entry in entries
+    ):
+        raise RuntimeError("IANA TLD snapshot contains an invalid ASCII label")
+    normalized = [entry.lower() for entry in entries]
+    if len(normalized) != len(set(normalized)):
+        raise RuntimeError("IANA TLD snapshot contains duplicate labels")
+    return frozenset(normalized)
+
+
 ERRORS: list[str] = []
 ALLOWED_DOMAIN_SUFFIXES = (".example", ".test", ".invalid")
+IANA_ASCII_TLDS = load_iana_tld_snapshot()
+RESERVED_ASCII_TLDS = frozenset(
+    suffix.removeprefix(".") for suffix in ALLOWED_DOMAIN_SUFFIXES
+)
 SYNTHETIC_NAME_ALLOWLIST: frozenset[str] = frozenset()
 FIXTURE_LABEL = "cases/fixtures/ch25-structured-analysis-attribution-dataset.json"
 FIXTURE_IDENTITY_COLLECTIONS = {
@@ -61,11 +96,6 @@ INDEPENDENCE_EVALUATION_TOKENS = (
     "裏付け",
 )
 URL_RE = re.compile(r"https?://[^\s<>()\]\[\"']+", re.IGNORECASE)
-HOSTNAME_RE = re.compile(
-    r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]+\.)+"
-    r"(?:[A-Za-z]{2,63}|[Xx][Nn]--[A-Za-z0-9-]{1,59}))"
-    r"(?![A-Za-z0-9_-])",
-)
 DOMAIN_CANDIDATE_RE = re.compile(
     r"(?<![\w@-])(?P<host>(?:[^\W_]|-)+(?:[.。．｡](?:[^\W_]|-)+)+)(?![\w-])",
     re.UNICODE,
@@ -74,31 +104,7 @@ UNICODE_SEPARATOR_ASCII_HOST_RE = re.compile(
     r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]+[。．｡])+[A-Za-z0-9-]+)"
     r"(?![A-Za-z0-9_-])"
 )
-COMMON_PUBLIC_TLDS = frozenset(
-    {
-        "app",
-        "biz",
-        "cloud",
-        "co",
-        "com",
-        "dev",
-        "edu",
-        "gov",
-        "info",
-        "io",
-        "jp",
-        "me",
-        "mil",
-        "net",
-        "org",
-        "site",
-        "tech",
-        "uk",
-        "us",
-        "xyz",
-    }
-)
-RECOGNIZED_IDN_TLDS = frozenset(
+DOCUMENTATION_IDN_TLDS = frozenset(
     {
         "भारत",
         "испытание",
@@ -119,20 +125,40 @@ RECOGNIZED_IDN_TLDS = frozenset(
         "परीक्षा",
     }
 )
-KNOWN_TLD_LABELS = frozenset(
-    COMMON_PUBLIC_TLDS
-    | RECOGNIZED_IDN_TLDS
-    | {suffix.removeprefix(".") for suffix in ALLOWED_DOMAIN_SUFFIXES}
+IANA_UNICODE_TLDS = frozenset(
+    tld.encode("ascii").decode("idna")
+    for tld in IANA_ASCII_TLDS
+    if tld.startswith("xn--")
 )
-KNOWN_TLD_PATTERN = "|".join(
-    re.escape(tld) for tld in sorted(KNOWN_TLD_LABELS, key=len, reverse=True)
+DOCUMENTATION_IDN_ASCII_TLDS = frozenset(
+    tld.encode("idna").decode("ascii") for tld in DOCUMENTATION_IDN_TLDS
+)
+RECOGNIZED_IDN_TLDS = IANA_UNICODE_TLDS | DOCUMENTATION_IDN_TLDS
+RECOGNIZED_ASCII_TLDS = (
+    IANA_ASCII_TLDS | RESERVED_ASCII_TLDS | DOCUMENTATION_IDN_ASCII_TLDS
+)
+ASCII_TLD_PATTERN = "|".join(
+    re.escape(tld)
+    for tld in sorted(RECOGNIZED_ASCII_TLDS, key=len, reverse=True)
+)
+RECOGNIZED_IDN_TLD_PATTERN = "|".join(
+    re.escape(tld)
+    for tld in sorted(RECOGNIZED_IDN_TLDS, key=len, reverse=True)
+)
+HOSTNAME_RE = re.compile(
+    r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]+\.)+(?:"
+    + ASCII_TLD_PATTERN
+    + r"))(?![A-Za-z0-9_-])",
+    re.IGNORECASE,
 )
 GENERAL_HOST_CANDIDATE_RE = re.compile(
     r"(?P<host>(?:(?:[^\W_@]|-)+[.。．｡])+(?:"
-    + KNOWN_TLD_PATTERN
-    + r"|xn--[A-Za-z0-9-]{1,59}))"
-    r"(?=$|です|でした|である|となる|を|へ|から|に|で|と|"
-    r"[/?:#]|[、,;；:：)\]」』])",
+    + RECOGNIZED_IDN_TLD_PATTERN
+    + "|"
+    + ASCII_TLD_PATTERN
+    + r"))"
+    r"(?=$|です|でした|である|となる|を|が|は|の|へ|から|に|で|と|"
+    r"[/?:#]|[。．｡、,;；:：!！?？)\]」』])",
     re.IGNORECASE | re.UNICODE,
 )
 HOST_CONTEXT_VALUE_RE = re.compile(
@@ -185,12 +211,14 @@ REQUIRED_SOURCE_IDS = (
     "SRC-CIA-SAT-001",
     "SRC-ATTACK-001",
     "SRC-BERKELEY-001",
+    "SRC-IANA-TLD-001",
 )
 CHAPTER25_SOURCE_CHECKED_AT = {
     "SRC-ATTACK-001": "2026-08-03",
     "SRC-ICD203-001": "2026-08-03",
     "SRC-CIA-SAT-001": "2026-08-03",
     "SRC-BERKELEY-001": "2026-07-25",
+    "SRC-IANA-TLD-001": "2026-08-03",
 }
 
 
@@ -329,6 +357,14 @@ def normalize_unicode_host(raw: str) -> str:
     return raw.translate(str.maketrans({"。": ".", "．": ".", "｡": "."}))
 
 
+def is_plausible_tld(label: str) -> bool:
+    lowered = label.lower()
+    return (
+        lowered in RECOGNIZED_ASCII_TLDS
+        or lowered in RECOGNIZED_IDN_TLDS
+    )
+
+
 def is_unicode_domain_candidate(raw: str) -> bool:
     """Recognize bare IDN or Unicode-separator hosts without treating prose as a host."""
     normalized = normalize_unicode_host(raw).rstrip(".")
@@ -346,9 +382,9 @@ def is_unicode_domain_candidate(raw: str) -> bool:
     final_label = labels[-1].lower()
     if not has_non_ascii:
         # Unicode full stops are punctuation in ordinary prose too. For all-ASCII
-        # labels, only treat a common public/reserved TLD as a domain candidate.
+        # labels, only treat an IANA snapshot/reserved TLD as a domain candidate.
         return any(separator in raw for separator in "。．｡") and (
-            final_label in COMMON_PUBLIC_TLDS
+            is_plausible_tld(final_label)
             or f".{final_label}" in ALLOWED_DOMAIN_SUFFIXES
         )
 
@@ -363,13 +399,12 @@ def is_unicode_domain_candidate(raw: str) -> bool:
         if labels[0].endswith(("は", "が", "を", "に", "で", "と", "へ")):
             return False
 
-    # A recognized public/reserved final label distinguishes a bare IDN from
+    # An IANA snapshot/reserved final label distinguishes a bare IDN from
     # ordinary sentence fragments without claiming to be a general PII or
     # public-suffix detector.
     return (
-        final_label in COMMON_PUBLIC_TLDS
+        is_plausible_tld(final_label)
         or f".{final_label}" in ALLOWED_DOMAIN_SUFFIXES
-        or final_label in RECOGNIZED_IDN_TLDS
     )
 
 
@@ -1457,6 +1492,11 @@ def main() -> int:
         "観測値は例え.comです",
         "URL例は例え.comです",
         "接続先->例え.comです",
+        "通信先は例え.aiです",
+        "通信先は例え.deです",
+        "通信先は例え.frです",
+        "観測した例え.comが応答した",
+        "観測値は例え.com。次へ進む",
     )
     for mutation in general_host_regressions:
         match = GENERAL_HOST_CANDIDATE_RE.search(mutation)
@@ -1550,6 +1590,13 @@ def main() -> int:
     attack = source_items.get("SRC-ATTACK-001", {})
     if "not as attribution proof" not in attack.get("notes", ""):
         error("references/sources.json: SRC-ATTACK-001 notes must state that ATT&CK is not attribution proof")
+    iana_tlds = source_items.get("SRC-IANA-TLD-001", {})
+    if iana_tlds.get("version") != IANA_TLD_SNAPSHOT_VERSION:
+        error("references/sources.json: IANA TLD snapshot version drifted")
+    if iana_tlds.get("url") != "https://data.iana.org/TLD/tlds-alpha-by-domain.txt":
+        error("references/sources.json: IANA TLD snapshot must use the official data URL")
+    if IANA_TLD_SNAPSHOT_SHA256 not in iana_tlds.get("notes", ""):
+        error("references/sources.json: IANA TLD snapshot digest is missing from notes")
     icd = source_items.get("SRC-ICD203-001", {})
     if icd.get("url") != "https://www.dni.gov/files/documents/ICD/ICD-203.pdf":
         error("references/sources.json: SRC-ICD203-001 must use the official DNI PDF URL")

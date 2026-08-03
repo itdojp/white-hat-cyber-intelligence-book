@@ -431,6 +431,25 @@
         15
       ],
       "notes": "Use the current page and linked guideline at publication time."
+    },
+    {
+      "id": "SRC-IANA-TLD-001",
+      "publisher": "Internet Assigned Numbers Authority (IANA)",
+      "title": "Root Zone Database — TLDs alpha by domain",
+      "kind": "registry-data",
+      "status": "current-snapshot",
+      "version": "2026080300",
+      "url": "https://data.iana.org/TLD/tlds-alpha-by-domain.txt",
+      "publishedAt": "2026-08-03",
+      "checkedAt": "2026-08-03",
+      "nextReviewAt": "2026-11-03",
+      "reviewTriggers": [
+        "IANA root-zone TLD list version change"
+      ],
+      "chapters": [
+        25
+      ],
+      "notes": "Pinned operational snapshot used only by the Chapter 25 synthetic-publication safety gate; sha256:1a5b42ef79e837556bce63981f79591808237cb42f9fafb1c110783ddf0fcb95."
     }
   ]
 }
