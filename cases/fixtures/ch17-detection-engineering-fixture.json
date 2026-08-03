@@ -310,6 +310,7 @@
     "mustInclude": [
       "case_id",
       "detection_id",
+      "evidence_ids",
       "scope_delta",
       "change_ticket_status",
       "target_workload_id",

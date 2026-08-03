@@ -189,7 +189,8 @@ def validate_fixture_records(rule: dict, fixture: dict, known_ids: set[str]) -> 
 def triage_context(
     rule: dict,
     *,
-    scope_delta: list[str],
+    evidence_ids: list[str],
+    scope_delta: list[str] | None,
     change_ticket_status: str,
     target_workload_id: str | None,
     coverage_statement: str,
@@ -199,6 +200,7 @@ def triage_context(
     return {
         "case_id": rule["caseId"],
         "detection_id": rule["detectionId"],
+        "evidence_ids": evidence_ids,
         "scope_delta": scope_delta,
         "change_ticket_status": change_ticket_status,
         "target_workload_id": target_workload_id,
@@ -222,6 +224,13 @@ def evaluate(rule: dict, fixture: dict) -> dict:
     )
     if len(available) != len(set(available)):
         raise ReplayError(f"{fixture.get('fixtureId')}: availableTelemetryIds contains duplicates")
+    evidence_ids = require_string_list(
+        fixture.get("relatedEvidenceIds"),
+        f"{fixture.get('fixtureId')} relatedEvidenceIds",
+        non_empty=True,
+    )
+    if len(evidence_ids) != len(set(evidence_ids)):
+        raise ReplayError(f"{fixture.get('fixtureId')}: relatedEvidenceIds contains duplicates")
     known_ids = set(required + optional)
     unknown = set(available) - known_ids
     if unknown:
@@ -238,31 +247,46 @@ def evaluate(rule: dict, fixture: dict) -> dict:
             f"{fixture.get('fixtureId')}: records claim unavailable telemetry {sorted(unavailable_records)}"
         )
 
-    missing_required = sorted(set(required) - set(available))
-    outcomes = rule.get("outcomes")
-    if not isinstance(outcomes, dict):
-        raise ReplayError("rule outcomes must be an object")
-    if missing_required:
-        return {
-            "outcome": outcomes["telemetryGap"],
-            "severity": "none",
-            "triage": triage_context(
-                rule,
-                scope_delta=[],
-                change_ticket_status="unknown",
-                target_workload_id=None,
-                coverage_statement=f"Missing required telemetry: {', '.join(missing_required)}",
-                correlation_state="indeterminate",
-                category="Needs telemetry gap review",
-            ),
-        }
-
     candidate_contract = rule["candidate"]
     approval_contract = rule["approval"]
     escalation_contract = rule["severityEscalation"]
     candidates = records_for(fixture, candidate_contract["telemetryId"])
     approvals = records_for(fixture, approval_contract["telemetryId"])
     sign_ins = records_for(fixture, escalation_contract["telemetryId"])
+
+    missing_required = sorted(set(required) - set(available))
+    outcomes = rule.get("outcomes")
+    if not isinstance(outcomes, dict):
+        raise ReplayError("rule outcomes must be an object")
+    if missing_required:
+        known_candidate = next(
+            (
+                candidate
+                for candidate in candidates
+                if candidate.get("eventType") == candidate_contract["eventType"]
+                and candidate.get(candidate_contract["resultField"]) == "success"
+            ),
+            None,
+        )
+        return {
+            "outcome": outcomes["telemetryGap"],
+            "severity": "none",
+            "triage": triage_context(
+                rule,
+                evidence_ids=evidence_ids,
+                scope_delta=None,
+                change_ticket_status="unknown",
+                target_workload_id=(
+                    known_candidate[candidate_contract["targetField"]]
+                    if known_candidate is not None
+                    else None
+                ),
+                coverage_statement=f"Missing required telemetry: {', '.join(missing_required)}",
+                correlation_state="indeterminate",
+                category="Needs telemetry gap review",
+            ),
+        }
+
     coverage_statement = (
         "Core telemetry available; optional escalation telemetry available"
         if escalation_contract["telemetryId"] in available
@@ -360,6 +384,7 @@ def evaluate(rule: dict, fixture: dict) -> dict:
             "severity": selected["severity"],
             "triage": triage_context(
                 rule,
+                evidence_ids=evidence_ids,
                 scope_delta=selected["scope_delta"],
                 change_ticket_status=selected["change_ticket_status"],
                 target_workload_id=selected["target_workload_id"],
@@ -375,6 +400,7 @@ def evaluate(rule: dict, fixture: dict) -> dict:
             "severity": "informational",
             "triage": triage_context(
                 rule,
+                evidence_ids=evidence_ids,
                 scope_delta=selected["scope_delta"],
                 change_ticket_status=selected["change_ticket_status"],
                 target_workload_id=selected["target_workload_id"],
@@ -388,6 +414,7 @@ def evaluate(rule: dict, fixture: dict) -> dict:
         "severity": "none",
         "triage": triage_context(
             rule,
+            evidence_ids=evidence_ids,
             scope_delta=[],
             change_ticket_status="not_applicable",
             target_workload_id=None,
@@ -413,6 +440,10 @@ def assert_result(rule: dict, fixture_set: dict, fixture: dict, result: dict) ->
         raise ReplayError(
             f"{fixture.get('fixtureId')}: expected triage category "
             f"{fixture.get('expectedTriageCategory')!r}, got {triage.get('category')!r}"
+        )
+    if triage.get("evidence_ids") != fixture.get("relatedEvidenceIds"):
+        raise ReplayError(
+            f"{fixture.get('fixtureId')}: triage evidence_ids must match relatedEvidenceIds"
         )
 
 
@@ -447,6 +478,7 @@ def build_gap_fixture(fixture_set: dict) -> dict:
     derived["expectedOutcome"] = gap.get("expectedOutcome")
     derived["expectedSeverity"] = gap.get("expectedSeverity")
     derived["expectedTriageCategory"] = gap.get("expectedTriageCategory")
+    derived["relatedEvidenceIds"] = gap.get("relatedEvidenceIds")
     return derived
 
 
@@ -514,6 +546,11 @@ def run_regressions(rule: dict, fixture_set: dict) -> None:
     missing_core_result = evaluate(rule, build_gap_fixture(fixture_set))
     if missing_core_result["outcome"] != rule["outcomes"]["telemetryGap"]:
         raise ReplayError("regression core telemetry gap: must be indeterminate")
+    missing_core_triage = missing_core_result["triage"]
+    if missing_core_triage["target_workload_id"] != "workload-billing-approval-01":
+        raise ReplayError("regression core telemetry gap: known target must be preserved")
+    if missing_core_triage["scope_delta"] is not None:
+        raise ReplayError("regression core telemetry gap: approval-dependent scope delta must be unknown")
 
     mutated_rule = copy.deepcopy(rule)
     mutated_rule["outcomes"]["unapprovedScopeChange"] = "mutated_alert_contract"
