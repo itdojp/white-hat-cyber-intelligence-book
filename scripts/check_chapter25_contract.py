@@ -184,8 +184,30 @@ INDEPENDENCE_EVALUATION_TOKENS = (
     "裏付け",
 )
 URL_RE = re.compile(r"https?://[^\s<>()\]\[\"']+", re.IGNORECASE)
+
+
+def post_idna_ascii_compatibility_chars() -> frozenset[str]:
+    characters = set()
+    for codepoint in range(sys.maxunicode + 1):
+        character = chr(codepoint)
+        current_mapping = unicodedata.normalize("NFKC", character).lower()
+        idna_mapping = unicodedata.ucd_3_2_0.normalize("NFKC", character).lower()
+        if (
+            current_mapping != idna_mapping
+            and re.fullmatch(r"[a-z0-9-]+", current_mapping) is not None
+        ):
+            characters.add(character)
+    return frozenset(characters)
+
+
+POST_IDNA_ASCII_COMPATIBILITY_CHARS = post_idna_ascii_compatibility_chars()
+POST_IDNA_ASCII_COMPATIBILITY_PATTERN = re.escape(
+    "".join(sorted(POST_IDNA_ASCII_COMPATIBILITY_CHARS))
+)
+DOMAIN_LABEL_CHAR_PATTERN = rf"(?:[^\W_]|-|[{POST_IDNA_ASCII_COMPATIBILITY_PATTERN}])"
 DOMAIN_CANDIDATE_RE = re.compile(
-    r"(?<![\w@-])(?P<host>(?:[^\W_]|-){1,63}(?:[.。．｡](?:[^\W_]|-){1,63}){1,9})(?![\w-])",
+    rf"(?<![\w@-])(?P<host>{DOMAIN_LABEL_CHAR_PATTERN}{{1,63}}"
+    rf"(?:[.。．｡]{DOMAIN_LABEL_CHAR_PATTERN}{{1,63}}){{1,9}})(?![\w-])",
     re.UNICODE,
 )
 UNICODE_SEPARATOR_ASCII_HOST_RE = re.compile(
@@ -297,7 +319,8 @@ KNOWN_SECRET_RE = re.compile(
     r"\bBearer\s+[A-Za-z0-9._~+/=-]{16,})"
 )
 PHONE_RE = re.compile(
-    r"(?<![\d-])(?:(?!\+81[ .-]?(?:19|20)\d{2}[ .-]?\d{4}[ .-]?\d{4})"
+    r"(?<!\d)(?!(?:0[1-9]|1[0-2])-[0-3]\d-(?:19|20)\d{2})"
+    r"(?:(?!\+81[ .-]?(?:19|20)\d{2}[ .-]?\d{4}[ .-]?\d{4})"
     r"\+\d{1,3}(?:[ .-]\d{1,4}){2,3}|0\d{1,3}[ .-]\d{2,4}[ .-]\d{3,4}|"
     r"\+\d{10,15}|81[1-9]\d{8,9}|1[2-9]\d{2}[2-9]\d{6}|"
     r"[2-9]\d{2}[ .-][2-9]\d{2}[ .-]\d{4}|0[1-9]\d{8,9})(?!\d)"
@@ -490,14 +513,15 @@ def normalize_for_host_scanning(text: str) -> str:
         "" if stringprep.in_table_b1(char) else stringprep.map_table_b2(char)
         for char in protected_text
     )
-    normalized = unicodedata.normalize("NFKC", mapped)
+    normalized = unicodedata.ucd_3_2_0.normalize("NFKC", mapped)
     return normalized.translate(
         str.maketrans({sentinel: separator for separator, sentinel in separator_sentinels.items()})
     )
 
 
 def normalize_phone_parentheses(text: str) -> str:
-    return re.sub(r"\(\s*(\d{1,4})\s*\)\s*", r"\1-", text)
+    normalized = re.sub(r"\(\s*(\d{1,4})\s*\)", r"-\1-", text)
+    return re.sub(r"(?<=\d)[ .-]+(?=\d)", "-", normalized)
 
 
 def general_host_from_match(match: re.Match[str]) -> str:
@@ -505,6 +529,21 @@ def general_host_from_match(match: re.Match[str]) -> str:
     if not host:
         raise ValueError("general host candidate match did not contain a host")
     return host
+
+
+def is_reserved_host_followed_by_japanese_sentence(raw: str) -> bool:
+    match = GENERAL_HOST_CANDIDATE_RE.match(raw)
+    if match is None:
+        return False
+    matched_host = normalize_unicode_host(general_host_from_match(match)).lower()
+    remainder = raw[match.end() :]
+    return (
+        any(matched_host.endswith(suffix) for suffix in ALLOWED_DOMAIN_SUFFIXES)
+        and len(remainder) > 1
+        and remainder[0] in "。．｡"
+        and not remainder[1].isascii()
+        and RESERVED_SUFFIX_EXTENSION_RE.match(raw) is None
+    )
 
 
 def is_unicode_domain_candidate(raw: str) -> bool:
@@ -541,6 +580,20 @@ def is_unicode_domain_candidate(raw: str) -> bool:
         if labels[0].endswith(("は", "が", "を", "に", "で", "と", "へ")):
             return False
 
+    if (
+        re.fullmatch(r"v?\d+", labels[0], re.IGNORECASE)
+        and labels[1]
+        and labels[1][0].isdigit()
+    ):
+        return False
+
+    # A host-like token with an ASCII label and ASCII dot remains a domain
+    # candidate even when its final label is private, malformed, or was added
+    # after IDNA 2003. This keeps compatibility lookalikes from bypassing the
+    # reserved-suffix validator without classifying Japanese dotted prose.
+    if "." in raw and any(label.isascii() for label in labels[:-1]):
+        return True
+
     # An IANA snapshot/reserved final label distinguishes a bare IDN from
     # ordinary sentence fragments without claiming to be a general PII or
     # public-suffix detector.
@@ -551,7 +604,8 @@ def url_domain_hosts(text: str):
     """Extract URL hosts without consuming adjacent Japanese prose."""
     for raw_url in URL_RE.findall(text):
         stripped_url = raw_url.rstrip(".,;:")
-        parsed_host = urlparse(stripped_url).hostname
+        parsed_url = urlparse(stripped_url)
+        parsed_host = parsed_url.hostname
         if not parsed_host:
             continue
         ipv4_authority_match = URL_IPV4_AUTHORITY_RE.match(parsed_host)
@@ -564,7 +618,15 @@ def url_domain_hosts(text: str):
             continue
         known_suffix_match = GENERAL_HOST_CANDIDATE_RE.match(parsed_host)
         if known_suffix_match is not None:
-            yield general_host_from_match(known_suffix_match)
+            matched_host = general_host_from_match(known_suffix_match)
+            remainder = parsed_host[known_suffix_match.end() :]
+            if (
+                remainder.startswith((".", "。", "．", "｡"))
+                and (parsed_url.path or parsed_url.query or parsed_url.fragment)
+            ):
+                yield parsed_host
+            else:
+                yield matched_host
             continue
         yield parsed_host
 
@@ -1066,6 +1128,10 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         assert_synthetic_domain(normalized, f"{relative}: Unicode/IDN host")
     for match in DOMAIN_CANDIDATE_RE.finditer(compatibility_text):
         candidate = match.group("host")
+        if is_repository_file_reference(candidate):
+            continue
+        if is_reserved_host_followed_by_japanese_sentence(candidate):
+            continue
         if not is_unicode_domain_candidate(candidate):
             continue
         normalized = normalize_unicode_host(candidate).lower()
@@ -1796,10 +1862,14 @@ def main() -> int:
     ):
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: deception candidate references an unknown alternative")
 
-    lineage = dataset.get("lineage", {})
-    if not lineage.get("edges"):
+    lineage_value = dataset.get("lineage", {})
+    lineage = lineage_value if isinstance(lineage_value, dict) else {}
+    lineage_edges_value = lineage.get("edges", [])
+    lineage_edges = lineage_edges_value if isinstance(lineage_edges_value, list) else []
+    if not lineage_edges:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: lineage.edges must be present")
-    circular = lineage.get("circularReportingCandidates", [])
+    circular_value = lineage.get("circularReportingCandidates", [])
+    circular = circular_value if isinstance(circular_value, list) else []
     if not circular:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: circularReportingCandidates must be present")
     else:
@@ -1850,7 +1920,7 @@ def main() -> int:
     if not source_evaluation_judgments:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: source-evaluation judgment is required for the circular-reporting assessment")
     else:
-        lineage_ids = {item.get("id") for item in lineage.get("edges", []) if isinstance(item, dict)}
+        lineage_ids = {item.get("id") for item in lineage_edges if isinstance(item, dict)}
         circular_ids = {item.get("id") for item in circular if isinstance(item, dict)}
         for judgment in source_evaluation_judgments:
             if not isinstance(judgment, dict):
@@ -1941,9 +2011,15 @@ def main() -> int:
         "ALT-2026-025-002": ("plausible-for-excerpt-only", ["EVD-2026-025-006"]),
         "ALT-2026-025-003": ("plausible-attribution-boundary", ["EVD-2026-025-002", "EVD-2026-025-003", "EVD-2026-025-004"]),
     }
+    alternative_assessments_value = analytic_judgment.get("alternativeAssessments", [])
+    alternative_assessments = (
+        alternative_assessments_value
+        if isinstance(alternative_assessments_value, list)
+        else []
+    )
     actual_alternative_assessments = {
         item.get("alternativeHypothesisId"): (item.get("disposition"), item.get("relatedEvidenceIds"))
-        for item in analytic_judgment.get("alternativeAssessments", [])
+        for item in alternative_assessments
         if isinstance(item, dict)
     }
     if actual_alternative_assessments != expected_alternative_assessments:
