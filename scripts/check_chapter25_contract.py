@@ -95,6 +95,27 @@ FIXTURE_IDENTITY_SINGLETON_EXPECTED_IDS = {
     "decision": "DEC-2026-025",
     "reassessment": "REA-2026-025",
 }
+FIXTURE_REFERENCE_TARGETS = {
+    "sourceNoteId": ("sourceNotes",),
+    "sourceNoteIds": ("sourceNotes",),
+    "observationHypothesisId": ("observationHypotheses",),
+    "relatedThreatHypothesisId": ("threatHypotheses",),
+    "relatedSourceEvaluationHypothesisId": ("sourceEvaluationHypotheses",),
+    "sourceEvaluationHypothesisId": ("sourceEvaluationHypotheses",),
+    "relatedAlternativeHypothesisId": ("alternativeHypotheses",),
+    "relatedAlternativeHypothesisIds": ("alternativeHypotheses",),
+    "supportedAlternativeHypothesisIds": ("alternativeHypotheses",),
+    "alternativeHypothesisId": ("alternativeHypotheses",),
+    "relatedEvidenceIds": ("evidence",),
+    "evidenceIds": ("evidence",),
+    "gapId": ("collectionGaps",),
+    "relatedGapIds": ("collectionGaps",),
+    "relatedDecisionId": ("decision",),
+    "triggeringIndicatorIds": ("indicators",),
+    "lineageEdgeIds": ("lineage.edges",),
+    "circularReportingCandidateId": ("lineage.circularReportingCandidates",),
+    "affectedIds": ("__all_owners__",),
+}
 IDENTITY_RE = re.compile(r"[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+\Z")
 ANALYTIC_ID_RE = re.compile(
     r"(?<![A-Z0-9-])(?:TH|OBS|SEH|GAP|ALT|SN|EVD|NEG|CR|DECPT|ATTR|CF|ASM|AJ|FOR|REC|IND|DEC|REA|LIN|UNC|SEJ)-2026-025(?:-\d{3})?(?![A-Z0-9-])"
@@ -187,7 +208,8 @@ URL_IPV4_AUTHORITY_RE = re.compile(
 )
 RESERVED_SUFFIX_EXTENSION_RE = re.compile(
     r"(?P<host>(?:(?:[^\W_@]|-){1,63}[.。．｡]){1,9}"
-    r"(?:example|test|invalid)(?:\.(?:[^\W_@]|-){1,63}|"
+    r"(?:example|test|invalid)(?:\.(?:[A-Za-z0-9-]{1,63}|"
+    r"(?:[^\W_@\x00-\x7f]|-){1,63})|"
     r"[。．｡][A-Za-z0-9-]{1,63}))"
     r"(?=$|[^\x00-\x7f]|[/?:#]|[,;:!?)\]])",
     re.IGNORECASE | re.UNICODE,
@@ -202,7 +224,12 @@ HOST_VALUE_TRAILING_PUNCTUATION_RE = re.compile(
     r"[、,;；:：)\]」』]+\Z",
     re.UNICODE,
 )
-EMAIL_RE = re.compile(r"\b[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?P<host>[\w-]+(?:\.[\w-]+)+)\b", re.UNICODE)
+EMAIL_RE = re.compile(
+    r"(?<![A-Za-z0-9.!#$%&'*+/=?^_`{|}~-])"
+    r"[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@"
+    r"(?P<host>[\w-]+(?:\.[\w-]+)+)(?![A-Za-z0-9_-])",
+    re.UNICODE,
+)
 IPV4_RE = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])")
 IPV6_RE = re.compile(r"(?<![\w:])(?:[0-9A-Fa-f]{0,4}:){2,}[0-9A-Fa-f]{0,4}(?![\w:])")
 SECRET_VALUE_RE = re.compile(
@@ -466,18 +493,37 @@ def url_domain_hosts(text: str):
     """Extract URL hosts without consuming adjacent Japanese prose."""
     for raw_url in URL_RE.findall(text):
         stripped_url = raw_url.rstrip(".,;:")
-        after_scheme = stripped_url.split("://", 1)[1]
-        ipv4_authority_match = URL_IPV4_AUTHORITY_RE.match(after_scheme)
+        parsed_host = urlparse(stripped_url).hostname
+        if not parsed_host:
+            continue
+        ipv4_authority_match = URL_IPV4_AUTHORITY_RE.match(parsed_host)
         if ipv4_authority_match is not None:
             yield ipv4_authority_match.group("host")
             continue
-        known_suffix_match = GENERAL_HOST_CANDIDATE_RE.match(after_scheme)
+        reserved_extension_match = RESERVED_SUFFIX_EXTENSION_RE.match(parsed_host)
+        if reserved_extension_match is not None:
+            yield reserved_extension_match.group("host")
+            continue
+        known_suffix_match = GENERAL_HOST_CANDIDATE_RE.match(parsed_host)
         if known_suffix_match is not None:
             yield general_host_from_match(known_suffix_match)
             continue
-        parsed_host = urlparse(stripped_url).hostname
-        if parsed_host:
-            yield parsed_host
+        yield parsed_host
+
+
+def email_domain_hosts(text: str):
+    """Extract complete email domains while separating adjacent Japanese prose."""
+    for match in EMAIL_RE.finditer(text):
+        raw_host = match.group("host")
+        reserved_extension_match = RESERVED_SUFFIX_EXTENSION_RE.match(raw_host)
+        if reserved_extension_match is not None:
+            yield reserved_extension_match.group("host")
+            continue
+        known_suffix_match = GENERAL_HOST_CANDIDATE_RE.match(raw_host)
+        if known_suffix_match is not None:
+            yield general_host_from_match(known_suffix_match)
+            continue
+        yield raw_host
 
 
 def contextual_domain_hosts(text: str):
@@ -663,6 +709,89 @@ def nested_value(value: object, relative_path: str) -> object | None:
     return current
 
 
+def owner_ids_for_path(dataset: object, relative_path: str) -> set[str]:
+    owner = nested_value(dataset, relative_path)
+    if relative_path in FIXTURE_IDENTITY_SINGLETONS:
+        if not isinstance(owner, dict):
+            return set()
+        identifier = owner.get(FIXTURE_IDENTITY_SINGLETONS[relative_path])
+        return {identifier} if is_valid_identity(identifier) else set()
+    identity_key = FIXTURE_IDENTITY_COLLECTIONS.get(relative_path)
+    if identity_key != "id" or not isinstance(owner, list):
+        return set()
+    return {
+        item.get(identity_key)
+        for item in owner
+        if isinstance(item, dict) and is_valid_identity(item.get(identity_key))
+    }
+
+
+def reference_integrity_violations(dataset: object) -> list[str]:
+    target_ids = {
+        target_path: owner_ids_for_path(dataset, target_path)
+        for target_paths in FIXTURE_REFERENCE_TARGETS.values()
+        for target_path in target_paths
+        if target_path != "__all_owners__"
+    }
+    all_owner_ids = set().union(
+        *(
+            owner_ids_for_path(dataset, path)
+            for path, identity_key in FIXTURE_IDENTITY_COLLECTIONS.items()
+            if not path.startswith("markdownProjection.") and identity_key == "id"
+        ),
+        *(
+            owner_ids_for_path(dataset, path)
+            for path in FIXTURE_IDENTITY_SINGLETONS
+        ),
+    )
+    violations: list[str] = []
+
+    def walk(value: object, path: str) -> None:
+        if isinstance(value, dict):
+            for key, child in value.items():
+                child_path = f"{path}.{key}" if path else key
+                target_paths = FIXTURE_REFERENCE_TARGETS.get(key)
+                if target_paths is not None:
+                    expected_ids = (
+                        all_owner_ids
+                        if target_paths == ("__all_owners__",)
+                        else set().union(*(target_ids[target] for target in target_paths))
+                    )
+                    values = child if isinstance(child, list) else [child]
+                    expects_list = key.endswith("Ids")
+                    if expects_list != isinstance(child, list) or not values or any(
+                        not isinstance(item, str) or item not in expected_ids
+                        for item in values
+                    ):
+                        violations.append(
+                            f"{child_path}: references must resolve to "
+                            f"{list(target_paths)}"
+                        )
+                if (
+                    key in {"from", "to"}
+                    and re.fullmatch(r"lineage\.edges\[\d+\]\.(?:from|to)", child_path)
+                    and (
+                        not isinstance(child, str)
+                        or child not in target_ids.get("sourceNotes", set())
+                    )
+                ):
+                    violations.append(
+                        f"{child_path}: lineage endpoint must resolve to sourceNotes"
+                    )
+                walk(child, child_path)
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                walk(child, f"{path}[{index}]")
+
+    walk(dataset, "")
+    return violations
+
+
+def require_reference_integrity(dataset: object) -> None:
+    for violation in reference_integrity_violations(dataset):
+        error(f"{FIXTURE_LABEL}.{violation}")
+
+
 def global_owner_identity_collisions(dataset: object) -> dict[str, list[str]]:
     """Find IDs reused by distinct canonical owning records.
 
@@ -754,8 +883,8 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
             normalized,
             f"{relative}: Unicode/IDN host",
         )
-    for match in EMAIL_RE.finditer(compatibility_text):
-        assert_synthetic_domain(match.group("host").lower(), f"{relative}: email")
+    for host in email_domain_hosts(compatibility_text):
+        assert_synthetic_domain(host.lower(), f"{relative}: email")
     for match in IPV4_RE.finditer(text):
         assert_doc_ip(match.group(0), f"{relative}: IP")
     for match in IPV6_RE.finditer(text):
@@ -1048,6 +1177,7 @@ def main() -> int:
         "cases/fixtures/ch25-structured-analysis-attribution-dataset.json",
     )
     require_globally_unique_owner_ids(dataset)
+    require_reference_integrity(dataset)
     for key, expected in (
         ("artifactId", "ART-11"),
         ("caseId", "CASE-2026-025"),
@@ -1704,11 +1834,24 @@ def main() -> int:
         "接続先はhttp://192.0.2.1です": ["192.0.2.1"],
         "URL: http://192.0.2.1、確認する": ["192.0.2.1"],
         "接続先は例え.example。次に確認する": ["例え.example"],
+        "URL: https://safe.example名@evil.com/path": ["evil.com"],
     }
     for mutation, expected_hosts in contextual_domain_regressions.items():
         if list(contextual_domain_hosts(mutation)) != expected_hosts:
             error(
                 "fixture safety regression: contextual host tokenization drifted: "
+                f"{mutation!r}"
+            )
+    email_domain_regressions = {
+        "連絡先はuser@safe.exampleです": ["safe.example"],
+        "連絡先はuser@evil.comです": ["evil.com"],
+        "連絡先はuser@safe.example.localです": ["safe.example.local"],
+    }
+    for mutation, expected_hosts in email_domain_regressions.items():
+        normalized_mutation = normalize_for_host_scanning(mutation)
+        if list(email_domain_hosts(normalized_mutation)) != expected_hosts:
+            error(
+                "fixture safety regression: email domain tokenization drifted: "
                 f"{mutation!r}"
             )
     general_host_regressions = (
