@@ -664,7 +664,8 @@ def has_unambiguous_url_context(
     url_match: re.Match[str],
     raw_url: str,
     *,
-    inside_fenced_code: bool = False,
+    line_start: int,
+    inside_code_context: bool = False,
 ) -> bool:
     url_start = url_match.start()
     preceding_character = text[url_start - 1] if url_start > 0 else ""
@@ -674,11 +675,7 @@ def has_unambiguous_url_context(
         and text[url_match.end()] == ">"
     ):
         return True
-    if inside_fenced_code:
-        return True
-
-    line_start = text.rfind("\n", 0, url_start) + 1
-    if text.startswith(("    ", "\t"), line_start):
+    if inside_code_context:
         return True
 
     # Skip arbitrary Markdown whitespace before a destination. This keeps long
@@ -698,8 +695,7 @@ def has_unambiguous_url_context(
 
     # Raw HTML permits quoted values with leading whitespace and unquoted
     # values after arbitrary horizontal whitespace.
-    html_prefix_start = text.rfind("\n", 0, context_end) + 1
-    html_prefix = text[max(html_prefix_start, context_end - 192) : context_end]
+    html_prefix = text[max(line_start, context_end - 192) : context_end]
     if re.search(
         r"(?:^|\s)[A-Za-z_:][A-Za-z0-9_.:-]*\s*=\s*\Z",
         html_prefix,
@@ -708,34 +704,95 @@ def has_unambiguous_url_context(
     return preceding_character == "(" and raw_url.endswith(")")
 
 
-def markdown_fenced_code_ranges(text: str) -> list[tuple[int, int]]:
-    """Return Kramdown-style fenced code ranges in one linear pass."""
-    ranges: list[tuple[int, int]] = []
-    opening_start: int | None = None
+def blockquote_content_offset(line: str) -> int:
+    """Return the offset after any Kramdown blockquote container markers."""
+    offset = 0
+    while offset < len(line):
+        cursor = offset
+        spaces = 0
+        while cursor < len(line) and line[cursor] == " " and spaces < 3:
+            cursor += 1
+            spaces += 1
+        if cursor >= len(line) or line[cursor] != ">":
+            break
+        offset = cursor + 1
+        if offset < len(line) and line[offset] in " \t":
+            offset += 1
+    return offset
+
+
+def markdown_line_contexts(
+    text: str,
+) -> list[tuple[int, int, int, bool]]:
+    """Index line/content offsets and Kramdown code context in one pass."""
+    contexts: list[tuple[int, int, int, bool]] = []
+    fence_is_open = False
     fence_character = ""
     minimum_length = 0
+    list_continuation_indent = 0
     offset = 0
     for line in text.splitlines(keepends=True):
         line_without_ending = line.rstrip("\r\n")
-        if opening_start is None:
-            opening = re.match(r" {0,3}(?P<fence>`{3,}|~{3,})", line_without_ending)
+        quote_offset = blockquote_content_offset(line_without_ending)
+        container_content = line_without_ending[quote_offset:]
+        inside_code_context = fence_is_open
+
+        if fence_is_open:
+            closing_candidate = container_content
+            if list_continuation_indent and closing_candidate.startswith(
+                " " * list_continuation_indent
+            ):
+                closing_candidate = closing_candidate[list_continuation_indent:]
+            closing = re.fullmatch(
+                rf" {{0,3}}{re.escape(fence_character)}"
+                rf"{{{minimum_length},}}[ \t]*",
+                closing_candidate,
+            )
+            if closing is not None:
+                fence_is_open = False
+                fence_character = ""
+                minimum_length = 0
+                list_continuation_indent = 0
+        else:
+            opening_candidate = container_content
+            leading = re.match(r" {0,3}", opening_candidate)
+            leading_length = len(leading.group(0)) if leading is not None else 0
+            after_leading = opening_candidate[leading_length:]
+            list_marker = re.match(
+                r"(?:[-+*]|\d{1,9}[.)])(?P<spacing>[ \t]+)",
+                after_leading,
+            )
+            if list_marker is not None:
+                marker_length = list_marker.end()
+                opening_candidate = after_leading[marker_length:]
+                candidate_list_indent = leading_length + marker_length
+            else:
+                opening_candidate = after_leading
+                candidate_list_indent = 0
+            opening = re.match(
+                r"(?P<fence>`{3,}|~{3,})",
+                opening_candidate,
+            )
             if opening is not None:
                 fence = opening.group("fence")
-                opening_start = offset
+                fence_is_open = True
                 fence_character = fence[0]
                 minimum_length = len(fence)
-        elif re.fullmatch(
-            rf" {{0,3}}{re.escape(fence_character)}{{{minimum_length},}}[ \t]*",
-            line_without_ending,
-        ):
-            ranges.append((opening_start, offset + len(line)))
-            opening_start = None
-            fence_character = ""
-            minimum_length = 0
+                list_continuation_indent = candidate_list_indent
+                inside_code_context = True
+            elif container_content.startswith(("    ", "\t")):
+                inside_code_context = True
+
+        contexts.append(
+            (
+                offset,
+                offset + len(line),
+                offset + quote_offset,
+                inside_code_context,
+            )
+        )
         offset += len(line)
-    if opening_start is not None:
-        ranges.append((opening_start, len(text)))
-    return ranges
+    return contexts
 
 
 def raw_url_authority(stripped_url: str) -> str:
@@ -745,19 +802,19 @@ def raw_url_authority(stripped_url: str) -> str:
 
 def url_domain_hosts(text: str):
     """Extract URL hosts without consuming adjacent Japanese prose."""
-    fenced_ranges = markdown_fenced_code_ranges(text)
-    fenced_index = 0
+    line_contexts = markdown_line_contexts(text)
+    line_index = 0
     for url_match in URL_RE.finditer(text):
         while (
-            fenced_index < len(fenced_ranges)
-            and fenced_ranges[fenced_index][1] <= url_match.start()
+            line_index < len(line_contexts)
+            and line_contexts[line_index][1] <= url_match.start()
         ):
-            fenced_index += 1
-        inside_fenced_code = bool(
-            fenced_index < len(fenced_ranges)
-            and fenced_ranges[fenced_index][0] <= url_match.start()
-            < fenced_ranges[fenced_index][1]
-        )
+            line_index += 1
+        if line_index < len(line_contexts):
+            line_start, _, _, inside_code_context = line_contexts[line_index]
+        else:
+            line_start = 0
+            inside_code_context = False
         raw_url = url_match.group(0)
         stripped_url = strip_url_trailing_punctuation(raw_url)
         try:
@@ -778,7 +835,8 @@ def url_domain_hosts(text: str):
                 text,
                 url_match,
                 raw_url,
-                inside_fenced_code=inside_fenced_code,
+                line_start=line_start,
+                inside_code_context=inside_code_context,
             )
             or parsed_url.path
             or parsed_url.query
@@ -850,12 +908,17 @@ def contextual_domain_hosts(text: str):
 
 def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, list[str]]:
     rows: dict[str, list[str]] = {}
-    for line in markdown.splitlines():
+    for _, line_end, content_start, inside_code_context in (
+        markdown_line_contexts(markdown)
+    ):
+        if inside_code_context:
+            continue
+        line = markdown[content_start:line_end].rstrip("\r\n")
         leading_spaces = len(line) - len(line.lstrip(" "))
         if leading_spaces > 3 or line.startswith("\t"):
             continue
-        table_line = line[leading_spaces:]
-        if not table_line.startswith("|"):
+        table_line = line[leading_spaces:].strip()
+        if "|" not in table_line:
             continue
         cells = [cell.strip() for cell in table_line.strip("|").split("|")]
         if not cells:
@@ -2499,7 +2562,23 @@ def main() -> int:
         "```text\nhttps://safe.example。悪意\n```": [
             "safe.example。悪意"
         ],
+        "~~~text\nhttps://safe.example。悪意\n~~~": [
+            "safe.example。悪意"
+        ],
         "    https://safe.example。悪意": ["safe.example。悪意"],
+        "> ```text\n> https://safe.example。悪意\n> ```": [
+            "safe.example。悪意"
+        ],
+        "> ~~~text\n> https://safe.example。悪意\n> ~~~": [
+            "safe.example。悪意"
+        ],
+        ">     https://safe.example。悪意": ["safe.example。悪意"],
+        "- ```text\n  https://safe.example。悪意\n  ```": [
+            "safe.example。悪意"
+        ],
+        "1. ```text\n   https://safe.example。悪意\n   ```": [
+            "safe.example。悪意"
+        ],
         "[x](" + " " * 300 + 'https://safe.example。悪意 "t")': [
             "safe.example。悪意"
         ],
@@ -2535,6 +2614,33 @@ def main() -> int:
             "fixture safety regression: indented code was treated as a "
             "Kramdown table"
         )
+    for rendered_table in (
+        "> | FOR-2026-025-999 | statement | 7日 | 中 | x |",
+        "FOR-2026-025-999 | statement | 7日 | 中 | x",
+    ):
+        if "FOR-2026-025-999" not in markdown_rows_by_id(
+            rendered_table,
+            "FOR-2026-025-",
+            "fixture safety regression",
+        ):
+            error(
+                "fixture safety regression: rendered Kramdown table row was "
+                f"not recognized: {rendered_table!r}"
+            )
+    for code_table in (
+        "```text\n| FOR-2026-025-999 | statement | 7日 | 中 | x |\n```",
+        "> ```text\n> | FOR-2026-025-999 | statement | 7日 | 中 | x |\n> ```",
+        "    | FOR-2026-025-999 | statement | 7日 | 中 | x |",
+    ):
+        if markdown_rows_by_id(
+            code_table,
+            "FOR-2026-025-",
+            "fixture safety regression",
+        ):
+            error(
+                "fixture safety regression: code content was treated as a "
+                f"Kramdown table row: {code_table!r}"
+            )
     email_domain_regressions = {
         "連絡先はuser@safe.exampleです": ["safe.example"],
         "連絡先はuser@evil.comです": ["evil.com"],
