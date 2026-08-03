@@ -46,6 +46,7 @@ FIXTURE_IDENTITY_COLLECTIONS = {
     "sourceEvaluationHypotheses": "id",
     "sourceEvaluationJudgments": "id",
 }
+IDENTITY_RE = re.compile(r"[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+\Z")
 ANALYTIC_ID_RE = re.compile(
     r"\b(?:TH|OBS|SEH|GAP|ALT|SN|EVD|NEG|CR|DECPT|ATTR|CF|ASM|AJ|FOR|REC|IND|DEC|REA|LIN|UNC|SEJ)-2026-025(?:-\d{3})?\b"
 )
@@ -111,19 +112,36 @@ RECOGNIZED_IDN_TLDS = frozenset(
         "測試",
         "网络",
         "網絡",
+        "世界",
         "한국",
         "δοκιμή",
         "시험",
         "परीक्षा",
     }
 )
-IDN_ASCII_DOT_HOST_RE = re.compile(
-    r"(?P<host>(?:[^\W_]|-)+\.(?:"
-    + "|".join(
-        re.escape(tld)
-        for tld in sorted(RECOGNIZED_IDN_TLDS, key=len, reverse=True)
-    )
-    + r"))",
+KNOWN_TLD_LABELS = frozenset(
+    COMMON_PUBLIC_TLDS
+    | RECOGNIZED_IDN_TLDS
+    | {suffix.removeprefix(".") for suffix in ALLOWED_DOMAIN_SUFFIXES}
+)
+KNOWN_TLD_PATTERN = "|".join(
+    re.escape(tld) for tld in sorted(KNOWN_TLD_LABELS, key=len, reverse=True)
+)
+CONTEXTUAL_HOST_VALUE_RE = re.compile(
+    r"^(?P<host>(?:(?:[^\W_]|-)+[.。．｡])+(?:"
+    + KNOWN_TLD_PATTERN
+    + r"|xn--[A-Za-z0-9-]{1,59}))"
+    r"(?=$|です|でした|である|となる|[、,;；:：)\]」』])",
+    re.IGNORECASE | re.UNICODE,
+)
+HOST_CONTEXT_VALUE_RE = re.compile(
+    r"(?:(?:合成)?(?:接続先|参照先|ドメイン)|\b(?:domain|host|URL)\b)"
+    r"(?:\s*(?:は|が|を|[:：=])\s*|\s+)"
+    r"(?P<value>[^\s`\"'<>|]{1,160})",
+    re.IGNORECASE,
+)
+HOST_VALUE_TRAILING_PUNCTUATION_RE = re.compile(
+    r"[、,;；:：)\]」』]+\Z",
     re.UNICODE,
 )
 EMAIL_RE = re.compile(r"\b[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?P<host>[\w-]+(?:\.[\w-]+)+)\b", re.UNICODE)
@@ -341,7 +359,8 @@ def is_unicode_domain_candidate(raw: str) -> bool:
         all(not char.isascii() for char in label if char.isalnum())
         for label in labels
     ):
-        return False
+        if labels[0].endswith(("は", "が", "を", "に", "で", "と", "へ")):
+            return False
 
     # A recognized public/reserved final label distinguishes a bare IDN from
     # ordinary sentence fragments without claiming to be a general PII or
@@ -353,21 +372,18 @@ def is_unicode_domain_candidate(raw: str) -> bool:
     )
 
 
-def contextual_unicode_hosts(text: str):
-    """Extract all-Unicode IDNs only when prose explicitly labels a host context."""
-    context_re = re.compile(
-        r"(?:接続先|ドメイン|[Dd]omain|[Hh]ost|URL)(?P<value>[^\s`\"'<>|]{1,96})"
-    )
-    particles = "はがを:："
-    for match in context_re.finditer(text):
-        value = match.group("value").lstrip(particles)
-        for separator in "。．｡":
-            for tld in RECOGNIZED_IDN_TLDS:
-                marker = f"{separator}{tld}"
-                marker_index = value.find(marker)
-                if marker_index <= 0:
-                    continue
-                yield value[: marker_index + len(marker)]
+def contextual_domain_hosts(text: str):
+    """Extract complete host values from explicit Japanese/English host contexts."""
+    for match in HOST_CONTEXT_VALUE_RE.finditer(text):
+        value = HOST_VALUE_TRAILING_PUNCTUATION_RE.sub("", match.group("value"))
+        known_suffix_match = CONTEXTUAL_HOST_VALUE_RE.match(value)
+        if known_suffix_match is not None:
+            yield known_suffix_match.group("host")
+            continue
+        if any(separator in value for separator in ".。．｡"):
+            # An explicitly labelled host with an unknown suffix is still a host
+            # candidate. Passing it to the reserved-suffix validator fails closed.
+            yield value
 
 
 def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, list[str]]:
@@ -401,6 +417,10 @@ def subsection_body(markdown: str, heading: str) -> str | None:
     return match.group("body") if match is not None else None
 
 
+def is_valid_identity(value: object) -> bool:
+    return isinstance(value, str) and IDENTITY_RE.fullmatch(value) is not None
+
+
 def require_unique_object_identities(
     items: object,
     label: str,
@@ -411,13 +431,10 @@ def require_unique_object_identities(
         return
     identifiers = [item.get(identity_key) for item in items if isinstance(item, dict)]
     if len(identifiers) != len(items) or any(
-        not isinstance(identifier, str)
-        or not identifier.strip()
-        or identifier != identifier.strip()
-        for identifier in identifiers
+        not is_valid_identity(identifier) for identifier in identifiers
     ):
         error(
-            f"{label}: every entry must be an object with a non-empty, trimmed string {identity_key}"
+            f"{label}: every entry must be an object with a canonical ASCII {identity_key}"
         )
         return
     duplicates = sorted({identifier for identifier in identifiers if identifiers.count(identifier) > 1})
@@ -487,14 +504,10 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
             continue
         assert_synthetic_domain(host, f"{relative}: host/URL")
     checked_unicode_hosts: set[str] = set()
-    for match in IDN_ASCII_DOT_HOST_RE.finditer(text):
-        normalized = normalize_unicode_host(match.group("host")).lower()
-        checked_unicode_hosts.add(normalized)
-        assert_synthetic_domain(normalized, f"{relative}: Unicode/IDN host")
-    for candidate in contextual_unicode_hosts(text):
+    for candidate in contextual_domain_hosts(text):
         normalized = normalize_unicode_host(candidate).lower()
         checked_unicode_hosts.add(normalized)
-        assert_synthetic_domain(normalized, f"{relative}: contextual Unicode/IDN host")
+        assert_synthetic_domain(normalized, f"{relative}: contextual host/IDN")
     for match in UNICODE_SEPARATOR_ASCII_HOST_RE.finditer(text):
         candidate = match.group("host")
         if not is_unicode_domain_candidate(candidate):
@@ -1394,10 +1407,36 @@ def main() -> int:
     punycode_match = HOSTNAME_RE.search("接続先はxn--r8jz45g.xn--zckzahです")
     if punycode_match is None or punycode_match.group("host") != "xn--r8jz45g.xn--zckzah":
         error("fixture safety regression: adjacent punycode host was not tokenized")
-    if list(contextual_unicode_hosts("接続先は例え。テストです")) != ["例え。テスト"]:
-        error("fixture safety regression: contextual all-Unicode IDN host was not tokenized")
+    contextual_domain_regressions = {
+        "接続先は例え.comです": ["例え.com"],
+        "接続先は例え。世界です": ["例え。世界"],
+        "接続先はпример.РФです": ["пример.РФ"],
+        "接続先: 例え。テスト": ["例え。テスト"],
+        "ドメインは 例え。テスト": ["例え。テスト"],
+        "合成接続先は例え.テスト.exampleです": ["例え.テスト.example"],
+    }
+    for mutation, expected_hosts in contextual_domain_regressions.items():
+        if list(contextual_domain_hosts(mutation)) != expected_hosts:
+            error(
+                "fixture safety regression: contextual host tokenization drifted: "
+                f"{mutation!r}"
+            )
+    for mutation in ("例え.テスト", "例え.世界"):
+        if not is_unicode_domain_candidate(mutation):
+            error(f"fixture safety regression: bare IDN was not recognized: {mutation!r}")
     if is_unicode_domain_candidate("これは。テスト"):
         error("fixture safety regression: Japanese prose was treated as a Unicode/IDN domain")
+    if is_unicode_domain_candidate("検証.テストケースを実施する"):
+        error("fixture safety regression: ordinary dotted Japanese prose was treated as an IDN")
+    for mutation in ("\u200b", "\ufeff", "ROLE-2026-025-001\u200b", "role-001"):
+        if is_valid_identity(mutation):
+            error(f"fixture identity regression: unsafe identity was accepted: {mutation!r}")
+    for canonical_identity in ("ROLE-2026-025-001", "ALT-2026-025-001"):
+        if not is_valid_identity(canonical_identity):
+            error(
+                "fixture identity regression: canonical identity was rejected: "
+                f"{canonical_identity!r}"
+            )
 
     package = load_json("package.json")
     scripts = package.get("scripts", {})
