@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import html
 from html.parser import HTMLParser
 import ipaddress
 import json
@@ -561,6 +562,16 @@ def normalize_for_host_scanning(text: str) -> str:
     )
 
 
+def normalize_policy_text(text: str) -> str:
+    """Normalize compatibility and mapped-to-nothing forms for policy matching."""
+    decoded = html.unescape(text)
+    mapped = "".join(
+        "" if stringprep.in_table_b1(character) else character
+        for character in decoded
+    )
+    return unicodedata.normalize("NFKC", mapped).casefold()
+
+
 def normalize_phone_parentheses(text: str) -> str:
     without_dates = PHONE_DATE_TIME_RE.sub(
         lambda match: " " * len(match.group(0)), text
@@ -598,6 +609,34 @@ def is_reserved_host_followed_by_japanese_sentence(raw: str) -> bool:
         and remainder[0] in "。．｡"
         and not remainder[1].isascii()
         and RESERVED_SUFFIX_EXTENSION_RE.match(raw) is None
+    )
+
+
+def is_japanese_sentence_continuation(remainder: str) -> bool:
+    """Recognize common prose immediately following a reserved example host."""
+    if any(
+        character.isascii()
+        and (character.isalnum() or character in ".-_@")
+        for character in remainder
+    ):
+        return False
+    return remainder.startswith(
+        (
+            "です",
+            "でした",
+            "である",
+            "では",
+            "を",
+            "は",
+            "が",
+            "に",
+            "へ",
+            "と",
+            "の",
+            "から",
+            "まで",
+            "より",
+        )
     )
 
 
@@ -778,7 +817,7 @@ def url_domain_hosts(text: str):
         if ipv4_authority_match is not None:
             matched_ipv4 = ipv4_authority_match.group("host")
             remainder = parsed_host[ipv4_authority_match.end() :]
-            if remainder:
+            if remainder and not is_japanese_sentence_continuation(remainder):
                 yield parsed_host
             else:
                 yield matched_ipv4
@@ -791,7 +830,7 @@ def url_domain_hosts(text: str):
         if known_suffix_match is not None:
             matched_host = general_host_from_match(known_suffix_match)
             remainder = parsed_host[known_suffix_match.end() :]
-            if remainder:
+            if remainder and not is_japanese_sentence_continuation(remainder):
                 yield parsed_host
             else:
                 yield matched_host
@@ -813,10 +852,11 @@ def email_domain_hosts(text: str):
             continue
         known_suffix_match = GENERAL_HOST_CANDIDATE_RE.match(raw_host)
         if known_suffix_match is not None:
+            remainder = raw_host[known_suffix_match.end() :]
             yield (
-                raw_host
-                if known_suffix_match.end() < len(raw_host)
-                else general_host_from_match(known_suffix_match)
+                general_host_from_match(known_suffix_match)
+                if not remainder or is_japanese_sentence_continuation(remainder)
+                else raw_host
             )
             continue
         yield raw_host
@@ -833,8 +873,12 @@ def contextual_domain_hosts(text: str):
         known_suffix_match = GENERAL_HOST_CANDIDATE_RE.search(value)
         if known_suffix_match is not None:
             remainder = value[known_suffix_match.end() :]
-            if remainder and not remainder.startswith(
-                ("/", "?", "#", ":", "、", ",", ";", "；")
+            if (
+                remainder
+                and not is_japanese_sentence_continuation(remainder)
+                and not remainder.startswith(
+                    ("/", "?", "#", ":", "、", ",", ";", "；")
+                )
             ):
                 yield value
             else:
@@ -870,29 +914,175 @@ class RenderedTextExtractor(HTMLParser):
         self.fragments.append(data)
 
 
+def protect_markdown_code(markdown: str) -> tuple[str, dict[str, str]]:
+    """Replace Markdown code contexts before parsing raw HTML."""
+    replacements: dict[str, str] = {}
+
+    def placeholder(value: str) -> str:
+        token = f"\ufdd0CODE{len(replacements)}\ufdd1"
+        replacements[token] = value
+        return token
+
+    protected_lines: list[str] = []
+    for line_start, line_end, _, inside_code_context in markdown_line_contexts(
+        markdown
+    ):
+        line = markdown[line_start:line_end]
+        if inside_code_context:
+            line_ending = line[len(line.rstrip("\r\n")) :]
+            line_body = line[: -len(line_ending)] if line_ending else line
+            protected_lines.append(placeholder(line_body) + line_ending)
+            continue
+
+        output: list[str] = []
+        index = 0
+        while index < len(line):
+            if line[index] != "`":
+                output.append(line[index])
+                index += 1
+                continue
+            run_end = index + 1
+            while run_end < len(line) and line[run_end] == "`":
+                run_end += 1
+            delimiter = line[index:run_end]
+            closing = line.find(delimiter, run_end)
+            if closing < 0:
+                output.append(delimiter)
+                index = run_end
+                continue
+            code = line[run_end:closing].replace("\r", " ").replace("\n", " ")
+            if code.startswith(" ") and code.endswith(" ") and code.strip():
+                code = code[1:-1]
+            output.append(placeholder(code))
+            index = closing + len(delimiter)
+        protected_lines.append("".join(output))
+    return "".join(protected_lines), replacements
+
+
+def normalized_reference_label(label: str) -> str:
+    return " ".join(label.split()).casefold()
+
+
+def matching_delimiter_end(
+    text: str,
+    start: int,
+    opening: str,
+    closing: str,
+    *,
+    honor_quotes: bool = False,
+) -> int | None:
+    """Return the matching delimiter index while honoring escapes and nesting."""
+    if start >= len(text) or text[start] != opening:
+        return None
+    depth = 1
+    quote: str | None = None
+    index = start + 1
+    while index < len(text):
+        character = text[index]
+        if character == "\\":
+            index += 2
+            continue
+        if honor_quotes and character in "\"'" and (
+            quote is not None
+            or (index > start + 1 and text[index - 1].isspace())
+        ):
+            if quote == character:
+                quote = None
+            elif quote is None:
+                quote = character
+            index += 1
+            continue
+        if quote is not None:
+            index += 1
+            continue
+        if character == opening:
+            depth += 1
+        elif character == closing:
+            depth -= 1
+            if depth == 0:
+                return index
+        index += 1
+    return None
+
+
+def markdown_visible_links(text: str) -> str:
+    """Project Markdown links to visible labels without rewriting undefined refs."""
+    definitions = {
+        normalized_reference_label(match.group("label"))
+        for match in re.finditer(
+            r"(?m)^ {0,3}\[(?P<label>[^\]\n]+)\]:[^\n]*(?:\n|$)", text
+        )
+    }
+    text = re.sub(
+        r"(?m)^ {0,3}\[[^\]\n]+\]:[^\n]*(?:\n|$)",
+        "",
+        text,
+    )
+    output: list[str] = []
+    index = 0
+    while index < len(text):
+        image = text.startswith("![", index)
+        label_start = index + 1 if image else index
+        if label_start >= len(text) or text[label_start] != "[":
+            output.append(text[index])
+            index += 1
+            continue
+        label_end = matching_delimiter_end(text, label_start, "[", "]")
+        if label_end is None:
+            output.append(text[index])
+            index += 1
+            continue
+        label = text[label_start + 1 : label_end]
+        suffix_start = label_end + 1
+        if suffix_start < len(text) and text[suffix_start] == "(":
+            destination_end = matching_delimiter_end(
+                text,
+                suffix_start,
+                "(",
+                ")",
+                honor_quotes=True,
+            )
+            if destination_end is not None:
+                output.append(label)
+                index = destination_end + 1
+                continue
+        if suffix_start < len(text) and text[suffix_start] == "[":
+            reference_end = matching_delimiter_end(
+                text, suffix_start, "[", "]"
+            )
+            if reference_end is not None:
+                reference = text[suffix_start + 1 : reference_end] or label
+                if normalized_reference_label(reference) in definitions:
+                    output.append(label)
+                else:
+                    output.append(text[index : reference_end + 1])
+                index = reference_end + 1
+                continue
+        if normalized_reference_label(label) in definitions:
+            output.append(label)
+        else:
+            output.append(text[index : label_end + 1])
+        index = label_end + 1
+    return "".join(output)
+
+
 def strip_html_comments_for_rendered_text(markdown: str) -> str:
     """Approximate rendered text for source-level ID collision checks."""
+    protected_markdown, code_replacements = protect_markdown_code(markdown)
     parser = RenderedTextExtractor()
-    parser.feed(markdown)
+    parser.feed(protected_markdown)
     parser.close()
     rendered_text = "".join(parser.fragments)
-    rendered_text = re.sub(
-        r"!?\[([^\]]*)\]\([^)]*\)",
-        r"\1",
-        rendered_text,
-    )
-    rendered_text = re.sub(
-        r"!?\[([^\]]*)\]\[[^\]]*\]",
-        r"\1",
-        rendered_text,
-    )
-    rendered_text = re.sub(r"!?\[([^\]]+)\]", r"\1", rendered_text)
+    rendered_text = markdown_visible_links(rendered_text)
     rendered_text = re.sub(
         rf"\\([{re.escape(string.punctuation)}])",
         r"\1",
         rendered_text,
     )
-    return rendered_text.translate(str.maketrans("", "", "*_~`"))
+    rendered_text = rendered_text.translate(str.maketrans("", "", "*_~`"))
+    for token, value in code_replacements.items():
+        rendered_text = rendered_text.replace(token, value)
+    return rendered_text
 
 
 def markdown_pipe_lines(
@@ -916,9 +1106,10 @@ def markdown_pipe_lines(
             parsed_lines.append(None)
             continue
         cells = [cell.strip() for cell in table_line.strip("|").split("|")]
-        container_signature = (
-            markdown[line_start:content_start] + " " * leading_spaces
-        )
+        # Kramdown accepts independently varying 0--3 spaces on table lines.
+        # Preserve structural containers such as blockquotes, but do not make
+        # optional top-level indentation part of the table identity.
+        container_signature = markdown[line_start:content_start]
         parsed_lines.append((container_signature, cells) if cells else None)
     return parsed_lines
 
@@ -984,6 +1175,18 @@ def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, lis
 
 def normalized_markdown_cell(value: str) -> str:
     return value.strip().replace("`", "")
+
+
+def unique_markdown_identifier(
+    value: str,
+    pattern: str,
+    label: str,
+) -> str | None:
+    matches = re.findall(pattern, value)
+    if len(matches) != 1:
+        error(f"{label}: expected exactly one relationship ID, found {matches!r}")
+        return None
+    return matches[0]
 
 
 def require_table_header_for_id_prefix(
@@ -1416,7 +1619,9 @@ def require_globally_unique_owner_ids(dataset: object) -> None:
 
 def check_synthetic_content_safety(relative: str, text: str) -> None:
     """Check synthetic teaching content only; official Source Note URLs use SOURCE_POLICY."""
-    compatibility_text = normalize_for_host_scanning(text)
+    # Decode character references before scanning so an HTML attribute cannot
+    # disguise a live URL or hostname from the synthetic-content policy.
+    compatibility_text = normalize_for_host_scanning(html.unescape(text))
     for host in url_domain_hosts(compatibility_text):
         assert_synthetic_host(host, f"{relative}: URL")
     for match in HOSTNAME_RE.finditer(compatibility_text):
@@ -1470,7 +1675,10 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     for match in IPV4_RE.finditer(text):
         assert_doc_ip(match.group(0), f"{relative}: IP")
     for match in IPV6_RE.finditer(text):
-        assert_doc_ip(match.group(0), f"{relative}: IPv6")
+        candidate = match.group(0)
+        if not is_ipv6_literal_candidate(candidate):
+            continue
+        assert_doc_ip(candidate, f"{relative}: IPv6")
     if SECRET_VALUE_RE.search(text):
         error(f"{relative}: contains a secret/token/private-key value assignment")
     if KNOWN_SECRET_RE.search(text):
@@ -1479,6 +1687,13 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         error(f"{relative}: contains a private-key block")
     if PHONE_RE.search(normalize_phone_parentheses(compatibility_text)):
         error(f"{relative}: contains a telephone-number-like value")
+
+
+def is_ipv6_literal_candidate(value: str) -> bool:
+    """Separate possible IPv6 literals from ordinary HH:MM:SS timestamps."""
+    # A valid IPv6 literal either uses compression (::) or contains at least
+    # three colons. Invalid strings outside those shapes are not IP literals.
+    return "::" in value or value.count(":") >= 3
 
 
 def check_structured_synthetic_people(relative: str, text: str) -> None:
@@ -2013,9 +2228,10 @@ def main() -> int:
             "searchedBehavior": normalized_markdown_cell(cells[3]) if len(cells) > 3 else None,
             "searchWindow": normalized_markdown_cell(cells[4]) if len(cells) > 4 else None,
             "availableCoverage": normalized_markdown_cell(cells[5]) if len(cells) > 5 else None,
-            "gapId": next(
-                iter(re.findall(r"GAP-2026-025-\d{3}", cells[6])),
-                None,
+            "gapId": unique_markdown_identifier(
+                cells[6],
+                r"GAP-2026-025-\d{3}",
+                f"{case_path}: {finding_id} Gap",
             )
             if len(cells) > 6
             else None,
@@ -2175,10 +2391,13 @@ def main() -> int:
         or any(
             not phrase.strip()
             or strip_html_comments_for_rendered_text(phrase) != phrase
-            or any(delimiter in phrase for delimiter in ("「", "」"))
             or any(
-                forbidden in phrase
-                for forbidden in ("Campaign", "Operator", "組織", "国家")
+                delimiter in normalize_policy_text(phrase)
+                for delimiter in ("「", "」")
+            )
+            or any(
+                forbidden in normalize_policy_text(phrase)
+                for forbidden in ("campaign", "operator", "組織", "国家")
             )
             for phrase in canonical_permitted_language
         )
@@ -2800,22 +3019,22 @@ def main() -> int:
     if punycode_match is None or punycode_match.group("host") != "xn--r8jz45g.xn--zckzah":
         error("fixture safety regression: adjacent punycode host was not tokenized")
     contextual_domain_regressions = {
-        "接続先は例え.comです": ["例え.comです"],
-        "接続先は例え。世界です": ["例え。世界です"],
-        "接続先はпример.РФです": ["пример.РФです"],
+        "接続先は例え.comです": ["例え.com"],
+        "接続先は例え。世界です": ["例え。世界"],
+        "接続先はпример.РФです": ["пример.РФ"],
         "接続先: 例え。テスト": ["例え。テスト"],
         "ドメインは 例え。テスト": ["例え。テスト"],
-        "合成接続先は例え.テスト.exampleです": ["例え.テスト.exampleです"],
-        "接続先は例え.exampleを使用する": ["例え.exampleを使用する"],
+        "合成接続先は例え.テスト.exampleです": ["例え.テスト.example"],
+        "接続先は例え.exampleを使用する": ["例え.example"],
         "接続先は例え.example/pathです": ["例え.example"],
         "URL: https://例え.example/path": ["例え.example"],
         "参照先はhttps://xn--r8jz45g.example/a?b=1です": [
             "xn--r8jz45g.example"
         ],
-        "接続先はhttps://例え.exampleです": ["例え.exampleです"],
+        "接続先はhttps://例え.exampleです": ["例え.example"],
         "URL: https://例え.example、確認する": ["例え.example"],
         "URL: http://192.0.2.1/path": ["192.0.2.1"],
-        "接続先はhttp://192.0.2.1です": ["192.0.2.1です"],
+        "接続先はhttp://192.0.2.1です": ["192.0.2.1"],
         "URL: http://192.0.2.1、確認する": ["192.0.2.1"],
         "接続先は例え.example。次に確認する": ["例え.example。次に確認する"],
         "接続先はsafe.example悪意": ["safe.example悪意"],
@@ -2966,6 +3185,9 @@ def main() -> int:
         "Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts\n"
         "--- | --- | --- | --- | ---\n"
         "FOR-2026-025-999 | statement | 7日 | 中 | x",
+        " Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts\n"
+        "  --- | --- | --- | --- | ---\n"
+        "   FOR-2026-025-999 | statement | 7日 | 中 | x",
     ):
         if "FOR-2026-025-999" not in markdown_rows_by_id(
             rendered_table,
@@ -3040,9 +3262,52 @@ def main() -> int:
             "fixture safety regression: formatted rendered Forecast ID was "
             "not recognized"
         )
+    rendered_forecast_regressions = {
+        "[FOR-2026-025-](https://safe.example/a_(b))999": True,
+        "[FOR-2026-025-](https://safe.example/a_(b_(c)))999": True,
+        '[FOR-2026-025-](https://safe.example "x)y")999': True,
+        "[FOR-2026-025-][ref]999\n[ref]: https://safe.example": True,
+        "`FOR-2026-025-<!--x-->999`": False,
+        "[FOR-2026-025-]999": False,
+    }
+    for mutation, should_render_id in rendered_forecast_regressions.items():
+        rendered = strip_html_comments_for_rendered_text(mutation)
+        rendered_id = "FOR-2026-025-999" in rendered
+        if rendered_id != should_render_id:
+            error(
+                "fixture safety regression: Markdown rendered Forecast-ID "
+                f"projection drifted: {mutation!r} -> {rendered!r}"
+            )
+    encoded_live_url = normalize_for_host_scanning(
+        html.unescape('<a href="h&#116;tps://evil&#46;com/path">x</a>')
+    )
+    if list(url_domain_hosts(encoded_live_url)) != ["evil.com"]:
+        error(
+            "fixture safety regression: HTML-character-reference URL escaped "
+            "synthetic host tokenization"
+        )
+    for disguised_policy_value in (
+        "campaign断定",
+        "operator断定",
+        "Ｃａｍｐａｉｇｎ断定",
+        "Cam\u200bpaign断定",
+    ):
+        normalized_policy_value = normalize_policy_text(disguised_policy_value)
+        if not any(
+            forbidden in normalized_policy_value
+            for forbidden in ("campaign", "operator")
+        ):
+            error(
+                "fixture safety regression: attribution-level policy value "
+                f"escaped normalization: {disguised_policy_value!r}"
+            )
+    if is_ipv6_literal_candidate("10:15:00"):
+        error("fixture safety regression: ordinary time was classified as IPv6")
+    if not is_ipv6_literal_candidate("2001:db8::1"):
+        error("fixture safety regression: IPv6 literal was not classified")
     email_domain_regressions = {
-        "連絡先はuser@safe.exampleです": ["safe.exampleです"],
-        "連絡先はuser@evil.comです": ["evil.comです"],
+        "連絡先はuser@safe.exampleです": ["safe.example"],
+        "連絡先はuser@evil.comです": ["evil.com"],
         "連絡先はuser@safe.example.localです": ["safe.example.localです"],
         "連絡先はuser@safe.example悪意": ["safe.example悪意"],
     }
