@@ -193,7 +193,7 @@ INDEPENDENCE_EVALUATION_TOKENS = (
     "独立",
     "裏付け",
 )
-URL_RE = re.compile(r"https?://[^\s<>\"']+", re.IGNORECASE)
+URL_RE = re.compile(r"https?://[^\s<>\"'`]+", re.IGNORECASE)
 
 
 def post_idna_ascii_compatibility_chars() -> frozenset[str]:
@@ -346,7 +346,7 @@ PHONE_RE = re.compile(
 )
 PHONE_DATE_TIME_RE = re.compile(
     r"(?<!\d)(?:"
-    r"(?:19|20)\d{2}\s*(?:[./-]\s*|\(\s*)"
+    r"(?:19|20)\d{2}\s*(?:[./-]\s*|\(\s*|\s+)"
     r"(?:0[1-9]|1[0-2])\s*\)?\s*[ ./-]\s*"
     r"(?:0[1-9]|[12]\d|3[01])|"
     r"(?:0[1-9]|1[0-2])[./-](?:0[1-9]|[12]\d|3[01])"
@@ -654,19 +654,24 @@ def strip_url_trailing_punctuation(raw_url: str) -> str:
 def has_unambiguous_url_context(
     text: str, url_match: re.Match[str], raw_url: str
 ) -> bool:
-    prefix = text[: url_match.start()]
+    url_start = url_match.start()
+    preceding_character = text[url_start - 1] if url_start > 0 else ""
     if (
         url_match.end() < len(text)
-        and prefix.endswith("<")
+        and preceding_character == "<"
         and text[url_match.end()] == ">"
     ):
         return True
-    if re.search(r"\]\(\s*<?\Z", prefix):
+    if preceding_character in {'"', "'", "`"}:
         return True
-    line_prefix = prefix.rsplit("\n", 1)[-1]
-    if re.fullmatch(r"[ \t]{0,3}\[[^\]\n]+\]:[ \t]*<?", line_prefix):
+    line_start = text.rfind("\n", 0, url_start) + 1
+    context_start = max(line_start, url_start - 256)
+    line_prefix = text[context_start:url_start]
+    if re.search(r"\]\(\s*<?\Z", line_prefix):
         return True
-    return prefix.endswith("(") and raw_url.endswith(")")
+    if re.search(r"\[[^\]\n]+\]:[ \t]*<?\Z", line_prefix):
+        return True
+    return preceding_character == "(" and raw_url.endswith(")")
 
 
 def raw_url_authority(stripped_url: str) -> str:
@@ -2032,6 +2037,9 @@ def main() -> int:
                     f"judgments.forecasts[{index}].{required_field} must be a "
                     "non-empty string"
                 )
+    all_markdown_forecast_rows = markdown_rows_by_id(
+        case, "FOR-2026-025-", case_path
+    )
     forecast_body = subsection_body(case, "10.4 Forecasts")
     if forecast_body is None:
         error(
@@ -2044,6 +2052,11 @@ def main() -> int:
             forecast_body,
             "FOR-2026-025-",
             f"{case_path}:10.4 Forecasts",
+        )
+    if all_markdown_forecast_rows != markdown_forecast_rows:
+        error(
+            "cases/ch25-structured-analysis-attribution-example.md: Forecast "
+            "rows must appear only in subsection 10.4 Forecasts"
         )
     actual_markdown_forecast_confidence = {
         forecast_id: (
@@ -2256,6 +2269,11 @@ def main() -> int:
         "2026-07-29 1015",
         "2026.07.29 1015",
         "2026 (07) 29 1015",
+        "UTC+09 2026 07 29 1015",
+        "+81 2026 07 29 1015",
+        "+44 2026 07 29 1015",
+        "offset +09 2026 08 04 0530",
+        "version +1 2026 08 04 1234",
     ):
         if PHONE_RE.search(normalize_phone_parentheses(non_phone)):
             error(f"fixture safety regression: non-telephone numeric value was rejected: {non_phone!r}")
@@ -2317,6 +2335,21 @@ def main() -> int:
             "safe.example。悪意"
         ],
         '[x]: https://safe.example。悪意 "title"': ["safe.example。悪意"],
+        '> [x]: https://safe.example。悪意 "title"\n> [use][x]': [
+            "safe.example。悪意"
+        ],
+        '> [x]: http://192.0.2.1。local "title"\n> [use][x]': [
+            "192.0.2.1。local"
+        ],
+        '<a href="https://safe.example。悪意">use</a>': [
+            "safe.example。悪意"
+        ],
+        '<img src="https://safe.example。悪意">': ["safe.example。悪意"],
+        '"https://safe.example。悪意"': ["safe.example。悪意"],
+        '`https://safe.example。悪意`': ["safe.example。悪意"],
+        '<a href="http://192.0.2.1。local">x</a>': [
+            "192.0.2.1。local"
+        ],
         "http://192.0.2.1。local/path": ["192.0.2.1。local"],
         "<http://192.0.2.1。local>": ["192.0.2.1。local"],
         "[x](http://192.0.2.1。local)": ["192.0.2.1。local"],
