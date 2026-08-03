@@ -10,6 +10,48 @@
     "pages",
     "directoryRoutes"
   ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "directoryRoutes": {
+            "required": [
+              "cases"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "canonicalDirectories": {
+            "contains": {
+              "const": "cases"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "directoryRoutes": {
+            "required": [
+              "schemas"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "canonicalDirectories": {
+            "contains": {
+              "const": "schemas"
+            }
+          }
+        }
+      }
+    }
+  ],
   "properties": {
     "schemaVersion": {
       "const": "1.0.0"
@@ -69,7 +111,10 @@
     "directoryRoutes": {
       "type": "object",
       "propertyNames": {
-        "pattern": "^[A-Za-z0-9_-]+$"
+        "enum": [
+          "cases",
+          "schemas"
+        ]
       },
       "additionalProperties": {
         "type": "string",

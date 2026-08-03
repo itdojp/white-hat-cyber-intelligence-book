@@ -266,6 +266,38 @@ def main() -> int:
     schema = load_json("schemas/site-pages.schema.json")
     if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
         error("schemas/site-pages.schema.json: unexpected JSON Schema dialect")
+    route_names = (
+        schema.get("properties", {})
+        .get("directoryRoutes", {})
+        .get("propertyNames", {})
+        .get("enum")
+    )
+    if route_names != ["cases", "schemas"]:
+        error(
+            "schemas/site-pages.schema.json: directoryRoutes must allow only "
+            "the approved canonical roots"
+        )
+    route_dependencies = {
+        (
+            item.get("if", {})
+            .get("properties", {})
+            .get("directoryRoutes", {})
+            .get("required", [None])[0]
+        ): (
+            item.get("then", {})
+            .get("properties", {})
+            .get("canonicalDirectories", {})
+            .get("contains", {})
+            .get("const")
+        )
+        for item in schema.get("allOf", [])
+        if isinstance(item, dict)
+    }
+    if route_dependencies != {"cases": "cases", "schemas": "schemas"}:
+        error(
+            "schemas/site-pages.schema.json: each directory route must require "
+            "its matching canonicalDirectories declaration"
+        )
 
     artifact_index = read_text("artifact-index.md")
     require_tokens(
