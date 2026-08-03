@@ -427,6 +427,23 @@ def require_unique_object_identities(
         )
 
 
+def require_declared_identity_collection_paths(dataset: object) -> None:
+    """Reject deletion of any collection covered by the identity contract."""
+    if not isinstance(dataset, dict):
+        error(f"{FIXTURE_LABEL}: fixture root must be an object")
+        return
+    for relative_path in FIXTURE_IDENTITY_COLLECTIONS:
+        current: object = dataset
+        for key in relative_path.split("."):
+            if not isinstance(current, dict) or key not in current:
+                error(
+                    f"{FIXTURE_LABEL}.{relative_path}: "
+                    "declared identity collection is missing"
+                )
+                break
+            current = current[key]
+
+
 def require_unique_ids_recursively(value: object, label: str) -> None:
     """Reject duplicate record identities in every nested fixture collection."""
     prefix = f"{FIXTURE_LABEL}."
@@ -780,6 +797,9 @@ def main() -> int:
     )
 
     dataset = load_json("cases/fixtures/ch25-structured-analysis-attribution-dataset.json")
+    require_declared_identity_collection_paths(dataset)
+    if not isinstance(dataset, dict):
+        dataset = {}
     if dataset.get("synthetic") is not True:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: synthetic must be true")
     require_unique_ids_recursively(
