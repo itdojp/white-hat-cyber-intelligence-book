@@ -112,6 +112,7 @@ FIXTURE_REFERENCE_TARGETS = {
     "gapId": ("collectionGaps",),
     "relatedGapIds": ("collectionGaps",),
     "relatedDecisionId": ("decision",),
+    "indicatorIds": ("indicators",),
     "triggeringIndicatorIds": ("indicators",),
     "lineageEdgeIds": ("lineage.edges",),
     "circularReportingCandidateId": ("lineage.circularReportingCandidates",),
@@ -143,6 +144,7 @@ FIXTURE_REQUIRED_RECORD_REFERENCE_FIELDS = {
     ),
     "judgments.confirmedFacts": ("evidenceIds",),
     "judgments.assumptions": ("relatedGapIds",),
+    "judgments.forecasts": ("indicatorIds",),
     "judgments.analyticJudgment.alternativeAssessments": (
         "alternativeHypothesisId",
         "relatedEvidenceIds",
@@ -2121,7 +2123,12 @@ def main() -> int:
     for index, forecast in enumerate(forecasts):
         if not isinstance(forecast, dict):
             continue
-        for required_field in ("statement", "statementJa", "confidence"):
+        for required_field in (
+            "statement",
+            "statementJa",
+            "timeHorizon",
+            "confidence",
+        ):
             field_value = forecast.get(required_field)
             if not isinstance(field_value, str) or not field_value.strip():
                 error(
@@ -2153,14 +2160,26 @@ def main() -> int:
     actual_markdown_forecast_projection = {
         forecast_id: (
             normalized_markdown_cell(cells[1]) if len(cells) > 1 else None,
+            normalized_markdown_cell(cells[2]) if len(cells) > 2 else None,
             normalized_markdown_cell(cells[3]) if len(cells) > 3 else None,
+            tuple(
+                value.strip()
+                for value in normalized_markdown_cell(cells[4]).split(",")
+                if value.strip()
+            )
+            if len(cells) > 4
+            else (),
         )
         for forecast_id, cells in markdown_forecast_rows.items()
     }
     expected_markdown_forecast_projection = {
         forecast.get("id"): (
             forecast.get("statementJa"),
+            forecast.get("timeHorizon"),
             forecast.get("confidence"),
+            tuple(forecast.get("indicatorIds", []))
+            if isinstance(forecast.get("indicatorIds"), list)
+            else (),
         )
         for forecast in forecasts
         if isinstance(forecast, dict)
@@ -2171,7 +2190,8 @@ def main() -> int:
     ):
         error(
             "cases/ch25-structured-analysis-attribution-example.md: Forecast "
-            "statement/confidence rendering differs from the canonical fixture"
+            "statement/horizon/confidence/indicator rendering differs from the "
+            "canonical fixture"
         )
     confirmed_facts = judgments.get("confirmedFacts", [])
     if any(isinstance(fact, dict) and fact.get("id") == "CF-2026-025-004" for fact in confirmed_facts):

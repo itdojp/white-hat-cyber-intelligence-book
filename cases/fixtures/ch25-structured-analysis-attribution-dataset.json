@@ -657,13 +657,22 @@
         "id": "FOR-2026-025-001",
         "statement": "similar domain registrations may recur within 7 days",
         "statementJa": "7日以内に同型Domainの追加登録または再送mailが発生する可能性がある",
-        "confidence": "中"
+        "timeHorizon": "7日",
+        "confidence": "中",
+        "indicatorIds": [
+          "IND-2026-025-001",
+          "IND-2026-025-002"
+        ]
       },
       {
         "id": "FOR-2026-025-002",
         "statement": "operator-level attribution will remain unsupported without new telemetry",
         "statementJa": "追加収集がなければ、Campaign / Operator表現へ進める材料は30日以内にも不足したまま残る可能性が高い",
-        "confidence": "中"
+        "timeHorizon": "30日",
+        "confidence": "中",
+        "indicatorIds": [
+          "IND-2026-025-003"
+        ]
       }
     ],
     "recommendations": [
