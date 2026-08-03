@@ -204,7 +204,7 @@ INDEPENDENCE_EVALUATION_TOKENS = (
 )
 URL_RE = re.compile(r"https?://[^\s<>\"'`、]+", re.IGNORECASE)
 PROTOCOL_RELATIVE_URL_RE = re.compile(
-    r"(?<![:/])//[^\s<>\"'`、]+",
+    r"(?:\A|[\s(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
     re.IGNORECASE,
 )
 
@@ -816,6 +816,24 @@ def url_domain_hosts(text: str):
             yield raw_url_authority(stripped_url)
             continue
         if not parsed_host:
+            # Browsers accept extra slashes after an HTTP(S) scheme and then
+            # reinterpret the first path token as the authority. Python's
+            # urlparse leaves hostname empty, so recover that token and pass it
+            # to the same fail-closed host policy.
+            scheme_remainder = stripped_url.partition(":")[2].lstrip("/")
+            candidate_authority = re.split(
+                r"[/?#]", scheme_remainder, maxsplit=1
+            )[0]
+            if candidate_authority:
+                try:
+                    recovered_host = urlparse(
+                        f"https://{candidate_authority}"
+                    ).hostname
+                except ValueError:
+                    recovered_host = candidate_authority
+                yield recovered_host or candidate_authority
+            else:
+                yield "invalid-missing-http-authority"
             continue
         ipv4_authority_match = URL_IPV4_AUTHORITY_RE.match(parsed_host)
         if ipv4_authority_match is not None:
@@ -845,12 +863,15 @@ def url_domain_hosts(text: str):
 def protocol_relative_hosts(text: str):
     """Extract protocol-relative authorities, including numeric host forms."""
     for match in PROTOCOL_RELATIVE_URL_RE.finditer(text):
-        candidate = strip_url_trailing_punctuation(match.group(0))
+        candidate = strip_url_trailing_punctuation(match.group("url"))
         try:
             host = urlparse(f"https:{candidate}").hostname
         except ValueError:
             host = raw_url_authority(f"https:{candidate}")
-        if host:
+        if host and (
+            any(separator in host for separator in ".:")
+            or host.isdigit()
+        ):
             yield host
 
 
@@ -952,10 +973,19 @@ def protect_markdown_code(markdown: str) -> tuple[str, dict[str, str]]:
         protected_lines.append(line)
 
     block_protected = "".join(protected_lines)
+
+    def is_escaped(index: int) -> bool:
+        slash_count = 0
+        cursor = index - 1
+        while cursor >= 0 and block_protected[cursor] == "\\":
+            slash_count += 1
+            cursor -= 1
+        return slash_count % 2 == 1
+
     output: list[str] = []
     index = 0
     while index < len(block_protected):
-        if block_protected[index] != "`":
+        if block_protected[index] != "`" or is_escaped(index):
             output.append(block_protected[index])
             index += 1
             continue
@@ -974,7 +1004,11 @@ def protect_markdown_code(markdown: str) -> tuple[str, dict[str, str]]:
             after_is_tick = (
                 after < len(block_protected) and block_protected[after] == "`"
             )
-            if not before_is_tick and not after_is_tick:
+            if (
+                not before_is_tick
+                and not after_is_tick
+                and not is_escaped(candidate)
+            ):
                 closing = candidate
                 break
             search_from = candidate + 1
@@ -1011,28 +1045,19 @@ def markdown_bracket_pairs(text: str) -> dict[int, int]:
     return pairs
 
 
-def matching_delimiter_end(
-    text: str,
-    start: int,
-    opening: str,
-    closing: str,
-    *,
-    honor_quotes: bool = False,
-) -> int | None:
-    """Return the matching delimiter index while honoring escapes and nesting."""
-    if start >= len(text) or text[start] != opening:
-        return None
-    depth = 1
+def markdown_parenthesis_pairs(text: str) -> dict[int, int]:
+    """Map unescaped parenthesis pairs with Markdown title quote handling."""
+    stack: list[int] = []
+    pairs: dict[int, int] = {}
     quote: str | None = None
-    index = start + 1
+    index = 0
     while index < len(text):
         character = text[index]
         if character == "\\":
             index += 2
             continue
-        if honor_quotes and character in "\"'" and (
-            quote is not None
-            or (index > start + 1 and text[index - 1].isspace())
+        if stack and character in "\"'" and (
+            quote is not None or (index > stack[-1] + 1 and text[index - 1].isspace())
         ):
             if quote == character:
                 quote = None
@@ -1043,20 +1068,21 @@ def matching_delimiter_end(
         if quote is not None:
             index += 1
             continue
-        if character == opening:
-            depth += 1
-        elif character == closing:
-            depth -= 1
-            if depth == 0:
-                return index
+        if character == "(":
+            stack.append(index)
+        elif character == ")" and stack:
+            pairs[stack.pop()] = index
+            if not stack:
+                quote = None
         index += 1
-    return None
+    return pairs
 
 
 def markdown_visible_links(text: str) -> str:
     """Project Markdown links to visible labels without rewriting undefined refs."""
     definition_pattern = (
         r"(?m)^(?: {0,3}>[ \t]?)* {0,3}"
+        r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+)? {0,3}"
         r"\[(?P<label>[^\]\n]+)\]:[^\n]*(?:\n|$)"
     )
     definitions = {
@@ -1069,6 +1095,7 @@ def markdown_visible_links(text: str) -> str:
         text,
     )
     bracket_pairs = markdown_bracket_pairs(text)
+    parenthesis_pairs = markdown_parenthesis_pairs(text)
     output: list[str] = []
     index = 0
     while index < len(text):
@@ -1086,13 +1113,7 @@ def markdown_visible_links(text: str) -> str:
         label = text[label_start + 1 : label_end]
         suffix_start = label_end + 1
         if suffix_start < len(text) and text[suffix_start] == "(":
-            destination_end = matching_delimiter_end(
-                text,
-                suffix_start,
-                "(",
-                ")",
-                honor_quotes=True,
-            )
+            destination_end = parenthesis_pairs.get(suffix_start)
             if destination_end is not None:
                 output.append(label)
                 index = destination_end + 1
@@ -1139,9 +1160,21 @@ def markdown_pipe_lines(
 ) -> list[tuple[str, list[str]] | None]:
     """Parse visible pipe-delimited lines while preserving line boundaries."""
     parsed_lines: list[tuple[str, list[str]] | None] = []
+    lazy_blockquote_depth = 0
     for line_start, line_end, content_start, inside_code_context in (
         markdown_line_contexts(markdown)
     ):
+        raw_line = markdown[line_start:line_end].rstrip("\r\n")
+        explicit_blockquote_depth = markdown[
+            line_start:content_start
+        ].count(">")
+        if explicit_blockquote_depth:
+            lazy_blockquote_depth = explicit_blockquote_depth
+        elif not raw_line.strip():
+            lazy_blockquote_depth = 0
+        effective_blockquote_depth = (
+            explicit_blockquote_depth or lazy_blockquote_depth
+        )
         if inside_code_context:
             parsed_lines.append(None)
             continue
@@ -1158,7 +1191,7 @@ def markdown_pipe_lines(
         # Kramdown accepts independently varying 0--3 spaces on table lines.
         # Preserve structural containers such as blockquotes, but do not make
         # optional top-level indentation part of the table identity.
-        container_signature = ">" * markdown[line_start:content_start].count(">")
+        container_signature = ">" * effective_blockquote_depth
         parsed_lines.append((container_signature, cells) if cells else None)
     return parsed_lines
 
@@ -3243,6 +3276,9 @@ def main() -> int:
         " > Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
         "  > --- | --- | --- | --- | ---\n"
         "   > FOR-2026-025-999 | statement | 7日 | 中 | x",
+        "> Forecast ID | Statement | Time horizon | Confidence | Indicators / Signposts |\n"
+        "> --- | --- | --- | --- | ---\n"
+        "FOR-2026-025-999 | statement | 7日 | 中 | x",
     ):
         if "FOR-2026-025-999" not in markdown_rows_by_id(
             rendered_table,
@@ -3324,6 +3360,9 @@ def main() -> int:
         "[FOR-2026-025-][ref]999\n[ref]: https://safe.example": True,
         "> [FOR-2026-025-][ref]999\n>\n> [ref]: https://safe.example": True,
         "> [FOR-2026-025-]999\n>\n> [FOR-2026-025-]: https://safe.example": True,
+        "- [ref]: https://safe.example\n  [FOR-2026-025-][ref]999": True,
+        "Term\n: [ref]: https://safe.example\n  [FOR-2026-025-][ref]999": True,
+        "\\`FOR-2026-025-<!--x-->999\\`": True,
         "`FOR-2026-025-<!--x-->999`": False,
         "`FOR-2026-025-<!--x-->999\n`": False,
         "`FOR\\-2026-025-999`": False,
@@ -3344,6 +3383,9 @@ def main() -> int:
         "[x](//evil%2ecom/path)",
         "[x](https%3A%2F%2Fevil%2ecom/path)",
         "[x](//%31%33%34%37%34%34%30%37%32/path)",
+        "[x](https:///evil/path)",
+        "[x](https:////2130706433/path)",
+        "[x](http:////127.1/path)",
     )
     for encoded_live_url in encoded_live_urls:
         normalized_live_url = normalize_synthetic_safety_text(encoded_live_url)
@@ -3360,6 +3402,20 @@ def main() -> int:
             error(
                 "fixture safety regression: encoded URL escaped synthetic "
                 f"host tokenization: {encoded_live_url!r}"
+            )
+    for non_authority in (
+        "[x](https://safe.example/a//segment)",
+        "[x](docs//chapter)",
+        "scripts//check_chapter25_contract.py",
+        "const x = 1; //comment",
+    ):
+        normalized_non_authority = normalize_for_host_scanning(
+            normalize_synthetic_safety_text(non_authority)
+        )
+        if list(protocol_relative_hosts(normalized_non_authority)):
+            error(
+                "fixture safety regression: non-authority // token was "
+                f"misclassified: {non_authority!r}"
             )
     encoded_safety_values = {
         "192&#46;168&#46;1&#46;1": IPV4_RE,
