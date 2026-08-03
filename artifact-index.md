@@ -12,9 +12,12 @@
 | ART-08 | CTI Report | 26 | `templates/cti-report.md` |
 | ART-09 | Executive Brief | 26, 29 | `templates/executive-brief.md` |
 | ART-10 | Integrated Security Case Map | 1, 29 | `templates/integrated-security-case-map.md` |
+| ART-11 | Analytic Judgment Record | 25, 29 | `templates/analytic-judgment-record.md` |
 
 `ART-10`は、他の成果物を置き換えるものではない。Case ID、Hypothesis ID、Evidence ID、Finding ID、Detection ID、Analytic Judgment ID、Decision ID、Reassessment IDを接続する索引兼判断記録である。
 
 第1章の合成記入例は`cases/ch01-integrated-security-case-example.md`を参照する。
 
 成果物IDは章間・演習・評価ルーブリックで共通利用する。
+
+`ART-11`は、Decision RequirementとIntelligence Requirementに対して、Threat Hypothesis、Alternative Hypothesis、Source Note、Evidence、Lineage、Deception candidate、Analytic Judgment、Decision、Reassessmentを接続する。

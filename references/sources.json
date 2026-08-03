@@ -11,8 +11,8 @@
       "version": "19.1",
       "url": "https://attack.mitre.org/resources/versions/",
       "publishedAt": "2026-04-28",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-08-03",
+      "nextReviewAt": "2026-11-03",
       "reviewTriggers": [
         "ATT&CK major or minor release"
       ],
@@ -23,9 +23,10 @@
         16,
         17,
         21,
+        25,
         26
       ],
-      "notes": "Current version page identifies ATT&CK v19.1 as current from 2026-04-28."
+      "notes": "Current version page identifies ATT&CK v19.1 as current from 2026-04-28. Used in Chapter 25 only as behavior-mapping vocabulary and explicitly not as attribution proof."
     },
     {
       "id": "SRC-NICE-001",
@@ -256,13 +257,13 @@
       "title": "ICD 203 Analytic Standards / Objectivity",
       "kind": "analytic-standard",
       "status": "official",
-      "version": "2015 revision",
-      "url": "https://www.odni.gov/index.php/how-we-work/objectivity",
-      "publishedAt": null,
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2027-07-25",
+      "version": "signed 2015-01-02; technical amendment effective 2022-01-21",
+      "url": "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
+      "publishedAt": "2015-01-02",
+      "checkedAt": "2026-08-03",
+      "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
-        "ICD 203 revision"
+        "ODNI directive amendment or replacement"
       ],
       "chapters": [
         1,
@@ -271,7 +272,26 @@
         25,
         26
       ],
-      "notes": "Official page identifies the revision as approved in January 2015; an exact day is not recorded here."
+      "notes": "Official PDF shows ICD 203 signed on 2015-01-02 and a technical amendment effective on 2022-01-21. Used for source quality, uncertainty/confidence, assumptions, alternatives, and logical argumentation."
+    },
+    {
+      "id": "SRC-CIA-SAT-001",
+      "publisher": "CIA Center for the Study of Intelligence",
+      "title": "A Tradecraft Primer: Structured Analytic Techniques for Improving Intelligence Analysis",
+      "kind": "tradecraft-guidance",
+      "status": "official",
+      "version": "March 2009",
+      "url": "https://www.cia.gov/resources/csi/static/Tradecraft-Primer-apr09.pdf",
+      "publishedAt": null,
+      "checkedAt": "2026-08-03",
+      "nextReviewAt": "2029-08-03",
+      "reviewTriggers": [
+        "official revision or replacement"
+      ],
+      "chapters": [
+        25
+      ],
+      "notes": "Official PDF identifies March 2009 but the exact publication day is not recorded here. Used as supplementary guidance for ACH, assumptions checks, indicators/signposts, and quality-of-information methods; it does not guarantee analytic correctness."
     },
     {
       "id": "SRC-AIRMF-001",

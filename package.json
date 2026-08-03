@@ -22,7 +22,8 @@
     "check:docs-sync": "python3 scripts/sync_book_site.py --check",
     "build": "npm run sync:docs && bundle exec jekyll build --source docs --config docs/_config.yml --destination _site",
     "serve": "npm run sync:docs && bundle exec jekyll serve --source docs --config docs/_config.yml --destination _site --livereload",
-    "test": "npm run check:contract && npm run check:chapter1 && npm run check:site-pages-security && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync"
+    "test": "npm run check:contract && npm run check:chapter1 && npm run check:chapter25 && npm run check:site-pages-security && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync",
+    "check:chapter25": "python3 scripts/check_chapter25_contract.py"
   },
   "repository": {
     "type": "git",

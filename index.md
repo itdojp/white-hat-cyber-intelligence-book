@@ -15,6 +15,7 @@
 - Telemetry Coverage MapとDetection Validation Record
 - Incident TimelineとRoot Cause Analysis
 - Evidence and Source TableとCTI Report
+- Analytic Judgment Record
 - Executive Decision Brief
 
 ## 想定読者
@@ -42,6 +43,16 @@
 - [合成記入例：請求書連携OAuthアプリの権限見直し](cases/ch01-integrated-security-case-example.md)
 
 この成果物は、Assessment、Detection、Hunting、IR / DFIR、CTI、経営判断、再評価を、共通Case IDとEvidence IDで接続します。
+
+## 第25章の成果物
+
+- [第25章 本文](manuscript/25-structured-analysis-attribution.md)
+- [Analytic Judgment Recordテンプレート](templates/analytic-judgment-record.md)
+- [合成記入例：共同報告に埋もれた技術クラスタの判断](cases/ch25-structured-analysis-attribution-example.md)
+- [Case索引](cases/index.md)
+- [Fixture catalog](cases/fixtures/index.md)
+
+この成果物は、Fact、Assumption、Judgment、Forecast、Recommendationを分離し、Lineage、circular reporting、deception candidate、Attribution Ladder、Decision、Reassessmentを同じCaseで接続します。
 
 ## 実務参照
 
