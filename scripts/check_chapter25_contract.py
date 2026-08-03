@@ -347,11 +347,12 @@ PHONE_RE = re.compile(
 PHONE_DATE_TIME_RE = re.compile(
     r"(?<!\d)(?:"
     r"(?:19|20)\d{2}\s*(?:[./-]\s*|\(\s*|\s+)"
-    r"(?:0[1-9]|1[0-2])\s*\)?\s*[ ./-]\s*"
-    r"(?:0[1-9]|[12]\d|3[01])|"
-    r"(?:0[1-9]|1[0-2])[./-](?:0[1-9]|[12]\d|3[01])"
-    r"[./-](?:19|20)\d{2}"
-    r")(?:[ T](?:[01]\d|2[0-3]):?\d{2}(?::?\d{2})?)?(?!\d)"
+    r"(?:0?[1-9]|1[0-2])\s*\)?\s*[ ./-]\s*"
+    r"(?:0?[1-9]|[12]\d|3[01])|"
+    r"(?:(?:0?[1-9]|1[0-2])[ ./-](?:0?[1-9]|[12]\d|3[01])|"
+    r"(?:0?[1-9]|[12]\d|3[01])[ ./-](?:0?[1-9]|1[0-2]))"
+    r"[ ./-](?:19|20)\d{2}"
+    r")(?:[ T](?:[01]?\d|2[0-3]):?\d{2}(?::?\d{2})?)?(?!\d)"
 )
 SYNTHETIC_CONTENT_FILES = (
     "manuscript/25-structured-analysis-attribution.md",
@@ -458,7 +459,7 @@ def recursive_confidence_values(value, label: str = "root") -> None:
                         error(f"cases/fixtures/ch25-structured-analysis-attribution-dataset.json: {child_label} must be 高 / 中 / 低")
                 elif isinstance(child, list):
                     for idx, item in enumerate(child):
-                        if item not in {"高", "中", "低"}:
+                        if not isinstance(item, str) or item not in {"高", "中", "低"}:
                             error(f"cases/fixtures/ch25-structured-analysis-attribution-dataset.json: {child_label}[{idx}] must be 高 / 中 / 低")
                 else:
                     error(
@@ -657,7 +658,11 @@ def strip_url_trailing_punctuation(raw_url: str) -> str:
 
 
 def has_unambiguous_url_context(
-    text: str, url_match: re.Match[str], raw_url: str
+    text: str,
+    url_match: re.Match[str],
+    raw_url: str,
+    *,
+    inside_fenced_code: bool = False,
 ) -> bool:
     url_start = url_match.start()
     preceding_character = text[url_start - 1] if url_start > 0 else ""
@@ -667,21 +672,68 @@ def has_unambiguous_url_context(
         and text[url_match.end()] == ">"
     ):
         return True
-    if preceding_character in {'"', "'", "`"}:
+    if inside_fenced_code:
         return True
+
     line_start = text.rfind("\n", 0, url_start) + 1
-    context_start = max(line_start, url_start - 256)
-    line_prefix = text[context_start:url_start]
-    if re.search(r"\]\(\s*<?\Z", line_prefix):
+    if text.startswith(("    ", "\t"), line_start):
         return True
-    if re.search(r"\]:[ \t]*<?\Z", line_prefix):
+
+    # Skip arbitrary Markdown whitespace before a destination. This keeps long
+    # and multiline Kramdown destinations in scope without repeatedly scanning
+    # a whole document prefix for every URL.
+    context_end = url_start
+    while context_end > 0 and text[context_end - 1].isspace():
+        context_end -= 1
+    if context_end > 0 and text[context_end - 1] == "<":
+        context_end -= 1
+    preceding_nonspace = text[context_end - 1] if context_end > 0 else ""
+    if preceding_nonspace in {'"', "'", "`"}:
         return True
+    syntax_prefix = text[max(0, context_end - 192) : context_end]
+    if syntax_prefix.endswith(("](", "]:")):
+        return True
+
+    # Raw HTML permits quoted values with leading whitespace and unquoted
+    # values after arbitrary horizontal whitespace.
+    html_prefix_start = text.rfind("\n", 0, context_end) + 1
+    html_prefix = text[max(html_prefix_start, context_end - 192) : context_end]
     if re.search(
         r"(?:^|\s)[A-Za-z_:][A-Za-z0-9_.:-]*\s*=\s*\Z",
-        line_prefix,
+        html_prefix,
     ):
         return True
     return preceding_character == "(" and raw_url.endswith(")")
+
+
+def markdown_fenced_code_ranges(text: str) -> list[tuple[int, int]]:
+    """Return Kramdown-style fenced code ranges in one linear pass."""
+    ranges: list[tuple[int, int]] = []
+    opening_start: int | None = None
+    fence_character = ""
+    minimum_length = 0
+    offset = 0
+    for line in text.splitlines(keepends=True):
+        line_without_ending = line.rstrip("\r\n")
+        if opening_start is None:
+            opening = re.match(r" {0,3}(?P<fence>`{3,}|~{3,})", line_without_ending)
+            if opening is not None:
+                fence = opening.group("fence")
+                opening_start = offset
+                fence_character = fence[0]
+                minimum_length = len(fence)
+        elif re.fullmatch(
+            rf" {{0,3}}{re.escape(fence_character)}{{{minimum_length},}}[ \t]*",
+            line_without_ending,
+        ):
+            ranges.append((opening_start, offset + len(line)))
+            opening_start = None
+            fence_character = ""
+            minimum_length = 0
+        offset += len(line)
+    if opening_start is not None:
+        ranges.append((opening_start, len(text)))
+    return ranges
 
 
 def raw_url_authority(stripped_url: str) -> str:
@@ -691,7 +743,19 @@ def raw_url_authority(stripped_url: str) -> str:
 
 def url_domain_hosts(text: str):
     """Extract URL hosts without consuming adjacent Japanese prose."""
+    fenced_ranges = markdown_fenced_code_ranges(text)
+    fenced_index = 0
     for url_match in URL_RE.finditer(text):
+        while (
+            fenced_index < len(fenced_ranges)
+            and fenced_ranges[fenced_index][1] <= url_match.start()
+        ):
+            fenced_index += 1
+        inside_fenced_code = bool(
+            fenced_index < len(fenced_ranges)
+            and fenced_ranges[fenced_index][0] <= url_match.start()
+            < fenced_ranges[fenced_index][1]
+        )
         raw_url = url_match.group(0)
         stripped_url = strip_url_trailing_punctuation(raw_url)
         try:
@@ -708,7 +772,12 @@ def url_domain_hosts(text: str):
             has_explicit_port = True
         has_structural_boundary = bool(
             has_explicit_port
-            or has_unambiguous_url_context(text, url_match, raw_url)
+            or has_unambiguous_url_context(
+                text,
+                url_match,
+                raw_url,
+                inside_fenced_code=inside_fenced_code,
+            )
             or parsed_url.path
             or parsed_url.query
             or parsed_url.fragment
@@ -780,9 +849,13 @@ def contextual_domain_hosts(text: str):
 def markdown_rows_by_id(markdown: str, prefix: str, label: str) -> dict[str, list[str]]:
     rows: dict[str, list[str]] = {}
     for line in markdown.splitlines():
-        if not line.startswith("|"):
+        leading_spaces = len(line) - len(line.lstrip(" "))
+        if leading_spaces > 3 or line.startswith("\t"):
             continue
-        cells = [cell.strip() for cell in line.strip("|").split("|")]
+        table_line = line[leading_spaces:]
+        if not table_line.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in table_line.strip("|").split("|")]
         if not cells:
             continue
         row_id = cells[0].strip("`")
@@ -2008,7 +2081,11 @@ def main() -> int:
     attribution = attribution_value if isinstance(attribution_value, dict) else {}
     if attribution.get("ladderLevel") != "L2":
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: expected L2 attribution stopping point")
-    if attribution.get("confidence") not in {"高", "中", "低"}:
+    attribution_confidence = attribution.get("confidence")
+    if (
+        not isinstance(attribution_confidence, str)
+        or attribution_confidence not in {"高", "中", "低"}
+    ):
         error(
             "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
             "attributionAssessment.confidence must be 高 / 中 / 低"
@@ -2293,6 +2370,11 @@ def main() -> int:
         "+44 2026 07 29 1015",
         "offset +09 2026 08 04 0530",
         "version +1 2026 08 04 1234",
+        "UTC+09 2026 7 29 1015",
+        "UTC+09 2026 8 4 0530",
+        "UTC+09 2026 8 4 05:30",
+        "UTC+09 04 08 2026 0530",
+        "UTC+09 08 04 2026 0530",
     ):
         if PHONE_RE.search(normalize_phone_parentheses(non_phone)):
             error(f"fixture safety regression: non-telephone numeric value was rejected: {non_phone!r}")
@@ -2353,6 +2435,11 @@ def main() -> int:
         '[x](https://safe.example。悪意\n  "title")': [
             "safe.example。悪意"
         ],
+        '[x](\n https://safe.example。悪意\n "title")': [
+            "safe.example。悪意"
+        ],
+        '![x](\n https://safe.example。悪意)': ["safe.example。悪意"],
+        '[x](\r\n https://safe.example。悪意)': ["safe.example。悪意"],
         '[x]: https://safe.example。悪意 "title"': ["safe.example。悪意"],
         '> [x]: https://safe.example。悪意 "title"\n> [use][x]': [
             "safe.example。悪意"
@@ -2364,6 +2451,9 @@ def main() -> int:
             "192.0.2.1。悪意.com"
         ],
         '<a href="https://safe.example。悪意">use</a>': [
+            "safe.example。悪意"
+        ],
+        '<a href=" https://safe.example。悪意">use</a>': [
             "safe.example。悪意"
         ],
         '<img src="https://safe.example。悪意">': ["safe.example。悪意"],
@@ -2386,6 +2476,16 @@ def main() -> int:
         "<https://safe.example>": ["safe.example"],
         "(http://192.0.2.1)": ["192.0.2.1"],
         "<http://[2001:db8::1]>": ["2001:db8::1"],
+        "```text\nhttps://safe.example。悪意\n```": [
+            "safe.example。悪意"
+        ],
+        "    https://safe.example。悪意": ["safe.example。悪意"],
+        "[x](" + " " * 300 + 'https://safe.example。悪意 "t")': [
+            "safe.example。悪意"
+        ],
+        "[x]:" + " " * 300 + 'https://safe.example。悪意 "t"': [
+            "safe.example。悪意"
+        ],
     }
     for mutation, expected_hosts in url_domain_regressions.items():
         if list(url_domain_hosts(mutation)) != expected_hosts:
@@ -2393,6 +2493,28 @@ def main() -> int:
                 "fixture safety regression: URL wrapper tokenization drifted: "
                 f"{mutation!r}"
             )
+    for indentation in range(4):
+        table = (
+            f"{' ' * indentation}| FOR-2026-025-999 | statement | 7日 | 中 | x |"
+        )
+        if "FOR-2026-025-999" not in markdown_rows_by_id(
+            table,
+            "FOR-2026-025-",
+            "fixture safety regression",
+        ):
+            error(
+                "fixture safety regression: Kramdown table indentation was "
+                f"not recognized: {indentation}"
+            )
+    if markdown_rows_by_id(
+        "    | FOR-2026-025-999 | statement | 7日 | 中 | x |",
+        "FOR-2026-025-",
+        "fixture safety regression",
+    ):
+        error(
+            "fixture safety regression: indented code was treated as a "
+            "Kramdown table"
+        )
     email_domain_regressions = {
         "連絡先はuser@safe.exampleです": ["safe.example"],
         "連絡先はuser@evil.comです": ["evil.com"],
