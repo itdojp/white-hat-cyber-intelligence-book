@@ -89,6 +89,12 @@ FIXTURE_IDENTITY_SINGLETONS = {
     "decision": "id",
     "reassessment": "id",
 }
+FIXTURE_IDENTITY_SINGLETON_EXPECTED_IDS = {
+    "attributionAssessment": "ATTR-2026-025-001",
+    "judgments.analyticJudgment": "AJ-2026-025",
+    "decision": "DEC-2026-025",
+    "reassessment": "REA-2026-025",
+}
 IDENTITY_RE = re.compile(r"[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+\Z")
 ANALYTIC_ID_RE = re.compile(
     r"(?<![A-Z0-9-])(?:TH|OBS|SEH|GAP|ALT|SN|EVD|NEG|CR|DECPT|ATTR|CF|ASM|AJ|FOR|REC|IND|DEC|REA|LIN|UNC|SEJ)-2026-025(?:-\d{3})?(?![A-Z0-9-])"
@@ -105,7 +111,7 @@ INDEPENDENCE_EVALUATION_TOKENS = (
 )
 URL_RE = re.compile(r"https?://[^\s<>()\]\[\"']+", re.IGNORECASE)
 DOMAIN_CANDIDATE_RE = re.compile(
-    r"(?<![\w@-])(?P<host>(?:[^\W_]|-)+(?:[.。．｡](?:[^\W_]|-)+)+)(?![\w-])",
+    r"(?<![\w@-])(?P<host>(?:[^\W_]|-){1,63}(?:[.。．｡](?:[^\W_]|-){1,63}){1,9})(?![\w-])",
     re.UNICODE,
 )
 UNICODE_SEPARATOR_ASCII_HOST_RE = re.compile(
@@ -158,22 +164,28 @@ DOCUMENTATION_ONLY_IDN_TLD_PATTERN = "|".join(
     for tld in sorted(DOCUMENTATION_ONLY_IDN_TLDS, key=len, reverse=True)
 )
 HOSTNAME_RE = re.compile(
-    r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]{1,63}\.)+(?:"
+    r"(?<![A-Za-z0-9_@-])(?P<host>(?:[A-Za-z0-9-]{1,63}\.){1,9}(?:"
     + ASCII_TLD_PATTERN
     + r"))(?![A-Za-z0-9_-])",
     re.IGNORECASE,
 )
 GENERAL_HOST_CANDIDATE_RE = re.compile(
-    r"(?P<host>(?:(?:[^\W_@]|-){1,63}[.。．｡])+(?:"
+    r"(?P<host>(?:(?:[^\W_@]|-){1,63}[.。．｡]){1,9}(?:"
     + IANA_UNICODE_TLD_PATTERN
     + "|"
     + ASCII_TLD_PATTERN
     + r"))"
-    r"(?=$|[^\x00-\x7f]|[/?:#]|[.,;:!?)\]])"
-    r"|(?P<documentation_host>(?:(?:[^\W_@]|-){1,63}[.。．｡])+(?:"
+    r"(?=$|[^\x00-\x7f]|[/?:#]|[,;:!?)\]])"
+    r"|(?P<documentation_host>(?:(?:[^\W_@]|-){1,63}[.。．｡]){1,9}(?:"
     + DOCUMENTATION_ONLY_IDN_TLD_PATTERN
     + r"))"
     r"(?=$|[/?:#]|[。．｡、,;；:：!！?？)\]」』])",
+    re.IGNORECASE | re.UNICODE,
+)
+RESERVED_SUFFIX_EXTENSION_RE = re.compile(
+    r"(?P<host>(?:(?:[^\W_@]|-){1,63}[.。．｡]){1,9}"
+    r"(?:example|test|invalid)(?:[.。．｡](?:[^\W_@]|-){1,63}){1,9})"
+    r"(?=$|[^\w-])",
     re.IGNORECASE | re.UNICODE,
 )
 HOST_CONTEXT_VALUE_RE = re.compile(
@@ -347,6 +359,15 @@ def assert_synthetic_domain(value: str, label: str) -> None:
         error(f"{label}: domain must use a reserved synthetic suffix: {value!r}")
 
 
+def assert_synthetic_host(value: str, label: str) -> None:
+    try:
+        ipaddress.ip_address(value)
+    except ValueError:
+        assert_synthetic_domain(value, label)
+        return
+    assert_doc_ip(value, label)
+
+
 def assert_synthetic_name(value: str, label: str) -> None:
     if value not in SYNTHETIC_NAME_ALLOWLIST and not value.startswith("SYNTH-"):
         error(f"{label}: synthetic named entity must use SYNTH- prefix or the explicit allowlist")
@@ -373,9 +394,12 @@ def normalize_unicode_host(raw: str) -> str:
 
 
 def normalize_for_host_scanning(text: str) -> str:
-    """Apply the same compatibility/ignored-character mapping as Python IDNA."""
-    normalized = unicodedata.normalize("NFKC", text)
-    return "".join(char for char in normalized if not stringprep.in_table_b1(char))
+    """Apply Python IDNA's Stringprep B.1/B.2 mapping before tokenization."""
+    mapped = "".join(
+        "" if stringprep.in_table_b1(char) else stringprep.map_table_b2(char)
+        for char in text
+    )
+    return unicodedata.normalize("NFKC", mapped)
 
 
 def general_host_from_match(match: re.Match[str]) -> str:
@@ -555,6 +579,13 @@ def require_declared_identity_singletons(dataset: object) -> None:
                 f"{FIXTURE_LABEL}.{relative_path}.{identity_key}: singleton identity "
                 "must use canonical uppercase ASCII hyphenated form"
             )
+            continue
+        expected_id = FIXTURE_IDENTITY_SINGLETON_EXPECTED_IDS[relative_path]
+        if singleton.get(identity_key) != expected_id:
+            error(
+                f"{FIXTURE_LABEL}.{relative_path}.{identity_key}: singleton identity "
+                f"must match canonical reference {expected_id!r}"
+            )
 
 
 def require_unique_ids_recursively(value: object, label: str) -> None:
@@ -663,12 +694,18 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     """Check synthetic teaching content only; official Source Note URLs use SOURCE_POLICY."""
     compatibility_text = normalize_for_host_scanning(text)
     for host in url_domain_hosts(compatibility_text):
-        assert_synthetic_domain(host, f"{relative}: URL")
+        assert_synthetic_host(host, f"{relative}: URL")
     for match in HOSTNAME_RE.finditer(compatibility_text):
         host = match.group("host").lower()
         if is_repository_file_reference(host):
             continue
         assert_synthetic_domain(host, f"{relative}: host/URL")
+    for match in RESERVED_SUFFIX_EXTENSION_RE.finditer(compatibility_text):
+        candidate = normalize_unicode_host(match.group("host")).lower()
+        assert_synthetic_domain(
+            candidate,
+            f"{relative}: reserved suffix followed by another label",
+        )
     checked_unicode_hosts: set[str] = set()
     for match in GENERAL_HOST_CANDIDATE_RE.finditer(compatibility_text):
         candidate = general_host_from_match(match)
@@ -680,7 +717,7 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     for candidate in contextual_domain_hosts(compatibility_text):
         normalized = normalize_unicode_host(candidate).lower()
         checked_unicode_hosts.add(normalized)
-        assert_synthetic_domain(normalized, f"{relative}: contextual host/IDN")
+        assert_synthetic_host(normalized, f"{relative}: contextual host/IDN")
     for match in UNICODE_SEPARATOR_ASCII_HOST_RE.finditer(compatibility_text):
         candidate = match.group("host")
         if not is_unicode_domain_candidate(candidate):
@@ -1646,6 +1683,7 @@ def main() -> int:
         ],
         "接続先はhttps://例え.exampleです": ["例え.example"],
         "URL: https://例え.example、確認する": ["例え.example"],
+        "URL: http://192.0.2.1/path": ["192.0.2.1"],
     }
     for mutation, expected_hosts in contextual_domain_regressions.items():
         if list(contextual_domain_hosts(mutation)) != expected_hosts:
@@ -1673,6 +1711,7 @@ def main() -> int:
         "観測値は例え.ｃｏｍ経由で取得した",
         "観測値は例え.c\u200bom経由で取得した",
         "観測値は例え.vermo\u0308gensberater経由で取得した",
+        "観測値は例え.preß経由で取得した",
     )
     for mutation in general_host_regressions:
         compatibility_mutation = normalize_for_host_scanning(mutation)
@@ -1696,6 +1735,19 @@ def main() -> int:
             error(
                 "fixture safety regression: documentation-only IDN tokenization "
                 f"treated ordinary prose as a host: {prose!r}"
+            )
+    for extended_reserved_host in (
+        "例え.example.local",
+        "例え.example。local",
+        "例え.test.internal",
+    ):
+        match = RESERVED_SUFFIX_EXTENSION_RE.search(extended_reserved_host)
+        if match is None or normalize_unicode_host(match.group("host")) != (
+            normalize_unicode_host(extended_reserved_host)
+        ):
+            error(
+                "fixture safety regression: reserved suffix extension was not "
+                f"tokenized as a complete invalid host: {extended_reserved_host!r}"
             )
     for mutation in ("\u200b", "\ufeff", "ROLE-2026-025-001\u200b", "role-001"):
         if is_valid_identity(mutation):
