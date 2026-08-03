@@ -127,11 +127,12 @@ KNOWN_TLD_LABELS = frozenset(
 KNOWN_TLD_PATTERN = "|".join(
     re.escape(tld) for tld in sorted(KNOWN_TLD_LABELS, key=len, reverse=True)
 )
-CONTEXTUAL_HOST_VALUE_RE = re.compile(
-    r"^(?P<host>(?:(?:[^\W_]|-)+[.。．｡])+(?:"
+GENERAL_HOST_CANDIDATE_RE = re.compile(
+    r"(?P<host>(?:(?:[^\W_@]|-)+[.。．｡])+(?:"
     + KNOWN_TLD_PATTERN
     + r"|xn--[A-Za-z0-9-]{1,59}))"
-    r"(?=$|です|でした|である|となる|[、,;；:：)\]」』])",
+    r"(?=$|です|でした|である|となる|を|へ|から|に|で|と|"
+    r"[/?:#]|[、,;；:：)\]」』])",
     re.IGNORECASE | re.UNICODE,
 )
 HOST_CONTEXT_VALUE_RE = re.compile(
@@ -376,7 +377,12 @@ def contextual_domain_hosts(text: str):
     """Extract complete host values from explicit Japanese/English host contexts."""
     for match in HOST_CONTEXT_VALUE_RE.finditer(text):
         value = HOST_VALUE_TRAILING_PUNCTUATION_RE.sub("", match.group("value"))
-        known_suffix_match = CONTEXTUAL_HOST_VALUE_RE.match(value)
+        if value.lower().startswith(("http://", "https://")):
+            parsed_host = urlparse(value).hostname
+            if parsed_host:
+                yield parsed_host
+                continue
+        known_suffix_match = GENERAL_HOST_CANDIDATE_RE.search(value)
         if known_suffix_match is not None:
             yield known_suffix_match.group("host")
             continue
@@ -504,6 +510,13 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
             continue
         assert_synthetic_domain(host, f"{relative}: host/URL")
     checked_unicode_hosts: set[str] = set()
+    for match in GENERAL_HOST_CANDIDATE_RE.finditer(text):
+        candidate = match.group("host")
+        if not is_unicode_domain_candidate(candidate):
+            continue
+        normalized = normalize_unicode_host(candidate).lower()
+        checked_unicode_hosts.add(normalized)
+        assert_synthetic_domain(normalized, f"{relative}: host/IDN")
     for candidate in contextual_domain_hosts(text):
         normalized = normalize_unicode_host(candidate).lower()
         checked_unicode_hosts.add(normalized)
@@ -1414,11 +1427,34 @@ def main() -> int:
         "接続先: 例え。テスト": ["例え。テスト"],
         "ドメインは 例え。テスト": ["例え。テスト"],
         "合成接続先は例え.テスト.exampleです": ["例え.テスト.example"],
+        "接続先は例え.exampleを使用する": ["例え.example"],
+        "接続先は例え.example/pathです": ["例え.example"],
+        "URL: https://例え.example/path": ["例え.example"],
+        "参照先はhttps://xn--r8jz45g.example/a?b=1です": [
+            "xn--r8jz45g.example"
+        ],
     }
     for mutation, expected_hosts in contextual_domain_regressions.items():
         if list(contextual_domain_hosts(mutation)) != expected_hosts:
             error(
                 "fixture safety regression: contextual host tokenization drifted: "
+                f"{mutation!r}"
+            )
+    general_host_regressions = (
+        "接続先として例え.comです",
+        "通信先は例え.comです",
+        "参照先として例え。世界です",
+        "ドメイン名は例え.comです",
+        "アクセス先は例え。世界です",
+        "観測値は例え.comです",
+        "URL例は例え.comです",
+        "接続先->例え.comです",
+    )
+    for mutation in general_host_regressions:
+        match = GENERAL_HOST_CANDIDATE_RE.search(mutation)
+        if match is None or not is_unicode_domain_candidate(match.group("host")):
+            error(
+                "fixture safety regression: Japanese-adjacent IDN was not tokenized: "
                 f"{mutation!r}"
             )
     for mutation in ("例え.テスト", "例え.世界"):
