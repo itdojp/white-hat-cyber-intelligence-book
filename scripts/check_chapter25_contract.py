@@ -96,6 +96,7 @@ FIXTURE_IDENTITY_SINGLETON_EXPECTED_IDS = {
     "reassessment": "REA-2026-025",
 }
 FIXTURE_REFERENCE_TARGETS = {
+    "dataSource": ("sourceNotes",),
     "sourceNoteId": ("sourceNotes",),
     "sourceNoteIds": ("sourceNotes",),
     "observationHypothesisId": ("observationHypotheses",),
@@ -127,6 +128,7 @@ FIXTURE_REQUIRED_RECORD_REFERENCE_FIELDS = {
     ),
     "markdownProjection.judgmentAssumptions": ("relatedGapIds",),
     "evidence": ("sourceNoteId", "observationHypothesisId"),
+    "observationHypotheses": ("dataSource",),
     "negativeFindings": (
         "relatedEvidenceIds",
         "gapId",
@@ -153,6 +155,14 @@ FIXTURE_REQUIRED_RECORD_REFERENCE_FIELDS = {
         "circularReportingCandidateId",
     ),
 }
+FIXTURE_LIST_REFERENCE_FIELDS = frozenset(
+    {"dataSource"}
+    | {
+        field
+        for field in FIXTURE_REFERENCE_TARGETS
+        if field.endswith("Ids")
+    }
+)
 FIXTURE_REQUIRED_SINGLETON_REFERENCE_FIELDS = {
     "attributionAssessment": ("relatedAlternativeHypothesisIds",),
     "judgments.analyticJudgment": ("relatedAlternativeHypothesisIds",),
@@ -183,7 +193,7 @@ INDEPENDENCE_EVALUATION_TOKENS = (
     "独立",
     "裏付け",
 )
-URL_RE = re.compile(r"https?://[^\s<>()\]\[\"']+", re.IGNORECASE)
+URL_RE = re.compile(r"https?://[^\s<>\]\[\"']+", re.IGNORECASE)
 
 
 def post_idna_ascii_compatibility_chars() -> frozenset[str]:
@@ -1003,7 +1013,7 @@ def reference_integrity_violations(dataset: object) -> list[str]:
                         else set().union(*(target_ids[target] for target in target_paths))
                     )
                     values = child if isinstance(child, list) else [child]
-                    expects_list = key.endswith("Ids")
+                    expects_list = key in FIXTURE_LIST_REFERENCE_FIELDS
                     if expects_list != isinstance(child, list) or not values or any(
                         not isinstance(item, str) or item not in expected_ids
                         for item in values
@@ -1793,7 +1803,13 @@ def main() -> int:
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: Evidence references an unknown Source Note")
     for evidence_id, (source_note_id, observation_id) in actual_evidence_links.items():
         observation = observation_by_id.get(observation_id, {})
-        if source_note_id not in observation.get("dataSource", []):
+        observation_sources_value = observation.get("dataSource", [])
+        observation_sources = (
+            observation_sources_value
+            if isinstance(observation_sources_value, list)
+            else []
+        )
+        if source_note_id not in observation_sources:
             error(
                 "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
                 f"{evidence_id} sourceNoteId is not declared by {observation_id}.dataSource"
@@ -1906,6 +1922,19 @@ def main() -> int:
 
     judgments_value = dataset.get("judgments", {})
     judgments = judgments_value if isinstance(judgments_value, dict) else {}
+    forecasts_value = judgments.get("forecasts", [])
+    forecasts = forecasts_value if isinstance(forecasts_value, list) else []
+    for index, forecast in enumerate(forecasts):
+        if not isinstance(forecast, dict):
+            continue
+        for required_field in ("statement", "confidence"):
+            field_value = forecast.get(required_field)
+            if not isinstance(field_value, str) or not field_value.strip():
+                error(
+                    "cases/fixtures/ch25-structured-analysis-attribution-dataset.json: "
+                    f"judgments.forecasts[{index}].{required_field} must be a "
+                    "non-empty string"
+                )
     confirmed_facts = judgments.get("confirmedFacts", [])
     if any(isinstance(fact, dict) and fact.get("id") == "CF-2026-025-004" for fact in confirmed_facts):
         error("cases/fixtures/ch25-structured-analysis-attribution-dataset.json: CF-2026-025-004 must be a source-evaluation judgment, not a Confirmed Fact")
@@ -2072,8 +2101,15 @@ def main() -> int:
         "819012345678",
         "14155552671",
         "(03)1234-5678",
+        "(03)-1234-5678",
+        "03(1234)5678",
+        "03-(1234)-5678",
         "(415) 555-2671",
+        "(415)-555-2671",
+        "415(555)2671",
         "+81 (90) 1234-5678",
+        "+81(90)1234-5678",
+        "+81-(90)-1234-5678",
     )
     for mutation in phone_mutations:
         if not PHONE_RE.search(normalize_phone_parentheses(mutation)):
@@ -2113,6 +2149,10 @@ def main() -> int:
         "URL: http://192.0.2.1、確認する": ["192.0.2.1"],
         "接続先は例え.example。次に確認する": ["例え.example"],
         "URL: https://safe.example名@evil.com/path": ["evil.com"],
+        "URL: https://safe.example(user)@evil.com/path": ["evil.com"],
+        "URL: https://safe.example。悪意/path": ["safe.example。悪意"],
+        "URL: https://safe.example．悪意/path": ["safe.example．悪意"],
+        "URL: https://safe.example｡悪意/path": ["safe.example｡悪意"],
     }
     for mutation, expected_hosts in contextual_domain_regressions.items():
         if list(contextual_domain_hosts(mutation)) != expected_hosts:
@@ -2167,6 +2207,28 @@ def main() -> int:
     for mutation in ("例え.テスト", "例え.世界", "例え.ｃｏｍ"):
         if not is_unicode_domain_candidate(mutation):
             error(f"fixture safety regression: bare IDN was not recognized: {mutation!r}")
+    for compatibility_character in POST_IDNA_ASCII_COMPATIBILITY_CHARS:
+        current_mapping = unicodedata.normalize(
+            "NFKC", compatibility_character
+        ).lower()
+        for reserved_label in RESERVED_ASCII_TLDS:
+            start = 0
+            while (offset := reserved_label.find(current_mapping, start)) >= 0:
+                mutated_label = (
+                    reserved_label[:offset]
+                    + compatibility_character
+                    + reserved_label[offset + len(current_mapping) :]
+                )
+                candidate = f"safe.{mutated_label}"
+                match = DOMAIN_CANDIDATE_RE.search(candidate)
+                if match is None or not is_unicode_domain_candidate(
+                    match.group("host")
+                ):
+                    error(
+                        "fixture safety regression: post-IDNA compatibility "
+                        f"domain mutation was accepted: {candidate!r}"
+                    )
+                start = offset + 1
     if is_unicode_domain_candidate("これは。テスト"):
         error("fixture safety regression: Japanese prose was treated as a Unicode/IDN domain")
     if is_unicode_domain_candidate("検証.テストケースを実施する"):
@@ -2238,6 +2300,28 @@ def main() -> int:
         )
     if declared_identity_key_for_object_path("undeclaredIdentityObject") is not None:
         error("fixture identity regression: undeclared identity object path was accepted")
+    duplicate_data_source_fixture = {
+        "sourceNotes": [{"id": "SN-2026-025-001"}],
+        "threatHypotheses": [{"id": "TH-2026-025-001"}],
+        "observationHypotheses": [
+            {
+                "id": "OBS-2026-025-001",
+                "relatedThreatHypothesisId": "TH-2026-025-001",
+                "dataSource": ["SN-2026-025-001", "SN-2026-025-001"],
+            }
+        ],
+    }
+    if not any(
+        "observationHypotheses[0].dataSource: duplicate relationship values"
+        in violation
+        for violation in reference_integrity_violations(
+            duplicate_data_source_fixture
+        )
+    ):
+        error(
+            "fixture relationship regression: duplicate Observation dataSource "
+            "values were accepted"
+        )
 
     package = load_json("package.json")
     scripts = package.get("scripts", {})
