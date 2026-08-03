@@ -572,6 +572,17 @@ def normalize_policy_text(text: str) -> str:
     return unicodedata.normalize("NFKC", mapped).casefold()
 
 
+def normalize_synthetic_safety_text(text: str) -> str:
+    """Expose rendered character references and Markdown punctuation escapes."""
+    decoded = html.unescape(text)
+    markdown_unescaped = re.sub(
+        rf"\\([{re.escape(string.punctuation)}])",
+        r"\1",
+        decoded,
+    )
+    return normalize_for_host_scanning(markdown_unescaped)
+
+
 def normalize_phone_parentheses(text: str) -> str:
     without_dates = PHONE_DATE_TIME_RE.sub(
         lambda match: " " * len(match.group(0)), text
@@ -1621,7 +1632,7 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     """Check synthetic teaching content only; official Source Note URLs use SOURCE_POLICY."""
     # Decode character references before scanning so an HTML attribute cannot
     # disguise a live URL or hostname from the synthetic-content policy.
-    compatibility_text = normalize_for_host_scanning(html.unescape(text))
+    compatibility_text = normalize_synthetic_safety_text(text)
     for host in url_domain_hosts(compatibility_text):
         assert_synthetic_host(host, f"{relative}: URL")
     for match in HOSTNAME_RE.finditer(compatibility_text):
@@ -3268,6 +3279,7 @@ def main() -> int:
         '[FOR-2026-025-](https://safe.example "x)y")999': True,
         "[FOR-2026-025-][ref]999\n[ref]: https://safe.example": True,
         "`FOR-2026-025-<!--x-->999`": False,
+        "`FOR\\-2026-025-999`": False,
         "[FOR-2026-025-]999": False,
     }
     for mutation, should_render_id in rendered_forecast_regressions.items():
@@ -3278,14 +3290,18 @@ def main() -> int:
                 "fixture safety regression: Markdown rendered Forecast-ID "
                 f"projection drifted: {mutation!r} -> {rendered!r}"
             )
-    encoded_live_url = normalize_for_host_scanning(
-        html.unescape('<a href="h&#116;tps://evil&#46;com/path">x</a>')
+    encoded_live_urls = (
+        '<a href="h&#116;tps://evil&#46;com/path">x</a>',
+        '<a href="https&#58;//evil&#46;com/path">x</a>',
+        r"[x](https\://evil\.com/path)",
     )
-    if list(url_domain_hosts(encoded_live_url)) != ["evil.com"]:
-        error(
-            "fixture safety regression: HTML-character-reference URL escaped "
-            "synthetic host tokenization"
-        )
+    for encoded_live_url in encoded_live_urls:
+        normalized_live_url = normalize_synthetic_safety_text(encoded_live_url)
+        if list(url_domain_hosts(normalized_live_url)) != ["evil.com"]:
+            error(
+                "fixture safety regression: encoded URL escaped synthetic "
+                f"host tokenization: {encoded_live_url!r}"
+            )
     for disguised_policy_value in (
         "campaign断定",
         "operator断定",
