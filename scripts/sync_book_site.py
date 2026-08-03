@@ -20,6 +20,7 @@ SCHEMA_VERSION = "1.0.0"
 DIRECTORY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 LINE_TERMINATOR_RE = re.compile(r"[\r\n\u2028\u2029]")
 ALLOWED_SECTIONS = set(base.SECTION_ORDER)
+ALLOWED_CANONICAL_DIRECTORIES = {"cases", "schemas"}
 RESERVED_DESTINATION_ROOTS = {
     "_data",
     "_includes",
@@ -146,6 +147,11 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
             raise SitePageRegistryError(
                 f"canonicalDirectories[{index}] is invalid: {directory!r}"
             )
+        if directory not in ALLOWED_CANONICAL_DIRECTORIES:
+            raise SitePageRegistryError(
+                f"canonicalDirectories[{index}] is not an approved publication root: "
+                f"{directory!r}"
+            )
         if directory in seen_directories:
             raise SitePageRegistryError(
                 f"canonicalDirectories contains duplicate value: {directory}"
@@ -194,6 +200,11 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
         if not isinstance(directory, str) or not DIRECTORY_RE.fullmatch(directory):
             raise SitePageRegistryError(
                 f"directoryRoutes key is invalid: {directory!r}"
+            )
+        if directory not in seen_directories:
+            raise SitePageRegistryError(
+                f"directoryRoutes key must name a declared canonical directory: "
+                f"{directory!r}"
             )
         schema_markdown_path(destination, f"directoryRoutes.{directory}")
 
@@ -335,6 +346,10 @@ def apply_registry(registry: dict) -> None:
 
     routes = dict(base.DIRECTORY_ROUTES)
     for raw_directory, raw_destination in registry["directoryRoutes"].items():
+        if raw_directory in routes:
+            raise SitePageRegistryError(
+                f"directory route must not override a built-in route: {raw_directory}"
+            )
         destination = validate_destination(
             raw_destination, f"directoryRoutes.{raw_directory}"
         )
@@ -382,6 +397,24 @@ def run_registry_security_regressions() -> list[str]:
             {
                 "schemaVersion": SCHEMA_VERSION,
                 "canonicalDirectories": ["cases", "cases"],
+                "pages": [],
+                "directoryRoutes": {},
+            },
+        ),
+        (
+            "unapproved canonical directory",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": ["vendor"],
+                "pages": [],
+                "directoryRoutes": {},
+            },
+        ),
+        (
+            "hidden canonical directory",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": ["_data"],
                 "pages": [],
                 "directoryRoutes": {},
             },
@@ -438,9 +471,20 @@ def run_registry_security_regressions() -> list[str]:
             "non-string directory route",
             {
                 "schemaVersion": SCHEMA_VERSION,
-                "canonicalDirectories": [],
+                "canonicalDirectories": ["cases"],
                 "pages": [],
                 "directoryRoutes": {"cases": 7},
+            },
+        ),
+        (
+            "undeclared directory route",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [],
+                "directoryRoutes": {
+                    "templates": "cases/example/index.md"
+                },
             },
         ),
     ):
