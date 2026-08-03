@@ -6,6 +6,7 @@ from html.parser import HTMLParser
 import ipaddress
 import json
 import re
+import string
 import stringprep
 import sys
 import unicodedata
@@ -886,6 +887,11 @@ def strip_html_comments_for_rendered_text(markdown: str) -> str:
         rendered_text,
     )
     rendered_text = re.sub(r"!?\[([^\]]+)\]", r"\1", rendered_text)
+    rendered_text = re.sub(
+        rf"\\([{re.escape(string.punctuation)}])",
+        r"\1",
+        rendered_text,
+    )
     return rendered_text.translate(str.maketrans("", "", "*_~`"))
 
 
