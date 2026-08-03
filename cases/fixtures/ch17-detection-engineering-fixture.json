@@ -1,0 +1,367 @@
+{
+  "fixtureSetId": "FXSET-2026-017",
+  "caseId": "CASE-DET-2026-001",
+  "relatedCaseMapCaseId": "CASE-2026-001",
+  "relatedCaseMapDecisionId": "DEC-2026-001",
+  "decisionRequirementId": "DR-DET-2026-001",
+  "responseObjectiveId": "RO-DET-2026-001",
+  "detectionValidationRecordId": "DVR-2026-017-001",
+  "detectionId": "DET-2026-017-001",
+  "sourceNoteIds": [
+    "SRC-ATTACK-001"
+  ],
+  "syntheticOnly": true,
+  "offlineOnly": true,
+  "attackMappingCoverageProof": false,
+  "safetyAssertions": {
+    "noMalwareOrC2": true,
+    "noCredentialTheft": true,
+    "noRealCredentials": true,
+    "noPII": true,
+    "noExternalTargets": true,
+    "allowedDomains": [
+      ".example",
+      ".test",
+      ".invalid"
+    ]
+  },
+  "threatHypotheses": [
+    {
+      "id": "TH-DET-2026-001",
+      "statement": "Unapproved admin consent adds business-unapproved scope to the billing approval workload.",
+      "attackMapping": [
+        "T1098"
+      ]
+    }
+  ],
+  "observationHypotheses": [
+    {
+      "id": "OBS-DET-2026-001",
+      "statement": "Consent audit contains actor, target workload, scope delta, change ticket, and event time."
+    },
+    {
+      "id": "OBS-DET-2026-002",
+      "statement": "Follow-on workload sign-in can be correlated within 30 minutes."
+    }
+  ],
+  "detectionBacklogInputs": [
+    {
+      "backlogItemId": "DBI-DET-2026-001",
+      "inputType": "finding",
+      "relatedSourceId": "FIND-2026-002",
+      "disposition": "accept"
+    },
+    {
+      "backlogItemId": "DBI-DET-2026-002",
+      "inputType": "hunt",
+      "relatedSourceId": "HUNT-2026-001",
+      "disposition": "accept"
+    },
+    {
+      "backlogItemId": "DBI-DET-2026-003",
+      "inputType": "incident",
+      "relatedSourceId": null,
+      "disposition": "defer-no-input-in-synthetic-case"
+    },
+    {
+      "backlogItemId": "DBI-DET-2026-004",
+      "inputType": "cti",
+      "relatedSourceId": null,
+      "disposition": "defer-no-input-in-synthetic-case"
+    }
+  ],
+  "telemetryContracts": [
+    {
+      "id": "TEL-DET-2026-001",
+      "name": "identity_control_plane_audit",
+      "eventType": "admin_consent_granted",
+      "requiredFields": [
+        "event_time",
+        "ingest_time",
+        "actor_id",
+        "target_workload_id",
+        "granted_scope_set",
+        "change_ticket_id",
+        "result"
+      ],
+      "timeContract": "Use event_time for logic and ingest_time for pipeline latency only.",
+      "identityContract": "target_workload_id must be stable workload-* identifier.",
+      "coverage": "available"
+    },
+    {
+      "id": "TEL-DET-2026-002",
+      "name": "approved_change_snapshot",
+      "eventType": "approved_change_snapshot",
+      "requiredFields": [
+        "change_ticket_id",
+        "approved_scope_set",
+        "window_start",
+        "window_end",
+        "owner_id"
+      ],
+      "timeContract": "Use approval window for matching, not ingest time.",
+      "identityContract": "owner_id is stable person identifier.",
+      "coverage": "available"
+    },
+    {
+      "id": "TEL-DET-2026-003",
+      "name": "workload_sign_in_audit",
+      "eventType": "workload_sign_in",
+      "requiredFields": [
+        "event_time",
+        "target_workload_id",
+        "result"
+      ],
+      "timeContract": "Correlate within 30 minutes of consent event_time.",
+      "identityContract": "Use same target_workload_id normalization as TEL-DET-2026-001.",
+      "coverage": "partial-optional-enrichment",
+      "optionalEnrichmentFields": [
+        "credential_state",
+        "source_label"
+      ]
+    }
+  ],
+  "fixtures": [
+    {
+      "fixtureId": "FIX-2026-017-POS",
+      "type": "positive",
+      "telemetryPresence": "present",
+      "targetEventPresence": "present",
+      "benignNearMissContext": "absent",
+      "expectedOutcome": "alert",
+      "expectedSeverity": "critical",
+      "availableTelemetryIds": [
+        "TEL-DET-2026-001",
+        "TEL-DET-2026-002",
+        "TEL-DET-2026-003"
+      ],
+      "relatedEvidenceIds": [
+        "EVD-DET-2026-001",
+        "EVD-DET-2026-005"
+      ],
+      "records": [
+        {
+          "telemetryId": "TEL-DET-2026-001",
+          "recordId": "rec-pos-001",
+          "eventType": "admin_consent_granted",
+          "event_time": "2026-07-31T04:12:00Z",
+          "ingest_time": "2026-07-31T04:12:09Z",
+          "actor_id": "admin-change-bot-01",
+          "target_workload_id": "workload-billing-approval-01",
+          "granted_scope_set": [
+            "Invoice.Read.All",
+            "Ledger.Export.All"
+          ],
+          "change_ticket_id": null,
+          "result": "success",
+          "target_label": "billing-approval.example"
+        },
+        {
+          "telemetryId": "TEL-DET-2026-002",
+          "recordId": "rec-pos-002",
+          "eventType": "approved_change_snapshot",
+          "change_ticket_id": "chg-2026-0710",
+          "approved_scope_set": [
+            "Invoice.Read.All"
+          ],
+          "window_start": "2026-07-31T02:00:00Z",
+          "window_end": "2026-07-31T02:30:00Z",
+          "owner_id": "owner-finops-01"
+        },
+        {
+          "telemetryId": "TEL-DET-2026-003",
+          "recordId": "rec-pos-003",
+          "eventType": "workload_sign_in",
+          "event_time": "2026-07-31T04:18:00Z",
+          "target_workload_id": "workload-billing-approval-01",
+          "credential_state": "active",
+          "source_label": "approved-network-segment-a",
+          "result": "success"
+        }
+      ],
+      "expectedTriageCategory": "Escalate"
+    },
+    {
+      "fixtureId": "FIX-2026-017-NEG",
+      "type": "negative",
+      "telemetryPresence": "present",
+      "targetEventPresence": "absent",
+      "benignNearMissContext": "absent",
+      "expectedOutcome": "no_alert",
+      "expectedSeverity": "none",
+      "availableTelemetryIds": [
+        "TEL-DET-2026-001",
+        "TEL-DET-2026-002",
+        "TEL-DET-2026-003"
+      ],
+      "relatedEvidenceIds": [
+        "EVD-DET-2026-002",
+        "EVD-DET-2026-005"
+      ],
+      "records": [
+        {
+          "telemetryId": "TEL-DET-2026-002",
+          "recordId": "rec-neg-002",
+          "eventType": "approved_change_snapshot",
+          "change_ticket_id": "chg-2026-0711",
+          "approved_scope_set": [
+            "Invoice.Read.All"
+          ],
+          "window_start": "2026-07-31T00:30:00Z",
+          "window_end": "2026-07-31T01:30:00Z",
+          "owner_id": "owner-finops-01"
+        },
+        {
+          "telemetryId": "TEL-DET-2026-003",
+          "recordId": "rec-neg-003",
+          "eventType": "workload_sign_in",
+          "event_time": "2026-07-31T01:10:00Z",
+          "target_workload_id": "workload-billing-approval-01",
+          "credential_state": "active",
+          "source_label": "approved-network-segment-a",
+          "result": "success"
+        }
+      ],
+      "expectedTriageCategory": null
+    },
+    {
+      "fixtureId": "FIX-2026-017-BNM",
+      "type": "benign_near_miss",
+      "telemetryPresence": "present",
+      "targetEventPresence": "present",
+      "benignNearMissContext": "present",
+      "expectedOutcome": "no_alert",
+      "expectedSeverity": "informational",
+      "availableTelemetryIds": [
+        "TEL-DET-2026-001",
+        "TEL-DET-2026-002",
+        "TEL-DET-2026-003"
+      ],
+      "relatedEvidenceIds": [
+        "EVD-DET-2026-003",
+        "EVD-DET-2026-005"
+      ],
+      "records": [
+        {
+          "telemetryId": "TEL-DET-2026-001",
+          "recordId": "rec-bnm-001",
+          "eventType": "admin_consent_granted",
+          "event_time": "2026-07-31T03:05:00Z",
+          "ingest_time": "2026-07-31T03:05:07Z",
+          "actor_id": "admin-change-bot-01",
+          "target_workload_id": "workload-billing-approval-01",
+          "granted_scope_set": [
+            "Invoice.Read.All"
+          ],
+          "change_ticket_id": "chg-2026-0712",
+          "result": "success",
+          "target_label": "billing-approval.example"
+        },
+        {
+          "telemetryId": "TEL-DET-2026-002",
+          "recordId": "rec-bnm-002",
+          "eventType": "approved_change_snapshot",
+          "change_ticket_id": "chg-2026-0712",
+          "approved_scope_set": [
+            "Invoice.Read.All"
+          ],
+          "window_start": "2026-07-31T03:00:00Z",
+          "window_end": "2026-07-31T03:30:00Z",
+          "owner_id": "owner-finops-01"
+        },
+        {
+          "telemetryId": "TEL-DET-2026-003",
+          "recordId": "rec-bnm-003",
+          "eventType": "workload_sign_in",
+          "event_time": "2026-07-31T03:11:00Z",
+          "target_workload_id": "workload-billing-approval-01",
+          "credential_state": "active",
+          "source_label": "approved-network-segment-a",
+          "result": "success"
+        }
+      ],
+      "expectedTriageCategory": "Approved change"
+    }
+  ],
+  "coverageGapExample": {
+    "gapId": "GAP-DET-2026-001",
+    "telemetryPresence": "absent",
+    "targetEventPresence": "unknown",
+    "description": "If TEL-DET-2026-002 is absent, the workflow cannot distinguish unapproved change from change-calendar ingestion failure.",
+    "permittedConclusion": "Decision is indeterminate; event absence cannot be concluded.",
+    "relatedEvidenceIds": [
+      "EVD-DET-2026-004"
+    ],
+    "sourceFixtureId": "FIX-2026-017-POS",
+    "missingTelemetryIds": [
+      "TEL-DET-2026-002"
+    ],
+    "expectedOutcome": "indeterminate",
+    "expectedSeverity": "none",
+    "expectedTriageCategory": "Needs telemetry gap review"
+  },
+  "triage": {
+    "triageId": "TRI-DET-2026-001",
+    "expectedCategories": [
+      "Escalate",
+      "Approved change",
+      "Needs telemetry gap review"
+    ],
+    "mustInclude": [
+      "case_id",
+      "detection_id",
+      "scope_delta",
+      "change_ticket_status",
+      "target_workload_id",
+      "coverage_statement",
+      "correlation_state"
+    ]
+  },
+  "incidentHandoff": {
+    "handoffId": "HO-DET-2026-001",
+    "requiredFields": [
+      "case_id",
+      "detection_id",
+      "evidence_ids",
+      "coverage",
+      "gap",
+      "permitted_conclusion"
+    ]
+  },
+  "controls": [
+    {
+      "controlId": "CTRL-DET-2026-001",
+      "description": "Review approved scope allow list monthly against business requirements."
+    },
+    {
+      "controlId": "CTRL-DET-2026-002",
+      "description": "Complete TEL-DET-2026-003 source_label field coverage."
+    }
+  ],
+  "reassessment": {
+    "reassessmentId": "REA-DET-2026-001",
+    "trigger": [
+      "scope allow list change",
+      "field rename",
+      "approval workflow change",
+      "parser update"
+    ],
+    "scheduledDate": "2026-10-29"
+  },
+  "relatedCaseMap": {
+    "detectionId": "DET-2026-001",
+    "relationship": "refines",
+    "fixtureId": "FIX-CONSENT-001",
+    "controlId": "CTRL-2026-003",
+    "telemetryMap": [
+      {
+        "caseMapTelemetryId": "TEL-2026-001",
+        "chapter17TelemetryId": "TEL-DET-2026-001"
+      },
+      {
+        "caseMapTelemetryId": "TEL-2026-004",
+        "chapter17TelemetryId": "TEL-DET-2026-003"
+      }
+    ]
+  }
+}

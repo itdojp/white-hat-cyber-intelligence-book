@@ -23,9 +23,9 @@ def render() -> str:
     lines = [
         '# Reference Baseline',
         '',
-        f'確認基準日: **{data["checkedAt"]}**',
+        f'Registry全体の最終一括監査日: **{data["checkedAt"]}**',
         '',
-        'このファイルは`references/sources.json`から生成します。機械可読の正本を直接更新し、このファイルを手編集しないでください。本文へ採用する際は、章Issueで再確認します。',
+        'このファイルは`references/sources.json`から生成します。機械可読の正本を直接更新し、このファイルを手編集しないでください。各行の確認日は個別Source Noteの最終確認日であり、本文へ採用する際は章Issueで再確認します。',
         '',
         '| ID | 発行主体 | 文書 | 版・状態 | 確認日 | 次回確認 | 主な章 |',
         '|---|---|---|---|---|---|---|',
