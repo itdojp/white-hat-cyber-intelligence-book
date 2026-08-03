@@ -164,9 +164,9 @@
 
 ### 8.3 Hunt or Incident Records
 
-| Record ID | Type | Related hypothesis | Question | Time range | Result | Evidence IDs | Next action |
-|---|---|---|---|---|---|---|---|
-| `HUNT-CASE-001` | Hunt / Incident | `TH-CASE-001` |  |  |  |  |  |
+| Record ID | Type | Related hypothesis | Related Telemetry IDs | Question | Time range | Result | Evidence IDs | Next action |
+|---|---|---|---|---|---|---|---|---|
+| `HUNT-CASE-001` | Hunt / Incident | `TH-CASE-001` | `TEL-CASE-001` |  |  |  |  |  |
 
 ## 9. Analytic Judgment
 
@@ -181,6 +181,7 @@
 | Basis for confidence |  |
 | Confirmed facts |  |
 | Assumptions |  |
+| Related Alternative IDs | `ALT-CASE-001` |
 | Alternative hypotheses |  |
 | Information gaps |  |
 | Deception / manipulation risk |  |

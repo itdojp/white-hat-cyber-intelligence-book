@@ -34,7 +34,7 @@
 |---|---|
 | Decision Requirement ID | `DR-2026-001` |
 | Decision owner | CTO |
-| Decision deadline | 2026-07-22T18:00:00+09:00 |
+| Decision deadline | 2026-07-22T09:00:00+09:00 |
 | Decision to make | 請求書連携OAuthアプリを即時停止するか、権限縮小と監視強化で継続するか |
 | Available options | 即時停止 / 権限縮小して継続 / 現状維持 |
 | Decision criteria | 顧客業務影響、権限範囲、既存Tokenの扱い、観測可能性、代替手段 |
@@ -174,9 +174,9 @@
 
 ### 8.3 Hunt or Incident Records
 
-| Record ID | Type | Related hypothesis | Question | Time range | Result | Evidence IDs | Next action |
-|---|---|---|---|---|---|---|---|
-| `HUNT-2026-001` | Hunt | `TH-2026-003` | 未承認同意変更または不自然なApp sign-inはあるか | 過去90日 | 確認範囲では該当なし | `EVD-2026-004`, `NEG-2026-001` | Telemetry Gap解消後に再実施 |
+| Record ID | Type | Related hypothesis | Related Telemetry IDs | Question | Time range | Result | Evidence IDs | Next action |
+|---|---|---|---|---|---|---|---|---|
+| `HUNT-2026-001` | Hunt | `TH-2026-003` | `TEL-2026-003` | 未承認同意変更または不自然なApp sign-inはあるか | 過去90日 | 確認範囲では該当なし | `EVD-2026-004`, `NEG-2026-001` | Telemetry Gap解消後に再実施 |
 
 ## 9. Analytic Judgment
 
@@ -191,6 +191,7 @@
 | Basis for confidence | 現行設定と業務要件の差分は直接確認した。過去利用はTelemetry Gapにより限定的である |
 | Confirmed facts | 過大scope、Credential有効、同意Event取得可能、API利用Telemetry不完全 |
 | Assumptions | 業務要件表が現行運用を正しく反映している |
+| Related Alternative IDs | `ALT-2026-001`, `ALT-2026-002` |
 | Alternative hypotheses | 初期導入時の暫定設定が残っただけで悪用はない |
 | Information gaps | 一部API利用Event、保持期間外の履歴 |
 | Deception / manipulation risk | 外部報告のActor帰属やCampaign名に依存しない判断とした |
@@ -204,7 +205,7 @@
 | Decision ID | `DEC-2026-001` |
 | Related Analytic Judgment ID | `AJ-2026-001` |
 | Decision owner | CTO |
-| Decision time | 2026-07-22T16:30:00+09:00 |
+| Decision time | 2026-07-22T08:30:00+09:00 |
 | Selected option | 権限縮小と監視強化で継続。縮小完了まで新規同意を停止 |
 | Rejected options and reason | 即時全面停止は月末業務影響が大きい。現状維持は過大権限とTelemetry Gapを受容できない |
 | Required actions | scope縮小、Credential更新、同意Rule導入、API audit収集、Retest |
@@ -243,14 +244,14 @@
 |---|---|---|---|---|---|---|
 | `HO-2026-001` | Assessment | SOC | Attack / Observation Hypothesis、Evidence ID、必要Event | Data sourceとFieldが特定されている | 「不審なActivityを監視」のように検証不能 | 2026-07-21 12:00 |
 | `HO-2026-002` | SOC | CSIRT | Alert context、Query version、Coverage、Gap | Case IDとEvidence IDへ追跡できる | Coverage不明、時刻範囲不明 | Alert後30分 |
-| `HO-2026-003` | CTI | CTO | Key Judgment、Confidence、Alternatives、Decision options | 事実と判断が分離されている | Actor名だけで推奨を正当化 | 2026-07-22 15:00 |
-| `HO-2026-004` | CTO | Control owners | Decision、期限、残存Risk、Retest条件 | OwnerとDue dateがある | 「監視強化」だけで具体策なし | 2026-07-22 18:00 |
+| `HO-2026-003` | CTI | CTO | Key Judgment、Confidence、Alternatives、Decision options | 事実と判断が分離されている | Actor名だけで推奨を正当化 | 2026-07-22 07:30 |
+| `HO-2026-004` | CTO | Control owners | Decision、期限、残存Risk、Retest条件 | OwnerとDue dateがある | 「監視強化」だけで具体策なし | 2026-07-22 09:00 |
 
 ## 14. Outcome Metrics
 
 | Metric ID | Metric | Baseline | Target | Measurement window | Owner |
 |---|---|---:|---:|---|---|
-| `MET-2026-001` | Decision latency | 55時間 | 48時間以内 | Case開始からDecisionまで | Security Program Lead |
+| `MET-2026-001` | Decision latency | 47時間30分 | 48時間以内 | Case開始からDecisionまで | Security Program Lead |
 | `MET-2026-002` | Critical hypothesis evidence coverage | 2 / 3 | 3 / 3、またはGapの責任者と期限を明示 | Reassessment時 | Case owner |
 | `MET-2026-003` | Verified control improvement rate | 0 / 4 | 4 / 4 | 30日 | Control owners |
 | `MET-2026-004` | Reassessment completed by due date | 未計測 | 100% | 四半期 | Security Program Lead |
