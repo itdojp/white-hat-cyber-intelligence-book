@@ -161,10 +161,10 @@
 
 | Telemetry ID | Related Evidence IDs | Behavior / question | Required event and fields | Retention | Current state | Gap owner |
 |---|---|---|---|---|---|---|
-| `TEL-2026-001` | `EVD-2026-003` | Admin consent変更 | actor、app ID、scope、target tenant、timestamp | 180日 | Available | SOC |
+| `TEL-2026-001` | `EVD-2026-003` | Admin consent変更 | actor、app ID、scope、target tenant、timestamp | 180日 | Partial（検索対象90日のうち72日） | SOC |
 | `TEL-2026-002` | `EVD-2026-001` | App credential変更 | actor、credential ID、operation、timestamp | 180日 | Available | Platform |
 | `TEL-2026-003` | `EVD-2026-004` | AppによるData API利用 | app ID、resource、operation、result、timestamp | 180日 | Partial | Platform |
-| `TEL-2026-004` | `EVD-2026-004` | App sign-in / Token利用 | app ID、credential ID、source、result、timestamp | 90日 | Available | Platform |
+| `TEL-2026-004` | `EVD-2026-004` | App sign-in / Token利用 | app ID、credential ID、source、result、timestamp | 90日 | Partial（72日） | Platform |
 
 ### 8.2 Detection Validation
 
