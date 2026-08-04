@@ -593,7 +593,11 @@ def skip_css_trivia_backward(text: str, cursor: int) -> int:
     return cursor
 
 
-def mask_data_url_payloads(text: str) -> str:
+def mask_data_url_payloads(
+    text: str,
+    *,
+    css_declarations: bool = False,
+) -> str:
     """Hide data URL tokens while preserving following Markdown destinations."""
     masked = list(text)
     index = 0
@@ -624,6 +628,7 @@ def mask_data_url_payloads(text: str) -> str:
 
         end = index + 5
         parenthesis_depth = 0
+        data_comma_seen = False
         css_cursor = skip_css_trivia_backward(text, index - 1)
         css_quote = ""
         if css_cursor >= 0 and text[css_cursor] in "\"'":
@@ -645,6 +650,12 @@ def mask_data_url_payloads(text: str) -> str:
                     or (not css_quote and candidate_character == ")")
                 ):
                     break
+            elif (
+                css_declarations
+                and data_comma_seen
+                and candidate_character in ";}"
+            ):
+                break
             elif html_quote is not None:
                 if candidate_character == html_quote:
                     break
@@ -657,6 +668,8 @@ def mask_data_url_payloads(text: str) -> str:
                     if parenthesis_depth == 0:
                         break
                     parenthesis_depth -= 1
+            if candidate_character == ",":
+                data_comma_seen = True
             end += 1
         masked[index:end] = " " * (end - index)
         index = end
@@ -1256,7 +1269,10 @@ def raw_html_css_hosts(text: str):
     for value in parser.values:
         normalized = normalize_for_host_scanning(
             normalize_synthetic_safety_text(
-                mask_data_url_payloads(decode_css_escapes(value)),
+                mask_data_url_payloads(
+                    decode_css_escapes(value),
+                    css_declarations=True,
+                ),
                 strip_url_controls=True,
                 unescape_markdown=False,
             )
@@ -3921,6 +3937,7 @@ def main() -> int:
         '<img srcset=//safe.example/a&#32;1x,//0x08080808/path>',
         '<link rel="preload" as="image" imagesrcset="//safe.example/a 1x,//0x08080808/path 2x">',
         '<div style="background:url(https\\3a //evil\\2e com/x)"></div>',
+        '<div style="--x:data:image/png,x;background:url(https://evil.com/x)"></div>',
         '[x](\x01 //evil/path)',
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
