@@ -661,6 +661,21 @@ def mask_data_url_payloads(
         r"</?[A-Za-z][A-Za-z0-9-]*(?=[\s/>])|<!|<\?"
     )
     inline_link_starts = markdown_inline_link_starts(text)
+    reference_data_starts: set[int] = set()
+    for _, colon, _, line_end in markdown_reference_definitions(text):
+        destination_start = colon + 1
+        while (
+            destination_start < line_end
+            and text[destination_start] in " \t"
+        ):
+            destination_start += 1
+        if (
+            destination_start < line_end
+            and text[destination_start] == "<"
+        ):
+            destination_start += 1
+        if text[destination_start : destination_start + 5].casefold() == "data:":
+            reference_data_starts.add(destination_start)
     while index < len(text):
         character = text[index]
         if (
@@ -774,6 +789,7 @@ def mask_data_url_payloads(
             or (inside_html_tag and data_is_attribute_url)
             or markdown_destination_context
             or angle_destination_context
+            or index in reference_data_starts
         )
         while end < len(text):
             candidate_character = text[end]
@@ -1374,6 +1390,69 @@ class CSSValueExtractor(HTMLParser):
     def handle_data(self, data: str) -> None:
         if self.style_depth:
             self.values.append(data)
+
+
+class ExecutableHTMLDetector(HTMLParser):
+    """Reject executable HTML contexts from synthetic teaching artifacts."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.violations: list[str] = []
+
+    def collect(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        normalized_tag = tag.casefold()
+        if normalized_tag == "script":
+            self.violations.append("script element")
+        for name, value in attrs:
+            normalized_name = name.casefold()
+            if normalized_name.startswith("on"):
+                self.violations.append(
+                    f"event-handler attribute {normalized_name}"
+                )
+            if normalized_name == "srcdoc":
+                self.violations.append("iframe srcdoc attribute")
+            if value is None:
+                continue
+            compact_prefix = re.sub(
+                r"[\x00-\x20\x7f]+",
+                "",
+                value,
+            ).casefold()
+            if compact_prefix.startswith("javascript:"):
+                self.violations.append(
+                    f"javascript URL in {normalized_name}"
+                )
+            if compact_prefix.startswith(
+                ("data:text/html", "data:application/xhtml+xml")
+            ):
+                self.violations.append(
+                    f"executable data URL in {normalized_name}"
+                )
+
+    def handle_starttag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        self.collect(tag, attrs)
+
+    def handle_startendtag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        self.collect(tag, attrs)
+
+
+def executable_html_violations(text: str) -> list[str]:
+    parser = ExecutableHTMLDetector()
+    parser.feed(text)
+    parser.close()
+    return parser.violations
 
 
 CSS_ESCAPE_RE = re.compile(
@@ -2329,6 +2408,11 @@ def require_globally_unique_owner_ids(dataset: object) -> None:
 
 def check_synthetic_content_safety(relative: str, text: str) -> None:
     """Check synthetic teaching content only; official Source Note URLs use SOURCE_POLICY."""
+    for violation in executable_html_violations(text):
+        error(
+            f"{relative}: executable HTML is not allowed in synthetic content: "
+            f"{violation}"
+        )
     # Decode character references before scanning so an HTML attribute cannot
     # disguise a live URL or hostname from the synthetic-content policy.
     rendered_safety_text = normalize_synthetic_safety_text(text)
@@ -4141,6 +4225,7 @@ def main() -> int:
         '<img srcset="data:text/plain,https%3A%2F%2Fevil.com 1x">',
         '<img src="data:text/plain,https://evil.com">',
         '<data:text/plain,https://evil.com>',
+        '[d]: data:text/plain,x[x](https://evil.com)\n[d]',
     ):
         if list(raw_html_srcset_hosts(data_url_srcset)):
             error(
@@ -4189,6 +4274,18 @@ def main() -> int:
             error(
                 "fixture safety regression: data-URL mask consumed a "
                 "following network destination"
+            )
+    for executable_html in (
+        '<button onclick="location=\'\\x2f\\x2f0x08080808/x\'">x</button>',
+        '<a href="javascript:location=\'//0x08080808/x\'">x</a>',
+        '<iframe srcdoc="&lt;script&gt;location=\'//0x08080808/x\'&lt;/script&gt;"></iframe>',
+        '<script>location="//0x08080808/x"</script>',
+        '<a href="data:text/html,&lt;script&gt;location=\'//0x08080808/x\'&lt;/script&gt;">x</a>',
+    ):
+        if not executable_html_violations(executable_html):
+            error(
+                "fixture safety regression: executable HTML context was "
+                f"accepted: {executable_html!r}"
             )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
