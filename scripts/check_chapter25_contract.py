@@ -615,6 +615,16 @@ def markdown_inline_link_starts(text: str) -> set[int]:
     return starts
 
 
+def markdown_character_is_escaped(text: str, index: int) -> bool:
+    """Return whether Markdown backslash parity escapes text[index]."""
+    backslashes = 0
+    cursor = index - 1
+    while cursor >= 0 and text[cursor] == "\\":
+        backslashes += 1
+        cursor -= 1
+    return backslashes % 2 == 1
+
+
 def mask_data_url_payloads(
     text: str,
     *,
@@ -757,6 +767,7 @@ def mask_data_url_payloads(
             not inside_html_tag
             and index > 0
             and text[index - 1] == "<"
+            and not markdown_character_is_escaped(text, index - 1)
         )
         structured_data_context = (
             css_url_context
@@ -4167,6 +4178,7 @@ def main() -> int:
         'location=\'https://evil.com\'">x</a>',
         'data:text/plain,x[x](https://evil.com)',
         '< data:text/plain,x[x](https://evil.com)>',
+        r"\<data:text/plain,x[x](https://evil.com)>",
     ):
         masked_adjacent_url = normalize_for_host_scanning(
             normalize_synthetic_safety_text(
