@@ -610,22 +610,26 @@ def mask_data_url_payloads(text: str) -> str:
 
         end = index + 5
         parenthesis_depth = 0
-        css_prefix = text[max(0, index - 16) : index]
-        css_url_match = re.search(
-            r"(?i)url\(\s*(?P<quote>['\"]?)\Z",
-            css_prefix,
-        )
-        css_quote = (
-            css_url_match.group("quote")
-            if css_url_match is not None
-            else ""
+        css_cursor = index - 1
+        while css_cursor >= 0 and text[css_cursor] in " \t\r\n\f":
+            css_cursor -= 1
+        css_quote = ""
+        if css_cursor >= 0 and text[css_cursor] in "\"'":
+            css_quote = text[css_cursor]
+            css_cursor -= 1
+            while css_cursor >= 0 and text[css_cursor] in " \t\r\n\f":
+                css_cursor -= 1
+        css_url_context = (
+            css_cursor >= 3
+            and text[css_cursor] == "("
+            and text[css_cursor - 3 : css_cursor].casefold() == "url"
         )
         while end < len(text):
             candidate_character = text[end]
             if candidate_character == "\\" and end + 1 < len(text):
                 end += 2
                 continue
-            if css_url_match is not None:
+            if css_url_context:
                 if (
                     (css_quote and candidate_character == css_quote)
                     or (not css_quote and candidate_character == ")")
@@ -3906,6 +3910,8 @@ def main() -> int:
         "[d](data:text/plain,x)[x](https://evil.com)",
         r"[d](data:text/plain,\()[x](https://evil.com)",
         '<div style="background:url(data:image/png,x); '
+        'background:url(https://evil.com/x)">',
+        '<div style="background:url(                    data:image/png,x); '
         'background:url(https://evil.com/x)">',
     ):
         masked_adjacent_url = normalize_for_host_scanning(
