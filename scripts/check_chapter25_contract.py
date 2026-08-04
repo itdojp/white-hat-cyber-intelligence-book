@@ -1104,6 +1104,24 @@ def blockquote_content_offset(line: str) -> int:
     return offset
 
 
+def blockquote_container_depth(line: str) -> int:
+    depth = 0
+    offset = 0
+    while offset < len(line):
+        cursor = offset
+        spaces = 0
+        while cursor < len(line) and line[cursor] == " " and spaces < 3:
+            cursor += 1
+            spaces += 1
+        if cursor >= len(line) or line[cursor] != ">":
+            break
+        depth += 1
+        offset = cursor + 1
+        if offset < len(line) and line[offset] in " \t":
+            offset += 1
+    return depth
+
+
 def markdown_line_contexts(
     text: str,
 ) -> list[tuple[int, int, int, bool]]:
@@ -2251,7 +2269,12 @@ def markdown_url_destinations(text: str):
             destination = destination[1:]
         yield destination
 
-    for label, colon, _, line_end in markdown_reference_definitions(protected_text):
+    for (
+        label,
+        colon,
+        definition_line_start,
+        line_end,
+    ) in markdown_reference_definitions(protected_text):
         if len(label) > 1 and label.startswith("^"):
             continue
         start = colon + 1
@@ -2269,6 +2292,16 @@ def markdown_url_destinations(text: str):
             continue
         continuation_end, content_start, inside_code_context = continuation
         if inside_code_context:
+            continue
+        definition_line = protected_text[definition_line_start:line_end].rstrip(
+            "\r\n"
+        )
+        continuation_line = protected_text[line_end:continuation_end].rstrip(
+            "\r\n"
+        )
+        if blockquote_container_depth(
+            definition_line
+        ) != blockquote_container_depth(continuation_line):
             continue
         content_end = continuation_end
         while (
@@ -4881,6 +4914,7 @@ def main() -> int:
         'javascript: is an executable scheme name',
         '[x](java script:alert(1))',
         'Text[^scheme]\n[^scheme]: javascript: は実行可能URLスキームである。',
+        '[x][ref]\n[ref]:\n> javascript: is blockquote prose',
     ):
         if executable_markdown_url_violations(inert_markdown):
             error(
