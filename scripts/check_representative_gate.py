@@ -94,7 +94,8 @@ class RawHtmlContainerTracker(HTMLParser):
     def handle_startendtag(
         self, tag: str, attrs: list[tuple[str, str | None]]
     ) -> None:
-        del tag, attrs
+        # HTML browsers ignore the self-closing flag on non-void HTML elements.
+        self.handle_starttag(tag, attrs)
 
     def handle_endtag(self, tag: str) -> None:
         normalized = tag.lower()
@@ -792,7 +793,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-030",
+            "GATE-031",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
