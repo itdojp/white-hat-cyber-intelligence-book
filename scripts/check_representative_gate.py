@@ -28,6 +28,10 @@ ARTIFACT_ROW_RE = re.compile(
     r"^\| (ART-\d{2}) \| ([^|]+?) \| ([^|]+?) \| `([^`]+)` \|$",
     re.MULTILINE,
 )
+REVIEW_HEADER = (
+    "| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |"
+)
+REVIEW_SEPARATOR = "|---|---|---|---|---|---|"
 
 
 def error(message: str) -> None:
@@ -66,6 +70,119 @@ def require_tokens(relative: str, content: str, tokens: tuple[str, ...]) -> None
 def require_heading(relative: str, content: str, heading: str) -> None:
     if heading not in content.splitlines():
         error(f"{relative}: missing exact heading {heading!r}")
+
+
+def review_table_rows(
+    relative: str, content: str, heading: str
+) -> dict[str, list[str]]:
+    lines = content.splitlines()
+    try:
+        heading_index = lines.index(heading)
+    except ValueError:
+        return {}
+
+    index = heading_index + 1
+    while index < len(lines) and not lines[index].strip():
+        index += 1
+    if index < len(lines) and lines[index].startswith("以下は合成Case内のReview記入例"):
+        index += 1
+        while index < len(lines) and not lines[index].strip():
+            index += 1
+    if index >= len(lines) or lines[index] != REVIEW_HEADER:
+        error(f"{relative}: Review table beneath {heading!r} has an invalid header")
+        return {}
+    if index + 1 >= len(lines) or lines[index + 1] != REVIEW_SEPARATOR:
+        error(f"{relative}: Review table beneath {heading!r} has an invalid separator")
+        return {}
+
+    rows: dict[str, list[str]] = {}
+    for line in lines[index + 2 :]:
+        if not line.startswith("|"):
+            break
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) != 6:
+            error(f"{relative}: Review table row must contain six cells: {line}")
+            continue
+        area = cells[0]
+        if area in rows:
+            error(f"{relative}: duplicate Review area {area!r}")
+            continue
+        rows[area] = cells
+    return rows
+
+
+def check_review_tables() -> None:
+    templates = {
+        "templates/integrated-security-case-map.md": "## 16. Review",
+        "templates/web-api-assessment-hypothesis-pack.md": "## 11. Review",
+        "templates/detection-validation.md": "## 11. Review",
+        "templates/analytic-judgment-record.md": "## 15. Review",
+    }
+    for relative, heading in templates.items():
+        rows = review_table_rows(relative, read_text(relative), heading)
+        if len(rows) != 5:
+            error(f"{relative}: Review table must contain exactly five viewpoint rows")
+
+    cases = {
+        "cases/ch01-integrated-security-case-example.md": (
+            "## 16. Review",
+            {
+                "Technical correctness": "SYNTH-REV-01-TECH-001",
+                "Safety / authorization": "SYNTH-REV-01-SAFE-001",
+                "Evidence / source quality": "SYNTH-REV-01-EVID-001",
+                "Analytic quality": "SYNTH-REV-01-ANALYTIC-001",
+                "Decision usefulness": "SYNTH-REV-01-DEC-001",
+            },
+        ),
+        "cases/ch11-web-api-assessment-example.md": (
+            "## 11. Review",
+            {
+                "Technical correctness": "SYNTH-REV-11-TECH-001",
+                "Safety / authorization": "SYNTH-REV-11-SAFE-001",
+                "Evidence / source quality": "SYNTH-REV-11-EVID-001",
+                "Detection handoff": "SYNTH-REV-11-DET-001",
+                "Decision usefulness": "SYNTH-REV-11-DEC-001",
+            },
+        ),
+        "cases/ch17-detection-validation-example.md": (
+            "## 11. Review",
+            {
+                "Technical correctness": "SYNTH-REV-17-TECH-001",
+                "Safety / authorization": "SYNTH-REV-17-SAFE-001",
+                "Evidence / source quality": "SYNTH-REV-17-EVID-001",
+                "Coverage and analytic quality": "SYNTH-REV-17-DET-001",
+                "Decision usefulness": "SYNTH-REV-17-DEC-001",
+            },
+        ),
+        "cases/ch25-structured-analysis-attribution-example.md": (
+            "## 15. Review",
+            {
+                "Technical correctness": "SYNTH-REV-25-TECH-001",
+                "Safety / authorization": "SYNTH-REV-25-SAFE-001",
+                "Evidence / source quality": "SYNTH-REV-25-EVID-001",
+                "Analytic quality": "SYNTH-REV-25-ANALYTIC-001",
+                "Decision usefulness": "SYNTH-REV-25-DEC-001",
+            },
+        ),
+    }
+    for relative, (heading, expected) in cases.items():
+        rows = review_table_rows(relative, read_text(relative), heading)
+        if set(rows) != set(expected):
+            error(
+                f"{relative}: Review areas differ; "
+                f"missing={sorted(set(expected) - set(rows))}, "
+                f"extra={sorted(set(rows) - set(expected))}"
+            )
+        for area, evidence_id in expected.items():
+            row = rows.get(area)
+            if row is None:
+                continue
+            actual = row[4].strip("`")
+            if actual != evidence_id:
+                error(
+                    f"{relative}: {area!r} must reference {evidence_id}, "
+                    f"got {row[4]!r}"
+                )
 
 
 def split_source_ids(relative: str, content: str) -> tuple[set[str], set[str]]:
@@ -180,7 +297,7 @@ def check_artifacts_and_cases() -> None:
             template_text,
             (
                 artifact_id,
-                "| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |",
+                REVIEW_HEADER,
             ),
         )
         require_heading(template, template_text, review_heading)
@@ -385,7 +502,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-022",
+            "GATE-024",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
@@ -488,6 +605,7 @@ def check_issue_template_and_gate_record() -> None:
 def main() -> int:
     check_source_traceability()
     check_artifacts_and_cases()
+    check_review_tables()
     check_frozen_contract()
     check_issue_template_and_gate_record()
 

@@ -60,6 +60,8 @@ GOは、全30章の内容が既に完成したことを意味しない。代表�
 | GATE-020 | P2 | 第1章の合成CaseだけReview disclaimerと`SYNTH-REV-*` Evidence referenceがなく、実Gate承認と誤認され得た | `ART-10` TemplateへEvidence reference欄を追加し、第1章の合成記入例へdisclaimerと観点別合成Evidence IDを追加した |
 | GATE-021 | P2 | formatter checkoutのHEADだけを検証していたため、trackedな未commit変更を加えた検査器でもQAを通せた | `git status --porcelain --untracked-files=no`でformatterのindex / worktreeのtracked変更を拒否してから検査を実行するようにした |
 | GATE-022 | P2 | 第1章のReview contractがdisclaimerとTechnical Evidence IDだけを検査し、TemplateのEvidence列や残り4観点の合成Evidence ID欠落を見逃した | 代表4 TemplateすべてのEvidence reference headerと、各合成Caseの5観点すべての`SYNTH-REV-*` IDを必須化した |
+| GATE-023 | P2 | Review headerを文書全体の文字列として確認していたため、実TableからEvidence列を削除して期待文字列をHTML commentへ移しても検査を通過できた | exact Review heading直下のTableをparseし、header、separator、6列、5観点行を構造として検証するようにした |
+| GATE-024 | P2 | 合成Review IDを文書全体の文字列として確認していたため、TechnicalとSafetyのIDを入れ替えても検査を通過できた | 各CaseのReview tableをparseし、各観点行のEvidence reference cellを期待`SYNTH-REV-*` IDと完全一致させるようにした |
 
 解消後のOpen件数はP0 / P1 / P2とも0である。
 
@@ -158,7 +160,7 @@ Artifact IDの重複定義とTemplate不一致は0件である。
 - 代表章PRの未解決Review Thread: 0
 
 Gate PRでは、`scripts/check_representative_gate.py`によりSource集合、Artifact、Case関係、凍結契約、Part Issue template、GO判定を継続検査する。
-Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、代表TemplateのEvidence header欠落、第1章の合成Review Evidence ID欠落（Technical / Safety各1件）の十四の負例を一時変異で検証し、14 / 14を拒否した。検証後は正本を復元し、positive gateを再実行した。
+Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、代表TemplateのEvidence header欠落、第1章の合成Review Evidence ID欠落（Technical / Safety各1件）、header文字列をcommentへ移したTable欠損、観点間でのEvidence ID入替の十六の負例を一時変異で検証し、16 / 16を拒否した。検証後は正本を復元し、positive gateを再実行した。
 
 ### 証跡と保証範囲
 
