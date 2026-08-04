@@ -6,6 +6,8 @@ import re
 from pathlib import Path
 from urllib.parse import urlparse
 
+from render_reference_baseline import render as render_reference_baseline
+
 ROOT = Path(__file__).resolve().parents[1]
 ERRORS: list[str] = []
 
@@ -89,6 +91,7 @@ def main() -> int:
         "book-config.json",
         "references/sources.json",
         "references/reference-baseline.md",
+        "references/ch02-source-review-2026-08-05.md",
         "package.json",
     )
     for relative in required_files:
@@ -152,6 +155,18 @@ def main() -> int:
             "Proceed with conditions",
             "Do not proceed",
             "Escalate",
+            "## 本章の責任境界",
+            "### OWN",
+            "### BRIDGE",
+            "### DELEGATE",
+            "本書は、実務上のAuthorization Gateと後続工程へのHandoffに責任を持つ。",
+            "本章は法的助言を提供せず、個別事案の法的判断と法令解釈は専門家へ委譲する。",
+            "委譲先へのリンクを読まなくても、第2章の論旨と運用判断は単独で成立する。",
+            "第8章の安全なLabとEvidence取扱い",
+            "第9章のRules of Engagement",
+            "第10章のReconnaissance / OSINT境界",
+            "第15章のFinding、Remediation、Retest、Responsible Disclosure",
+            "第19章のIncidentとPersonal Data対応",
         ),
     )
     for forbidden in (
@@ -333,6 +348,11 @@ def main() -> int:
     )
 
     sources = load_json("references/sources.json")
+    if sources.get("checkedAt") != "2026-07-25":
+        error(
+            "references/sources.json: registry-level checkedAt must remain 2026-07-25; "
+            "only the two Chapter 2 source entries were re-audited"
+        )
     source_entries = {
         item.get("id"): item
         for item in sources.get("sources", [])
@@ -346,6 +366,69 @@ def main() -> int:
         chapters = entry.get("chapters", [])
         if 2 not in chapters:
             error(f"references/sources.json: {source_id} does not map chapter 2")
+
+    expected_source_metadata = {
+        "SRC-JP-LAW-001": {
+            "version": "current display effective 2025-06-01",
+            "checkedAt": "2026-08-05",
+            "nextReviewAt": "2026-11-05",
+            "noteMarkers": (
+                "e-Gov current display was rechecked on 2026-08-05",
+                "law effective from 2025-06-01",
+                "confirm current text before publication",
+                "book is not legal advice",
+            ),
+        },
+        "SRC-IPA-VDP-001": {
+            "version": "2024 edition",
+            "checkedAt": "2026-08-05",
+            "nextReviewAt": "2026-11-05",
+            "noteMarkers": (
+                "official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05",
+                "official page showed last update 2026-04-06",
+                "current page and linked guideline must be rechecked at publication time",
+            ),
+        },
+    }
+    for source_id, expected in expected_source_metadata.items():
+        entry = source_entries.get(source_id)
+        if entry is None:
+            continue
+        for field in ("version", "checkedAt", "nextReviewAt"):
+            if entry.get(field) != expected[field]:
+                error(
+                    f"references/sources.json: {source_id}.{field} "
+                    f"must be {expected[field]!r}"
+                )
+        notes = entry.get("notes")
+        if not isinstance(notes, str):
+            error(f"references/sources.json: {source_id}.notes must be a string")
+            continue
+        for marker in expected["noteMarkers"]:
+            if marker not in notes:
+                error(
+                    f"references/sources.json: {source_id}.notes missing marker {marker!r}"
+                )
+
+    audit_note_path = "references/ch02-source-review-2026-08-05.md"
+    audit_note = read_text(audit_note_path)
+    require_tokens(
+        audit_note_path,
+        audit_note,
+        (
+            "SRC-JP-LAW-001",
+            "2025-06-01施行表示",
+            "SRC-IPA-VDP-001",
+            "2024年版",
+            "2026-04-06",
+            "Checked at | 2026-08-05",
+        ),
+    )
+
+    baseline_path = "references/reference-baseline.md"
+    baseline = read_text(baseline_path)
+    if baseline != render_reference_baseline():
+        error(f"{baseline_path}: out of sync with references/sources.json")
 
     package = load_json("package.json")
     scripts = package.get("scripts", {})

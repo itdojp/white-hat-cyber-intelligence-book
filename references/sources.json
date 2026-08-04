@@ -456,11 +456,11 @@
       "title": "不正アクセス行為の禁止等に関する法律",
       "kind": "law",
       "status": "current-law",
-      "version": null,
+      "version": "current display effective 2025-06-01",
       "url": "https://laws.e-gov.go.jp/law/411AC0000000128",
       "publishedAt": null,
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-08-05",
+      "nextReviewAt": "2026-11-05",
       "reviewTriggers": [
         "law amendment or legal chapter release"
       ],
@@ -468,7 +468,7 @@
         2,
         9
       ],
-      "notes": "Always confirm current text before publication; this book is not legal advice."
+      "notes": "The e-Gov current display was rechecked on 2026-08-05 and showed the law effective from 2025-06-01. Always confirm current text before publication; this book is not legal advice."
     },
     {
       "id": "SRC-IPA-VDP-001",
@@ -476,11 +476,11 @@
       "title": "情報セキュリティ早期警戒パートナーシップガイドライン",
       "kind": "guideline",
       "status": "current-guidance",
-      "version": null,
+      "version": "2024 edition",
       "url": "https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html",
       "publishedAt": null,
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-08-05",
+      "nextReviewAt": "2026-11-05",
       "reviewTriggers": [
         "guideline revision or disclosure chapter release"
       ],
@@ -488,7 +488,7 @@
         2,
         15
       ],
-      "notes": "Use the current page and linked guideline at publication time."
+      "notes": "The official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05, and the official page showed last update 2026-04-06. The current page and linked guideline must be rechecked at publication time."
     },
     {
       "id": "SRC-IANA-TLD-001",

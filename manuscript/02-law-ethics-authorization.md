@@ -15,6 +15,31 @@ description: 技術的に可能な操作を、明示的に許可され安全に�
 
 脆弱性を発見した後の取扱いでは、IPAとJPCERT/CCが運用する情報セキュリティ早期警戒パートナーシップが、発見者、製品開発者、ウェブサイト運営者等の役割と推奨行為を整理している。発見情報を公開する前に、対象、連絡先、調整経路、情報管理を確認する。`SRC-IPA-VDP-001`
 
+## 本章の責任境界
+
+本書は、実務上のAuthorization Gateと後続工程へのHandoffに責任を持つ。本章は法的助言を提供せず、個別事案の法的判断と法令解釈は専門家へ委譲する。専門領域の詳細は委譲先に残すが、委譲先へのリンクを読まなくても、第2章の論旨と運用判断は単独で成立する。
+
+### OWN
+
+- `Authorization Checklist`
+- Authority / Scope / Safety / Disclosureを開始可否を決める実務Gateとして運用すること
+- 停止、Escalation、再Authorization、Rules of Engagement（RoE）へのHandoff
+- 確認済み事実、仮定、未解決の法務・契約上の論点、判断責任者を分離すること
+
+### BRIDGE
+
+- 第8章の安全なLabとEvidence取扱い
+- 第9章のRules of Engagement
+- 第10章のReconnaissance / OSINT境界
+- 第15章のFinding、Remediation、Retest、Responsible Disclosure
+- 第19章のIncidentとPersonal Data対応
+
+### DELEGATE
+
+- 個別事案の法的助言と法令解釈
+- 業界規制、契約法、紛争の網羅的な取扱い
+- 詳細な攻撃技法、脆弱性の悪用、認証Protocol内部、Infrastructure Hardening
+
 ## 学習目標
 
 - 技術的可能性、組織内承認、契約上の権限、法令・第三者権利を区別できる
