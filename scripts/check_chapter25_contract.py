@@ -526,6 +526,25 @@ def assert_synthetic_host(value: str, label: str) -> None:
     assert_doc_ip(value, label)
 
 
+def is_allowed_synthetic_host(value: str) -> bool:
+    try:
+        ip = ipaddress.ip_address(value)
+    except ValueError:
+        host = value.rstrip(".").lower()
+        try:
+            ascii_host = host.encode("idna").decode("ascii")
+        except UnicodeError:
+            return False
+        return any(ascii_host.endswith(suffix) for suffix in ALLOWED_DOMAIN_SUFFIXES)
+    documentation_networks = (
+        ipaddress.ip_network("192.0.2.0/24"),
+        ipaddress.ip_network("198.51.100.0/24"),
+        ipaddress.ip_network("203.0.113.0/24"),
+        ipaddress.ip_network("2001:db8::/32"),
+    )
+    return any(ip in network for network in documentation_networks)
+
+
 def assert_synthetic_name(value: str, label: str) -> None:
     if value not in SYNTHETIC_NAME_ALLOWLIST and not value.startswith("SYNTH-"):
         error(f"{label}: synthetic named entity must use SYNTH- prefix or the explicit allowlist")
@@ -1489,14 +1508,22 @@ def kramdown_inline_attribute_lists(text: str):
 def executable_kramdown_ial_violations(text: str) -> list[str]:
     """Reject IAL attributes that Kramdown would render as executable HTML."""
     violations: list[str] = []
-    for body in kramdown_inline_attribute_lists(text):
+    protected_text, _ = protect_markdown_code(text)
+    for body in kramdown_inline_attribute_lists(protected_text):
         decoded = html.unescape(body)
         if re.search(r"(?i)(?:^|\s)on[a-z][a-z0-9_-]*\s*=", decoded):
             violations.append("event-handler Kramdown inline attribute")
         if re.search(r"(?i)(?:^|\s)srcdoc\s*=", decoded):
             violations.append("srcdoc Kramdown inline attribute")
-        if re.search(r"(?i)(?:^|\s)style\s*=", decoded):
-            violations.append("style Kramdown inline attribute")
+        css_parser = CSSValueExtractor()
+        css_parser.feed(f"<span {decoded}></span>")
+        css_parser.close()
+        for value in css_parser.values:
+            for host in css_value_hosts(value):
+                if not is_allowed_synthetic_host(host):
+                    violations.append(
+                        "non-synthetic URL in Kramdown style attribute"
+                    )
         compact = re.sub(r"[\x00-\x20\x7f]+", "", decoded).casefold()
         if "javascript:" in compact:
             violations.append("javascript URL in Kramdown inline attribute")
@@ -1549,24 +1576,28 @@ def decode_css_escapes(value: str) -> str:
     return CSS_ESCAPE_RE.sub(replace, value)
 
 
+def css_value_hosts(value: str):
+    normalized = normalize_for_host_scanning(
+        normalize_synthetic_safety_text(
+            mask_data_url_payloads(
+                decode_css_escapes(value),
+                css_declarations=True,
+            ),
+            strip_url_controls=True,
+            unescape_markdown=False,
+        )
+    )
+    yield from url_domain_hosts(normalized)
+    yield from protocol_relative_hosts(normalized)
+
+
 def raw_html_css_hosts(text: str):
     """Yield URL hosts after CSS escape decoding in HTML style contexts."""
     parser = CSSValueExtractor()
     parser.feed(text)
     parser.close()
     for value in parser.values:
-        normalized = normalize_for_host_scanning(
-            normalize_synthetic_safety_text(
-                mask_data_url_payloads(
-                    decode_css_escapes(value),
-                    css_declarations=True,
-                ),
-                strip_url_controls=True,
-                unescape_markdown=False,
-            )
-        )
-        yield from url_domain_hosts(normalized)
-        yield from protocol_relative_hosts(normalized)
+        yield from css_value_hosts(value)
 
 
 def raw_html_srcset_hosts(text: str):
@@ -4387,6 +4418,17 @@ def main() -> int:
             error(
                 "fixture safety regression: executable Kramdown IAL was "
                 f"accepted: {executable_ial!r}"
+            )
+    for safe_ial in (
+        '[x](#){: style="color:red" }',
+        '[x](#){: style="background:url(https://asset.example/x)" }',
+        '`{: style="background:url(https://evil.com/x)" }`',
+        '```text\n{: style="background:url(https://evil.com/x)" }\n```',
+    ):
+        if executable_kramdown_ial_violations(safe_ial):
+            error(
+                "fixture safety regression: safe/non-rendered Kramdown IAL "
+                f"was rejected: {safe_ial!r}"
             )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
