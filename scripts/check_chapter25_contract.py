@@ -1074,7 +1074,7 @@ def strip_html_comments_preserving_lines(markdown: str) -> str:
 
 
 class SrcsetExtractor(HTMLParser):
-    """Collect decoded srcset values using HTML tokenization semantics."""
+    """Collect decoded srcset/imagesrcset values with HTML tokenization."""
 
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
@@ -1082,7 +1082,7 @@ class SrcsetExtractor(HTMLParser):
 
     def collect(self, attrs: list[tuple[str, str | None]]) -> None:
         for name, value in attrs:
-            if name.lower() == "srcset" and value:
+            if name.lower() in ("srcset", "imagesrcset") and value:
                 self.values.append(value)
 
     def handle_starttag(
@@ -3727,6 +3727,7 @@ def main() -> int:
         '<a href="//0x08080808\\@safe.example/path">x</a>',
         '<img srcset="//safe.example/a 1x,//134744072/path 2x">',
         '<img srcset=//safe.example/a&#32;1x,//0x08080808/path>',
+        '<link rel="preload" as="image" imagesrcset="//safe.example/a 1x,//0x08080808/path 2x">',
         '[x](\x01 //evil/path)',
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
