@@ -1184,6 +1184,87 @@ class SrcsetExtractor(HTMLParser):
         self.collect(attrs)
 
 
+class CSSValueExtractor(HTMLParser):
+    """Collect inline style attributes and style-element text."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.values: list[str] = []
+        self.style_depth = 0
+
+    def collect(self, attrs: list[tuple[str, str | None]]) -> None:
+        for name, value in attrs:
+            if name.lower() == "style" and value:
+                self.values.append(value)
+
+    def handle_starttag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        self.collect(attrs)
+        if tag.lower() == "style":
+            self.style_depth += 1
+
+    def handle_startendtag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        self.collect(attrs)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() == "style" and self.style_depth:
+            self.style_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if self.style_depth:
+            self.values.append(data)
+
+
+CSS_ESCAPE_RE = re.compile(
+    r"\\(?:"
+    r"(?P<hex>[0-9A-Fa-f]{1,6})(?:\r\n|[ \t\r\n\f])?"
+    r"|(?P<newline>\r\n|[\r\n\f])"
+    r"|(?P<character>.)"
+    r")",
+    re.DOTALL,
+)
+
+
+def decode_css_escapes(value: str) -> str:
+    """Decode CSS escaped code points and escaped punctuation."""
+    def replace(match: re.Match[str]) -> str:
+        hexadecimal = match.group("hex")
+        if hexadecimal is not None:
+            codepoint = int(hexadecimal, 16)
+            if codepoint == 0 or codepoint > sys.maxunicode or 0xD800 <= codepoint <= 0xDFFF:
+                return "\ufffd"
+            return chr(codepoint)
+        if match.group("newline") is not None:
+            return ""
+        return match.group("character") or ""
+
+    return CSS_ESCAPE_RE.sub(replace, value)
+
+
+def raw_html_css_hosts(text: str):
+    """Yield URL hosts after CSS escape decoding in HTML style contexts."""
+    parser = CSSValueExtractor()
+    parser.feed(text)
+    parser.close()
+    for value in parser.values:
+        normalized = normalize_for_host_scanning(
+            normalize_synthetic_safety_text(
+                mask_data_url_payloads(decode_css_escapes(value)),
+                strip_url_controls=True,
+                unescape_markdown=False,
+            )
+        )
+        yield from url_domain_hosts(normalized)
+        yield from protocol_relative_hosts(normalized)
+
+
 def raw_html_srcset_hosts(text: str):
     """Yield every URL host from quoted or unquoted raw-HTML srcset values."""
     parser = SrcsetExtractor()
@@ -2124,6 +2205,8 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         assert_synthetic_host(host, f"{relative}: protocol-relative URL")
     for host in set(raw_html_srcset_hosts(text)):
         assert_synthetic_host(host, f"{relative}: HTML srcset URL")
+    for host in set(raw_html_css_hosts(text)):
+        assert_synthetic_host(host, f"{relative}: CSS URL")
     for match in HOSTNAME_RE.finditer(compatibility_text):
         host = match.group("host").lower()
         if is_repository_file_reference(host):
@@ -3837,6 +3920,7 @@ def main() -> int:
         '<img srcset="//safe.example/a 1x,//134744072/path 2x">',
         '<img srcset=//safe.example/a&#32;1x,//0x08080808/path>',
         '<link rel="preload" as="image" imagesrcset="//safe.example/a 1x,//0x08080808/path 2x">',
+        '<div style="background:url(https\\3a //evil\\2e com/x)"></div>',
         '[x](\x01 //evil/path)',
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
@@ -3859,6 +3943,7 @@ def main() -> int:
             set(url_domain_hosts(compatibility_live_url))
             | set(protocol_relative_hosts(compatibility_live_url))
             | set(raw_html_srcset_hosts(encoded_live_url))
+            | set(raw_html_css_hosts(encoded_live_url))
             | {
             match.group("host").lower()
             for match in HOSTNAME_RE.finditer(compatibility_live_url)
