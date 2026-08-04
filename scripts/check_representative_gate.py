@@ -127,15 +127,55 @@ def review_table_rows(
 
 def check_review_tables() -> None:
     templates = {
-        "templates/integrated-security-case-map.md": "## 16. Review",
-        "templates/web-api-assessment-hypothesis-pack.md": "## 11. Review",
-        "templates/detection-validation.md": "## 11. Review",
-        "templates/analytic-judgment-record.md": "## 15. Review",
+        "templates/integrated-security-case-map.md": (
+            "## 16. Review",
+            {
+                "Technical correctness",
+                "Safety / authorization",
+                "Evidence / source quality",
+                "Analytic quality",
+                "Decision usefulness",
+            },
+        ),
+        "templates/web-api-assessment-hypothesis-pack.md": (
+            "## 11. Review",
+            {
+                "Technical correctness",
+                "Safety / authorization",
+                "Evidence / source quality",
+                "Detection handoff",
+                "Decision usefulness",
+            },
+        ),
+        "templates/detection-validation.md": (
+            "## 11. Review",
+            {
+                "Technical correctness",
+                "Safety / authorization",
+                "Evidence / source quality",
+                "Coverage and analytic quality",
+                "Decision usefulness",
+            },
+        ),
+        "templates/analytic-judgment-record.md": (
+            "## 15. Review",
+            {
+                "Technical correctness",
+                "Safety / authorization",
+                "Evidence / source quality",
+                "Analytic quality",
+                "Decision usefulness",
+            },
+        ),
     }
-    for relative, heading in templates.items():
+    for relative, (heading, expected_areas) in templates.items():
         rows = review_table_rows(relative, read_text(relative), heading)
-        if len(rows) != 5:
-            error(f"{relative}: Review table must contain exactly five viewpoint rows")
+        if set(rows) != expected_areas:
+            error(
+                f"{relative}: Review areas differ; "
+                f"missing={sorted(expected_areas - set(rows))}, "
+                f"extra={sorted(set(rows) - expected_areas)}"
+            )
 
     cases = {
         "cases/ch01-integrated-security-case-example.md": (
@@ -521,7 +561,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-025",
+            "GATE-026",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
