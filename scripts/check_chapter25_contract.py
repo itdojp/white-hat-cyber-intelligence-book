@@ -1107,6 +1107,8 @@ def raw_html_srcset_hosts(text: str):
     parser.close()
     for value in parser.values:
         for candidate in srcset_url_candidates(value):
+            if candidate[:5].casefold() == "data:":
+                continue
             normalized = normalize_for_host_scanning(
                 normalize_synthetic_safety_text(
                     candidate,
@@ -3802,15 +3804,17 @@ def main() -> int:
             "fixture safety regression: malformed container prefix was "
             "treated as a reference definition"
         )
-    data_url_srcset = (
+    for data_url_srcset in (
         '<link rel="preload" as="image" '
-        'imagesrcset="data:image/svg+xml,//comment 1x">'
-    )
-    if list(raw_html_srcset_hosts(data_url_srcset)):
-        error(
-            "fixture safety regression: data-URL comma was treated as a "
-            "srcset candidate separator"
-        )
+        'imagesrcset="data:image/svg+xml,//comment 1x">',
+        '<img srcset="data:text/plain,https://evil.com 1x">',
+        '<img srcset="data:text/plain,https%3A%2F%2Fevil.com 1x">',
+    ):
+        if list(raw_html_srcset_hosts(data_url_srcset)):
+            error(
+                "fixture safety regression: data-URL payload was treated as "
+                "a network srcset candidate"
+            )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
             normalize_synthetic_safety_text(separated_prose)
