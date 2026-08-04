@@ -145,13 +145,13 @@
 
 | Negative Finding ID | Related Evidence IDs | Searched behavior | Search window | Available coverage | Gaps | Permitted conclusion |
 |---|---|---|---|---|---|---|
-| `NEG-2026-001` | `EVD-2026-004` | 未承認同意変更と異常なApp sign-in | 過去90日 | 同意変更とsign-inは72日分。API利用は一部のみ | 18日分の保持不足、API利用Field不足 | 取得できた範囲では該当Eventを確認していない。侵害不存在は断定しない |
+| `NEG-2026-001` | `EVD-2026-004` | 未承認同意変更、異常なApp sign-in、Data API利用 | 過去90日 | 同意変更とsign-inは72日分。API利用は一部のみ | 18日分の保持不足、API利用Field不足 | 取得できた範囲では3つの対象Behaviorに該当するEventを確認していない。侵害不存在は断定しない |
 
 ## 7. Findings and Control Gaps
 
 | Finding ID | Root condition | Evidence IDs | Business impact | Existing control | Recommended treatment | Status |
 |---|---|---|---|---|---|---|
-| `FIND-2026-001` | 業務要件を超えるApp permission | `EVD-2026-001`, `EVD-2026-002` | Credential不正利用時の影響範囲拡大 | 手動設定Review | 必要scopeへ縮小、Credential更新、再テスト | Retest Required |
+| `FIND-2026-001` | 業務要件を超えるApp permission | `EVD-2026-001`, `EVD-2026-002` | Credential不正利用時の影響範囲拡大 | 手動設定Review | 必要scopeへ縮小、Credential更新、再テスト | Mitigated |
 | `FIND-2026-002` | 同意変更の検知Ruleがない | `EVD-2026-003` | scope変更の早期発見が遅れる | Audit logは取得 | RuleとTriage手順を追加 | Open |
 | `FIND-2026-003` | API利用Telemetryが不完全 | `EVD-2026-004`, `NEG-2026-001` | 過去調査と影響範囲評価に不確実性 | Sign-in log | API auditの収集・保持を追加 | Open |
 
@@ -253,7 +253,7 @@
 | Metric ID | Metric | Baseline | Target | Measurement window | Owner |
 |---|---|---:|---:|---|---|
 | `MET-2026-001` | Decision latency | 47時間30分 | 48時間以内 | Case開始からDecisionまで | Security Program Lead |
-| `MET-2026-002` | Critical hypothesis evidence coverage | 2 / 3 | 3 / 3、またはGapの責任者と期限を明示 | Reassessment時 | Case owner |
+| `MET-2026-002` | Critical hypothesis evidence coverage | 3 / 3 | 3 / 3を維持し、Gapの責任者と期限を明示 | Reassessment時 | Case owner |
 | `MET-2026-003` | Verified control improvement rate | 0 / 4 | 4 / 4 | 30日 | Control owners |
 | `MET-2026-004` | Reassessment completed by due date | 未計測 | 100% | 四半期 | Security Program Lead |
 
