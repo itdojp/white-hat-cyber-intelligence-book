@@ -1546,6 +1546,25 @@ class ExecutableHTMLDetector(HTMLParser):
                 self.violations.append(
                     f"executable data URL in {normalized_name}"
                 )
+        if normalized_tag == "link":
+            relations = {
+                relation.casefold()
+                for name, value in attrs
+                if name.casefold() == "rel" and value is not None
+                for relation in value.split()
+            }
+            if (
+                "stylesheet" in relations
+                and any(
+                    re.match(
+                        r"data:text/css(?:[;,])",
+                        re.sub(r"[\x00-\x20\x7f]+", "", value).casefold(),
+                    )
+                    for name, value in attrs
+                    if name.casefold() == "href" and value is not None
+                )
+            ):
+                self.violations.append("CSS data URL in stylesheet link")
 
     def handle_starttag(
         self,
@@ -1647,6 +1666,10 @@ EXECUTABLE_DATA_URL_RE = re.compile(
     r"(?:text/html|application/xhtml\+xml|image/svg\+xml)(?:[;,])"
 )
 
+STYLESHEET_DATA_URL_RE = re.compile(
+    r"(?i)data:[\t\r\n\f ]*text/css(?:[;,])"
+)
+
 
 def has_executable_data_url(text: str) -> bool:
     normalized = normalize_synthetic_safety_text(text)
@@ -1691,6 +1714,9 @@ def executable_css_value_violations(value: str) -> list[str]:
         violations.append("executable script URL in style attribute")
     if has_executable_data_url(decoded):
         violations.append("executable data URL in style attribute")
+    data_detection_view, _ = data_scheme_detection_view(without_comments)
+    if STYLESHEET_DATA_URL_RE.search(data_detection_view):
+        violations.append("CSS data URL in style context")
     return violations
 
 
@@ -4564,6 +4590,10 @@ def main() -> int:
         '<iframe src="data:image/svg+xml,'
         '%3Csvg%20onload%3D%22location%3D\'%2F%2F0x08080808%2Fx\'%22%3E">'
         '</iframe>',
+        '<link rel="stylesheet" '
+        'href="data:text/css,body{background:url(https://evil.com/x)}">',
+        '<link href="da&#9;ta:text/css,body{}" '
+        'rel="alternate stylesheet">',
     ):
         if not executable_html_violations(executable_html):
             error(
@@ -4613,6 +4643,9 @@ def main() -> int:
         '<div style="background:url(ja\\76 ascript:alert(1))"></div>',
         '<style>.x{background:url(ja\\76 ascript:alert(1))}</style>',
         '<div style="background:url(ja/**/vascript:alert(1))"></div>',
+        '<style>@import url(data:text/css,body{background:'
+        'url(https://evil.com/x)})</style>',
+        '<style>@import url(d\\61 ta:text/css,body{})</style>',
     ):
         if not raw_html_executable_css_violations(executable_css):
             error(
