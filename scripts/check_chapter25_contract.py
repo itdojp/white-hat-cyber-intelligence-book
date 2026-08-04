@@ -1495,6 +1495,8 @@ def executable_kramdown_ial_violations(text: str) -> list[str]:
             violations.append("event-handler Kramdown inline attribute")
         if re.search(r"(?i)(?:^|\s)srcdoc\s*=", decoded):
             violations.append("srcdoc Kramdown inline attribute")
+        if re.search(r"(?i)(?:^|\s)style\s*=", decoded):
+            violations.append("style Kramdown inline attribute")
         compact = re.sub(r"[\x00-\x20\x7f]+", "", decoded).casefold()
         if "javascript:" in compact:
             violations.append("javascript URL in Kramdown inline attribute")
@@ -4379,6 +4381,7 @@ def main() -> int:
         '[x](#){: onclick="location=\'\\u002f\\u002f0x08080808/x\'" }',
         '[x](#){: href="javascript:location=\'//0x08080808/x\'" }',
         '[x](#){: src="data:image/svg+xml,%3Csvg%3E" }',
+        '[x](#){: style="background:url(https\\3a //evil\\2e com/x)" }',
     ):
         if not executable_kramdown_ial_violations(executable_ial):
             error(
