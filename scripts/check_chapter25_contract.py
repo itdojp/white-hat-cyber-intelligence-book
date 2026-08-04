@@ -2233,6 +2233,11 @@ def markdown_url_destinations(text: str):
     protected_text = strip_html_comments_preserving_lines(protected_text)
     bracket_pairs = markdown_bracket_pairs(protected_text)
     parenthesis_pairs = markdown_parenthesis_pairs(protected_text)
+    line_contexts = {
+        line_start: (line_end, content_start, inside_code_context)
+        for line_start, line_end, content_start, inside_code_context
+        in markdown_line_contexts(protected_text)
+    }
 
     for label_end in bracket_pairs.values():
         opening = label_end + 1
@@ -2254,7 +2259,41 @@ def markdown_url_destinations(text: str):
             start += 1
         if start < line_end and protected_text[start] == "<":
             start += 1
-        yield protected_text[start:line_end]
+        same_line_destination = protected_text[start:line_end]
+        if same_line_destination.strip():
+            yield same_line_destination
+            continue
+
+        continuation = line_contexts.get(line_end)
+        if continuation is None:
+            continue
+        continuation_end, content_start, inside_code_context = continuation
+        if inside_code_context:
+            continue
+        content_end = continuation_end
+        while (
+            content_end > content_start
+            and protected_text[content_end - 1] in "\r\n"
+        ):
+            content_end -= 1
+        indentation_end = content_start
+        while (
+            indentation_end < content_end
+            and protected_text[indentation_end] == " "
+            and indentation_end - content_start < 3
+        ):
+            indentation_end += 1
+        if (
+            indentation_end < content_end
+            and protected_text[indentation_end] == " "
+        ):
+            continue
+        if (
+            indentation_end < content_end
+            and protected_text[indentation_end] == "<"
+        ):
+            indentation_end += 1
+        yield protected_text[indentation_end:content_end]
 
     for match in re.finditer(r"<(?P<destination>[^<>\r\n]+)>", protected_text):
         yield match.group("destination")
@@ -4827,6 +4866,7 @@ def main() -> int:
     for executable_markdown in (
         '[x](javascript:location="//0x08080808/x")',
         '[x][ref]\n[ref]: java&#9;script:location="//0x08080808/x"',
+        '[x][next]\n[next]:\n  javascript:location="//0x08080808/x"',
         '[x][^]\n[^]: javascript:location="//0x08080808/x"',
         '<vbscript:msgbox(1)>',
     ):
