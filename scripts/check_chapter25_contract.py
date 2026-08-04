@@ -207,10 +207,11 @@ PROTOCOL_RELATIVE_URL_RE = re.compile(
     r"(?:\A|[\s<(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
     re.IGNORECASE,
 )
+REFERENCE_LABEL_PATTERN = r"(?:\\[^\r\n]|[^\]\\\r\n])+"
 REFERENCE_DEFINITION_PREFIX_RE = re.compile(
     r"(?m)^(?: {0,3}>[ \t]?)*[ \t]*"
     r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+ {0,3})*"
-    r"\[[^\]\n]+\]:"
+    rf"\[{REFERENCE_LABEL_PATTERN}\]:"
 )
 
 
@@ -624,8 +625,11 @@ def normalize_synthetic_safety_text(
         lambda match: f"{match.group('prefix')}{match.group('space')}//",
         without_url_controls,
     )
+    safety_escape_punctuation = string.punctuation.translate(
+        str.maketrans("", "", "[]")
+    )
     markdown_unescaped = re.sub(
-        rf"\\([{re.escape(string.punctuation)}])",
+        rf"\\([{re.escape(safety_escape_punctuation)}])",
         r"\1",
         structured_backslashes,
     )
@@ -1237,7 +1241,7 @@ def markdown_visible_links(text: str) -> str:
     definition_pattern = (
         r"(?m)^(?: {0,3}>[ \t]?)*[ \t]*"
         r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+ {0,3})*"
-        r"\[(?P<label>[^\]\n]+)\]:[^\n]*(?:\n|$)"
+        rf"\[(?P<label>{REFERENCE_LABEL_PATTERN})\]:[^\n]*(?:\n|$)"
     )
     definitions = {
         normalized_reference_label(match.group("label"))
@@ -3584,6 +3588,7 @@ def main() -> int:
         '[x](\x01 //evil/path)',
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
+        r"[x\]]: //0x08080808/path" "\n" r"[a][x\]]",
         "[x](\v//evil/path)",
     )
     for encoded_live_url in encoded_live_urls:
