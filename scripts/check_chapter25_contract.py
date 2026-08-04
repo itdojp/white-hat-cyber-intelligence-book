@@ -203,6 +203,7 @@ INDEPENDENCE_EVALUATION_TOKENS = (
     "裏付け",
 )
 URL_RE = re.compile(r"https?://[^\s<>\"'`、]+", re.IGNORECASE)
+DATA_URL_RE = re.compile(r"(?i)\bdata:[^\s<>\"'`]+")
 PROTOCOL_RELATIVE_URL_RE = re.compile(
     r"(?:\A|[\s<(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
     re.IGNORECASE,
@@ -577,6 +578,11 @@ def normalize_policy_text(text: str) -> str:
         for character in decoded
     )
     return unicodedata.normalize("NFKC", mapped).casefold()
+
+
+def mask_data_url_payloads(text: str) -> str:
+    """Hide non-network data URL payloads from URL/hostname-only scans."""
+    return DATA_URL_RE.sub(lambda match: " " * len(match.group(0)), text)
 
 
 def normalize_synthetic_safety_text(
@@ -2010,12 +2016,15 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     # Decode character references before scanning so an HTML attribute cannot
     # disguise a live URL or hostname from the synthetic-content policy.
     rendered_safety_text = normalize_synthetic_safety_text(text)
+    host_scan_text = mask_data_url_payloads(text)
+    host_rendered_safety_text = normalize_synthetic_safety_text(host_scan_text)
     browser_url_safety_text = normalize_synthetic_safety_text(
-        text,
+        host_scan_text,
         strip_url_controls=True,
         unescape_markdown=False,
     )
-    compatibility_text = normalize_for_host_scanning(rendered_safety_text)
+    compatibility_text = normalize_for_host_scanning(host_rendered_safety_text)
+    phone_compatibility_text = normalize_for_host_scanning(rendered_safety_text)
     browser_url_compatibility_text = normalize_for_host_scanning(
         browser_url_safety_text
     )
@@ -2098,7 +2107,7 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         error(f"{relative}: contains a known secret/token format")
     if PRIVATE_KEY_RE.search(rendered_safety_text):
         error(f"{relative}: contains a private-key block")
-    if PHONE_RE.search(normalize_phone_parentheses(compatibility_text)):
+    if PHONE_RE.search(normalize_phone_parentheses(phone_compatibility_text)):
         error(f"{relative}: contains a telephone-number-like value")
 
 
@@ -3814,6 +3823,20 @@ def main() -> int:
             error(
                 "fixture safety regression: data-URL payload was treated as "
                 "a network srcset candidate"
+            )
+        masked_data_url = normalize_for_host_scanning(
+            normalize_synthetic_safety_text(
+                mask_data_url_payloads(data_url_srcset)
+            )
+        )
+        if (
+            list(url_domain_hosts(masked_data_url))
+            or list(protocol_relative_hosts(masked_data_url))
+            or HOSTNAME_RE.search(masked_data_url) is not None
+        ):
+            error(
+                "fixture safety regression: data-URL payload escaped the "
+                "global host-scan mask"
             )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
