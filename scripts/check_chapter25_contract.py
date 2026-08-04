@@ -579,6 +579,20 @@ def normalize_policy_text(text: str) -> str:
     return unicodedata.normalize("NFKC", mapped).casefold()
 
 
+def skip_css_trivia_backward(text: str, cursor: int) -> int:
+    """Skip CSS whitespace/comments ending at cursor in one backward walk."""
+    while cursor >= 0:
+        while cursor >= 0 and text[cursor] in " \t\r\n\f":
+            cursor -= 1
+        if cursor < 1 or text[cursor - 1 : cursor + 1] != "*/":
+            break
+        comment_start = text.rfind("/*", 0, cursor - 1)
+        if comment_start < 0:
+            break
+        cursor = comment_start - 1
+    return cursor
+
+
 def mask_data_url_payloads(text: str) -> str:
     """Hide data URL tokens while preserving following Markdown destinations."""
     masked = list(text)
@@ -610,15 +624,11 @@ def mask_data_url_payloads(text: str) -> str:
 
         end = index + 5
         parenthesis_depth = 0
-        css_cursor = index - 1
-        while css_cursor >= 0 and text[css_cursor] in " \t\r\n\f":
-            css_cursor -= 1
+        css_cursor = skip_css_trivia_backward(text, index - 1)
         css_quote = ""
         if css_cursor >= 0 and text[css_cursor] in "\"'":
             css_quote = text[css_cursor]
-            css_cursor -= 1
-            while css_cursor >= 0 and text[css_cursor] in " \t\r\n\f":
-                css_cursor -= 1
+            css_cursor = skip_css_trivia_backward(text, css_cursor - 1)
         css_url_context = (
             css_cursor >= 3
             and text[css_cursor] == "("
@@ -3912,6 +3922,8 @@ def main() -> int:
         '<div style="background:url(data:image/png,x); '
         'background:url(https://evil.com/x)">',
         '<div style="background:url(                    data:image/png,x); '
+        'background:url(https://evil.com/x)">',
+        '<div style="background:url(/**/data:image/png,x); '
         'background:url(https://evil.com/x)">',
     ):
         masked_adjacent_url = normalize_for_host_scanning(
