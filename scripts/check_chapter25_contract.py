@@ -604,6 +604,7 @@ def mask_data_url_payloads(
     inside_html_tag = False
     html_quote: str | None = None
     html_attribute_name = ""
+    html_attribute_value_start = 0
     data_url_attributes = {
         "action",
         "background",
@@ -633,8 +634,10 @@ def mask_data_url_payloads(
                 if character == html_quote:
                     html_quote = None
                     html_attribute_name = ""
+                    html_attribute_value_start = 0
             elif character in "\"'":
                 html_quote = character
+                html_attribute_value_start = index + 1
                 attribute_match = re.search(
                     r"([^\s\"'<>/=]+)\s*=\s*$",
                     text[max(0, index - 256) : index],
@@ -647,6 +650,7 @@ def mask_data_url_payloads(
             elif character == ">":
                 inside_html_tag = False
                 html_attribute_name = ""
+                html_attribute_value_start = 0
 
         if (
             text[index : index + 5].casefold() != "data:"
@@ -667,13 +671,38 @@ def mask_data_url_payloads(
             if unquoted_attribute_match is not None:
                 data_attribute_name = unquoted_attribute_match.group(1).casefold()
 
+        data_is_attribute_url = False
+        if html_quote is not None and data_attribute_name:
+            attribute_prefix = text[html_attribute_value_start:index]
+            if data_attribute_name in {"srcset", "imagesrcset"}:
+                data_is_attribute_url = re.search(
+                    r"(?:^|,)\s*$", attribute_prefix
+                ) is not None
+            elif data_attribute_name == "content":
+                data_is_attribute_url = re.search(
+                    r"(?:^|;\s*url\s*=)\s*$",
+                    attribute_prefix,
+                    re.IGNORECASE,
+                ) is not None
+            elif data_attribute_name == "style":
+                data_is_attribute_url = True
+            else:
+                data_is_attribute_url = not attribute_prefix.strip()
+        elif inside_html_tag and data_attribute_name:
+            # The unquoted attribute matcher above succeeds only when data: is
+            # the first token after `=`.
+            data_is_attribute_url = True
+
         # A data URL payload is non-network content only when it appears in a
         # URL-valued HTML attribute (or CSS). Do not mask arbitrary attributes
         # such as event handlers or data-* containers: they may contain a later
         # executable/network URL that the general safety scan must still see.
         if (
             inside_html_tag
-            and data_attribute_name not in data_url_attributes
+            and (
+                data_attribute_name not in data_url_attributes
+                or not data_is_attribute_url
+            )
         ):
             index += 5
             continue
@@ -4084,6 +4113,8 @@ def main() -> int:
         'location=\'https://evil.com\'">x</button>',
         '<button onclick=data:text/plain,x;location=https://evil.com>x</button>',
         '<div data-script="data:text/plain,x;https://evil.com"></div>',
+        '<a href="javascript:const x=\'data:text/plain,x\';'
+        'location=\'https://evil.com\'">x</a>',
     ):
         masked_adjacent_url = normalize_for_host_scanning(
             normalize_synthetic_safety_text(
