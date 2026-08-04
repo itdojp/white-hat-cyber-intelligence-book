@@ -1707,15 +1707,19 @@ def raw_html_url_attribute_hosts(text: str):
     parser = URLAttributeExtractor()
     parser.feed(text)
     parser.close()
+    url_trim_characters = (
+        "".join(chr(codepoint) for codepoint in range(33)) + "\x7f"
+    )
     for name, value in parser.values:
         candidates = re.split(r"[\x00-\x20]+", value.strip()) if name == "ping" else [value]
         for candidate in candidates:
-            if not candidate or candidate[:5].casefold() == "data:":
+            url_candidate = candidate.lstrip(url_trim_characters)
+            if not url_candidate or url_candidate[:5].casefold() == "data:":
                 continue
             normalized_views = {
                 normalize_for_host_scanning(
                     normalize_synthetic_safety_text(
-                        candidate,
+                        url_candidate,
                         strip_url_controls=True,
                         unescape_markdown=unescape_markdown,
                     )
@@ -4449,6 +4453,7 @@ def main() -> int:
         '<img src="data:text/plain,https://evil.com">',
         '<data:text/plain,https://evil.com>',
         '[d]: data:text/plain,x[x](https://evil.com)\n[d]',
+        '<img src=" data:text/plain,https://evil.com">',
     ):
         if list(raw_html_srcset_hosts(data_url_srcset)):
             error(
