@@ -204,8 +204,11 @@ INDEPENDENCE_EVALUATION_TOKENS = (
 )
 URL_RE = re.compile(r"https?://[^\s<>\"'`、]+", re.IGNORECASE)
 PROTOCOL_RELATIVE_URL_RE = re.compile(
-    r"(?:\A|[\s<(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
+    r"(?:\A|[\s,<(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
     re.IGNORECASE,
+)
+SRCSET_ATTRIBUTE_RE = re.compile(
+    r"(?is)\bsrcset\s*=\s*(?P<quote>['\"])(?P<value>.*?)(?P=quote)"
 )
 
 
@@ -953,6 +956,12 @@ def protocol_relative_hosts(text: str):
         colon
         for _, colon, _, _ in markdown_reference_definitions(text)
     }
+    srcset_commas = {
+        match.start("value") + index
+        for match in SRCSET_ATTRIBUTE_RE.finditer(text)
+        for index, character in enumerate(match.group("value"))
+        if character == ","
+    }
     for match in PROTOCOL_RELATIVE_URL_RE.finditer(text):
         candidate = strip_url_trailing_punctuation(match.group("url")).replace(
             "\\", "/"
@@ -976,6 +985,7 @@ def protocol_relative_hosts(text: str):
             text,
             match.start("url"),
             reference_definition_colons,
+            srcset_commas,
         )
         if host and (
             structured_context
@@ -989,6 +999,7 @@ def is_structured_url_context(
     text: str,
     url_start: int,
     reference_definition_colons: set[int] | None = None,
+    srcset_commas: set[int] | None = None,
 ) -> bool:
     """Recognize URL destinations/attributes without treating code comments as URLs."""
     if url_start == 0:
@@ -998,6 +1009,8 @@ def is_structured_url_context(
         cursor -= 1
     if cursor < 0 or text[cursor] in "<(=[{'\"":
         return True
+    if text[cursor] == ",":
+        return srcset_commas is not None and cursor in srcset_commas
     if text[cursor] != ":":
         return False
     if reference_definition_colons is None:
@@ -3675,6 +3688,7 @@ def main() -> int:
         '<a href="\x01//0x08080808/path">x</a>',
         '<a href="\x01 //evil/path">x</a>',
         '<a href="//0x08080808\\@safe.example/path">x</a>',
+        '<img srcset="//safe.example/a 1x,//134744072/path 2x">',
         '[x](\x01 //evil/path)',
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
@@ -3712,6 +3726,7 @@ def main() -> int:
         "scripts//check_chapter25_contract.py",
         "const x = 1; //comment",
         "Notation: //comment denotes a placeholder.",
+        "Notation, //comment denotes a placeholder.",
     ):
         normalized_non_authority = normalize_for_host_scanning(
             normalize_synthetic_safety_text(non_authority)
