@@ -287,6 +287,7 @@
     "gapId": "GAP-DET-2026-001",
     "telemetryPresence": "absent",
     "targetEventPresence": "unknown",
+    "benignNearMissContext": "unknown",
     "description": "If TEL-DET-2026-002 is absent, the workflow cannot distinguish unapproved change from change-calendar ingestion failure.",
     "permittedConclusion": "Decision is indeterminate; event absence cannot be concluded.",
     "relatedEvidenceIds": [

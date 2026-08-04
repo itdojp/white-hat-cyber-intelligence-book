@@ -129,7 +129,7 @@
 | `EVD-DET-2026-001` | `FIX-2026-017-POS` | `TEL-DET-2026-001`, `TEL-DET-2026-002`, `TEL-DET-2026-003` | `DET-2026-017-001` | Pass | scope差分、ticket欠落、follow-on sign-inの3要素が確認できた | 2026-07-31T14:10:00+09:00 |
 | `EVD-DET-2026-002` | `FIX-2026-017-NEG` | `TEL-DET-2026-001`, `TEL-DET-2026-002`, `TEL-DET-2026-003` | `DET-2026-017-001` | Pass | 対象Behaviorがなく、No alertで期待どおり | 2026-07-31T14:20:00+09:00 |
 | `EVD-DET-2026-003` | `FIX-2026-017-BNM` | `TEL-DET-2026-001`, `TEL-DET-2026-002`, `TEL-DET-2026-003` | `DET-2026-017-001` | Pass | Eventは存在するが承認済みChangeに一致し、許容判定になった | 2026-07-31T14:32:00+09:00 |
-| `EVD-DET-2026-004` | `FIX-2026-017-POS` | `TEL-DET-2026-001`, `TEL-DET-2026-003` | `DET-2026-017-001` | Partial | `TEL-DET-2026-002`を外すと未承認か連携欠落かを区別できない | 2026-07-31T14:40:00+09:00 |
+| `EVD-DET-2026-004` | `GAP-DET-2026-001` | `TEL-DET-2026-001`, `TEL-DET-2026-003` | `DET-2026-017-001` | Partial | source fixture `FIX-2026-017-POS`から`TEL-DET-2026-002`を外すと、未承認か連携欠落かを区別できない | 2026-07-31T14:40:00+09:00 |
 | `EVD-DET-2026-005` | `FIX-2026-017-POS`, `FIX-2026-017-NEG`, `FIX-2026-017-BNM` | `TEL-DET-2026-001`, `TEL-DET-2026-002`, `TEL-DET-2026-003` | `DET-2026-017-001` | Pass | 3種類のfixtureすべてで期待結果が固定化され、Replay証跡を保存した | 2026-07-31T15:00:00+09:00 |
 
 ## 7. Negative Finding and Coverage Limits

@@ -210,6 +210,59 @@ def triage_context(
     }
 
 
+def incident_handoff_context(fixture_set: dict, fixture: dict, result: dict) -> dict:
+    contract = fixture_set.get("incidentHandoff")
+    if not isinstance(contract, dict):
+        raise ReplayError("incidentHandoff must be an object")
+    handoff_id = require_non_empty_string(contract.get("handoffId"), "incidentHandoff handoffId")
+    if handoff_id != "HO-DET-2026-001":
+        raise ReplayError("incidentHandoff handoffId mismatch")
+    required_fields = require_string_list(
+        contract.get("requiredFields"), "incidentHandoff requiredFields", non_empty=True
+    )
+    expected_required_fields = [
+        "case_id",
+        "detection_id",
+        "evidence_ids",
+        "coverage",
+        "gap",
+        "permitted_conclusion",
+    ]
+    if required_fields != expected_required_fields:
+        raise ReplayError("incidentHandoff requiredFields contract mismatch")
+
+    triage = result.get("triage")
+    if not isinstance(triage, dict):
+        raise ReplayError(f"{fixture.get('fixtureId')}: triage context must be an object")
+    gap_contract = fixture_set.get("coverageGapExample")
+    if not isinstance(gap_contract, dict):
+        raise ReplayError("coverageGapExample must be an object")
+    is_gap = fixture.get("fixtureId") == gap_contract.get("gapId")
+    payload = {
+        "handoffId": handoff_id,
+        "case_id": triage.get("case_id"),
+        "detection_id": triage.get("detection_id"),
+        "evidence_ids": triage.get("evidence_ids"),
+        "coverage": triage.get("coverage_statement"),
+        "gap": (
+            gap_contract.get("description")
+            if is_gap
+            else "No core telemetry gap in this synthetic fixture replay."
+        ),
+        "permitted_conclusion": (
+            gap_contract.get("permittedConclusion")
+            if is_gap
+            else "Use only the synthetic fixture outcome; do not generalize it to production."
+        ),
+    }
+    missing = [field for field in required_fields if payload.get(field) in (None, "", [])]
+    if missing:
+        raise ReplayError(
+            f"{fixture.get('fixtureId')}: incident handoff has empty required fields {missing}"
+        )
+    return payload
+
+
 def evaluate(rule: dict, fixture: dict) -> dict:
     required = require_string_list(
         rule.get("requiredTelemetryIds"), "rule requiredTelemetryIds", non_empty=True
@@ -425,6 +478,12 @@ def evaluate(rule: dict, fixture: dict) -> dict:
     }
 
 
+def replay(rule: dict, fixture_set: dict, fixture: dict) -> dict:
+    result = evaluate(rule, fixture)
+    result["incident_handoff"] = incident_handoff_context(fixture_set, fixture, result)
+    return result
+
+
 def assert_result(rule: dict, fixture_set: dict, fixture: dict, result: dict) -> None:
     expected = (fixture.get("expectedOutcome"), fixture.get("expectedSeverity"))
     actual = (result.get("outcome"), result.get("severity"))
@@ -444,6 +503,32 @@ def assert_result(rule: dict, fixture_set: dict, fixture: dict, result: dict) ->
     if triage.get("evidence_ids") != fixture.get("relatedEvidenceIds"):
         raise ReplayError(
             f"{fixture.get('fixtureId')}: triage evidence_ids must match relatedEvidenceIds"
+        )
+    handoff = result.get("incident_handoff")
+    if not isinstance(handoff, dict):
+        raise ReplayError(f"{fixture.get('fixtureId')}: incident handoff must be an object")
+    handoff_contract = fixture_set.get("incidentHandoff", {})
+    if handoff.get("handoffId") != handoff_contract.get("handoffId"):
+        raise ReplayError(f"{fixture.get('fixtureId')}: incident handoff ID mismatch")
+    required_handoff_fields = handoff_contract.get("requiredFields")
+    if not isinstance(required_handoff_fields, list) or any(
+        field not in handoff for field in required_handoff_fields
+    ):
+        raise ReplayError(f"{fixture.get('fixtureId')}: incident handoff is incomplete")
+    if (
+        handoff.get("case_id") != triage.get("case_id")
+        or handoff.get("detection_id") != triage.get("detection_id")
+        or handoff.get("evidence_ids") != triage.get("evidence_ids")
+        or handoff.get("coverage") != triage.get("coverage_statement")
+    ):
+        raise ReplayError(f"{fixture.get('fixtureId')}: triage and handoff contexts differ")
+    gap_contract = fixture_set.get("coverageGapExample", {})
+    if fixture.get("fixtureId") == gap_contract.get("gapId") and (
+        handoff.get("gap") != gap_contract.get("description")
+        or handoff.get("permitted_conclusion") != gap_contract.get("permittedConclusion")
+    ):
+        raise ReplayError(
+            f"{fixture.get('fixtureId')}: gap handoff must preserve gap and permitted conclusion"
         )
 
 
@@ -467,6 +552,15 @@ def build_gap_fixture(fixture_set: dict) -> dict:
     )
     derived = copy.deepcopy(source)
     derived["fixtureId"] = gap.get("gapId")
+    expected_semantics = {
+        "telemetryPresence": "absent",
+        "targetEventPresence": "unknown",
+        "benignNearMissContext": "unknown",
+    }
+    for field, expected in expected_semantics.items():
+        if gap.get(field) != expected:
+            raise ReplayError(f"coverageGapExample {field}: expected {expected!r}")
+        derived[field] = gap[field]
     derived["availableTelemetryIds"] = [
         item for item in source.get("availableTelemetryIds", []) if item not in missing
     ]
@@ -482,9 +576,9 @@ def build_gap_fixture(fixture_set: dict) -> dict:
     return derived
 
 
-def expect_replay_error(rule: dict, fixture: dict, label: str) -> None:
+def expect_replay_error(rule: dict, fixture_set: dict, fixture: dict, label: str) -> None:
     try:
-        evaluate(rule, fixture)
+        replay(rule, fixture_set, fixture)
     except ReplayError:
         return
     raise ReplayError(f"regression {label}: expected ReplayError")
@@ -497,11 +591,11 @@ def run_regressions(rule: dict, fixture_set: dict) -> None:
 
     missing_field = copy.deepcopy(positive)
     del missing_field["records"][0]["ingest_time"]
-    expect_replay_error(rule, missing_field, "missing candidate field")
+    expect_replay_error(rule, fixture_set, missing_field, "missing candidate field")
 
     failed_candidate = copy.deepcopy(positive)
     failed_candidate["records"][0]["result"] = "failure"
-    failed_candidate_result = evaluate(rule, failed_candidate)
+    failed_candidate_result = replay(rule, fixture_set, failed_candidate)
     if (failed_candidate_result["outcome"], failed_candidate_result["severity"]) != (
         rule["outcomes"]["noCandidateEvent"],
         "none",
@@ -510,7 +604,7 @@ def run_regressions(rule: dict, fixture_set: dict) -> None:
 
     wrong_approval = copy.deepcopy(benign)
     wrong_approval["records"][1]["eventType"] = "unrelated_snapshot"
-    wrong_approval_result = evaluate(rule, wrong_approval)
+    wrong_approval_result = replay(rule, fixture_set, wrong_approval)
     if wrong_approval_result["outcome"] != rule["outcomes"]["unapprovedScopeChange"]:
         raise ReplayError("regression wrong approval type: unrelated record must not suppress")
 
@@ -524,7 +618,7 @@ def run_regressions(rule: dict, fixture_set: dict) -> None:
             del partial["records"][2][field]
         else:
             partial["records"][2][field] = value
-        partial_result = evaluate(rule, partial)
+        partial_result = replay(rule, fixture_set, partial)
         if (partial_result["outcome"], partial_result["severity"]) != (
             rule["outcomes"]["unapprovedScopeChange"],
             "high",
@@ -536,14 +630,14 @@ def run_regressions(rule: dict, fixture_set: dict) -> None:
     no_optional["records"] = [
         record for record in no_optional["records"] if record["telemetryId"] != "TEL-DET-2026-003"
     ]
-    no_optional_result = evaluate(rule, no_optional)
+    no_optional_result = replay(rule, fixture_set, no_optional)
     if (no_optional_result["outcome"], no_optional_result["severity"]) != (
         rule["outcomes"]["unapprovedScopeChange"],
         "high",
     ):
         raise ReplayError("regression optional telemetry: core detection must remain evaluable")
 
-    missing_core_result = evaluate(rule, build_gap_fixture(fixture_set))
+    missing_core_result = replay(rule, fixture_set, build_gap_fixture(fixture_set))
     if missing_core_result["outcome"] != rule["outcomes"]["telemetryGap"]:
         raise ReplayError("regression core telemetry gap: must be indeterminate")
     missing_core_triage = missing_core_result["triage"]
@@ -554,12 +648,25 @@ def run_regressions(rule: dict, fixture_set: dict) -> None:
 
     mutated_rule = copy.deepcopy(rule)
     mutated_rule["outcomes"]["unapprovedScopeChange"] = "mutated_alert_contract"
-    if evaluate(mutated_rule, positive)["outcome"] != "mutated_alert_contract":
+    if replay(mutated_rule, fixture_set, positive)["outcome"] != "mutated_alert_contract":
         raise ReplayError("regression rule outcomes: runner must use the rule declaration")
 
     malformed_target = copy.deepcopy(positive)
     malformed_target["records"][0]["target_workload_id"] = "Billing Workload"
-    expect_replay_error(rule, malformed_target, "unstable target identifier")
+    expect_replay_error(rule, fixture_set, malformed_target, "unstable target identifier")
+
+    malformed_handoff = copy.deepcopy(fixture_set)
+    malformed_handoff["incidentHandoff"]["requiredFields"].remove("permitted_conclusion")
+    expect_replay_error(rule, malformed_handoff, positive, "incomplete incident handoff contract")
+
+    malformed_gap_semantics = copy.deepcopy(fixture_set)
+    malformed_gap_semantics["coverageGapExample"]["targetEventPresence"] = "present"
+    try:
+        build_gap_fixture(malformed_gap_semantics)
+    except ReplayError:
+        pass
+    else:
+        raise ReplayError("regression gap semantics: expected ReplayError")
 
 
 def main() -> int:
@@ -578,14 +685,14 @@ def main() -> int:
         for fixture in fixtures:
             if not isinstance(fixture, dict):
                 raise ReplayError("fixture entry must be an object")
-            result = evaluate(rule, fixture)
+            result = replay(rule, fixture_set, fixture)
             assert_result(rule, fixture_set, fixture, result)
             results.append(
                 f"{fixture.get('fixtureId')}={result['outcome']}/{result['severity']}"
             )
 
         gap_fixture = build_gap_fixture(fixture_set)
-        gap_result = evaluate(rule, gap_fixture)
+        gap_result = replay(rule, fixture_set, gap_fixture)
         assert_result(rule, fixture_set, gap_fixture, gap_result)
         results.append(
             f"{gap_fixture.get('fixtureId')}={gap_result['outcome']}/{gap_result['severity']}"
@@ -595,7 +702,7 @@ def main() -> int:
         print(f"ERROR: {exc}")
         return 1
 
-    print("chapter 17 offline replay passed: " + ", ".join(results) + ", regressions=10")
+    print("chapter 17 offline replay passed: " + ", ".join(results) + ", regressions=12")
     return 0
 
 

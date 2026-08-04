@@ -324,6 +324,7 @@ def main() -> int:
             "FIX-2026-017-NEG",
             "FIX-2026-017-BNM",
             "EVD-DET-2026-001",
+            "| `EVD-DET-2026-004` | `GAP-DET-2026-001` |",
             "NEG-DET-2026-001",
             "TRI-DET-2026-001",
             "HO-DET-2026-001",
@@ -601,7 +602,11 @@ def main() -> int:
     gap = fixture.get("coverageGapExample", {})
     if gap.get("gapId") != "GAP-DET-2026-001":
         error("fixture: coverageGapExample.gapId mismatch")
-    if gap.get("telemetryPresence") != "absent" or gap.get("targetEventPresence") != "unknown":
+    if (
+        gap.get("telemetryPresence") != "absent"
+        or gap.get("targetEventPresence") != "unknown"
+        or gap.get("benignNearMissContext") != "unknown"
+    ):
         error("fixture: coverageGapExample must distinguish telemetry absence from unknown event presence")
     permitted = gap.get("permittedConclusion", "")
     expected_gap_conclusion = (
@@ -622,6 +627,19 @@ def main() -> int:
     for key, expected in expected_gap_replay.items():
         if gap.get(key) != expected:
             error(f"fixture: coverageGapExample.{key} must be {expected!r}")
+
+    incident_handoff = fixture.get("incidentHandoff", {})
+    if incident_handoff.get("handoffId") != "HO-DET-2026-001":
+        error("fixture: incidentHandoff.handoffId mismatch")
+    if incident_handoff.get("requiredFields") != [
+        "case_id",
+        "detection_id",
+        "evidence_ids",
+        "coverage",
+        "gap",
+        "permitted_conclusion",
+    ]:
+        error("fixture: incidentHandoff.requiredFields contract mismatch")
 
     payload = fixture_path.read_text(encoding="utf-8")
     for value in iter_strings(fixture):
