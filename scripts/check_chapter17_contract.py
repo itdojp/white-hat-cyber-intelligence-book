@@ -329,6 +329,7 @@ def main() -> int:
         example,
         (
             "CASE-DET-2026-001",
+            "| Detection Validation Record ID | `DVR-2026-017-001` |",
             "CASE-2026-001",
             "DEC-2026-001",
             "DET-2026-001",
@@ -410,6 +411,8 @@ def main() -> int:
 
     if fixture.get("caseId") != "CASE-DET-2026-001":
         error("fixture: caseId mismatch")
+    if fixture.get("detectionValidationRecordId") != "DVR-2026-017-001":
+        error("fixture: detectionValidationRecordId mismatch")
     if fixture.get("relatedCaseMapCaseId") != "CASE-2026-001":
         error("fixture: relatedCaseMapCaseId mismatch")
     if fixture.get("relatedCaseMapDecisionId") != "DEC-2026-001":
@@ -665,7 +668,6 @@ def main() -> int:
     ]:
         error("fixture: incidentHandoff.requiredFields contract mismatch")
 
-    payload = fixture_path.read_text(encoding="utf-8")
     for value in iter_strings(fixture):
         for reason in unsafe_value_reasons(value):
             error(f"fixture: unsafe synthetic value {value!r}: {reason}")

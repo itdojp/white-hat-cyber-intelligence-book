@@ -289,15 +289,16 @@ def evaluate(rule: dict, fixture: dict) -> dict:
     if unknown:
         raise ReplayError(f"{fixture.get('fixtureId')}: unknown available telemetry IDs {sorted(unknown)}")
     validate_fixture_records(rule, fixture, known_ids)
-    record_ids = {
+    record_telemetry_ids = {
         record["telemetryId"]
         for record in fixture.get("records", [])
         if isinstance(record, dict)
     }
-    unavailable_records = record_ids - set(available)
-    if unavailable_records:
+    unavailable_record_telemetry_ids = record_telemetry_ids - set(available)
+    if unavailable_record_telemetry_ids:
         raise ReplayError(
-            f"{fixture.get('fixtureId')}: records claim unavailable telemetry {sorted(unavailable_records)}"
+            f"{fixture.get('fixtureId')}: records claim unavailable telemetry "
+            f"{sorted(unavailable_record_telemetry_ids)}"
         )
 
     candidate_contract = rule["candidate"]
@@ -677,6 +678,8 @@ def main() -> int:
             raise ReplayError("rule must remain synthetic-only and offline-only")
         if rule.get("detectionId") != fixture_set.get("detectionId"):
             raise ReplayError("rule and fixture detection IDs differ")
+        if fixture_set.get("detectionValidationRecordId") != "DVR-2026-017-001":
+            raise ReplayError("fixture detectionValidationRecordId mismatch")
 
         fixtures = fixture_set.get("fixtures", [])
         if not isinstance(fixtures, list) or not fixtures:
