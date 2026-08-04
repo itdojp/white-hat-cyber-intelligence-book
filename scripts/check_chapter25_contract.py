@@ -1672,9 +1672,11 @@ class ExecutableHTMLDetector(HTMLParser):
         if normalized_tag == "meta":
             attribute_map: dict[str, str] = {}
             for name, value in attrs:
-                if value is not None:
-                    # HTML tokenization keeps the first duplicate attribute.
-                    attribute_map.setdefault(name.casefold(), value)
+                # HTML tokenization keeps the first duplicate attribute;
+                # a valueless attribute has an empty value.
+                attribute_map.setdefault(
+                    name.casefold(), "" if value is None else value
+                )
             if attribute_map.get("http-equiv", "").strip().casefold() == (
                 "refresh"
             ):
@@ -5213,6 +5215,10 @@ def main() -> int:
         '<meta http-equiv="refresh" content="0" '
         'content="0;url=javascript:alert(1)">',
         '<meta http-equiv="default-style" http-equiv="refresh" '
+        'content="0;url=javascript:alert(1)">',
+        '<meta http-equiv="refresh" content '
+        'content="0;url=javascript:alert(1)">',
+        '<meta http-equiv http-equiv="refresh" '
         'content="0;url=javascript:alert(1)">',
         '```html\n<a href="vbscript:msgbox(1)">example</a>\n```',
     ):
