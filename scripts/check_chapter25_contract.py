@@ -583,6 +583,7 @@ def normalize_synthetic_safety_text(
     text: str,
     *,
     strip_url_controls: bool = False,
+    unescape_markdown: bool = True,
 ) -> str:
     """Expose rendered character references and Markdown punctuation escapes."""
     decoded = unquote(html.unescape(text))
@@ -622,10 +623,14 @@ def normalize_synthetic_safety_text(
     safety_escape_punctuation = string.punctuation.translate(
         str.maketrans("", "", "[]")
     )
-    markdown_unescaped = re.sub(
-        rf"\\([{re.escape(safety_escape_punctuation)}])",
-        r"\1",
-        structured_backslashes,
+    markdown_unescaped = (
+        re.sub(
+            rf"\\([{re.escape(safety_escape_punctuation)}])",
+            r"\1",
+            structured_backslashes,
+        )
+        if unescape_markdown
+        else structured_backslashes
     )
     return re.sub(
         r"(?i)(?<![A-Za-z0-9])(?P<scheme>https?):[\t\r\n\f]*[\\/]+",
@@ -890,7 +895,7 @@ def url_domain_hosts(text: str):
     """Extract URL hosts and fail closed on Unicode-label extensions."""
     for url_match in URL_RE.finditer(text):
         raw_url = url_match.group(0)
-        stripped_url = strip_url_trailing_punctuation(raw_url)
+        stripped_url = strip_url_trailing_punctuation(raw_url).replace("\\", "/")
         try:
             parsed_url = urlparse(stripped_url)
             parsed_host = parsed_url.hostname
@@ -949,7 +954,9 @@ def protocol_relative_hosts(text: str):
         for _, colon, _, _ in markdown_reference_definitions(text)
     }
     for match in PROTOCOL_RELATIVE_URL_RE.finditer(text):
-        candidate = strip_url_trailing_punctuation(match.group("url"))
+        candidate = strip_url_trailing_punctuation(match.group("url")).replace(
+            "\\", "/"
+        )
         try:
             host = urlparse(f"https:{candidate}").hostname
         except ValueError:
@@ -1937,6 +1944,7 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     browser_url_safety_text = normalize_synthetic_safety_text(
         text,
         strip_url_controls=True,
+        unescape_markdown=False,
     )
     compatibility_text = normalize_for_host_scanning(rendered_safety_text)
     browser_url_compatibility_text = normalize_for_host_scanning(
@@ -3654,6 +3662,7 @@ def main() -> int:
         '<a href="https\t://evil/path">x</a>',
         '<a href="\x01//0x08080808/path">x</a>',
         '<a href="\x01 //evil/path">x</a>',
+        '<a href="//0x08080808\\@safe.example/path">x</a>',
         '[x](\x01 //evil/path)',
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
