@@ -1109,16 +1109,33 @@ def blockquote_container_depth(line: str) -> int:
     offset = 0
     while offset < len(line):
         cursor = offset
-        spaces = 0
-        while cursor < len(line) and line[cursor] == " " and spaces < 3:
+        while cursor < len(line) and line[cursor] in " \t":
             cursor += 1
-            spaces += 1
-        if cursor >= len(line) or line[cursor] != ">":
-            break
-        depth += 1
-        offset = cursor + 1
-        if offset < len(line) and line[offset] in " \t":
-            offset += 1
+        if cursor < len(line) and line[cursor] == ">":
+            depth += 1
+            offset = cursor + 1
+            if offset < len(line) and line[offset] in " \t":
+                offset += 1
+            continue
+
+        marker_end = cursor
+        if cursor < len(line) and line[cursor] in "-+*:":
+            marker_end = cursor + 1
+        elif cursor < len(line) and line[cursor].isdigit():
+            while marker_end < len(line) and line[marker_end].isdigit():
+                marker_end += 1
+            if marker_end >= len(line) or line[marker_end] not in ".)":
+                marker_end = cursor
+            else:
+                marker_end += 1
+        if (
+            marker_end > cursor
+            and marker_end < len(line)
+            and line[marker_end] in " \t"
+        ):
+            offset = marker_end + 1
+            continue
+        break
     return depth
 
 
