@@ -64,6 +64,9 @@ KRAMDOWN_EXTENSION_CLOSE_RE = re.compile(
     r"^ {0,3}\{:/([A-Za-z][A-Za-z0-9_-]*)\}", re.IGNORECASE
 )
 KRAMDOWN_BLOCK_IAL_OPEN_RE = re.compile(r"^ {0,3}\{:")
+ACTIVE_RAW_HTML_RE = re.compile(
+    r"<(style|script|link)(?=[\s/>])", re.IGNORECASE
+)
 VOID_HTML_TAGS = {
     "area",
     "base",
@@ -183,6 +186,41 @@ def strip_html_comments(line: str, in_comment: bool) -> tuple[str, bool]:
     return "".join(visible), in_comment
 
 
+def mask_inline_code_and_escaped_angles(line: str) -> str:
+    """Mask inline code spans and escaped '<' before active-HTML detection."""
+    masked = list(line)
+    cursor = 0
+    while True:
+        opener = re.search(r"`+", line[cursor:])
+        if opener is None:
+            break
+        start = cursor + opener.start()
+        end = cursor + opener.end()
+        ticks = line[start:end]
+        closer = re.search(
+            rf"(?<!`){re.escape(ticks)}(?!`)",
+            line[end:],
+        )
+        if closer is None:
+            cursor = end
+            continue
+        close_end = end + closer.end()
+        masked[start:close_end] = " " * (close_end - start)
+        cursor = close_end
+
+    for index, character in enumerate(masked):
+        if character != "<":
+            continue
+        backslashes = 0
+        previous = index - 1
+        while previous >= 0 and masked[previous] == "\\":
+            backslashes += 1
+            previous -= 1
+        if backslashes % 2:
+            masked[index] = " "
+    return "".join(masked)
+
+
 def liquid_block_line_is_hidden(
     relative: str, line: str, stack: list[str]
 ) -> bool:
@@ -268,6 +306,9 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
                 f"{kramdown_close.group(1).lower()!r}"
             )
             continue
+        if KRAMDOWN_BLOCK_IAL_OPEN_RE.match(line):
+            error(f"{relative}: Kramdown block IAL is not allowed")
+            continue
         if html_delimiter_end:
             if html_delimiter_end in line:
                 html_delimiter_end = ""
@@ -294,6 +335,16 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
             fence = fence_match.group(1)
             fence_char = fence[0]
             fence_length = len(fence)
+            continue
+
+        active_html = ACTIVE_RAW_HTML_RE.search(
+            mask_inline_code_and_escaped_angles(line)
+        )
+        if active_html:
+            error(
+                f"{relative}: active raw HTML <{active_html.group(1).lower()}> "
+                "is not allowed in representative content"
+            )
             continue
 
         delimited_html = False
@@ -405,14 +456,6 @@ def review_table_rows(
         else:
             rows[area] = cells
 
-    ial_index = row_index
-    while ial_index < len(lines) and not lines[ial_index].strip():
-        ial_index += 1
-    if ial_index < len(lines) and KRAMDOWN_BLOCK_IAL_OPEN_RE.match(lines[ial_index]):
-        error(
-            f"{relative}: Review table beneath {heading!r} must not carry "
-            "a Kramdown block IAL"
-        )
     return rows
 
 
@@ -851,7 +894,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-037",
+            "GATE-039",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
