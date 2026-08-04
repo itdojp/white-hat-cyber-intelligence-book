@@ -1516,7 +1516,8 @@ def executable_kramdown_ial_violations(text: str) -> list[str]:
         if re.search(r"(?i)(?:^|\s)srcdoc\s*=", decoded):
             violations.append("srcdoc Kramdown inline attribute")
         css_parser = CSSValueExtractor()
-        css_parser.feed(f"<span {decoded}></span>")
+        projected_html = f"<span {decoded}></span>"
+        css_parser.feed(projected_html)
         css_parser.close()
         for value in css_parser.values:
             violations.extend(executable_css_value_violations(value))
@@ -1525,6 +1526,11 @@ def executable_kramdown_ial_violations(text: str) -> list[str]:
                     violations.append(
                         "non-synthetic URL in Kramdown style attribute"
                     )
+        for host in raw_html_srcset_hosts(projected_html):
+            if not is_allowed_synthetic_host(host):
+                violations.append(
+                    "non-synthetic URL in Kramdown srcset attribute"
+                )
         compact = re.sub(r"[\x00-\x20\x7f]+", "", decoded).casefold()
         if "javascript:" in compact:
             violations.append("javascript URL in Kramdown inline attribute")
@@ -4445,6 +4451,8 @@ def main() -> int:
         '[x](#){: src="data:image/svg+xml,%3Csvg%3E" }',
         '[x](#){: style="background:url(https\\3a //evil\\2e com/x)" }',
         '[x](#){: style="background:url(ja\\76 ascript:alert(1))" }',
+        '![x](#){: srcset="//asset.example/a 1x,'
+        '//0x08080808/path 2x" }',
     ):
         if not executable_kramdown_ial_violations(executable_ial):
             error(
@@ -4454,6 +4462,8 @@ def main() -> int:
     for safe_ial in (
         '[x](#){: style="color:red" }',
         '[x](#){: style="background:url(https://asset.example/x)" }',
+        '![x](#){: srcset="//asset.example/a 1x,'
+        '//cdn.example/path 2x" }',
         '`{: style="background:url(https://evil.com/x)" }`',
         '```text\n{: style="background:url(https://evil.com/x)" }\n```',
     ):
