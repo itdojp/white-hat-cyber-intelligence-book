@@ -6,6 +6,7 @@ import re
 import subprocess
 import sys
 from datetime import date
+from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,6 +38,62 @@ SYNTH_REVIEW_DISCLAIMER = (
     "証跡ではない。Evidence referenceも合成IDである。"
 )
 FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
+RAW_HTML_OPEN_RE = re.compile(
+    r"^ {0,3}<([A-Za-z][A-Za-z0-9:-]*)(?=[\s/>])", re.IGNORECASE
+)
+RAW_HTML_DELIMITERS = (
+    (re.compile(r"^ {0,3}<\?"), "?>", "processing instruction"),
+    (re.compile(r"^ {0,3}<!\[CDATA\[", re.IGNORECASE), "]]>", "CDATA block"),
+    (re.compile(r"^ {0,3}<![A-Z]"), ">", "declaration"),
+)
+VOID_HTML_TAGS = {
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr",
+}
+
+
+class RawHtmlContainerTracker(HTMLParser):
+    """Track a strict raw-HTML container that cannot satisfy Markdown gates."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=False)
+        self.stack: list[str] = []
+        self.malformed = ""
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        del attrs
+        normalized = tag.lower()
+        if normalized not in VOID_HTML_TAGS:
+            self.stack.append(normalized)
+
+    def handle_startendtag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        del tag, attrs
+
+    def handle_endtag(self, tag: str) -> None:
+        normalized = tag.lower()
+        if not self.stack:
+            self.malformed = f"unexpected closing tag </{normalized}>"
+            return
+        if self.stack[-1] != normalized:
+            self.malformed = (
+                f"mismatched closing tag </{normalized}> for <{self.stack[-1]}>"
+            )
+            return
+        self.stack.pop()
 
 
 def error(message: str) -> None:
@@ -96,11 +153,14 @@ def strip_html_comments(line: str, in_comment: bool) -> tuple[str, bool]:
 
 
 def visible_markdown_lines(relative: str, content: str) -> list[str]:
-    """Return lines that can render, excluding fenced code and HTML comments."""
+    """Return contract-eligible Markdown outside code, comments, and raw HTML."""
     visible: list[str] = []
     in_comment = False
     fence_char = ""
     fence_length = 0
+    html_tracker: RawHtmlContainerTracker | None = None
+    html_delimiter_end = ""
+    html_delimiter_name = ""
 
     for raw_line in content.splitlines():
         if fence_char:
@@ -113,11 +173,51 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
             continue
 
         line, in_comment = strip_html_comments(raw_line, in_comment)
+        if html_delimiter_end:
+            if html_delimiter_end in line:
+                html_delimiter_end = ""
+                html_delimiter_name = ""
+            continue
+        if html_tracker is not None:
+            html_tracker.feed(line + "\n")
+            if html_tracker.malformed:
+                error(f"{relative}: malformed raw HTML: {html_tracker.malformed}")
+                html_tracker = None
+            elif not html_tracker.stack:
+                html_tracker.close()
+                html_tracker = None
+            continue
+
         fence_match = FENCE_OPEN_RE.match(line)
         if fence_match:
             fence = fence_match.group(1)
             fence_char = fence[0]
             fence_length = len(fence)
+            continue
+
+        delimited_html = False
+        for opener, closer, name in RAW_HTML_DELIMITERS:
+            match = opener.match(line)
+            if match is None:
+                continue
+            if closer not in line[match.end() :]:
+                html_delimiter_end = closer
+                html_delimiter_name = name
+            delimited_html = True
+            break
+        if delimited_html:
+            continue
+
+        html_match = RAW_HTML_OPEN_RE.match(line)
+        if html_match and not html_match.group(1).endswith(":"):
+            html_tracker = RawHtmlContainerTracker()
+            html_tracker.feed(line + "\n")
+            if html_tracker.malformed:
+                error(f"{relative}: malformed raw HTML: {html_tracker.malformed}")
+                html_tracker = None
+            elif not html_tracker.stack:
+                html_tracker.close()
+                html_tracker = None
             continue
         visible.append(line)
 
@@ -125,6 +225,11 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
         error(f"{relative}: unclosed fenced code block")
     if in_comment:
         error(f"{relative}: unclosed HTML comment")
+    if html_delimiter_end:
+        error(f"{relative}: unclosed raw HTML {html_delimiter_name}")
+    if html_tracker is not None:
+        open_tags = ", ".join(f"<{tag}>" for tag in html_tracker.stack)
+        error(f"{relative}: unclosed raw HTML container(s): {open_tags}")
     return visible
 
 
@@ -618,7 +723,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-028",
+            "GATE-029",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
