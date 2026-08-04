@@ -212,6 +212,7 @@ def main() -> int:
             "../cases/fixtures/ch17-detection-engineering-fixture.json",
             "DR-DET-2026-001",
             "RO-DET-2026-001",
+            "DVR-2026-017-001",
             "CASE-2026-001",
             "DEC-2026-001",
             "FIND-2026-002",
@@ -235,8 +236,8 @@ def main() -> int:
             "F-17-01",
             "F-17-02",
             "T-17-01",
-            "../detections/cloud_identity/det_2026_017_001.json",
-            "../scripts/replay_chapter17_detection.py",
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/f546a03a5f0534e7603dbb86ff2bdaa98542e01f/detections/cloud_identity/det_2026_017_001.json",
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/f546a03a5f0534e7603dbb86ff2bdaa98542e01f/scripts/replay_chapter17_detection.py",
         ),
     )
     forbidden_terms = (
@@ -245,6 +246,9 @@ def main() -> int:
         "malware sample",
         "実Credentialを使って",
         "第三者Tenantへ",
+        "Detection Validation Recordを、`CASE-DET-2026-001`として作成する",
+        "/blob/main/detections/cloud_identity/det_2026_017_001.json",
+        "/blob/main/scripts/replay_chapter17_detection.py",
     )
     for term in forbidden_terms:
         if term in chapter:
@@ -361,8 +365,16 @@ def main() -> int:
             "scripts/check_chapter17_contract.py",
             "scripts/replay_chapter17_detection.py",
             "detections/cloud_identity/det_2026_017_001.json",
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/f546a03a5f0534e7603dbb86ff2bdaa98542e01f/detections/cloud_identity/det_2026_017_001.json",
+            "f546a03a5f0534e7603dbb86ff2bdaa98542e01f",
         ),
     )
+    for term in (
+        "/blob/main/detections/cloud_identity/det_2026_017_001.json",
+        "/blob/main/scripts/replay_chapter17_detection.py",
+    ):
+        if term in fixture_doc:
+            error(f"{fixture_doc_path}: contains mutable artifact link {term!r}")
 
     fixture_path = ROOT / "cases/fixtures/ch17-detection-engineering-fixture.json"
     try:

@@ -60,7 +60,7 @@ ATT&CKのDetection Strategiesは、platform-specific analyticsを束ねる高水
 1. `DR-DET-2026-001`: 月末処理を止めずに、未承認権限付与を60分以内に「遮断 / 承認 / 監視継続」のいずれかへ判断できること
 2. `RO-DET-2026-001`: SOCがAlert受信から15分以内に、`Escalate` / `Approved change` / `Needs telemetry gap review`を一次判定できること
 
-この章では、上記要求を満たすDetection Validation Recordを、`CASE-DET-2026-001`として作成する。このRecordは、第1章Case Mapの`CASE-2026-001` / `DEC-2026-001`と、Detection backlogを開始した`FIND-2026-002` / `HUNT-2026-001`へ直接接続する。Detectionの版関係は、`DET-2026-017-001`が第1章の`DET-2026-001`を`refines`する詳細化である。第1章の`FIX-CONSENT-001` / `CTRL-2026-003`を置換または再配備するものではなく、Telemetry、Triage、Coverage gapの検証契約を追加する。
+この章では、上記要求を満たすDetection Validation Recordを`DVR-2026-017-001`として、対応するCaseを`CASE-DET-2026-001`として作成する。このRecordは、第1章Case Mapの`CASE-2026-001` / `DEC-2026-001`と、Detection backlogを開始した`FIND-2026-002` / `HUNT-2026-001`へ直接接続する。Detectionの版関係は、`DET-2026-017-001`が第1章の`DET-2026-001`を`refines`する詳細化である。第1章の`FIX-CONSENT-001` / `CTRL-2026-003`を置換または再配備するものではなく、Telemetry、Triage、Coverage gapの検証契約を追加する。
 
 ## 全体像
 
@@ -273,8 +273,10 @@ python3 -m json.tool cases/fixtures/ch17-detection-engineering-fixture.json | se
 - 合成記入例: [`../cases/ch17-detection-validation-example.md`](../cases/ch17-detection-validation-example.md)
 - fixture説明: [`../cases/fixtures/ch17-detection-engineering-fixture.md`](../cases/fixtures/ch17-detection-engineering-fixture.md)
 - machine-readable fixture: [`../cases/fixtures/ch17-detection-engineering-fixture.json`](../cases/fixtures/ch17-detection-engineering-fixture.json)
-- 合成rule: [`../detections/cloud_identity/det_2026_017_001.json`](../detections/cloud_identity/det_2026_017_001.json)
-- オフラインrunner: [`../scripts/replay_chapter17_detection.py`](../scripts/replay_chapter17_detection.py)
+- 合成rule: [`detections/cloud_identity/det_2026_017_001.json`](https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/f546a03a5f0534e7603dbb86ff2bdaa98542e01f/detections/cloud_identity/det_2026_017_001.json)
+- オフラインrunner: [`scripts/replay_chapter17_detection.py`](https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/f546a03a5f0534e7603dbb86ff2bdaa98542e01f/scripts/replay_chapter17_detection.py)
+
+合成ruleとrunnerへのリンクは、監査済みcommit `f546a03a5f0534e7603dbb86ff2bdaa98542e01f`に固定している。Replay時は同一checkout内のrule、runner、fixtureを使用し、異なる版を混在させない。
 
 ## 評価基準
 

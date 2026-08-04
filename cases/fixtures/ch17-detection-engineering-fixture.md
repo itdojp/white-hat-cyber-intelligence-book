@@ -31,4 +31,4 @@
 3. `coverageGapExample`はPositive fixtureから`TEL-DET-2026-002`を除く決定的な派生入力であり、Negative fixtureとTelemetry gapを区別する。
 4. `scripts/check_chapter17_contract.py`でID、fixture semantics、安全条件を検証する。
 
-合成rule本体は[`detections/cloud_identity/det_2026_017_001.json`](../../detections/cloud_identity/det_2026_017_001.json)である。これは教材用の決定的な評価契約であり、実SIEM / EDRへ投入しない。
+合成rule本体は[`detections/cloud_identity/det_2026_017_001.json`](https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/f546a03a5f0534e7603dbb86ff2bdaa98542e01f/detections/cloud_identity/det_2026_017_001.json)である。このリンクは監査済みcommit `f546a03a5f0534e7603dbb86ff2bdaa98542e01f`に固定している。Replay時は同一checkout内のrule、runner、fixtureを使用し、異なる版を混在させない。これは教材用の決定的な評価契約であり、実SIEM / EDRへ投入しない。
