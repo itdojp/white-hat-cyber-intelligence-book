@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "canonicalDirectories": [
     "cases",
     "schemas"
@@ -43,5 +43,11 @@
   ],
   "directoryRoutes": {
     "cases": "cases/chapter-01-integrated-security-case/index.md"
-  }
+  },
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch11-web-api-assessment-dataset.json",
+      "destination": "downloads/ch11-web-api-assessment-dataset.json"
+    }
+  ]
 }

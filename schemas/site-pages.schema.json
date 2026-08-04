@@ -54,7 +54,7 @@
   ],
   "properties": {
     "schemaVersion": {
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "canonicalDirectories": {
       "type": "array",
@@ -119,6 +119,28 @@
       "additionalProperties": {
         "type": "string",
         "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.md$"
+      }
+    },
+    "staticFiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "destination"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*//)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)[._])[A-Za-z0-9][A-Za-z0-9._/-]*\\.json$"
+          },
+          "destination": {
+            "type": "string",
+            "pattern": "^downloads/(?![._])(?!.*//)(?!.*\/[._])[A-Za-z0-9][A-Za-z0-9._/-]*\\.json$"
+          }
+        }
       }
     }
   }

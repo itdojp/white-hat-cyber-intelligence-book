@@ -500,6 +500,23 @@ def main() -> int:
     missing_pages = expected_pages - actual_pages
     if missing_pages:
         error(f"site-pages.json: missing chapter 11 pages: {sorted(missing_pages)}")
+    expected_static_files = {
+        (
+            "cases/fixtures/ch11-web-api-assessment-dataset.json",
+            "downloads/ch11-web-api-assessment-dataset.json",
+        )
+    }
+    actual_static_files = {
+        (item.get("source"), item.get("destination"))
+        for item in registry.get("staticFiles", [])
+        if isinstance(item, dict)
+    }
+    missing_static_files = expected_static_files - actual_static_files
+    if missing_static_files:
+        error(
+            "site-pages.json: missing chapter 11 static artifact: "
+            f"{sorted(missing_static_files)}"
+        )
 
     artifact_index = read_text("artifact-index.md")
     require_tokens(

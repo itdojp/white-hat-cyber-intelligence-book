@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
+from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTICE_SOURCE = ROOT / "THIRD_PARTY_NOTICES.md"
@@ -60,6 +62,56 @@ def main() -> int:
         if not page.is_file() or page.stat().st_size == 0:
             errors.append(f"missing or empty page: {page.relative_to(site)}")
 
+    static_files = manifest.get("staticFiles", [])
+    generated_markdown_text = "\n".join(
+        path.read_text(encoding="utf-8") for path in sorted(source.rglob("*.md"))
+    )
+    built_html_text = "\n".join(
+        path.read_text(encoding="utf-8") for path in sorted(site.rglob("*.html"))
+    )
+    for item in static_files:
+        source_path = ROOT / item["source"]
+        generated_path = source / item["destination"]
+        published_path = site / item["destination"]
+        if not source_path.is_file():
+            errors.append(f"missing canonical static artifact: {item['source']}")
+            continue
+        canonical_bytes = source_path.read_bytes()
+        expected_sha256 = hashlib.sha256(canonical_bytes).hexdigest()
+        if item.get("sha256") != expected_sha256:
+            errors.append(
+                f"static artifact manifest hash mismatch: {item['destination']}"
+            )
+        for label, path in (
+            ("generated", generated_path),
+            ("published", published_path),
+        ):
+            if not path.is_file() or path.read_bytes() != canonical_bytes:
+                errors.append(
+                    f"{label} static artifact differs from canonical source: "
+                    f"{item['destination']}"
+                )
+        if item["destination"] not in generated_markdown_text:
+            errors.append(
+                f"generated pages do not link to static artifact: {item['destination']}"
+            )
+        if item["destination"] not in built_html_text:
+            errors.append(
+                f"built pages do not link to static artifact: {item['destination']}"
+            )
+        mutable_repository_link = (
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/main/"
+            + quote(item["source"], safe="/")
+        )
+        if mutable_repository_link in generated_markdown_text:
+            errors.append(
+                f"generated pages retain mutable static artifact link: {item['source']}"
+            )
+        if mutable_repository_link in built_html_text:
+            errors.append(
+                f"built pages retain mutable static artifact link: {item['source']}"
+            )
+
     for asset in REQUIRED_ASSETS:
         path = site / asset
         if not path.is_file() or path.stat().st_size == 0:
@@ -114,6 +166,7 @@ def main() -> int:
 
     print(
         f"built site smoke check passed: {len(expected_pages)} pages, "
+        f"{len(static_files)} static artifact(s), "
         f"{len(REQUIRED_ASSETS)} assets, 1 third-party notice"
     )
     return 0
