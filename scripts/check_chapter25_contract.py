@@ -203,7 +203,6 @@ INDEPENDENCE_EVALUATION_TOKENS = (
     "裏付け",
 )
 URL_RE = re.compile(r"https?://[^\s<>\"'`、]+", re.IGNORECASE)
-DATA_URL_RE = re.compile(r"(?i)\bdata:[^\s<>\"'`]+")
 PROTOCOL_RELATIVE_URL_RE = re.compile(
     r"(?:\A|[\s<(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
     re.IGNORECASE,
@@ -581,8 +580,54 @@ def normalize_policy_text(text: str) -> str:
 
 
 def mask_data_url_payloads(text: str) -> str:
-    """Hide non-network data URL payloads from URL/hostname-only scans."""
-    return DATA_URL_RE.sub(lambda match: " " * len(match.group(0)), text)
+    """Hide data URL tokens while preserving following Markdown destinations."""
+    masked = list(text)
+    index = 0
+    inside_html_tag = False
+    html_quote: str | None = None
+    while index < len(text):
+        character = text[index]
+        if not inside_html_tag and character == "<":
+            inside_html_tag = True
+        elif inside_html_tag:
+            if html_quote is not None:
+                if character == html_quote:
+                    html_quote = None
+            elif character in "\"'":
+                html_quote = character
+            elif character == ">":
+                inside_html_tag = False
+
+        if (
+            text[index : index + 5].casefold() != "data:"
+            or (
+                index > 0
+                and (text[index - 1].isalnum() or text[index - 1] == "_")
+            )
+        ):
+            index += 1
+            continue
+
+        end = index + 5
+        parenthesis_depth = 0
+        while end < len(text):
+            candidate_character = text[end]
+            if html_quote is not None:
+                if candidate_character == html_quote:
+                    break
+            else:
+                if candidate_character in " \t\r\n\f<>\"'`":
+                    break
+                if candidate_character == "(":
+                    parenthesis_depth += 1
+                elif candidate_character == ")":
+                    if parenthesis_depth == 0:
+                        break
+                    parenthesis_depth -= 1
+            end += 1
+        masked[index:end] = " " * (end - index)
+        index = end
+    return "".join(masked)
 
 
 def normalize_synthetic_safety_text(
@@ -3838,6 +3883,17 @@ def main() -> int:
                 "fixture safety regression: data-URL payload escaped the "
                 "global host-scan mask"
             )
+    adjacent_markdown_url = "[d](data:text/plain,x)[x](https://evil.com)"
+    masked_adjacent_url = normalize_for_host_scanning(
+        normalize_synthetic_safety_text(
+            mask_data_url_payloads(adjacent_markdown_url)
+        )
+    )
+    if "evil.com" not in set(url_domain_hosts(masked_adjacent_url)):
+        error(
+            "fixture safety regression: data-URL mask consumed a following "
+            "Markdown destination"
+        )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
             normalize_synthetic_safety_text(separated_prose)
