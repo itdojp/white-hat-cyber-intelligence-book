@@ -644,6 +644,51 @@ def markdown_character_is_escaped(text: str, index: int) -> bool:
     return backslashes % 2 == 1
 
 
+def data_scheme_detection_view(text: str) -> tuple[str, dict[int, int]]:
+    """Expose data: schemes with URL tab/newline obfuscation, preserving offsets."""
+    view = list(text)
+    scheme_ends: dict[int, int] = {}
+    index = 0
+
+    def skip_url_tab_newline(cursor: int) -> int:
+        while cursor < len(text):
+            if text[cursor] in "\t\r\n":
+                cursor += 1
+                continue
+            if text[cursor] != "&":
+                break
+            semicolon = text.find(";", cursor + 1, min(len(text), cursor + 34))
+            if semicolon < 0:
+                break
+            entity = text[cursor : semicolon + 1]
+            if html.unescape(entity) not in {"\t", "\r", "\n"}:
+                break
+            cursor = semicolon + 1
+        return cursor
+
+    while index < len(text):
+        if text[index].casefold() != "d":
+            index += 1
+            continue
+        cursor = index
+        matched = True
+        for expected in "data:":
+            cursor = skip_url_tab_newline(cursor)
+            if cursor >= len(text) or text[cursor].casefold() != expected:
+                matched = False
+                break
+            cursor += 1
+        if not matched:
+            index += 1
+            continue
+        scheme_ends[index] = cursor
+        view[index : index + 5] = "data:"
+        if cursor > index + 5:
+            view[index + 5 : cursor] = " " * (cursor - index - 5)
+        index = cursor
+    return "".join(view), scheme_ends
+
+
 def mask_data_url_payloads(
     text: str,
     *,
@@ -651,6 +696,7 @@ def mask_data_url_payloads(
 ) -> str:
     """Hide data URL tokens while preserving following Markdown destinations."""
     masked = list(text)
+    data_detection_text, data_scheme_ends = data_scheme_detection_view(text)
     index = 0
     inside_html_tag = False
     html_quote: str | None = None
@@ -727,7 +773,7 @@ def mask_data_url_payloads(
                 html_attribute_value_start = 0
 
         if (
-            text[index : index + 5].casefold() != "data:"
+            data_detection_text[index : index + 5] != "data:"
             or (
                 index > 0
                 and (text[index - 1].isalnum() or text[index - 1] == "_")
@@ -781,7 +827,7 @@ def mask_data_url_payloads(
             index += 5
             continue
 
-        end = index + 5
+        end = data_scheme_ends.get(index, index + 5)
         parenthesis_depth = 0
         data_comma_seen = False
         css_cursor = skip_css_trivia_backward(text, index - 1)
@@ -1604,7 +1650,8 @@ EXECUTABLE_DATA_URL_RE = re.compile(
 
 def has_executable_data_url(text: str) -> bool:
     normalized = normalize_synthetic_safety_text(text)
-    return EXECUTABLE_DATA_URL_RE.search(normalized) is not None
+    detection_view, _ = data_scheme_detection_view(normalized)
+    return EXECUTABLE_DATA_URL_RE.search(detection_view) is not None
 
 
 CSS_ESCAPE_RE = re.compile(
@@ -1714,7 +1761,10 @@ def raw_html_url_attribute_hosts(text: str):
         candidates = re.split(r"[\x00-\x20]+", value.strip()) if name == "ping" else [value]
         for candidate in candidates:
             url_candidate = candidate.lstrip(url_trim_characters)
-            if not url_candidate or url_candidate[:5].casefold() == "data:":
+            data_candidate = url_candidate.translate(
+                str.maketrans("", "", "\t\r\n")
+            )
+            if not data_candidate or data_candidate[:5].casefold() == "data:":
                 continue
             normalized_views = {
                 normalize_for_host_scanning(
@@ -4451,6 +4501,8 @@ def main() -> int:
         '<img srcset="data:text/plain,https://evil.com 1x">',
         '<img srcset="data:text/plain,https%3A%2F%2Fevil.com 1x">',
         '<img src="data:text/plain,https://evil.com">',
+        '<iframe src="da&#9;ta:text/plain,https://evil.com"></iframe>',
+        '<iframe src="da\tta:text/plain,https://evil.com"></iframe>',
         '<data:text/plain,https://evil.com>',
         '[d]: data:text/plain,x[x](https://evil.com)\n[d]',
         '<img src=" data:text/plain,https://evil.com">',
@@ -4521,6 +4573,7 @@ def main() -> int:
     for executable_data_url in (
         '[x](data:image/svg+xml,%3Csvg%20onload%3Dalert(1)%3E)',
         '<a href="data&#58;text/html,&lt;script&gt;x&lt;/script&gt;">x</a>',
+        '<iframe src="da&#9;ta:text/html,&lt;script&gt;x&lt;/script&gt;"></iframe>',
     ):
         if not has_executable_data_url(executable_data_url):
             error(
