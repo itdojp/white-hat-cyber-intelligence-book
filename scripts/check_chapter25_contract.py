@@ -1949,9 +1949,21 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     browser_url_compatibility_text = normalize_for_host_scanning(
         browser_url_safety_text
     )
-    for host in url_domain_hosts(browser_url_compatibility_text):
+    url_safety_views = (
+        browser_url_compatibility_text,
+        compatibility_text,
+    )
+    for host in {
+        host
+        for safety_view in url_safety_views
+        for host in url_domain_hosts(safety_view)
+    }:
         assert_synthetic_host(host, f"{relative}: URL")
-    for host in protocol_relative_hosts(browser_url_compatibility_text):
+    for host in {
+        host
+        for safety_view in url_safety_views
+        for host in protocol_relative_hosts(safety_view)
+    }:
         assert_synthetic_host(host, f"{relative}: protocol-relative URL")
     for match in HOSTNAME_RE.finditer(compatibility_text):
         host = match.group("host").lower()
@@ -3637,6 +3649,7 @@ def main() -> int:
         '<a href="h&#116;tps://evil&#46;com/path">x</a>',
         '<a href="https&#58;//evil&#46;com/path">x</a>',
         r"[x](https\://evil\.com/path)",
+        r"[x](https\://134744072/path)",
         "[x](//evil%2ecom/path)",
         "[x](//evil/path)",
         "[x](//evil:443/path)",
