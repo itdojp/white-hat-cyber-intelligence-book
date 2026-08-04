@@ -2168,6 +2168,8 @@ def markdown_reference_definition_can_render(text: str, line_start: int) -> bool
         return True
     if re.match(r"^(?:`{3,}|~{3,})", stripped):
         return True
+    if re.fullmatch(r"\ufdd0CODE\d+\ufdd1", stripped):
+        return True
     if re.match(r"^(?:-{3,}|\*{3,}|_{3,})\s*$", stripped):
         return True
     return bool(markdown_reference_definitions(previous_line + "\n"))
@@ -4859,6 +4861,8 @@ def main() -> int:
     for executable_markdown in (
         '[x](javascript:location="//0x08080808/x")',
         '[x][ref]\n\n[ref]: java&#9;script:location="//0x08080808/x"',
+        '```text\ncode\n```\n[after-code]: javascript:alert(1)\n\n'
+        '[x][after-code]',
         '[x][^]\n\n[^]: javascript:location="//0x08080808/x"',
         '<vbscript:msgbox(1)>',
     ):
