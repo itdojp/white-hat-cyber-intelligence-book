@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import json
+import hashlib
 import ipaddress
+import json
 import re
 import sys
 from pathlib import Path
@@ -19,6 +20,15 @@ from scripts.sync_book_site import (  # noqa: E402
 import scripts.sync_site_source as base  # noqa: E402
 
 ERRORS: list[str] = []
+AUDITED_ARTIFACT_REVISION = "5a31db5a15a7583218b0bd49ca1a285d9348f0b0"
+AUDITED_ARTIFACT_SHA256 = {
+    "detections/cloud_identity/det_2026_017_001.json": (
+        "119694a96b9ac68b4ecbf8a946bbffb1bbd9cda1416720a0c42346961c5f88e8"
+    ),
+    "scripts/replay_chapter17_detection.py": (
+        "e04d0829bc01e46fcb3a15ec05ed83de18c1a7c14139f2dfa6ff0d0ffbc16cfe"
+    ),
+}
 RESERVED_DOMAIN_SUFFIXES = (".example", ".test", ".invalid")
 DOCUMENTATION_NETWORKS = tuple(
     ipaddress.ip_network(cidr)
@@ -74,6 +84,19 @@ def load_json(relative: str) -> dict:
         error(f"{relative}: root must be an object")
         return {}
     return data
+
+
+def check_audited_artifact_hashes() -> None:
+    for relative, expected in AUDITED_ARTIFACT_SHA256.items():
+        path = ROOT / relative
+        if not path.is_file():
+            continue
+        actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        if actual != expected:
+            error(
+                f"{relative}: sha256 {actual} does not match audited revision "
+                f"{AUDITED_ARTIFACT_REVISION} ({expected})"
+            )
 
 
 def require_tokens(relative: str, text: str, tokens: tuple[str, ...]) -> None:
@@ -161,6 +184,7 @@ def main() -> int:
     for relative in required_files:
         if not (ROOT / relative).is_file():
             error(f"missing required file: {relative}")
+    check_audited_artifact_hashes()
 
     config = load_json("book-config.json")
     chapters = config.get("structure", {}).get("chapters", [])
@@ -236,8 +260,8 @@ def main() -> int:
             "F-17-01",
             "F-17-02",
             "T-17-01",
-            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/f546a03a5f0534e7603dbb86ff2bdaa98542e01f/detections/cloud_identity/det_2026_017_001.json",
-            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/f546a03a5f0534e7603dbb86ff2bdaa98542e01f/scripts/replay_chapter17_detection.py",
+            f"https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/{AUDITED_ARTIFACT_REVISION}/detections/cloud_identity/det_2026_017_001.json",
+            f"https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/{AUDITED_ARTIFACT_REVISION}/scripts/replay_chapter17_detection.py",
         ),
     )
     forbidden_terms = (
@@ -366,8 +390,8 @@ def main() -> int:
             "scripts/check_chapter17_contract.py",
             "scripts/replay_chapter17_detection.py",
             "detections/cloud_identity/det_2026_017_001.json",
-            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/f546a03a5f0534e7603dbb86ff2bdaa98542e01f/detections/cloud_identity/det_2026_017_001.json",
-            "f546a03a5f0534e7603dbb86ff2bdaa98542e01f",
+            f"https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/{AUDITED_ARTIFACT_REVISION}/detections/cloud_identity/det_2026_017_001.json",
+            AUDITED_ARTIFACT_REVISION,
         ),
     )
     for term in (
