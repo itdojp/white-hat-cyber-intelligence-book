@@ -1106,10 +1106,7 @@ def raw_html_srcset_hosts(text: str):
     parser.feed(text)
     parser.close()
     for value in parser.values:
-        for raw_candidate in value.split(","):
-            candidate = raw_candidate.strip().split(maxsplit=1)[0]
-            if not candidate:
-                continue
+        for candidate in srcset_url_candidates(value):
             normalized = normalize_for_host_scanning(
                 normalize_synthetic_safety_text(
                     candidate,
@@ -1119,6 +1116,29 @@ def raw_html_srcset_hosts(text: str):
             )
             yield from url_domain_hosts(normalized)
             yield from protocol_relative_hosts(normalized)
+
+
+def srcset_url_candidates(value: str):
+    """Parse srcset URL tokens without splitting commas embedded in data URLs."""
+    index = 0
+    while index < len(value):
+        while index < len(value) and value[index] in " \t\r\n\f,":
+            index += 1
+        if index >= len(value):
+            return
+        url_start = index
+        while index < len(value) and value[index] not in " \t\r\n\f":
+            index += 1
+        raw_url = value[url_start:index]
+        candidate = raw_url.rstrip(",")
+        if candidate:
+            yield candidate
+        if len(candidate) != len(raw_url):
+            continue
+        while index < len(value) and value[index] != ",":
+            index += 1
+        if index < len(value):
+            index += 1
 
 
 class RenderedTextExtractor(HTMLParser):
@@ -3781,6 +3801,15 @@ def main() -> int:
         error(
             "fixture safety regression: malformed container prefix was "
             "treated as a reference definition"
+        )
+    data_url_srcset = (
+        '<link rel="preload" as="image" '
+        'imagesrcset="data:image/svg+xml,//comment 1x">'
+    )
+    if list(raw_html_srcset_hosts(data_url_srcset)):
+        error(
+            "fixture safety regression: data-URL comma was treated as a "
+            "srcset candidate separator"
         )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
