@@ -204,7 +204,7 @@ INDEPENDENCE_EVALUATION_TOKENS = (
 )
 URL_RE = re.compile(r"https?://[^\s<>\"'`、]+", re.IGNORECASE)
 PROTOCOL_RELATIVE_URL_RE = re.compile(
-    r"(?:\A|[\s(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
+    r"(?:\A|[\s<(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
     re.IGNORECASE,
 )
 
@@ -585,7 +585,7 @@ def normalize_synthetic_safety_text(text: str) -> str:
         decoded,
     )
     return re.sub(
-        r"(?i)(?<![A-Za-z0-9])(?P<scheme>https?):[\\/]+",
+        r"(?i)(?<![A-Za-z0-9])(?P<scheme>https?):[\t\r\n\f]*[\\/]+",
         lambda match: f"{match.group('scheme')}://",
         markdown_unescaped,
     )
@@ -888,6 +888,17 @@ def protocol_relative_hosts(text: str):
             host = urlparse(f"https:{candidate}").hostname
         except ValueError:
             host = raw_url_authority(f"https:{candidate}")
+        if not host:
+            scheme_remainder = candidate.lstrip("/")
+            candidate_authority = re.split(
+                r"[/?#]", scheme_remainder, maxsplit=1
+            )[0]
+            if candidate_authority:
+                try:
+                    host = urlparse(f"https://{candidate_authority}").hostname
+                except ValueError:
+                    host = candidate_authority
+                host = host or candidate_authority
         boundary = text[match.start() : match.start("url")]
         structured_context = (
             match.start("url") == 0
@@ -3445,11 +3456,14 @@ def main() -> int:
         "[x](//悪意/path)",
         "[x](https%3A%2F%2Fevil%2ecom/path)",
         "[x](//%31%33%34%37%34%34%30%37%32/path)",
+        "[x](///134744072/path)",
+        "[x](<//134744072/path>)",
         "[x](https:///evil/path)",
         "[x](https:////2130706433/path)",
         "[x](http:////127.1/path)",
         r"[x](https:\\evil/path)",
         r"[x](https:\\2130706433/path)",
+        '<a href="https:\t\\134744072/path">x</a>',
     )
     for encoded_live_url in encoded_live_urls:
         normalized_live_url = normalize_synthetic_safety_text(encoded_live_url)
