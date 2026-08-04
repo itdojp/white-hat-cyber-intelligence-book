@@ -33,46 +33,29 @@
 
 1. [第0章 本書の読み方](manuscript/00-reading-guide.md)
 2. [第1章 攻撃・防御・インテリジェンスを一つの業務として捉える](manuscript/01-integrated-discipline.md)
-3. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
-4. [Quick Start](quickstart.md)
-5. [Concept Map](concept-map.md)
-6. [詳細目次](TOC.md)
+3. [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
+4. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
+5. [第25章 構造化分析、不確実性、アトリビューション](manuscript/25-structured-analysis-attribution.md)
+6. [Quick Start](quickstart.md)
+7. [Concept Map](concept-map.md)
+8. [詳細目次](TOC.md)
 
 ## 代表章の成果物
 
 - [Integrated Security Case Mapテンプレート](templates/integrated-security-case-map.md)
 - [第1章 合成記入例：請求書連携OAuthアプリの権限見直し](cases/ch01-integrated-security-case-example.md)
+- [Web/API Assessment Hypothesis Packテンプレート](templates/web-api-assessment-hypothesis-pack.md)
+- [第11章 合成記入例：マルチテナント受注Export APIとWebhook登録の評価](cases/ch11-web-api-assessment-example.md)
+- [第11章 読み取り専用の合成Request / Response Dataset](cases/fixtures/ch11-web-api-assessment-dataset.json)
 - [Detection Validation Recordテンプレート](templates/detection-validation.md)
 - [第17章 合成記入例：未承認管理者同意変更のDetection Validation](cases/ch17-detection-validation-example.md)
 - [第17章 オフラインfixture説明](cases/fixtures/ch17-detection-engineering-fixture.md)
-
-これらの成果物は、Assessment、Detection、Hunting、IR / DFIR、CTI、経営判断、再評価を、共通Case IDとEvidence IDで接続します。
-
-## 第11章の本文と成果物
-
-- [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
-- [Web/API Assessment Hypothesis Packテンプレート](templates/web-api-assessment-hypothesis-pack.md)
-- [合成記入例：マルチテナント受注Export APIとWebhook登録の評価](cases/ch11-web-api-assessment-example.md)
-- [読み取り専用の合成Request / Response Dataset](cases/fixtures/ch11-web-api-assessment-dataset.json)
-
-第11章では、Web/API評価を脆弱性名やTool順ではなく、Asset、Actor、Boundary、State、Safe Validation、Evidence、Telemetry、Detection、Reassessmentの追跡可能な仮説として設計します。
-
-## 第1章の成果物
-
-- [Integrated Security Case Mapテンプレート](templates/integrated-security-case-map.md)
-- [合成記入例：請求書連携OAuthアプリの権限見直し](cases/ch01-integrated-security-case-example.md)
-
-この成果物は、Assessment、Detection、Hunting、IR / DFIR、CTI、経営判断、再評価を、共通Case IDとEvidence IDで接続します。
-
-## 第25章の成果物
-
-- [第25章 本文](manuscript/25-structured-analysis-attribution.md)
 - [Analytic Judgment Recordテンプレート](templates/analytic-judgment-record.md)
-- [合成記入例：共同報告に埋もれた技術クラスタの判断](cases/ch25-structured-analysis-attribution-example.md)
-- [Case索引](cases/index.md)
+- [第25章 合成記入例：共同報告に埋もれた技術クラスタの判断](cases/ch25-structured-analysis-attribution-example.md)
+- [合成Case索引](cases/index.md)
 - [Fixture catalog](cases/fixtures/index.md)
 
-この成果物は、Fact、Assumption、Judgment、Forecast、Recommendationを分離し、Lineage、circular reporting、deception candidate、Attribution Ladder、Decision、Reassessmentを同じCaseで接続します。
+これらの成果物は、Assessment、Detection、Hunting、IR / DFIR、CTI、構造化分析、経営判断、再評価を、共通Case IDとEvidence IDで接続します。代表4章では、Web/API評価を追跡可能な仮説として設計し、Detectionを再現可能なReplayで検証し、Fact、Assumption、Judgment、Forecast、Recommendationを分離したうえで、許容されるAttributionの段階を示します。
 
 ## 実務参照
 
