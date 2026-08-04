@@ -610,9 +610,28 @@ def mask_data_url_payloads(text: str) -> str:
 
         end = index + 5
         parenthesis_depth = 0
+        css_prefix = text[max(0, index - 16) : index]
+        css_url_match = re.search(
+            r"(?i)url\(\s*(?P<quote>['\"]?)\Z",
+            css_prefix,
+        )
+        css_quote = (
+            css_url_match.group("quote")
+            if css_url_match is not None
+            else ""
+        )
         while end < len(text):
             candidate_character = text[end]
-            if html_quote is not None:
+            if candidate_character == "\\" and end + 1 < len(text):
+                end += 2
+                continue
+            if css_url_match is not None:
+                if (
+                    (css_quote and candidate_character == css_quote)
+                    or (not css_quote and candidate_character == ")")
+                ):
+                    break
+            elif html_quote is not None:
                 if candidate_character == html_quote:
                     break
             else:
@@ -3883,17 +3902,22 @@ def main() -> int:
                 "fixture safety regression: data-URL payload escaped the "
                 "global host-scan mask"
             )
-    adjacent_markdown_url = "[d](data:text/plain,x)[x](https://evil.com)"
-    masked_adjacent_url = normalize_for_host_scanning(
-        normalize_synthetic_safety_text(
-            mask_data_url_payloads(adjacent_markdown_url)
+    for adjacent_network_url in (
+        "[d](data:text/plain,x)[x](https://evil.com)",
+        r"[d](data:text/plain,\()[x](https://evil.com)",
+        '<div style="background:url(data:image/png,x); '
+        'background:url(https://evil.com/x)">',
+    ):
+        masked_adjacent_url = normalize_for_host_scanning(
+            normalize_synthetic_safety_text(
+                mask_data_url_payloads(adjacent_network_url)
+            )
         )
-    )
-    if "evil.com" not in set(url_domain_hosts(masked_adjacent_url)):
-        error(
-            "fixture safety regression: data-URL mask consumed a following "
-            "Markdown destination"
-        )
+        if "evil.com" not in set(url_domain_hosts(masked_adjacent_url)):
+            error(
+                "fixture safety regression: data-URL mask consumed a "
+                "following network destination"
+            )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
             normalize_synthetic_safety_text(separated_prose)
