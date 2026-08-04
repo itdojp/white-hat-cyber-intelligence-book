@@ -64,6 +64,8 @@ GOは、全30章の内容が既に完成したことを意味しない。代表�
 | GATE-024 | P2 | 合成Review IDを文書全体の文字列として確認していたため、TechnicalとSafetyのIDを入れ替えても検査を通過できた | 各CaseのReview tableをparseし、各観点行のEvidence reference cellを期待`SYNTH-REV-*` IDと完全一致させるようにした |
 | GATE-025 | P2 | Table構造を検査しても、合成Review disclaimerがReview節から別位置へ移動した回帰を見逃す余地があった | 各合成Caseのexact Review heading直下にexact disclaimerがあることをTable parse時に必須化した |
 | GATE-026 | P2 | TemplateのReview tableが6列・5行でも、観点名を誤って変更した回帰を見逃す余地があった | 各Artifact固有の5観点名集合をTemplate tableの実Rowと完全一致させるようにした |
+| GATE-027 | P2 | Review節全体をfenced codeまたはHTML commentへ移すと、非表示でも生の行検索を満たしてGateを通過できた | fenced codeとHTML commentを除く表示対象Markdownだけをparseし、非表示の見出し・disclaimer・Tableでは契約を満たせないようにした |
+| GATE-028 | P2 | 表示される同一Review見出しが複数あっても、最初のTableだけでGateを通過できる余地があった | 各Template / Caseのexact Review headingが表示対象Markdown内に一つだけ存在することを必須化した |
 
 解消後のOpen件数はP0 / P1 / P2とも0である。
 
@@ -162,11 +164,11 @@ Artifact IDの重複定義とTemplate不一致は0件である。
 - 代表章PRの未解決Review Thread: 0
 
 Gate PRでは、`scripts/check_representative_gate.py`によりSource集合、Artifact、Case関係、凍結契約、Part Issue template、GO判定を継続検査する。
-Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、代表TemplateのEvidence header欠落、第1章の合成Review Evidence ID欠落（Technical / Safety各1件）、header文字列をcommentへ移したTable欠損、観点間でのEvidence ID入替、Review節外へ移した合成Review disclaimer、Template観点名変更の十八の負例を一時変異で検証し、18 / 18を拒否した。検証後は正本を復元し、positive gateを再実行した。
+Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、代表TemplateのEvidence header欠落、第1章の合成Review Evidence ID欠落（Technical / Safety各1件）、header文字列をcommentへ移したTable欠損、観点間でのEvidence ID入替、Review節外へ移した合成Review disclaimer、Template観点名変更、Review節全体のfenced code化、Review節全体のHTML comment化、表示Review節の重複の二十一の負例を一時変異で検証し、21 / 21を拒否した。検証後は正本を復元し、positive gateを再実行した。
 
 ### 証跡と保証範囲
 
-`scripts/check_representative_gate.py`は、本文領域・章末一覧・Registry mappingのSource集合、Artifact / Case関係、正確なReview見出し、合成Review Evidence ID、凍結文書、Part Issue form、本記録の必須構造を検査する。Review baselineは監査済み40桁SHAへのpinであり、履歴が利用可能なら実在commitかつ`HEAD`のancestorであることを検査する。shallow CIでは固定pinを検査する。Review日はISO実在日かつ実行日以前、独立Review evidenceは専用行のIssue #8 comment URLであることを検査する。
+`scripts/check_representative_gate.py`は、本文領域・章末一覧・Registry mappingのSource集合、Artifact / Case関係、fenced codeとHTML commentを除く表示対象Markdown内で一意なReview見出しと直下Table、合成Review Evidence ID、凍結文書、Part Issue form、本記録の必須構造を検査する。Review baselineは監査済み40桁SHAへのpinであり、履歴が利用可能なら実在commitかつ`HEAD`のancestorであることを検査する。shallow CIでは固定pinを検査する。Review日はISO実在日かつ実行日以前、独立Review evidenceは専用行のIssue #8 comment URLであることを検査する。
 
 **Repository checker does not validate GitHub live state.** 次は外部Gateであり、Repository内の`GO`文字列だけでは完了扱いにしない。
 

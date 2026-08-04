@@ -36,6 +36,7 @@ SYNTH_REVIEW_DISCLAIMER = (
     "以下は合成Case内のReview記入例であり、実際のGate reviewまたは本番承認の"
     "証跡ではない。Evidence referenceも合成IDである。"
 )
+FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 
 
 def error(message: str) -> None:
@@ -71,9 +72,60 @@ def require_tokens(relative: str, content: str, tokens: tuple[str, ...]) -> None
             error(f"{relative}: missing required token {token!r}")
 
 
-def require_heading(relative: str, content: str, heading: str) -> None:
-    if heading not in content.splitlines():
-        error(f"{relative}: missing exact heading {heading!r}")
+def strip_html_comments(line: str, in_comment: bool) -> tuple[str, bool]:
+    """Remove Markdown HTML comments while preserving visible text around them."""
+    visible: list[str] = []
+    cursor = 0
+    while cursor < len(line):
+        if in_comment:
+            end = line.find("-->", cursor)
+            if end == -1:
+                return "".join(visible), True
+            cursor = end + len("-->")
+            in_comment = False
+            continue
+
+        start = line.find("<!--", cursor)
+        if start == -1:
+            visible.append(line[cursor:])
+            break
+        visible.append(line[cursor:start])
+        cursor = start + len("<!--")
+        in_comment = True
+    return "".join(visible), in_comment
+
+
+def visible_markdown_lines(relative: str, content: str) -> list[str]:
+    """Return lines that can render, excluding fenced code and HTML comments."""
+    visible: list[str] = []
+    in_comment = False
+    fence_char = ""
+    fence_length = 0
+
+    for raw_line in content.splitlines():
+        if fence_char:
+            if re.fullmatch(
+                rf" {{0,3}}{re.escape(fence_char)}{{{fence_length},}}[ \t]*",
+                raw_line,
+            ):
+                fence_char = ""
+                fence_length = 0
+            continue
+
+        line, in_comment = strip_html_comments(raw_line, in_comment)
+        fence_match = FENCE_OPEN_RE.match(line)
+        if fence_match:
+            fence = fence_match.group(1)
+            fence_char = fence[0]
+            fence_length = len(fence)
+            continue
+        visible.append(line)
+
+    if fence_char:
+        error(f"{relative}: unclosed fenced code block")
+    if in_comment:
+        error(f"{relative}: unclosed HTML comment")
+    return visible
 
 
 def review_table_rows(
@@ -83,11 +135,18 @@ def review_table_rows(
     *,
     require_synthetic_disclaimer: bool = False,
 ) -> dict[str, list[str]]:
-    lines = content.splitlines()
-    try:
-        heading_index = lines.index(heading)
-    except ValueError:
+    lines = visible_markdown_lines(relative, content)
+    heading_indexes = [index for index, line in enumerate(lines) if line == heading]
+    if not heading_indexes:
+        error(f"{relative}: missing visible exact heading {heading!r}")
         return {}
+    if len(heading_indexes) != 1:
+        error(
+            f"{relative}: visible exact heading {heading!r} must occur once, "
+            f"got {len(heading_indexes)}"
+        )
+        return {}
+    heading_index = heading_indexes[0]
 
     index = heading_index + 1
     while index < len(lines) and not lines[index].strip():
@@ -359,8 +418,6 @@ def check_artifacts_and_cases() -> None:
                 REVIEW_HEADER,
             ),
         )
-        require_heading(template, template_text, review_heading)
-
     relationships = {
         "cases/ch01-integrated-security-case-example.md": (
             "ART-10",
@@ -561,7 +618,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-026",
+            "GATE-028",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
