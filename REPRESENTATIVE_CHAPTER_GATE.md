@@ -81,6 +81,9 @@ GOは、全30章の内容が既に完成したことを意味しない。代表�
 | GATE-041 | P2 | block IAL検出が行頭の空白だけを許容し、blockquote / list marker後のIALでSource-bearing blockを非表示にできた | Markdown container prefixを反復除去してからfence、Kramdown extension、block IALを判定するようにした |
 | GATE-042 | P2 | Source IDのcode span直後へspan IALを付けると、Citationだけを非表示にしても本文使用IDとして数えられた | inline codeとescaped syntaxをmaskした行全体から`{:`を検出し、block / spanを問わずKramdown IALを禁止するようにした |
 | GATE-043 | P2 | self-contained raw HTML要素のevent handlerから後続Review tableをDOM操作で非表示にできた | `on*`、`style`、`srcdoc`とscript-capable URL schemeを持つraw HTML属性を禁止し、通常の非実行属性だけを許容するようにした |
+| GATE-044 | P2 | URL scheme内へASCII tab / CR / LFを挿入すると、Browserは除去して`javascript:`として解釈する一方、文字列比較では実行可能URLを見逃した | URL scheme検査前にBrowser URL parserと同じASCII tab / newline除去を行い、文字参照とliteral controlの両方を回帰検査するようにした |
+| GATE-045 | P2 | `meta http-equiv="refresh"`から後続Reviewを別文書へ遷移させる実行系raw HTMLを許容していた | `meta refresh`を属性順序にかかわらず禁止し、`object data`を含むscript-capable URL属性も同じfail-closed検査へ統合した |
+| GATE-046 | P2 | `AGENTS.md`と`MAINTENANCE.md`のlocal Book QA手順にformatter依存関係のinstallがなく、README / CIと再現前提が一致していなかった | 両手順へ固定formatter checkoutに対する`npm ci --ignore-scripts`を追加し、README / CIと同じclean-environment契約へ統一した |
 
 解消後のOpen件数はP0 / P1 / P2とも0である。
 
@@ -179,7 +182,7 @@ Artifact IDの重複定義とTemplate不一致は0件である。
 - 代表章PRの未解決Review Thread: 0
 
 Gate PRでは、`scripts/check_representative_gate.py`によりSource集合、Artifact、Case関係、凍結契約、Part Issue template、GO判定を継続検査する。
-Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、代表TemplateのEvidence header欠落、第1章の合成Review Evidence ID欠落（Technical / Safety各1件）、header文字列をcommentへ移したTable欠損、観点間でのEvidence ID入替、Review節外へ移した合成Review disclaimer、Template観点名変更、Review節全体のfenced code化、Review節全体のHTML comment化、表示Review節の重複、`template` / `div hidden` / `script`のraw HTML container化、Liquidのcomment / capture / false condition、Kramdown comment / nomarkdown化、非void要素のself-closing marker化、Review tableへのstyle / class / quoted-brace IAL付加、standalone / inline active style、非表示Source ID化、Source blockへの通常 / blockquote / span IAL付加、inline `div hidden`化、raw HTML event handler追加の四十一の負例を一時変異で検証し、41 / 41を拒否した。検証後は正本を復元し、positive gateを再実行した。
+Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、代表TemplateのEvidence header欠落、第1章の合成Review Evidence ID欠落（Technical / Safety各1件）、header文字列をcommentへ移したTable欠損、観点間でのEvidence ID入替、Review節外へ移した合成Review disclaimer、Template観点名変更、Review節全体のfenced code化、Review節全体のHTML comment化、表示Review節の重複、`template` / `div hidden` / `script`のraw HTML container化、Liquidのcomment / capture / false condition、Kramdown comment / nomarkdown化、非void要素のself-closing marker化、Review tableへのstyle / class / quoted-brace IAL付加、standalone / inline active style、非表示Source ID化、Source blockへの通常 / blockquote / span IAL付加、inline `div hidden`化、raw HTML event handler追加、control文字で難読化したscript URL、`meta refresh`の四十三の負例を一時変異で検証し、43 / 43を拒否した。検証後は正本を復元し、positive gateを再実行した。
 
 ### 証跡と保証範囲
 

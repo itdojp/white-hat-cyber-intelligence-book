@@ -84,6 +84,7 @@ Before tagging a release:
 
 ```bash
 npm ci
+npm ci --prefix ../book-formatter --ignore-scripts
 bundle install
 BOOK_FORMATTER_DIR=../book-formatter npm test
 BOOK_FORMATTER_DIR=../book-formatter npm run check:book-qa

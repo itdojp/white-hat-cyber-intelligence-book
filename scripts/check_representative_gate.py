@@ -84,13 +84,26 @@ FOREIGN_ROOT_TAGS = {"math", "svg"}
 ACTIVE_RAW_HTML_TAGS = {"link", "script", "style"}
 SCRIPT_URL_ATTRIBUTES = {
     "action",
+    "data",
     "formaction",
     "href",
     "poster",
     "src",
     "xlink:href",
 }
-SCRIPT_URL_PREFIXES = ("javascript:", "data:text/html", "data:image/svg+xml")
+SCRIPT_URL_PREFIXES = (
+    "javascript:",
+    "vbscript:",
+    "data:text/html",
+    "data:application/xhtml+xml",
+    "data:image/svg+xml",
+)
+URL_ASCII_TAB_OR_NEWLINE_RE = re.compile(r"[\t\r\n]")
+
+
+def normalize_url_for_scheme_check(value: str | None) -> str:
+    """Apply the browser URL parser's ASCII-tab/newline preprocessing."""
+    return URL_ASCII_TAB_OR_NEWLINE_RE.sub("", value or "").strip().lower()
 
 
 class RawHtmlContainerTracker(HTMLParser):
@@ -104,10 +117,13 @@ class RawHtmlContainerTracker(HTMLParser):
         self.unsafe_attribute = ""
         self.saw_tag = False
 
-    def inspect_attributes(self, attrs: list[tuple[str, str | None]]) -> None:
+    def inspect_attributes(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        http_equiv_values: list[str] = []
         for name, value in attrs:
             attribute = name.lower()
-            normalized_value = (value or "").strip().lower()
+            normalized_value = normalize_url_for_scheme_check(value)
             if attribute.startswith("on") or attribute in {"srcdoc", "style"}:
                 self.unsafe_attribute = attribute
                 return
@@ -116,15 +132,24 @@ class RawHtmlContainerTracker(HTMLParser):
             ):
                 self.unsafe_attribute = attribute
                 return
+            if attribute == "http-equiv":
+                http_equiv_values.append(normalized_value)
+        if tag == "meta" and "refresh" in http_equiv_values:
+            self.unsafe_attribute = "http-equiv=refresh"
+
+    def register_tag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        self.saw_tag = True
+        if tag in ACTIVE_RAW_HTML_TAGS and not self.active_content_tag:
+            self.active_content_tag = tag
+        self.inspect_attributes(tag, attrs)
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         normalized = tag.lower()
         if normalized.endswith(":"):
             return
-        self.saw_tag = True
-        if normalized in ACTIVE_RAW_HTML_TAGS and not self.active_content_tag:
-            self.active_content_tag = normalized
-        self.inspect_attributes(attrs)
+        self.register_tag(normalized, attrs)
         if normalized not in VOID_HTML_TAGS:
             self.stack.append(normalized)
 
@@ -137,13 +162,13 @@ class RawHtmlContainerTracker(HTMLParser):
         normalized = tag.lower()
         if normalized.endswith(":"):
             return
-        self.saw_tag = True
-        self.inspect_attributes(attrs)
+        self.register_tag(normalized, attrs)
         if normalized in FOREIGN_ROOT_TAGS or any(
             ancestor in FOREIGN_ROOT_TAGS for ancestor in self.stack
         ):
             return
-        self.handle_starttag(tag, attrs)
+        if normalized not in VOID_HTML_TAGS:
+            self.stack.append(normalized)
 
     def handle_endtag(self, tag: str) -> None:
         normalized = tag.lower()
@@ -163,6 +188,44 @@ class RawHtmlContainerTracker(HTMLParser):
 
 def error(message: str) -> None:
     ERRORS.append(message)
+
+
+def check_raw_html_attribute_regressions() -> None:
+    unsafe_markup = {
+        "character-reference tab in javascript URL": (
+            '<iframe src="java&#x09;script:alert(1)"></iframe>'
+        ),
+        "literal CR/LF in javascript URL": (
+            '<iframe src="java\r\nscript:alert(1)"></iframe>'
+        ),
+        "meta refresh": (
+            '<meta http-equiv="refresh" content="0;url=data:text/html,synthetic">'
+        ),
+        "object executable data URL": (
+            '<object data="data:application/xhtml+xml,synthetic"></object>'
+        ),
+    }
+    for label, markup in unsafe_markup.items():
+        tracker = RawHtmlContainerTracker()
+        tracker.feed(markup)
+        tracker.close()
+        if not tracker.unsafe_attribute:
+            error(f"raw HTML safety regression accepted {label}")
+
+    safe_markup = {
+        "synthetic image": '<img src="synthetic.png" alt="synthetic fixture">',
+        "inert data URL": '<a href="data:text/plain,synthetic">sample</a>',
+        "description metadata": (
+            '<meta name="description" content="synthetic fixture">'
+        ),
+        "local object": '<object data="synthetic.pdf"></object>',
+    }
+    for label, markup in safe_markup.items():
+        tracker = RawHtmlContainerTracker()
+        tracker.feed(markup)
+        tracker.close()
+        if tracker.unsafe_attribute or tracker.active_content_tag or tracker.malformed:
+            error(f"raw HTML safety regression rejected {label}")
 
 
 def read_text(relative: str) -> str:
@@ -958,7 +1021,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-043",
+            "GATE-046",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
@@ -1059,6 +1122,7 @@ def check_issue_template_and_gate_record() -> None:
 
 
 def main() -> int:
+    check_raw_html_attribute_regressions()
     check_source_traceability()
     check_artifacts_and_cases()
     check_review_tables()
