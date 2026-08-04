@@ -3668,6 +3668,8 @@ def main() -> int:
         (
             "合成Case索引",
             "ch01-integrated-security-case-example.md",
+            "ch11-web-api-assessment-example.md",
+            "ch17-detection-validation-example.md",
             "ch25-structured-analysis-attribution-example.md",
             "fixtures/index.md",
         ),
@@ -3679,6 +3681,8 @@ def main() -> int:
         fixture_index,
         (
             "Fixture Catalog",
+            "ch11-web-api-assessment-dataset.json",
+            "ch17-detection-engineering-fixture.json",
             "ch25-structured-analysis-attribution-dataset.json",
             "synthetic data",
             "Lineage",
