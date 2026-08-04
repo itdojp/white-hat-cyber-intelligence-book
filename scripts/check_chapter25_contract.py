@@ -625,9 +625,16 @@ def mask_data_url_payloads(
         "usemap",
         "xlink:href",
     }
+    html_tag_start = re.compile(
+        r"</?[A-Za-z][A-Za-z0-9-]*(?=[\s/>])|<!|<\?"
+    )
     while index < len(text):
         character = text[index]
-        if not inside_html_tag and character == "<":
+        if (
+            not inside_html_tag
+            and character == "<"
+            and html_tag_start.match(text, index) is not None
+        ):
             inside_html_tag = True
         elif inside_html_tag:
             if html_quote is not None:
@@ -4080,6 +4087,7 @@ def main() -> int:
         '<img srcset="data:text/plain,https://evil.com 1x">',
         '<img srcset="data:text/plain,https%3A%2F%2Fevil.com 1x">',
         '<img src="data:text/plain,https://evil.com">',
+        '<data:text/plain,https://evil.com>',
     ):
         if list(raw_html_srcset_hosts(data_url_srcset)):
             error(
