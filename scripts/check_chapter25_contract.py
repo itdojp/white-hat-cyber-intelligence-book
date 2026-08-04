@@ -2101,6 +2101,129 @@ def normalized_reference_label(label: str) -> str:
     return " ".join(label.split()).casefold()
 
 
+KRAMDOWN_HTML_SPAN_ELEMENTS = frozenset(
+    "a abbr acronym b big bdo br button cite code del dfn em i img input "
+    "ins kbd label mark option q rb rbc rp rt rtc ruby samp select small "
+    "span strong sub sup time tt u var".split()
+)
+HTML_ELEMENTS_WITHOUT_BODY = frozenset(
+    "area base br col command embed hr img input keygen link meta param "
+    "source track wbr".split()
+)
+
+
+class MarkdownRawHtmlBlockParser(HTMLParser):
+    """Track one Kramdown block-HTML element through its matching end tag."""
+
+    def __init__(self, target: str) -> None:
+        super().__init__(convert_charrefs=False)
+        self.target = target.casefold()
+        self.depth = 0
+        self.started = False
+        self.closed = False
+        self.trailing_content = False
+
+    def mark_trailing(self, value: str = "content") -> None:
+        if self.closed and value.strip():
+            self.trailing_content = True
+
+    def handle_starttag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        del attrs
+        normalized = tag.casefold()
+        if self.closed:
+            self.trailing_content = True
+            return
+        if normalized == self.target:
+            self.started = True
+            if normalized in HTML_ELEMENTS_WITHOUT_BODY:
+                self.closed = True
+            else:
+                self.depth += 1
+
+    def handle_startendtag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        del attrs
+        if self.closed:
+            self.trailing_content = True
+        elif tag.casefold() == self.target:
+            self.started = True
+            self.closed = True
+
+    def handle_endtag(self, tag: str) -> None:
+        if self.closed:
+            self.trailing_content = True
+            return
+        if tag.casefold() == self.target and self.depth:
+            self.depth -= 1
+            if self.depth == 0:
+                self.closed = True
+
+    def handle_data(self, data: str) -> None:
+        self.mark_trailing(data)
+
+    def handle_entityref(self, name: str) -> None:
+        self.mark_trailing(name)
+
+    def handle_charref(self, name: str) -> None:
+        self.mark_trailing(name)
+
+    def handle_comment(self, data: str) -> None:
+        self.mark_trailing(data or "comment")
+
+    def handle_decl(self, decl: str) -> None:
+        self.mark_trailing(decl)
+
+    def unknown_decl(self, data: str) -> None:
+        self.mark_trailing(data)
+
+    def handle_pi(self, data: str) -> None:
+        self.mark_trailing(data)
+
+
+def markdown_raw_html_definition_boundaries(text: str) -> set[int]:
+    """Return line starts after completed Kramdown block-HTML elements."""
+    boundaries: set[int] = set()
+    parser: MarkdownRawHtmlBlockParser | None = None
+    for line_start, line_end, content_start, inside_code_context in (
+        markdown_line_contexts(text)
+    ):
+        line = text[content_start:line_end].rstrip("\r\n")
+        if inside_code_context:
+            parser = None
+            continue
+        if parser is None:
+            candidate = line.lstrip(" ")
+            if len(line) - len(candidate) > 3:
+                continue
+            opening = re.match(
+                r"<(?P<tag>[A-Za-z][A-Za-z0-9_.:-]*)(?:\s|/?>)",
+                candidate,
+            )
+            if (
+                opening is None
+                or opening.group("tag").casefold()
+                in KRAMDOWN_HTML_SPAN_ELEMENTS
+            ):
+                continue
+            parser = MarkdownRawHtmlBlockParser(opening.group("tag"))
+            parser.feed(candidate)
+        else:
+            parser.feed(line)
+        if parser.closed:
+            if parser.started and not parser.trailing_content:
+                boundaries.add(line_end)
+            parser.close()
+            parser = None
+    return boundaries
+
+
 def markdown_reference_definitions(
     text: str,
 ) -> list[tuple[str, int, int, int]]:
@@ -2175,9 +2298,15 @@ def markdown_reference_definitions(
     return definitions
 
 
-def markdown_reference_definition_can_render(text: str, line_start: int) -> bool:
+def markdown_reference_definition_can_render(
+    text: str,
+    line_start: int,
+    raw_html_boundaries: set[int] | None = None,
+) -> bool:
     """Match Kramdown GFM block boundaries for link reference definitions."""
     if line_start == 0:
+        return True
+    if raw_html_boundaries is not None and line_start in raw_html_boundaries:
         return True
     previous_end = line_start - 1
     if previous_end > 0 and text[previous_end - 1] == "\r":
@@ -2279,6 +2408,9 @@ def markdown_url_destinations(text: str):
     """Yield ordinary inline, reference, and autolink URL destinations."""
     protected_text, _ = protect_markdown_code(text)
     protected_text = strip_html_comments_preserving_lines(protected_text)
+    raw_html_boundaries = markdown_raw_html_definition_boundaries(
+        protected_text
+    )
     bracket_pairs = markdown_bracket_pairs(protected_text)
     parenthesis_pairs = markdown_parenthesis_pairs(protected_text)
 
@@ -2305,6 +2437,7 @@ def markdown_url_destinations(text: str):
         if not markdown_reference_definition_can_render(
             protected_text,
             definition_line_start,
+            raw_html_boundaries,
         ):
             continue
         start = colon + 1
@@ -4887,6 +5020,10 @@ def main() -> int:
         '[x][ref]\n\n[ref]: java&#9;script:location="//0x08080808/x"',
         '```text\ncode\n```\n[after-code]: javascript:alert(1)\n\n'
         '[x][after-code]',
+        '[x][html-ref]\n<pre>\nsafe\n</pre>\n'
+        '[html-ref]: javascript:alert(1)',
+        '[x][inline-html-ref]\n<pre>safe</pre>\n'
+        '[inline-html-ref]: javascript:alert(1)',
         '[x][^]\n\n[^]: javascript:location="//0x08080808/x"',
         '<vbscript:msgbox(1)>',
     ):
@@ -4900,6 +5037,10 @@ def main() -> int:
         '```text\n[x](javascript:alert(1))\n```',
         '`code`\n[after]: javascript: is same-paragraph prose\n\n[x][after]',
         '    code\n[after]: javascript: remains indented-code prose\n\n[x][after]',
+        '[x][literal-close]\nliteral </pre>\n'
+        '[literal-close]: javascript: is same-paragraph prose',
+        '[x][orphan-close]\n</pre>\n'
+        '[orphan-close]: javascript: is same-paragraph prose',
         'javascript: is an executable scheme name',
         '[x](java script:alert(1))',
         '[x][ref]\n[ref]: javascript: is same-paragraph prose',
