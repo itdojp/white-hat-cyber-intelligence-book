@@ -1703,6 +1703,135 @@ def decode_css_escapes(value: str) -> str:
     return CSS_ESCAPE_RE.sub(replace, value)
 
 
+def skip_css_space_and_comments(value: str, index: int) -> int:
+    while index < len(value):
+        if value[index] in " \t\r\n\f":
+            index += 1
+            continue
+        if value.startswith("/*", index):
+            comment_end = value.find("*/", index + 2)
+            if comment_end < 0:
+                return len(value)
+            index = comment_end + 2
+            continue
+        break
+    return index
+
+
+def consume_css_escape(value: str, index: int) -> tuple[str, int]:
+    match = CSS_ESCAPE_RE.match(value, index)
+    if match is None:
+        return "", min(len(value), index + 1)
+    return decode_css_escapes(match.group(0)), match.end()
+
+
+def consume_css_identifier(value: str, index: int) -> tuple[str, int]:
+    decoded: list[str] = []
+    while index < len(value):
+        character = value[index]
+        if character == "\\":
+            escaped, index = consume_css_escape(value, index)
+            decoded.append(escaped)
+            continue
+        if character.isalnum() or character in "_-" or ord(character) >= 0x80:
+            decoded.append(character)
+            index += 1
+            continue
+        break
+    return "".join(decoded), index
+
+
+def consume_css_string(value: str, index: int) -> tuple[str, int]:
+    quote = value[index]
+    decoded: list[str] = []
+    index += 1
+    while index < len(value):
+        character = value[index]
+        if character == quote:
+            return "".join(decoded), index + 1
+        if character == "\\":
+            escaped, index = consume_css_escape(value, index)
+            decoded.append(escaped)
+            continue
+        decoded.append(character)
+        index += 1
+    return "".join(decoded), index
+
+
+def consume_css_unquoted_url(value: str, index: int) -> tuple[str, int]:
+    decoded: list[str] = []
+    while index < len(value):
+        character = value[index]
+        if character == ")" or character in " \t\r\n\f":
+            break
+        if value.startswith("/*", index):
+            comment_end = value.find("*/", index + 2)
+            if comment_end < 0:
+                return "".join(decoded), len(value)
+            index = comment_end + 2
+            continue
+        if character == "\\":
+            escaped, index = consume_css_escape(value, index)
+            decoded.append(escaped)
+            continue
+        decoded.append(character)
+        index += 1
+    return "".join(decoded), index
+
+
+def is_stylesheet_data_url(value: str) -> bool:
+    candidate = re.sub(r"^[\x00-\x20\x7f]+", "", value)
+    detection_view, _ = data_scheme_detection_view(candidate)
+    return STYLESHEET_DATA_URL_RE.match(detection_view) is not None
+
+
+def has_css_import_data_url(value: str) -> bool:
+    """Detect executable CSS data URLs only in @import's URL position."""
+    index = 0
+    while index < len(value):
+        if value.startswith("/*", index):
+            index = skip_css_space_and_comments(value, index)
+            continue
+        if value[index] in "\"'":
+            _, index = consume_css_string(value, index)
+            continue
+        if value[index] != "@":
+            index += 1
+            continue
+
+        keyword, keyword_end = consume_css_identifier(value, index + 1)
+        if keyword.casefold() != "import":
+            index = max(index + 1, keyword_end)
+            continue
+        cursor = skip_css_space_and_comments(value, keyword_end)
+        if cursor >= len(value):
+            return False
+        if value[cursor] in "\"'":
+            candidate, candidate_end = consume_css_string(value, cursor)
+            if is_stylesheet_data_url(candidate):
+                return True
+            index = candidate_end
+            continue
+
+        function_name, function_end = consume_css_identifier(value, cursor)
+        if function_name.casefold() != "url":
+            index = max(index + 1, keyword_end)
+            continue
+        cursor = skip_css_space_and_comments(value, function_end)
+        if cursor >= len(value) or value[cursor] != "(":
+            index = max(index + 1, keyword_end)
+            continue
+        cursor = skip_css_space_and_comments(value, cursor + 1)
+        if cursor < len(value) and value[cursor] in "\"'":
+            candidate, candidate_end = consume_css_string(value, cursor)
+        else:
+            candidate, candidate_end = consume_css_unquoted_url(value, cursor)
+        if is_stylesheet_data_url(candidate):
+            return True
+        index = max(candidate_end, index + 1)
+    return False
+
+
 def executable_css_value_violations(value: str) -> list[str]:
     decoded = decode_css_escapes(value)
     without_comments = re.sub(r"/\*.*?\*/", "", decoded, flags=re.DOTALL)
@@ -1714,9 +1843,8 @@ def executable_css_value_violations(value: str) -> list[str]:
         violations.append("executable script URL in style attribute")
     if has_executable_data_url(decoded):
         violations.append("executable data URL in style attribute")
-    data_detection_view, _ = data_scheme_detection_view(without_comments)
-    if STYLESHEET_DATA_URL_RE.search(data_detection_view):
-        violations.append("CSS data URL in style context")
+    if has_css_import_data_url(value):
+        violations.append("CSS data URL in @import")
     return violations
 
 
@@ -4633,6 +4761,7 @@ def main() -> int:
         '[x](#){: ping="//audit.example/a //notify.example/path" }',
         '`{: style="background:url(https://evil.com/x)" }`',
         '```text\n{: style="background:url(https://evil.com/x)" }\n```',
+        '[x](#){: style=\'content:"data:text/css,body{}"\' }',
     ):
         if executable_kramdown_ial_violations(safe_ial):
             error(
@@ -4646,11 +4775,21 @@ def main() -> int:
         '<style>@import url(data:text/css,body{background:'
         'url(https://evil.com/x)})</style>',
         '<style>@import url(d\\61 ta:text/css,body{})</style>',
+        '<style>@\\69 mport "da\\74 a:text/css,body{}"</style>',
     ):
         if not raw_html_executable_css_violations(executable_css):
             error(
                 "fixture safety regression: executable raw HTML CSS was "
                 f"accepted: {executable_css!r}"
+            )
+    for safe_css in (
+        '<div style=\'content:"data:text/css,body{}"\'></div>',
+        '<style>.x::after{content:"@import url(data:text/css,body{})"}</style>',
+    ):
+        if raw_html_executable_css_violations(safe_css):
+            error(
+                "fixture safety regression: inert CSS string was treated as "
+                f"executable: {safe_css!r}"
             )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
