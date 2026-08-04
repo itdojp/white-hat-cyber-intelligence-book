@@ -19,6 +19,11 @@ CHAPTERS = {
 }
 SOURCE_ID_RE = re.compile(r"\bSRC-[A-Z0-9-]+\b")
 EXPECTED_REVIEW_BASELINE = "b56af680863a43017475b046ed7f9280f759844f"
+EXPECTED_REVIEW_DATE = date(2026, 8, 4)
+EXPECTED_REVIEW_EVIDENCE_URL = (
+    "https://github.com/itdojp/white-hat-cyber-intelligence-book/"
+    "issues/8#issuecomment-5181087925"
+)
 ARTIFACT_ROW_RE = re.compile(
     r"^\| (ART-\d{2}) \| ([^|]+?) \| ([^|]+?) \| `([^`]+)` \|$",
     re.MULTILINE,
@@ -187,6 +192,8 @@ def check_artifacts_and_cases() -> None:
             "DEC-2026-001",
             "REA-2026-001",
             "## 16. Review",
+            "合成Case内のReview記入例",
+            "SYNTH-REV-01-TECH-001",
         ),
         "cases/ch11-web-api-assessment-example.md": (
             "ART-11",
@@ -355,7 +362,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-017",
+            "GATE-021",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
@@ -425,11 +432,16 @@ def check_issue_template_and_gate_record() -> None:
         else:
             if review_date > date.today():
                 error("REPRESENTATIVE_CHAPTER_GATE.md: Review日 must not be in the future")
+            if review_date != EXPECTED_REVIEW_DATE:
+                error(
+                    "REPRESENTATIVE_CHAPTER_GATE.md: Review日 differs from the "
+                    f"audited date: {review_date.isoformat()}"
+                )
 
     evidence_match = re.search(
         r"^- 独立Review evidence: \[[^\]]+\]\("
         r"https://github\.com/itdojp/white-hat-cyber-intelligence-book/"
-        r"issues/8#issuecomment-\d+\)$",
+        r"issues/8#issuecomment-(\d+)\)$",
         record,
         re.MULTILINE,
     )
@@ -438,6 +450,16 @@ def check_issue_template_and_gate_record() -> None:
             "REPRESENTATIVE_CHAPTER_GATE.md: independent review evidence must "
             "reference an Issue #8 comment"
         )
+    else:
+        evidence_url = (
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/"
+            f"issues/8#issuecomment-{evidence_match.group(1)}"
+        )
+        if evidence_url != EXPECTED_REVIEW_EVIDENCE_URL:
+            error(
+                "REPRESENTATIVE_CHAPTER_GATE.md: independent review evidence "
+                f"differs from the audited comment: {evidence_url}"
+            )
 
 
 def main() -> int:

@@ -22,6 +22,11 @@ if [[ "$ACTUAL_FORMATTER_SHA" != "$EXPECTED_FORMATTER_SHA" ]]; then
   exit 2
 fi
 
+if [[ -n "$(git -C "$FORMATTER_DIR" status --porcelain=v1 --untracked-files=no)" ]]; then
+  echo "ERROR: book-formatter checkout has tracked index or worktree changes" >&2
+  exit 2
+fi
+
 REPORT_DIR="$ROOT/.tmp/white-hat-book-qa"
 mkdir -p "$REPORT_DIR"
 

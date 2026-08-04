@@ -55,6 +55,10 @@ GOは、全30章の内容が既に完成したことを意味しない。代表�
 | GATE-015 | P2 | Gate記録のReview baselineとReview日が形式・Repository履歴へ束縛されず、staleまたは不正な自己申告をRepository checkerが見逃し得た | baselineを監査済み40桁commit SHAへpinし、履歴が利用可能なら実在commitかつ`HEAD`のancestorとして検証する。shallow CIではpinを検証し、Review日をISO実在日、Review evidenceをIssue #8 comment URLとして検証するようにした |
 | GATE-016 | P2 | 第1章本文に旧学習目標の説明が残り、また凍結した静的出版QAをlocalで一括再現するcommandがなかった | 第1章本文とcontractをWorkflow MapからCase Mapへの適用目標へ同期し、固定formatter SHAを検証してCI相当の静的検査・Jekyll build・built-site smokeを実行する`npm run check:book-qa`を追加した |
 | GATE-017 | P2 | Review日が未来でも通り、独立Review evidence欄が壊れても文書内の別URLで検査を通過できた | Review日を実在ISO日かつ実行日以前に限定し、Issue #8 comment URLを`独立Review evidence`専用行へanchorして検査するようにした |
+| GATE-018 | P2 | `独立Review evidence`欄が別の数値comment URLでも通り、監査済みURLが文書後半に残れば検査を通過できた | 専用行からURLをcaptureし、監査済みIssue #8 comment URLと完全一致させるようにした |
+| GATE-019 | P2 | Review日が監査baselineより過去でも通り、baseline/date bindingが不完全だった | Review日を実行日以前に加え、監査済みReview日`2026-08-04`と完全一致させるようにした |
+| GATE-020 | P2 | 第1章の合成CaseだけReview disclaimerと`SYNTH-REV-*` Evidence referenceがなく、実Gate承認と誤認され得た | `ART-10` TemplateへEvidence reference欄を追加し、第1章の合成記入例へdisclaimerと観点別合成Evidence IDを追加した |
+| GATE-021 | P2 | formatter checkoutのHEADだけを検証していたため、trackedな未commit変更を加えた検査器でもQAを通せた | `git status --porcelain --untracked-files=no`でformatterのindex / worktreeのtracked変更を拒否してから検査を実行するようにした |
 
 解消後のOpen件数はP0 / P1 / P2とも0である。
 
@@ -153,7 +157,7 @@ Artifact IDの重複定義とTemplate不一致は0件である。
 - 代表章PRの未解決Review Thread: 0
 
 Gate PRでは、`scripts/check_representative_gate.py`によりSource集合、Artifact、Case関係、凍結契約、Part Issue template、GO判定を継続検査する。
-Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正Review日、不一致formatter checkout、未来のReview日、専用欄が壊れたReview evidenceの八つの負例を一時変異で検証し、8 / 8を拒否した。検証後は正本を復元し、positive gateを再実行した。
+Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、第1章の合成Review Evidence欠落の十二の負例を一時変異で検証し、12 / 12を拒否した。検証後は正本を復元し、positive gateを再実行した。
 
 ### 証跡と保証範囲
 
