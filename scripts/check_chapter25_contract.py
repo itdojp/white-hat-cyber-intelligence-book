@@ -1106,6 +1106,9 @@ def blockquote_content_offset(line: str) -> int:
 
 def markdown_line_contexts(
     text: str,
+    *,
+    fence_boundary_starts: set[int] | None = None,
+    container_content_starts: dict[int, int] | None = None,
 ) -> list[tuple[int, int, int, bool]]:
     """Index line/content offsets and Kramdown code context in one pass."""
     contexts: list[tuple[int, int, int, bool]] = []
@@ -1133,6 +1136,8 @@ def markdown_line_contexts(
                 closing_candidate,
             )
             if closing is not None:
+                if fence_boundary_starts is not None:
+                    fence_boundary_starts.add(offset)
                 fence_is_open = False
                 fence_character = ""
                 minimum_length = 0
@@ -1179,6 +1184,18 @@ def markdown_line_contexts(
                 else:
                     opening_candidate = container_content[leading_length:]
                     candidate_list_indent = 0
+            if container_content_starts is not None:
+                container_content_starts[offset] = (
+                    offset
+                    + quote_offset
+                    + (
+                        marker_cursor
+                        if marker_found
+                        else active_list_indent
+                        if in_list_continuation
+                        else 0
+                    )
+                )
             opening = re.match(
                 r"(?P<fence>`{3,}|~{3,})",
                 opening_candidate,
@@ -2010,37 +2027,20 @@ def protect_markdown_code(markdown: str) -> tuple[str, dict[str, str]]:
         return token
 
     protected_lines: list[str] = []
-    fence_character = ""
-    fence_length = 0
+    fence_boundary_starts: set[int] = set()
     for line_start, line_end, _, inside_code_context in markdown_line_contexts(
-        markdown
+        markdown,
+        fence_boundary_starts=fence_boundary_starts,
     ):
         line = markdown[line_start:line_end]
         if inside_code_context:
             line_ending = line[len(line.rstrip("\r\n")) :]
             line_body = line[: -len(line_ending)] if line_ending else line
-            content = line_body[blockquote_content_offset(line_body) :]
-            candidate = content.lstrip(" ")
-            indentation = len(content) - len(candidate)
-            fence_match = (
-                re.match(r"(?P<fence>`{3,}|~{3,})(?P<rest>.*)$", candidate)
-                if indentation <= 3
-                else None
+            kind = (
+                "FENCEBOUNDARY"
+                if line_start in fence_boundary_starts
+                else "BLOCKCODE"
             )
-            kind = "BLOCKCODE"
-            if fence_character:
-                if (
-                    fence_match is not None
-                    and fence_match.group("fence")[0] == fence_character
-                    and len(fence_match.group("fence")) >= fence_length
-                    and not fence_match.group("rest").strip()
-                ):
-                    kind = "FENCEBOUNDARY"
-                    fence_character = ""
-                    fence_length = 0
-            elif fence_match is not None:
-                fence_character = fence_match.group("fence")[0]
-                fence_length = len(fence_match.group("fence"))
             protected_lines.append(placeholder(line_body, kind) + line_ending)
             continue
         protected_lines.append(line)
@@ -2191,10 +2191,16 @@ def markdown_raw_html_definition_boundaries(text: str) -> set[int]:
     """Return line starts after completed Kramdown block-HTML elements."""
     boundaries: set[int] = set()
     parser: MarkdownRawHtmlBlockParser | None = None
+    container_content_starts: dict[int, int] = {}
     for line_start, line_end, content_start, inside_code_context in (
-        markdown_line_contexts(text)
+        markdown_line_contexts(
+            text,
+            container_content_starts=container_content_starts,
+        )
     ):
-        line = text[content_start:line_end].rstrip("\r\n")
+        line = text[
+            container_content_starts.get(line_start, content_start) : line_end
+        ].rstrip("\r\n")
         if inside_code_context:
             parser = None
             continue
@@ -5020,10 +5026,20 @@ def main() -> int:
         '[x][ref]\n\n[ref]: java&#9;script:location="//0x08080808/x"',
         '```text\ncode\n```\n[after-code]: javascript:alert(1)\n\n'
         '[x][after-code]',
+        '- ```text\n  code\n  ```\n'
+        '[after-list-code]: javascript:alert(1)\n\n[x][after-list-code]',
+        '- outer\n    1. ```text\n       code\n       ```\n'
+        '[after-nested-list-code]: javascript:alert(1)\n\n'
+        '[x][after-nested-list-code]',
         '[x][html-ref]\n<pre>\nsafe\n</pre>\n'
         '[html-ref]: javascript:alert(1)',
         '[x][inline-html-ref]\n<pre>safe</pre>\n'
         '[inline-html-ref]: javascript:alert(1)',
+        '[x][list-html-ref]\n- <pre>safe</pre>\n'
+        '[list-html-ref]: javascript:alert(1)',
+        '[x][nested-list-html-ref]\n- outer\n'
+        '    1. <pre>safe</pre>\n'
+        '[nested-list-html-ref]: javascript:alert(1)',
         '[x][^]\n\n[^]: javascript:location="//0x08080808/x"',
         '<vbscript:msgbox(1)>',
     ):
