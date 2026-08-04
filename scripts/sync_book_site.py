@@ -4,9 +4,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import posixpath
 import re
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,8 +18,9 @@ if str(ROOT) not in sys.path:
 from scripts import sync_site_source as base  # noqa: E402
 
 REGISTRY_PATH = ROOT / "site-pages.json"
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 DIRECTORY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+STATIC_PATH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]*\.json$")
 LINE_TERMINATOR_RE = re.compile(r"[\r\n\u2028\u2029]")
 ALLOWED_SECTIONS = set(base.SECTION_ORDER)
 ALLOWED_CANONICAL_DIRECTORIES = {"cases", "schemas"}
@@ -27,6 +30,20 @@ RESERVED_DESTINATION_ROOTS = {
     "_layouts",
     "assets",
 }
+STATIC_DESTINATION_ROOT = "downloads"
+ALLOWED_STATIC_SUFFIXES = {".json"}
+MAX_STATIC_FILE_BYTES = 1024 * 1024
+
+
+@dataclass(frozen=True)
+class StaticFile:
+    source: str
+    destination: str
+
+
+STATIC_FILES: tuple[StaticFile, ...] = ()
+BASE_REWRITE_LINKS = base.rewrite_links
+BASE_GENERATE = base.generate
 
 
 class SitePageRegistryError(base.SiteGenerationError):
@@ -109,30 +126,112 @@ def schema_markdown_path(value: object, label: str) -> str:
     # For example, Path("cases/example.md/") becomes "cases/example.md".
     if not value.endswith(".md"):
         raise SitePageRegistryError(f"{label} must end in .md: {value}")
-    path = base.safe_relative_path(value, label).as_posix()
+    try:
+        path = base.safe_relative_path(value, label).as_posix()
+    except base.SiteGenerationError as exc:
+        raise SitePageRegistryError(str(exc)) from exc
     if not path.endswith(".md"):
         raise SitePageRegistryError(f"{label} must end in .md: {path}")
     return path
+
+
+def schema_static_path(value: object, label: str) -> str:
+    """Validate a static artifact path before source/destination policy checks."""
+    if not isinstance(value, str):
+        raise SitePageRegistryError(f"{label} must be a string")
+    if LINE_TERMINATOR_RE.search(value):
+        raise SitePageRegistryError(
+            f"{label} must not contain CR, LF, U+2028, or U+2029"
+        )
+    if not any(value.endswith(suffix) for suffix in ALLOWED_STATIC_SUFFIXES):
+        raise SitePageRegistryError(
+            f"{label} must end in an approved static artifact suffix: {value}"
+        )
+    try:
+        path = base.safe_relative_path(value, label)
+    except base.SiteGenerationError as exc:
+        raise SitePageRegistryError(str(exc)) from exc
+    normalized = path.as_posix()
+    if normalized != value or not STATIC_PATH_RE.fullmatch(value):
+        raise SitePageRegistryError(
+            f"{label} must be a normalized URL-safe relative JSON path: {value}"
+        )
+    if any(part.startswith((".", "_")) for part in path.parts):
+        raise SitePageRegistryError(
+            f"{label} must not use hidden or Jekyll-reserved path components: "
+            f"{normalized}"
+        )
+    if path.suffix not in ALLOWED_STATIC_SUFFIXES:
+        raise SitePageRegistryError(
+            f"{label} must use an approved static artifact suffix: {normalized}"
+        )
+    return normalized
+
+
+def validate_static_json(data: bytes, label: str) -> None:
+    if not data:
+        raise SitePageRegistryError(f"{label} must not be empty")
+    if len(data) > MAX_STATIC_FILE_BYTES:
+        raise SitePageRegistryError(
+            f"{label} exceeds the {MAX_STATIC_FILE_BYTES}-byte publication limit"
+        )
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise SitePageRegistryError(f"{label} must be UTF-8 JSON") from exc
+
+    def reject_constant(value: str) -> None:
+        raise ValueError(f"non-standard JSON constant: {value}")
+
+    def reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
+        result: dict[str, object] = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError(f"duplicate JSON key: {key}")
+            result[key] = value
+        return result
+
+    try:
+        decoded = json.loads(
+            text,
+            object_pairs_hook=reject_duplicate_keys,
+            parse_constant=reject_constant,
+        )
+    except (json.JSONDecodeError, ValueError) as exc:
+        raise SitePageRegistryError(
+            f"{label} must be strict RFC-compatible JSON: {exc}"
+        ) from exc
+    if not isinstance(decoded, (dict, list)):
+        raise SitePageRegistryError(
+            f"{label} JSON root must be an object or array"
+        )
 
 
 def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
     """Enforce every constraint declared by schemas/site-pages.schema.json."""
     if not isinstance(value, dict):
         raise SitePageRegistryError(f"{label} root must be a JSON object")
-    registry = value
+    registry = dict(value)
 
-    expected_keys = {
+    allowed_keys = {
+        "schemaVersion",
+        "canonicalDirectories",
+        "pages",
+        "directoryRoutes",
+        "staticFiles",
+    }
+    required_keys = {
         "schemaVersion",
         "canonicalDirectories",
         "pages",
         "directoryRoutes",
     }
-    unknown = set(registry) - expected_keys
+    unknown = set(registry) - allowed_keys
     if unknown:
         raise SitePageRegistryError(
             f"{label} has unknown keys: {sorted(unknown)}"
         )
-    missing = expected_keys - set(registry)
+    missing = required_keys - set(registry)
     if missing:
         raise SitePageRegistryError(
             f"{label} is missing keys: {sorted(missing)}"
@@ -218,6 +317,39 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
             )
         schema_markdown_path(destination, f"directoryRoutes.{directory}")
 
+    static_files = registry.setdefault("staticFiles", [])
+    if not isinstance(static_files, list):
+        raise SitePageRegistryError("staticFiles must be an array")
+    allowed_static_keys = {"source", "destination"}
+    seen_static_items: set[tuple[str, str]] = set()
+    for index, item in enumerate(static_files):
+        if not isinstance(item, dict):
+            raise SitePageRegistryError(f"staticFiles[{index}] must be an object")
+        unknown_static_keys = set(item) - allowed_static_keys
+        if unknown_static_keys:
+            raise SitePageRegistryError(
+                f"staticFiles[{index}] has unknown keys: "
+                f"{sorted(unknown_static_keys)}"
+            )
+        missing_static_keys = allowed_static_keys - set(item)
+        if missing_static_keys:
+            raise SitePageRegistryError(
+                f"staticFiles[{index}] is missing keys: "
+                f"{sorted(missing_static_keys)}"
+            )
+        source = schema_static_path(
+            item["source"], f"staticFiles[{index}].source"
+        )
+        destination = validate_static_destination(
+            item["destination"], f"staticFiles[{index}].destination"
+        )
+        static_item = (source, destination)
+        if static_item in seen_static_items:
+            raise SitePageRegistryError(
+                f"staticFiles contains duplicate value: {static_item}"
+            )
+        seen_static_items.add(static_item)
+
     return registry
 
 
@@ -255,6 +387,149 @@ def validate_destination(raw: str, label: str) -> str:
     return destination
 
 
+def validate_static_destination(raw: str, label: str) -> str:
+    destination = schema_static_path(raw, label)
+    path = Path(destination)
+    if path.parts[0] != STATIC_DESTINATION_ROOT or len(path.parts) < 2:
+        raise SitePageRegistryError(
+            f"{label} must be below {STATIC_DESTINATION_ROOT}/: {destination}"
+        )
+    return destination
+
+
+def rewrite_registered_links(
+    markdown: str,
+    source: str,
+    destination: str,
+    source_to_destination: dict[str, str],
+) -> str:
+    # The common generator treats every registered target as a pretty-route page.
+    # Static artifacts retain their filename, so rewrite them separately first.
+    static_targets = {item.source: item.destination for item in STATIC_FILES}
+    if not static_targets:
+        return BASE_REWRITE_LINKS(
+            markdown, source, destination, source_to_destination
+        )
+
+    source_path = ROOT / source
+    current_dir = base.site_dir(destination)
+    lines: list[str] = []
+    in_code = False
+    for line in markdown.splitlines():
+        if base.CODE_FENCE_RE.match(line):
+            in_code = not in_code
+            lines.append(line)
+            continue
+        if in_code:
+            lines.append(line)
+            continue
+
+        def replace(match: re.Match[str]) -> str:
+            before, raw, after = match.groups()
+            parsed = base.parse_link_target(raw)
+            if parsed is None:
+                return match.group(0)
+            path, fragment, query, formatter = parsed
+            if query:
+                return match.group(0)
+            target = (source_path.parent / path).resolve()
+            try:
+                target_relative = target.relative_to(ROOT).as_posix()
+            except ValueError:
+                return match.group(0)
+            static_destination = static_targets.get(target_relative)
+            if static_destination is None:
+                return match.group(0)
+            relative = posixpath.relpath(static_destination, current_dir)
+            return before + formatter.format(url=relative + fragment) + after
+
+        lines.append(base.LINK_RE.sub(replace, line))
+
+    if in_code:
+        raise SitePageRegistryError(
+            f"{source}: unbalanced code fence during static link rewrite"
+        )
+    static_rewritten = "\n".join(lines).rstrip() + "\n"
+    return BASE_REWRITE_LINKS(
+        static_rewritten, source, destination, source_to_destination
+    )
+
+
+def generate_registered_site(
+    output: Path,
+    components: dict[str, bytes],
+    revision: dict,
+) -> dict[str, str]:
+    previous_rewrite_links = base.rewrite_links
+    base.rewrite_links = rewrite_registered_links
+    try:
+        BASE_GENERATE(output, components, revision)
+    finally:
+        base.rewrite_links = previous_rewrite_links
+
+    static_manifest: list[dict[str, str]] = []
+    for item in STATIC_FILES:
+        data = (ROOT / item.source).read_bytes()
+        base.write_bytes(output, item.destination, data)
+        static_manifest.append(
+            {
+                "source": item.source,
+                "destination": item.destination,
+                "sha256": base.sha256_bytes(data),
+            }
+        )
+
+    manifest_path = output / "_data" / "build-manifest.json"
+    manifest = base.load_json(manifest_path)
+    manifest["staticFiles"] = static_manifest
+    base.write_bytes(
+        output,
+        "_data/build-manifest.json",
+        (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8"),
+    )
+    return base.tree_hashes(output)
+
+
+def check_registered_determinism(
+    components: dict[str, bytes], revision: dict
+) -> None:
+    before = base.repository_state_hashes()
+    with tempfile.TemporaryDirectory(
+        prefix="book-site-registry-a-"
+    ) as first_tmp, tempfile.TemporaryDirectory(
+        prefix="book-site-registry-b-"
+    ) as second_tmp:
+        first = generate_registered_site(Path(first_tmp), components, revision)
+        second = generate_registered_site(Path(second_tmp), components, revision)
+        if first != second:
+            differing = sorted(
+                set(first) ^ set(second)
+                | {
+                    key
+                    for key in set(first) & set(second)
+                    if first[key] != second[key]
+                }
+            )
+            raise SitePageRegistryError(
+                f"registered site generation is not deterministic: {differing}"
+            )
+
+    after = base.repository_state_hashes()
+    if before != after:
+        changed = sorted(
+            key
+            for key in set(before) | set(after)
+            if before.get(key) != after.get(key)
+        )
+        raise SitePageRegistryError(
+            f"tracked repository files changed during generation: {changed}"
+        )
+    print(
+        f"site source is deterministic: {len(first)} generated files; "
+        f"{len(before)} tracked repository files unchanged"
+    )
+
+
 def validated_canonical_source_paths() -> list[Path]:
     paths: set[Path] = set()
     for path in ROOT.glob("*.md"):
@@ -285,6 +560,7 @@ def validated_canonical_source_paths() -> list[Path]:
 
 
 def apply_registry(registry: dict) -> None:
+    global STATIC_FILES
     canonical_directories = list(base.CANONICAL_DIRECTORIES)
     for raw in registry["canonicalDirectories"]:
         directory = ROOT / raw
@@ -319,7 +595,6 @@ def apply_registry(registry: dict) -> None:
             f"pages[{index}].source",
             kind="file",
         )
-
         destination = validate_destination(
             item["destination"], f"pages[{index}].destination"
         )
@@ -369,6 +644,49 @@ def apply_registry(registry: dict) -> None:
             )
         routes[raw_directory] = destination
     base.DIRECTORY_ROUTES = routes
+
+    static_files: list[StaticFile] = []
+    static_sources: set[str] = set()
+    static_destinations: set[str] = set()
+    for index, item in enumerate(registry["staticFiles"]):
+        source = schema_static_path(
+            item["source"], f"staticFiles[{index}].source"
+        )
+        source_parts = Path(source).parts
+        if len(source_parts) < 2 or source_parts[0] not in allowed_source_roots:
+            raise SitePageRegistryError(
+                f"staticFiles[{index}].source must be inside a declared canonical "
+                f"directory: {source}"
+            )
+        source_path = ROOT / source
+        require_repository_path(
+            ROOT,
+            source_path,
+            f"staticFiles[{index}].source",
+            kind="file",
+        )
+        validate_static_json(
+            source_path.read_bytes(), f"staticFiles[{index}].source"
+        )
+        destination = validate_static_destination(
+            item["destination"], f"staticFiles[{index}].destination"
+        )
+        if Path(source).suffix.lower() != Path(destination).suffix.lower():
+            raise SitePageRegistryError(
+                f"staticFiles[{index}] must preserve the source suffix"
+            )
+        if source in sources or source in static_sources:
+            raise SitePageRegistryError(f"duplicate publication source: {source}")
+        if destination in destinations or destination in static_destinations:
+            raise SitePageRegistryError(
+                f"duplicate publication destination: {destination}"
+            )
+        static_files.append(StaticFile(source, destination))
+        static_sources.add(source)
+        static_destinations.add(destination)
+    STATIC_FILES = tuple(
+        sorted(static_files, key=lambda item: (item.destination, item.source))
+    )
 
     base.canonical_source_paths = validated_canonical_source_paths
 
@@ -577,6 +895,81 @@ def run_registry_security_regressions() -> list[str]:
                 },
             },
         ),
+        (
+            "markdown static artifact",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [],
+                "directoryRoutes": {},
+                "staticFiles": [
+                    {
+                        "source": "cases/example.md",
+                        "destination": "downloads/example.md",
+                    }
+                ],
+            },
+        ),
+        (
+            "traversing static artifact",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [],
+                "directoryRoutes": {},
+                "staticFiles": [
+                    {
+                        "source": "cases/../secret.json",
+                        "destination": "downloads/secret.json",
+                    }
+                ],
+            },
+        ),
+        (
+            "static destination outside downloads",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [],
+                "directoryRoutes": {},
+                "staticFiles": [
+                    {
+                        "source": "cases/example.json",
+                        "destination": "cases/example.json",
+                    }
+                ],
+            },
+        ),
+        (
+            "trailing slash after static source",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [],
+                "directoryRoutes": {},
+                "staticFiles": [
+                    {
+                        "source": "cases/example.json/",
+                        "destination": "downloads/example.json",
+                    }
+                ],
+            },
+        ),
+        (
+            "trailing slash after static destination",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "canonicalDirectories": [],
+                "pages": [],
+                "directoryRoutes": {},
+                "staticFiles": [
+                    {
+                        "source": "cases/example.json",
+                        "destination": "downloads/example.json/",
+                    }
+                ],
+            },
+        ),
     ):
         expect_invalid_registry(failures, name, value)
 
@@ -633,6 +1026,48 @@ def run_registry_security_regressions() -> list[str]:
     except SitePageRegistryError as exc:
         failures.append(f"destination validator rejected valid route: {exc}")
 
+    for destination in (
+        "assets/example.json",
+        "downloads.json",
+        "downloads/.hidden.json",
+        "downloads/example.exe",
+    ):
+        try:
+            validate_static_destination(destination, "static destination fixture")
+        except SitePageRegistryError:
+            pass
+        else:
+            failures.append(
+                f"static destination validator accepted {destination}"
+            )
+
+    try:
+        validate_static_destination(
+            "downloads/example.json", "valid static destination"
+        )
+    except SitePageRegistryError as exc:
+        failures.append(f"static destination validator rejected valid path: {exc}")
+
+    for name, data in (
+        ("empty JSON", b""),
+        ("non-JSON text", b"<script>alert(1)</script>"),
+        ("scalar JSON", b'"not-a-document"'),
+        ("duplicate JSON key", b'{"id": 1, "id": 2}'),
+        ("non-standard JSON constant", b'{"value": NaN}'),
+        ("oversized JSON", b'[' + b'0,' * (MAX_STATIC_FILE_BYTES // 2) + b'0]'),
+    ):
+        try:
+            validate_static_json(data, f"{name} fixture")
+        except SitePageRegistryError:
+            pass
+        else:
+            failures.append(f"static JSON validator accepted {name}")
+
+    try:
+        validate_static_json(b'{"synthetic": true}', "valid JSON fixture")
+    except SitePageRegistryError as exc:
+        failures.append(f"static JSON validator rejected valid object: {exc}")
+
     with tempfile.TemporaryDirectory(prefix="site-registry-root-") as root_tmp, tempfile.TemporaryDirectory(
         prefix="site-registry-outside-"
     ) as outside_tmp:
@@ -683,17 +1118,18 @@ def main() -> int:
     formatter_dir = Path(args.book_formatter_dir) if args.book_formatter_dir else None
     components, revision = base.read_shared_components(formatter_dir)
     if args.check:
-        base.check_determinism(components, revision)
+        check_registered_determinism(components, revision)
         return 0
 
     output = Path(args.output)
     if not output.is_absolute():
         output = ROOT / output
     output = base.validate_generated_output_path(output)
-    hashes = base.generate(output, components, revision)
+    hashes = generate_registered_site(output, components, revision)
     print(
         f"generated {len(hashes)} site-source files in {output.relative_to(ROOT)} "
-        f"from {len(base.PAGES)} registered pages"
+        f"from {len(base.PAGES)} registered pages and "
+        f"{len(STATIC_FILES)} static artifact(s)"
     )
     return 0
 

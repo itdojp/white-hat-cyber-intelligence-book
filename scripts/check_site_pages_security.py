@@ -19,7 +19,7 @@ def main() -> int:
         return 1
     print(
         "site page security regressions passed: object root, reserved destinations, "
-        "canonical containment, and symlink rejection"
+        "canonical containment, safe static downloads, and symlink rejection"
     )
     return 0
 

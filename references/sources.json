@@ -121,7 +121,7 @@
       "version": "2025",
       "url": "https://owasp.org/Top10/",
       "publishedAt": null,
-      "checkedAt": "2026-07-25",
+      "checkedAt": "2026-08-03",
       "nextReviewAt": "2026-10-25",
       "reviewTriggers": [
         "new OWASP Top 10 release or correction"
@@ -141,7 +141,7 @@
       "version": "4.2; 5.0 under development",
       "url": "https://owasp.org/www-project-web-security-testing-guide/",
       "publishedAt": "2020-12-03",
-      "checkedAt": "2026-07-25",
+      "checkedAt": "2026-08-03",
       "nextReviewAt": "2026-10-25",
       "reviewTriggers": [
         "WSTG stable or 5.0 release"
@@ -163,7 +163,7 @@
       "version": "2023",
       "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
       "publishedAt": "2023-07-03",
-      "checkedAt": "2026-07-25",
+      "checkedAt": "2026-08-03",
       "nextReviewAt": "2027-01-25",
       "reviewTriggers": [
         "new API Security Top 10 edition"
