@@ -1183,7 +1183,6 @@ def markdown_reference_definitions(
                 marker_end = cursor
                 while (
                     marker_end < len(line_body)
-                    and marker_end - cursor < 9
                     and line_body[marker_end].isdigit()
                 ):
                     marker_end += 1
@@ -3670,6 +3669,9 @@ def main() -> int:
         "- > [ref]: //evil/path\n  > [x][ref]",
         "- outer\n    - > [ref]: //evil/path\n      > [x][ref]",
         ": > [ref]: //evil/path\n  > [x][ref]",
+        "1234567890. [ref]: //evil/path\n            [x][ref]",
+        "12345678901234567890. [ref]: //evil/path\n                      [x][ref]",
+        "1234567890. > [ref]: //evil/path\n              > [x][ref]",
         "[x](\v//evil/path)",
     )
     for encoded_live_url in encoded_live_urls:
