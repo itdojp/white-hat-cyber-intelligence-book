@@ -155,13 +155,13 @@ def main() -> int:
         ),
     )
     for forbidden in (
-        "善意の研究なら許可は不要である",
-        "管理者権限があれば承認できる",
-        "脆弱性を発見したら影響を最大まで実証する",
-        "届出すれば直ちに公開してよい",
+        "善意の研究であれば明示的な許可は不要である。",
+        "管理者権限があれば業務上の承認も不要である。",
+        "脆弱性を発見したら影響を最大まで実証する。",
+        "届出後は関係者との調整を待たず公開する。",
     ):
         if forbidden in chapter:
-            error(f"{chapter_path}: unsafe or unsupported statement {forbidden!r}")
+            error(f"{chapter_path}: unsafe or unsupported assertion {forbidden!r}")
 
     body, references = chapter_body_and_references(chapter)
     used_ids = source_ids(body)
