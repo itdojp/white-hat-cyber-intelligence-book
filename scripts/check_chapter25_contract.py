@@ -1519,6 +1519,7 @@ def executable_kramdown_ial_violations(text: str) -> list[str]:
         css_parser.feed(f"<span {decoded}></span>")
         css_parser.close()
         for value in css_parser.values:
+            violations.extend(executable_css_value_violations(value))
             for host in css_value_hosts(value):
                 if not is_allowed_synthetic_host(host):
                     violations.append(
@@ -1576,6 +1577,17 @@ def decode_css_escapes(value: str) -> str:
     return CSS_ESCAPE_RE.sub(replace, value)
 
 
+def executable_css_value_violations(value: str) -> list[str]:
+    decoded = decode_css_escapes(value)
+    compact = re.sub(r"[\x00-\x20\x7f]+", "", decoded).casefold()
+    violations: list[str] = []
+    if "javascript:" in compact or "vbscript:" in compact:
+        violations.append("executable script URL in style attribute")
+    if has_executable_data_url(decoded):
+        violations.append("executable data URL in style attribute")
+    return violations
+
+
 def css_value_hosts(value: str):
     normalized = normalize_for_host_scanning(
         normalize_synthetic_safety_text(
@@ -1598,6 +1610,17 @@ def raw_html_css_hosts(text: str):
     parser.close()
     for value in parser.values:
         yield from css_value_hosts(value)
+
+
+def raw_html_executable_css_violations(text: str) -> list[str]:
+    parser = CSSValueExtractor()
+    parser.feed(text)
+    parser.close()
+    return [
+        violation
+        for value in parser.values
+        for violation in executable_css_value_violations(value)
+    ]
 
 
 def raw_html_srcset_hosts(text: str):
@@ -2516,6 +2539,11 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         error(
             f"{relative}: executable Kramdown IAL is not allowed in synthetic "
             f"content: {violation}"
+        )
+    for violation in raw_html_executable_css_violations(text):
+        error(
+            f"{relative}: executable CSS is not allowed in synthetic content: "
+            f"{violation}"
         )
     if has_executable_data_url(text):
         error(
@@ -4413,6 +4441,7 @@ def main() -> int:
         '[x](#){: href="javascript:location=\'//0x08080808/x\'" }',
         '[x](#){: src="data:image/svg+xml,%3Csvg%3E" }',
         '[x](#){: style="background:url(https\\3a //evil\\2e com/x)" }',
+        '[x](#){: style="background:url(ja\\76 ascript:alert(1))" }',
     ):
         if not executable_kramdown_ial_violations(executable_ial):
             error(
@@ -4429,6 +4458,15 @@ def main() -> int:
             error(
                 "fixture safety regression: safe/non-rendered Kramdown IAL "
                 f"was rejected: {safe_ial!r}"
+            )
+    for executable_css in (
+        '<div style="background:url(ja\\76 ascript:alert(1))"></div>',
+        '<style>.x{background:url(ja\\76 ascript:alert(1))}</style>',
+    ):
+        if not raw_html_executable_css_violations(executable_css):
+            error(
+                "fixture safety regression: executable raw HTML CSS was "
+                f"accepted: {executable_css!r}"
             )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
