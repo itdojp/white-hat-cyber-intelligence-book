@@ -593,6 +593,28 @@ def skip_css_trivia_backward(text: str, cursor: int) -> int:
     return cursor
 
 
+def markdown_inline_link_starts(text: str) -> set[int]:
+    """Return inline-link label starts in one linear, escape-aware pass."""
+    starts: set[int] = set()
+    label_stack: list[int] = []
+    index = 0
+    while index < len(text):
+        character = text[index]
+        if character == "\\" and index + 1 < len(text):
+            index += 2
+            continue
+        if character in "\r\n":
+            label_stack.clear()
+        elif character == "[":
+            label_stack.append(index)
+        elif character == "]" and label_stack:
+            label_start = label_stack.pop()
+            if index + 1 < len(text) and text[index + 1] == "(":
+                starts.add(label_start)
+        index += 1
+    return starts
+
+
 def mask_data_url_payloads(
     text: str,
     *,
@@ -628,6 +650,7 @@ def mask_data_url_payloads(
     html_tag_start = re.compile(
         r"</?[A-Za-z][A-Za-z0-9-]*(?=[\s/>])|<!|<\?"
     )
+    inline_link_starts = markdown_inline_link_starts(text)
     while index < len(text):
         character = text[index]
         if (
@@ -727,6 +750,19 @@ def mask_data_url_payloads(
             and text[css_cursor] == "("
             and text[css_cursor - 3 : css_cursor].casefold() == "url"
         )
+        markdown_destination_context = re.search(
+            r"\]\(\s*$", text[max(0, index - 64) : index]
+        ) is not None
+        angle_destination_context = (
+            not inside_html_tag
+            and text[max(0, index - 64) : index].rstrip().endswith("<")
+        )
+        structured_data_context = (
+            css_url_context
+            or (inside_html_tag and data_is_attribute_url)
+            or markdown_destination_context
+            or angle_destination_context
+        )
         while end < len(text):
             candidate_character = text[end]
             if candidate_character == "\\" and end + 1 < len(text):
@@ -748,6 +784,11 @@ def mask_data_url_payloads(
                 if candidate_character == html_quote:
                     break
             else:
+                if (
+                    not structured_data_context
+                    and end in inline_link_starts
+                ):
+                    break
                 if candidate_character in " \t\r\n\f<>\"'`":
                     break
                 if candidate_character == "(":
@@ -4123,6 +4164,7 @@ def main() -> int:
         '<div data-script="data:text/plain,x;https://evil.com"></div>',
         '<a href="javascript:const x=\'data:text/plain,x\';'
         'location=\'https://evil.com\'">x</a>',
+        'data:text/plain,x[x](https://evil.com)',
     ):
         masked_adjacent_url = normalize_for_host_scanning(
             normalize_synthetic_safety_text(
