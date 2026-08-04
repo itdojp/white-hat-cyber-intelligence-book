@@ -29,6 +29,7 @@
 - Source Note IDと各章の対応をCIで相互検証するように変更
 - `package.json`とlockfileのLicense metadataを本文・コードの適用範囲に合わせて更新
 - GitHubの編集Linkが生成済み`docs/`ではなくcanonical `source_path`を指すように共有layoutへ決定的変換を適用
+- `book-formatter`を監査済みrevision `764f644850c21983c96919d0e13706413d59c089`、shared component version `3.2.3`へ更新
 
 ### Fixed
 
@@ -36,6 +37,7 @@
 - `node_modules`等の第三者・生成DirectoryがRepository固有検査へ混入する問題を修正
 - 第0章・第1章のSource Registry章対応漏れを修正
 - 代表章計画の「全29章」を「全30章（第0章〜第29章）」へ修正
+- mobile/tablet幅でsidebarが初期表示から本文を覆うCSS cascade回帰を修正
 
 ### Pending
 
