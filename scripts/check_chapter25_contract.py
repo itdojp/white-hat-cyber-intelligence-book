@@ -1373,6 +1373,51 @@ class SrcsetExtractor(HTMLParser):
         self.collect(attrs)
 
 
+class URLAttributeExtractor(HTMLParser):
+    """Collect URL-bearing HTML attributes after character-reference decoding."""
+
+    URL_ATTRIBUTES = {
+        "action",
+        "background",
+        "cite",
+        "data",
+        "formaction",
+        "href",
+        "longdesc",
+        "manifest",
+        "ping",
+        "poster",
+        "profile",
+        "src",
+        "usemap",
+        "xlink:href",
+    }
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.values: list[tuple[str, str]] = []
+
+    def collect(self, attrs: list[tuple[str, str | None]]) -> None:
+        for name, value in attrs:
+            normalized_name = name.casefold()
+            if normalized_name in self.URL_ATTRIBUTES and value:
+                self.values.append((normalized_name, value))
+
+    def handle_starttag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        self.collect(attrs)
+
+    def handle_startendtag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        self.collect(attrs)
+
+
 class CSSValueExtractor(HTMLParser):
     """Collect inline style attributes and style-element text."""
 
@@ -1531,6 +1576,11 @@ def executable_kramdown_ial_violations(text: str) -> list[str]:
                 violations.append(
                     "non-synthetic URL in Kramdown srcset attribute"
                 )
+        for host in raw_html_url_attribute_hosts(projected_html):
+            if not is_allowed_synthetic_host(host):
+                violations.append(
+                    "non-synthetic URL in Kramdown URL attribute"
+                )
         compact = re.sub(r"[\x00-\x20\x7f]+", "", decoded).casefold()
         if "javascript:" in compact:
             violations.append("javascript URL in Kramdown inline attribute")
@@ -1650,6 +1700,31 @@ def raw_html_srcset_hosts(text: str):
             )
             yield from url_domain_hosts(normalized)
             yield from protocol_relative_hosts(normalized)
+
+
+def raw_html_url_attribute_hosts(text: str):
+    """Yield hosts from single-URL and space-separated ping attributes."""
+    parser = URLAttributeExtractor()
+    parser.feed(text)
+    parser.close()
+    for name, value in parser.values:
+        candidates = re.split(r"[\x00-\x20]+", value.strip()) if name == "ping" else [value]
+        for candidate in candidates:
+            if not candidate or candidate[:5].casefold() == "data:":
+                continue
+            normalized_views = {
+                normalize_for_host_scanning(
+                    normalize_synthetic_safety_text(
+                        candidate,
+                        strip_url_controls=True,
+                        unescape_markdown=unescape_markdown,
+                    )
+                )
+                for unescape_markdown in (False, True)
+            }
+            for normalized in normalized_views:
+                yield from url_domain_hosts(normalized)
+                yield from protocol_relative_hosts(normalized)
 
 
 def srcset_url_candidates(value: str):
@@ -2592,6 +2667,8 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         assert_synthetic_host(host, f"{relative}: protocol-relative URL")
     for host in set(raw_html_srcset_hosts(text)):
         assert_synthetic_host(host, f"{relative}: HTML srcset URL")
+    for host in set(raw_html_url_attribute_hosts(text)):
+        assert_synthetic_host(host, f"{relative}: HTML URL attribute")
     for host in set(raw_html_css_hosts(text)):
         assert_synthetic_host(host, f"{relative}: CSS URL")
     for match in HOSTNAME_RE.finditer(compatibility_text):
@@ -4453,6 +4530,7 @@ def main() -> int:
         '[x](#){: style="background:url(ja\\76 ascript:alert(1))" }',
         '![x](#){: srcset="//asset.example/a 1x,'
         '//0x08080808/path 2x" }',
+        '[x](#){: ping="//audit.example/a //0x08080808/path" }',
     ):
         if not executable_kramdown_ial_violations(executable_ial):
             error(
@@ -4464,6 +4542,7 @@ def main() -> int:
         '[x](#){: style="background:url(https://asset.example/x)" }',
         '![x](#){: srcset="//asset.example/a 1x,'
         '//cdn.example/path 2x" }',
+        '[x](#){: ping="//audit.example/a //notify.example/path" }',
         '`{: style="background:url(https://evil.com/x)" }`',
         '```text\n{: style="background:url(https://evil.com/x)" }\n```',
     ):
