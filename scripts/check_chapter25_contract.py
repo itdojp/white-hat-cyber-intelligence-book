@@ -648,6 +648,15 @@ URL_TRIM_CHARACTERS = "".join(chr(codepoint) for codepoint in range(33)) + "\x7f
 URL_TAB_NEWLINE_TRANSLATION = str.maketrans("", "", "\t\r\n")
 
 
+def normalized_url_scheme_candidate(value: str) -> str:
+    """Normalize browser-discarded URL controls without deleting spaces."""
+    return (
+        value.lstrip(URL_TRIM_CHARACTERS)
+        .translate(URL_TAB_NEWLINE_TRANSLATION)
+        .casefold()
+    )
+
+
 def data_scheme_detection_view(text: str) -> tuple[str, dict[int, int]]:
     """Expose data: schemes with URL tab/newline obfuscation, preserving offsets."""
     view = list(text)
@@ -1607,6 +1616,29 @@ class ExecutableHTMLDetector(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.violations: list[str] = []
 
+    def collect_url_candidate(self, label: str, candidate: str) -> None:
+        normalized = normalized_url_scheme_candidate(candidate)
+        executable_scheme = next(
+            (
+                scheme
+                for scheme in ("javascript:", "vbscript:")
+                if normalized.startswith(scheme)
+            ),
+            None,
+        )
+        if executable_scheme is not None:
+            self.violations.append(
+                f"{executable_scheme[:-1]} URL in {label}"
+            )
+        if normalized.startswith(
+            (
+                "data:text/html",
+                "data:application/xhtml+xml",
+                "data:image/svg+xml",
+            )
+        ):
+            self.violations.append(f"executable data URL in {label}")
+
     def collect(
         self,
         tag: str,
@@ -1636,34 +1668,29 @@ class ExecutableHTMLDetector(HTMLParser):
                     else [value]
                 )
                 for candidate in candidates:
-                    compact_candidate = re.sub(
-                        r"[\x00-\x20\x7f]+",
-                        "",
-                        candidate,
-                    ).casefold()
-                    executable_scheme = next(
-                        (
-                            scheme
-                            for scheme in ("javascript:", "vbscript:")
-                            if compact_candidate.startswith(scheme)
-                        ),
-                        None,
-                    )
-                    if executable_scheme is not None:
-                        self.violations.append(
-                            f"{executable_scheme[:-1]} URL in "
-                            f"{normalized_name}"
-                        )
-                    if compact_candidate.startswith(
-                        (
-                            "data:text/html",
-                            "data:application/xhtml+xml",
-                            "data:image/svg+xml",
-                        )
+                    self.collect_url_candidate(normalized_name, candidate)
+        if normalized_tag == "meta":
+            attribute_map = {
+                name.casefold(): value
+                for name, value in attrs
+                if value is not None
+            }
+            if attribute_map.get("http-equiv", "").strip().casefold() == (
+                "refresh"
+            ):
+                content = attribute_map.get("content", "")
+                _, separator, destination = content.partition(";")
+                if separator:
+                    destination = re.sub(
+                        r"(?i)^\s*url\s*=\s*", "", destination
+                    ).strip()
+                    if (
+                        len(destination) >= 2
+                        and destination[0] == destination[-1]
+                        and destination[0] in "\"'"
                     ):
-                        self.violations.append(
-                            f"executable data URL in {normalized_name}"
-                        )
+                        destination = destination[1:-1]
+                    self.collect_url_candidate("meta refresh", destination)
         if normalized_tag == "link":
             relations = {
                 relation.casefold()
@@ -1776,9 +1803,7 @@ def executable_kramdown_ial_violations(text: str) -> list[str]:
                 else [value]
             )
             for candidate in candidates:
-                compact_candidate = re.sub(
-                    r"[\x00-\x20\x7f]+", "", candidate
-                ).casefold()
+                compact_candidate = normalized_url_scheme_candidate(candidate)
                 for scheme in ("javascript:", "vbscript:"):
                     if compact_candidate.startswith(scheme):
                         violations.append(
@@ -1800,9 +1825,7 @@ def executable_kramdown_ial_violations(text: str) -> list[str]:
         srcset_parser.close()
         for value in srcset_parser.values:
             for candidate in srcset_url_candidates(value):
-                compact_candidate = re.sub(
-                    r"[\x00-\x20\x7f]+", "", candidate
-                ).casefold()
+                compact_candidate = normalized_url_scheme_candidate(candidate)
                 if compact_candidate.startswith(
                     (
                         "javascript:",
@@ -2048,8 +2071,7 @@ def executable_css_value_violations(value: str) -> list[str]:
         css_import_candidates(value)
     )
     if any(
-        re.sub(r"[\x00-\x20\x7f]+", "", candidate)
-        .casefold()
+        normalized_url_scheme_candidate(candidate)
         .startswith(("javascript:", "vbscript:"))
         for candidate in candidates
     ):
@@ -5157,6 +5179,8 @@ def main() -> int:
         '<button onclick="location=\'\\x2f\\x2f0x08080808/x\'">x</button>',
         '<a href="javascript:location=\'//0x08080808/x\'">x</a>',
         '<a href="vbscript:location.href=Chr(47)&amp;Chr(47)">x</a>',
+        '<meta http-equiv="refresh" '
+        'content="0;url=javascript:void(location=atob(\'Ly8xMzQ3NDQwNzI=\'))">',
         '<iframe srcdoc="&lt;script&gt;location=\'//0x08080808/x\'&lt;/script&gt;"></iframe>',
         '<script>location="//0x08080808/x"</script>',
         '<a href="data:text/html,&lt;script&gt;location=\'//0x08080808/x\'&lt;/script&gt;">x</a>',
@@ -5178,6 +5202,8 @@ def main() -> int:
         '<link rel="icon" href="data:text/css,body{}">',
         '<a title="vbscript: is a legacy URL scheme">x</a>',
         '<a title="data:image/svg+xml is an executable URL example">x</a>',
+        '<a href="java script:alert(1)">x</a>',
+        '<meta http-equiv="refresh" content="0;url=java script:alert(1)">',
     ):
         if executable_html_violations(safe_html):
             error(
@@ -5292,6 +5318,8 @@ def main() -> int:
         '[x](#){: title="vbscript: is a legacy URL scheme" }',
         '[x](#){: title="data:image/svg+xml is a URL example" }',
         '[x](#){: style=\'content:"vbscript:note"\' }',
+        '[x](#){: href="java script:alert(1)" }',
+        '[x](#){: style=\'background:url("java script:alert(1)")\' }',
     ):
         if executable_kramdown_ial_violations(safe_ial):
             error(
@@ -5316,6 +5344,7 @@ def main() -> int:
     for safe_css in (
         '<div style=\'content:"data:text/css,body{}"\'></div>',
         '<div style=\'content:"vbscript:note"\'></div>',
+        '<div style=\'background:url("java script:alert(1)")\'></div>',
         '<style>.x::after{content:"@import url(data:text/css,body{})"}</style>',
         '<style>@import url(data:te xt/css,body{})</style>',
     ):
