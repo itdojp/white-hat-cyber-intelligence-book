@@ -59,6 +59,7 @@ LIQUID_BLOCK_ENDS = {
 }
 KRAMDOWN_COMMENT_OPEN_RE = re.compile(r"^ {0,3}\{::comment\}\s*$")
 KRAMDOWN_COMMENT_CLOSE_RE = re.compile(r"^ {0,3}\{:/comment\}\s*$")
+KRAMDOWN_BLOCK_IAL_RE = re.compile(r"^ {0,3}\{:[^}]*\}\s*$")
 VOID_HTML_TAGS = {
     "area",
     "base",
@@ -352,9 +353,12 @@ def review_table_rows(
         return {}
 
     rows: dict[str, list[str]] = {}
-    for line in lines[index + 2 :]:
+    row_index = index + 2
+    while row_index < len(lines):
+        line = lines[row_index]
         if not line.startswith("|"):
             break
+        row_index += 1
         cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
         if len(cells) != 6:
             error(f"{relative}: Review table row must contain six cells: {line}")
@@ -362,8 +366,17 @@ def review_table_rows(
         area = cells[0]
         if area in rows:
             error(f"{relative}: duplicate Review area {area!r}")
-            continue
-        rows[area] = cells
+        else:
+            rows[area] = cells
+
+    ial_index = row_index
+    while ial_index < len(lines) and not lines[ial_index].strip():
+        ial_index += 1
+    if ial_index < len(lines) and KRAMDOWN_BLOCK_IAL_RE.fullmatch(lines[ial_index]):
+        error(
+            f"{relative}: Review table beneath {heading!r} must not carry "
+            "a Kramdown block IAL"
+        )
     return rows
 
 
@@ -801,7 +814,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-032",
+            "GATE-033",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),

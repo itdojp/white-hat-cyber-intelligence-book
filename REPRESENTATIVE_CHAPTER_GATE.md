@@ -70,6 +70,7 @@ GOは、全30章の内容が既に完成したことを意味しない。代表�
 | GATE-030 | P2 | Jekyll / Kramdownの非出力blockへReview節を移すと、Repository checkerは通る一方、公開HTMLでReview節が消える経路が残っていた | Liquidのcomment / capture / conditional / iteration / highlight blockとKramdown commentを追跡し、その内部ではrequired Review契約を満たせないようにした |
 | GATE-031 | P2 | 非void HTML要素のself-closing記法をparserが閉じた要素として扱い、Browserでは開いたままになる`<div hidden/>`でReview節を隠せた | self-closing markerはvoid要素だけに適用し、非void要素はBrowserと同様に開いたcontainerとしてclose tagまで追跡するようにした |
 | GATE-032 | P2 | HTML用self-closing修正が`<svg/>` / `<math/>`にも適用され、Browserでは正当なforeign-content self-closing要素を未closeとして誤検出した | SVG / MathML rootとその子孫ではself-closing flagを保持し、HTML非void要素だけをopen containerとして追跡するようにした |
+| GATE-033 | P2 | Review table直後へKramdown block IALを付けると、表をCSSで非表示にしても構造parserを通過できた | required Review table直後のblock IALを属性内容にかかわらず拒否し、style / class経由でReview evidenceを隠せないようにした |
 
 解消後のOpen件数はP0 / P1 / P2とも0である。
 
@@ -168,7 +169,7 @@ Artifact IDの重複定義とTemplate不一致は0件である。
 - 代表章PRの未解決Review Thread: 0
 
 Gate PRでは、`scripts/check_representative_gate.py`によりSource集合、Artifact、Case関係、凍結契約、Part Issue template、GO判定を継続検査する。
-Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、代表TemplateのEvidence header欠落、第1章の合成Review Evidence ID欠落（Technical / Safety各1件）、header文字列をcommentへ移したTable欠損、観点間でのEvidence ID入替、Review節外へ移した合成Review disclaimer、Template観点名変更、Review節全体のfenced code化、Review節全体のHTML comment化、表示Review節の重複、`template` / `div hidden` / `script`のraw HTML container化、Liquidのcomment / capture / false condition、Kramdown comment化、非void要素のself-closing marker化の二十九の負例を一時変異で検証し、29 / 29を拒否した。検証後は正本を復元し、positive gateを再実行した。
+Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、代表TemplateのEvidence header欠落、第1章の合成Review Evidence ID欠落（Technical / Safety各1件）、header文字列をcommentへ移したTable欠損、観点間でのEvidence ID入替、Review節外へ移した合成Review disclaimer、Template観点名変更、Review節全体のfenced code化、Review節全体のHTML comment化、表示Review節の重複、`template` / `div hidden` / `script`のraw HTML container化、Liquidのcomment / capture / false condition、Kramdown comment化、非void要素のself-closing marker化、Review tableへのstyle / class IAL付加の三十一の負例を一時変異で検証し、31 / 31を拒否した。検証後は正本を復元し、positive gateを再実行した。
 
 ### 証跡と保証範囲
 
