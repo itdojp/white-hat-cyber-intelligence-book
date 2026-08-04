@@ -1104,41 +1104,6 @@ def blockquote_content_offset(line: str) -> int:
     return offset
 
 
-def blockquote_container_depth(line: str) -> int:
-    depth = 0
-    offset = 0
-    while offset < len(line):
-        cursor = offset
-        while cursor < len(line) and line[cursor] in " \t":
-            cursor += 1
-        if cursor < len(line) and line[cursor] == ">":
-            depth += 1
-            offset = cursor + 1
-            if offset < len(line) and line[offset] in " \t":
-                offset += 1
-            continue
-
-        marker_end = cursor
-        if cursor < len(line) and line[cursor] in "-+*:":
-            marker_end = cursor + 1
-        elif cursor < len(line) and line[cursor].isdigit():
-            while marker_end < len(line) and line[marker_end].isdigit():
-                marker_end += 1
-            if marker_end >= len(line) or line[marker_end] not in ".)":
-                marker_end = cursor
-            else:
-                marker_end += 1
-        if (
-            marker_end > cursor
-            and marker_end < len(line)
-            and line[marker_end] in " \t"
-        ):
-            offset = marker_end + 1
-            continue
-        break
-    return depth
-
-
 def markdown_line_contexts(
     text: str,
 ) -> list[tuple[int, int, int, bool]]:
@@ -2268,11 +2233,6 @@ def markdown_url_destinations(text: str):
     protected_text = strip_html_comments_preserving_lines(protected_text)
     bracket_pairs = markdown_bracket_pairs(protected_text)
     parenthesis_pairs = markdown_parenthesis_pairs(protected_text)
-    line_contexts = {
-        line_start: (line_end, content_start, inside_code_context)
-        for line_start, line_end, content_start, inside_code_context
-        in markdown_line_contexts(protected_text)
-    }
 
     for label_end in bracket_pairs.values():
         opening = label_end + 1
@@ -2286,12 +2246,7 @@ def markdown_url_destinations(text: str):
             destination = destination[1:]
         yield destination
 
-    for (
-        label,
-        colon,
-        definition_line_start,
-        line_end,
-    ) in markdown_reference_definitions(protected_text):
+    for label, colon, _, line_end in markdown_reference_definitions(protected_text):
         if len(label) > 1 and label.startswith("^"):
             continue
         start = colon + 1
@@ -2299,51 +2254,7 @@ def markdown_url_destinations(text: str):
             start += 1
         if start < line_end and protected_text[start] == "<":
             start += 1
-        same_line_destination = protected_text[start:line_end]
-        if same_line_destination.strip():
-            yield same_line_destination
-            continue
-
-        continuation = line_contexts.get(line_end)
-        if continuation is None:
-            continue
-        continuation_end, content_start, inside_code_context = continuation
-        if inside_code_context:
-            continue
-        definition_line = protected_text[definition_line_start:line_end].rstrip(
-            "\r\n"
-        )
-        continuation_line = protected_text[line_end:continuation_end].rstrip(
-            "\r\n"
-        )
-        if blockquote_container_depth(
-            definition_line
-        ) != blockquote_container_depth(continuation_line):
-            continue
-        content_end = continuation_end
-        while (
-            content_end > content_start
-            and protected_text[content_end - 1] in "\r\n"
-        ):
-            content_end -= 1
-        indentation_end = content_start
-        while (
-            indentation_end < content_end
-            and protected_text[indentation_end] == " "
-            and indentation_end - content_start < 3
-        ):
-            indentation_end += 1
-        if (
-            indentation_end < content_end
-            and protected_text[indentation_end] == " "
-        ):
-            continue
-        if (
-            indentation_end < content_end
-            and protected_text[indentation_end] == "<"
-        ):
-            indentation_end += 1
-        yield protected_text[indentation_end:content_end]
+        yield protected_text[start:line_end]
 
     for match in re.finditer(r"<(?P<destination>[^<>\r\n]+)>", protected_text):
         yield match.group("destination")
@@ -4916,7 +4827,6 @@ def main() -> int:
     for executable_markdown in (
         '[x](javascript:location="//0x08080808/x")',
         '[x][ref]\n[ref]: java&#9;script:location="//0x08080808/x"',
-        '[x][next]\n[next]:\n  javascript:location="//0x08080808/x"',
         '[x][^]\n[^]: javascript:location="//0x08080808/x"',
         '<vbscript:msgbox(1)>',
     ):
@@ -4931,6 +4841,7 @@ def main() -> int:
         'javascript: is an executable scheme name',
         '[x](java script:alert(1))',
         'Text[^scheme]\n[^scheme]: javascript: は実行可能URLスキームである。',
+        '[x][next]\n\n[next]:\n  javascript: is ordinary prose',
         '[x][ref]\n[ref]:\n> javascript: is blockquote prose',
     ):
         if executable_markdown_url_violations(inert_markdown):
