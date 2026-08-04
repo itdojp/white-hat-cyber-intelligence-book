@@ -314,9 +314,7 @@ def main() -> int:
     for directory in ("cases", "schemas"):
         if directory not in directories:
             error(f"site-pages.json: canonicalDirectories missing {directory}")
-    if registry.get("directoryRoutes", {}).get("cases") != (
-        "cases/chapter-01-integrated-security-case/index.md"
-    ):
+    if registry.get("directoryRoutes", {}).get("cases") != "cases/index.md":
         error("site-pages.json: cases directory route mismatch")
 
     schema = load_json("schemas/site-pages.schema.json")

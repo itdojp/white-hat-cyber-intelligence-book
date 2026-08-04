@@ -13,6 +13,7 @@
 | ART-09 | Executive Brief | 26, 29 | `templates/executive-brief.md` |
 | ART-10 | Integrated Security Case Map | 1, 29 | `templates/integrated-security-case-map.md` |
 | ART-11 | Web/API Assessment Hypothesis Pack | 11 | `templates/web-api-assessment-hypothesis-pack.md` |
+| ART-12 | Analytic Judgment Record | 25, 29 | `templates/analytic-judgment-record.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -23,5 +24,7 @@
 第1章の合成記入例は`cases/ch01-integrated-security-case-example.md`を参照する。
 
 `ART-11`は`ART-10`のCase IDとDecision Requirement IDを継承し、Web/API評価のAsset、Boundary、State、Validation、Evidence、Finding、Telemetry、Detection、Reassessmentを接続する。第11章の合成記入例は`cases/ch11-web-api-assessment-example.md`、読み取り専用の合成Datasetは`cases/fixtures/ch11-web-api-assessment-dataset.json`を参照する。
+
+`ART-12`は、Decision RequirementとIntelligence Requirementに対して、Threat Hypothesis、Alternative Hypothesis、Source Note、Evidence、Lineage、Deception candidate、Analytic Judgment、Decision、Reassessmentを接続する。
 
 成果物IDは章間・演習・評価ルーブリックで共通利用する。

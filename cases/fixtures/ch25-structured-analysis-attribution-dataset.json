@@ -1,0 +1,759 @@
+{
+  "datasetId": "FIX-CH25-2026-001",
+  "synthetic": true,
+  "caseId": "CASE-2026-025",
+  "artifactId": "ART-12",
+  "decisionRequirementId": "DR-2026-025",
+  "intelligenceRequirementId": "IR-2026-025",
+  "analyticJudgmentId": "AJ-2026-025",
+  "decisionId": "DEC-2026-025",
+  "reassessmentId": "REA-2026-025",
+  "scope": {
+    "timeWindow": {
+      "start": "2026-07-21T00:00:00+09:00",
+      "end": "2026-07-29T18:00:00+09:00"
+    },
+    "allowedData": [
+      "synthetic-mail-gateway",
+      "synthetic-decoy-proxy",
+      "synthetic-registrar-export",
+      "synthetic-vendor-bulletin",
+      "synthetic-blog-repost",
+      "synthetic-translated-excerpt",
+      "synthetic-newsletter-recap",
+      "synthetic-idp-sign-in-summary"
+    ],
+    "prohibitedData": [
+      "real-credentials",
+      "real-personal-data",
+      "real-third-party-data"
+    ]
+  },
+  "markdownProjection": {
+    "negativeFindings": [
+      {
+        "id": "NEG-2026-025-001",
+        "relatedEvidenceIds": [
+          "EVD-2026-025-008"
+        ],
+        "observationHypothesisId": "OBS-2026-025-004",
+        "searchedBehavior": "成功したfollow-on accessまたはtoken replay",
+        "searchWindow": "2026-07-21〜2026-07-29",
+        "availableCoverage": "IdP sign-in summary 2026-07-23〜2026-07-29",
+        "gapId": "GAP-2026-025-001",
+        "gap": "GAP-2026-025-001 によりtoken issuance詳細と対象期間前半2日分が欠落",
+        "permittedConclusion": "観測範囲では成功痕跡を確認していない。侵害不存在や未遂確定は断定しない"
+      }
+    ],
+    "sourceEvaluationJudgments": [
+      {
+        "id": "SEJ-2026-025-001",
+        "statement": "Vendor bulletin、repost、recapの三件は独立外部観測とは言えない",
+        "basis": "SEH-2026-025-001、LIN-2026-025-001、LIN-2026-025-002、LIN-2026-025-003、同一independence group、CR-2026-025-001",
+        "changeCondition": "各媒体が別原典または独自観測を提示する"
+      }
+    ],
+    "attributionAssessments": [
+      {
+        "id": "ATTR-2026-025-001",
+        "ladderLevel": "L2",
+        "confidence": "中",
+        "evidenceThresholdMet": "誘導mail、redirect chain、近接登録DomainによりTechnical clusterの関連は示せるが、独立外部裏付けとOperator固有癖は不足",
+        "relatedEvidenceIds": [
+          "EVD-2026-025-001",
+          "EVD-2026-025-002",
+          "EVD-2026-025-003",
+          "EVD-2026-025-004"
+        ],
+        "relatedAlternativeHypothesisIds": [
+          "ALT-2026-025-001",
+          "ALT-2026-025-002",
+          "ALT-2026-025-003"
+        ],
+        "permittedLanguage": "「同一Technical clusterの可能性がある」「Partner administratorを狙うcredential-relay型の挙動と整合する」",
+        "prohibitedJump": "Campaign、Operator、組織、国家の断定"
+      }
+    ],
+    "judgmentAssumptions": [
+      {
+        "id": "ASM-2026-025-001",
+        "statement": "quarantine exportが対象期間の誘導mail評価に対して実質的に完全である",
+        "whyNeeded": "lure観測の有無を評価するため",
+        "failureTrigger": "archive欠落やfilter bypassが判明した場合",
+        "relatedGapIds": [
+          "GAP-2026-025-004"
+        ]
+      },
+      {
+        "id": "ASM-2026-025-002",
+        "statement": "Vendor bulletinのscreen shotは撮影後に編集されていない",
+        "whyNeeded": "lineage評価のため",
+        "failureTrigger": "bulletin revision差分が見つかった場合",
+        "relatedGapIds": [
+          "GAP-2026-025-002"
+        ]
+      },
+      {
+        "id": "ASM-2026-025-003",
+        "statement": "translated excerptの訳語は攻撃意図を過度に誇張していない",
+        "whyNeeded": "意図推定のため",
+        "failureTrigger": "原文全文で別義が優勢と分かった場合",
+        "relatedGapIds": [
+          "GAP-2026-025-003"
+        ]
+      },
+      {
+        "id": "ASM-2026-025-004",
+        "statement": "IdP sign-in summaryは明示した2026-07-23〜2026-07-29のCoverage内で実質的に完全である",
+        "whyNeeded": "Coverage内のNegative Findingを解釈するため",
+        "failureTrigger": "summary欠落またはsummary外のtoken issuance recordが判明した場合",
+        "relatedGapIds": [
+          "GAP-2026-025-001"
+        ]
+      }
+    ]
+  },
+  "syntheticEntities": {
+    "organizations": [
+      {
+        "id": "ORG-2026-025-001",
+        "name": "SYNTH-ORG-ALPHA",
+        "synthetic": true
+      },
+      {
+        "id": "ORG-2026-025-002",
+        "name": "SYNTH-MEDIA-RESEARCH-001",
+        "synthetic": true
+      }
+    ],
+    "media": [
+      {
+        "id": "MED-2026-025-001",
+        "name": "SYNTH-MEDIA-WEEKLY-001",
+        "synthetic": true
+      }
+    ],
+    "roles": [
+      {
+        "id": "ROLE-2026-025-001",
+        "name": "SYNTH-CISO",
+        "synthetic": true
+      },
+      {
+        "id": "ROLE-2026-025-002",
+        "name": "SYNTH-CTI Lead",
+        "synthetic": true
+      },
+      {
+        "id": "ROLE-2026-025-003",
+        "name": "SYNTH-SOC Lead",
+        "synthetic": true
+      },
+      {
+        "id": "ROLE-2026-025-004",
+        "name": "SYNTH-Identity Lead",
+        "synthetic": true
+      },
+      {
+        "id": "ROLE-2026-025-005",
+        "name": "SYNTH-Risk Manager",
+        "synthetic": true
+      },
+      {
+        "id": "ROLE-2026-025-006",
+        "name": "SYNTH-Security Operations",
+        "synthetic": true
+      },
+      {
+        "id": "ROLE-2026-025-007",
+        "name": "SYNTH-Partner Operations Owner",
+        "synthetic": true
+      }
+    ],
+    "domains": [
+      "portal-reset.example",
+      "signin-bridge.example",
+      "mail-notice.example",
+      "idp-summary.example"
+    ],
+    "ips": [
+      "198.51.100.42",
+      "203.0.113.77"
+    ]
+  },
+  "threatHypotheses": [
+    {
+      "id": "TH-2026-025-001",
+      "statement": "credential-relay型Technical clusterがSYNTH-ORG-ALPHAのPartner administratorを狙っている",
+      "assessment": "Supported"
+    },
+    {
+      "id": "TH-2026-025-002",
+      "statement": "credential-relay型Technical clusterが近接登録した合成Domainを使いPartner administrator向けlureを反復送達する",
+      "assessment": "Partially supported"
+    },
+    {
+      "id": "TH-2026-025-003",
+      "statement": "credential-relayが成功した場合、Technical clusterがPartner資源へのfollow-on accessを試行する",
+      "assessment": "Inconclusive"
+    }
+  ],
+  "observationHypotheses": [
+    {
+      "id": "OBS-2026-025-001",
+      "relatedThreatHypothesisId": "TH-2026-025-001",
+      "expectedSignal": "quarantine mail and redirect chain",
+      "dataSource": [
+        "SN-2026-025-001",
+        "SN-2026-025-002"
+      ]
+    },
+    {
+      "id": "OBS-2026-025-002",
+      "relatedThreatHypothesisId": "TH-2026-025-002",
+      "expectedSignal": "repeat lure, close domain registrations, and the same redirect sequence",
+      "dataSource": [
+        "SN-2026-025-001",
+        "SN-2026-025-002",
+        "SN-2026-025-003"
+      ]
+    },
+    {
+      "id": "OBS-2026-025-003",
+      "relatedSourceEvaluationHypothesisId": "SEH-2026-025-001",
+      "expectedSignal": "same screenshot reused across reports",
+      "dataSource": [
+        "SN-2026-025-004",
+        "SN-2026-025-005",
+        "SN-2026-025-007"
+      ]
+    },
+    {
+      "id": "OBS-2026-025-004",
+      "relatedThreatHypothesisId": "TH-2026-025-003",
+      "expectedSignal": "IdP sign-in telemetry or token replay evidence of successful follow-on access",
+      "dataSource": [
+        "SN-2026-025-008"
+      ]
+    },
+    {
+      "id": "OBS-2026-025-005",
+      "relatedAlternativeHypothesisId": "ALT-2026-025-002",
+      "expectedSignal": "verifiable original-language context, speaker provenance, and collection path for the translated excerpt",
+      "dataSource": [
+        "SN-2026-025-006"
+      ]
+    }
+  ],
+  "collectionGaps": [
+    {
+      "id": "GAP-2026-025-001",
+      "missingEvidence": "detailed IdP token issuance telemetry",
+      "decisionImpact": "successful follow-on access cannot be confirmed or ruled out",
+      "priority": "高",
+      "relatedThreatHypothesisId": "TH-2026-025-003"
+    },
+    {
+      "id": "GAP-2026-025-002",
+      "missingEvidence": "newsletter revision history",
+      "decisionImpact": "same-origin republication timing remains partially uncertain",
+      "priority": "中"
+    },
+    {
+      "id": "GAP-2026-025-003",
+      "missingEvidence": "original-language full transcript",
+      "decisionImpact": "intent interpretation remains low confidence",
+      "priority": "中"
+    },
+    {
+      "id": "GAP-2026-025-004",
+      "missingEvidence": "mail archive completeness and filter-bypass accounting for the quarantine export",
+      "decisionImpact": "lure frequency could be underestimated if the export is incomplete",
+      "priority": "中",
+      "relatedThreatHypothesisId": "TH-2026-025-001"
+    }
+  ],
+  "alternativeHypotheses": [
+    {
+      "id": "ALT-2026-025-001",
+      "statement": "SSO maintenance side effect rather than external lure",
+      "focusQuestion": "Were the observed technical events an external lure or an authorized SSO maintenance side effect?",
+      "relationshipToPrimaryJudgment": "directly_competing"
+    },
+    {
+      "id": "ALT-2026-025-002",
+      "statement": "translated excerpt is a planted false flag by an unrelated third party and does not identify the operator behind the technical events",
+      "focusQuestion": "Does the translated excerpt identify the operator behind the technical events?",
+      "relationshipToPrimaryJudgment": "attribution_boundary"
+    },
+    {
+      "id": "ALT-2026-025-003",
+      "statement": "shared phishing kit reuse rather than same operator or sponsor",
+      "focusQuestion": "Do shared artifacts identify one operator or sponsor?",
+      "relationshipToPrimaryJudgment": "attribution_boundary"
+    }
+  ],
+  "sourceNotes": [
+    {
+      "id": "SN-2026-025-001",
+      "origin": "synthetic-mail-gateway",
+      "reliability": "高",
+      "credibility": "中",
+      "independenceGroupId": "IG-INT-001",
+      "collectedAt": "2026-07-27T08:40:00+09:00",
+      "synthetic": true,
+      "reference": "mail-notice.example/message/042"
+    },
+    {
+      "id": "SN-2026-025-002",
+      "origin": "synthetic-decoy-proxy",
+      "reliability": "高",
+      "credibility": "高",
+      "independenceGroupId": "IG-INT-002",
+      "collectedAt": "2026-07-27T09:10:00+09:00",
+      "synthetic": true,
+      "reference": "signin-bridge.example/log/edge-20260727"
+    },
+    {
+      "id": "SN-2026-025-003",
+      "origin": "synthetic-registrar-export",
+      "reliability": "中",
+      "credibility": "中",
+      "independenceGroupId": "IG-EXT-001",
+      "collectedAt": "2026-07-27T10:05:00+09:00",
+      "synthetic": true,
+      "reference": "portal-reset.example/registration/export"
+    },
+    {
+      "id": "SN-2026-025-004",
+      "origin": "synthetic-vendor-bulletin",
+      "reliability": "中",
+      "credibility": "中",
+      "independenceGroupId": "IG-EXT-002",
+      "collectedAt": "2026-07-28T07:50:00+09:00",
+      "synthetic": true,
+      "reference": "blue-quill.example/bulletins/2026-07-28"
+    },
+    {
+      "id": "SN-2026-025-005",
+      "origin": "synthetic-blog-repost",
+      "reliability": "低",
+      "credibility": "低",
+      "independenceGroupId": "IG-EXT-002",
+      "collectedAt": "2026-07-28T12:00:00+09:00",
+      "synthetic": true,
+      "reference": "harbor-signal.example/posts/relay-cluster"
+    },
+    {
+      "id": "SN-2026-025-006",
+      "origin": "synthetic-translated-excerpt",
+      "reliability": "低",
+      "credibility": "低",
+      "independenceGroupId": "IG-EXT-003",
+      "collectedAt": "2026-07-29T08:20:00+09:00",
+      "synthetic": true,
+      "reference": "chat-excerpt.example/item/17"
+    },
+    {
+      "id": "SN-2026-025-007",
+      "origin": "synthetic-newsletter-recap",
+      "reliability": "低",
+      "credibility": "低",
+      "independenceGroupId": "IG-EXT-002",
+      "collectedAt": "2026-07-29T09:45:00+09:00",
+      "synthetic": true,
+      "reference": "weekly-brief.example/2026-07-29/relay"
+    },
+    {
+      "id": "SN-2026-025-008",
+      "origin": "synthetic-idp-sign-in-summary",
+      "reliability": "高",
+      "credibility": "中",
+      "independenceGroupId": "IG-INT-003",
+      "collectedAt": "2026-07-29T10:15:00+09:00",
+      "synthetic": true,
+      "reference": "idp-summary.example/reports/2026-07-23--2026-07-29"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVD-2026-025-001",
+      "sourceNoteId": "SN-2026-025-001",
+      "observationHypothesisId": "OBS-2026-025-001",
+      "hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "id": "EVD-2026-025-002",
+      "sourceNoteId": "SN-2026-025-002",
+      "observationHypothesisId": "OBS-2026-025-001",
+      "hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    {
+      "id": "EVD-2026-025-003",
+      "sourceNoteId": "SN-2026-025-003",
+      "observationHypothesisId": "OBS-2026-025-002",
+      "hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    {
+      "id": "EVD-2026-025-004",
+      "sourceNoteId": "SN-2026-025-004",
+      "observationHypothesisId": "OBS-2026-025-003",
+      "hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+    },
+    {
+      "id": "EVD-2026-025-005",
+      "sourceNoteId": "SN-2026-025-005",
+      "observationHypothesisId": "OBS-2026-025-003",
+      "hash": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+    },
+    {
+      "id": "EVD-2026-025-006",
+      "sourceNoteId": "SN-2026-025-006",
+      "observationHypothesisId": "OBS-2026-025-005",
+      "hash": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+    },
+    {
+      "id": "EVD-2026-025-007",
+      "sourceNoteId": "SN-2026-025-007",
+      "observationHypothesisId": "OBS-2026-025-003",
+      "hash": "sha256:7777777777777777777777777777777777777777777777777777777777777777"
+    },
+    {
+      "id": "EVD-2026-025-008",
+      "sourceNoteId": "SN-2026-025-008",
+      "observationHypothesisId": "OBS-2026-025-004",
+      "hash": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+    }
+  ],
+  "negativeFindings": [
+    {
+      "id": "NEG-2026-025-001",
+      "relatedEvidenceIds": [
+        "EVD-2026-025-008"
+      ],
+      "availableCoverage": "IdP sign-in summary for 2026-07-23 through 2026-07-29",
+      "gapId": "GAP-2026-025-001",
+      "permittedConclusion": "no successful follow-on access observed within available coverage; absence cannot be concluded",
+      "observationHypothesisId": "OBS-2026-025-004"
+    }
+  ],
+  "uncertainties": [
+    {
+      "id": "UNC-2026-025-001",
+      "type": "translation",
+      "affectedIds": [
+        "EVD-2026-025-006",
+        "AJ-2026-025"
+      ]
+    },
+    {
+      "id": "UNC-2026-025-002",
+      "type": "timestamp",
+      "affectedIds": [
+        "EVD-2026-025-004",
+        "EVD-2026-025-005",
+        "EVD-2026-025-007"
+      ]
+    },
+    {
+      "id": "UNC-2026-025-003",
+      "type": "entity",
+      "affectedIds": [
+        "EVD-2026-025-002",
+        "EVD-2026-025-003"
+      ]
+    }
+  ],
+  "lineage": {
+    "edges": [
+      {
+        "id": "LIN-2026-025-001",
+        "from": "SN-2026-025-004",
+        "to": "SN-2026-025-005",
+        "relationship": "republishes",
+        "independenceEffect": "counts-as-same"
+      },
+      {
+        "id": "LIN-2026-025-002",
+        "from": "SN-2026-025-004",
+        "to": "SN-2026-025-007",
+        "relationship": "derived-from",
+        "independenceEffect": "counts-as-same"
+      },
+      {
+        "id": "LIN-2026-025-003",
+        "from": "SN-2026-025-005",
+        "to": "SN-2026-025-007",
+        "relationship": "cites",
+        "independenceEffect": "counts-as-same"
+      }
+    ],
+    "circularReportingCandidates": [
+      {
+        "id": "CR-2026-025-001",
+        "sourceNoteIds": [
+          "SN-2026-025-004",
+          "SN-2026-025-005",
+          "SN-2026-025-007"
+        ],
+        "sameOriginRepublication": true,
+        "doNotCountAsIndependent": true
+      }
+    ]
+  },
+  "deceptionCandidates": [
+    {
+      "id": "DECPT-2026-025-001",
+      "category": "shared tooling",
+      "evidenceIds": [
+        "EVD-2026-025-002",
+        "EVD-2026-025-003",
+        "EVD-2026-025-004"
+      ],
+      "supportedAlternativeHypothesisIds": [
+        "ALT-2026-025-003"
+      ]
+    },
+    {
+      "id": "DECPT-2026-025-002",
+      "category": "false flag",
+      "evidenceIds": [
+        "EVD-2026-025-006"
+      ],
+      "supportedAlternativeHypothesisIds": [
+        "ALT-2026-025-002"
+      ]
+    },
+    {
+      "id": "DECPT-2026-025-003",
+      "category": "infrastructure reuse",
+      "evidenceIds": [
+        "EVD-2026-025-003"
+      ],
+      "supportedAlternativeHypothesisIds": [
+        "ALT-2026-025-003"
+      ]
+    }
+  ],
+  "attributionAssessment": {
+    "id": "ATTR-2026-025-001",
+    "ladderLevel": "L2",
+    "confidence": "中",
+    "relatedEvidenceIds": [
+      "EVD-2026-025-001",
+      "EVD-2026-025-002",
+      "EVD-2026-025-003",
+      "EVD-2026-025-004"
+    ],
+    "permittedLanguage": [
+      "同一Technical clusterの可能性がある",
+      "Partner administratorを狙うcredential-relay型の挙動と整合する"
+    ],
+    "prohibitedJump": "Campaign、Operator、組織、国家の断定",
+    "relatedAlternativeHypothesisIds": [
+      "ALT-2026-025-001",
+      "ALT-2026-025-002",
+      "ALT-2026-025-003"
+    ]
+  },
+  "judgments": {
+    "confirmedFacts": [
+      {
+        "id": "CF-2026-025-001",
+        "statement": "quarantine mail was present",
+        "evidenceIds": [
+          "EVD-2026-025-001"
+        ]
+      },
+      {
+        "id": "CF-2026-025-002",
+        "statement": "redirect chain was observed",
+        "evidenceIds": [
+          "EVD-2026-025-002"
+        ]
+      },
+      {
+        "id": "CF-2026-025-003",
+        "statement": "domains were registered in close succession",
+        "evidenceIds": [
+          "EVD-2026-025-003"
+        ]
+      }
+    ],
+    "assumptions": [
+      {
+        "id": "ASM-2026-025-001",
+        "statement": "quarantine export is materially complete for the scoped lure assessment",
+        "whyNeeded": "to evaluate whether lure delivery was observed within the scoped mail source",
+        "failureTrigger": "mail archive gaps or filter bypass are identified",
+        "relatedGapIds": [
+          "GAP-2026-025-004"
+        ]
+      },
+      {
+        "id": "ASM-2026-025-002",
+        "statement": "vendor bulletin timestamps were not altered",
+        "whyNeeded": "to compare report lineage and timing",
+        "failureTrigger": "bulletin revision history contradicts the captured timestamp",
+        "relatedGapIds": [
+          "GAP-2026-025-002"
+        ]
+      },
+      {
+        "id": "ASM-2026-025-003",
+        "statement": "translated term does not overstate intent",
+        "whyNeeded": "to avoid treating a translation choice as operator evidence",
+        "failureTrigger": "the original-language transcript supports a materially different meaning",
+        "relatedGapIds": [
+          "GAP-2026-025-003"
+        ]
+      },
+      {
+        "id": "ASM-2026-025-004",
+        "statement": "IdP sign-in summary is materially complete for its stated 2026-07-23 through 2026-07-29 coverage",
+        "whyNeeded": "to interpret the scoped negative finding without extending it beyond available coverage",
+        "failureTrigger": "summary omissions or token issuance records outside the summary are identified",
+        "relatedGapIds": [
+          "GAP-2026-025-001"
+        ]
+      }
+    ],
+    "analyticJudgment": {
+      "id": "AJ-2026-025",
+      "statement": "観測事象はPartner administratorを狙うcredential-relay型Technical clusterと整合するが、外部報告の独立性不足とshared toolingの可能性があるため、CampaignやOperatorまでの表現は支持しない",
+      "confidence": "中",
+      "basis": "ALT-2026-025-001はquarantine mail、外部redirect chain、近接登録した合成Domainにより弱まる。一方、ALT-2026-025-002 / 003はexcerptとL2超の帰属境界として残り、成功したfollow-on accessも未確認である",
+      "relatedAlternativeHypothesisIds": [
+        "ALT-2026-025-001",
+        "ALT-2026-025-002",
+        "ALT-2026-025-003"
+      ],
+      "changeCondition": "承認済みSSO保守ticketがtechnical event全体を説明する、独立Partner telemetryで同一lureとfollow-on accessが確認される、またはkit再利用を示す強い証拠が出る",
+      "alternativeAssessments": [
+        {
+          "alternativeHypothesisId": "ALT-2026-025-001",
+          "disposition": "weakened",
+          "relatedEvidenceIds": [
+            "EVD-2026-025-001",
+            "EVD-2026-025-002",
+            "EVD-2026-025-003"
+          ],
+          "rationale": "quarantine mail, an external redirect chain, and close synthetic domain registrations are inconsistent with an authorized SSO maintenance-only explanation"
+        },
+        {
+          "alternativeHypothesisId": "ALT-2026-025-002",
+          "disposition": "plausible-for-excerpt-only",
+          "relatedEvidenceIds": [
+            "EVD-2026-025-006"
+          ],
+          "rationale": "the excerpt lacks verifiable original-language context and cannot identify the operator behind independently observed technical events"
+        },
+        {
+          "alternativeHypothesisId": "ALT-2026-025-003",
+          "disposition": "plausible-attribution-boundary",
+          "relatedEvidenceIds": [
+            "EVD-2026-025-002",
+            "EVD-2026-025-003",
+            "EVD-2026-025-004"
+          ],
+          "rationale": "shared kit and infrastructure reuse remain viable explanations for similarities above the technical-cluster level"
+        }
+      ]
+    },
+    "forecasts": [
+      {
+        "id": "FOR-2026-025-001",
+        "statement": "similar domain registrations may recur within 7 days",
+        "statementJa": "7日以内に同型Domainの追加登録または再送mailが発生する可能性がある",
+        "timeHorizon": "7日",
+        "confidence": "中",
+        "indicatorIds": [
+          "IND-2026-025-001",
+          "IND-2026-025-002"
+        ]
+      },
+      {
+        "id": "FOR-2026-025-002",
+        "statement": "operator-level attribution will remain unsupported without new telemetry",
+        "statementJa": "追加収集がなければ、Campaign / Operator表現へ進める材料は30日以内にも不足したまま残る可能性が高い",
+        "timeHorizon": "30日",
+        "confidence": "中",
+        "indicatorIds": [
+          "IND-2026-025-003"
+        ]
+      }
+    ],
+    "recommendations": [
+      {
+        "id": "REC-2026-025-001",
+        "statement": "block two synthetic domains and warn partner admins",
+        "priority": "高",
+        "relatedDecisionId": "DEC-2026-025"
+      },
+      {
+        "id": "REC-2026-025-002",
+        "statement": "extend IdP telemetry retention",
+        "priority": "高",
+        "relatedDecisionId": "DEC-2026-025"
+      },
+      {
+        "id": "REC-2026-025-003",
+        "statement": "collect original transcript and bulletin revisions",
+        "priority": "中",
+        "relatedDecisionId": "DEC-2026-025"
+      }
+    ]
+  },
+  "indicators": [
+    {
+      "id": "IND-2026-025-001",
+      "statement": "new synthetic domains containing reset or signin",
+      "relatedThreatHypothesisId": "TH-2026-025-001"
+    },
+    {
+      "id": "IND-2026-025-002",
+      "statement": "repeat lure mail to partner admins",
+      "relatedThreatHypothesisId": "TH-2026-025-001"
+    },
+    {
+      "id": "IND-2026-025-003",
+      "statement": "builder signature proving shared kit reuse",
+      "relatedThreatHypothesisId": "TH-2026-025-002"
+    }
+  ],
+  "decision": {
+    "id": "DEC-2026-025",
+    "selectedOption": "notify as technical cluster and block; do not use campaign or operator language",
+    "residualRisk": "follow-on access remains unconfirmed until GAP-2026-025-001 is closed"
+  },
+  "reassessment": {
+    "id": "REA-2026-025",
+    "reviewDate": "2026-08-08T10:00:00+09:00",
+    "triggeringIndicatorIds": [
+      "IND-2026-025-001",
+      "IND-2026-025-002",
+      "IND-2026-025-003"
+    ],
+    "invalidationCondition": "successful follow-on access is confirmed, the translated excerpt is contradicted by the original text, or independent external telemetry raises the assessment to campaign threshold"
+  },
+  "sourceEvaluationHypotheses": [
+    {
+      "id": "SEH-2026-025-001",
+      "statement": "external reports derive from one origin and do not constitute independent corroboration",
+      "assessment": "Supported"
+    }
+  ],
+  "sourceEvaluationJudgments": [
+    {
+      "id": "SEJ-2026-025-001",
+      "statement": "vendor bulletin, repost, and recap are not three independent external observations",
+      "sourceEvaluationHypothesisId": "SEH-2026-025-001",
+      "lineageEdgeIds": [
+        "LIN-2026-025-001",
+        "LIN-2026-025-002",
+        "LIN-2026-025-003"
+      ],
+      "circularReportingCandidateId": "CR-2026-025-001"
+    }
+  ]
+}

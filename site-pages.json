@@ -60,10 +60,45 @@
       "section": "additional",
       "order": 270,
       "title": "第17章 オフラインfixture：未承認管理者同意変更の検知検証"
+    },
+    {
+      "source": "cases/index.md",
+      "destination": "cases/index.md",
+      "section": "additional",
+      "order": 235,
+      "title": "合成Case索引"
+    },
+    {
+      "source": "templates/analytic-judgment-record.md",
+      "destination": "templates/analytic-judgment-record/index.md",
+      "section": "additional",
+      "order": 280,
+      "title": "Analytic Judgment Record"
+    },
+    {
+      "source": "cases/fixtures/index.md",
+      "destination": "cases/fixtures/index.md",
+      "section": "additional",
+      "order": 290,
+      "title": "Fixture Catalog"
+    },
+    {
+      "source": "cases/ch25-structured-analysis-attribution-example.md",
+      "destination": "cases/chapter-25-structured-analysis-attribution/index.md",
+      "section": "additional",
+      "order": 300,
+      "title": "第25章 合成記入例：共同報告に埋もれた技術クラスタの判断"
+    },
+    {
+      "source": "manuscript/25-structured-analysis-attribution.md",
+      "destination": "chapters/chapter-25/index.md",
+      "section": "chapters",
+      "order": 210,
+      "title": "第25章 構造化分析、不確実性、アトリビューション"
     }
   ],
   "directoryRoutes": {
-    "cases": "cases/chapter-01-integrated-security-case/index.md"
+    "cases": "cases/index.md"
   },
   "staticFiles": [
     {
@@ -73,6 +108,10 @@
     {
       "source": "cases/fixtures/ch17-detection-engineering-fixture.json",
       "destination": "downloads/ch17-detection-engineering-fixture.json"
+    },
+    {
+      "source": "cases/fixtures/ch25-structured-analysis-attribution-dataset.json",
+      "destination": "downloads/ch25-structured-analysis-attribution-dataset.json"
     }
   ]
 }

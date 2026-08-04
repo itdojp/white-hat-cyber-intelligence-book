@@ -22,4 +22,11 @@
 | F-17-02 | Detection-as-Code lifecycle | `manuscript/17-detection-engineering.md` | Implemented |
 | T-17-01 | Positive / Negative / Benign-near-miss fixture semantics | `manuscript/17-detection-engineering.md` | Implemented |
 
+| F-25-01 | 情報から判断へ変換するAnalytic Reduction | `manuscript/25-structured-analysis-attribution.md` | Implemented |
+| T-25-01 | Source reliability、credibility、independenceの分離 | `manuscript/25-structured-analysis-attribution.md` | Implemented |
+| T-25-02 | ACHの用途・限界とBayesian前提 | `manuscript/25-structured-analysis-attribution.md` | Implemented |
+| T-25-03 | Attribution Ladderの証拠閾値と許容表現 | `manuscript/25-structured-analysis-attribution.md` | Implemented |
+| F-25-02 | Lineageとcircular reportingの検知 | `manuscript/25-structured-analysis-attribution.md` | Implemented |
+| F-25-03 | Reassessmentと無効化条件 | `manuscript/25-structured-analysis-attribution.md` | Implemented |
+
 Mermaid図は、図だけを見なくても意味を理解できる文章代替を直後に置く。表は、列の意味と判断への使い方を本文で説明する。
