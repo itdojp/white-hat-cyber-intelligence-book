@@ -81,6 +81,7 @@ VOID_HTML_TAGS = {
     "wbr",
 }
 FOREIGN_ROOT_TAGS = {"math", "svg"}
+ACTIVE_RAW_HTML_TAGS = {"link", "script", "style"}
 
 
 class RawHtmlContainerTracker(HTMLParser):
@@ -90,10 +91,13 @@ class RawHtmlContainerTracker(HTMLParser):
         super().__init__(convert_charrefs=False)
         self.stack: list[str] = []
         self.malformed = ""
+        self.active_content_tag = ""
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         del attrs
         normalized = tag.lower()
+        if normalized in ACTIVE_RAW_HTML_TAGS and not self.active_content_tag:
+            self.active_content_tag = normalized
         if normalized not in VOID_HTML_TAGS:
             self.stack.append(normalized)
 
@@ -271,7 +275,13 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
             continue
         if html_tracker is not None:
             html_tracker.feed(line + "\n")
-            if html_tracker.malformed:
+            if html_tracker.active_content_tag:
+                error(
+                    f"{relative}: active raw HTML <{html_tracker.active_content_tag}> "
+                    "is not allowed in representative content"
+                )
+                html_tracker = None
+            elif html_tracker.malformed:
                 error(f"{relative}: malformed raw HTML: {html_tracker.malformed}")
                 html_tracker = None
             elif not html_tracker.stack:
@@ -303,7 +313,13 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
         if html_match and not html_match.group(1).endswith(":"):
             html_tracker = RawHtmlContainerTracker()
             html_tracker.feed(line + "\n")
-            if html_tracker.malformed:
+            if html_tracker.active_content_tag:
+                error(
+                    f"{relative}: active raw HTML <{html_tracker.active_content_tag}> "
+                    "is not allowed in representative content"
+                )
+                html_tracker = None
+            elif html_tracker.malformed:
                 error(f"{relative}: malformed raw HTML: {html_tracker.malformed}")
                 html_tracker = None
             elif not html_tracker.stack:
@@ -521,10 +537,11 @@ def check_review_tables() -> None:
 
 def split_source_ids(relative: str, content: str) -> tuple[set[str], set[str]]:
     marker = "## 参考文献・Source Note ID"
-    if content.count(marker) != 1:
+    visible_content = "\n".join(visible_markdown_lines(relative, content))
+    if visible_content.count(marker) != 1:
         error(f"{relative}: missing reference section")
         return set(), set()
-    body, section = content.split(marker, 1)
+    body, section = visible_content.split(marker, 1)
     return set(SOURCE_ID_RE.findall(body)), set(SOURCE_ID_RE.findall(section))
 
 
@@ -834,7 +851,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-035",
+            "GATE-037",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),

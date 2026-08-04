@@ -73,6 +73,8 @@ GOは、全30章の内容が既に完成したことを意味しない。代表�
 | GATE-033 | P2 | Review table直後へKramdown block IALを付けると、表をCSSで非表示にしても構造parserを通過できた | required Review table直後のblock IALを属性内容にかかわらず拒否し、style / class経由でReview evidenceを隠せないようにした |
 | GATE-034 | P2 | IAL検出が最初の`}`までの正規表現だったため、quoted attribute値内の`}`で検出を打ち切り、後続の`display:none`を見逃した | required Review table直後ではIALを解釈する必要がないため、quoteに依存せず`{:` openerの時点で保守的に拒否するようにした |
 | GATE-035 | P2 | Kramdown `nomarkdown` extension内へReview節を置くと、生Markdown検査は通る一方で見出しとTableへ変換されなかった | `comment`と`nomarkdown`をhidden extension stackとして追跡し、内部のraw行ではrequired Review契約を満たせないようにした |
+| GATE-036 | P2 | Review節外のstandalone `style` blockからrequired Review tableを非表示にしても、構造parserは後続Tableを有効と判定した | 代表Artifact / Caseではactive raw HTMLの`style`、`script`、stylesheetを読み込める`link`を禁止し、後続Reviewの表示状態を変更できないようにした |
+| GATE-037 | P2 | Source使用IDを生テキストから抽出していたため、comment等の非表示領域だけに残るIDを本文引用として数えられた | renderer-hidden領域を除いたMarkdownから本文・章末のSource ID集合を計算し、非表示IDではRegistry mappingと本文使用の一致を満たせないようにした |
 
 解消後のOpen件数はP0 / P1 / P2とも0である。
 
@@ -171,11 +173,11 @@ Artifact IDの重複定義とTemplate不一致は0件である。
 - 代表章PRの未解決Review Thread: 0
 
 Gate PRでは、`scripts/check_representative_gate.py`によりSource集合、Artifact、Case関係、凍結契約、Part Issue template、GO判定を継続検査する。
-Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、代表TemplateのEvidence header欠落、第1章の合成Review Evidence ID欠落（Technical / Safety各1件）、header文字列をcommentへ移したTable欠損、観点間でのEvidence ID入替、Review節外へ移した合成Review disclaimer、Template観点名変更、Review節全体のfenced code化、Review節全体のHTML comment化、表示Review節の重複、`template` / `div hidden` / `script`のraw HTML container化、Liquidのcomment / capture / false condition、Kramdown comment / nomarkdown化、非void要素のself-closing marker化、Review tableへのstyle / class / quoted-brace IAL付加の三十三の負例を一時変異で検証し、33 / 33を拒否した。検証後は正本を復元し、positive gateを再実行した。
+Source mapping不一致、Review見出し欠落、GO判定欠落、不正baseline、不正・未来・baseline以前のReview日、不一致またはtracked変更を持つformatter checkout、専用欄が壊れた、または別数値commentを指すReview evidence、代表TemplateのEvidence header欠落、第1章の合成Review Evidence ID欠落（Technical / Safety各1件）、header文字列をcommentへ移したTable欠損、観点間でのEvidence ID入替、Review節外へ移した合成Review disclaimer、Template観点名変更、Review節全体のfenced code化、Review節全体のHTML comment化、表示Review節の重複、`template` / `div hidden` / `script`のraw HTML container化、Liquidのcomment / capture / false condition、Kramdown comment / nomarkdown化、非void要素のself-closing marker化、Review tableへのstyle / class / quoted-brace IAL付加、active style block、非表示Source ID化の三十五の負例を一時変異で検証し、35 / 35を拒否した。検証後は正本を復元し、positive gateを再実行した。
 
 ### 証跡と保証範囲
 
-`scripts/check_representative_gate.py`は、本文領域・章末一覧・Registry mappingのSource集合、Artifact / Case関係、fenced code、HTML comment、raw HTML block、Liquid非出力候補block、Kramdown comment / nomarkdownを除く表示対象Markdown内で一意なReview見出しと直下Table、合成Review Evidence ID、凍結文書、Part Issue form、本記録の必須構造を検査する。required Review table直後のKramdown block IALも拒否する。Review baselineは監査済み40桁SHAへのpinであり、履歴が利用可能なら実在commitかつ`HEAD`のancestorであることを検査する。shallow CIでは固定pinを検査する。Review日はISO実在日かつ実行日以前、独立Review evidenceは専用行のIssue #8 comment URLであることを検査する。
+`scripts/check_representative_gate.py`は、本文領域・章末一覧・Registry mappingのSource集合、Artifact / Case関係、fenced code、HTML comment、raw HTML block、Liquid非出力候補block、Kramdown comment / nomarkdownを除く表示対象Markdown内で一意なReview見出しと直下Table、合成Review Evidence ID、凍結文書、Part Issue form、本記録の必須構造を検査する。Source本文使用集合も同じ表示対象Markdownから計算する。required Review table直後のKramdown block IALと、表示を変更できるactive raw HTMLも拒否する。Review baselineは監査済み40桁SHAへのpinであり、履歴が利用可能なら実在commitかつ`HEAD`のancestorであることを検査する。shallow CIでは固定pinを検査する。Review日はISO実在日かつ実行日以前、独立Review evidenceは専用行のIssue #8 comment URLであることを検査する。
 
 **Repository checker does not validate GitHub live state.** 次は外部Gateであり、Repository内の`GO`文字列だけでは完了扱いにしない。
 
