@@ -17,7 +17,7 @@ description: 情報を判断へ変換し、競合仮説、不確実性、欺瞞�
 - 欺瞞、false flag、shared tooling、infrastructure reuse、circular reportingを前提に、証拠を超える帰属を止める
 - Decision ownerが、判断期限までに何を決められ、何が未確定かを理解できる
 
-本章が完成すると、読者は`ART-11 Analytic Judgment Record`を用いて、Technical clusterからCampaign、Operator、Sponsorshipへ安易に飛躍せず、**どこで止まるべきか**を説明できる。
+本章が完成すると、読者は`ART-12 Analytic Judgment Record`を用いて、Technical clusterからCampaign、Operator、Sponsorshipへ安易に飛躍せず、**どこで止まるべきか**を説明できる。
 
 ## 学習目標
 
@@ -316,7 +316,7 @@ flowchart TD
 
 ## 10. 作成する成果物
 
-本章の中心成果物は`ART-11 Analytic Judgment Record`である。
+本章の中心成果物は`ART-12 Analytic Judgment Record`である。
 
 - [空Template](../templates/analytic-judgment-record.md)
 - [第25章の合成記入例](../cases/ch25-structured-analysis-attribution-example.md)

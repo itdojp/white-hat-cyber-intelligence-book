@@ -1,16 +1,16 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "canonicalDirectories": [
     "cases",
     "schemas"
   ],
   "pages": [
     {
-      "source": "cases/index.md",
-      "destination": "cases/index.md",
-      "section": "additional",
-      "order": 235,
-      "title": "合成Case索引"
+      "source": "manuscript/11-web-api-hypothesis.md",
+      "destination": "chapters/chapter-11/index.md",
+      "section": "chapters",
+      "order": 50,
+      "title": "第11章 Web・APIを仮説駆動で評価する"
     },
     {
       "source": "templates/integrated-security-case-map.md",
@@ -27,35 +27,91 @@
       "title": "第1章 合成記入例：請求書連携OAuthアプリの権限見直し"
     },
     {
+      "source": "templates/web-api-assessment-hypothesis-pack.md",
+      "destination": "templates/web-api-assessment-hypothesis-pack/index.md",
+      "section": "additional",
+      "order": 240,
+      "title": "Web/API Assessment Hypothesis Pack"
+    },
+    {
+      "source": "cases/ch11-web-api-assessment-example.md",
+      "destination": "cases/chapter-11-web-api-assessment/index.md",
+      "section": "additional",
+      "order": 250,
+      "title": "第11章 合成記入例：マルチテナント受注Export APIとWebhook登録の評価"
+    },
+    {
+      "source": "manuscript/17-detection-engineering.md",
+      "destination": "chapters/chapter-17/index.md",
+      "section": "chapters",
+      "order": 200,
+      "title": "第17章 Detection Engineering"
+    },
+    {
+      "source": "cases/ch17-detection-validation-example.md",
+      "destination": "cases/chapter-17-detection-validation/index.md",
+      "section": "additional",
+      "order": 260,
+      "title": "第17章 合成記入例：未承認管理者同意変更のDetection Validation"
+    },
+    {
+      "source": "cases/fixtures/ch17-detection-engineering-fixture.md",
+      "destination": "cases/fixtures/ch17-detection-engineering-fixture/index.md",
+      "section": "additional",
+      "order": 270,
+      "title": "第17章 オフラインfixture：未承認管理者同意変更の検知検証"
+    },
+    {
+      "source": "cases/index.md",
+      "destination": "cases/index.md",
+      "section": "additional",
+      "order": 235,
+      "title": "合成Case索引"
+    },
+    {
       "source": "templates/analytic-judgment-record.md",
       "destination": "templates/analytic-judgment-record/index.md",
       "section": "additional",
-      "order": 240,
+      "order": 280,
       "title": "Analytic Judgment Record"
     },
     {
       "source": "cases/fixtures/index.md",
       "destination": "cases/fixtures/index.md",
       "section": "additional",
-      "order": 250,
+      "order": 290,
       "title": "Fixture Catalog"
     },
     {
       "source": "cases/ch25-structured-analysis-attribution-example.md",
       "destination": "cases/chapter-25-structured-analysis-attribution/index.md",
       "section": "additional",
-      "order": 260,
+      "order": 300,
       "title": "第25章 合成記入例：共同報告に埋もれた技術クラスタの判断"
     },
     {
       "source": "manuscript/25-structured-analysis-attribution.md",
       "destination": "chapters/chapter-25/index.md",
       "section": "chapters",
-      "order": 250,
+      "order": 210,
       "title": "第25章 構造化分析、不確実性、アトリビューション"
     }
   ],
   "directoryRoutes": {
     "cases": "cases/index.md"
-  }
+  },
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch11-web-api-assessment-dataset.json",
+      "destination": "downloads/ch11-web-api-assessment-dataset.json"
+    },
+    {
+      "source": "cases/fixtures/ch17-detection-engineering-fixture.json",
+      "destination": "downloads/ch17-detection-engineering-fixture.json"
+    },
+    {
+      "source": "cases/fixtures/ch25-structured-analysis-attribution-dataset.json",
+      "destination": "downloads/ch25-structured-analysis-attribution-dataset.json"
+    }
+  ]
 }

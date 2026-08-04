@@ -18,7 +18,7 @@
 
 | Field | Value |
 |---|---|
-| Artifact ID | `ART-11` |
+| Artifact ID | `ART-12` |
 | Case ID | `CASE-YYYY-025` |
 | Title |  |
 | Status | Draft / Active / Decision Support / Reassessment Due / Closed |

@@ -3565,7 +3565,7 @@ def main() -> int:
         template_path,
         template,
         (
-            "Artifact ID | `ART-11`",
+            "Artifact ID | `ART-12`",
             "Case ID",
             "Decision Requirement ID",
             "Intelligence Requirement ID",
@@ -3713,7 +3713,7 @@ def main() -> int:
         return 1
     for key, expected in (
         ("datasetId", "FIX-CH25-2026-001"),
-        ("artifactId", "ART-11"),
+        ("artifactId", "ART-12"),
         ("caseId", "CASE-2026-025"),
         ("decisionRequirementId", "DR-2026-025"),
         ("intelligenceRequirementId", "IR-2026-025"),
@@ -5617,7 +5617,7 @@ def main() -> int:
         "artifact-index.md",
         artifact_index,
         (
-            "ART-11",
+            "ART-12",
             "Analytic Judgment Record",
             "templates/analytic-judgment-record.md",
             "Decision Requirement",
@@ -5737,6 +5737,15 @@ def main() -> int:
             error(f"site-pages.json: {source} destination must be {destination!r}")
     if registry.get("directoryRoutes", {}).get("cases") != "cases/index.md":
         error("site-pages.json: directoryRoutes.cases must target cases/index.md")
+    static_files = {
+        item.get("source"): item.get("destination")
+        for item in registry.get("staticFiles", [])
+        if isinstance(item, dict)
+    }
+    if static_files.get(
+        "cases/fixtures/ch25-structured-analysis-attribution-dataset.json"
+    ) != "downloads/ch25-structured-analysis-attribution-dataset.json":
+        error("site-pages.json: chapter 25 dataset must be a fixed JSON download")
 
     for message in ERRORS:
         print(f"ERROR: {message}")

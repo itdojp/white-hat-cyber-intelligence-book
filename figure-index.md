@@ -12,6 +12,16 @@
 | T-01-01 | 業務機能の責任と非責任 | `manuscript/01-integrated-discipline.md` | Implemented |
 | T-01-02 | Handoff Contract | `manuscript/01-integrated-discipline.md` | Implemented |
 | T-01-03 | Outcome metricと件数指標の区別 | `manuscript/01-integrated-discipline.md` | Implemented |
+| F-11-01 | DecisionからDetectionまでの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
+| F-11-02 | Request・Evidence・Telemetry・Decisionの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
+| T-11-01 | ChecklistとHypothesis Packの違い | `manuscript/11-web-api-hypothesis.md` | Implemented |
+| T-11-02 | 論点から仮説へ変換する観点 | `manuscript/11-web-api-hypothesis.md` | Implemented |
+| T-11-03 | 良い仮説と悪い仮説 | `manuscript/11-web-api-hypothesis.md` | Implemented |
+| T-11-04 | FindingからDetectionへの変換 | `manuscript/11-web-api-hypothesis.md` | Implemented |
+| F-17-01 | BehaviorからDecision contributionまでのDetection traceability | `manuscript/17-detection-engineering.md` | Implemented |
+| F-17-02 | Detection-as-Code lifecycle | `manuscript/17-detection-engineering.md` | Implemented |
+| T-17-01 | Positive / Negative / Benign-near-miss fixture semantics | `manuscript/17-detection-engineering.md` | Implemented |
+
 | F-25-01 | 情報から判断へ変換するAnalytic Reduction | `manuscript/25-structured-analysis-attribution.md` | Implemented |
 | T-25-01 | Source reliability、credibility、independenceの分離 | `manuscript/25-structured-analysis-attribution.md` | Implemented |
 | T-25-02 | ACHの用途・限界とBayesian前提 | `manuscript/25-structured-analysis-attribution.md` | Implemented |

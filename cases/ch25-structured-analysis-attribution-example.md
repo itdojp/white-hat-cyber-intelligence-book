@@ -16,7 +16,7 @@
 
 | Field | Value |
 |---|---|
-| Artifact ID | `ART-11` |
+| Artifact ID | `ART-12` |
 | Case ID | `CASE-2026-025` |
 | Title | 共同報告に埋もれた技術クラスタの判断 |
 | Status | Decision Support |

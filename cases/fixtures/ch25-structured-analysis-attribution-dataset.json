@@ -2,7 +2,7 @@
   "datasetId": "FIX-CH25-2026-001",
   "synthetic": true,
   "caseId": "CASE-2026-025",
-  "artifactId": "ART-11",
+  "artifactId": "ART-12",
   "decisionRequirementId": "DR-2026-025",
   "intelligenceRequirementId": "IR-2026-025",
   "analyticJudgmentId": "AJ-2026-025",

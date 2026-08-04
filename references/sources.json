@@ -26,7 +26,64 @@
         25,
         26
       ],
-      "notes": "Current version page identifies ATT&CK v19.1 as current from 2026-04-28. Used in Chapter 25 only as behavior-mapping vocabulary and explicitly not as attribution proof."
+      "notes": "Current version page identifies ATT&CK v19.1 as current from 2026-04-28. Chapter 17 relies on ATT&CK framing that detection mapping is not coverage proof; Chapter 25 uses it only as behavior-mapping vocabulary and not as attribution proof."
+    },
+    {
+      "id": "SRC-ATTACK-DS-001",
+      "publisher": "MITRE",
+      "title": "ATT&CK Data Sources",
+      "kind": "framework-reference",
+      "status": "deprecated-reference",
+      "version": "Deprecated in ATT&CK v18",
+      "url": "https://attack.mitre.org/datasources/",
+      "publishedAt": null,
+      "checkedAt": "2026-08-03",
+      "nextReviewAt": "2026-11-03",
+      "reviewTriggers": [
+        "ATT&CK data source taxonomy change or deprecation status change"
+      ],
+      "chapters": [
+        17
+      ],
+      "notes": "Official page states data sources were deprecated in the ATT&CK v18 release in October 2025 and no new data sources will be added."
+    },
+    {
+      "id": "SRC-ATTACK-DET-001",
+      "publisher": "MITRE",
+      "title": "ATT&CK Detection Strategies",
+      "kind": "framework-reference",
+      "status": "current",
+      "version": null,
+      "url": "https://attack.mitre.org/detectionstrategies/",
+      "publishedAt": null,
+      "checkedAt": "2026-08-03",
+      "nextReviewAt": "2026-11-03",
+      "reviewTriggers": [
+        "ATT&CK detection strategy additions or model changes"
+      ],
+      "chapters": [
+        17
+      ],
+      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms."
+    },
+    {
+      "id": "SRC-SIGMA-001",
+      "publisher": "SigmaHQ",
+      "title": "Sigma Rules Specification",
+      "kind": "specification",
+      "status": "current",
+      "version": "2.1.0",
+      "url": "https://sigmahq.io/sigma-specification/specification/sigma-rules-specification.html",
+      "publishedAt": "2025-08-02",
+      "checkedAt": "2026-08-03",
+      "nextReviewAt": "2027-08-03",
+      "reviewTriggers": [
+        "Sigma specification version change"
+      ],
+      "chapters": [
+        17
+      ],
+      "notes": "Official specification page lists version 2.1.0, release date 2025-08-02, and documents status, logsource, detection, and condition fields."
     },
     {
       "id": "SRC-NICE-001",
@@ -79,18 +136,19 @@
       "version": "SP 800-61 Rev.3",
       "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
       "publishedAt": "2025-04-03",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2027-04-03",
+      "checkedAt": "2026-08-03",
+      "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
         "NIST revision or supplemental guidance change"
       ],
       "chapters": [
         1,
+        17,
         19,
         20,
         22
       ],
-      "notes": "Supersedes SP 800-61 Rev.2."
+      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03."
     },
     {
       "id": "SRC-BERKELEY-001",
@@ -122,7 +180,7 @@
       "version": "2025",
       "url": "https://owasp.org/Top10/",
       "publishedAt": null,
-      "checkedAt": "2026-07-25",
+      "checkedAt": "2026-08-03",
       "nextReviewAt": "2026-10-25",
       "reviewTriggers": [
         "new OWASP Top 10 release or correction"
@@ -142,7 +200,7 @@
       "version": "4.2; 5.0 under development",
       "url": "https://owasp.org/www-project-web-security-testing-guide/",
       "publishedAt": "2020-12-03",
-      "checkedAt": "2026-07-25",
+      "checkedAt": "2026-08-03",
       "nextReviewAt": "2026-10-25",
       "reviewTriggers": [
         "WSTG stable or 5.0 release"
@@ -164,7 +222,7 @@
       "version": "2023",
       "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
       "publishedAt": "2023-07-03",
-      "checkedAt": "2026-07-25",
+      "checkedAt": "2026-08-03",
       "nextReviewAt": "2027-01-25",
       "reviewTriggers": [
         "new API Security Top 10 edition"
