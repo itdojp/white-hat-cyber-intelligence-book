@@ -60,7 +60,7 @@ KRAMDOWN_HIDDEN_OPEN_RE = re.compile(
 KRAMDOWN_EXTENSION_CLOSE_RE = re.compile(
     r"^ {0,3}\{:/([A-Za-z][A-Za-z0-9_-]*)\}", re.IGNORECASE
 )
-KRAMDOWN_BLOCK_IAL_OPEN_RE = re.compile(r"^ {0,3}\{:")
+KRAMDOWN_IAL_OPEN_RE = re.compile(r"\{:")
 ACTIVE_RAW_HTML_RE = re.compile(
     r"<(style|script|link)(?=[\s/>])", re.IGNORECASE
 )
@@ -82,6 +82,15 @@ VOID_HTML_TAGS = {
 }
 FOREIGN_ROOT_TAGS = {"math", "svg"}
 ACTIVE_RAW_HTML_TAGS = {"link", "script", "style"}
+SCRIPT_URL_ATTRIBUTES = {
+    "action",
+    "formaction",
+    "href",
+    "poster",
+    "src",
+    "xlink:href",
+}
+SCRIPT_URL_PREFIXES = ("javascript:", "data:text/html", "data:image/svg+xml")
 
 
 class RawHtmlContainerTracker(HTMLParser):
@@ -92,16 +101,30 @@ class RawHtmlContainerTracker(HTMLParser):
         self.stack: list[str] = []
         self.malformed = ""
         self.active_content_tag = ""
+        self.unsafe_attribute = ""
         self.saw_tag = False
 
+    def inspect_attributes(self, attrs: list[tuple[str, str | None]]) -> None:
+        for name, value in attrs:
+            attribute = name.lower()
+            normalized_value = (value or "").strip().lower()
+            if attribute.startswith("on") or attribute in {"srcdoc", "style"}:
+                self.unsafe_attribute = attribute
+                return
+            if attribute in SCRIPT_URL_ATTRIBUTES and normalized_value.startswith(
+                SCRIPT_URL_PREFIXES
+            ):
+                self.unsafe_attribute = attribute
+                return
+
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        del attrs
         normalized = tag.lower()
         if normalized.endswith(":"):
             return
         self.saw_tag = True
         if normalized in ACTIVE_RAW_HTML_TAGS and not self.active_content_tag:
             self.active_content_tag = normalized
+        self.inspect_attributes(attrs)
         if normalized not in VOID_HTML_TAGS:
             self.stack.append(normalized)
 
@@ -115,6 +138,7 @@ class RawHtmlContainerTracker(HTMLParser):
         if normalized.endswith(":"):
             return
         self.saw_tag = True
+        self.inspect_attributes(attrs)
         if normalized in FOREIGN_ROOT_TAGS or any(
             ancestor in FOREIGN_ROOT_TAGS for ancestor in self.stack
         ):
@@ -193,8 +217,8 @@ def strip_html_comments(line: str, in_comment: bool) -> tuple[str, bool]:
     return "".join(visible), in_comment
 
 
-def mask_inline_code_and_escaped_angles(line: str) -> str:
-    """Mask inline code spans and escaped '<' before active-HTML detection."""
+def mask_inline_code_and_escapes(line: str) -> str:
+    """Mask inline code spans and escaped contract syntax."""
     masked = list(line)
     cursor = 0
     while True:
@@ -216,7 +240,7 @@ def mask_inline_code_and_escaped_angles(line: str) -> str:
         cursor = close_end
 
     for index, character in enumerate(masked):
-        if character != "<":
+        if character not in "<{":
             continue
         backslashes = 0
         previous = index - 1
@@ -333,9 +357,6 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
                 f"{kramdown_close.group(1).lower()!r}"
             )
             continue
-        if KRAMDOWN_BLOCK_IAL_OPEN_RE.match(block_line):
-            error(f"{relative}: Kramdown block IAL is not allowed")
-            continue
         if html_delimiter_end:
             if html_delimiter_end in line:
                 html_delimiter_end = ""
@@ -347,6 +368,12 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
                 error(
                     f"{relative}: active raw HTML <{html_tracker.active_content_tag}> "
                     "is not allowed in representative content"
+                )
+                html_tracker = None
+            elif html_tracker.unsafe_attribute:
+                error(
+                    f"{relative}: unsafe raw HTML attribute "
+                    f"{html_tracker.unsafe_attribute!r} is not allowed"
                 )
                 html_tracker = None
             elif html_tracker.malformed:
@@ -364,9 +391,12 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
             fence_length = len(fence)
             continue
 
-        active_html = ACTIVE_RAW_HTML_RE.search(
-            mask_inline_code_and_escaped_angles(line)
-        )
+        contract_line = mask_inline_code_and_escapes(line)
+        if KRAMDOWN_IAL_OPEN_RE.search(contract_line):
+            error(f"{relative}: Kramdown IAL is not allowed")
+            continue
+
+        active_html = ACTIVE_RAW_HTML_RE.search(contract_line)
         if active_html:
             error(
                 f"{relative}: active raw HTML <{active_html.group(1).lower()}> "
@@ -388,15 +418,18 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
             continue
 
         candidate_tracker = RawHtmlContainerTracker()
-        candidate_tracker.feed(
-            mask_inline_code_and_escaped_angles(line) + "\n"
-        )
+        candidate_tracker.feed(contract_line + "\n")
         if candidate_tracker.saw_tag:
             if candidate_tracker.active_content_tag:
                 error(
                     f"{relative}: active raw HTML "
                     f"<{candidate_tracker.active_content_tag}> "
                     "is not allowed in representative content"
+                )
+            elif candidate_tracker.unsafe_attribute:
+                error(
+                    f"{relative}: unsafe raw HTML attribute "
+                    f"{candidate_tracker.unsafe_attribute!r} is not allowed"
                 )
             elif candidate_tracker.malformed:
                 error(
@@ -925,7 +958,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-041",
+            "GATE-043",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
