@@ -184,3 +184,15 @@
 - Reassessment ID: `REA-DET-2026-001`
 - Detection backlog input IDs: `DBI-DET-2026-001`〜`DBI-DET-2026-004`
 - Source Note IDs: `SRC-ATTACK-001`, `SRC-ATTACK-DET-001`, `SRC-SIGMA-001`, `SRC-IR-001`
+
+## 11. Review
+
+以下は合成Case内のReview記入例であり、実際のGate reviewまたは本番承認の証跡ではない。Evidence referenceも合成IDである。
+
+| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |
+|---|---|---|---|---|---|
+| Technical correctness | Detection Engineering reviewer | Pass | 2026-08-04 | `SYNTH-REV-17-TECH-001` | Data semantics、Rule、fixture、Triageの関係を確認 |
+| Safety / authorization | Safety reviewer | Pass | 2026-08-04 | `SYNTH-REV-17-SAFE-001` | Offline synthetic replay、外部通信なし、禁止操作を確認 |
+| Evidence / source quality | Evidence reviewer | Pass | 2026-08-04 | `SYNTH-REV-17-EVID-001` | Positive、Negative、Benign、Coverage gapを区別 |
+| Coverage and analytic quality | SOC analytics reviewer | Pass | 2026-08-04 | `SYNTH-REV-17-DET-001` | ATT&CK mappingをCoverage proofとして扱わず、Gap時はIndeterminate |
+| Decision usefulness | Response owner delegate | Pass | 2026-08-04 | `SYNTH-REV-17-DEC-001` | Triage、Incident handoff、Control、Reassessmentを確認 |

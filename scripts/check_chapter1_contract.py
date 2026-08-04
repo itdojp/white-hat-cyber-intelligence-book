@@ -97,10 +97,10 @@ def main() -> int:
         error("book-config.json: missing ch01-integrated-discipline")
     else:
         objectives = chapter_config.get("objectives", [])
-        if "Integrated Security Workflow Mapを作成できる" not in objectives:
+        if "Integrated Security Workflow MapをCase Mapへ適用できる" not in objectives:
             error(
                 "book-config.json: chapter 1 must retain the configured "
-                "Integrated Security Workflow Map learning objective"
+                "Workflow Map to Case Map application learning objective"
             )
 
     chapter_path = "manuscript/01-integrated-discipline.md"
@@ -109,6 +109,7 @@ def main() -> int:
         chapter_path,
         chapter,
         (
+            "学習成果として`Integrated Security Workflow Map`を`Case Map`へ適用できること",
             "Integrated Security Case Map",
             "Integrated Security Workflow Map",
             "OWN",

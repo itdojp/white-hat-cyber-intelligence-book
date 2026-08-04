@@ -296,6 +296,8 @@ flowchart TD
 - 予約済みDomain（`.example`、`.test`、`.invalid`）
 - 必要に応じて文書用IP Address
 
+予約済みDomainとRoot Zoneの現行状態は、合成Datasetの公開前安全GateでIANAのRoot Zone snapshotと照合する。これは実在Domainの調査ではなく、合成値が実TLDへ逸脱していないことをfail-closedで確認するために用いる。`SRC-IANA-TLD-001`
+
 ### 禁止
 
 - 実在Actor、組織、国家、個人への帰属
@@ -415,5 +417,6 @@ flowchart TD
 - `SRC-CIA-SAT-001`: ACH、Key Assumptions Check、Indicators / Signpostsなどの構造化分析技法の補助的な実務ガイドとして参照する
 - `SRC-ATTACK-001`: Behaviorの記述とMappingの共通語彙として参照する。ただし帰属証拠としては使わない
 - `SRC-BERKELEY-001`: 出典、取得経路、完全性、時刻、改変可能性を追跡する補助的基準として参照する
+- `SRC-IANA-TLD-001`: 合成DatasetのDomainが予約済み用途から実TLDへ逸脱していないことを確認する公開前安全Gateに利用する
 
 Version、Status、確認日、次回Review日は[Source Baseline](../references/reference-baseline.md)を参照する。

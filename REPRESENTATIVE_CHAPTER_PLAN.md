@@ -8,7 +8,7 @@
 
 | 章 | 検証する設計 | 必須成果物 |
 |---|---|---|
-| 第1章 | 統合概念と四つの視点 | Integrated Security Workflow Map |
+| 第1章 | 統合概念と四つの視点 | Integrated Security Case Map（Workflow Mapの適用記録） |
 | 第11章 | 仮説駆動の攻撃評価と安全な詳細度 | Web/API Assessment Hypothesis Pack |
 | 第17章 | BehaviorからSignal、Rule、Testへの変換 | Detection Validation Record |
 | 第25章 | 代替仮説、確信度、アトリビューション限界 | Analytic Judgment Record |

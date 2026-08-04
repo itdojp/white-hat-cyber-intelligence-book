@@ -595,7 +595,7 @@ Draft
 
 ### 6.3 Integrated Security Workflow Mapとの関係
 
-`book-config.json`では学習成果を`Integrated Security Workflow Map`として定義している。本章では、そのWorkflowを実際のCaseへ適用し、EvidenceとDecisionを保持する成果物を`Integrated Security Case Map`と呼ぶ。
+`book-config.json`では、学習成果として`Integrated Security Workflow Map`を`Case Map`へ適用できることを定義している。本章では、そのWorkflowを実際のCaseへ適用し、EvidenceとDecisionを保持する成果物を`Integrated Security Case Map`と呼ぶ。
 
 - Workflow Map: 機能と流れの一般形
 - Case Map: 特定Caseに対するID、Evidence、判断、責任の実体
