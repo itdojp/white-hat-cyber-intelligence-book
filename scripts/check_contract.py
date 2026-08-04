@@ -299,7 +299,7 @@ if package_lock:
 
 revision = load_json(ROOT / '.book-formatter/revision.json')
 if revision:
-    if revision.get('commit') != '69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c':
+    if revision.get('commit') != '764f644850c21983c96919d0e13706413d59c089':
         error('.book-formatter/revision.json: unexpected pinned book-formatter commit')
     if revision.get('schema', {}).get('blobSha') != '87dcb44b0d4b543ba43ae3a8ebc27d2f3cfda3cd':
         error('.book-formatter/revision.json: unexpected schema blob SHA')

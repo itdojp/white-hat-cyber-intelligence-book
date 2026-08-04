@@ -62,7 +62,7 @@
 
 ```bash
 git clone https://github.com/itdojp/book-formatter.git ../book-formatter
-git -C ../book-formatter checkout 69eb5c12f5a750b65614bc9bbbc3d7abd5aa6f6c
+git -C ../book-formatter checkout 764f644850c21983c96919d0e13706413d59c089
 
 npm ci
 bundle install
