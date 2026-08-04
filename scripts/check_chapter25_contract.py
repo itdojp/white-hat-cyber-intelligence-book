@@ -603,6 +603,27 @@ def mask_data_url_payloads(
     index = 0
     inside_html_tag = False
     html_quote: str | None = None
+    html_attribute_name = ""
+    data_url_attributes = {
+        "action",
+        "background",
+        "cite",
+        "content",
+        "data",
+        "formaction",
+        "href",
+        "imagesrcset",
+        "longdesc",
+        "manifest",
+        "ping",
+        "poster",
+        "profile",
+        "src",
+        "srcset",
+        "style",
+        "usemap",
+        "xlink:href",
+    }
     while index < len(text):
         character = text[index]
         if not inside_html_tag and character == "<":
@@ -611,10 +632,21 @@ def mask_data_url_payloads(
             if html_quote is not None:
                 if character == html_quote:
                     html_quote = None
+                    html_attribute_name = ""
             elif character in "\"'":
                 html_quote = character
+                attribute_match = re.search(
+                    r"([^\s\"'<>/=]+)\s*=\s*$",
+                    text[max(0, index - 256) : index],
+                )
+                html_attribute_name = (
+                    attribute_match.group(1).casefold()
+                    if attribute_match is not None
+                    else ""
+                )
             elif character == ">":
                 inside_html_tag = False
+                html_attribute_name = ""
 
         if (
             text[index : index + 5].casefold() != "data:"
@@ -624,6 +656,26 @@ def mask_data_url_payloads(
             )
         ):
             index += 1
+            continue
+
+        data_attribute_name = html_attribute_name
+        if inside_html_tag and html_quote is None:
+            unquoted_attribute_match = re.search(
+                r"([^\s\"'<>/=]+)\s*=\s*$",
+                text[max(0, index - 256) : index],
+            )
+            if unquoted_attribute_match is not None:
+                data_attribute_name = unquoted_attribute_match.group(1).casefold()
+
+        # A data URL payload is non-network content only when it appears in a
+        # URL-valued HTML attribute (or CSS). Do not mask arbitrary attributes
+        # such as event handlers or data-* containers: they may contain a later
+        # executable/network URL that the general safety scan must still see.
+        if (
+            inside_html_tag
+            and data_attribute_name not in data_url_attributes
+        ):
+            index += 5
             continue
 
         end = index + 5
@@ -651,7 +703,7 @@ def mask_data_url_payloads(
                 ):
                     break
             elif (
-                css_declarations
+                (css_declarations or data_attribute_name == "style")
                 and data_comma_seen
                 and candidate_character in ";}"
             ):
@@ -3998,6 +4050,7 @@ def main() -> int:
         'imagesrcset="data:image/svg+xml,//comment 1x">',
         '<img srcset="data:text/plain,https://evil.com 1x">',
         '<img srcset="data:text/plain,https%3A%2F%2Fevil.com 1x">',
+        '<img src="data:text/plain,https://evil.com">',
     ):
         if list(raw_html_srcset_hosts(data_url_srcset)):
             error(
@@ -4027,6 +4080,10 @@ def main() -> int:
         'background:url(https://evil.com/x)">',
         '<div style="background:url(/**/data:image/png,x); '
         'background:url(https://evil.com/x)">',
+        '<button onclick="const x=\'data:text/plain,x\';'
+        'location=\'https://evil.com\'">x</button>',
+        '<button onclick=data:text/plain,x;location=https://evil.com>x</button>',
+        '<div data-script="data:text/plain,x;https://evil.com"></div>',
     ):
         masked_adjacent_url = normalize_for_host_scanning(
             normalize_synthetic_safety_text(
