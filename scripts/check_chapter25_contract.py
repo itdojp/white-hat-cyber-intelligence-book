@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from bisect import bisect_left
 import hashlib
 import html
 from html.parser import HTMLParser
@@ -367,6 +368,9 @@ PHONE_DATE_TIME_RE = re.compile(
     r"[ ./-](?:19|20)\d{2}"
     r")(?:[ T](?:[01]?\d|2[0-3]):?\d{2}(?::?\d{2})?)?(?!\d)"
 )
+LIST_MARKER_RE = re.compile(
+    r"(?:[-+*]|\d{1,9}[.)]|:)(?P<spacing>[ \t]+)"
+)
 SYNTHETIC_CONTENT_FILES = (
     "manuscript/25-structured-analysis-attribution.md",
     "templates/analytic-judgment-record.md",
@@ -576,13 +580,27 @@ def normalize_policy_text(text: str) -> str:
     return unicodedata.normalize("NFKC", mapped).casefold()
 
 
-def normalize_synthetic_safety_text(text: str) -> str:
+def normalize_synthetic_safety_text(
+    text: str,
+    *,
+    strip_url_controls: bool = False,
+) -> str:
     """Expose rendered character references and Markdown punctuation escapes."""
     decoded = unquote(html.unescape(text))
+    without_url_controls = (
+        decoded.translate(str.maketrans("", "", "\t\r\n\f"))
+        if strip_url_controls
+        else decoded
+    )
+    structured_backslashes = re.sub(
+        r"(?P<prefix>\A|[<(=\[{'\"])(?P<space> *)(?P<slashes>\\{2,})",
+        lambda match: f"{match.group('prefix')}{match.group('space')}//",
+        without_url_controls,
+    )
     markdown_unescaped = re.sub(
         rf"\\([{re.escape(string.punctuation)}])",
         r"\1",
-        decoded,
+        structured_backslashes,
     )
     return re.sub(
         r"(?i)(?<![A-Za-z0-9])(?P<scheme>https?):[\t\r\n\f]*[\\/]+",
@@ -765,32 +783,43 @@ def markdown_line_contexts(
         else:
             leading = re.match(r" {0,3}", container_content)
             leading_length = len(leading.group(0)) if leading is not None else 0
-            marker_cursor = leading_length
+            current_indent = len(container_content) - len(
+                container_content.lstrip(" ")
+            )
+            in_list_continuation = bool(
+                active_list_indent and current_indent >= active_list_indent
+            )
+            if container_content.strip() and not in_list_continuation:
+                active_list_indent = 0
+            base_cursor = active_list_indent if in_list_continuation else 0
+            marker_cursor = base_cursor
+            optional_spaces = re.match(
+                r" {0,3}", container_content[marker_cursor:]
+            )
+            marker_cursor += (
+                len(optional_spaces.group(0))
+                if optional_spaces is not None
+                else 0
+            )
+            first_marker_start = marker_cursor
             while True:
-                list_marker = re.match(
-                    r"(?:[-+*]|\d{1,9}[.)]|:)(?P<spacing>[ \t]+)",
-                    container_content[marker_cursor:],
+                list_marker = LIST_MARKER_RE.match(
+                    container_content,
+                    marker_cursor,
                 )
                 if list_marker is None:
                     break
-                marker_cursor += list_marker.end()
-            if marker_cursor > leading_length:
+                marker_cursor = list_marker.end()
+            marker_found = marker_cursor > first_marker_start
+            if marker_found:
                 active_list_indent = marker_cursor
                 opening_candidate = container_content[marker_cursor:]
                 candidate_list_indent = marker_cursor
             else:
-                current_indent = len(container_content) - len(
-                    container_content.lstrip(" ")
-                )
-                if (
-                    active_list_indent
-                    and current_indent >= active_list_indent
-                ):
+                if in_list_continuation:
                     opening_candidate = container_content[active_list_indent:]
                     candidate_list_indent = active_list_indent
                 else:
-                    if container_content.strip() and current_indent < active_list_indent:
-                        active_list_indent = 0
                     opening_candidate = container_content[leading_length:]
                     candidate_list_indent = 0
             opening = re.match(
@@ -804,7 +833,11 @@ def markdown_line_contexts(
                 minimum_length = len(fence)
                 list_continuation_indent = candidate_list_indent
                 inside_code_context = True
-            elif opening_candidate.startswith(("    ", "\t")):
+            elif (
+                opening_candidate
+                if in_list_continuation or marker_found
+                else container_content
+            ).startswith(("    ", "\t")):
                 inside_code_context = True
 
         contexts.append(
@@ -899,10 +932,9 @@ def protocol_relative_hosts(text: str):
                 except ValueError:
                     host = candidate_authority
                 host = host or candidate_authority
-        boundary = text[match.start() : match.start("url")]
-        structured_context = (
-            match.start("url") == 0
-            or bool(boundary and boundary[-1] in "(=[{'\"")
+        structured_context = is_structured_url_context(
+            text,
+            match.start("url"),
         )
         if host and (
             structured_context
@@ -910,6 +942,21 @@ def protocol_relative_hosts(text: str):
             or host.isdigit()
         ):
             yield host
+
+
+def is_structured_url_context(text: str, url_start: int) -> bool:
+    """Recognize URL destinations/attributes without treating code comments as URLs."""
+    if url_start == 0:
+        return True
+    line_start = max(text.rfind("\n", 0, url_start), text.rfind("\r", 0, url_start)) + 1
+    prefix = text[line_start:url_start]
+    stripped = prefix.rstrip(" ")
+    if stripped.endswith(("(", "<", "=", "[", "{", "'", '"')):
+        return True
+    return bool(
+        re.search(r"\[[^\]\n]+\]:\s*\Z", prefix)
+        or re.search(r"\b(?:href|src)\s*=\s*[\"']?\s*\Z", prefix, re.IGNORECASE)
+    )
 
 
 def email_domain_hosts(text: str):
@@ -1104,13 +1151,32 @@ def markdown_link_destination_end(
     text: str,
     start: int,
     structural_pairs: dict[int, int],
+    title_quote_positions: list[int],
+    line_break_positions: list[int],
 ) -> int | None:
     """Resolve one link destination, localizing optional title quote state."""
     structural_end = structural_pairs.get(start)
-    if structural_end is None:
-        return None
-    if re.search(r"\s[\"']", text[start + 1 : structural_end]) is None:
+    quote_index = bisect_left(title_quote_positions, start + 1)
+    next_quote = (
+        title_quote_positions[quote_index]
+        if quote_index < len(title_quote_positions)
+        else None
+    )
+    if structural_end is not None and (
+        next_quote is None or next_quote >= structural_end
+    ):
         return structural_end
+    if structural_end is None:
+        break_index = bisect_left(line_break_positions, start)
+        next_break = (
+            line_break_positions[break_index]
+            if break_index < len(line_break_positions)
+            else None
+        )
+        if next_quote is None or (
+            next_break is not None and next_break < next_quote
+        ):
+            return None
 
     depth = 1
     quote: str | None = None
@@ -1145,7 +1211,7 @@ def markdown_link_destination_end(
 def markdown_visible_links(text: str) -> str:
     """Project Markdown links to visible labels without rewriting undefined refs."""
     definition_pattern = (
-        r"(?m)^(?: {0,3}>[ \t]?)* {0,3}"
+        r"(?m)^(?: {0,3}>[ \t]?)*[ \t]*"
         r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+ {0,3})*"
         r"\[(?P<label>[^\]\n]+)\]:[^\n]*(?:\n|$)"
     )
@@ -1160,6 +1226,14 @@ def markdown_visible_links(text: str) -> str:
     )
     bracket_pairs = markdown_bracket_pairs(text)
     parenthesis_pairs = markdown_parenthesis_pairs(text)
+    title_quote_positions = [
+        index
+        for index, character in enumerate(text)
+        if character in "\"'" and index > 0 and text[index - 1].isspace()
+    ]
+    line_break_positions = [
+        index for index, character in enumerate(text) if character in "\r\n"
+    ]
     output: list[str] = []
     index = 0
     while index < len(text):
@@ -1181,6 +1255,8 @@ def markdown_visible_links(text: str) -> str:
                 text,
                 suffix_start,
                 parenthesis_pairs,
+                title_quote_positions,
+                line_break_positions,
             )
             if destination_end is not None:
                 output.append(label)
@@ -1772,7 +1848,11 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     # Decode character references before scanning so an HTML attribute cannot
     # disguise a live URL or hostname from the synthetic-content policy.
     rendered_safety_text = normalize_synthetic_safety_text(text)
-    compatibility_text = normalize_for_host_scanning(rendered_safety_text)
+    browser_url_safety_text = normalize_synthetic_safety_text(
+        text,
+        strip_url_controls=True,
+    )
+    compatibility_text = normalize_for_host_scanning(browser_url_safety_text)
     for host in url_domain_hosts(compatibility_text):
         assert_synthetic_host(host, f"{relative}: URL")
     for host in protocol_relative_hosts(compatibility_text):
@@ -3430,8 +3510,10 @@ def main() -> int:
         "> [FOR-2026-025-]999\n>\n> [FOR-2026-025-]: https://safe.example": True,
         "- [ref]: https://safe.example\n  [FOR-2026-025-][ref]999": True,
         "- - [ref]: https://safe.example\n    [FOR-2026-025-][ref]999": True,
+        "- outer\n    - [ref]: /x\n      [FOR-2026-025-][ref]999": True,
         "Term\n: [ref]: https://safe.example\n  [FOR-2026-025-][ref]999": True,
         '( "unclosed\n[FOR-2026-025-](/x)999': True,
+        '[FOR-2026-025-](/x "x(y")999': True,
         "\\`FOR-2026-025-<!--x-->999\\`": True,
         "`FOR-2026-025-<!--x-->999`": False,
         "`FOR-2026-025-<!--x-->999\n`": False,
@@ -3454,6 +3536,10 @@ def main() -> int:
         "[x](//evil/path)",
         "[x](//evil:443/path)",
         "[x](//悪意/path)",
+        "[x](<//evil/path>)",
+        "[x]( //evil/path )",
+        "[reference]: //evil/path\n[x][reference]",
+        '<a href=" //evil/path">x</a>',
         "[x](https%3A%2F%2Fevil%2ecom/path)",
         "[x](//%31%33%34%37%34%34%30%37%32/path)",
         "[x](///134744072/path)",
@@ -3464,9 +3550,15 @@ def main() -> int:
         r"[x](https:\\evil/path)",
         r"[x](https:\\2130706433/path)",
         '<a href="https:\t\\134744072/path">x</a>',
+        '<a href="ht\ttps://evil/path">x</a>',
+        '<a href="https\t://evil/path">x</a>',
+        '<a href="\\\\evil/path">x</a>',
     )
     for encoded_live_url in encoded_live_urls:
-        normalized_live_url = normalize_synthetic_safety_text(encoded_live_url)
+        normalized_live_url = normalize_synthetic_safety_text(
+            encoded_live_url,
+            strip_url_controls=True,
+        )
         compatibility_live_url = normalize_for_host_scanning(normalized_live_url)
         detected_live_hosts = (
             set(url_domain_hosts(compatibility_live_url))
