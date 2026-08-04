@@ -1625,33 +1625,45 @@ class ExecutableHTMLDetector(HTMLParser):
                 self.violations.append("iframe srcdoc attribute")
             if value is None:
                 continue
-            compact_prefix = re.sub(
-                r"[\x00-\x20\x7f]+",
-                "",
-                value,
-            ).casefold()
-            executable_scheme = next(
-                (
-                    scheme
-                    for scheme in ("javascript:", "vbscript:")
-                    if compact_prefix.startswith(scheme)
-                ),
-                None,
-            )
-            if executable_scheme is not None:
-                self.violations.append(
-                    f"{executable_scheme[:-1]} URL in {normalized_name}"
-                )
-            if compact_prefix.startswith(
-                (
-                    "data:text/html",
-                    "data:application/xhtml+xml",
-                    "data:image/svg+xml",
-                )
+            if normalized_name in URLAttributeExtractor.URL_ATTRIBUTES or (
+                normalized_name in ("srcset", "imagesrcset")
             ):
-                self.violations.append(
-                    f"executable data URL in {normalized_name}"
+                candidates = (
+                    re.split(r"[\x00-\x20]+", value.strip())
+                    if normalized_name == "ping"
+                    else srcset_url_candidates(value)
+                    if normalized_name in ("srcset", "imagesrcset")
+                    else [value]
                 )
+                for candidate in candidates:
+                    compact_candidate = re.sub(
+                        r"[\x00-\x20\x7f]+",
+                        "",
+                        candidate,
+                    ).casefold()
+                    executable_scheme = next(
+                        (
+                            scheme
+                            for scheme in ("javascript:", "vbscript:")
+                            if compact_candidate.startswith(scheme)
+                        ),
+                        None,
+                    )
+                    if executable_scheme is not None:
+                        self.violations.append(
+                            f"{executable_scheme[:-1]} URL in "
+                            f"{normalized_name}"
+                        )
+                    if compact_candidate.startswith(
+                        (
+                            "data:text/html",
+                            "data:application/xhtml+xml",
+                            "data:image/svg+xml",
+                        )
+                    ):
+                        self.violations.append(
+                            f"executable data URL in {normalized_name}"
+                        )
         if normalized_tag == "link":
             relations = {
                 relation.casefold()
@@ -1754,21 +1766,55 @@ def executable_kramdown_ial_violations(text: str) -> list[str]:
                 violations.append(
                     "non-synthetic URL in Kramdown URL attribute"
                 )
-        compact = re.sub(r"[\x00-\x20\x7f]+", "", decoded).casefold()
-        for scheme in ("javascript:", "vbscript:"):
-            if scheme in compact:
-                violations.append(
-                    f"{scheme[:-1]} URL in Kramdown inline attribute"
-                )
-        if any(
-            executable_data in compact
-            for executable_data in (
-                "data:text/html",
-                "data:application/xhtml+xml",
-                "data:image/svg+xml",
+        url_parser = URLAttributeExtractor()
+        url_parser.feed(projected_html)
+        url_parser.close()
+        for name, value in url_parser.values:
+            candidates = (
+                re.split(r"[\x00-\x20]+", value.strip())
+                if name == "ping"
+                else [value]
             )
-        ):
-            violations.append("executable data URL in Kramdown inline attribute")
+            for candidate in candidates:
+                compact_candidate = re.sub(
+                    r"[\x00-\x20\x7f]+", "", candidate
+                ).casefold()
+                for scheme in ("javascript:", "vbscript:"):
+                    if compact_candidate.startswith(scheme):
+                        violations.append(
+                            f"{scheme[:-1]} URL in Kramdown "
+                            f"{name} attribute"
+                        )
+                if compact_candidate.startswith(
+                    (
+                        "data:text/html",
+                        "data:application/xhtml+xml",
+                        "data:image/svg+xml",
+                    )
+                ):
+                    violations.append(
+                        f"executable data URL in Kramdown {name} attribute"
+                    )
+        srcset_parser = SrcsetExtractor()
+        srcset_parser.feed(projected_html)
+        srcset_parser.close()
+        for value in srcset_parser.values:
+            for candidate in srcset_url_candidates(value):
+                compact_candidate = re.sub(
+                    r"[\x00-\x20\x7f]+", "", candidate
+                ).casefold()
+                if compact_candidate.startswith(
+                    (
+                        "javascript:",
+                        "vbscript:",
+                        "data:text/html",
+                        "data:application/xhtml+xml",
+                        "data:image/svg+xml",
+                    )
+                ):
+                    violations.append(
+                        "executable URL in Kramdown srcset attribute"
+                    )
     return violations
 
 
@@ -1908,8 +1954,44 @@ def is_stylesheet_data_url(value: str) -> bool:
     return STYLESHEET_DATA_URL_RE.match(detection_view) is not None
 
 
-def has_css_import_data_url(value: str) -> bool:
-    """Detect executable CSS data URLs only in @import's URL position."""
+def css_url_function_candidates(value: str):
+    """Yield decoded values from CSS url() functions outside strings."""
+    index = 0
+    while index < len(value):
+        if value.startswith("/*", index):
+            index = skip_css_space_and_comments(value, index)
+            continue
+        if value[index] in "\"'":
+            _, index = consume_css_string(value, index)
+            continue
+        if not (
+            value[index] == "\\"
+            or value[index].isalnum()
+            or value[index] in "_-"
+            or ord(value[index]) >= 0x80
+        ):
+            index += 1
+            continue
+        function_name, function_end = consume_css_identifier(value, index)
+        cursor = skip_css_space_and_comments(value, function_end)
+        if (
+            function_name.casefold() != "url"
+            or cursor >= len(value)
+            or value[cursor] != "("
+        ):
+            index = max(index + 1, function_end)
+            continue
+        cursor = skip_css_space_and_comments(value, cursor + 1)
+        if cursor < len(value) and value[cursor] in "\"'":
+            candidate, candidate_end = consume_css_string(value, cursor)
+        else:
+            candidate, candidate_end = consume_css_unquoted_url(value, cursor)
+        yield candidate
+        index = max(candidate_end, index + 1)
+
+
+def css_import_candidates(value: str):
+    """Yield decoded URL values from CSS @import rules outside strings."""
     index = 0
     while index < len(value):
         if value.startswith("/*", index):
@@ -1931,8 +2013,7 @@ def has_css_import_data_url(value: str) -> bool:
             return False
         if value[cursor] in "\"'":
             candidate, candidate_end = consume_css_string(value, cursor)
-            if is_stylesheet_data_url(candidate):
-                return True
+            yield candidate
             index = candidate_end
             continue
 
@@ -1949,22 +2030,31 @@ def has_css_import_data_url(value: str) -> bool:
             candidate, candidate_end = consume_css_string(value, cursor)
         else:
             candidate, candidate_end = consume_css_unquoted_url(value, cursor)
-        if is_stylesheet_data_url(candidate):
-            return True
+        yield candidate
         index = max(candidate_end, index + 1)
-    return False
+
+
+def has_css_import_data_url(value: str) -> bool:
+    """Detect executable CSS data URLs only in @import's URL position."""
+    return any(
+        is_stylesheet_data_url(candidate)
+        for candidate in css_import_candidates(value)
+    )
 
 
 def executable_css_value_violations(value: str) -> list[str]:
-    decoded = decode_css_escapes(value)
-    without_comments = re.sub(r"/\*.*?\*/", "", decoded, flags=re.DOTALL)
-    compact = re.sub(
-        r"[\x00-\x20\x7f]+", "", without_comments
-    ).casefold()
     violations: list[str] = []
-    if "javascript:" in compact or "vbscript:" in compact:
+    candidates = list(css_url_function_candidates(value)) + list(
+        css_import_candidates(value)
+    )
+    if any(
+        re.sub(r"[\x00-\x20\x7f]+", "", candidate)
+        .casefold()
+        .startswith(("javascript:", "vbscript:"))
+        for candidate in candidates
+    ):
         violations.append("executable script URL in style attribute")
-    if has_executable_data_url(decoded):
+    if any(has_executable_data_url(candidate) for candidate in candidates):
         violations.append("executable data URL in style attribute")
     if has_css_import_data_url(value):
         violations.append("CSS data URL in @import")
@@ -5086,6 +5176,8 @@ def main() -> int:
     for safe_html in (
         '<link rel="stylesheet" href="da ta:text/css,body{}">',
         '<link rel="icon" href="data:text/css,body{}">',
+        '<a title="vbscript: is a legacy URL scheme">x</a>',
+        '<a title="data:image/svg+xml is an executable URL example">x</a>',
     ):
         if executable_html_violations(safe_html):
             error(
@@ -5197,6 +5289,9 @@ def main() -> int:
         '`{: style="background:url(https://evil.com/x)" }`',
         '```text\n{: style="background:url(https://evil.com/x)" }\n```',
         '[x](#){: style=\'content:"data:text/css,body{}"\' }',
+        '[x](#){: title="vbscript: is a legacy URL scheme" }',
+        '[x](#){: title="data:image/svg+xml is a URL example" }',
+        '[x](#){: style=\'content:"vbscript:note"\' }',
     ):
         if executable_kramdown_ial_violations(safe_ial):
             error(
@@ -5220,6 +5315,7 @@ def main() -> int:
             )
     for safe_css in (
         '<div style=\'content:"data:text/css,body{}"\'></div>',
+        '<div style=\'content:"vbscript:note"\'></div>',
         '<style>.x::after{content:"@import url(data:text/css,body{})"}</style>',
         '<style>@import url(data:te xt/css,body{})</style>',
     ):
