@@ -2246,7 +2246,9 @@ def markdown_url_destinations(text: str):
             destination = destination[1:]
         yield destination
 
-    for _, colon, _, line_end in markdown_reference_definitions(protected_text):
+    for label, colon, _, line_end in markdown_reference_definitions(protected_text):
+        if label.startswith("^"):
+            continue
         start = colon + 1
         while start < line_end and protected_text[start] in " \t":
             start += 1
@@ -4837,6 +4839,7 @@ def main() -> int:
         '```text\n[x](javascript:alert(1))\n```',
         'javascript: is an executable scheme name',
         '[x](java script:alert(1))',
+        'Text[^scheme]\n[^scheme]: javascript: は実行可能URLスキームである。',
     ):
         if executable_markdown_url_violations(inert_markdown):
             error(
