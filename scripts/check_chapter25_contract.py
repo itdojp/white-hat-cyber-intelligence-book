@@ -1129,13 +1129,19 @@ def markdown_indent_offset(line: str, target_column: int) -> int | None:
         return 0
     cursor = 0
     column = 0
+    saw_space = False
     while cursor < len(line) and line[cursor] in " \t":
         character = line[cursor]
-        column = (
-            column + 4 - column % 4
-            if character == "\t"
-            else column + 1
-        )
+        if character == "\t":
+            # Kramdown accepts a tab-only continuation prefix when tab
+            # expansion reaches or crosses the container body column. A mixed
+            # space+tab prefix is not equivalent to spaces that reach it.
+            if saw_space:
+                return None
+            column += 4 - column % 4
+        else:
+            column += 1
+            saw_space = True
         cursor += 1
         if column >= target_column:
             return cursor
@@ -1230,6 +1236,13 @@ def markdown_line_contexts(
                 else:
                     opening_candidate = container_content[leading_length:]
                     candidate_list_indent = 0
+            fence_candidate = opening_candidate
+            if in_list_continuation or marker_found:
+                optional_fence_indent = re.match(r" {0,3}", fence_candidate)
+                if optional_fence_indent is not None:
+                    fence_candidate = fence_candidate[
+                        len(optional_fence_indent.group(0)) :
+                    ]
             if container_content_starts is not None:
                 container_content_starts[offset] = (
                     offset
@@ -1244,7 +1257,7 @@ def markdown_line_contexts(
                 )
             opening = re.match(
                 r"(?P<fence>`{3,}|~{3,})",
-                opening_candidate,
+                fence_candidate,
             )
             if opening is not None:
                 fence = opening.group("fence")
@@ -5077,7 +5090,7 @@ def main() -> int:
         '- outer\n    1. ```text\n       code\n       ```\n'
         '[after-nested-list-code]: javascript:alert(1)\n\n'
         '[x][after-nested-list-code]',
-        '-\touter\n\t```text\n\tcode\n\t```\n'
+        '-\t```text\n\tcode\n\t```\n'
         '[after-tab-list-code]: javascript:alert(1)\n\n'
         '[x][after-tab-list-code]',
         '[x][html-ref]\n<pre>\nsafe\n</pre>\n'
@@ -5091,6 +5104,8 @@ def main() -> int:
         '[nested-list-html-ref]: javascript:alert(1)',
         '[x][tab-list-html-ref]\n-\touter\n\t<pre>safe</pre>\n'
         '[tab-list-html-ref]: javascript:alert(1)',
+        '[x][tab-crossing-html-ref]\n- outer\n\t<pre>safe</pre>\n'
+        '[tab-crossing-html-ref]: javascript:alert(1)',
         '[x][^]\n\n[^]: javascript:location="//0x08080808/x"',
         '<vbscript:msgbox(1)>',
     ):
@@ -5106,6 +5121,8 @@ def main() -> int:
         '    code\n[after]: javascript: remains indented-code prose\n\n[x][after]',
         '\tcode\n[after-tab]: javascript: remains tab-indented-code prose\n\n'
         '[x][after-tab]',
+        '[x][mixed-tab]\n- outer\n \t<pre>safe</pre>\n'
+        '[mixed-tab]: javascript: remains list prose',
         '[x][literal-close]\nliteral </pre>\n'
         '[literal-close]: javascript: is same-paragraph prose',
         '[x][orphan-close]\n</pre>\n'
