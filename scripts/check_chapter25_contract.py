@@ -207,12 +207,6 @@ PROTOCOL_RELATIVE_URL_RE = re.compile(
     r"(?:\A|[\s<(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
     re.IGNORECASE,
 )
-REFERENCE_LABEL_PATTERN = r"(?:\\[^\r\n]|[^\]\\\r\n])+"
-REFERENCE_DEFINITION_PREFIX_RE = re.compile(
-    r"(?m)^(?: {0,3}>[ \t]?)*[ \t]*"
-    r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+ {0,3})*"
-    rf"\[{REFERENCE_LABEL_PATTERN}\]:"
-)
 
 
 def post_idna_ascii_compatibility_chars() -> frozenset[str]:
@@ -951,8 +945,8 @@ def url_domain_hosts(text: str):
 def protocol_relative_hosts(text: str):
     """Extract protocol-relative authorities, including numeric host forms."""
     reference_definition_colons = {
-        match.end() - 1
-        for match in REFERENCE_DEFINITION_PREFIX_RE.finditer(text)
+        colon
+        for _, colon, _, _ in markdown_reference_definitions(text)
     }
     for match in PROTOCOL_RELATIVE_URL_RE.finditer(text):
         candidate = strip_url_trailing_punctuation(match.group("url"))
@@ -1001,8 +995,8 @@ def is_structured_url_context(
         return False
     if reference_definition_colons is None:
         reference_definition_colons = {
-            match.end() - 1
-            for match in REFERENCE_DEFINITION_PREFIX_RE.finditer(text)
+            colon
+            for _, colon, _, _ in markdown_reference_definitions(text)
         }
     return cursor in reference_definition_colons
 
@@ -1160,6 +1154,81 @@ def normalized_reference_label(label: str) -> str:
     return " ".join(label.split()).casefold()
 
 
+def markdown_reference_definitions(
+    text: str,
+) -> list[tuple[str, int, int, int]]:
+    """Index reference definitions and mixed list/blockquote containers linearly."""
+    definitions: list[tuple[str, int, int, int]] = []
+    offset = 0
+    for line in text.splitlines(keepends=True):
+        line_body = line.rstrip("\r\n")
+        cursor = 0
+        while cursor < len(line_body):
+            while cursor < len(line_body) and line_body[cursor] in " \t":
+                cursor += 1
+            if cursor < len(line_body) and line_body[cursor] == ">":
+                cursor += 1
+                continue
+            marker_end = cursor
+            if cursor < len(line_body) and line_body[cursor] in "-+*:":
+                marker_end = cursor + 1
+            elif cursor < len(line_body) and line_body[cursor].isdigit():
+                marker_end = cursor
+                while (
+                    marker_end < len(line_body)
+                    and marker_end - cursor < 9
+                    and line_body[marker_end].isdigit()
+                ):
+                    marker_end += 1
+                if (
+                    marker_end == cursor
+                    or marker_end >= len(line_body)
+                    or line_body[marker_end] not in ".)"
+                ):
+                    marker_end = cursor
+                else:
+                    marker_end += 1
+            if (
+                marker_end > cursor
+                and marker_end < len(line_body)
+                and line_body[marker_end] in " \t"
+            ):
+                cursor = marker_end
+                continue
+            break
+
+        if cursor >= len(line_body) or line_body[cursor] != "[":
+            offset += len(line)
+            continue
+        label_start = cursor + 1
+        cursor = label_start
+        while cursor < len(line_body):
+            if line_body[cursor] == "\\":
+                cursor += 2
+                continue
+            if line_body[cursor] == "]":
+                break
+            cursor += 1
+        if (
+            cursor == label_start
+            or cursor >= len(line_body)
+            or cursor + 1 >= len(line_body)
+            or line_body[cursor + 1] != ":"
+        ):
+            offset += len(line)
+            continue
+        definitions.append(
+            (
+                line_body[label_start:cursor],
+                offset + cursor + 1,
+                offset,
+                offset + len(line),
+            )
+        )
+        offset += len(line)
+    return definitions
+
+
 def markdown_bracket_pairs(text: str) -> dict[int, int]:
     """Map unescaped square-bracket pairs in one pass."""
     stack: list[int] = []
@@ -1238,20 +1307,19 @@ def markdown_link_destination_end(
 
 def markdown_visible_links(text: str) -> str:
     """Project Markdown links to visible labels without rewriting undefined refs."""
-    definition_pattern = (
-        r"(?m)^(?: {0,3}>[ \t]?)*[ \t]*"
-        r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+ {0,3})*"
-        rf"\[(?P<label>{REFERENCE_LABEL_PATTERN})\]:[^\n]*(?:\n|$)"
-    )
+    reference_definitions = markdown_reference_definitions(text)
     definitions = {
-        normalized_reference_label(match.group("label"))
-        for match in re.finditer(definition_pattern, text)
+        normalized_reference_label(label)
+        for label, _, _, _ in reference_definitions
     }
-    text = re.sub(
-        definition_pattern,
-        "",
-        text,
-    )
+    if reference_definitions:
+        retained: list[str] = []
+        cursor = 0
+        for _, _, line_start, line_end in reference_definitions:
+            retained.append(text[cursor:line_start])
+            cursor = line_end
+        retained.append(text[cursor:])
+        text = "".join(retained)
     bracket_pairs = markdown_bracket_pairs(text)
     parenthesis_pairs = markdown_parenthesis_pairs(text)
     output: list[str] = []
@@ -3539,6 +3607,7 @@ def main() -> int:
         "- - [ref]: https://safe.example\n    [FOR-2026-025-][ref]999": True,
         "- outer\n    - [ref]: /x\n      [FOR-2026-025-][ref]999": True,
         "Term\n: [ref]: https://safe.example\n  [FOR-2026-025-][ref]999": True,
+        "- > [ref]: /x\n  > [FOR-2026-025-][ref]999": True,
         '( "unclosed\n[FOR-2026-025-](/x)999': True,
         '[FOR-2026-025-](/x "x(y")999': True,
         '[FOR-2026-025-](\n /x\n "x(y")999': True,
@@ -3589,6 +3658,9 @@ def main() -> int:
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
         r"[x\]]: //0x08080808/path" "\n" r"[a][x\]]",
+        "- > [ref]: //evil/path\n  > [x][ref]",
+        "- outer\n    - > [ref]: //evil/path\n      > [x][ref]",
+        ": > [ref]: //evil/path\n  > [x][ref]",
         "[x](\v//evil/path)",
     )
     for encoded_live_url in encoded_live_urls:
@@ -3625,6 +3697,12 @@ def main() -> int:
                 "fixture safety regression: non-authority // token was "
                 f"misclassified: {non_authority!r}"
             )
+    ambiguous_container_prefix = "-    " * 10_000 + "X //safe.example"
+    if markdown_reference_definitions(ambiguous_container_prefix):
+        error(
+            "fixture safety regression: malformed container prefix was "
+            "treated as a reference definition"
+        )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
             normalize_synthetic_safety_text(separated_prose)
