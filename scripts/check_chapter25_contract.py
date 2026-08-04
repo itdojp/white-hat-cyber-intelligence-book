@@ -2247,7 +2247,7 @@ def markdown_url_destinations(text: str):
         yield destination
 
     for label, colon, _, line_end in markdown_reference_definitions(protected_text):
-        if label.startswith("^"):
+        if len(label) > 1 and label.startswith("^"):
             continue
         start = colon + 1
         while start < line_end and protected_text[start] in " \t":
@@ -4827,6 +4827,7 @@ def main() -> int:
     for executable_markdown in (
         '[x](javascript:location="//0x08080808/x")',
         '[x][ref]\n[ref]: java&#9;script:location="//0x08080808/x"',
+        '[x][^]\n[^]: javascript:location="//0x08080808/x"',
         '<vbscript:msgbox(1)>',
     ):
         if not executable_markdown_url_violations(executable_markdown):
