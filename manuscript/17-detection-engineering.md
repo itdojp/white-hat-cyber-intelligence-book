@@ -273,10 +273,10 @@ python3 -m json.tool cases/fixtures/ch17-detection-engineering-fixture.json | se
 - 合成記入例: [`../cases/ch17-detection-validation-example.md`](../cases/ch17-detection-validation-example.md)
 - fixture説明: [`../cases/fixtures/ch17-detection-engineering-fixture.md`](../cases/fixtures/ch17-detection-engineering-fixture.md)
 - machine-readable fixture: [`../cases/fixtures/ch17-detection-engineering-fixture.json`](../cases/fixtures/ch17-detection-engineering-fixture.json)
-- 合成rule: [`detections/cloud_identity/det_2026_017_001.json`](https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/5a31db5a15a7583218b0bd49ca1a285d9348f0b0/detections/cloud_identity/det_2026_017_001.json)
-- オフラインrunner: [`scripts/replay_chapter17_detection.py`](https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/5a31db5a15a7583218b0bd49ca1a285d9348f0b0/scripts/replay_chapter17_detection.py)
+- 合成rule: [`detections/cloud_identity/det_2026_017_001.json`](https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/66a338f2de15248e3a9291286fd26a68b11a6e0a/detections/cloud_identity/det_2026_017_001.json)
+- オフラインrunner: [`scripts/replay_chapter17_detection.py`](https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/66a338f2de15248e3a9291286fd26a68b11a6e0a/scripts/replay_chapter17_detection.py)
 
-合成ruleとrunnerへのリンクは、監査済みcommit `5a31db5a15a7583218b0bd49ca1a285d9348f0b0`に固定している。Replay時は同一checkout内のrule、runner、fixtureを使用し、異なる版を混在させない。
+合成ruleとrunnerへのリンクは、監査済みcommit `66a338f2de15248e3a9291286fd26a68b11a6e0a`に固定している。Replay時は同一checkout内のrule、runner、fixtureを使用し、異なる版を混在させない。
 
 ## 評価基準
 

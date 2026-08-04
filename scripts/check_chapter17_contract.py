@@ -20,13 +20,13 @@ from scripts.sync_book_site import (  # noqa: E402
 import scripts.sync_site_source as base  # noqa: E402
 
 ERRORS: list[str] = []
-AUDITED_ARTIFACT_REVISION = "5a31db5a15a7583218b0bd49ca1a285d9348f0b0"
+AUDITED_ARTIFACT_REVISION = "66a338f2de15248e3a9291286fd26a68b11a6e0a"
 AUDITED_ARTIFACT_SHA256 = {
     "detections/cloud_identity/det_2026_017_001.json": (
         "119694a96b9ac68b4ecbf8a946bbffb1bbd9cda1416720a0c42346961c5f88e8"
     ),
     "scripts/replay_chapter17_detection.py": (
-        "e04d0829bc01e46fcb3a15ec05ed83de18c1a7c14139f2dfa6ff0d0ffbc16cfe"
+        "f55ed2f82869005c83b619983305b78a21d57bba00d476568d24cc439f21528d"
     ),
 }
 RESERVED_DOMAIN_SUFFIXES = (".example", ".test", ".invalid")
