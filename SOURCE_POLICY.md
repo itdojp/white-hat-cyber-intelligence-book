@@ -28,6 +28,8 @@
 
 日付が不明な場合は推測せず`null`にし、理由を`notes`へ記録する。
 
+Registry直下の`checkedAt`は、全Source Noteを一括監査した最終基準日である。個別Source Noteを章Issueで再確認した場合は、その項目の`checkedAt`だけを更新し、未再確認の項目まで一括監査済みと見なして直下の日付を進めない。読者向けBaselineでは、直下の日付をRegistry-wide baseline、各行の日付を個別Source Noteの確認日として表示する。
+
 ## 3. 鮮度分類
 
 | class | 対象 | 通常確認間隔 |

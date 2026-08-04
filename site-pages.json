@@ -39,6 +39,27 @@
       "section": "additional",
       "order": 250,
       "title": "第11章 合成記入例：マルチテナント受注Export APIとWebhook登録の評価"
+    },
+    {
+      "source": "manuscript/17-detection-engineering.md",
+      "destination": "chapters/chapter-17/index.md",
+      "section": "chapters",
+      "order": 200,
+      "title": "第17章 Detection Engineering"
+    },
+    {
+      "source": "cases/ch17-detection-validation-example.md",
+      "destination": "cases/chapter-17-detection-validation/index.md",
+      "section": "additional",
+      "order": 260,
+      "title": "第17章 合成記入例：未承認管理者同意変更のDetection Validation"
+    },
+    {
+      "source": "cases/fixtures/ch17-detection-engineering-fixture.md",
+      "destination": "cases/fixtures/ch17-detection-engineering-fixture/index.md",
+      "section": "additional",
+      "order": 270,
+      "title": "第17章 オフラインfixture：未承認管理者同意変更の検知検証"
     }
   ],
   "directoryRoutes": {
@@ -48,6 +69,10 @@
     {
       "source": "cases/fixtures/ch11-web-api-assessment-dataset.json",
       "destination": "downloads/ch11-web-api-assessment-dataset.json"
+    },
+    {
+      "source": "cases/fixtures/ch17-detection-engineering-fixture.json",
+      "destination": "downloads/ch17-detection-engineering-fixture.json"
     }
   ]
 }

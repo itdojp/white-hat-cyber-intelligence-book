@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0.0",
+  "detectionId": "DET-2026-017-001",
+  "status": "synthetic-validation-only",
+  "syntheticOnly": true,
+  "offlineOnly": true,
+  "requiredTelemetryIds": [
+    "TEL-DET-2026-001",
+    "TEL-DET-2026-002"
+  ],
+  "candidate": {
+    "telemetryId": "TEL-DET-2026-001",
+    "eventType": "admin_consent_granted",
+    "eventTimeField": "event_time",
+    "targetField": "target_workload_id",
+    "grantedScopeField": "granted_scope_set",
+    "changeTicketField": "change_ticket_id",
+    "ingestTimeField": "ingest_time",
+    "actorField": "actor_id",
+    "resultField": "result"
+  },
+  "approval": {
+    "telemetryId": "TEL-DET-2026-002",
+    "ticketField": "change_ticket_id",
+    "approvedScopeField": "approved_scope_set",
+    "windowStartField": "window_start",
+    "windowEndField": "window_end",
+    "eventType": "approved_change_snapshot",
+    "ownerField": "owner_id"
+  },
+  "severityEscalation": {
+    "telemetryId": "TEL-DET-2026-003",
+    "eventType": "workload_sign_in",
+    "eventTimeField": "event_time",
+    "targetField": "target_workload_id",
+    "withinMinutes": 30,
+    "resultField": "result",
+    "credentialStateField": "credential_state",
+    "sourceLabelField": "source_label"
+  },
+  "outcomes": {
+    "unapprovedScopeChange": "alert",
+    "approvedScopeChange": "no_alert",
+    "noCandidateEvent": "no_alert",
+    "telemetryGap": "indeterminate"
+  },
+  "caseId": "CASE-DET-2026-001",
+  "relatedCaseMap": {
+    "detectionId": "DET-2026-001",
+    "relationship": "refines",
+    "fixtureId": "FIX-CONSENT-001",
+    "controlId": "CTRL-2026-003",
+    "telemetryMap": [
+      {
+        "caseMapTelemetryId": "TEL-2026-001",
+        "chapter17TelemetryId": "TEL-DET-2026-001"
+      },
+      {
+        "caseMapTelemetryId": "TEL-2026-004",
+        "chapter17TelemetryId": "TEL-DET-2026-003"
+      }
+    ],
+    "versionBoundary": "Chapter 17 refines the Chapter 1 case-map entry; it does not supersede or redeploy that synthetic rule."
+  },
+  "optionalTelemetryIds": [
+    "TEL-DET-2026-003"
+  ]
+}
