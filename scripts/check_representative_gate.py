@@ -38,9 +38,6 @@ SYNTH_REVIEW_DISCLAIMER = (
     "証跡ではない。Evidence referenceも合成IDである。"
 )
 FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
-RAW_HTML_OPEN_RE = re.compile(
-    r"^ {0,3}<([A-Za-z][A-Za-z0-9:-]*)(?=[\s/>])", re.IGNORECASE
-)
 RAW_HTML_DELIMITERS = (
     (re.compile(r"^ {0,3}<\?"), "?>", "processing instruction"),
     (re.compile(r"^ {0,3}<!\[CDATA\[", re.IGNORECASE), "]]>", "CDATA block"),
@@ -95,10 +92,14 @@ class RawHtmlContainerTracker(HTMLParser):
         self.stack: list[str] = []
         self.malformed = ""
         self.active_content_tag = ""
+        self.saw_tag = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         del attrs
         normalized = tag.lower()
+        if normalized.endswith(":"):
+            return
+        self.saw_tag = True
         if normalized in ACTIVE_RAW_HTML_TAGS and not self.active_content_tag:
             self.active_content_tag = normalized
         if normalized not in VOID_HTML_TAGS:
@@ -111,6 +112,9 @@ class RawHtmlContainerTracker(HTMLParser):
         # SVG / MathML and their descendants use foreign-content semantics,
         # where the self-closing flag is honored.
         normalized = tag.lower()
+        if normalized.endswith(":"):
+            return
+        self.saw_tag = True
         if normalized in FOREIGN_ROOT_TAGS or any(
             ancestor in FOREIGN_ROOT_TAGS for ancestor in self.stack
         ):
@@ -119,6 +123,9 @@ class RawHtmlContainerTracker(HTMLParser):
 
     def handle_endtag(self, tag: str) -> None:
         normalized = tag.lower()
+        if normalized.endswith(":"):
+            return
+        self.saw_tag = True
         if not self.stack:
             self.malformed = f"unexpected closing tag </{normalized}>"
             return
@@ -221,6 +228,24 @@ def mask_inline_code_and_escaped_angles(line: str) -> str:
     return "".join(masked)
 
 
+def strip_markdown_container_prefixes(line: str) -> str:
+    """Strip blockquote and list markers before block-level contract checks."""
+    remaining = line
+    while True:
+        blockquote = re.match(r"^ {0,3}>[ \t]?", remaining)
+        if blockquote:
+            remaining = remaining[blockquote.end() :]
+            continue
+        list_item = re.match(
+            r"^ {0,3}(?:[-+*]|\d{1,9}[.)])[ \t]+",
+            remaining,
+        )
+        if list_item:
+            remaining = remaining[list_item.end() :]
+            continue
+        return remaining
+
+
 def liquid_block_line_is_hidden(
     relative: str, line: str, stack: list[str]
 ) -> bool:
@@ -270,9 +295,10 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
 
     for raw_line in content.splitlines():
         if fence_char:
+            fence_line = strip_markdown_container_prefixes(raw_line)
             if re.fullmatch(
                 rf" {{0,3}}{re.escape(fence_char)}{{{fence_length},}}[ \t]*",
-                raw_line,
+                fence_line,
             ):
                 fence_char = ""
                 fence_length = 0
@@ -281,8 +307,9 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
         line, in_comment = strip_html_comments(raw_line, in_comment)
         if liquid_block_line_is_hidden(relative, line, liquid_stack):
             continue
-        kramdown_open = KRAMDOWN_HIDDEN_OPEN_RE.match(line)
-        kramdown_close = KRAMDOWN_EXTENSION_CLOSE_RE.match(line)
+        block_line = strip_markdown_container_prefixes(line)
+        kramdown_open = KRAMDOWN_HIDDEN_OPEN_RE.match(block_line)
+        kramdown_close = KRAMDOWN_EXTENSION_CLOSE_RE.match(block_line)
         if kramdown_hidden_stack:
             if kramdown_open:
                 kramdown_hidden_stack.append(kramdown_open.group(1).lower())
@@ -306,7 +333,7 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
                 f"{kramdown_close.group(1).lower()!r}"
             )
             continue
-        if KRAMDOWN_BLOCK_IAL_OPEN_RE.match(line):
+        if KRAMDOWN_BLOCK_IAL_OPEN_RE.match(block_line):
             error(f"{relative}: Kramdown block IAL is not allowed")
             continue
         if html_delimiter_end:
@@ -330,7 +357,7 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
                 html_tracker = None
             continue
 
-        fence_match = FENCE_OPEN_RE.match(line)
+        fence_match = FENCE_OPEN_RE.match(block_line)
         if fence_match:
             fence = fence_match.group(1)
             fence_char = fence[0]
@@ -349,10 +376,10 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
 
         delimited_html = False
         for opener, closer, name in RAW_HTML_DELIMITERS:
-            match = opener.match(line)
+            match = opener.match(block_line)
             if match is None:
                 continue
-            if closer not in line[match.end() :]:
+            if closer not in block_line[match.end() :]:
                 html_delimiter_end = closer
                 html_delimiter_name = name
             delimited_html = True
@@ -360,22 +387,26 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
         if delimited_html:
             continue
 
-        html_match = RAW_HTML_OPEN_RE.match(line)
-        if html_match and not html_match.group(1).endswith(":"):
-            html_tracker = RawHtmlContainerTracker()
-            html_tracker.feed(line + "\n")
-            if html_tracker.active_content_tag:
+        candidate_tracker = RawHtmlContainerTracker()
+        candidate_tracker.feed(
+            mask_inline_code_and_escaped_angles(line) + "\n"
+        )
+        if candidate_tracker.saw_tag:
+            if candidate_tracker.active_content_tag:
                 error(
-                    f"{relative}: active raw HTML <{html_tracker.active_content_tag}> "
+                    f"{relative}: active raw HTML "
+                    f"<{candidate_tracker.active_content_tag}> "
                     "is not allowed in representative content"
                 )
-                html_tracker = None
-            elif html_tracker.malformed:
-                error(f"{relative}: malformed raw HTML: {html_tracker.malformed}")
-                html_tracker = None
-            elif not html_tracker.stack:
-                html_tracker.close()
-                html_tracker = None
+            elif candidate_tracker.malformed:
+                error(
+                    f"{relative}: malformed raw HTML: "
+                    f"{candidate_tracker.malformed}"
+                )
+            elif candidate_tracker.stack:
+                html_tracker = candidate_tracker
+            else:
+                candidate_tracker.close()
             continue
         visible.append(line)
 
@@ -894,7 +925,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-039",
+            "GATE-041",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
