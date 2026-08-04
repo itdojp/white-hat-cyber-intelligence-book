@@ -204,11 +204,8 @@ INDEPENDENCE_EVALUATION_TOKENS = (
 )
 URL_RE = re.compile(r"https?://[^\s<>\"'`、]+", re.IGNORECASE)
 PROTOCOL_RELATIVE_URL_RE = re.compile(
-    r"(?:\A|[\s,<(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
+    r"(?:\A|[\s<(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
     re.IGNORECASE,
-)
-SRCSET_ATTRIBUTE_RE = re.compile(
-    r"(?is)\bsrcset\s*=\s*(?P<quote>['\"])(?P<value>.*?)(?P=quote)"
 )
 
 
@@ -956,12 +953,6 @@ def protocol_relative_hosts(text: str):
         colon
         for _, colon, _, _ in markdown_reference_definitions(text)
     }
-    srcset_commas = {
-        match.start("value") + index
-        for match in SRCSET_ATTRIBUTE_RE.finditer(text)
-        for index, character in enumerate(match.group("value"))
-        if character == ","
-    }
     for match in PROTOCOL_RELATIVE_URL_RE.finditer(text):
         candidate = strip_url_trailing_punctuation(match.group("url")).replace(
             "\\", "/"
@@ -985,7 +976,6 @@ def protocol_relative_hosts(text: str):
             text,
             match.start("url"),
             reference_definition_colons,
-            srcset_commas,
         )
         if host and (
             structured_context
@@ -999,7 +989,6 @@ def is_structured_url_context(
     text: str,
     url_start: int,
     reference_definition_colons: set[int] | None = None,
-    srcset_commas: set[int] | None = None,
 ) -> bool:
     """Recognize URL destinations/attributes without treating code comments as URLs."""
     if url_start == 0:
@@ -1009,8 +998,6 @@ def is_structured_url_context(
         cursor -= 1
     if cursor < 0 or text[cursor] in "<(=[{'\"":
         return True
-    if text[cursor] == ",":
-        return srcset_commas is not None and cursor in srcset_commas
     if text[cursor] != ":":
         return False
     if reference_definition_colons is None:
@@ -1084,6 +1071,54 @@ def strip_html_comments_preserving_lines(markdown: str) -> str:
         markdown,
         flags=re.DOTALL,
     )
+
+
+class SrcsetExtractor(HTMLParser):
+    """Collect decoded srcset values using HTML tokenization semantics."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.values: list[str] = []
+
+    def collect(self, attrs: list[tuple[str, str | None]]) -> None:
+        for name, value in attrs:
+            if name.lower() == "srcset" and value:
+                self.values.append(value)
+
+    def handle_starttag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        self.collect(attrs)
+
+    def handle_startendtag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        self.collect(attrs)
+
+
+def raw_html_srcset_hosts(text: str):
+    """Yield every URL host from quoted or unquoted raw-HTML srcset values."""
+    parser = SrcsetExtractor()
+    parser.feed(text)
+    parser.close()
+    for value in parser.values:
+        for raw_candidate in value.split(","):
+            candidate = raw_candidate.strip().split(maxsplit=1)[0]
+            if not candidate:
+                continue
+            normalized = normalize_for_host_scanning(
+                normalize_synthetic_safety_text(
+                    candidate,
+                    strip_url_controls=True,
+                    unescape_markdown=False,
+                )
+            )
+            yield from url_domain_hosts(normalized)
+            yield from protocol_relative_hosts(normalized)
 
 
 class RenderedTextExtractor(HTMLParser):
@@ -1978,6 +2013,8 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         for host in protocol_relative_hosts(safety_view)
     }:
         assert_synthetic_host(host, f"{relative}: protocol-relative URL")
+    for host in set(raw_html_srcset_hosts(text)):
+        assert_synthetic_host(host, f"{relative}: HTML srcset URL")
     for match in HOSTNAME_RE.finditer(compatibility_text):
         host = match.group("host").lower()
         if is_repository_file_reference(host):
@@ -3689,6 +3726,7 @@ def main() -> int:
         '<a href="\x01 //evil/path">x</a>',
         '<a href="//0x08080808\\@safe.example/path">x</a>',
         '<img srcset="//safe.example/a 1x,//134744072/path 2x">',
+        '<img srcset=//safe.example/a&#32;1x,//0x08080808/path>',
         '[x](\x01 //evil/path)',
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
@@ -3710,6 +3748,7 @@ def main() -> int:
         detected_live_hosts = (
             set(url_domain_hosts(compatibility_live_url))
             | set(protocol_relative_hosts(compatibility_live_url))
+            | set(raw_html_srcset_hosts(encoded_live_url))
             | {
             match.group("host").lower()
             for match in HOSTNAME_RE.finditer(compatibility_live_url)
