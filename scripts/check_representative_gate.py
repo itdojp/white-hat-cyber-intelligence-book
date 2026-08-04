@@ -57,9 +57,13 @@ LIQUID_BLOCK_ENDS = {
     "tablerow": "endtablerow",
     "unless": "endunless",
 }
-KRAMDOWN_COMMENT_OPEN_RE = re.compile(r"^ {0,3}\{::comment\}\s*$")
-KRAMDOWN_COMMENT_CLOSE_RE = re.compile(r"^ {0,3}\{:/comment\}\s*$")
-KRAMDOWN_BLOCK_IAL_RE = re.compile(r"^ {0,3}\{:[^}]*\}\s*$")
+KRAMDOWN_HIDDEN_OPEN_RE = re.compile(
+    r"^ {0,3}\{::(comment|nomarkdown)\b", re.IGNORECASE
+)
+KRAMDOWN_EXTENSION_CLOSE_RE = re.compile(
+    r"^ {0,3}\{:/([A-Za-z][A-Za-z0-9_-]*)\}", re.IGNORECASE
+)
+KRAMDOWN_BLOCK_IAL_OPEN_RE = re.compile(r"^ {0,3}\{:")
 VOID_HTML_TAGS = {
     "area",
     "base",
@@ -220,7 +224,7 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
     html_delimiter_end = ""
     html_delimiter_name = ""
     liquid_stack: list[str] = []
-    kramdown_comment_depth = 0
+    kramdown_hidden_stack: list[str] = []
 
     for raw_line in content.splitlines():
         if fence_char:
@@ -235,17 +239,30 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
         line, in_comment = strip_html_comments(raw_line, in_comment)
         if liquid_block_line_is_hidden(relative, line, liquid_stack):
             continue
-        if kramdown_comment_depth:
-            if KRAMDOWN_COMMENT_OPEN_RE.fullmatch(line):
-                kramdown_comment_depth += 1
-            elif KRAMDOWN_COMMENT_CLOSE_RE.fullmatch(line):
-                kramdown_comment_depth -= 1
+        kramdown_open = KRAMDOWN_HIDDEN_OPEN_RE.match(line)
+        kramdown_close = KRAMDOWN_EXTENSION_CLOSE_RE.match(line)
+        if kramdown_hidden_stack:
+            if kramdown_open:
+                kramdown_hidden_stack.append(kramdown_open.group(1).lower())
+            elif kramdown_close:
+                actual = kramdown_close.group(1).lower()
+                expected = kramdown_hidden_stack[-1]
+                if actual != expected:
+                    error(
+                        f"{relative}: Kramdown closing extension {actual!r} "
+                        f"does not match {expected!r}"
+                    )
+                else:
+                    kramdown_hidden_stack.pop()
             continue
-        if KRAMDOWN_COMMENT_OPEN_RE.fullmatch(line):
-            kramdown_comment_depth = 1
+        if kramdown_open:
+            kramdown_hidden_stack.append(kramdown_open.group(1).lower())
             continue
-        if KRAMDOWN_COMMENT_CLOSE_RE.fullmatch(line):
-            error(f"{relative}: unexpected Kramdown comment closing tag")
+        if kramdown_close:
+            error(
+                f"{relative}: unexpected Kramdown closing extension "
+                f"{kramdown_close.group(1).lower()!r}"
+            )
             continue
         if html_delimiter_end:
             if html_delimiter_end in line:
@@ -307,8 +324,11 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
     if liquid_stack:
         open_tags = ", ".join(f"{{% {tag} %}}" for tag in liquid_stack)
         error(f"{relative}: unclosed Liquid block(s): {open_tags}")
-    if kramdown_comment_depth:
-        error(f"{relative}: unclosed Kramdown comment block")
+    if kramdown_hidden_stack:
+        open_tags = ", ".join(
+            f"{{::{name}}}" for name in kramdown_hidden_stack
+        )
+        error(f"{relative}: unclosed Kramdown hidden extension(s): {open_tags}")
     return visible
 
 
@@ -372,7 +392,7 @@ def review_table_rows(
     ial_index = row_index
     while ial_index < len(lines) and not lines[ial_index].strip():
         ial_index += 1
-    if ial_index < len(lines) and KRAMDOWN_BLOCK_IAL_RE.fullmatch(lines[ial_index]):
+    if ial_index < len(lines) and KRAMDOWN_BLOCK_IAL_OPEN_RE.match(lines[ial_index]):
         error(
             f"{relative}: Review table beneath {heading!r} must not carry "
             "a Kramdown block IAL"
@@ -814,7 +834,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-033",
+            "GATE-035",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
