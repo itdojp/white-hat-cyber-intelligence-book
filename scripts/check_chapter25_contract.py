@@ -1579,7 +1579,10 @@ def decode_css_escapes(value: str) -> str:
 
 def executable_css_value_violations(value: str) -> list[str]:
     decoded = decode_css_escapes(value)
-    compact = re.sub(r"[\x00-\x20\x7f]+", "", decoded).casefold()
+    without_comments = re.sub(r"/\*.*?\*/", "", decoded, flags=re.DOTALL)
+    compact = re.sub(
+        r"[\x00-\x20\x7f]+", "", without_comments
+    ).casefold()
     violations: list[str] = []
     if "javascript:" in compact or "vbscript:" in compact:
         violations.append("executable script URL in style attribute")
@@ -4462,6 +4465,7 @@ def main() -> int:
     for executable_css in (
         '<div style="background:url(ja\\76 ascript:alert(1))"></div>',
         '<style>.x{background:url(ja\\76 ascript:alert(1))}</style>',
+        '<div style="background:url(ja/**/vascript:alert(1))"></div>',
     ):
         if not raw_html_executable_css_violations(executable_css):
             error(
