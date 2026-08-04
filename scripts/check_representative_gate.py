@@ -175,7 +175,14 @@ def check_artifacts_and_cases() -> None:
                 f"got {actual.get(artifact_id)!r}"
             )
         template_text = read_text(template)
-        require_tokens(template, template_text, (artifact_id,))
+        require_tokens(
+            template,
+            template_text,
+            (
+                artifact_id,
+                "| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |",
+            ),
+        )
         require_heading(template, template_text, review_heading)
 
     relationships = {
@@ -194,6 +201,10 @@ def check_artifacts_and_cases() -> None:
             "## 16. Review",
             "合成Case内のReview記入例",
             "SYNTH-REV-01-TECH-001",
+            "SYNTH-REV-01-SAFE-001",
+            "SYNTH-REV-01-EVID-001",
+            "SYNTH-REV-01-ANALYTIC-001",
+            "SYNTH-REV-01-DEC-001",
         ),
         "cases/ch11-web-api-assessment-example.md": (
             "ART-11",
@@ -210,6 +221,10 @@ def check_artifacts_and_cases() -> None:
             "Artifact completeness",
             "合成Case内のReview記入例",
             "SYNTH-REV-11-TECH-001",
+            "SYNTH-REV-11-SAFE-001",
+            "SYNTH-REV-11-EVID-001",
+            "SYNTH-REV-11-DET-001",
+            "SYNTH-REV-11-DEC-001",
         ),
         "cases/ch17-detection-validation-example.md": (
             "ART-05",
@@ -224,6 +239,10 @@ def check_artifacts_and_cases() -> None:
             "## 11. Review",
             "合成Case内のReview記入例",
             "SYNTH-REV-17-TECH-001",
+            "SYNTH-REV-17-SAFE-001",
+            "SYNTH-REV-17-EVID-001",
+            "SYNTH-REV-17-DET-001",
+            "SYNTH-REV-17-DEC-001",
         ),
         "cases/ch25-structured-analysis-attribution-example.md": (
             "ART-12",
@@ -236,6 +255,10 @@ def check_artifacts_and_cases() -> None:
             "## 15. Review",
             "合成Case内のReview記入例",
             "SYNTH-REV-25-TECH-001",
+            "SYNTH-REV-25-SAFE-001",
+            "SYNTH-REV-25-EVID-001",
+            "SYNTH-REV-25-ANALYTIC-001",
+            "SYNTH-REV-25-DEC-001",
         ),
     }
     for relative, tokens in relationships.items():
@@ -362,7 +385,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-021",
+            "GATE-022",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
