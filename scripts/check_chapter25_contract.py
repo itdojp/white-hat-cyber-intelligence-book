@@ -1729,8 +1729,9 @@ class ExecutableHTMLDetector(HTMLParser):
 
 
 def executable_html_violations(text: str) -> list[str]:
+    protected_text, _ = protect_markdown_code(text)
     parser = ExecutableHTMLDetector()
-    parser.feed(text)
+    parser.feed(protected_text)
     parser.close()
     return parser.violations
 
@@ -2108,8 +2109,9 @@ def raw_html_css_hosts(text: str):
 
 
 def raw_html_executable_css_violations(text: str) -> list[str]:
+    protected_text, _ = protect_markdown_code(text)
     parser = CSSValueExtractor()
-    parser.feed(text)
+    parser.feed(protected_text)
     parser.close()
     return [
         violation
@@ -3282,6 +3284,7 @@ def require_globally_unique_owner_ids(dataset: object) -> None:
 
 def check_synthetic_content_safety(relative: str, text: str) -> None:
     """Check synthetic teaching content only; official Source Note URLs use SOURCE_POLICY."""
+    protected_rendered_text, _ = protect_markdown_code(text)
     for violation in executable_html_violations(text):
         error(
             f"{relative}: executable HTML is not allowed in synthetic content: "
@@ -3302,7 +3305,7 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
             f"{relative}: executable CSS is not allowed in synthetic content: "
             f"{violation}"
         )
-    if has_executable_data_url(text):
+    if has_executable_data_url(protected_rendered_text):
         error(
             f"{relative}: executable HTML/SVG data URLs are not allowed in "
             "synthetic content"
@@ -5204,6 +5207,7 @@ def main() -> int:
         '<a title="data:image/svg+xml is an executable URL example">x</a>',
         '<a href="java script:alert(1)">x</a>',
         '<meta http-equiv="refresh" content="0;url=java script:alert(1)">',
+        '```html\n<a href="vbscript:msgbox(1)">example</a>\n```',
     ):
         if executable_html_violations(safe_html):
             error(
@@ -5345,6 +5349,7 @@ def main() -> int:
         '<div style=\'content:"data:text/css,body{}"\'></div>',
         '<div style=\'content:"vbscript:note"\'></div>',
         '<div style=\'background:url("java script:alert(1)")\'></div>',
+        '```html\n<div style="background:url(vbscript:msgbox(1))"></div>\n```',
         '<style>.x::after{content:"@import url(data:text/css,body{})"}</style>',
         '<style>@import url(data:te xt/css,body{})</style>',
     ):
