@@ -151,7 +151,7 @@
 
 | Finding ID | Root condition | Evidence IDs | Business impact | Existing control | Recommended treatment | Status |
 |---|---|---|---|---|---|---|
-| `FIND-2026-001` | 業務要件を超えるApp permission | `EVD-2026-001`, `EVD-2026-002` | Credential不正利用時の影響範囲拡大 | 手動設定Review | 必要scopeへ縮小、Credential更新、再テスト | Retest Required |
+| `FIND-2026-001` | 業務要件を超えるApp permission | `EVD-2026-001`, `EVD-2026-002` | Credential不正利用時の影響範囲拡大 | 手動設定Review | 必要scopeへ縮小、Credential更新、再テスト | Mitigated |
 | `FIND-2026-002` | 同意変更の検知Ruleがない | `EVD-2026-003` | scope変更の早期発見が遅れる | Audit logは取得 | RuleとTriage手順を追加 | Open |
 | `FIND-2026-003` | API利用Telemetryが不完全 | `EVD-2026-004`, `NEG-2026-001` | 過去調査と影響範囲評価に不確実性 | Sign-in log | API auditの収集・保持を追加 | Open |
 
