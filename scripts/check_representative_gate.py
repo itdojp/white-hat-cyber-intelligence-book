@@ -46,6 +46,19 @@ RAW_HTML_DELIMITERS = (
     (re.compile(r"^ {0,3}<!\[CDATA\[", re.IGNORECASE), "]]>", "CDATA block"),
     (re.compile(r"^ {0,3}<![A-Z]"), ">", "declaration"),
 )
+LIQUID_TAG_RE = re.compile(r"{%-?\s*([A-Za-z_][A-Za-z0-9_-]*)\b.*?-?%}")
+LIQUID_BLOCK_ENDS = {
+    "capture": "endcapture",
+    "case": "endcase",
+    "comment": "endcomment",
+    "for": "endfor",
+    "highlight": "endhighlight",
+    "if": "endif",
+    "tablerow": "endtablerow",
+    "unless": "endunless",
+}
+KRAMDOWN_COMMENT_OPEN_RE = re.compile(r"^ {0,3}\{::comment\}\s*$")
+KRAMDOWN_COMMENT_CLOSE_RE = re.compile(r"^ {0,3}\{:/comment\}\s*$")
 VOID_HTML_TAGS = {
     "area",
     "base",
@@ -152,6 +165,41 @@ def strip_html_comments(line: str, in_comment: bool) -> tuple[str, bool]:
     return "".join(visible), in_comment
 
 
+def liquid_block_line_is_hidden(
+    relative: str, line: str, stack: list[str]
+) -> bool:
+    """Track Liquid blocks whose body is conditional, captured, or non-Markdown."""
+    tags = [match.group(1).lower() for match in LIQUID_TAG_RE.finditer(line)]
+    was_hidden = bool(stack)
+
+    if stack and stack[-1] == "comment":
+        if LIQUID_BLOCK_ENDS["comment"] in tags:
+            stack.pop()
+        return True
+
+    block_tag_seen = False
+    for tag in tags:
+        if tag in LIQUID_BLOCK_ENDS:
+            stack.append(tag)
+            block_tag_seen = True
+            continue
+        if tag not in LIQUID_BLOCK_ENDS.values():
+            continue
+        block_tag_seen = True
+        if not stack:
+            error(f"{relative}: unexpected Liquid closing tag {tag!r}")
+            continue
+        expected = LIQUID_BLOCK_ENDS[stack[-1]]
+        if tag != expected:
+            error(
+                f"{relative}: Liquid closing tag {tag!r} does not match "
+                f"{expected!r}"
+            )
+            continue
+        stack.pop()
+    return was_hidden or block_tag_seen or bool(stack)
+
+
 def visible_markdown_lines(relative: str, content: str) -> list[str]:
     """Return contract-eligible Markdown outside code, comments, and raw HTML."""
     visible: list[str] = []
@@ -161,6 +209,8 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
     html_tracker: RawHtmlContainerTracker | None = None
     html_delimiter_end = ""
     html_delimiter_name = ""
+    liquid_stack: list[str] = []
+    kramdown_comment_depth = 0
 
     for raw_line in content.splitlines():
         if fence_char:
@@ -173,6 +223,20 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
             continue
 
         line, in_comment = strip_html_comments(raw_line, in_comment)
+        if liquid_block_line_is_hidden(relative, line, liquid_stack):
+            continue
+        if kramdown_comment_depth:
+            if KRAMDOWN_COMMENT_OPEN_RE.fullmatch(line):
+                kramdown_comment_depth += 1
+            elif KRAMDOWN_COMMENT_CLOSE_RE.fullmatch(line):
+                kramdown_comment_depth -= 1
+            continue
+        if KRAMDOWN_COMMENT_OPEN_RE.fullmatch(line):
+            kramdown_comment_depth = 1
+            continue
+        if KRAMDOWN_COMMENT_CLOSE_RE.fullmatch(line):
+            error(f"{relative}: unexpected Kramdown comment closing tag")
+            continue
         if html_delimiter_end:
             if html_delimiter_end in line:
                 html_delimiter_end = ""
@@ -230,6 +294,11 @@ def visible_markdown_lines(relative: str, content: str) -> list[str]:
     if html_tracker is not None:
         open_tags = ", ".join(f"<{tag}>" for tag in html_tracker.stack)
         error(f"{relative}: unclosed raw HTML container(s): {open_tags}")
+    if liquid_stack:
+        open_tags = ", ".join(f"{{% {tag} %}}" for tag in liquid_stack)
+        error(f"{relative}: unclosed Liquid block(s): {open_tags}")
+    if kramdown_comment_depth:
+        error(f"{relative}: unclosed Kramdown comment block")
     return visible
 
 
@@ -723,7 +792,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-029",
+            "GATE-030",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
