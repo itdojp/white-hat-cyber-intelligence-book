@@ -1471,6 +1471,20 @@ class URLAttributeExtractor(HTMLParser):
 class CSSValueExtractor(HTMLParser):
     """Collect inline style attributes and style-element text."""
 
+    SVG_PRESENTATION_URL_ATTRIBUTES = {
+        "clip-path",
+        "color-profile",
+        "cursor",
+        "fill",
+        "filter",
+        "marker",
+        "marker-end",
+        "marker-mid",
+        "marker-start",
+        "mask",
+        "stroke",
+    }
+
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.values: list[str] = []
@@ -1478,7 +1492,11 @@ class CSSValueExtractor(HTMLParser):
 
     def collect(self, attrs: list[tuple[str, str | None]]) -> None:
         for name, value in attrs:
-            if name.lower() == "style" and value:
+            normalized_name = name.casefold()
+            if value and (
+                normalized_name == "style"
+                or normalized_name in self.SVG_PRESENTATION_URL_ATTRIBUTES
+            ):
                 self.values.append(value)
 
     def handle_starttag(
@@ -2209,6 +2227,54 @@ def markdown_link_destination_end(
     return structural_pairs.get(start)
 
 
+def markdown_url_destinations(text: str):
+    """Yield ordinary inline, reference, and autolink URL destinations."""
+    protected_text, _ = protect_markdown_code(text)
+    protected_text = strip_html_comments_preserving_lines(protected_text)
+    bracket_pairs = markdown_bracket_pairs(protected_text)
+    parenthesis_pairs = markdown_parenthesis_pairs(protected_text)
+
+    for label_end in bracket_pairs.values():
+        opening = label_end + 1
+        if opening >= len(protected_text) or protected_text[opening] != "(":
+            continue
+        closing = parenthesis_pairs.get(opening)
+        if closing is None:
+            continue
+        destination = protected_text[opening + 1 : closing].lstrip(" \t\r\n")
+        if destination.startswith("<"):
+            destination = destination[1:]
+        yield destination
+
+    for _, colon, _, line_end in markdown_reference_definitions(protected_text):
+        start = colon + 1
+        while start < line_end and protected_text[start] in " \t":
+            start += 1
+        if start < line_end and protected_text[start] == "<":
+            start += 1
+        yield protected_text[start:line_end]
+
+    for match in re.finditer(r"<(?P<destination>[^<>\r\n]+)>", protected_text):
+        yield match.group("destination")
+
+
+def executable_markdown_url_violations(text: str) -> list[str]:
+    violations: list[str] = []
+    for destination in markdown_url_destinations(text):
+        normalized = normalize_synthetic_safety_text(destination)
+        url_candidate = (
+            normalized.lstrip(URL_TRIM_CHARACTERS)
+            .translate(URL_TAB_NEWLINE_TRANSLATION)
+            .casefold()
+        )
+        for scheme in ("javascript:", "vbscript:"):
+            if url_candidate.startswith(scheme):
+                violations.append(
+                    f"executable {scheme[:-1]} Markdown destination"
+                )
+    return violations
+
+
 def markdown_visible_links(text: str) -> str:
     """Project Markdown links to visible labels without rewriting undefined refs."""
     reference_definitions = markdown_reference_definitions(text)
@@ -2843,6 +2909,11 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
     for violation in executable_kramdown_ial_violations(text):
         error(
             f"{relative}: executable Kramdown IAL is not allowed in synthetic "
+            f"content: {violation}"
+        )
+    for violation in executable_markdown_url_violations(text):
+        error(
+            f"{relative}: executable Markdown URL is not allowed in synthetic "
             f"content: {violation}"
         )
     for violation in raw_html_executable_css_violations(text):
@@ -4607,6 +4678,7 @@ def main() -> int:
         '<link rel="preload" as="image" imagesrcset="//safe.example/a 1x,//0x08080808/path 2x">',
         '<div style="background:url(https\\3a //evil\\2e com/x)"></div>',
         '<div style="--x:data:image/png,x;background:url(https://evil.com/x)"></div>',
+        '<svg><rect filter="url(https\\3a //evil\\2e com/x#f)"/></svg>',
         '[x](\x01 //evil/path)',
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
@@ -4749,6 +4821,27 @@ def main() -> int:
             error(
                 "fixture safety regression: inert HTML URL was treated as "
                 f"executable: {safe_html!r}"
+            )
+    for executable_markdown in (
+        '[x](javascript:location="//0x08080808/x")',
+        '[x][ref]\n[ref]: java&#9;script:location="//0x08080808/x"',
+        '<vbscript:msgbox(1)>',
+    ):
+        if not executable_markdown_url_violations(executable_markdown):
+            error(
+                "fixture safety regression: executable Markdown URL was "
+                f"accepted: {executable_markdown!r}"
+            )
+    for inert_markdown in (
+        '`[x](javascript:alert(1))`',
+        '```text\n[x](javascript:alert(1))\n```',
+        'javascript: is an executable scheme name',
+        '[x](java script:alert(1))',
+    ):
+        if executable_markdown_url_violations(inert_markdown):
+            error(
+                "fixture safety regression: inert Markdown text was treated "
+                f"as executable: {inert_markdown!r}"
             )
     for executable_data_url in (
         '[x](data:image/svg+xml,%3Csvg%20onload%3Dalert(1)%3E)',
