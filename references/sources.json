@@ -45,7 +45,7 @@
       "chapters": [
         17
       ],
-      "notes": "Official page states data sources were deprecated in the ATT&CK v18 release in October 2025 and no new data sources will be added."
+      "notes": "Official page states data sources were deprecated in the ATT&CK v18 release in October 2025 and no new data sources will be added. The exact publication day is not recorded on the page, so publishedAt remains null."
     },
     {
       "id": "SRC-ATTACK-DET-001",
@@ -64,7 +64,7 @@
       "chapters": [
         17
       ],
-      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms."
+      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt."
     },
     {
       "id": "SRC-SIGMA-001",

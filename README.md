@@ -63,12 +63,12 @@
 ```bash
 git clone https://github.com/itdojp/book-formatter.git ../book-formatter
 git -C ../book-formatter checkout 764f644850c21983c96919d0e13706413d59c089
+npm ci --prefix ../book-formatter --ignore-scripts
 
 npm ci
 bundle install
 BOOK_FORMATTER_DIR=../book-formatter npm test
-BOOK_FORMATTER_DIR=../book-formatter npm run build
-python3 scripts/check_built_site.py --source docs --site _site
+BOOK_FORMATTER_DIR=../book-formatter npm run check:book-qa
 ```
 
 `BOOK_FORMATTER_DIR`を省略した場合、生成スクリプトは固定commitの共通部品を取得し、Git blob SHAを検証します。
@@ -78,6 +78,7 @@ python3 scripts/check_built_site.py --source docs --site _site
 | コマンド | 内容 |
 |---|---|
 | `npm test` | 編集・安全・出典・部品固定・生成決定性を検証 |
+| `npm run check:book-qa` | 固定formatterでCI相当の静的検査、Jekyll build、built-site smokeを再現（`BOOK_FORMATTER_DIR`必須） |
 | `npm run sync:docs` | 正本から`docs/`を再生成 |
 | `npm run check:docs-sync` | 2回生成の一致と正本非変更を検証 |
 | `npm run build` | `docs/`生成後にJekyll build |

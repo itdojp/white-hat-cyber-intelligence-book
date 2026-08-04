@@ -228,3 +228,13 @@ Evidenceごとに、公開・共有前の無害化と廃棄責任を定義する
 - [OAuth 2.0 / OIDCの評価観点](https://itdojp.github.io/pentest-learning-book/part4_api/43_oauth_oidc_testing/)
 - [RBAC / ABACの誤実装パターン](https://itdojp.github.io/pentest-learning-book/part4_api/44_rbac_abac_misconfig/)
 - [認証・認可プロトコルの設計詳細](https://itdojp.github.io/practical-auth-book/)
+
+## 11. Review
+
+| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |
+|---|---|---|---|---|---|
+| Technical correctness |  | Pass / Changes required |  |  |  |
+| Safety / authorization |  | Pass / Changes required |  |  |  |
+| Evidence / source quality |  | Pass / Changes required |  |  |  |
+| Detection handoff |  | Pass / Changes required |  |  |  |
+| Decision usefulness |  | Pass / Changes required |  |  |  |

@@ -104,3 +104,29 @@
 ## 9. 法的注意
 
 本書は法律相談を提供するものではない。実務での診断、調査、監視、情報収集は、対象国、契約、個人情報、通信、営業秘密、委託条件等に応じて専門家の確認を行う。
+
+## 10. 合成Caseとfixtureの公開契約
+
+合成Case、Template記入例、JSON fixtureは、次をすべて満たす場合だけ公開する。
+
+- 合成であることを本文と機械可読Dataの両方で明示する
+- Domainは`.example`、`.test`、`.invalid`、IP Addressは文書用範囲、Credential形式は実環境で無効な合成値だけを使う
+- 組織、人物、Role、報告、Event、Hash、判断を実在対象と誤認しない命名にする
+- Case ID、Artifact ID、Evidence ID、Owner、Review dateを本文とfixtureで照合する
+- JSONはUTF-8の非実行Dataとして厳密にParseし、公開先を`downloads/`配下へ限定する
+- 生成前にSecret、実Credential、Token、Cookie、個人情報、実在連絡先、非予約Domain、非文書用IP Addressを検査する
+- 一つでも実Dataの疑いがある場合はfail-closedとし、生成・artifact upload・Pages公開を停止する
+
+合成Dataであるというラベルだけでは安全とみなさない。内容、参照先、公開経路、生成物を独立に検査する。
+
+## 11. 安全レビューの証跡
+
+出版前レビューでは、対象commit、検査対象、検出件数、除外理由、Review担当Contextを記録する。受け入れ条件は次のとおりである。
+
+- 禁止された実在Target、Credential、Token、Cookie、PII: 0件
+- 未調整脆弱性を第三者へ転用できる実行手順: 0件
+- Authority、Scope、Stop、Cleanupの欠落: 0件
+- 合成Dataと公開Dataの不一致: 0件
+- P0 / P1の安全指摘と未解決Review Thread: 0件
+
+誤検知を除外する場合は、予約済み名前・Address、無効な合成Credential、または監査済み固定commitへの参照である根拠を残す。

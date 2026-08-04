@@ -252,3 +252,13 @@ Confirmed Factには、直接観測したEventのみを記録する。independen
 - Confidence表現は`高 / 中 / 低`だけを使っている
 - Technical clusterからSponsorへの飛躍がない
 - Circular reporting候補を独立裏付けに数えていない
+
+## 15. Review
+
+| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |
+|---|---|---|---|---|---|
+| Technical correctness |  | Pass / Changes required |  |  |  |
+| Safety / authorization |  | Pass / Changes required |  |  |  |
+| Evidence / source quality |  | Pass / Changes required |  |  |  |
+| Analytic quality |  | Pass / Changes required |  |  |  |
+| Decision usefulness |  | Pass / Changes required |  |  |  |

@@ -71,3 +71,22 @@ Registry直下の`checkedAt`は、全Source Noteを一括監査した最終基�
 4. 本文・図・テンプレート・演習を再監査
 5. `CHANGELOG.md`へ読者影響を記録
 6. 独立レビュー後にmerge
+
+## 7. 章との双方向Traceability
+
+- 本文で使用する`SRC-*`は、同じ章の`参考文献・Source Note ID`に列挙する
+- 章末に列挙したIDは、本文、演習、安全境界、Templateまたはfixtureの説明で実際に使用する
+- Registryの`chapters`は、実際にSource Noteを使用する章だけを含める
+- 章固有の安全Gateやfixture検査に使うSourceも、読者が用途を確認できる箇所でIDと役割を示す
+- Sourceの登録だけを先行して、未使用の章mappingを残さない。将来利用は利用する章のPRで追加する
+
+代表章Gateでは、本文中の使用ID、章末一覧、Registry mappingの集合が一致することをCIで検査する。全章展開時も同じ契約を継承する。
+
+## 8. Source品質の受け入れ条件
+
+- 一次または公式Sourceで重要主張を確認している
+- `status`、`checkedAt`、`nextReviewAt`、`reviewTriggers`が空でない
+- Versionまたは公開日が`null`の場合、値を特定できない理由と追跡方法が`notes`にある
+- Development、Deprecated、SnapshotをStableな現行標準として扱っていない
+- 変更検知時に再確認する章、図、Template、fixture、判断基準が分かる
+- 引用の独立性を記事数で水増しせず、同一原典を一つの系統として扱う

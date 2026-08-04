@@ -275,10 +275,12 @@
 
 ## 16. Review
 
-| Review area | Reviewer / role | Result | Date | Notes |
-|---|---|---|---|---|
-| Technical correctness | Platform reviewer | Pass | 2026-07-30 | scopeとTelemetryの関係を確認 |
-| Safety / authorization | Engagement owner | Pass | 2026-07-30 | 合成環境・最小操作を確認 |
-| Evidence / source quality | Evidence reviewer | Pass | 2026-07-30 | Negative Findingの限界を確認 |
-| Analytic quality | CTI reviewer | Pass | 2026-07-30 | Actor帰属へ依存しない判断を確認 |
-| Decision usefulness | CTO delegate | Pass | 2026-07-30 | 選択肢、期限、残存Riskを確認 |
+以下は合成Case内のReview記入例であり、実際のGate reviewまたは本番承認の証跡ではない。Evidence referenceも合成IDである。
+
+| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |
+|---|---|---|---|---|---|
+| Technical correctness | Platform reviewer | Pass | 2026-07-30 | `SYNTH-REV-01-TECH-001` | scopeとTelemetryの関係を確認 |
+| Safety / authorization | Engagement owner | Pass | 2026-07-30 | `SYNTH-REV-01-SAFE-001` | 合成環境・最小操作を確認 |
+| Evidence / source quality | Evidence reviewer | Pass | 2026-07-30 | `SYNTH-REV-01-EVID-001` | Negative Findingの限界を確認 |
+| Analytic quality | CTI reviewer | Pass | 2026-07-30 | `SYNTH-REV-01-ANALYTIC-001` | Actor帰属へ依存しない判断を確認 |
+| Decision usefulness | CTO delegate | Pass | 2026-07-30 | `SYNTH-REV-01-DEC-001` | 選択肢、期限、残存Riskを確認 |

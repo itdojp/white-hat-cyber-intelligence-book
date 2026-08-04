@@ -21,7 +21,7 @@
 - Threat-Informed Decision Loop
 - 四つの視点: 攻撃者、防御者、分析者、意思決定者
 
-成果物: `Integrated Security Workflow Map`
+成果物: `Integrated Security Case Map`（Integrated Security Workflow Mapの適用記録）
 
 ### 第2章　法、倫理、許可、責任ある開示
 
@@ -385,6 +385,6 @@
 - 付録E　用語集
 - 付録F　図表索引
 - 付録G　参考文献とSource Baseline
-- 付録H　既存書籍への学習導線
-- 付録I　演習データセットと再現手順
-- 付録J　評価ルーブリック
+- 付録H　ラボ運用ガイド
+- 付録I　成果物評価ルーブリック
+- 付録J　既存書籍との学習導線

@@ -269,3 +269,17 @@ Request / ResponseとDetection eventは、外部通信を行わない[読み取�
 - `TH-2026-014`はWeakenedであり、確認した合成Host入力が拒否されdispatch taskも作成されなかったことだけを示す。別encoding、scheme、port、redirect、hostname normalization、DNS rebinding、別worker pathは未評価である。
 - 主要な公開阻害要因は、Deprecated APIのFunction authz gap、Property authz gap、Retry pathのIdempotency gapである。
 - 条件付き公開を選ぶなら、少なくとも`FIND-2026-011`と`FIND-2026-013`の解消と`DET-2026-011`の有効化が先行条件になる。
+
+`TEL-2026-012`がMissingであることは、成果物そのものの未完成を意味しない。この例のArtifact completenessは、Gap、Owner、影響、先行条件、再収集証拠、期限を明示してDecisionへ渡せる状態を指す。Systemの公開可否やControl完了とは別に判定する。
+
+## 11. Review
+
+以下は合成Case内のReview記入例であり、実際のGate reviewまたは本番承認の証跡ではない。Evidence referenceも合成IDである。
+
+| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |
+|---|---|---|---|---|---|
+| Technical correctness | Product Security reviewer | Pass | 2026-08-04 | `SYNTH-REV-11-TECH-001` | Function、Property、Tenant、Server-side、Idempotency境界を確認 |
+| Safety / authorization | Engagement owner | Pass | 2026-08-04 | `SYNTH-REV-11-SAFE-001` | 合成Data、低回数検証、Stop、Cleanupを確認 |
+| Evidence / source quality | Evidence reviewer | Pass | 2026-08-04 | `SYNTH-REV-11-EVID-001` | Negative FindingのCoverageとGapを確認 |
+| Detection handoff | SOC Detection reviewer | Pass | 2026-08-04 | `SYNTH-REV-11-DET-001` | `TEL-2026-012`のMissingを隠さずOwner、先行条件、再収集へ接続 |
+| Decision usefulness | Product decision delegate | Pass | 2026-08-04 | `SYNTH-REV-11-DEC-001` | 条件付き公開の阻害要因、期限、Reassessmentを確認 |

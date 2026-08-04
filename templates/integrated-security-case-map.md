@@ -256,10 +256,10 @@
 
 ## 16. Review
 
-| Review area | Reviewer / role | Result | Date | Notes |
-|---|---|---|---|---|
-| Technical correctness |  | Pass / Changes required |  |  |
-| Safety / authorization |  | Pass / Changes required |  |  |
-| Evidence / source quality |  | Pass / Changes required |  |  |
-| Analytic quality |  | Pass / Changes required |  |  |
-| Decision usefulness |  | Pass / Changes required |  |  |
+| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |
+|---|---|---|---|---|---|
+| Technical correctness |  | Pass / Changes required |  |  |  |
+| Safety / authorization |  | Pass / Changes required |  |  |  |
+| Evidence / source quality |  | Pass / Changes required |  |  |  |
+| Analytic quality |  | Pass / Changes required |  |  |  |
+| Decision usefulness |  | Pass / Changes required |  |  |  |

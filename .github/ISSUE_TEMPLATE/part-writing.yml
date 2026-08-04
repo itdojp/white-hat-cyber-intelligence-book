@@ -1,0 +1,119 @@
+name: Part writing
+description: 代表章Gateで凍結した契約に従い、Part単位で章執筆を管理する
+title: "[Writing][Part ] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        `WRITING_GUIDE.md`のChapter Definition of Done、`SOURCE_POLICY.md`、`SAFETY_SCOPE.md`、`CROSS_BOOK_MAP.md`に従ってください。
+        実Credential、個人情報、第三者Target、未調整の脆弱性詳細は公開Issueへ記載しないでください。
+  - type: input
+    id: part
+    attributes:
+      label: Part・対象章
+      description: Part番号、章番号、章IDを依存順に列挙する
+      placeholder: Part III / chapter 11〜15
+    validations:
+      required: true
+  - type: textarea
+    id: objective
+    attributes:
+      label: 目的と読者の判断
+      description: 読者が何を判断・作成できる状態にするか
+    validations:
+      required: true
+  - type: textarea
+    id: prerequisites
+    attributes:
+      label: 前提Issue・章・固定commit
+      description: 完了が必要なIssue、章、契約、固定SHAを列挙する
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 対象と対象外
+      description: OWN / BRIDGE / DELEGATE、変更対象、非目標を明記する
+    validations:
+      required: true
+  - type: textarea
+    id: source_plan
+    attributes:
+      label: Source計画
+      description: 重要主張、一次Source Note ID、version、status、checkedAt、review trigger
+    validations:
+      required: true
+  - type: textarea
+    id: artifact_plan
+    attributes:
+      label: Artifact・Case・ID関係
+      description: Artifact ID、Case ID、親Case ID、refines / supersedes / independent、EvidenceからReassessmentまでの関係
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: 安全境界と停止条件
+      description: Authority、Scope、許可Data、禁止操作、Stop、Cleanup、公開前のfail-closed検査
+    validations:
+      required: true
+  - type: textarea
+    id: pr_plan
+    attributes:
+      label: PR分割と依存順
+      description: 原則1章1PR。同一Repository内の直列順と、混在させない変更を記載する
+    validations:
+      required: true
+  - type: textarea
+    id: review_evidence
+    attributes:
+      label: Review証跡
+      description: Reviewer Context、対象commit、Pass別の結果、Issue / PR / thread / artifact URL、P2の採否を記録する
+    validations:
+      required: true
+  - type: textarea
+    id: publication_evidence
+    attributes:
+      label: QA・公開証跡
+      description: local QA、PR CI、main、Pages、公開HTTP / markerのURLまたはrun ID。未実施は未実施と明記する
+    validations:
+      required: true
+  - type: checkboxes
+    id: implementation
+    attributes:
+      label: 章ごとの実装
+      options:
+        - label: book-configの学習目標と必須見出しを満たす
+        - label: Template、合成記入例、fixture、Rubricを必要に応じて追加する
+        - label: 本文使用Source ID、章末一覧、Registry mappingを一致させる
+        - label: OWN / BRIDGE / DELEGATEと安定した委譲Linkを確認する
+        - label: Decision RequirementからAction / Reassessmentまで追跡できる
+  - type: checkboxes
+    id: review
+    attributes:
+      label: 独立Review Pass
+      options:
+        - label: Technical accuracy
+        - label: Safety and legal boundary
+        - label: Source quality and freshness
+        - label: Analytic quality
+        - label: Instructional design and readability
+        - label: Cross-book boundary and artifact traceability
+        - label: Command and lab reproducibility
+        - label: Publication quality
+  - type: checkboxes
+    id: verification
+    attributes:
+      label: 完了条件
+      options:
+        - label: 章固有contractとnpm testが成功した
+        - label: 固定formatterでnpm run check:book-qa（静的検査、Jekyll build、built-site smoke）が成功した
+        - label: Link、Anchor、Unicode、Textlint、Layout、Markdown structureのerrorが0件
+        - label: 禁止された実Target、Credential、Token、Cookie、PIIが0件
+        - label: P0 / P1と未解決Review Threadが0件
+        - label: main CI、Pages、公開HTTPとmarkerを確認した
+  - type: textarea
+    id: blockers
+    attributes:
+      label: Blocker・owner・再開条件
+      description: 未完了の場合に原因、影響、owner、期限または再確認条件を記録する

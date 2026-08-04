@@ -119,10 +119,10 @@ With the pinned formatter checkout:
 
 ```bash
 npm ci
+npm ci --prefix ../book-formatter --ignore-scripts
 bundle install
 BOOK_FORMATTER_DIR=../book-formatter npm test
-BOOK_FORMATTER_DIR=../book-formatter npm run build
-python3 scripts/check_built_site.py --source docs --site _site
+BOOK_FORMATTER_DIR=../book-formatter npm run check:book-qa
 ```
 
 The following must remain true:

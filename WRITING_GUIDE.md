@@ -1,5 +1,7 @@
 # Writing Guide
 
+**契約状態:** 代表章Gateで凍結（2026-08-04）。以後の変更は、根拠となるIssue、影響する章、移行方法、独立レビューを伴う。
+
 ## 1. 目的
 
 本書の文章を、技術的に正確で、安全で、判断に使え、更新可能な形へ統一する。
@@ -97,3 +99,76 @@
 - CTI分析品質
 - 教育設計・可読性
 - コマンド・ラボ再現性
+
+## 10. Case・成果物・識別子の契約
+
+章の成果物は、単独の記入例ではなく、判断へ至る追跡可能な記録として設計する。該当する要素を次の順で接続し、使用しない要素は理由を明記する。
+
+```text
+Decision Requirement
+→ Asset / Threat Hypothesis
+→ Authority / RoE
+→ Assessment Hypothesis / Finding
+→ Telemetry / Detection
+→ Evidence / Incident context
+→ Analytic Judgment / CTI
+→ Action / Reassessment
+```
+
+- `Case ID`は一つの判断対象を束ねる。別の章で同じCaseを扱う場合は同じ`Case ID`を継承する
+- 詳細化用の子Recordへ別IDを付ける場合は、親Case IDと`refines` / `supersedes` / `independent`の関係を明示する
+- 別の判断対象を、章間の見かけ上の連続性だけを理由に同じCaseへ統合しない。独立Caseは`independent`と明示する
+- `Artifact ID`は`artifact-index.md`を正本とし、別の成果物へ再利用しない
+- 合成Case、Template、fixture、本文で、ID、Status、Evidence reference、Owner、Review dateの意味を一致させる
+- 確信度は`高・中・低`、仮説の状態は成果物で定義した有限集合を使用し、自由記述の同義語を増やさない
+
+代表章での正本となる同一Case追跡例は、`CASE-2026-001`と、それを`refines`する第17章の`CASE-DET-2026-001`である。第11章と第25章の合成Caseは、異なる判断要求を扱う独立Caseである。
+
+## 11. Source Noteと主張の契約
+
+- 時点依存または外部規範に依存する重要主張には、本文の該当文または段落で`SRC-*`を付ける
+- 章末の`参考文献・Source Note ID`には、その章で使用した全IDを過不足なく列挙する
+- `references/sources.json`の`chapters` mappingは、実際にIDを使用する章と一致させる
+- Versionが存在しない継続更新Pageや、公開日の日まで特定できない資料は`null`を許容するが、理由を`notes`へ記録する
+- 二次資料だけで重要主張を確定しない。Development資料はStatusを明示し、Stableな規範として扱わない
+- Sourceの変更が本文、図、Template、fixture、判断基準へ及ぼす影響を確認してから`checkedAt`を更新する
+
+## 12. Chapter Definition of Done
+
+各章の執筆IssueとPRは、次を満たして初めて完成とする。
+
+**成果物の完成**は、すべてのControl、Telemetry、仮説がPassまたはAvailableになった状態を意味しない。判断に必要な必須欄が埋まり、Partial / Missing / Inconclusiveを隠さず、Gap、Owner、期限、許容結論、Decision、Reassessmentが記録された状態を含む。未解決の業務課題と、未完成の教材・成果物を混同しない。
+
+### 内容と教育設計
+
+- [ ] `book-config.json`の章ID、題名、学習目標と一致する
+- [ ] 必須見出し、前提知識、導入Caseまたは判断要求、成果物、評価基準、まとめ、次の学習先を持つ
+- [ ] 確認事実、分析判断、仮定、予測、推奨を区別し、分析判断には代替説明、情報ギャップ、確信度、無効化条件がある
+- [ ] 良い例、悪い例、失敗または反証例のうち、学習目標に必要な対比がある
+
+### 安全性と境界
+
+- [ ] OWN / BRIDGE / DELEGATEを明示し、委譲先を読まなくても本章の論旨が成立する
+- [ ] 実行内容にPurpose、Prerequisite、Authority / Scope、Expected evidence、Impact、Stop、Cleanupがある
+- [ ] 実Target、実Credential、Token、Cookie、個人情報、未調整の脆弱性詳細を含まない
+- [ ] 合成fixtureはfail-closedの公開前検査を通り、実Data混入時は生成・公開を停止する
+
+### 出典と追跡性
+
+- [ ] 重要主張を一次情報の`SRC-*`へ追跡でき、章末一覧とRegistry mappingが一致する
+- [ ] 成果物、合成Case、fixtureのIDと関係が`artifact-index.md`および親Caseと一致する
+- [ ] Decision RequirementからAction / Reassessmentまで、該当する追跡Chainを辿れる
+
+### 品質Gate
+
+- [ ] 章固有contract test、`npm test`、`BOOK_FORMATTER_DIR=<pinned checkout> npm run check:book-qa`が成功する
+- [ ] Link、Anchor、Unicode、Textlint、Layout、Markdown structureのerrorが0件である
+- [ ] 技術、安全・法・倫理、出典・鮮度、分析品質、教育設計を別Passでレビューする
+- [ ] P0 / P1が0件、未解決Review Threadが0件であり、P2の採否と理由が記録されている
+- [ ] `docs/`と`_site/`をcommitしていない
+
+## 13. Part単位の執筆運用
+
+Part単位の着手には`.github/ISSUE_TEMPLATE/part-writing.yml`を使用する。複数章を同じIssueで管理しても、原則として章ごとに独立PRとし、同一Repository内は依存順に直列化する。
+
+Part Issueは、対象章、前提、非目標、Source、成果物、Case関係、安全境界、PR分割、レビュー担当Context、QA、公開確認、停止条件を持つ。代表章Gateの契約を変更する必要が生じた場合は、Part Issue内で暗黙に変更せず、契約変更Issueを分離する。

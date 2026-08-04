@@ -292,3 +292,15 @@ Missing evidenceとevidence of absenceを分離する。
 - `NEG-2026-025-001`により、不成功と不存在を混同していない
 - `ATTR-2026-025-001`により、L2 Technical clusterで止めている
 - `REA-2026-025`により、無効化条件を先に定義している
+
+## 15. Review
+
+以下は合成Case内のReview記入例であり、実際のGate reviewまたは本番承認の証跡ではない。Evidence referenceも合成IDである。
+
+| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |
+|---|---|---|---|---|---|
+| Technical correctness | CTI technical reviewer | Pass | 2026-08-04 | `SYNTH-REV-25-TECH-001` | Technical cluster、Telemetry、Source lineageを確認 |
+| Safety / authorization | Safety and legal reviewer | Pass | 2026-08-04 | `SYNTH-REV-25-SAFE-001` | 合成Data限定、実在主体調査禁止、Stopを確認 |
+| Evidence / source quality | Source reviewer | Pass | 2026-08-04 | `SYNTH-REV-25-EVID-001` | reliability、credibility、independence、circular reportingを確認 |
+| Analytic quality | Independent analytic reviewer | Pass | 2026-08-04 | `SYNTH-REV-25-ANALYTIC-001` | Fact、Assumption、Judgment、Forecast、代替仮説、Confidenceを確認 |
+| Decision usefulness | SYNTH-CISO delegate | Pass | 2026-08-04 | `SYNTH-REV-25-DEC-001` | 許容表現、選択肢、Collection Priority、Reassessmentを確認 |
