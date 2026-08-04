@@ -207,6 +207,11 @@ PROTOCOL_RELATIVE_URL_RE = re.compile(
     r"(?:\A|[\s<(=\[{'\"])(?P<url>//[^\s<>\"'`、]+)",
     re.IGNORECASE,
 )
+REFERENCE_DEFINITION_PREFIX_RE = re.compile(
+    r"(?m)^(?: {0,3}>[ \t]?)*[ \t]*"
+    r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+ {0,3})*"
+    r"\[[^\]\n]+\]:"
+)
 
 
 def post_idna_ascii_compatibility_chars() -> frozenset[str]:
@@ -607,11 +612,10 @@ def normalize_synthetic_safety_text(
             without_url_controls,
         )
         without_url_controls = re.sub(
-            r"(?P<prefix>\A|[:<(=\[{'\"])(?P<space>[ \t]*)"
-            r"[\x00-\x1f\x7f]+(?P<slashes>[\\/]{2,})",
+            r"(?P<prefix>\A|[:<(=\[{'\"])"
+            r"(?P<leading>[\x00-\x20\x7f]+)(?P<slashes>[\\/]{2,})",
             lambda match: (
-                f"{match.group('prefix')}{match.group('space')}"
-                f"{match.group('slashes')}"
+                f"{match.group('prefix')} {match.group('slashes')}"
             ),
             without_url_controls,
         )
@@ -942,6 +946,10 @@ def url_domain_hosts(text: str):
 
 def protocol_relative_hosts(text: str):
     """Extract protocol-relative authorities, including numeric host forms."""
+    reference_definition_colons = {
+        match.end() - 1
+        for match in REFERENCE_DEFINITION_PREFIX_RE.finditer(text)
+    }
     for match in PROTOCOL_RELATIVE_URL_RE.finditer(text):
         candidate = strip_url_trailing_punctuation(match.group("url"))
         try:
@@ -962,6 +970,7 @@ def protocol_relative_hosts(text: str):
         structured_context = is_structured_url_context(
             text,
             match.start("url"),
+            reference_definition_colons,
         )
         if host and (
             structured_context
@@ -971,7 +980,11 @@ def protocol_relative_hosts(text: str):
             yield host
 
 
-def is_structured_url_context(text: str, url_start: int) -> bool:
+def is_structured_url_context(
+    text: str,
+    url_start: int,
+    reference_definition_colons: set[int] | None = None,
+) -> bool:
     """Recognize URL destinations/attributes without treating code comments as URLs."""
     if url_start == 0:
         return True
@@ -982,18 +995,12 @@ def is_structured_url_context(text: str, url_start: int) -> bool:
         return True
     if text[cursor] != ":":
         return False
-
-    # A colon is structural only when it terminates a Markdown reference
-    # definition. Ordinary prose such as ``Notation: //comment`` is not a URL
-    # destination and must remain publishable.
-    line_start = text.rfind("\n", 0, cursor) + 1
-    prefix = text[line_start : cursor + 1]
-    return re.fullmatch(
-        r"(?: {0,3}>[ \t]?)*[ \t]*"
-        r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+ {0,3})*"
-        r"\[[^\]\n]+\]:",
-        prefix,
-    ) is not None
+    if reference_definition_colons is None:
+        reference_definition_colons = {
+            match.end() - 1
+            for match in REFERENCE_DEFINITION_PREFIX_RE.finditer(text)
+        }
+    return cursor in reference_definition_colons
 
 
 def email_domain_hosts(text: str):
@@ -3573,6 +3580,8 @@ def main() -> int:
         '<a href="htt\tps://134744072/path">x</a>',
         '<a href="https\t://evil/path">x</a>',
         '<a href="\x01//0x08080808/path">x</a>',
+        '<a href="\x01 //evil/path">x</a>',
+        '[x](\x01 //evil/path)',
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
         "[x](\v//evil/path)",
