@@ -4,7 +4,7 @@
 
 - すべてsynthetic dataである。
 - 実在Target、実在Actor、実在個人、実Credentialは含まない。
-- Lineage、circular reporting、deception candidateを検査可能な形で保持する。
+- 各fixtureは対象章の契約に応じ、仮説、Evidence、Telemetry、Lineage、circular reporting、deception candidateなど必要な検証情報を保持する。
 
 ## 公開中のfixture
 
@@ -18,5 +18,5 @@
 
 - JSONは教材用の合成schemaであり、外部CTI標準そのものではない。
 - fixtureの主張は、MarkdownのCaseと同じく判断構造の例示を目的とする。
-- JSON fixtureを機械可読の正本とし、Markdown Caseは読者向けrenderingとして同じIDを表示する。`scripts/check_chapter25_contract.py`でID集合だけでなく主要参照関係と意味属性の一致を検証する。
-- safety gateが機械保証する範囲は、予約Domain、文書用IP、既知Secret / token形式、電話番号様文字列、構造化担当者の`SYNTH-`接頭辞である。一般的な人名・住所PII検出器ではないため、自由記述は独立Reviewを併用する。
+- 各JSON fixtureを機械可読の正本とし、Markdown Caseは読者向けrenderingとして同じIDを表示する。`scripts/check_chapter11_contract.py`、`scripts/check_chapter17_contract.py`、`scripts/check_chapter25_contract.py`で、各章のID集合、主要参照関係、意味属性を検証する。
+- 章別safety gateが機械保証する範囲は契約ごとに異なる。予約Domain、文書用IP、既知Secret / token形式、電話番号様文字列、構造化担当者の`SYNTH-`接頭辞などを検査するが、一般的な人名・住所PII検出器ではないため、自由記述は独立Reviewを併用する。
