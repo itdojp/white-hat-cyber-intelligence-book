@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from bisect import bisect_left
 import hashlib
 import html
 from html.parser import HTMLParser
@@ -587,17 +586,35 @@ def normalize_synthetic_safety_text(
 ) -> str:
     """Expose rendered character references and Markdown punctuation escapes."""
     decoded = unquote(html.unescape(text))
-    without_url_controls = (
-        decoded.translate(
-            str.maketrans(
-                "",
-                "",
-                "".join(chr(codepoint) for codepoint in range(32)) + "\x7f",
-            )
+    without_url_controls = decoded
+    if strip_url_controls:
+        url_controls = "".join(chr(codepoint) for codepoint in range(32)) + "\x7f"
+        delete_url_controls = str.maketrans("", "", url_controls)
+
+        # WHATWG URL parsing removes ASCII tabs/newlines throughout an HTTP(S)
+        # token. Normalize only URL-shaped candidates: deleting controls from
+        # the complete document would join ordinary prose and erase Markdown
+        # reference-definition line boundaries.
+        obfuscated_http_url = re.compile(
+            r"(?i)(?<![A-Za-z0-9])"
+            r"h[\x00-\x1f\x7f]*t[\x00-\x1f\x7f]*"
+            r"t[\x00-\x1f\x7f]*p[\x00-\x1f\x7f]*"
+            r"s?[\x00-\x1f\x7f]*:[\x00-\x1f\x7f]*"
+            r"[\\/]+[^ <>\"'`、]*"
         )
-        if strip_url_controls
-        else decoded
-    )
+        without_url_controls = obfuscated_http_url.sub(
+            lambda match: match.group(0).translate(delete_url_controls),
+            without_url_controls,
+        )
+        without_url_controls = re.sub(
+            r"(?P<prefix>\A|[:<(=\[{'\"])(?P<space>[ \t]*)"
+            r"[\x00-\x1f\x7f]+(?P<slashes>[\\/]{2,})",
+            lambda match: (
+                f"{match.group('prefix')}{match.group('space')}"
+                f"{match.group('slashes')}"
+            ),
+            without_url_controls,
+        )
     structured_backslashes = re.sub(
         r"(?P<prefix>\A|[:<(=\[{'\"])(?P<space> *)(?P<slashes>\\{2,})",
         lambda match: f"{match.group('prefix')}{match.group('space')}//",
@@ -616,6 +633,10 @@ def normalize_synthetic_safety_text(
 
 
 def normalize_phone_parentheses(text: str) -> str:
+    # Browsers render horizontal tabs and line breaks as visible whitespace.
+    # Normalize the complete ASCII control range to one separator for this
+    # phone-only view instead of deleting it from the general hostname view.
+    text = re.sub(r"[\x00-\x20\x7f]+", " ", text)
     without_dates = PHONE_DATE_TIME_RE.sub(
         lambda match: " " * len(match.group(0)), text
     )
@@ -957,7 +978,22 @@ def is_structured_url_context(text: str, url_start: int) -> bool:
     cursor = url_start - 1
     while cursor >= 0 and text[cursor] in " \t\r\n\f\v":
         cursor -= 1
-    return cursor < 0 or text[cursor] in ":<(=[{'\""
+    if cursor < 0 or text[cursor] in "<(=[{'\"":
+        return True
+    if text[cursor] != ":":
+        return False
+
+    # A colon is structural only when it terminates a Markdown reference
+    # definition. Ordinary prose such as ``Notation: //comment`` is not a URL
+    # destination and must remain publishable.
+    line_start = text.rfind("\n", 0, cursor) + 1
+    prefix = text[line_start : cursor + 1]
+    return re.fullmatch(
+        r"(?: {0,3}>[ \t]?)*[ \t]*"
+        r"(?:(?:[-+*]|\d{1,9}[.)]|:)[ \t]+ {0,3})*"
+        r"\[[^\]\n]+\]:",
+        prefix,
+    ) is not None
 
 
 def email_domain_hosts(text: str):
@@ -1131,20 +1167,52 @@ def markdown_bracket_pairs(text: str) -> dict[int, int]:
 
 
 def markdown_parenthesis_pairs(text: str) -> dict[int, int]:
-    """Map structural unescaped parenthesis pairs in one pass."""
-    stack: list[int] = []
+    """Map Kramdown-like parenthesis pairs in one bounded linear pass."""
+    stack: list[dict[str, int | str | bool | None]] = []
     pairs: dict[int, int] = {}
-    index = 0
-    while index < len(text):
-        character = text[index]
-        if character == "\\":
-            index += 2
+    contexts = markdown_line_contexts(text)
+    for line_start, line_end, content_start, inside_code_context in contexts:
+        line = text[line_start:line_end]
+        line_body = line.rstrip("\r\n")
+        container_body = text[content_start : line_start + len(line_body)]
+        is_blank = not container_body.strip()
+        if is_blank or inside_code_context:
+            stack.clear()
+        if is_blank or inside_code_context:
             continue
-        if character == "(":
-            stack.append(index)
-        elif character == ")" and stack:
-            pairs[stack.pop()] = index
-        index += 1
+
+        index = line_start
+        body_end = line_start + len(line_body)
+        while index < body_end:
+            character = text[index]
+            if character == "\\":
+                index += 2
+                continue
+            if stack and stack[-1]["quote"] is not None:
+                if character == stack[-1]["quote"]:
+                    stack[-1]["quote"] = None
+                index += 1
+                continue
+            if (
+                stack
+                and stack[-1]["link"] is True
+                and character in "\"'"
+                and index > int(stack[-1]["start"]) + 1
+                and text[index - 1].isspace()
+            ):
+                stack[-1]["quote"] = character
+            elif character == "(":
+                stack.append(
+                    {
+                        "start": index,
+                        "quote": None,
+                        "link": index > 0 and text[index - 1] == "]",
+                    }
+                )
+            elif character == ")" and stack:
+                opening = stack.pop()
+                pairs[int(opening["start"])] = index
+            index += 1
     return pairs
 
 
@@ -1152,52 +1220,9 @@ def markdown_link_destination_end(
     text: str,
     start: int,
     structural_pairs: dict[int, int],
-    title_quote_positions: list[int],
 ) -> int | None:
-    """Resolve one link destination, localizing optional title quote state."""
-    structural_end = structural_pairs.get(start)
-    quote_index = bisect_left(title_quote_positions, start + 1)
-    next_quote = (
-        title_quote_positions[quote_index]
-        if quote_index < len(title_quote_positions)
-        else None
-    )
-    if structural_end is not None and (
-        next_quote is None or next_quote >= structural_end
-    ):
-        return structural_end
-    if structural_end is None:
-        if next_quote is None:
-            return None
-
-    depth = 1
-    quote: str | None = None
-    index = start + 1
-    while index < len(text):
-        character = text[index]
-        if character == "\\":
-            index += 2
-            continue
-        if character in "\"'" and (
-            quote is not None or (index > start + 1 and text[index - 1].isspace())
-        ):
-            if quote == character:
-                quote = None
-            elif quote is None:
-                quote = character
-            index += 1
-            continue
-        if quote is not None:
-            index += 1
-            continue
-        if character == "(":
-            depth += 1
-        elif character == ")":
-            depth -= 1
-            if depth == 0:
-                return index
-        index += 1
-    return None
+    """Return the pre-indexed destination end without rescanning a suffix."""
+    return structural_pairs.get(start)
 
 
 def markdown_visible_links(text: str) -> str:
@@ -1218,11 +1243,6 @@ def markdown_visible_links(text: str) -> str:
     )
     bracket_pairs = markdown_bracket_pairs(text)
     parenthesis_pairs = markdown_parenthesis_pairs(text)
-    title_quote_positions = [
-        index
-        for index, character in enumerate(text)
-        if character in "\"'" and index > 0 and text[index - 1].isspace()
-    ]
     output: list[str] = []
     index = 0
     while index < len(text):
@@ -1244,7 +1264,6 @@ def markdown_visible_links(text: str) -> str:
                 text,
                 suffix_start,
                 parenthesis_pairs,
-                title_quote_positions,
             )
             if destination_end is not None:
                 output.append(label)
@@ -3206,6 +3225,12 @@ def main() -> int:
         "(+81)-(0)3-1234-5678",
         "(+44) (0)20 7946 0958",
         "(+81)(90)12345678",
+        "090\t1234\t5678",
+        "090\n1234\n5678",
+        "+81\t90\t1234\t5678",
+        "+81\n90\n1234\n5678",
+        "(03)\t1234\t5678",
+        "(415)\n555\n2671",
     )
     for mutation in phone_mutations:
         if not PHONE_RE.search(normalize_phone_parentheses(mutation)):
@@ -3506,6 +3531,7 @@ def main() -> int:
         '( "unclosed\n[FOR-2026-025-](/x)999': True,
         '[FOR-2026-025-](/x "x(y")999': True,
         '[FOR-2026-025-](\n /x\n "x(y")999': True,
+        '[FOR-2026-025-](\n\n "x(y")999': False,
         "\\`FOR-2026-025-<!--x-->999\\`": True,
         "`FOR-2026-025-<!--x-->999`": False,
         "`FOR-2026-025-<!--x-->999\n`": False,
@@ -3536,6 +3562,7 @@ def main() -> int:
         "[x](//%31%33%34%37%34%34%30%37%32/path)",
         "[x](///134744072/path)",
         "[x](<//134744072/path>)",
+        "[x](<//0x08080808/path>)",
         "[x](https:///evil/path)",
         "[x](https:////2130706433/path)",
         "[x](http:////127.1/path)",
@@ -3543,7 +3570,9 @@ def main() -> int:
         r"[x](https:\\2130706433/path)",
         '<a href="https:\t\\134744072/path">x</a>',
         '<a href="ht\ttps://evil/path">x</a>',
+        '<a href="htt\tps://134744072/path">x</a>',
         '<a href="https\t://evil/path">x</a>',
+        '<a href="\x01//0x08080808/path">x</a>',
         '<a href="\\\\evil/path">x</a>',
         "[reference]: \\\\evil/path\n[x][reference]",
         "[x](\v//evil/path)",
@@ -3572,6 +3601,7 @@ def main() -> int:
         "[x](docs//chapter)",
         "scripts//check_chapter25_contract.py",
         "const x = 1; //comment",
+        "Notation: //comment denotes a placeholder.",
     ):
         normalized_non_authority = normalize_for_host_scanning(
             normalize_synthetic_safety_text(non_authority)
