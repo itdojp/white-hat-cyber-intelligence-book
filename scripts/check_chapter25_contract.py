@@ -2004,12 +2004,14 @@ def protect_markdown_code(markdown: str) -> tuple[str, dict[str, str]]:
     """Replace Markdown code contexts before parsing raw HTML."""
     replacements: dict[str, str] = {}
 
-    def placeholder(value: str) -> str:
-        token = f"\ufdd0CODE{len(replacements)}\ufdd1"
+    def placeholder(value: str, kind: str = "INLINECODE") -> str:
+        token = f"\ufdd0{kind}{len(replacements)}\ufdd1"
         replacements[token] = value
         return token
 
     protected_lines: list[str] = []
+    fence_character = ""
+    fence_length = 0
     for line_start, line_end, _, inside_code_context in markdown_line_contexts(
         markdown
     ):
@@ -2017,7 +2019,29 @@ def protect_markdown_code(markdown: str) -> tuple[str, dict[str, str]]:
         if inside_code_context:
             line_ending = line[len(line.rstrip("\r\n")) :]
             line_body = line[: -len(line_ending)] if line_ending else line
-            protected_lines.append(placeholder(line_body) + line_ending)
+            content = line_body[blockquote_content_offset(line_body) :]
+            candidate = content.lstrip(" ")
+            indentation = len(content) - len(candidate)
+            fence_match = (
+                re.match(r"(?P<fence>`{3,}|~{3,})(?P<rest>.*)$", candidate)
+                if indentation <= 3
+                else None
+            )
+            kind = "BLOCKCODE"
+            if fence_character:
+                if (
+                    fence_match is not None
+                    and fence_match.group("fence")[0] == fence_character
+                    and len(fence_match.group("fence")) >= fence_length
+                    and not fence_match.group("rest").strip()
+                ):
+                    kind = "FENCEBOUNDARY"
+                    fence_character = ""
+                    fence_length = 0
+            elif fence_match is not None:
+                fence_character = fence_match.group("fence")[0]
+                fence_length = len(fence_match.group("fence"))
+            protected_lines.append(placeholder(line_body, kind) + line_ending)
             continue
         protected_lines.append(line)
 
@@ -2168,7 +2192,7 @@ def markdown_reference_definition_can_render(text: str, line_start: int) -> bool
         return True
     if re.match(r"^(?:`{3,}|~{3,})", stripped):
         return True
-    if re.fullmatch(r"\ufdd0CODE\d+\ufdd1", stripped):
+    if re.fullmatch(r"\ufdd0FENCEBOUNDARY\d+\ufdd1", stripped):
         return True
     if re.match(r"^(?:-{3,}|\*{3,}|_{3,})\s*$", stripped):
         return True
@@ -4874,6 +4898,8 @@ def main() -> int:
     for inert_markdown in (
         '`[x](javascript:alert(1))`',
         '```text\n[x](javascript:alert(1))\n```',
+        '`code`\n[after]: javascript: is same-paragraph prose\n\n[x][after]',
+        '    code\n[after]: javascript: remains indented-code prose\n\n[x][after]',
         'javascript: is an executable scheme name',
         '[x](java script:alert(1))',
         '[x][ref]\n[ref]: javascript: is same-paragraph prose',
