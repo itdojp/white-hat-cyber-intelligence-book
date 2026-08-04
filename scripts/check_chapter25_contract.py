@@ -1679,8 +1679,17 @@ STYLESHEET_DATA_URL_RE = re.compile(
 
 def has_executable_data_url(text: str) -> bool:
     normalized = normalize_synthetic_safety_text(text)
-    detection_view, _ = data_scheme_detection_view(normalized)
-    return EXECUTABLE_DATA_URL_RE.search(detection_view) is not None
+    url_normalized = normalized.translate(URL_TAB_NEWLINE_TRANSLATION)
+    detection_view, _ = data_scheme_detection_view(url_normalized)
+    for match in EXECUTABLE_DATA_URL_RE.finditer(detection_view):
+        start = match.start()
+        if start > 0 and (
+            detection_view[start - 1].isalnum()
+            or detection_view[start - 1] in "_+.-"
+        ):
+            continue
+        return True
+    return False
 
 
 CSS_ESCAPE_RE = re.compile(
@@ -4745,11 +4754,22 @@ def main() -> int:
         '[x](data:image/svg+xml,%3Csvg%20onload%3Dalert(1)%3E)',
         '<a href="data&#58;text/html,&lt;script&gt;x&lt;/script&gt;">x</a>',
         '<iframe src="da&#9;ta:text/html,&lt;script&gt;x&lt;/script&gt;"></iframe>',
+        '[x](data:text/ht&#9;ml,%3Cscript%3Ex%3C%2Fscript%3E)',
     ):
         if not has_executable_data_url(executable_data_url):
             error(
                 "fixture safety regression: executable data URL escaped the "
                 f"global source scan: {executable_data_url!r}"
+            )
+    for inert_data_text in (
+        '[x](data:text/plain,hello)',
+        '[x](data:text/ht ml,hello)',
+        'metadata:text/html, is an inert prose fragment',
+    ):
+        if has_executable_data_url(inert_data_text):
+            error(
+                "fixture safety regression: inert data text was treated as "
+                f"executable: {inert_data_text!r}"
             )
     for executable_ial in (
         '[x](#){: onclick="location=\'\\u002f\\u002f0x08080808/x\'" }',
