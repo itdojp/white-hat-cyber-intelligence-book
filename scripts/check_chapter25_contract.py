@@ -2151,6 +2151,28 @@ def markdown_reference_definitions(
     return definitions
 
 
+def markdown_reference_definition_can_render(text: str, line_start: int) -> bool:
+    """Match Kramdown GFM block boundaries for link reference definitions."""
+    if line_start == 0:
+        return True
+    previous_end = line_start - 1
+    if previous_end > 0 and text[previous_end - 1] == "\r":
+        previous_end -= 1
+    previous_start = text.rfind("\n", 0, previous_end) + 1
+    previous_line = text[previous_start:previous_end]
+    content = previous_line[blockquote_content_offset(previous_line) :]
+    stripped = content.strip()
+    if not stripped:
+        return True
+    if re.match(r"^#{1,6}(?:\s|$)", stripped):
+        return True
+    if re.match(r"^(?:`{3,}|~{3,})", stripped):
+        return True
+    if re.match(r"^(?:-{3,}|\*{3,}|_{3,})\s*$", stripped):
+        return True
+    return bool(markdown_reference_definitions(previous_line + "\n"))
+
+
 def markdown_bracket_pairs(text: str) -> dict[int, int]:
     """Map unescaped square-bracket pairs in one pass."""
     stack: list[int] = []
@@ -2246,8 +2268,18 @@ def markdown_url_destinations(text: str):
             destination = destination[1:]
         yield destination
 
-    for label, colon, _, line_end in markdown_reference_definitions(protected_text):
+    for (
+        label,
+        colon,
+        definition_line_start,
+        line_end,
+    ) in markdown_reference_definitions(protected_text):
         if len(label) > 1 and label.startswith("^"):
+            continue
+        if not markdown_reference_definition_can_render(
+            protected_text,
+            definition_line_start,
+        ):
             continue
         start = colon + 1
         while start < line_end and protected_text[start] in " \t":
@@ -4826,8 +4858,8 @@ def main() -> int:
             )
     for executable_markdown in (
         '[x](javascript:location="//0x08080808/x")',
-        '[x][ref]\n[ref]: java&#9;script:location="//0x08080808/x"',
-        '[x][^]\n[^]: javascript:location="//0x08080808/x"',
+        '[x][ref]\n\n[ref]: java&#9;script:location="//0x08080808/x"',
+        '[x][^]\n\n[^]: javascript:location="//0x08080808/x"',
         '<vbscript:msgbox(1)>',
     ):
         if not executable_markdown_url_violations(executable_markdown):
@@ -4840,6 +4872,7 @@ def main() -> int:
         '```text\n[x](javascript:alert(1))\n```',
         'javascript: is an executable scheme name',
         '[x](java script:alert(1))',
+        '[x][ref]\n[ref]: javascript: is same-paragraph prose',
         'Text[^scheme]\n[^scheme]: javascript: は実行可能URLスキームである。',
         '[x][next]\n\n[next]:\n  javascript: is ordinary prose',
         '[x][ref]\n[ref]:\n> javascript: is blockquote prose',
