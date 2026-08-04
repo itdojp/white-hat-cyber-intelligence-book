@@ -1786,7 +1786,10 @@ def consume_css_unquoted_url(value: str, index: int) -> tuple[str, int]:
 
 
 def is_stylesheet_data_url(value: str) -> bool:
-    candidate = re.sub(r"^[\x00-\x20\x7f]+", "", value)
+    candidate = (
+        value.lstrip(URL_TRIM_CHARACTERS)
+        .translate(URL_TAB_NEWLINE_TRANSLATION)
+    )
     detection_view, _ = data_scheme_detection_view(candidate)
     return STYLESHEET_DATA_URL_RE.match(detection_view) is not None
 
@@ -4786,6 +4789,7 @@ def main() -> int:
         'url(https://evil.com/x)})</style>',
         '<style>@import url(d\\61 ta:text/css,body{})</style>',
         '<style>@\\69 mport "da\\74 a:text/css,body{}"</style>',
+        '<style>@import url(data:te\\9 xt/css,body{})</style>',
     ):
         if not raw_html_executable_css_violations(executable_css):
             error(
@@ -4795,6 +4799,7 @@ def main() -> int:
     for safe_css in (
         '<div style=\'content:"data:text/css,body{}"\'></div>',
         '<style>.x::after{content:"@import url(data:text/css,body{})"}</style>',
+        '<style>@import url(data:te xt/css,body{})</style>',
     ):
         if raw_html_executable_css_violations(safe_css):
             error(
