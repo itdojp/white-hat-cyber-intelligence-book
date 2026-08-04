@@ -32,6 +32,10 @@ REVIEW_HEADER = (
     "| Review area | Reviewer / role | Result | Date | Evidence reference | Notes |"
 )
 REVIEW_SEPARATOR = "|---|---|---|---|---|---|"
+SYNTH_REVIEW_DISCLAIMER = (
+    "以下は合成Case内のReview記入例であり、実際のGate reviewまたは本番承認の"
+    "証跡ではない。Evidence referenceも合成IDである。"
+)
 
 
 def error(message: str) -> None:
@@ -73,7 +77,11 @@ def require_heading(relative: str, content: str, heading: str) -> None:
 
 
 def review_table_rows(
-    relative: str, content: str, heading: str
+    relative: str,
+    content: str,
+    heading: str,
+    *,
+    require_synthetic_disclaimer: bool = False,
 ) -> dict[str, list[str]]:
     lines = content.splitlines()
     try:
@@ -84,7 +92,13 @@ def review_table_rows(
     index = heading_index + 1
     while index < len(lines) and not lines[index].strip():
         index += 1
-    if index < len(lines) and lines[index].startswith("以下は合成Case内のReview記入例"):
+    if require_synthetic_disclaimer:
+        if index >= len(lines) or lines[index] != SYNTH_REVIEW_DISCLAIMER:
+            error(
+                f"{relative}: Review table beneath {heading!r} must carry the "
+                "exact synthetic-review disclaimer"
+            )
+            return {}
         index += 1
         while index < len(lines) and not lines[index].strip():
             index += 1
@@ -166,7 +180,12 @@ def check_review_tables() -> None:
         ),
     }
     for relative, (heading, expected) in cases.items():
-        rows = review_table_rows(relative, read_text(relative), heading)
+        rows = review_table_rows(
+            relative,
+            read_text(relative),
+            heading,
+            require_synthetic_disclaimer=True,
+        )
         if set(rows) != set(expected):
             error(
                 f"{relative}: Review areas differ; "
@@ -502,7 +521,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-024",
+            "GATE-025",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
