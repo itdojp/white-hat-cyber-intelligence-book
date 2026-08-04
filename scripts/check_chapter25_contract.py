@@ -1670,11 +1670,11 @@ class ExecutableHTMLDetector(HTMLParser):
                 for candidate in candidates:
                     self.collect_url_candidate(normalized_name, candidate)
         if normalized_tag == "meta":
-            attribute_map = {
-                name.casefold(): value
-                for name, value in attrs
-                if value is not None
-            }
+            attribute_map: dict[str, str] = {}
+            for name, value in attrs:
+                if value is not None:
+                    # HTML tokenization keeps the first duplicate attribute.
+                    attribute_map.setdefault(name.casefold(), value)
             if attribute_map.get("http-equiv", "").strip().casefold() == (
                 "refresh"
             ):
@@ -5184,6 +5184,9 @@ def main() -> int:
         '<a href="vbscript:location.href=Chr(47)&amp;Chr(47)">x</a>',
         '<meta http-equiv="refresh" '
         'content="0;url=javascript:void(location=atob(\'Ly8xMzQ3NDQwNzI=\'))">',
+        '<meta http-equiv="refresh" '
+        'content="0;url=javascript:void(location=atob(\'Ly8xMzQ3NDQwNzIveA==\'))" '
+        'content="0">',
         '<iframe srcdoc="&lt;script&gt;location=\'//0x08080808/x\'&lt;/script&gt;"></iframe>',
         '<script>location="//0x08080808/x"</script>',
         '<a href="data:text/html,&lt;script&gt;location=\'//0x08080808/x\'&lt;/script&gt;">x</a>',
@@ -5207,6 +5210,10 @@ def main() -> int:
         '<a title="data:image/svg+xml is an executable URL example">x</a>',
         '<a href="java script:alert(1)">x</a>',
         '<meta http-equiv="refresh" content="0;url=java script:alert(1)">',
+        '<meta http-equiv="refresh" content="0" '
+        'content="0;url=javascript:alert(1)">',
+        '<meta http-equiv="default-style" http-equiv="refresh" '
+        'content="0;url=javascript:alert(1)">',
         '```html\n<a href="vbscript:msgbox(1)">example</a>\n```',
     ):
         if executable_html_violations(safe_html):
