@@ -51,8 +51,11 @@ BOOK_FORMATTER_DIR=../book-formatter npm run build
 - 正本Sourceと生成先Destinationの対応
 - Navigation sectionとorder
 - Directory route
+- JSON形式の非実行・読み取り専用教材と`downloads/`配下の公開先
 
 RegistryのSchemaは`schemas/site-pages.schema.json`で管理する。新しい章や成果物を公開するPRは、本文、TemplateまたはCase、Registry、検査を同じPRで更新する。
+
+`staticFiles`は、許可されたCanonical Directory内にある1 MiB以下のUTF-8 JSONだけを対象とし、`.json`のまま`downloads/`配下へbyte-for-byteで生成する。JSONはobjectまたはarrayをrootとする厳密な形式とし、重複keyや`NaN`等の非標準値を拒否する。生成器はMarkdown内の正本リンクを公開先への相対リンクに変換し、正本と公開物のSHA-256をbuild manifestへ記録する。symlink、path traversal、hidden path、実行形式、共有`assets/`への上書きは拒否する。
 
 ## 非破壊build契約
 

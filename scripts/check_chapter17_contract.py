@@ -710,6 +710,23 @@ def main() -> int:
     missing_pages = expected_registry_pages - actual_pages
     if missing_pages:
         error(f"site-pages.json: missing chapter 17 publication pages: {sorted(missing_pages)}")
+    expected_static_files = {
+        (
+            "cases/fixtures/ch17-detection-engineering-fixture.json",
+            "downloads/ch17-detection-engineering-fixture.json",
+        )
+    }
+    actual_static_files = {
+        (item.get("source"), item.get("destination"))
+        for item in registry.get("staticFiles", [])
+        if isinstance(item, dict)
+    }
+    missing_static_files = expected_static_files - actual_static_files
+    if missing_static_files:
+        error(
+            "site-pages.json: missing chapter 17 static artifact: "
+            f"{sorted(missing_static_files)}"
+        )
     if "cases" not in registry.get("canonicalDirectories", []):
         error("site-pages.json: canonicalDirectories must include cases for fixture publication")
 

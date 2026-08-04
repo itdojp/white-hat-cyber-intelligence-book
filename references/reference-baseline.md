@@ -14,9 +14,9 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-CSF-001 | NIST | [Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework) | 2.0 / final | 2026-07-25 | 2027-07-25 | 1, 19, 22 |
 | SRC-IR-001 | NIST | [Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | SP 800-61 Rev.3 / final | 2026-08-03 | 2027-08-03 | 1, 17, 19, 20, 22 |
 | SRC-BERKELEY-001 | OHCHR / UC Berkeley | [Berkeley Protocol on Digital Open Source Investigations](https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source) | 2022 edition / published | 2026-07-25 | 2027-07-25 | 8, 24, 25 |
-| SRC-OWASP-TOP10-001 | OWASP | [OWASP Top 10:2025](https://owasp.org/Top10/) | 2025 / released | 2026-07-25 | 2026-10-25 | 7, 11 |
-| SRC-WSTG-001 | OWASP | [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | 4.2; 5.0 under development / stable | 2026-07-25 | 2026-10-25 | 9, 11, 14, 15 |
-| SRC-API-001 | OWASP | [OWASP API Security Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/) | 2023 / released | 2026-07-25 | 2027-01-25 | 11 |
+| SRC-OWASP-TOP10-001 | OWASP | [OWASP Top 10:2025](https://owasp.org/Top10/) | 2025 / released | 2026-08-03 | 2026-10-25 | 7, 11 |
+| SRC-WSTG-001 | OWASP | [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | 4.2; 5.0 under development / stable | 2026-08-03 | 2026-10-25 | 9, 11, 14, 15 |
+| SRC-API-001 | OWASP | [OWASP API Security Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/) | 2023 / released | 2026-08-03 | 2027-01-25 | 11 |
 | SRC-EPSS-001 | FIRST | [Exploit Prediction Scoring System](https://www.first.org/epss/) | v4 model line / current | 2026-07-25 | 2026-10-25 | 7 |
 | SRC-KEV-001 | CISA | [Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | continuously-updated | 2026-07-25 | 2026-10-25 | 7, 22 |
 | SRC-STIX-001 | OASIS | [STIX Version 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html) | 2.1 / OASIS Standard | 2026-07-25 | 2028-07-25 | 26 |

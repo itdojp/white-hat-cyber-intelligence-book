@@ -47,6 +47,15 @@
 
 これらの成果物は、Assessment、Detection、Hunting、IR / DFIR、CTI、経営判断、再評価を、共通Case IDとEvidence IDで接続します。
 
+## 第11章の本文と成果物
+
+- [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
+- [Web/API Assessment Hypothesis Packテンプレート](templates/web-api-assessment-hypothesis-pack.md)
+- [合成記入例：マルチテナント受注Export APIとWebhook登録の評価](cases/ch11-web-api-assessment-example.md)
+- [読み取り専用の合成Request / Response Dataset](cases/fixtures/ch11-web-api-assessment-dataset.json)
+
+第11章では、Web/API評価を脆弱性名やTool順ではなく、Asset、Actor、Boundary、State、Safe Validation、Evidence、Telemetry、Detection、Reassessmentの追跡可能な仮説として設計します。
+
 ## 実務参照
 
 - [成果物索引](artifact-index.md)
