@@ -69,6 +69,7 @@ GOは、全30章の内容が既に完成したことを意味しない。代表�
 | GATE-029 | P2 | Review節全体を`template`等のraw HTML containerへ移すと、Browser上で非表示またはMarkdown構造でなくてもGateを通過できた | required Review節はfenced code、HTML comment、raw HTML blockの外にある一意なMarkdown heading / tableとしてだけ検証するようにした |
 | GATE-030 | P2 | Jekyll / Kramdownの非出力blockへReview節を移すと、Repository checkerは通る一方、公開HTMLでReview節が消える経路が残っていた | Liquidのcomment / capture / conditional / iteration / highlight blockとKramdown commentを追跡し、その内部ではrequired Review契約を満たせないようにした |
 | GATE-031 | P2 | 非void HTML要素のself-closing記法をparserが閉じた要素として扱い、Browserでは開いたままになる`<div hidden/>`でReview節を隠せた | self-closing markerはvoid要素だけに適用し、非void要素はBrowserと同様に開いたcontainerとしてclose tagまで追跡するようにした |
+| GATE-032 | P2 | HTML用self-closing修正が`<svg/>` / `<math/>`にも適用され、Browserでは正当なforeign-content self-closing要素を未closeとして誤検出した | SVG / MathML rootとその子孫ではself-closing flagを保持し、HTML非void要素だけをopen containerとして追跡するようにした |
 
 解消後のOpen件数はP0 / P1 / P2とも0である。
 

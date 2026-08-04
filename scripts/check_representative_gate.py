@@ -75,6 +75,7 @@ VOID_HTML_TAGS = {
     "track",
     "wbr",
 }
+FOREIGN_ROOT_TAGS = {"math", "svg"}
 
 
 class RawHtmlContainerTracker(HTMLParser):
@@ -95,6 +96,13 @@ class RawHtmlContainerTracker(HTMLParser):
         self, tag: str, attrs: list[tuple[str, str | None]]
     ) -> None:
         # HTML browsers ignore the self-closing flag on non-void HTML elements.
+        # SVG / MathML and their descendants use foreign-content semantics,
+        # where the self-closing flag is honored.
+        normalized = tag.lower()
+        if normalized in FOREIGN_ROOT_TAGS or any(
+            ancestor in FOREIGN_ROOT_TAGS for ancestor in self.stack
+        ):
+            return
         self.handle_starttag(tag, attrs)
 
     def handle_endtag(self, tag: str) -> None:
@@ -793,7 +801,7 @@ def check_issue_template_and_gate_record() -> None:
             "issues/8#issuecomment-5181087925",
             "Repository checker does not validate GitHub live state",
             "GATE-001",
-            "GATE-031",
+            "GATE-032",
             "CASE-2026-001",
             "CASE-DET-2026-001",
         ),
