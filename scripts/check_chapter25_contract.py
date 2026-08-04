@@ -1630,9 +1630,17 @@ class ExecutableHTMLDetector(HTMLParser):
                 "",
                 value,
             ).casefold()
-            if compact_prefix.startswith("javascript:"):
+            executable_scheme = next(
+                (
+                    scheme
+                    for scheme in ("javascript:", "vbscript:")
+                    if compact_prefix.startswith(scheme)
+                ),
+                None,
+            )
+            if executable_scheme is not None:
                 self.violations.append(
-                    f"javascript URL in {normalized_name}"
+                    f"{executable_scheme[:-1]} URL in {normalized_name}"
                 )
             if compact_prefix.startswith(
                 (
@@ -1747,8 +1755,11 @@ def executable_kramdown_ial_violations(text: str) -> list[str]:
                     "non-synthetic URL in Kramdown URL attribute"
                 )
         compact = re.sub(r"[\x00-\x20\x7f]+", "", decoded).casefold()
-        if "javascript:" in compact:
-            violations.append("javascript URL in Kramdown inline attribute")
+        for scheme in ("javascript:", "vbscript:"):
+            if scheme in compact:
+                violations.append(
+                    f"{scheme[:-1]} URL in Kramdown inline attribute"
+                )
         if any(
             executable_data in compact
             for executable_data in (
@@ -5055,6 +5066,7 @@ def main() -> int:
     for executable_html in (
         '<button onclick="location=\'\\x2f\\x2f0x08080808/x\'">x</button>',
         '<a href="javascript:location=\'//0x08080808/x\'">x</a>',
+        '<a href="vbscript:location.href=Chr(47)&amp;Chr(47)">x</a>',
         '<iframe srcdoc="&lt;script&gt;location=\'//0x08080808/x\'&lt;/script&gt;"></iframe>',
         '<script>location="//0x08080808/x"</script>',
         '<a href="data:text/html,&lt;script&gt;location=\'//0x08080808/x\'&lt;/script&gt;">x</a>',
@@ -5163,6 +5175,7 @@ def main() -> int:
     for executable_ial in (
         '[x](#){: onclick="location=\'\\u002f\\u002f0x08080808/x\'" }',
         '[x](#){: href="javascript:location=\'//0x08080808/x\'" }',
+        '[x](#){: href="vbscript:location.href=Chr(47)&amp;Chr(47)" }',
         '[x](#){: src="data:image/svg+xml,%3Csvg%3E" }',
         '[x](#){: style="background:url(https\\3a //evil\\2e com/x)" }',
         '[x](#){: style="background:url(ja\\76 ascript:alert(1))" }',
