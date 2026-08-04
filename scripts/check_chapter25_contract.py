@@ -1427,7 +1427,11 @@ class ExecutableHTMLDetector(HTMLParser):
                     f"javascript URL in {normalized_name}"
                 )
             if compact_prefix.startswith(
-                ("data:text/html", "data:application/xhtml+xml")
+                (
+                    "data:text/html",
+                    "data:application/xhtml+xml",
+                    "data:image/svg+xml",
+                )
             ):
                 self.violations.append(
                     f"executable data URL in {normalized_name}"
@@ -1453,6 +1457,68 @@ def executable_html_violations(text: str) -> list[str]:
     parser.feed(text)
     parser.close()
     return parser.violations
+
+
+def kramdown_inline_attribute_lists(text: str):
+    """Yield Kramdown IAL bodies with quote-aware, same-line boundaries."""
+    index = 0
+    while index < len(text) - 1:
+        start = text.find("{:", index)
+        if start < 0:
+            return
+        cursor = start + 2
+        quote = ""
+        while cursor < len(text) and text[cursor] not in "\r\n":
+            character = text[cursor]
+            if character == "\\" and cursor + 1 < len(text):
+                cursor += 2
+                continue
+            if quote:
+                if character == quote:
+                    quote = ""
+            elif character in "\"'":
+                quote = character
+            elif character == "}":
+                yield text[start + 2 : cursor]
+                cursor += 1
+                break
+            cursor += 1
+        index = max(start + 2, cursor)
+
+
+def executable_kramdown_ial_violations(text: str) -> list[str]:
+    """Reject IAL attributes that Kramdown would render as executable HTML."""
+    violations: list[str] = []
+    for body in kramdown_inline_attribute_lists(text):
+        decoded = html.unescape(body)
+        if re.search(r"(?i)(?:^|\s)on[a-z][a-z0-9_-]*\s*=", decoded):
+            violations.append("event-handler Kramdown inline attribute")
+        if re.search(r"(?i)(?:^|\s)srcdoc\s*=", decoded):
+            violations.append("srcdoc Kramdown inline attribute")
+        compact = re.sub(r"[\x00-\x20\x7f]+", "", decoded).casefold()
+        if "javascript:" in compact:
+            violations.append("javascript URL in Kramdown inline attribute")
+        if any(
+            executable_data in compact
+            for executable_data in (
+                "data:text/html",
+                "data:application/xhtml+xml",
+                "data:image/svg+xml",
+            )
+        ):
+            violations.append("executable data URL in Kramdown inline attribute")
+    return violations
+
+
+EXECUTABLE_DATA_URL_RE = re.compile(
+    r"(?i)data:[\t\r\n\f ]*"
+    r"(?:text/html|application/xhtml\+xml|image/svg\+xml)(?:[;,])"
+)
+
+
+def has_executable_data_url(text: str) -> bool:
+    normalized = normalize_synthetic_safety_text(text)
+    return EXECUTABLE_DATA_URL_RE.search(normalized) is not None
 
 
 CSS_ESCAPE_RE = re.compile(
@@ -2412,6 +2478,16 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         error(
             f"{relative}: executable HTML is not allowed in synthetic content: "
             f"{violation}"
+        )
+    for violation in executable_kramdown_ial_violations(text):
+        error(
+            f"{relative}: executable Kramdown IAL is not allowed in synthetic "
+            f"content: {violation}"
+        )
+    if has_executable_data_url(text):
+        error(
+            f"{relative}: executable HTML/SVG data URLs are not allowed in "
+            "synthetic content"
         )
     # Decode character references before scanning so an HTML attribute cannot
     # disguise a live URL or hostname from the synthetic-content policy.
@@ -4281,11 +4357,33 @@ def main() -> int:
         '<iframe srcdoc="&lt;script&gt;location=\'//0x08080808/x\'&lt;/script&gt;"></iframe>',
         '<script>location="//0x08080808/x"</script>',
         '<a href="data:text/html,&lt;script&gt;location=\'//0x08080808/x\'&lt;/script&gt;">x</a>',
+        '<iframe src="data:image/svg+xml,'
+        '%3Csvg%20onload%3D%22location%3D\'%2F%2F0x08080808%2Fx\'%22%3E">'
+        '</iframe>',
     ):
         if not executable_html_violations(executable_html):
             error(
                 "fixture safety regression: executable HTML context was "
                 f"accepted: {executable_html!r}"
+            )
+    for executable_data_url in (
+        '[x](data:image/svg+xml,%3Csvg%20onload%3Dalert(1)%3E)',
+        '<a href="data&#58;text/html,&lt;script&gt;x&lt;/script&gt;">x</a>',
+    ):
+        if not has_executable_data_url(executable_data_url):
+            error(
+                "fixture safety regression: executable data URL escaped the "
+                f"global source scan: {executable_data_url!r}"
+            )
+    for executable_ial in (
+        '[x](#){: onclick="location=\'\\u002f\\u002f0x08080808/x\'" }',
+        '[x](#){: href="javascript:location=\'//0x08080808/x\'" }',
+        '[x](#){: src="data:image/svg+xml,%3Csvg%3E" }',
+    ):
+        if not executable_kramdown_ial_violations(executable_ial):
+            error(
+                "fixture safety regression: executable Kramdown IAL was "
+                f"accepted: {executable_ial!r}"
             )
     for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
         normalized_prose = normalize_for_host_scanning(
