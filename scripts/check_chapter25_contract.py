@@ -644,6 +644,10 @@ def markdown_character_is_escaped(text: str, index: int) -> bool:
     return backslashes % 2 == 1
 
 
+URL_TRIM_CHARACTERS = "".join(chr(codepoint) for codepoint in range(33)) + "\x7f"
+URL_TAB_NEWLINE_TRANSLATION = str.maketrans("", "", "\t\r\n")
+
+
 def data_scheme_detection_view(text: str) -> tuple[str, dict[int, int]]:
     """Expose data: schemes with URL tab/newline obfuscation, preserving offsets."""
     view = list(text)
@@ -1558,7 +1562,9 @@ class ExecutableHTMLDetector(HTMLParser):
                 and any(
                     re.match(
                         r"data:text/css(?:[;,])",
-                        re.sub(r"[\x00-\x20\x7f]+", "", value).casefold(),
+                        value.lstrip(URL_TRIM_CHARACTERS)
+                        .translate(URL_TAB_NEWLINE_TRANSLATION)
+                        .casefold(),
                     )
                     for name, value in attrs
                     if name.casefold() == "href" and value is not None
@@ -1908,16 +1914,11 @@ def raw_html_url_attribute_hosts(text: str):
     parser = URLAttributeExtractor()
     parser.feed(text)
     parser.close()
-    url_trim_characters = (
-        "".join(chr(codepoint) for codepoint in range(33)) + "\x7f"
-    )
     for name, value in parser.values:
         candidates = re.split(r"[\x00-\x20]+", value.strip()) if name == "ping" else [value]
         for candidate in candidates:
-            url_candidate = candidate.lstrip(url_trim_characters)
-            data_candidate = url_candidate.translate(
-                str.maketrans("", "", "\t\r\n")
-            )
+            url_candidate = candidate.lstrip(URL_TRIM_CHARACTERS)
+            data_candidate = url_candidate.translate(URL_TAB_NEWLINE_TRANSLATION)
             if not data_candidate or data_candidate[:5].casefold() == "data:":
                 continue
             normalized_views = {
@@ -4727,6 +4728,15 @@ def main() -> int:
             error(
                 "fixture safety regression: executable HTML context was "
                 f"accepted: {executable_html!r}"
+            )
+    for safe_html in (
+        '<link rel="stylesheet" href="da ta:text/css,body{}">',
+        '<link rel="icon" href="data:text/css,body{}">',
+    ):
+        if executable_html_violations(safe_html):
+            error(
+                "fixture safety regression: inert HTML URL was treated as "
+                f"executable: {safe_html!r}"
             )
     for executable_data_url in (
         '[x](data:image/svg+xml,%3Csvg%20onload%3Dalert(1)%3E)',
