@@ -588,12 +588,18 @@ def normalize_synthetic_safety_text(
     """Expose rendered character references and Markdown punctuation escapes."""
     decoded = unquote(html.unescape(text))
     without_url_controls = (
-        decoded.translate(str.maketrans("", "", "\t\r\n\f"))
+        decoded.translate(
+            str.maketrans(
+                "",
+                "",
+                "".join(chr(codepoint) for codepoint in range(32)) + "\x7f",
+            )
+        )
         if strip_url_controls
         else decoded
     )
     structured_backslashes = re.sub(
-        r"(?P<prefix>\A|[<(=\[{'\"])(?P<space> *)(?P<slashes>\\{2,})",
+        r"(?P<prefix>\A|[:<(=\[{'\"])(?P<space> *)(?P<slashes>\\{2,})",
         lambda match: f"{match.group('prefix')}{match.group('space')}//",
         without_url_controls,
     )
@@ -948,15 +954,10 @@ def is_structured_url_context(text: str, url_start: int) -> bool:
     """Recognize URL destinations/attributes without treating code comments as URLs."""
     if url_start == 0:
         return True
-    line_start = max(text.rfind("\n", 0, url_start), text.rfind("\r", 0, url_start)) + 1
-    prefix = text[line_start:url_start]
-    stripped = prefix.rstrip(" ")
-    if stripped.endswith(("(", "<", "=", "[", "{", "'", '"')):
-        return True
-    return bool(
-        re.search(r"\[[^\]\n]+\]:\s*\Z", prefix)
-        or re.search(r"\b(?:href|src)\s*=\s*[\"']?\s*\Z", prefix, re.IGNORECASE)
-    )
+    cursor = url_start - 1
+    while cursor >= 0 and text[cursor] in " \t\r\n\f\v":
+        cursor -= 1
+    return cursor < 0 or text[cursor] in ":<(=[{'\""
 
 
 def email_domain_hosts(text: str):
@@ -1152,7 +1153,6 @@ def markdown_link_destination_end(
     start: int,
     structural_pairs: dict[int, int],
     title_quote_positions: list[int],
-    line_break_positions: list[int],
 ) -> int | None:
     """Resolve one link destination, localizing optional title quote state."""
     structural_end = structural_pairs.get(start)
@@ -1167,15 +1167,7 @@ def markdown_link_destination_end(
     ):
         return structural_end
     if structural_end is None:
-        break_index = bisect_left(line_break_positions, start)
-        next_break = (
-            line_break_positions[break_index]
-            if break_index < len(line_break_positions)
-            else None
-        )
-        if next_quote is None or (
-            next_break is not None and next_break < next_quote
-        ):
+        if next_quote is None:
             return None
 
     depth = 1
@@ -1231,9 +1223,6 @@ def markdown_visible_links(text: str) -> str:
         for index, character in enumerate(text)
         if character in "\"'" and index > 0 and text[index - 1].isspace()
     ]
-    line_break_positions = [
-        index for index, character in enumerate(text) if character in "\r\n"
-    ]
     output: list[str] = []
     index = 0
     while index < len(text):
@@ -1256,7 +1245,6 @@ def markdown_visible_links(text: str) -> str:
                 suffix_start,
                 parenthesis_pairs,
                 title_quote_positions,
-                line_break_positions,
             )
             if destination_end is not None:
                 output.append(label)
@@ -1852,10 +1840,13 @@ def check_synthetic_content_safety(relative: str, text: str) -> None:
         text,
         strip_url_controls=True,
     )
-    compatibility_text = normalize_for_host_scanning(browser_url_safety_text)
-    for host in url_domain_hosts(compatibility_text):
+    compatibility_text = normalize_for_host_scanning(rendered_safety_text)
+    browser_url_compatibility_text = normalize_for_host_scanning(
+        browser_url_safety_text
+    )
+    for host in url_domain_hosts(browser_url_compatibility_text):
         assert_synthetic_host(host, f"{relative}: URL")
-    for host in protocol_relative_hosts(compatibility_text):
+    for host in protocol_relative_hosts(browser_url_compatibility_text):
         assert_synthetic_host(host, f"{relative}: protocol-relative URL")
     for match in HOSTNAME_RE.finditer(compatibility_text):
         host = match.group("host").lower()
@@ -3514,6 +3505,7 @@ def main() -> int:
         "Term\n: [ref]: https://safe.example\n  [FOR-2026-025-][ref]999": True,
         '( "unclosed\n[FOR-2026-025-](/x)999': True,
         '[FOR-2026-025-](/x "x(y")999': True,
+        '[FOR-2026-025-](\n /x\n "x(y")999': True,
         "\\`FOR-2026-025-<!--x-->999\\`": True,
         "`FOR-2026-025-<!--x-->999`": False,
         "`FOR-2026-025-<!--x-->999\n`": False,
@@ -3553,6 +3545,8 @@ def main() -> int:
         '<a href="ht\ttps://evil/path">x</a>',
         '<a href="https\t://evil/path">x</a>',
         '<a href="\\\\evil/path">x</a>',
+        "[reference]: \\\\evil/path\n[x][reference]",
+        "[x](\v//evil/path)",
     )
     for encoded_live_url in encoded_live_urls:
         normalized_live_url = normalize_synthetic_safety_text(
@@ -3586,6 +3580,15 @@ def main() -> int:
             error(
                 "fixture safety regression: non-authority // token was "
                 f"misclassified: {non_authority!r}"
+            )
+    for separated_prose in ("safe.\ncom is a command name", "safe.\tcom values"):
+        normalized_prose = normalize_for_host_scanning(
+            normalize_synthetic_safety_text(separated_prose)
+        )
+        if HOSTNAME_RE.search(normalized_prose) is not None:
+            error(
+                "fixture safety regression: URL control handling joined "
+                f"ordinary prose into a hostname: {separated_prose!r}"
             )
     encoded_safety_values = {
         "192&#46;168&#46;1&#46;1": IPV4_RE,
