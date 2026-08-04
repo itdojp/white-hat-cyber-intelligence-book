@@ -1104,6 +1104,44 @@ def blockquote_content_offset(line: str) -> int:
     return offset
 
 
+def markdown_column_width(text: str) -> int:
+    """Return Kramdown's four-column tab-expanded width for a prefix."""
+    column = 0
+    for character in text:
+        if character == "\t":
+            column += 4 - column % 4
+        else:
+            column += 1
+    return column
+
+
+def markdown_leading_indent(line: str) -> tuple[int, int]:
+    """Return the character offset and expanded column of leading whitespace."""
+    cursor = 0
+    while cursor < len(line) and line[cursor] in " \t":
+        cursor += 1
+    return cursor, markdown_column_width(line[:cursor])
+
+
+def markdown_indent_offset(line: str, target_column: int) -> int | None:
+    """Return the character offset that reaches a container body column."""
+    if target_column == 0:
+        return 0
+    cursor = 0
+    column = 0
+    while cursor < len(line) and line[cursor] in " \t":
+        character = line[cursor]
+        column = (
+            column + 4 - column % 4
+            if character == "\t"
+            else column + 1
+        )
+        cursor += 1
+        if column >= target_column:
+            return cursor
+    return None
+
+
 def markdown_line_contexts(
     text: str,
     *,
@@ -1126,10 +1164,13 @@ def markdown_line_contexts(
 
         if fence_is_open:
             closing_candidate = container_content
-            if list_continuation_indent and closing_candidate.startswith(
-                " " * list_continuation_indent
-            ):
-                closing_candidate = closing_candidate[list_continuation_indent:]
+            if list_continuation_indent:
+                continuation_cursor = markdown_indent_offset(
+                    closing_candidate,
+                    list_continuation_indent,
+                )
+                if continuation_cursor is not None:
+                    closing_candidate = closing_candidate[continuation_cursor:]
             closing = re.fullmatch(
                 rf" {{0,3}}{re.escape(fence_character)}"
                 rf"{{{minimum_length},}}[ \t]*",
@@ -1145,15 +1186,18 @@ def markdown_line_contexts(
         else:
             leading = re.match(r" {0,3}", container_content)
             leading_length = len(leading.group(0)) if leading is not None else 0
-            current_indent = len(container_content) - len(
-                container_content.lstrip(" ")
-            )
+            _, current_indent = markdown_leading_indent(container_content)
             in_list_continuation = bool(
                 active_list_indent and current_indent >= active_list_indent
             )
             if container_content.strip() and not in_list_continuation:
                 active_list_indent = 0
-            base_cursor = active_list_indent if in_list_continuation else 0
+            continuation_cursor = (
+                markdown_indent_offset(container_content, active_list_indent)
+                if in_list_continuation
+                else None
+            )
+            base_cursor = continuation_cursor or 0
             marker_cursor = base_cursor
             optional_spaces = re.match(
                 r" {0,3}", container_content[marker_cursor:]
@@ -1174,12 +1218,14 @@ def markdown_line_contexts(
                 marker_cursor = list_marker.end()
             marker_found = marker_cursor > first_marker_start
             if marker_found:
-                active_list_indent = marker_cursor
+                active_list_indent = markdown_column_width(
+                    container_content[:marker_cursor]
+                )
                 opening_candidate = container_content[marker_cursor:]
-                candidate_list_indent = marker_cursor
+                candidate_list_indent = active_list_indent
             else:
                 if in_list_continuation:
-                    opening_candidate = container_content[active_list_indent:]
+                    opening_candidate = container_content[base_cursor:]
                     candidate_list_indent = active_list_indent
                 else:
                     opening_candidate = container_content[leading_length:]
@@ -1191,7 +1237,7 @@ def markdown_line_contexts(
                     + (
                         marker_cursor
                         if marker_found
-                        else active_list_indent
+                        else base_cursor
                         if in_list_continuation
                         else 0
                     )
@@ -5031,6 +5077,9 @@ def main() -> int:
         '- outer\n    1. ```text\n       code\n       ```\n'
         '[after-nested-list-code]: javascript:alert(1)\n\n'
         '[x][after-nested-list-code]',
+        '-\touter\n\t```text\n\tcode\n\t```\n'
+        '[after-tab-list-code]: javascript:alert(1)\n\n'
+        '[x][after-tab-list-code]',
         '[x][html-ref]\n<pre>\nsafe\n</pre>\n'
         '[html-ref]: javascript:alert(1)',
         '[x][inline-html-ref]\n<pre>safe</pre>\n'
@@ -5040,6 +5089,8 @@ def main() -> int:
         '[x][nested-list-html-ref]\n- outer\n'
         '    1. <pre>safe</pre>\n'
         '[nested-list-html-ref]: javascript:alert(1)',
+        '[x][tab-list-html-ref]\n-\touter\n\t<pre>safe</pre>\n'
+        '[tab-list-html-ref]: javascript:alert(1)',
         '[x][^]\n\n[^]: javascript:location="//0x08080808/x"',
         '<vbscript:msgbox(1)>',
     ):
@@ -5053,6 +5104,8 @@ def main() -> int:
         '```text\n[x](javascript:alert(1))\n```',
         '`code`\n[after]: javascript: is same-paragraph prose\n\n[x][after]',
         '    code\n[after]: javascript: remains indented-code prose\n\n[x][after]',
+        '\tcode\n[after-tab]: javascript: remains tab-indented-code prose\n\n'
+        '[x][after-tab]',
         '[x][literal-close]\nliteral </pre>\n'
         '[literal-close]: javascript: is same-paragraph prose',
         '[x][orphan-close]\n</pre>\n'
