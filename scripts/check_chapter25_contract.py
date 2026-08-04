@@ -755,7 +755,8 @@ def mask_data_url_payloads(
         ) is not None
         angle_destination_context = (
             not inside_html_tag
-            and text[max(0, index - 64) : index].rstrip().endswith("<")
+            and index > 0
+            and text[index - 1] == "<"
         )
         structured_data_context = (
             css_url_context
@@ -4165,6 +4166,7 @@ def main() -> int:
         '<a href="javascript:const x=\'data:text/plain,x\';'
         'location=\'https://evil.com\'">x</a>',
         'data:text/plain,x[x](https://evil.com)',
+        '< data:text/plain,x[x](https://evil.com)>',
     ):
         masked_adjacent_url = normalize_for_host_scanning(
             normalize_synthetic_safety_text(
