@@ -684,7 +684,8 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:deployable[- ]?)?malware|ransomware|wiper|"
     r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
     r"[- ](?:infrastructure|server|site|page|channel)|"
-    r"\b(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)\b|"
+    r"\b(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|"
+    r"c[ \t]*&[ \t]*c)\b|"
     r"lateral[- ]movement|defen[cs]e[- ]evasion|"
     r"persistence|persistent[- ]access|backdoor|privilege[- ]escalation|"
     r"(?:log|audit[- ]trail)[- ](?:deletion|erasure|tampering)|"
@@ -697,11 +698,12 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"anonymi[sz]ation[- ]infrastructure|dark[- ]web[- ]infiltration|"
     r"confident[- ]attribution[- ]from[- ]weak[- ]evidence|"
     r"マルウェア|ランサムウェア|ワイパー|"
-    r"フィッシング(?:攻撃|詐欺|基盤|インフラ|サイト|ページ)|"
+    r"フィッシング[ \t　・]*(?:攻撃|詐欺|基盤|インフラ|サイト|ページ)|"
     r"C2(?:基盤|インフラ|サーバー|チャネル|通信路|通信|接続|制御|運用)|"
     r"(?:phishing|C2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|フィッシング|"
     r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール)"
     r"(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
+    r"c[ \t]*&[ \t]*c(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
     r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール"
     r"(?:基盤|インフラ|サーバー|チャネル|通信路|通信|制御|運用)|"
     r"横展開|ラテラルムーブメント|永続化|永続的アクセス|バックドア|"
@@ -2391,6 +2393,10 @@ def verify_negative_regressions(
         "C2 channelを作る",
         "C2を構築する",
         "build C2 for additional benign record",
+        "C&Cを構築する",
+        "C＆Cを構築する",
+        "C & Cを構築する",
+        "build C & C for additional benign record",
         "deploy command-and-control for additional benign record",
         "command-and-control channelを作る",
         "lateral movementを実施する",
@@ -2415,6 +2421,8 @@ def verify_negative_regressions(
         "マルウェアを作成する",
         "フィッシング基盤を構築する",
         "フィッシングサイトを構築する",
+        "フィッシング サイトを構築する",
+        "フィッシング・ページを作る",
         "C2基盤を構築する",
         "C2チャネルを作る",
         "C2通信を確立する",
