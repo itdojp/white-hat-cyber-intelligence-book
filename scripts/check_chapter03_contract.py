@@ -429,9 +429,12 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"date[- ]of[- ]birth|birth[- ]date|dob|"
     r"ssn|social[- ]security[- ]number|passport[- ]number|national[- ]id|"
     r"driver(?:'s)?[- ]licen[cs]e[- ]number|"
+    r"(?:credit|debit|payment)[- ]card[- ](?:number|no\.?)|"
+    r"bank(?:ing)?[- ]account[- ](?:number|no\.?)|"
     r"メールアドレス|Eメールアドレス|電子メールアドレス|"
     r"電話番号|携帯番号|氏名|本名|姓名|住所|生年月日|"
-    r"マイナンバー|個人番号|パスポート番号|運転免許証番号)",
+    r"マイナンバー|個人番号|パスポート番号|運転免許証番号|"
+    r"クレジットカード番号|デビットカード番号|銀行口座番号|口座番号)",
     re.IGNORECASE,
 )
 SYNTHETIC_QUALIFIABLE_INPUT = re.compile(
@@ -467,6 +470,20 @@ EXPLICIT_NEGATED_USE = re.compile(
     r")",
     re.IGNORECASE,
 )
+ELIDED_POST_NEGATION_ACTION = re.compile(
+    r"^\s*(?:(?:しかし|ただし|一方で|また|その後|そして|だが|が)[、,\s]*)*"
+    r"(?:(?:それ|同じ(?:もの|情報|Data|データ))(?:を|は|も)?\s*)?"
+    r"(?:攻撃|操作|調査|走査|スキャン|観測|閲覧|参照|分析|取得|使用|利用|"
+    r"投入|保存|収集|接続|検証|公開|記録|共有)"
+    r"(?:する|した|します|行う|実施する)|"
+    r"^\s*(?:(?:but|then|and|yet|however|later|subsequently|afterwards?)"
+    r"[,\s]+)*"
+    r"(?:(?:it|they|them|the[- ]same(?:[- ](?:data|material|token))?)\s+)?"
+    r"(?:(?:is|are|was|were|be|being)\s+)?"
+    r"(?:used|retrieved|collected|stored|accessed|shared|recorded|analyzed|"
+    r"scanned|observed|tested)\b",
+    re.IGNORECASE,
+)
 
 
 def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
@@ -478,7 +495,13 @@ def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
         clause_start = max(prefix.rfind(mark) for mark in "、,。;；\n") + 1
         protected_prefix = field[clause_start : match.start()]
         suffix = field[match.end() :]
-        clause_tail = re.split(r"[、,。;；\n]", suffix, maxsplit=1)[0]
+        separator = re.search(r"[、,。;；\n]", suffix)
+        if separator:
+            clause_tail = suffix[: separator.start()]
+            continuation = suffix[separator.end() :]
+        else:
+            clause_tail = suffix
+            continuation = ""
         if index + 1 < len(matches):
             next_match = matches[index + 1]
             next_relative_start = next_match.start() - match.end()
@@ -488,7 +511,14 @@ def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
             SYNTHETIC_QUALIFIABLE_INPUT.fullmatch(match.group(0))
             and EXPLICIT_SYNTHETIC_QUALIFIER.fullmatch(protected_prefix)
         )
-        if not (EXPLICIT_NEGATED_USE.fullmatch(clause_tail) or synthetic_qualified):
+        explicitly_negated = bool(EXPLICIT_NEGATED_USE.fullmatch(clause_tail))
+        if explicitly_negated and ELIDED_POST_NEGATION_ACTION.search(continuation):
+            messages.append(
+                f"unsafe real-target or sensitive-data input in {context}: "
+                f"{match.group(0)!r} is followed by an elided unsafe action"
+            )
+            break
+        if not (explicitly_negated or synthetic_qualified):
             messages.append(
                 f"unsafe real-target or sensitive-data input in {context}: "
                 f"{match.group(0)!r} is neither explicitly synthetic nor negated"
@@ -1499,6 +1529,18 @@ def verify_negative_regressions(
         "生年月日を収集する",
         "date of birth collected for additional benign record",
         "synthetic email address used",
+        "クレジットカード番号を収集する",
+        "credit card number collected for additional benign record",
+        "銀行口座番号を収集する",
+        "bank account number collected for additional benign record",
+        "synthetic credit card number used",
+        "Tokenは使用しない、取得する",
+        "Tokenは使用しない、それを取得する",
+        "token is not used, but retrieved",
+        "token is not used, but then retrieved",
+        "token is not used, and then retrieved",
+        "token is not used, but later retrieved",
+        "token is not used; however, it is retrieved",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1520,6 +1562,8 @@ def verify_negative_regressions(
         "Synthetic session ID fixture used",
         "Synthetic JWT fixture used",
         "Tokenを使用しない",
+        "Tokenを使用しない、結果だけを記録する",
+        "token is not used, only the fixture result is recorded",
     ):
         if unsafe_operational_field_errors(
             explicitly_negated_field, "negative-form safety statement"
