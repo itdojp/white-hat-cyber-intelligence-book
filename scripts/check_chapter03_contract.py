@@ -679,11 +679,11 @@ def markdown_row_cells(line: str) -> list[str]:
 PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:実(?:際|在)?の?(?:Target|標的|ターゲット)|現実の(?:Target|標的|ターゲット)|"
     r"real[- ]target|実運用(?:環境|System|システム)|"
-    r"第三者(?:の)?(?:System|システム|環境|Data|データ|API|"
+    r"第三者[ \t　]*(?:の[ \t　]*)?(?:System|システム|環境|Data|データ|API|"
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
-    r"他社(?:の)?(?:System|システム|環境|Data|データ|API|"
+    r"他社[ \t　]*(?:の[ \t　]*)?(?:System|システム|環境|Data|データ|API|"
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
-    r"外部(?:組織|企業|団体)(?:の)?(?:System|システム|環境|Data|データ|API|"
+    r"外部(?:組織|企業|団体)[ \t　]*(?:の[ \t　]*)?(?:System|システム|環境|Data|データ|API|"
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
     r"外部[ \t　]*(?:の[ \t　]*)?(?:System|システム|環境|Data|データ|API|"
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
@@ -706,7 +706,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:unauthorized[- ])?(?:data[- ])?(?:modification|encryption)|"
     r"resource[- ]exhaustion|mfa[- ]fatigue|"
     r"brute[- ]force[- ](?:login|authentication|auth)|"
-    r"(?:login|authentication|auth)[- ](?:attempts?|brute[- ]force)|"
+    r"(?:login|sign[- ]?in|authentication|auth)[- ](?:attempts?|brute[- ]force)|"
     r"session[- ](?:hijack(?:ing)?|fixation|replay|reuse|takeover|theft)|"
     r"stealth[- ]tool(?:ing)?|impersonation|social[- ]engineering|"
     r"doxx(?:ing)?|tracking[- ](?:a[- ])?real[- ]person|"
@@ -723,7 +723,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"通信路|通信|接続|制御|運用)|"
     r"c[ \t]*&[ \t]*c(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
     r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール"
-    r"(?:基盤|インフラ|サーバー?|チャ(?:ネル|ンネル)|通信路|通信|制御|運用)|"
+    r"(?:基盤|インフラ|サーバー?|チャ(?:ネル|ンネル)|通信路|通信|接続|制御|運用)|"
     r"横展開|ラテラルムーブメント|永続化|永続的アクセス|バックドア|"
     r"権限昇格|防御回避|検知回避|"
     r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん)|"
@@ -731,7 +731,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"無許可(?:データ)?(?:変更|改変|暗号化)|データ(?:変更|改変|改ざん|暗号化)|"
     r"資源枯渇|MFA疲労(?:攻撃)?|ステルスツール|なりすまし|"
     r"認証(?:試行|総当たり)|ログイン(?:試行|総当たり)|"
-    r"(?:ログイン|認証)(?:(?:を|へ)?(?:試す|試行する|試みる|"
+    r"(?:ログイン|サインイン|login|sign[- ]?in|認証)(?:(?:を|へ)?(?:試す|試行する|試みる|"
     r"実施する|行う)|する)|"
     r"総当たり(?:攻撃|ログイン|認証)|"
     r"ブルート[ \t　・-]*フォース(?:ログイン|認証|攻撃)|"
@@ -797,7 +797,7 @@ EXPLICIT_NEGATED_USE = re.compile(
     r"ではなく|ではない|"
     r"(?:を|は|が|へ|に|として|の|も)?"
     r"(?:攻撃|操作|調査|走査|スキャン|観測|閲覧|参照|分析|取得|使用|利用|"
-    r"投入|保存|収集|接続|検証|公開|記録|実施|実行)?"
+    r"投入|保存|収集|接続|検証|公開|記録|実施|実行|確立)?"
     r"(?:を|は|が|も)?"
     r"(?:なし|しない|せず|禁止|対象外|除外|未使用|非使用|不要|要求しない|"
     r"使わない|使わず|用いない|含めない|含まない|持ち込まない|行わない|"
@@ -2474,7 +2474,10 @@ def verify_negative_regressions(
         "第三者APIへ接続する",
         "第三者APIエンドポイントへ接続する",
         "第三者サービスへ接続する",
+        "第三者 の APIへ接続する",
+        "第三者　の　APIへ接続する",
         "他社サービスへ接続する",
+        "他社 の サービスへ接続する",
         "外部サービスへ接続する",
         "外部システムへ接続する",
         "外部APIへ接続する",
@@ -2514,6 +2517,7 @@ def verify_negative_regressions(
         "C & C インフラを構築する",
         "deploy command-and-control for additional benign record",
         "command-and-control channelを作る",
+        "コマンド・アンド・コントロール接続を確立する",
         "lateral movementを実施する",
         "defense evasionを自動化する",
         "log deletionを実行する",
@@ -2574,6 +2578,9 @@ def verify_negative_regressions(
         "ログインを試す",
         "認証を試す",
         "ログインする",
+        "loginする",
+        "サインインする",
+        "sign-inする",
         "ログインを実施する",
         "認証を行う",
         "ログイン総当たりを実施する",
@@ -2620,6 +2627,10 @@ def verify_negative_regressions(
         "token is not used, only the fixture result is recorded",
         "外部 の APIへ接続しない",
         "外部　の　APIへ接続しない",
+        "第三者 の APIへ接続しない",
+        "loginを実施しない",
+        "サインインしない",
+        "コマンド・アンド・コントロール接続を確立しない",
         "sessionを再利用しない",
         "セッションを再利用しない",
         "セッションの再利用を実施しない",
