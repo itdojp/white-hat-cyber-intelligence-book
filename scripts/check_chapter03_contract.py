@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import json
+import html
 import re
 import sys
+import unicodedata
 from collections import Counter
 from copy import deepcopy
 from datetime import date, datetime
@@ -108,6 +110,10 @@ CLAIM_JUDGMENT_HEADER = (
 REASSESSMENT_HEADER = (
     "| Reassessment ID | Scheduled date | Reassessment Trigger | Evidence to recollect | "
     "Task to revisit | Owner | Closure criteria | Status |"
+)
+EXPECTED_CLAIM_EXPIRY = "2026-11-05T17:00:00+09:00"
+RFC3339_SECONDS_TIMESTAMP = re.compile(
+    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})"
 )
 
 EXPECTED_SOURCES = {
@@ -395,6 +401,180 @@ def template_contract_errors(text: str, label: str) -> list[str]:
             messages.append(f"{label}: prohibited HR or ranking use {forbidden!r}")
     if text.find("### 2.1 Rubric Definitions") > text.find("## 3. Practice and Evidence Trace"):
         messages.append(f"{label}: Rubric definitions must precede Practice/Evidence trace")
+
+    def scan_template_table(
+        start_heading: str,
+        end_heading: str | None,
+        expected_header: tuple[str, ...],
+        scan_columns: tuple[tuple[int, str], ...],
+    ) -> None:
+        end_pattern = (
+            rf"(?=^{re.escape(end_heading)}\s*$)" if end_heading else r"\Z"
+        )
+        section_match = re.search(
+            rf"^{re.escape(start_heading)}\s*$\n(?P<body>.*?){end_pattern}",
+            text,
+            re.MULTILINE | re.DOTALL,
+        )
+        if section_match is None:
+            messages.append(f"{label}: missing bounded template section {start_heading!r}")
+            return
+        table_rows = [
+            markdown_row_cells(line)
+            for line in section_match.group("body").splitlines()
+            if line.strip().startswith("|")
+        ]
+        if len(table_rows) < 3:
+            messages.append(f"{label}: {start_heading} requires a header and data row")
+            return
+        if tuple(table_rows[0]) != expected_header:
+            messages.append(
+                f"{label}: {start_heading} header {tuple(table_rows[0])!r} "
+                f"does not match {expected_header!r}"
+            )
+        if len(table_rows[1]) != len(expected_header) or not all(
+            re.fullmatch(r":?-{3,}:?", cell) for cell in table_rows[1]
+        ):
+            messages.append(f"{label}: {start_heading} has an invalid separator row")
+        for row_number, cells in enumerate(table_rows[2:], start=1):
+            if len(cells) != len(expected_header):
+                messages.append(
+                    f"{label}: {start_heading} data row {row_number} is malformed: "
+                    f"{cells!r}"
+                )
+                continue
+            for column, field_name in scan_columns:
+                for message in unsafe_operational_field_errors(
+                    cells[column],
+                    f"{start_heading} row {row_number} {field_name}",
+                ):
+                    messages.append(f"{label}: {message}")
+
+    scan_template_table(
+        "## 1. Capability Claim Boundary",
+        "## 2. Work Decomposition",
+        ("Field", "Value"),
+        ((1, "Value"),),
+    )
+    scan_template_table(
+        "## 2. Work Decomposition",
+        "### 2.1 Rubric Definitions",
+        (
+            "Entry ID",
+            "Work Role / Responsibility",
+            "Task ID / statement",
+            "Knowledge reference",
+            "Skill reference",
+            "NICE Components references（optional）",
+        ),
+        (
+            (1, "Work Role / Responsibility"),
+            (2, "Task ID / statement"),
+            (3, "Knowledge reference"),
+            (4, "Skill reference"),
+        ),
+    )
+    scan_template_table(
+        "## 3. Practice and Evidence Trace",
+        "## 4. Gap and Learning Action",
+        (
+            "Entry ID",
+            "Practice ID",
+            "Authority / Environment",
+            "Artifact / Evidence ID",
+            "Reviewer",
+            "Rubric",
+            "Result",
+            "Status",
+            "Limitations",
+            "Reassessment ID",
+        ),
+        ((2, "Authority / Environment"), (8, "Limitations")),
+    )
+    scan_template_table(
+        "## 4. Gap and Learning Action",
+        "## 5. Review Result",
+        (
+            "Entry ID",
+            "Gap",
+            "Learning Action",
+            "Owner",
+            "Due date",
+            "Expected next evidence",
+        ),
+        ((1, "Gap"), (2, "Learning Action")),
+    )
+    scan_template_table(
+        "## 5. Review Result",
+        "## 6. Bounded Capability Judgment",
+        (
+            "Review ID",
+            "Artifact / Evidence ID",
+            "Artifact version",
+            "Reviewer / role",
+            "Rubric",
+            "Result",
+            "Reviewed at",
+            "Findings",
+            "Disposition",
+        ),
+        ((7, "Findings"), (8, "Disposition")),
+    )
+    scan_template_table(
+        "## 6. Bounded Capability Judgment",
+        "## 7. Reassessment",
+        (
+            "Claim ID",
+            "Scope",
+            "Conditions",
+            "Evidence set",
+            "Reviewer / Rubric",
+            "Result",
+            "Limitations",
+            "Expiry",
+            "Reassessment Trigger",
+            "Reassessment ID",
+        ),
+        (
+            (1, "Scope"),
+            (2, "Conditions"),
+            (6, "Limitations"),
+            (8, "Reassessment Trigger"),
+        ),
+    )
+    scan_template_table(
+        "## 7. Reassessment",
+        "## 8. Traceability Check",
+        (
+            "Reassessment ID",
+            "Scheduled date",
+            "Reassessment Trigger",
+            "Evidence to recollect",
+            "Task to revisit",
+            "Owner",
+            "Closure criteria",
+            "Status",
+        ),
+        (
+            (2, "Reassessment Trigger"),
+            (3, "Evidence to recollect"),
+            (4, "Task to revisit"),
+            (6, "Closure criteria"),
+        ),
+    )
+    scan_template_table(
+        "## 9. Review",
+        None,
+        (
+            "Review area",
+            "Reviewer / role",
+            "Result",
+            "Date",
+            "Evidence reference",
+            "Notes",
+        ),
+        ((5, "Notes"),),
+    )
     return messages
 
 
@@ -403,11 +583,17 @@ def markdown_row_cells(line: str) -> list[str]:
 
 
 PROTECTED_PRACTICE_INPUT = re.compile(
-    r"(?:実(?:際|在)?の?(?:Target|標的)|現実の(?:Target|標的)|real[- ]target|"
+    r"(?:実(?:際|在)?の?(?:Target|標的|ターゲット)|現実の(?:Target|標的|ターゲット)|"
+    r"real[- ]target|実運用(?:環境|System|システム)|"
     r"第三者(?:の)?(?:System|システム|環境|Data|データ)|"
+    r"他社(?:の)?(?:System|システム|環境|Data|データ)|"
+    r"外部(?:組織|企業|団体)(?:の)?(?:System|システム|環境|Data|データ)|"
     r"third[- ]party[- ]?(?:system|data|environment)|"
     r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
     r"real[- ]?(?:credential|token|cookie)|"
+    r"(?:production|actual|real)[- ]?(?:value|data|credential|token|cookie|secret|key|id)|"
+    r"本番(?:値|Data|データ|Credential|認証情報|資格情報|Token|トークン|Cookie|"
+    r"クッキー|Secret|シークレット|キー|鍵|ID|識別子)?|"
     r"(?:credential|token|cookie|secret|password|passphrase)s?|"
     r"(?:jwt|json[- ]web[- ]token)|"
     r"api[- _]?(?:key|キー)|"
@@ -471,8 +657,10 @@ EXPLICIT_NEGATED_USE = re.compile(
     re.IGNORECASE,
 )
 ELIDED_POST_NEGATION_ACTION = re.compile(
-    r"^\s*(?:(?:しかし|ただし|一方で|また|その後|そして|だが|が)[、,\s]*)*"
-    r"(?:(?:それ|同じ(?:もの|情報|Data|データ))(?:を|は|も)?\s*)?"
+    r"^\s*(?:(?:しかし|ただし|一方で|また|その後|そして|なお|もっとも|だが|が)"
+    r"[、,\s]*)*"
+    r"(?:(?:これ|それ|当該(?:値|情報|Data|データ)|同じ(?:もの|情報|Data|データ))"
+    r"(?:を|は|も)?\s*)?"
     r"(?:攻撃|操作|調査|走査|スキャン|観測|閲覧|参照|分析|取得|使用|利用|"
     r"投入|保存|収集|接続|検証|公開|記録|共有)"
     r"(?:する|した|します|行う|実施する)|"
@@ -486,9 +674,19 @@ ELIDED_POST_NEGATION_ACTION = re.compile(
 )
 
 
+def normalize_safety_text(text: str) -> str:
+    """Normalize reader-visible text before applying fail-closed safety grammar."""
+    normalized = html.unescape(unicodedata.normalize("NFKC", text))
+    normalized = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", normalized)
+    normalized = re.sub(r"<[^>]+>", "", normalized)
+    normalized = re.sub(r"[*_~`]", "", normalized)
+    return normalized.replace("\\", "")
+
+
 def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
     """Reject protected inputs unless directly synthetic or explicitly negated."""
     messages: list[str] = []
+    field = normalize_safety_text(field)
     matches = list(PROTECTED_PRACTICE_INPUT.finditer(field))
     for index, match in enumerate(matches):
         prefix = field[: match.start()]
@@ -677,28 +875,66 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             for message in unsafe_operational_field_errors(field, context)
         )
 
+    def bounded_case_table_rows(
+        start_heading: str,
+        end_heading: str,
+        expected_header: tuple[str, ...],
+    ) -> list[list[str]]:
+        section_match = re.search(
+            rf"^{re.escape(start_heading)}\s*$\n(?P<body>.*?)(?=^{re.escape(end_heading)}\s*$)",
+            text,
+            re.MULTILINE | re.DOTALL,
+        )
+        if section_match is None:
+            messages.append(f"{label}: missing bounded Case section {start_heading!r}")
+            return []
+        rows = [
+            markdown_row_cells(line)
+            for line in section_match.group("body").splitlines()
+            if line.strip().startswith("|")
+        ]
+        if not rows or tuple(rows[0]) != expected_header:
+            messages.append(f"{label}: {start_heading} table header is invalid")
+        if (
+            len(rows) < 2
+            or len(rows[1]) != len(expected_header)
+            or not all(re.fullmatch(r":?-{3,}:?", cell) for cell in rows[1])
+        ):
+            messages.append(f"{label}: {start_heading} table separator is invalid")
+        return rows[2:] if len(rows) >= 2 else []
+
     expected_work_decomposition = {
         "CAP-ENTRY-001": ("TASK-CAP-001", "KN-CAP-001", "SK-CAP-001"),
         "CAP-ENTRY-002": ("TASK-CAP-002", "KN-CAP-002", "SK-CAP-002"),
         "CAP-ENTRY-003": ("TASK-CAP-003", "KN-CAP-003", "SK-CAP-003"),
     }
-    work_rows = [
-        markdown_row_cells(line)
-        for line in text.splitlines()
-        if line.startswith("| `CAP-ENTRY-")
-        and "TASK-CAP-" in line
-        and "KN-CAP-" in line
-        and "SK-CAP-" in line
-    ]
+    work_rows = bounded_case_table_rows(
+        "## 2. Work Decomposition",
+        "### 2.1 完全合成Practice packet",
+        (
+            "Entry ID",
+            "Work Role / Responsibility",
+            "Task ID / statement",
+            "Knowledge reference",
+            "Skill reference",
+            "NICE Components references（optional）",
+        ),
+    )
     work_by_entry: dict[str, tuple[str, str, str]] = {}
     for cells in work_rows:
         if len(cells) != 6:
             messages.append(f"{label}: malformed Work Decomposition row {cells!r}")
             continue
+        if not re.fullmatch(r"`CAP-ENTRY-\d{3}`", cells[0]):
+            messages.append(
+                f"{label}: Work Decomposition Entry ID must use backticked "
+                f"CAP-ENTRY-NNN form: {cells[0]!r}"
+            )
         entry_id = cells[0].strip("`")
         for field_name, field_value in (
             ("Work Role / Responsibility", cells[1]),
             ("Task statement", cells[2]),
+            ("Knowledge reference", cells[3]),
             ("Skill reference", cells[4]),
         ):
             reject_unsafe_operational_field(
@@ -771,11 +1007,22 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             messages.append(f"{label}: duplicate Capability Claim rubric ID {rubric_id}")
         claim_rubrics[rubric_id] = cells[1]
 
-    entry_rows = [
-        markdown_row_cells(line)
-        for line in text.splitlines()
-        if line.startswith("| `CAP-ENTRY-") and "PRACTICE-CAP-" in line
-    ]
+    entry_rows = bounded_case_table_rows(
+        "## 3. Practice and Evidence Trace",
+        "## 4. Gap and Learning Action",
+        (
+            "Entry ID",
+            "Practice ID",
+            "Authority / Environment",
+            "Artifact / Evidence ID",
+            "Reviewer",
+            "Rubric",
+            "Result",
+            "Status",
+            "Limitations",
+            "Reassessment ID",
+        ),
+    )
     if len(entry_rows) != 3:
         messages.append(f"{label}: expected exactly 3 Practice/Evidence entry rows")
     practice_by_evidence: dict[str, dict[str, str]] = {}
@@ -785,6 +1032,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if len(cells) != 10:
             messages.append(f"{label}: malformed Practice/Evidence row {cells!r}")
             continue
+        if not re.fullmatch(r"`CAP-ENTRY-\d{3}`", cells[0]):
+            messages.append(
+                f"{label}: Practice Entry ID must use backticked "
+                f"CAP-ENTRY-NNN form: {cells[0]!r}"
+            )
         evidence_id = cells[3].strip("`")
         reject_unsafe_operational_field(
             cells[2], f"{cells[0].strip('`')} Authority / Environment"
@@ -821,11 +1073,21 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 f"{label}: rubric {cells[5]!r} does not apply to {evidence_id}"
             )
 
-    review_rows = [
-        markdown_row_cells(line)
-        for line in text.splitlines()
-        if line.startswith("| `REV-CAP-")
-    ]
+    review_rows = bounded_case_table_rows(
+        "## 5. Review Result",
+        "## 6. Bounded Capability Judgment",
+        (
+            "Review ID",
+            "Artifact / Evidence ID",
+            "Artifact version",
+            "Reviewer / role",
+            "Rubric",
+            "Result",
+            "Reviewed at",
+            "Findings",
+            "Disposition",
+        ),
+    )
     if len(review_rows) != 3:
         messages.append(f"{label}: expected exactly 3 Review Result rows")
     reviews_by_evidence: dict[str, dict[str, str]] = {}
@@ -833,6 +1095,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if len(cells) != 9:
             messages.append(f"{label}: malformed Review Result row {cells!r}")
             continue
+        if not re.fullmatch(r"`REV-CAP-\d{3}`", cells[0]):
+            messages.append(
+                f"{label}: Review ID must use backticked REV-CAP-NNN form: {cells[0]!r}"
+            )
         evidence_id = cells[1].strip("`")
         if evidence_id in reviews_by_evidence:
             messages.append(f"{label}: duplicate reviewed evidence ID {evidence_id}")
@@ -915,14 +1181,35 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         )
     else:
         boundary_expiry = boundary_expiry_matches[0]
+        if not RFC3339_SECONDS_TIMESTAMP.fullmatch(boundary_expiry):
+            messages.append(
+                f"{label}: Capability Claim Boundary Expiry must use strict "
+                f"RFC 3339 seconds precision: {boundary_expiry!r}"
+            )
+        if boundary_expiry != EXPECTED_CLAIM_EXPIRY:
+            messages.append(
+                f"{label}: Capability Claim Boundary Expiry must remain "
+                f"{EXPECTED_CLAIM_EXPIRY!r}"
+            )
 
     claim_reassessment_id = ""
     claim_expiry = ""
-    claim_rows = [
-        markdown_row_cells(line)
-        for line in text.splitlines()
-        if line.startswith("| `CAP-CLAIM-2026-003`")
-    ]
+    claim_rows = bounded_case_table_rows(
+        "## 6. Bounded Capability Judgment",
+        "## 7. Reassessment",
+        (
+            "Claim ID",
+            "Scope",
+            "Conditions",
+            "Evidence set",
+            "Reviewer / Rubric",
+            "Result",
+            "Limitations",
+            "Expiry",
+            "Reassessment Trigger",
+            "Reassessment ID",
+        ),
+    )
     if len(claim_rows) != 1:
         messages.append(f"{label}: expected exactly one bounded Capability Judgment row")
     else:
@@ -930,6 +1217,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if len(cells) != 10:
             messages.append(f"{label}: malformed Capability Judgment row {cells!r}")
         else:
+            if cells[0] != "`CAP-CLAIM-2026-003`":
+                messages.append(
+                    f"{label}: Capability Judgment Claim ID must be exact and backticked: "
+                    f"{cells[0]!r}"
+                )
             for field_name, field_value in (
                 ("Scope", cells[1]),
                 ("Conditions", cells[2]),
@@ -983,6 +1275,16 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             if cells[5] not in CLAIM_RESULT_SET:
                 messages.append(f"{label}: Capability Judgment result outside finite set: {cells[5]!r}")
             claim_expiry = cells[7]
+            if not RFC3339_SECONDS_TIMESTAMP.fullmatch(claim_expiry):
+                messages.append(
+                    f"{label}: Capability Judgment Expiry must use strict "
+                    f"RFC 3339 seconds precision: {claim_expiry!r}"
+                )
+            if claim_expiry != EXPECTED_CLAIM_EXPIRY:
+                messages.append(
+                    f"{label}: Capability Judgment Expiry must remain "
+                    f"{EXPECTED_CLAIM_EXPIRY!r}"
+                )
             try:
                 datetime.fromisoformat(claim_expiry)
             except ValueError:
@@ -1040,11 +1342,31 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     if gap_section_match is None:
         messages.append(f"{label}: missing bounded Gap and Learning Action section")
     else:
-        gap_rows = [
+        all_gap_table_rows = [
             markdown_row_cells(line)
             for line in gap_section_match.group("body").splitlines()
-            if line.startswith("| `CAP-ENTRY-")
+            if line.strip().startswith("|")
         ]
+        expected_gap_header = [
+            "Entry ID",
+            "Gap",
+            "Learning Action",
+            "Owner",
+            "Due date",
+            "Expected next evidence",
+        ]
+        if not all_gap_table_rows or all_gap_table_rows[0] != expected_gap_header:
+            messages.append(f"{label}: Gap/Learning Action table header is invalid")
+        if (
+            len(all_gap_table_rows) < 2
+            or len(all_gap_table_rows[1]) != len(expected_gap_header)
+            or not all(
+                re.fullmatch(r":?-{3,}:?", cell)
+                for cell in all_gap_table_rows[1]
+            )
+        ):
+            messages.append(f"{label}: Gap/Learning Action table separator is invalid")
+        gap_rows = all_gap_table_rows[2:]
     gap_entries = {cells[0].strip("`") for cells in gap_rows if len(cells) == 6}
     gap_next_evidence: dict[str, str] = {}
     gap_due_dates: dict[str, str] = {}
@@ -1052,6 +1374,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if len(cells) != 6:
             messages.append(f"{label}: malformed Gap/Learning Action row {cells!r}")
             continue
+        if not re.fullmatch(r"`CAP-ENTRY-\d{3}`", cells[0]):
+            messages.append(
+                f"{label}: Gap/Learning Action Entry ID must use backticked "
+                f"CAP-ENTRY-NNN form: {cells[0]!r}"
+            )
         entry_id = cells[0].strip("`")
         next_evidence = re.findall(r"ART-EVD-CAP-\d{3}-R2", cells[5])
         if len(next_evidence) != 1:
@@ -1087,17 +1414,31 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             {"TASK-CAP-001", "TASK-CAP-002", "TASK-CAP-003"},
         ),
     }
-    reassessment_rows = [
-        markdown_row_cells(line)
-        for line in text.splitlines()
-        if line.startswith("| `REA-CAP-")
-    ]
+    reassessment_rows = bounded_case_table_rows(
+        "## 7. Reassessment",
+        "## 8. Traceability Check",
+        (
+            "Reassessment ID",
+            "Scheduled date",
+            "Reassessment Trigger",
+            "Evidence to recollect",
+            "Task to revisit",
+            "Owner",
+            "Closure criteria",
+            "Status",
+        ),
+    )
     reassessments: dict[str, tuple[set[str], set[str], str]] = {}
     reassessment_dates: dict[str, str] = {}
     for cells in reassessment_rows:
         if len(cells) != 8:
             messages.append(f"{label}: malformed Reassessment row {cells!r}")
             continue
+        if not re.fullmatch(r"`REA-CAP-(?:\d{3}|CLAIM-\d{3})`", cells[0]):
+            messages.append(
+                f"{label}: Reassessment ID must use a backticked finite form: "
+                f"{cells[0]!r}"
+            )
         reassessment_id = cells[0].strip("`")
         if reassessment_id in reassessments:
             messages.append(f"{label}: duplicate Reassessment ID {reassessment_id}")
@@ -1227,14 +1568,65 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     if final_review_section_match is None:
         messages.append(f"{label}: missing bounded final Review section")
     else:
-        for line in final_review_section_match.group("body").splitlines():
-            if not line.startswith("|"):
-                continue
-            cells = markdown_row_cells(line)
-            if not cells or cells[0] not in expected_final_review_areas:
-                continue
+        final_review_body_lines = final_review_section_match.group("body").splitlines()
+        final_review_table_lines = [
+            line for line in final_review_body_lines if line.strip().startswith("|")
+        ]
+        final_review_header = [
+            "Review area",
+            "Reviewer / role",
+            "Result",
+            "Date",
+            "Evidence reference",
+            "Notes",
+        ]
+        parsed_final_review_rows = [
+            markdown_row_cells(line) for line in final_review_table_lines
+        ]
+        expected_final_review_intro = (
+            "以下は合成Case内のReview記入例であり、実際の章Gate、人事評価、"
+            "Repository merge承認の証跡ではない。Evidence referenceも合成IDである。"
+        )
+        prose_before_table: list[str] = []
+        for line in final_review_body_lines:
+            if line.strip().startswith("|"):
+                break
+            if line.strip():
+                prose_before_table.append(line.strip())
+        if prose_before_table != [expected_final_review_intro]:
+            messages.append(
+                f"{label}: final Review pre-table prose must remain the single "
+                f"synthetic-evidence disclaimer"
+            )
+        if not parsed_final_review_rows or parsed_final_review_rows[0] != final_review_header:
+            messages.append(f"{label}: final Review table header is invalid")
+        if (
+            len(parsed_final_review_rows) < 2
+            or len(parsed_final_review_rows[1]) != len(final_review_header)
+            or not all(
+                re.fullmatch(r":?-{3,}:?", cell)
+                for cell in parsed_final_review_rows[1]
+            )
+        ):
+            messages.append(f"{label}: final Review table separator is invalid")
+        table_started = False
+        for line in final_review_body_lines:
+            if line.strip().startswith("|"):
+                table_started = True
+            elif table_started and line.strip():
+                messages.append(
+                    f"{label}: final Review section contains trailing prose after its table"
+                )
+                break
+        for cells in parsed_final_review_rows[2:]:
             if len(cells) != 6:
                 messages.append(f"{label}: malformed final Review row {cells!r}")
+                continue
+            if cells[0] not in expected_final_review_areas:
+                messages.append(f"{label}: unexpected final Review area {cells[0]!r}")
+                reject_unsafe_operational_field(
+                    cells[5], f"unexpected final Review {cells[0]} Notes"
+                )
                 continue
             if cells[0] in final_review_rows:
                 messages.append(f"{label}: duplicate final Review area {cells[0]!r}")
@@ -1304,6 +1696,33 @@ def sensitive_content_errors(relative: str, text: str) -> list[str]:
         domain = email.lower()
         if not domain.endswith((".example", ".test", ".invalid")):
             messages.append(f"{relative}: possible real personal email address detected")
+    if re.search(r"(?<!\d)0\d{1,4}[- ]\d{1,4}[- ]\d{4}(?!\d)", text):
+        messages.append(f"{relative}: possible real telephone number detected")
+
+    def luhn_valid(candidate: str) -> bool:
+        digits = [int(value) for value in candidate]
+        checksum = 0
+        parity = len(digits) % 2
+        for index, value in enumerate(digits):
+            if index % 2 == parity:
+                value *= 2
+                if value > 9:
+                    value -= 9
+            checksum += value
+        return checksum % 10 == 0
+
+    for candidate in re.findall(r"(?<!\d)(?:\d[- ]?){12,18}\d(?!\d)", text):
+        digits = re.sub(r"\D", "", candidate)
+        if 13 <= len(digits) <= 19 and luhn_valid(digits):
+            messages.append(f"{relative}: possible payment-card number detected")
+            break
+    if re.search(
+        r"(?:銀行)?口座(?:番号)?\D{0,8}\d{7,12}(?!\d)|"
+        r"bank(?:ing)?[- ]account(?:[- ]number)?\D{0,8}\d{7,17}(?!\d)",
+        text,
+        re.IGNORECASE,
+    ):
+        messages.append(f"{relative}: possible bank-account number detected")
     return messages
 
 
@@ -1440,6 +1859,38 @@ def verify_negative_regressions(
     if not template_contract_errors(template_with_hr_use, "negative Template HR use"):
         error("negative regression accepted ART-14 for hiring or public ranking")
 
+    template_with_unsafe_action = template.replace(
+        "| `CAP-ENTRY-001` |  |  |  | ISO 8601 |  |",
+        "| `CAP-ENTRY-001` |  | Tokenを取得する |  | ISO 8601 |  |",
+        1,
+    )
+    template_unsafe_action_errors = template_contract_errors(
+        template_with_unsafe_action,
+        "negative Template unsafe Learning Action",
+    )
+    if not any(
+        "unsafe real-target or sensitive-data input" in message
+        and "Learning Action" in message
+        for message in template_unsafe_action_errors
+    ):
+        error("negative regression accepted protected input in Template action cell")
+
+    template_with_unsafe_reassessment_task = template.replace(
+        "| `REA-CAP-001` | ISO 8601 |  |  | `TASK-CAP-001` |  |  | Planned / Reassessment due / Complete |",
+        "| `REA-CAP-001` | ISO 8601 |  |  | `TASK-CAP-001`: Tokenを取得する |  |  | Planned / Reassessment due / Complete |",
+        1,
+    )
+    template_unsafe_reassessment_errors = template_contract_errors(
+        template_with_unsafe_reassessment_task,
+        "negative Template unsafe Reassessment Task",
+    )
+    if not any(
+        "unsafe real-target or sensitive-data input" in message
+        and "Task to revisit" in message
+        for message in template_unsafe_reassessment_errors
+    ):
+        error("negative regression accepted protected input in Reassessment Task")
+
     unsafe_case = case + "\n実Targetへの攻撃を実施する\n"
     if not case_contract_errors(unsafe_case, "negative real-target practice"):
         error("negative regression accepted real-target activity as learning evidence")
@@ -1541,6 +1992,12 @@ def verify_negative_regressions(
         "token is not used, and then retrieved",
         "token is not used, but later retrieved",
         "token is not used; however, it is retrieved",
+        "Tokenを使用しない。なお、それを取得する",
+        "合成Tokenを使用する。ただし本番値へ置換して外部APIへ送信する",
+        "第三者**System**へ接続する",
+        "他社システムを追加走査する",
+        "実**Target**を走査する",
+        "実ターゲットを走査する",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1564,6 +2021,7 @@ def verify_negative_regressions(
         "Tokenを使用しない",
         "Tokenを使用しない、結果だけを記録する",
         "token is not used, only the fixture result is recorded",
+        "合成Tokenを使用する。本番値は使用しない",
     ):
         if unsafe_operational_field_errors(
             explicitly_negated_field, "negative-form safety statement"
@@ -1596,6 +2054,23 @@ def verify_negative_regressions(
         for message in extra_gap_errors
     ):
         error("negative regression accepted an unscanned extra Gap row")
+
+    unquoted_extra_unsafe_gap_row = case.replace(
+        "| `CAP-ENTRY-003` | Source independenceを支える別系統が不足 | 既存の合成資料から来歴が独立したSource noteを追加する | Synthetic Learning Owner | 2026-08-26 | `ART-EVD-CAP-003-R2` |\n",
+        "| `CAP-ENTRY-003` | Source independenceを支える別系統が不足 | 既存の合成資料から来歴が独立したSource noteを追加する | Synthetic Learning Owner | 2026-08-26 | `ART-EVD-CAP-003-R2` |\n"
+        "| CAP-ENTRY-004 | 追加Gap | Tokenを取得して再評価 | Synthetic Learning Owner | 2026-08-30 | ART-EVD-CAP-004-R2 |\n",
+        1,
+    )
+    unquoted_extra_gap_errors = case_contract_errors(
+        unquoted_extra_unsafe_gap_row,
+        "negative unquoted extra unsafe Gap row",
+    )
+    if not any(
+        "unsafe real-target or sensitive-data input" in message
+        and "CAP-ENTRY-004 Learning Action" in message
+        for message in unquoted_extra_gap_errors
+    ):
+        error("negative regression accepted an unquoted unscanned Gap row")
 
     gap_due_date_drift = case.replace(
         "2026-08-19 | `ART-EVD-CAP-002-R2` |",
@@ -1708,6 +2183,20 @@ def verify_negative_regressions(
     ):
         error("negative regression accepted claim Expiry date drift")
 
+    expiry_offset_seconds = case.replace(
+        EXPECTED_CLAIM_EXPIRY,
+        "2026-11-05T17:00:00+09:00:99",
+    )
+    expiry_offset_seconds_errors = case_contract_errors(
+        expiry_offset_seconds,
+        "negative Expiry offset seconds",
+    )
+    if not any(
+        "strict RFC 3339 seconds precision" in message
+        for message in expiry_offset_seconds_errors
+    ):
+        error("negative regression accepted Expiry with offset seconds")
+
     practice_status_in_reassessment = case.replace(
         "| `REA-CAP-001` | 2026-08-13 | 再承認Triggerの修正完了 | `ART-EVD-CAP-001-R2` | `TASK-CAP-001` | Synthetic Safety Reviewer | Scope変更時の停止・再承認が一意 | Planned |",
         "| `REA-CAP-001` | 2026-08-13 | 再承認Triggerの修正完了 | `ART-EVD-CAP-001-R2` | `TASK-CAP-001` | Synthetic Safety Reviewer | Scope変更時の停止・再承認が一意 | Reviewed |",
@@ -1796,6 +2285,11 @@ def verify_negative_regressions(
             "`TASK-CAP-002`: 本Caseのoffline fixtureを期待結果と照合し、Coverageと限界を記録する。実Targetを走査する",
         ),
         (
+            "Knowledge reference",
+            "`KN-CAP-002`: Telemetry、fixture、negative finding",
+            "`KN-CAP-002`: Tokenを取得して検証する",
+        ),
+        (
             "Skill reference",
             "`SK-CAP-003`: Fact、Assumption、Judgmentを分離する",
             "`SK-CAP-003`: Fact、Assumption、Judgmentを分離する。個人情報を収集する",
@@ -1844,6 +2338,16 @@ def verify_negative_regressions(
         unsafe_final_review_notes, "negative unsafe final Review Notes"
     ):
         error("negative regression accepted protected input in final Review Notes")
+
+    unsafe_trailing_prose = case + "\nTokenを取得して外部APIへ送信する。\n"
+    if not any(
+        "trailing prose after its table" in message
+        for message in case_contract_errors(
+            unsafe_trailing_prose,
+            "negative unsafe trailing Case prose",
+        )
+    ):
+        error("negative regression accepted trailing prose after the final Review table")
 
     fixture_without_required_field_negative = case.replace(
         "| `FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert | 欠損Fieldの補完処理は未評価 |\n",
@@ -1989,6 +2493,15 @@ def verify_negative_regressions(
     pii_audit = audit_note + "\nreviewer=person@real-company.com\n"
     if not sensitive_content_errors("negative source audit PII", pii_audit):
         error("negative regression accepted a real-domain email in the source audit")
+    concrete_pii = "山田太郎の携帯 090-1234-5678 と 4111 1111 1111 1111を収集する"
+    concrete_pii_errors = sensitive_content_errors(
+        "negative concrete PII and payment data",
+        concrete_pii,
+    )
+    if not any("telephone number" in message for message in concrete_pii_errors):
+        error("negative regression accepted a concrete telephone number")
+    if not any("payment-card number" in message for message in concrete_pii_errors):
+        error("negative regression accepted a payment-card number")
 
     source_mutations: list[tuple[str, str, dict]] = []
     for source_id in EXPECTED_SOURCES:
