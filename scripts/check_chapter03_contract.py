@@ -278,7 +278,6 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
     )
     for token in missing_tokens(text, required):
         messages.append(f"{label}: missing required token {token!r}")
-
     body, references = chapter_body_and_references(text)
     body_ids = source_ids(body)
     reference_ids = source_ids(references)
@@ -422,6 +421,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "Source評価済みの分析判断",
         "### 2.1 完全合成Practice packet",
         "第17章または第25章の読了、外部Network、別Datasetを前提にしない",
+        "#### Minimum Authorization Checklist stub",
+        "第2章の完全なTemplateを参照しなくても、四Gate、停止、Escalation、再承認のEvidenceを作成できる",
+        "| Authority | 承認主体、実施主体、根拠、承認状態 |",
+        "| Scope | 対象、対象外、Data、期間、許可Action |",
+        "| Safety | 隔離、Rate / load制約、停止条件、Cleanup |",
+        "| Disclosure | 連絡先、Evidence取扱い、報告先、開示境界 |",
+        "| Stop / Escalation | 誰が、何を検出したら、誰へ引き渡すか |",
+        "| Reauthorization | Target、Data、期間、手法、Owner変更時の再承認条件 |",
         "FIX-CAP-002-POS",
         "FIX-CAP-002-NEG",
         "FIX-CAP-002-BENIGN",
@@ -432,6 +439,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         ARTIFACT_RUBRIC_HEADER,
         "#### Capability Claim Rubric",
         CLAIM_RUBRIC_HEADER,
+        "三TaskがすべてMeetsで、宣言ScopeとLimitationsが矛盾しない",
+        "一つ以上のTaskがDoes not meet、またはEvidence setが宣言Scopeを支持しない",
+        "必須EvidenceまたはReview Resultが不足・矛盾し、限定結論も作れない",
         CLAIM_JUDGMENT_HEADER,
         REASSESSMENT_HEADER,
         "NICE Components references（optional）",
@@ -440,6 +450,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "Not mapped。Components identifierへの対応を推測しない",
         "v2.2.0; Work Role OG-WRL-017; local Task / K / S: Not mapped（当該Taskとの対応未確認）",
         "本CaseのTaskやCapability Claimを`OG-WRL-017`へ対応付けない",
+        "本節の最小Checklist stubでTarget、Data、期間変更のTriggerを書き直す",
         "Synthetic Safety Reviewer",
         "Synthetic Detection Reviewer",
         "Synthetic Analytic Reviewer",
@@ -462,6 +473,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     )
     for token in missing_tokens(text, required):
         messages.append(f"{label}: missing required token {token!r}")
+    if re.search(r"(?:非)?Critical", text):
+        messages.append(
+            f"{label}: rubric must use explicit conditions instead of undefined Critical labels"
+        )
 
     artifact_rubric_rows = [
         markdown_row_cells(line)
@@ -632,6 +647,35 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 )
             if cells[5] not in CLAIM_RESULT_SET:
                 messages.append(f"{label}: Capability Judgment result outside finite set: {cells[5]!r}")
+            boundary_result_match = re.search(
+                r"^\| Result \| (Supported|Partially supported|Not supported|Inconclusive) \|$",
+                text,
+                re.MULTILINE,
+            )
+            if boundary_result_match is None:
+                messages.append(f"{label}: missing finite Capability Claim Boundary result")
+            elif boundary_result_match.group(1) != cells[5]:
+                messages.append(
+                    f"{label}: Capability Claim Boundary result {boundary_result_match.group(1)!r} "
+                    f"does not match bounded judgment result {cells[5]!r}"
+                )
+
+            review_results = [item["result"] for item in reviews_by_evidence.values()]
+            if any(result == "Does not meet" for result in review_results):
+                expected_claim_result = "Not supported"
+            elif review_results and all(result == "Meets" for result in review_results):
+                expected_claim_result = "Supported"
+            elif review_results and all(
+                result == "Inconclusive" for result in review_results
+            ):
+                expected_claim_result = "Inconclusive"
+            else:
+                expected_claim_result = "Partially supported"
+            if cells[5] != expected_claim_result:
+                messages.append(
+                    f"{label}: Capability Judgment result {cells[5]!r} is inconsistent "
+                    f"with Review Results {review_results!r}; expected {expected_claim_result!r}"
+                )
 
     gap_rows = [
         markdown_row_cells(line)
@@ -876,6 +920,50 @@ def verify_negative_regressions(
         trigger_header_drift, "negative Capability Judgment header drift"
     ):
         error("negative regression accepted Trigger in place of Reassessment Trigger")
+
+    overstated_claim = case.replace(
+        "| Result | Partially supported |",
+        "| Result | Supported |",
+        1,
+    ).replace(
+        "Synthetic Capability Panel / `RUBRIC-CAP-CLAIM-003` | Partially supported |",
+        "Synthetic Capability Panel / `RUBRIC-CAP-CLAIM-003` | Supported |",
+        1,
+    )
+    if not case_contract_errors(overstated_claim, "negative overstated Capability Claim"):
+        error("negative regression accepted Supported with partial/inconclusive reviews")
+
+    degraded_review = case.replace(
+        "`RUBRIC-CAP-003` | Inconclusive | Reassessment due",
+        "`RUBRIC-CAP-003` | Does not meet | Reassessment due",
+        1,
+    ).replace(
+        "`RUBRIC-CAP-003` | Inconclusive | 2026-08-05T15:00:00+09:00",
+        "`RUBRIC-CAP-003` | Does not meet | 2026-08-05T15:00:00+09:00",
+        1,
+    )
+    if not case_contract_errors(degraded_review, "negative degraded Review Result"):
+        error("negative regression accepted a partial Claim with Does not meet evidence")
+
+    boundary_result_drift = case.replace(
+        "| Result | Partially supported |",
+        "| Result | Supported |",
+        1,
+    )
+    if not case_contract_errors(
+        boundary_result_drift, "negative Capability Claim Boundary result drift"
+    ):
+        error("negative regression accepted mismatched Claim Boundary and Judgment results")
+
+    missing_authorization_stub = case.replace(
+        "#### Minimum Authorization Checklist stub",
+        "#### Authorization input omitted",
+        1,
+    )
+    if not case_contract_errors(
+        missing_authorization_stub, "negative missing Authorization Checklist stub"
+    ):
+        error("negative regression accepted a non-self-contained Task 1 exercise")
 
     if not reserved_name_contract_errors(
         "negative synthetic domain", "https://admin.localhost/runbook"

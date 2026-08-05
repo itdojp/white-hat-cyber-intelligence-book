@@ -73,6 +73,19 @@ Work Role / ResponsibilityはTaskを整理する入口であり、合成学習�
 - 許可期間は2026-08-05T09:00:00+09:00から17:00:00+09:00までである。
 - Data scope、外部接続禁止、停止、Cleanupは定義済みだが、Target、Data、期間変更時の再承認Triggerが未記入である。
 
+#### Minimum Authorization Checklist stub
+
+Task 1では次の最小stubを使う。第2章の完全なTemplateを参照しなくても、四Gate、停止、Escalation、再承認のEvidenceを作成できる。
+
+| Gate / control | Required record |
+|---|---|
+| Authority | 承認主体、実施主体、根拠、承認状態 |
+| Scope | 対象、対象外、Data、期間、許可Action |
+| Safety | 隔離、Rate / load制約、停止条件、Cleanup |
+| Disclosure | 連絡先、Evidence取扱い、報告先、開示境界 |
+| Stop / Escalation | 誰が、何を検出したら、誰へ引き渡すか |
+| Reauthorization | Target、Data、期間、手法、Owner変更時の再承認条件 |
+
 #### Offline Detection Fixture
 
 | Fixture ID | Input | Expected observation | Coverage limitation |
@@ -95,15 +108,15 @@ Work Role / ResponsibilityはTaskを整理する入口であり、合成学習�
 
 | Rubric ID | Applies to | Meets | Partially meets | Does not meet | Inconclusive |
 |---|---|---|---|---|---|
-| `RUBRIC-CAP-001` | `TASK-CAP-001` / `ART-EVD-CAP-001` | 四Gate、停止、再承認Triggerが再現可能 | Gateは分離したが非Critical条件が不足 | Authority、Scope、停止条件のいずれかを無視し、安全に開始判断できない | Authority根拠またはScopeが確認不能 |
+| `RUBRIC-CAP-001` | `TASK-CAP-001` / `ART-EVD-CAP-001` | 四Gate、停止、再承認Triggerが再現可能 | 四Gateと停止は分離したが、再承認Triggerの一部が不足 | Authority、Scope、停止条件のいずれかを無視し、安全に開始判断できない | Authority根拠またはScopeが確認不能 |
 | `RUBRIC-CAP-002` | `TASK-CAP-002` / `ART-EVD-CAP-002` | 三Fixtureが期待結果と一致し、Coverage limitationを説明 | 一部結果または限界説明が不足 | 期待結果と実測が矛盾するか、offline replayを実施していない | Fixture版、期待結果、必須Fieldが不明 |
-| `RUBRIC-CAP-003` | `TASK-CAP-003` / `ART-EVD-CAP-003` | 独立Sourceと反対仮説を評価し限定判断を作成 | 判断は限定したが非Criticalな来歴Gapが残る | Fact、Assumption、Judgmentを混在させるか、Source lineageを無視する | 独立Sourceがなく、現在の問いを支持・反証できない |
+| `RUBRIC-CAP-003` | `TASK-CAP-003` / `ART-EVD-CAP-003` | 独立Sourceと反対仮説を評価し限定判断を作成 | 判断は限定したが、結論を反転させない来歴情報が不足 | Fact、Assumption、Judgmentを混在させるか、Source lineageを無視する | 独立Sourceがなく、現在の問いを支持・反証できない |
 
 #### Capability Claim Rubric
 
 | Rubric ID | Applies to | Supported | Partially supported | Not supported | Inconclusive |
 |---|---|---|---|---|---|
-| `RUBRIC-CAP-CLAIM-003` | `CAP-CLAIM-2026-003` | 三TaskがすべてMeetsで、宣言ScopeにCritical gapがない | 複数EvidenceをReview済みで、未達または結論不能をLimitations、Gap、Reassessmentへ閉じている | Critical TaskがDoes not meet、またはEvidence setが宣言Scopeを支持しない | 必須EvidenceまたはReview Resultが不足・矛盾し、限定結論も作れない |
+| `RUBRIC-CAP-CLAIM-003` | `CAP-CLAIM-2026-003` | 三TaskがすべてMeetsで、宣言ScopeとLimitationsが矛盾しない | 複数EvidenceをReview済みで、未達または結論不能をLimitations、Gap、Reassessmentへ閉じている | 一つ以上のTaskがDoes not meet、またはEvidence setが宣言Scopeを支持しない | 必須EvidenceまたはReview Resultが不足・矛盾し、限定結論も作れない |
 
 ## 3. Practice and Evidence Trace
 
@@ -119,7 +132,7 @@ Statusは`Planned / In practice / Evidence submitted / Reviewed / Gap identified
 
 | Entry ID | Gap | Learning Action | Owner | Due date | Expected next evidence |
 |---|---|---|---|---|---|
-| `CAP-ENTRY-001` | 条件付き許可の再承認Triggerが曖昧 | 第2章TemplateでTarget、Data、期間変更のTriggerを書き直す | Synthetic Learning Owner | 2026-08-12 | `ART-EVD-CAP-001-R2` |
+| `CAP-ENTRY-001` | 条件付き許可の再承認Triggerが曖昧 | 本節の最小Checklist stubでTarget、Data、期間変更のTriggerを書き直す | Synthetic Learning Owner | 2026-08-12 | `ART-EVD-CAP-001-R2` |
 | `CAP-ENTRY-002` | benign near-missに対する説明が一例のみ | 既存fixtureの追加benign recordをofflineで再評価する | Synthetic Learning Owner | 2026-08-19 | `ART-EVD-CAP-002-R2` |
 | `CAP-ENTRY-003` | Source independenceを支える別系統が不足 | 既存の合成資料から来歴が独立したSource noteを追加する | Synthetic Learning Owner | 2026-08-26 | `ART-EVD-CAP-003-R2` |
 
