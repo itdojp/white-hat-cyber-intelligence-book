@@ -14,6 +14,9 @@
 | T-01-03 | Outcome metricと件数指標の区別 | `manuscript/01-integrated-discipline.md` | Implemented |
 | F-02-01 | Authorization Decision Gate | `manuscript/02-law-ethics-authorization.md` | Implemented |
 | T-02-01 | 許容性判断の層 | `manuscript/02-law-ethics-authorization.md` | Implemented |
+| F-03-01 | Capability Evidence Trace | `manuscript/03-capability-evidence.md` | Implemented |
+| T-03-01 | Evidenceの四分類 | `manuscript/03-capability-evidence.md` | Implemented |
+| T-03-02 | 本書固有の学習進行 | `manuscript/03-capability-evidence.md` | Implemented |
 | F-11-01 | DecisionからDetectionまでの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | F-11-02 | Request・Evidence・Telemetry・Decisionの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | T-11-01 | ChecklistとHypothesis Packの違い | `manuscript/11-web-api-hypothesis.md` | Implemented |

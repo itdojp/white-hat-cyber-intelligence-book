@@ -15,6 +15,7 @@
 | ART-11 | Web/API Assessment Hypothesis Pack | 11 | `templates/web-api-assessment-hypothesis-pack.md` |
 | ART-12 | Analytic Judgment Record | 25, 29 | `templates/analytic-judgment-record.md` |
 | ART-13 | Authorization Checklist | 2, 9 | `templates/authorization-checklist.md` |
+| ART-14 | Capability Evidence Matrix | 3, 29 | `templates/capability-evidence-matrix.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -29,5 +30,7 @@
 `ART-12`は、Decision RequirementとIntelligence Requirementに対して、Threat Hypothesis、Alternative Hypothesis、Source Note、Evidence、Lineage、Deception candidate、Analytic Judgment、Decision、Reassessmentを接続する。
 
 `ART-13`は、技術検証を開始する前にAuthority、Scope、Safety、Disclosureの四つのGateを評価し、`Proceed`、`Proceed with conditions`、`Do not proceed`、`Escalate`のDecisionと、Rules of Engagementへの受入・差戻し条件を記録する。第2章の合成記入例は`cases/ch02-authorization-decision-example.md`を参照する。
+
+`ART-14`は、`ART-01 Learning Route Plan`をTask、Knowledge / Skill、許可されたPractice、Artifact Evidence、Review、Gap、Learning Action、Reassessmentへ分解する。Capability Judgmentは、複数Evidenceに基づく限定結論としてScope、Conditions、Reviewer、Limitations、Expiry、Reassessment Triggerを持つ。第3章の合成記入例は`cases/ch03-capability-evidence-example.md`を参照する。
 
 成果物IDは章間・演習・評価ルーブリックで共通利用する。

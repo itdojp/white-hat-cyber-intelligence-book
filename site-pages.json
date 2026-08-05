@@ -13,6 +13,13 @@
       "title": "第2章 法、倫理、許可、責任ある開示"
     },
     {
+      "source": "manuscript/03-capability-evidence.md",
+      "destination": "chapters/chapter-03/index.md",
+      "section": "chapters",
+      "order": 46,
+      "title": "第3章 能力を分解し、証拠で学習する"
+    },
+    {
       "source": "manuscript/11-web-api-hypothesis.md",
       "destination": "chapters/chapter-11/index.md",
       "section": "chapters",
@@ -48,10 +55,24 @@
       "title": "第2章 合成記入例：OAuth連携評価前のAuthorization判断"
     },
     {
+      "source": "templates/capability-evidence-matrix.md",
+      "destination": "templates/capability-evidence-matrix/index.md",
+      "section": "additional",
+      "order": 234,
+      "title": "Capability Evidence Matrix"
+    },
+    {
+      "source": "cases/ch03-capability-evidence-example.md",
+      "destination": "cases/chapter-03-capability-evidence/index.md",
+      "section": "additional",
+      "order": 236,
+      "title": "第3章 合成記入例：Capability Evidence Matrix"
+    },
+    {
       "source": "cases/index.md",
       "destination": "cases/index.md",
       "section": "additional",
-      "order": 235,
+      "order": 238,
       "title": "合成Case索引"
     },
     {

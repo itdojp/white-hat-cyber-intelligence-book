@@ -5,7 +5,10 @@
 | Assessment | 対象の弱点、成立条件、影響、対策を許可範囲で評価する活動 |
 | Authority | 対象、操作、期間、Dataを承認できる法的・契約上・組織上の権限と、その根拠 |
 | Authorization | 特定のDecision Requirementについて、Authority、Scope、Safety、Disclosureの条件を満たした操作許可。技術的なAccess control上の認可とは文脈で区別する |
+| Artifact Evidence | 明示した条件で作成され、Task、Source、版、限界とともに第三者がReviewできる出力 |
+| Capability Judgment | 複数のEvidence itemを基に、Scope、Conditions、Reviewer、Limitations、Expiry、Reassessment Triggerを明示した限定的な能力判断 |
 | Collection Gap | 判断や検知に必要なEvent、Field、期間、完全性が不足している状態 |
+| Competency Area | NICE Componentsで関連する能力領域をまとめるGrouping。個人が有能であることの証明ではない |
 | CTI | サイバー脅威に関する情報を、特定の判断に使える分析へ変えたもの |
 | Data Owner | Dataの利用目的、分類、Access、保持、共有、廃棄の判断責任を持つ役割 |
 | Decision Requirement | 誰が、何を、いつまでに、どの程度の不確実性で判断するかを定義した問い |
@@ -16,7 +19,9 @@
 | Negative Finding | 定義した範囲では該当事象を観測しなかったという結果。観測不能点がある場合、事象の不存在を意味しない |
 | OSINT | 公開情報を合法かつ再現可能に収集・検証する活動 |
 | Provenance | 情報の由来、取得方法、時刻、変換履歴 |
+| Reassessment | 時間、Scope、Source、Role、Technology、Rubricの変更または期限到来によって実施する後続Review |
 | Reassessment Trigger | 判断、仮説、コントロールを再評価する契機となる期限、変更、兆候、Incident、Source更新 |
+| Review Result | 一つのArtifact Evidenceを、宣言済みRubricとReviewer roleで評価した結果 |
 | Residual Risk | 対策、検知、移転、受容後にも残る不確実性と損失可能性 |
 | Responsible Disclosure | 脆弱性関連情報を、被害抑制、修正、利用者保護、関係者調整を考慮し、適切な窓口・時期・範囲で取り扱うこと |
 | Rules of Engagement | 許可されたSecurity engagementについて、対象、手法、時間、Data、停止、連絡、復旧、報告を実施可能な条件へ具体化した規則 |
@@ -24,4 +29,5 @@
 | Telemetry | 操作・状態・通信を観測するために収集するEvent、Log、Metric等 |
 | Threat Hunting | 既存Alertだけに依存せず、仮説に基づいて環境を探索する活動 |
 | Threat-Informed | 一般論だけでなく、関連する脅威行動と自組織の文脈を判断へ反映すること |
+| Work Role | NICE Frameworkにおける仕事のGrouping。Job titleまたは個人を意味しない |
 | 確信度 | 分析判断を支える証拠品質、整合性、情報ギャップ、代替仮説の強さに対する評価 |
