@@ -451,6 +451,12 @@ def template_contract_errors(text: str, label: str) -> list[str]:
                     messages.append(f"{label}: {message}")
 
     scan_template_table(
+        "## 0. Document Control",
+        "## 1. Capability Claim Boundary",
+        ("Field", "Value"),
+        ((1, "Value"),),
+    )
+    scan_template_table(
         "## 1. Capability Claim Boundary",
         "## 2. Work Decomposition",
         ("Field", "Value"),
@@ -575,6 +581,37 @@ def template_contract_errors(text: str, label: str) -> list[str]:
         ),
         ((5, "Notes"),),
     )
+    template_trace_match = re.search(
+        r"^## 8\. Traceability Check\s*$\n(?P<body>.*?)(?=^## 9\. Review\s*$)",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    expected_template_trace = (
+        "- [ ] `ART-01`の学習GoalからTaskへ追跡できる",
+        "- [ ] Parent Plan IDで、refine対象のLearning Route Plan instanceを一意に特定できる",
+        "- [ ] TaskにKnowledge / Skill referenceがある",
+        "- [ ] NICE identifierを使う場合はComponents版と対応根拠があり、未確認の対応を推測していない",
+        "- [ ] PracticeのAuthorityとEnvironmentが明示されている",
+        "- [ ] TaskからArtifact / Evidence IDへ追跡できる",
+        "- [ ] Reviewer roleとRubricがEvidence評価前に定義されている",
+        "- [ ] Review ResultとCapability Judgmentを分離している",
+        "- [ ] Capability Judgmentが複数Evidenceに支えられている",
+        "- [ ] Scope、Conditions、Limitations、Expiry、Reassessment Triggerがある",
+        "- [ ] GapにLearning Action、Owner、Due dateがある",
+        "- [ ] 実Target、実Secret、個人・従業員・顧客Data、公開ランキングを使用していない",
+    )
+    if template_trace_match is None:
+        messages.append(f"{label}: missing bounded Template Traceability Check")
+    else:
+        actual_template_trace = tuple(
+            line.strip()
+            for line in template_trace_match.group("body").splitlines()
+            if line.strip()
+        )
+        if actual_template_trace != expected_template_trace:
+            messages.append(
+                f"{label}: Template Traceability Check must remain the exact frozen checklist"
+            )
     return messages
 
 
@@ -902,6 +939,106 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         ):
             messages.append(f"{label}: {start_heading} table separator is invalid")
         return rows[2:] if len(rows) >= 2 else []
+
+    def validate_field_value_table(
+        rows: list[list[str]],
+        expected_fields: tuple[str, ...],
+        context: str,
+        skip_safety_fields: frozenset[str] = frozenset(),
+    ) -> None:
+        actual_fields: list[str] = []
+        for cells in rows:
+            if len(cells) != 2:
+                messages.append(f"{label}: malformed {context} row {cells!r}")
+                continue
+            field_name, field_value = cells
+            actual_fields.append(field_name)
+            if field_name not in skip_safety_fields:
+                reject_unsafe_operational_field(
+                    field_value,
+                    f"{context} {field_name}",
+                )
+        if tuple(actual_fields) != expected_fields:
+            messages.append(
+                f"{label}: {context} fields {tuple(actual_fields)!r} do not match "
+                f"the frozen schema {expected_fields!r}"
+            )
+
+    parent_plan_rows = bounded_case_table_rows(
+        "### Parent ART-01 Learning Route Plan instance",
+        "## 0. Document Control",
+        ("Learning Route Plan field", "Value"),
+    )
+    validate_field_value_table(
+        parent_plan_rows,
+        (
+            "Artifact ID",
+            "Plan ID",
+            "Learner Profile ID",
+            "現在の役割",
+            "目標とするResponsibility",
+            "判断・業務上の目的",
+            "6か月後の成果物",
+            "強い前提知識",
+            "補強が必要な前提知識",
+            "最初に読む章",
+            "委譲先の専門書",
+            "使用する隔離ラボ",
+            "禁止する対象・操作",
+            "月次レビュー日",
+            "学習の証拠",
+        ),
+        "Parent ART-01",
+        frozenset({"禁止する対象・操作"}),
+    )
+    document_control_rows = bounded_case_table_rows(
+        "## 0. Document Control",
+        "## 1. Capability Claim Boundary",
+        ("Field", "Value"),
+    )
+    validate_field_value_table(
+        document_control_rows,
+        (
+            "Artifact ID",
+            "Matrix ID",
+            "Learner Profile ID",
+            "Parent Artifact ID",
+            "Parent Plan ID",
+            "Relation",
+            "Case ID",
+            "Title",
+            "NICE structural publication",
+            "NICE Components baseline",
+            "Practice packet",
+            "Status",
+            "Owner",
+            "Classification",
+            "Created at",
+            "Updated at",
+        ),
+        "Document Control",
+    )
+    capability_boundary_rows = bounded_case_table_rows(
+        "## 1. Capability Claim Boundary",
+        "## 2. Work Decomposition",
+        ("Field", "Value"),
+    )
+    validate_field_value_table(
+        capability_boundary_rows,
+        (
+            "Capability Claim ID",
+            "Scope",
+            "Conditions",
+            "Evidence set",
+            "Reviewer",
+            "Rubric",
+            "Result",
+            "Limitations",
+            "Expiry",
+            "Reassessment Trigger",
+        ),
+        "Capability Claim Boundary",
+    )
 
     expected_work_decomposition = {
         "CAP-ENTRY-001": ("TASK-CAP-001", "KN-CAP-001", "SK-CAP-001"),
@@ -1552,6 +1689,37 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{claim_reassessment_id!r} is not defined"
         )
 
+    case_trace_match = re.search(
+        r"^## 8\. Traceability Check\s*$\n(?P<body>.*?)(?=^## 9\. Review\s*$)",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    expected_case_trace = (
+        "- [x] `ART-01`の合成学習Goalから三つのTaskへ追跡できる",
+        "- [x] `LRP-2026-003`でrefine対象のLearning Route Plan instanceを特定できる",
+        "- [x] 各TaskにKnowledge / Skill referenceがある",
+        "- [x] PracticeのAuthorityとEnvironmentを明示している",
+        "- [x] 各TaskからArtifact / Evidence IDへ追跡できる",
+        "- [x] Reviewer roleとRubricをResultより先に定義している",
+        "- [x] Review ResultとCapability Judgmentを分離している",
+        "- [x] Capability Judgmentが三つのEvidenceに支えられている",
+        "- [x] Scope、Conditions、Limitations、Expiry、Reassessment Triggerがある",
+        "- [x] GapにLearning Action、Owner、Due dateがある",
+        "- [x] 実Target、実Secret、個人・従業員・顧客Data、公開ランキングを使用していない",
+    )
+    if case_trace_match is None:
+        messages.append(f"{label}: missing bounded Case Traceability Check")
+    else:
+        actual_case_trace = tuple(
+            line.strip()
+            for line in case_trace_match.group("body").splitlines()
+            if line.strip()
+        )
+        if actual_case_trace != expected_case_trace:
+            messages.append(
+                f"{label}: Case Traceability Check must remain the exact frozen checklist"
+            )
+
     expected_final_review_areas = {
         "Technical correctness",
         "Safety / authorization",
@@ -1890,6 +2058,21 @@ def verify_negative_regressions(
         for message in template_unsafe_reassessment_errors
     ):
         error("negative regression accepted protected input in Reassessment Task")
+
+    template_trace_drift = template.replace(
+        "- [ ] GapにLearning Action、Owner、Due dateがある\n",
+        "- [ ] GapにLearning Action、Owner、Due dateがある\n"
+        "- [ ] Tokenを取得する\n",
+        1,
+    )
+    if not any(
+        "Template Traceability Check must remain" in message
+        for message in template_contract_errors(
+            template_trace_drift,
+            "negative Template Traceability drift",
+        )
+    ):
+        error("negative regression accepted extra Template Traceability text")
 
     unsafe_case = case + "\n実Targetへの攻撃を実施する\n"
     if not case_contract_errors(unsafe_case, "negative real-target practice"):
@@ -2348,6 +2531,21 @@ def verify_negative_regressions(
         )
     ):
         error("negative regression accepted trailing prose after the final Review table")
+
+    case_trace_drift = case.replace(
+        "- [x] GapにLearning Action、Owner、Due dateがある\n",
+        "- [x] GapにLearning Action、Owner、Due dateがある\n"
+        "- [x] Tokenを取得して検証した\n",
+        1,
+    )
+    if not any(
+        "Case Traceability Check must remain" in message
+        for message in case_contract_errors(
+            case_trace_drift,
+            "negative Case Traceability drift",
+        )
+    ):
+        error("negative regression accepted extra Case Traceability text")
 
     fixture_without_required_field_negative = case.replace(
         "| `FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert | 欠損Fieldの補完処理は未評価 |\n",
