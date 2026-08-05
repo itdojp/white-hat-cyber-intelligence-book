@@ -685,7 +685,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
     r"外部(?:組織|企業|団体)(?:の)?(?:System|システム|環境|Data|データ|API|"
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
-    r"外部(?:の)?[ \t　]*(?:System|システム|環境|Data|データ|API|"
+    r"外部[ \t　]*(?:の[ \t　]*)?(?:System|システム|環境|Data|データ|API|"
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
     r"third[- ]party[- ]?(?:system|data|environment|api(?:[- ]endpoint)?s?|service|saas|site)s?|"
     r"external[- ](?:service|saas|site)s?|"
@@ -735,7 +735,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"実施する|行う)|する)|"
     r"総当たり(?:攻撃|ログイン|認証)|"
     r"ブルート[ \t　・-]*フォース(?:ログイン|認証|攻撃)|"
-    r"セッション[ \t　・-]*(?:ハイジャック|ハイジャッキング|固定|"
+    r"(?:セッション|session)[ \t　・-]*(?:(?:を|の)[ \t　]*)?(?:ハイジャック|ハイジャッキング|固定|"
     r"フィクセーション|リプレイ|再利用|乗っ取り)|"
     r"ソーシャルエンジニアリング|ドキシング|晒し|"
     r"実在人物(?:の)?(?:追跡|位置推定)|匿名化基盤|"
@@ -797,7 +797,7 @@ EXPLICIT_NEGATED_USE = re.compile(
     r"ではなく|ではない|"
     r"(?:を|は|が|へ|に|として|の|も)?"
     r"(?:攻撃|操作|調査|走査|スキャン|観測|閲覧|参照|分析|取得|使用|利用|"
-    r"投入|保存|収集|接続|検証|公開|記録)?"
+    r"投入|保存|収集|接続|検証|公開|記録|実施|実行)?"
     r"(?:を|は|が|も)?"
     r"(?:なし|しない|せず|禁止|対象外|除外|未使用|非使用|不要|要求しない|"
     r"使わない|使わず|用いない|含めない|含まない|持ち込まない|行わない|"
@@ -2479,6 +2479,8 @@ def verify_negative_regressions(
         "外部システムへ接続する",
         "外部APIへ接続する",
         "外部の APIへ接続する",
+        "外部 の APIへ接続する",
+        "外部　の　APIへ接続する",
         "third-party API accessed for additional benign record",
         "third-party API endpoint accessed for additional benign record",
         "third-party service accessed for additional benign record",
@@ -2582,6 +2584,10 @@ def verify_negative_regressions(
         "セッション ハイジャックを実施する",
         "セッションリプレイを実施する",
         "セッション・リプレイを実施する",
+        "セッションを再利用する",
+        "sessionを再利用する",
+        "セッションの再利用を実施する",
+        "sessionの再利用を実施する",
         "ステルスツールを作成する",
         "なりすましを実施する",
         "ソーシャルエンジニアリングを実施する",
@@ -2612,6 +2618,11 @@ def verify_negative_regressions(
         "Tokenを使用しない",
         "Tokenを使用しない、結果だけを記録する",
         "token is not used, only the fixture result is recorded",
+        "外部 の APIへ接続しない",
+        "外部　の　APIへ接続しない",
+        "sessionを再利用しない",
+        "セッションを再利用しない",
+        "セッションの再利用を実施しない",
         "合成Tokenを使用する。本番値は使用しない",
     ):
         if unsafe_operational_field_errors(
