@@ -4,7 +4,7 @@
 
 | 項目 | 値 |
 |---|---|
-| Source Note ID | `SRC-NICE-001` |
+| Source Note ID | `SRC-NICE-001`（構造文書）、`SRC-NICE-COMP-001`（現行Components） |
 | 対象章 | 第0章、第1章、第3章 |
 | Checked at | 2026-08-05 |
 | 次回確認日 | 2026-11-05 |
@@ -70,8 +70,8 @@ Current Versionsページの表示は`CURRENT VERSION: 2.2.0 (April 28, 2025)`�
 
 ## Registry更新方針
 
-- Source ID `SRC-NICE-001`は維持する。
-- `version`で構造文書`SP 800-181 Rev.1`と現行Components `v2.2.0`を区別する。
+- Source ID `SRC-NICE-001`は構造文書用として維持する。
+- 現行Componentsは`SRC-NICE-COMP-001`へ分離し、各Source IDのURL、版、公開日を一つの一次資料へ対応させる。
 - 個別Source Noteの`checkedAt`だけを2026-08-05へ更新し、Registry全体の一括監査日は変更しない。
 - `nextReviewAt`は2026-11-05とする。
 - Review triggerは次とする。

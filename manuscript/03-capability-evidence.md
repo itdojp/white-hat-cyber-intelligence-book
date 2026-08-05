@@ -93,6 +93,8 @@ Work Role / Responsibility
 → Reassessment
 ```
 
+この正本Traceでは、`Review / Rubric`が個々のArtifactに対する評価活動を表し、その出力を`Review Result`とする。複数のReview Resultから作る`Capability Judgment`はTraceを上書きせず、`Gap / Learning Action`と並ぶ判断分岐として扱う。したがって、一つのResultを人物全体のCapabilityへ直結させない。
+
 ### F-03-01 Capability Evidence Trace
 
 ```mermaid
@@ -152,7 +154,7 @@ flowchart LR
 
 ## 3. NICE Frameworkを使う範囲
 
-NICE Frameworkは、Cybersecurity workを共通語彙で記述するための参照である。構造文書は`NIST SP 800-181 Rev.1`、別管理される現行Componentsは`v2.2.0`として確認した。`v2.2.0`にはWork Role、Competency Area、Task / Knowledge / Skill等が含まれる。`SRC-NICE-001`
+NICE Frameworkは、Cybersecurity workを共通語彙で記述するための参照である。構造文書は`NIST SP 800-181 Rev.1`として確認した。`SRC-NICE-001` 別管理される現行Componentsは`v2.2.0`として確認し、Work Role、Competency Area、Task / Knowledge / Skill等を収録する。`SRC-NICE-COMP-001`
 
 本章では、NICEを次の用途に限定する。
 
@@ -169,6 +171,8 @@ NICE Frameworkは、Cybersecurity workを共通語彙で記述するための参
 - 資格、採用、報酬、人事評価の結論を自動生成する
 
 Chapter 3のTemplateと合成CaseでComponents identifierを使う場合、`NICE Framework Components v2.2.0`へ版を固定する。Sourceの版が変わった場合は、対応付けが維持されるかを再評価する。
+
+`ART-14`では、Components identifierを使う場合だけ`NICE Components references`欄へ版とidentifierを記録する。対応を確認できないTaskへ推測でidentifierを割り当てず、`Not mapped`と理由を残す。Matrix内のTask ID、Knowledge reference、Skill referenceはArtifact内の追跡IDであり、NICE identifierと同一とは限らない。
 
 ## 4. Evidenceの品質を判定する
 
@@ -286,8 +290,8 @@ Capability claimのScopeとExpiryが、業務を任せる、追加Reviewを求�
 ### 手順
 
 1. 学習Goalから二つまたは三つのbounded Taskを定義する。
-2. 各TaskにKnowledge / Skill referenceを割り当てる。
-3. 合成または明示的許可済みのPractice Environmentを指定する。
+2. 各TaskにKnowledge / Skill referenceを割り当て、対応を確認できる場合だけComponents版とNICE identifierを記録する。
+3. 合成または明示的許可済みのPractice Environmentを指定する。最初の演習では、第3章合成Case内のPractice packetを使える。
 4. Expected Artifact、Evidence ID、Rubric、Reviewer roleを決める。
 5. Result、Limitations、Gap、Learning Action、Due dateを記録する。
 6. 複数Evidenceから限定Capability Judgmentを作る。
@@ -313,7 +317,7 @@ Capability claimのScopeとExpiryが、業務を任せる、追加Reviewを求�
 
 本章では`ART-14 Capability Evidence Matrix`を作成する。
 
-Templateは[Capability Evidence Matrix](../templates/capability-evidence-matrix.md)、完全合成記入例は[第3章 合成学習Profile](../cases/ch03-capability-evidence-example.md)を参照する。
+Templateは[Capability Evidence Matrix](../templates/capability-evidence-matrix.md)、完全合成記入例は[第3章 合成記入例：Capability Evidence Matrix](../cases/ch03-capability-evidence-example.md)を参照する。
 
 Statusは次の有限集合だけを使う。
 
@@ -388,6 +392,7 @@ Source、Role、Scope、Technology、Rubric、時間が変われば結論は古�
 
 ## 参考文献・Source Note ID
 
-- `SRC-NICE-001`: `NIST SP 800-181 Rev.1`と別管理の`NICE Framework Components v2.2.0`。Work Role、Task、Knowledge、Skill、Competency Areaの共通語彙として使用し、個人能力の単独証明には使用しない
+- `SRC-NICE-001`: `NIST SP 800-181 Rev.1`。NICE Frameworkの構造文書として使用する
+- `SRC-NICE-COMP-001`: 別管理の`NICE Framework Components v2.2.0`。Work Role、Task、Knowledge、Skill、Competency Areaの現行語彙として使用し、個人能力の単独証明には使用しない
 
 版、確認日、Componentsの日付不整合は[Source Baseline](../references/reference-baseline.md)と[第3章 Source Review Note](../references/ch03-source-review-2026-08-05.md)を参照する。

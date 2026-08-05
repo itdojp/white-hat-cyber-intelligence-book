@@ -20,6 +20,7 @@ from scripts.sync_book_site import (  # noqa: E402
     SitePageRegistryError,
     parse_registry_data,
 )
+from scripts.sync_site_source import PAGES, rewrite_links  # noqa: E402
 
 ERRORS: list[str] = []
 
@@ -29,18 +30,28 @@ EXPECTED_CHAPTER03_PAGES = {
         "chapters/chapter-03/index.md",
         "chapters",
         46,
+        "第3章 能力を分解し、証拠で学習する",
     ),
     (
         "templates/capability-evidence-matrix.md",
         "templates/capability-evidence-matrix/index.md",
         "additional",
         234,
+        "Capability Evidence Matrix",
     ),
     (
         "cases/ch03-capability-evidence-example.md",
         "cases/chapter-03-capability-evidence/index.md",
         "additional",
         236,
+        "第3章 合成記入例：Capability Evidence Matrix",
+    ),
+    (
+        "references/ch03-source-review-2026-08-05.md",
+        "references/chapter-03-source-review/index.md",
+        "additional",
+        237,
+        "第3章 Source Review Note：NICE Framework",
     ),
 }
 
@@ -77,35 +88,55 @@ CLAIM_RESULT_SET = {
     "Inconclusive",
 }
 
-EXPECTED_SOURCE = {
-    "title": (
-        "Workforce Framework for Cybersecurity (NICE Framework) and "
-        "NICE Framework Components"
-    ),
-    "version": "SP 800-181 Rev.1; Components v2.2.0",
-    "publishedAt": "2020-11-16",
-    "checkedAt": "2026-08-05",
-    "nextReviewAt": "2026-11-05",
+EXPECTED_SOURCES = {
+    "SRC-NICE-001": {
+        "fields": {
+            "title": "Workforce Framework for Cybersecurity (NICE Framework)",
+            "status": "final",
+            "version": "SP 800-181 Rev.1",
+            "url": "https://csrc.nist.gov/pubs/sp/800/181/r1/final",
+            "publishedAt": "2020-11-16",
+            "checkedAt": "2026-08-05",
+            "nextReviewAt": "2026-11-05",
+            "reviewTriggers": ["NIST SP 800-181 revision or errata"],
+            "chapters": [0, 1, 3],
+        },
+        "noteMarkers": (
+            "Structural publication: NIST SP 800-181 Rev.1",
+            "final, published 2020-11-16",
+            "SRC-NICE-COMP-001",
+            "common vocabulary and decomposition aid",
+            "not as standalone proof of individual competence",
+        ),
+    },
+    "SRC-NICE-COMP-001": {
+        "fields": {
+            "title": "NICE Framework Components v2.2.0",
+            "status": "current",
+            "version": "2.2.0",
+            "url": "https://www.nist.gov/news-events/news/2026/04/nice-releases-nice-framework-components-v220",
+            "publishedAt": "2026-04-28",
+            "checkedAt": "2026-08-05",
+            "nextReviewAt": "2026-11-05",
+            "reviewTriggers": [
+                "NICE Framework Components major or minor release",
+                "Changes to Work Role, Competency Area, or TKS identifiers used by Chapter 3",
+            ],
+            "chapters": [3],
+        },
+        "noteMarkers": (
+            "NICE Framework Components release v2.2.0",
+            "released 2026-04-28",
+            "Current Versions page displayed April 28, 2025",
+            "2025 is treated as an apparent page typo",
+            "OG-WRL-017",
+            "NF-COM-006",
+            "NF-COM-008",
+            "common vocabulary and decomposition aid",
+            "not as standalone proof of individual competence",
+        ),
+    },
 }
-
-EXPECTED_SOURCE_TRIGGERS = [
-    "NIST SP 800-181 revision or errata",
-    "NICE Framework Components major or minor release",
-    "Changes to Work Role, Competency Area, or TKS identifiers used by Chapter 3",
-]
-
-EXPECTED_SOURCE_NOTE_MARKERS = (
-    "Structural publication: NIST SP 800-181 Rev.1",
-    "final, published 2020-11-16",
-    "NICE Framework Components v2.2.0, released 2026-04-28",
-    "Current Versions page displayed April 28, 2025",
-    "2025 is treated as an apparent page typo",
-    "OG-WRL-017",
-    "NF-COM-006",
-    "NF-COM-008",
-    "common vocabulary and decomposition aid",
-    "not as standalone proof of individual competence",
-)
 
 
 def error(message: str) -> None:
@@ -177,6 +208,7 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
         "第2章のAuthority / Scope / Safety / Disclosure",
         "LEARN-CASE-2026-003",
         CORE_TRACE,
+        "複数のReview Resultから作る`Capability Judgment`はTraceを上書きせず",
         "F-03-01 Capability Evidence Trace",
         "**Taskは、実行する仕事である。**",
         "**Knowledgeは、Taskに必要な概念または情報である。**",
@@ -189,8 +221,11 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
         "**Reassessmentは、時間、Scope、Source、Role、Technology、Rubricの変更によって起動する後続Reviewである。**",
         "NIST SP 800-181 Rev.1",
         "NICE Framework Components v2.2.0",
+        "SRC-NICE-COMP-001",
         "NICEを次の用途に限定する",
         "identifierを一つ割り当てただけで個人の能力を証明する",
+        "`NICE Components references`欄",
+        "`Not mapped`と理由を残す",
         "T-03-01 Evidenceの四分類",
         "良いEvidence",
         "弱いEvidence",
@@ -230,7 +265,7 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
     body, references = chapter_body_and_references(text)
     body_ids = source_ids(body)
     reference_ids = source_ids(references)
-    expected_ids = {"SRC-NICE-001"}
+    expected_ids = {"SRC-NICE-001", "SRC-NICE-COMP-001"}
     if body_ids != expected_ids:
         messages.append(
             f"{label}: body source IDs {sorted(body_ids)} != {sorted(expected_ids)}"
@@ -267,11 +302,14 @@ def template_contract_errors(text: str, label: str) -> list[str]:
         "Matrix ID | `CAP-MATRIX-YYYY-NNN`",
         "Learner Profile ID | `SYNTH-LEARNER-NNN`",
         "Parent Artifact ID | `ART-01`",
+        "Parent Plan ID | `LRP-YYYY-NNN`",
         "Relation | `refines` / `supersedes` / `independent`",
         "NICE Components baseline | `v2.2.0`",
         "Task ID / statement",
         "Knowledge reference",
         "Skill reference",
+        "NICE Components references（optional）",
+        "`Not mapped`と理由",
         "Practice ID",
         "Authority / Environment",
         "Artifact / Evidence ID",
@@ -320,6 +358,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "CAP-MATRIX-2026-003",
         "SYNTH-LEARNER-003",
         "Parent Artifact ID | `ART-01`",
+        "Parent Plan ID | `LRP-2026-003`",
         "Relation | `refines`",
         "LEARN-CASE-2026-003",
         "NICE Components baseline | `v2.2.0`",
@@ -351,6 +390,18 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "Authorization Checklistを作り",
         "offline detection fixture",
         "Source評価済みの分析判断",
+        "### 2.1 完全合成Practice packet",
+        "第17章または第25章の読了、外部Network、別Datasetを前提にしない",
+        "FIX-CAP-002-POS",
+        "FIX-CAP-002-NEG",
+        "FIX-CAP-002-BENIGN",
+        "SN-CAP-003-A",
+        "SN-CAP-003-B",
+        "SN-CAP-003-C",
+        "NICE Components references（optional）",
+        "Not mapped。合成の横断Task",
+        "Not mapped。学習用Task",
+        "Not mapped。Components identifierへの対応を推測しない",
         "Synthetic Safety Reviewer",
         "Synthetic Detection Reviewer",
         "Synthetic Analytic Reviewer",
@@ -369,6 +420,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "SYNTH-REV-CAP-SOURCE-001",
         "SYNTH-REV-CAP-TRACE-001",
         "SYNTH-REV-CAP-DEC-001",
+        "`LRP-2026-003`でrefine対象のLearning Route Plan instanceを特定できる",
     )
     for token in missing_tokens(text, required):
         messages.append(f"{label}: missing required token {token!r}")
@@ -554,39 +606,36 @@ def source_contract_errors(registry: dict, label: str) -> list[str]:
         for item in sources
         if isinstance(item, dict) and isinstance(item.get("id"), str)
     }
-    entry = entries.get("SRC-NICE-001")
-    if entry is None:
-        return messages + [f"{label}: missing SRC-NICE-001"]
-    for field, expected in EXPECTED_SOURCE.items():
-        if entry.get(field) != expected:
-            messages.append(
-                f"{label}: SRC-NICE-001.{field} must be {expected!r}"
-            )
-    if entry.get("status") != "final":
-        messages.append(f"{label}: SRC-NICE-001.status must remain 'final'")
-    if entry.get("reviewTriggers") != EXPECTED_SOURCE_TRIGGERS:
-        messages.append(f"{label}: SRC-NICE-001.reviewTriggers changed")
-    if entry.get("chapters") != [0, 1, 3]:
-        messages.append(f"{label}: SRC-NICE-001.chapters must be [0, 1, 3]")
+    for source_id, expected in EXPECTED_SOURCES.items():
+        entry = entries.get(source_id)
+        if entry is None:
+            messages.append(f"{label}: missing {source_id}")
+            continue
+        for field, expected_value in expected["fields"].items():
+            if entry.get(field) != expected_value:
+                messages.append(
+                    f"{label}: {source_id}.{field} must be {expected_value!r}"
+                )
+        notes = entry.get("notes")
+        if not isinstance(notes, str):
+            messages.append(f"{label}: {source_id}.notes must be a string")
+        else:
+            for marker in expected["noteMarkers"]:
+                if marker not in notes:
+                    messages.append(
+                        f"{label}: {source_id}.notes missing marker {marker!r}"
+                    )
     chapter3_entries = {
         source_id
         for source_id, item in entries.items()
         if 3 in item.get("chapters", [])
     }
-    if chapter3_entries != {"SRC-NICE-001"}:
+    expected_chapter3_entries = {"SRC-NICE-001", "SRC-NICE-COMP-001"}
+    if chapter3_entries != expected_chapter3_entries:
         messages.append(
             f"{label}: Chapter 3 source mapping {sorted(chapter3_entries)} "
-            "must match body source IDs ['SRC-NICE-001']"
+            f"must match body source IDs {sorted(expected_chapter3_entries)}"
         )
-    notes = entry.get("notes")
-    if not isinstance(notes, str):
-        messages.append(f"{label}: SRC-NICE-001.notes must be a string")
-    else:
-        for marker in EXPECTED_SOURCE_NOTE_MARKERS:
-            if marker not in notes:
-                messages.append(
-                    f"{label}: SRC-NICE-001.notes missing marker {marker!r}"
-                )
     return messages
 
 
@@ -601,6 +650,7 @@ def chapter03_page_contract_errors(registry: dict, label: str) -> list[str]:
             item.get("destination"),
             item.get("section"),
             item.get("order"),
+            item.get("title"),
         )
         for item in pages
         if isinstance(item, dict)
@@ -703,20 +753,25 @@ def verify_negative_regressions(
     if not sensitive_content_errors("negative source audit PII", pii_audit):
         error("negative regression accepted a real-domain email in the source audit")
 
-    source_mutations: list[tuple[str, dict]] = []
-    for field, value in (
-        ("version", "Components latest"),
-        ("checkedAt", "2026-07-25"),
-        ("nextReviewAt", "2027-01-01"),
-        ("notes", "NICE proves competence"),
-    ):
-        mutation = deepcopy(sources)
-        entry = next(item for item in mutation["sources"] if item.get("id") == "SRC-NICE-001")
-        entry[field] = value
-        source_mutations.append((field, mutation))
-    for field, mutation in source_mutations:
-        if not source_contract_errors(mutation, f"negative source {field}"):
-            error(f"negative regression accepted SRC-NICE-001 {field} drift")
+    source_mutations: list[tuple[str, str, dict]] = []
+    for source_id in EXPECTED_SOURCES:
+        for field, value in (
+            ("version", "latest"),
+            ("checkedAt", "2026-07-25"),
+            ("nextReviewAt", "2027-01-01"),
+            ("notes", "NICE proves competence"),
+        ):
+            mutation = deepcopy(sources)
+            entry = next(
+                item for item in mutation["sources"] if item.get("id") == source_id
+            )
+            entry[field] = value
+            source_mutations.append((source_id, field, mutation))
+    for source_id, field, mutation in source_mutations:
+        if not source_contract_errors(
+            mutation, f"negative source {source_id}.{field}"
+        ):
+            error(f"negative regression accepted {source_id} {field} drift")
 
     page_source = "manuscript/03-capability-evidence.md"
     page_mutations: list[tuple[str, dict]] = []
@@ -729,6 +784,9 @@ def verify_negative_regressions(
     mutation = deepcopy(raw_registry)
     next(item for item in mutation["pages"] if item.get("source") == page_source)["order"] = 47
     page_mutations.append(("order drift", mutation))
+    mutation = deepcopy(raw_registry)
+    next(item for item in mutation["pages"] if item.get("source") == page_source)["title"] = "Changed Chapter Title"
+    page_mutations.append(("title drift", mutation))
     mutation = deepcopy(raw_registry)
     page = next(item for item in mutation["pages"] if item.get("source") == page_source)
     mutation["pages"].append(deepcopy(page))
@@ -747,6 +805,7 @@ def main() -> int:
     required_files = (
         "manuscript/03-capability-evidence.md",
         "templates/capability-evidence-matrix.md",
+        "templates/learning-route-plan.md",
         "cases/ch03-capability-evidence-example.md",
         "scripts/check_chapter03_contract.py",
         "site-pages.json",
@@ -803,6 +862,7 @@ def main() -> int:
         chapter_path,
         template_path,
         case_path,
+        "templates/learning-route-plan.md",
         "references/ch03-source-review-2026-08-05.md",
         "references/sources.json",
         "references/reference-baseline.md",
@@ -826,6 +886,42 @@ def main() -> int:
         registry = {}
     for message in chapter03_page_contract_errors(registry, "site-pages.json"):
         error(message)
+
+    if registry:
+        source_to_destination = {page.source: page.destination for page in PAGES}
+        source_to_destination.update({
+            item["source"]: item["destination"]
+            for item in registry.get("pages", [])
+            if isinstance(item, dict)
+        })
+        rewritten_chapter = rewrite_links(
+            chapter,
+            chapter_path,
+            "chapters/chapter-03/index.md",
+            source_to_destination,
+        )
+        if "/blob/main/references/" in rewritten_chapter:
+            error(
+                "generated Chapter 3 source links must not fall back to mutable blob/main"
+            )
+        require_tokens(
+            "generated Chapter 3 links",
+            rewritten_chapter,
+            (
+                "../../source-notes/",
+                "../../references/chapter-03-source-review/",
+            ),
+        )
+
+    require_tokens(
+        "templates/learning-route-plan.md",
+        read_text("templates/learning-route-plan.md"),
+        (
+            "Artifact ID: `ART-01`",
+            "Plan ID: `LRP-YYYY-NNN`",
+            "Learner Profile ID: `SYNTH-LEARNER-NNN`",
+        ),
+    )
 
     require_tokens(
         "artifact-index.md",
@@ -879,6 +975,8 @@ def main() -> int:
         (
             "Checked at | 2026-08-05",
             "NIST SP 800-181 Rev.1",
+            "SRC-NICE-001",
+            "SRC-NICE-COMP-001",
             "2020-11-16",
             "NICE Framework Components v2.2.0",
             "2026-04-28",

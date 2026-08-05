@@ -69,6 +69,13 @@
       "title": "第3章 合成記入例：Capability Evidence Matrix"
     },
     {
+      "source": "references/ch03-source-review-2026-08-05.md",
+      "destination": "references/chapter-03-source-review/index.md",
+      "section": "additional",
+      "order": 237,
+      "title": "第3章 Source Review Note：NICE Framework"
+    },
+    {
       "source": "cases/index.md",
       "destination": "cases/index.md",
       "section": "additional",

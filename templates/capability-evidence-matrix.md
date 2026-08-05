@@ -22,6 +22,7 @@
 | Matrix ID | `CAP-MATRIX-YYYY-NNN` |
 | Learner Profile ID | `SYNTH-LEARNER-NNN` |
 | Parent Artifact ID | `ART-01` |
+| Parent Plan ID | `LRP-YYYY-NNN` |
 | Relation | `refines` / `supersedes` / `independent` |
 | Title |  |
 | NICE structural publication | `NIST SP 800-181 Rev.1` |
@@ -51,9 +52,9 @@
 
 Work Roleは仕事のGroupingであり、Job titleまたは個人ではない。Competency AreaはNICE ComponentsのGroupingであり、個人能力の証明ではない。
 
-| Entry ID | Work Role / Responsibility | Task ID / statement | Knowledge reference | Skill reference |
-|---|---|---|---|---|
-| `CAP-ENTRY-001` |  | `TASK-CAP-001`:  | `KN-CAP-001` | `SK-CAP-001` |
+| Entry ID | Work Role / Responsibility | Task ID / statement | Knowledge reference | Skill reference | NICE Components references（optional） |
+|---|---|---|---|---|---|
+| `CAP-ENTRY-001` |  | `TASK-CAP-001`:  | `KN-CAP-001` | `SK-CAP-001` | Version + Work Role / Competency Area / Task / K / S identifier、または`Not mapped`と理由 |
 
 ## 3. Practice and Evidence Trace
 
@@ -100,7 +101,9 @@ Capability Judgmentは、一つのReview Resultではなく、複数Evidence ite
 ## 8. Traceability Check
 
 - [ ] `ART-01`の学習GoalからTaskへ追跡できる
+- [ ] Parent Plan IDで、refine対象のLearning Route Plan instanceを一意に特定できる
 - [ ] TaskにKnowledge / Skill referenceがある
+- [ ] NICE identifierを使う場合はComponents版と対応根拠があり、未確認の対応を推測していない
 - [ ] PracticeのAuthorityとEnvironmentが明示されている
 - [ ] TaskからArtifact / Evidence IDへ追跡できる
 - [ ] Reviewer roleとRubricがEvidence評価前に定義されている

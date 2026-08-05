@@ -21,6 +21,7 @@
 | Matrix ID | `CAP-MATRIX-2026-003` |
 | Learner Profile ID | `SYNTH-LEARNER-003` |
 | Parent Artifact ID | `ART-01` |
+| Parent Plan ID | `LRP-2026-003` |
 | Relation | `refines` |
 | Case ID | `LEARN-CASE-2026-003` |
 | Title | Authority、Detection、分析判断のEvidenceを作る合成学習計画 |
@@ -51,21 +52,58 @@
 
 ## 2. Work Decomposition
 
-| Entry ID | Work Role / Responsibility | Task ID / statement | Knowledge reference | Skill reference |
-|---|---|---|---|---|
-| `CAP-ENTRY-001` | Security engagementの開始判断を支援する | `TASK-CAP-001`: 合成ScenarioからAuthorization Checklistを作り、停止・Escalation条件を説明する | `KN-CAP-001`: Authority / Scope / Safety / Disclosure | `SK-CAP-001`: 不足条件をGate decisionへ変換する |
-| `CAP-ENTRY-002` | Detection logicの検証可能性を確認する | `TASK-CAP-002`: Repositoryのoffline fixtureを期待結果と照合し、Coverageと限界を記録する | `KN-CAP-002`: Telemetry、fixture、negative finding | `SK-CAP-002`: replay結果を期待値と比較する |
-| `CAP-ENTRY-003` | Source評価済みの分析判断を作る | `TASK-CAP-003`: 合成Sourceの来歴と独立性を評価し、限定Judgmentを作る | `KN-CAP-003`: Reliability、Credibility、Independence | `SK-CAP-003`: Fact、Assumption、Judgmentを分離する |
+| Entry ID | Work Role / Responsibility | Task ID / statement | Knowledge reference | Skill reference | NICE Components references（optional） |
+|---|---|---|---|---|---|
+| `CAP-ENTRY-001` | Security engagementの開始判断を支援する | `TASK-CAP-001`: 合成ScenarioからAuthorization Checklistを作り、停止・Escalation条件を説明する | `KN-CAP-001`: Authority / Scope / Safety / Disclosure | `SK-CAP-001`: 不足条件をGate decisionへ変換する | `v2.2.0`; Not mapped。合成の横断Taskであり、対応identifierを確認していない |
+| `CAP-ENTRY-002` | Detection logicの検証可能性を確認する | `TASK-CAP-002`: 本Caseのoffline fixtureを期待結果と照合し、Coverageと限界を記録する | `KN-CAP-002`: Telemetry、fixture、negative finding | `SK-CAP-002`: replay結果を期待値と比較する | `v2.2.0`; Not mapped。学習用Taskを特定Work Roleへ固定しない |
+| `CAP-ENTRY-003` | Source評価済みの分析判断を作る | `TASK-CAP-003`: 本Caseの合成Source packetの来歴と独立性を評価し、限定Judgmentを作る | `KN-CAP-003`: Reliability、Credibility、Independence | `SK-CAP-003`: Fact、Assumption、Judgmentを分離する | `v2.2.0`; Not mapped。Components identifierへの対応を推測しない |
 
 Work Role / ResponsibilityはTaskを整理する入口であり、合成学習者のJob titleまたは人物像ではない。Knowledge / Skill referenceは本Case内の識別子であり、NICE identifierとの同一性を主張しない。
+
+### 2.1 完全合成Practice packet
+
+この節だけで三つのTaskを再現できる。第17章または第25章の読了、外部Network、別Datasetを前提にしない。
+
+#### Authorization Scenario
+
+- System ownerとData ownerは合成人物Roleとして定義済みである。
+- 許可対象は隔離済みの合成Tenant設定Exportだけである。
+- 許可期間は2026-08-05T09:00:00+09:00から17:00:00+09:00までである。
+- Data scope、外部接続禁止、停止、Cleanupは定義済みだが、Target、Data、期間変更時の再承認Triggerが未記入である。
+
+#### Offline Detection Fixture
+
+| Fixture ID | Input | Expected observation | Coverage limitation |
+|---|---|---|---|
+| `FIX-CAP-002-POS` | 合成管理操作、未承認Actor、必須Field完備 | Alert | 一つのEvent schemaだけを確認 |
+| `FIX-CAP-002-NEG` | 合成管理操作、承認済みActor、必須Field完備 | No alert | 許可Listの鮮度は未評価 |
+| `FIX-CAP-002-BENIGN` | 合成閲覧操作、未承認Actor、必須Field完備 | No alert | 類似する別操作は未評価 |
+
+#### Synthetic Source Packet
+
+| Source Note ID | Statement | Lineage | Independence |
+|---|---|---|---|
+| `SN-CAP-003-A` | 合成技術Cluster `CL-CAP-003`の同一特徴を報告 | 合成一次観測 | Group A |
+| `SN-CAP-003-B` | `SN-CAP-003-A`を要約して同じ特徴を報告 | derived-from `SN-CAP-003-A` | Group A |
+| `SN-CAP-003-C` | 反対仮説に整合する別特徴を報告 | 合成一次観測だが対象期間外 | Group B / scope mismatch |
+
+`SN-CAP-003-A`と`SN-CAP-003-B`を独立した二件に数えない。`SN-CAP-003-C`は対象期間外であるため、現在の問いを独立に裏付けない。したがって現時点のResultは`Inconclusive`である。
+
+#### Rubric
+
+| Rubric ID | Meets | Partially meets | Inconclusive |
+|---|---|---|---|
+| `RUBRIC-CAP-001` | 四Gate、停止、再承認Triggerが再現可能 | Gateは分離したが非Critical条件が不足 | Authority根拠またはScopeが確認不能 |
+| `RUBRIC-CAP-002` | 三Fixtureが期待結果と一致し、Coverage limitationを説明 | 一部結果または限界説明が不足 | Fixture版、期待結果、必須Fieldが不明 |
+| `RUBRIC-CAP-003` | 独立Sourceと反対仮説を評価し限定判断を作成 | 判断は限定したが非Criticalな来歴Gapが残る | 独立Sourceがなく、現在の問いを支持・反証できない |
 
 ## 3. Practice and Evidence Trace
 
 | Entry ID | Practice ID | Authority / Environment | Artifact / Evidence ID | Reviewer | Rubric | Result | Status | Limitations | Reassessment ID |
 |---|---|---|---|---|---|---|---|---|---|
 | `CAP-ENTRY-001` | `PRACTICE-CAP-001` | 合成Scenario。外部接続と実Target操作なし | `ART-EVD-CAP-001` | Synthetic Safety Reviewer | `RUBRIC-CAP-001` | Partially meets | Gap identified | 法的助言の正しさと実案件のAuthorityは評価対象外 | `REA-CAP-001` |
-| `CAP-ENTRY-002` | `PRACTICE-CAP-002` | Repository提供offline fixture。Network accessなし | `ART-EVD-CAP-002` | Synthetic Detection Reviewer | `RUBRIC-CAP-002` | Meets | Reviewed | Product固有設定、Production scale、未知Telemetryは未評価 | `REA-CAP-002` |
-| `CAP-ENTRY-003` | `PRACTICE-CAP-003` | 第25章の完全合成Source / dataset。追加収集なし | `ART-EVD-CAP-003` | Synthetic Analytic Reviewer | `RUBRIC-CAP-003` | Inconclusive | Reassessment due | 独立Sourceが一系統不足し、帰属判断は対象外 | `REA-CAP-003` |
+| `CAP-ENTRY-002` | `PRACTICE-CAP-002` | Section 2.1のoffline fixture。Network accessなし | `ART-EVD-CAP-002` | Synthetic Detection Reviewer | `RUBRIC-CAP-002` | Meets | Reviewed | Product固有設定、Production scale、未知Telemetryは未評価 | `REA-CAP-002` |
+| `CAP-ENTRY-003` | `PRACTICE-CAP-003` | Section 2.1の合成Source packet。追加収集なし | `ART-EVD-CAP-003` | Synthetic Analytic Reviewer | `RUBRIC-CAP-003` | Inconclusive | Reassessment due | 独立Sourceが一系統不足し、帰属判断は対象外 | `REA-CAP-003` |
 
 Statusは`Planned / In practice / Evidence submitted / Reviewed / Gap identified / Reassessment due / Complete`の有限集合から選んでいる。`Reviewed`はTask 2のEvidence lifecycleを示すだけで、人物全体のCapabilityがCompleteであることを意味しない。
 
@@ -109,6 +147,7 @@ Rubricの判定軸はTask開始前に固定した。結果に合わせた基準�
 ## 8. Traceability Check
 
 - [x] `ART-01`の合成学習Goalから三つのTaskへ追跡できる
+- [x] `LRP-2026-003`でrefine対象のLearning Route Plan instanceを特定できる
 - [x] 各TaskにKnowledge / Skill referenceがある
 - [x] PracticeのAuthorityとEnvironmentを明示している
 - [x] 各TaskからArtifact / Evidence IDへ追跡できる
