@@ -6,6 +6,7 @@ import re
 import sys
 from collections import Counter
 from copy import deepcopy
+from datetime import date, datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -420,7 +421,17 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"従業員(?:の)?(?:Data|データ|情報)|"
     r"顧客(?:の)?(?:Data|データ|情報)|"
     r"(?:personal|employee|customer|staff)[- ](?:data|info(?:rmation)?)|"
-    r"personally[- ]identifiable[- ]info(?:rmation)?)",
+    r"personally[- ]identifiable[- ]info(?:rmation)?|"
+    r"e[- ]?mail(?:[- ]address)?|"
+    r"(?:phone|telephone|mobile)[- ](?:number|no\.?)|"
+    r"(?:full|legal|person)[- ]name|"
+    r"(?:home|postal|mailing|street)[- ]address|"
+    r"date[- ]of[- ]birth|birth[- ]date|dob|"
+    r"ssn|social[- ]security[- ]number|passport[- ]number|national[- ]id|"
+    r"driver(?:'s)?[- ]licen[cs]e[- ]number|"
+    r"メールアドレス|Eメールアドレス|電子メールアドレス|"
+    r"電話番号|携帯番号|氏名|本名|姓名|住所|生年月日|"
+    r"マイナンバー|個人番号|パスポート番号|運転免許証番号)",
     re.IGNORECASE,
 )
 SYNTHETIC_QUALIFIABLE_INPUT = re.compile(
@@ -864,7 +875,19 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             boundary_field_matches[0], f"Capability Claim Boundary {field_name}"
         )
 
+    boundary_expiry_matches = re.findall(
+        r"^\| Expiry \| (.+) \|$", boundary_text, re.MULTILINE
+    )
+    boundary_expiry = ""
+    if len(boundary_expiry_matches) != 1:
+        messages.append(
+            f"{label}: Capability Claim Boundary requires exactly one Expiry field"
+        )
+    else:
+        boundary_expiry = boundary_expiry_matches[0]
+
     claim_reassessment_id = ""
+    claim_expiry = ""
     claim_rows = [
         markdown_row_cells(line)
         for line in text.splitlines()
@@ -929,6 +952,19 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 )
             if cells[5] not in CLAIM_RESULT_SET:
                 messages.append(f"{label}: Capability Judgment result outside finite set: {cells[5]!r}")
+            claim_expiry = cells[7]
+            try:
+                datetime.fromisoformat(claim_expiry)
+            except ValueError:
+                messages.append(
+                    f"{label}: Capability Judgment Expiry is not a valid ISO datetime: "
+                    f"{claim_expiry!r}"
+                )
+            if boundary_expiry and boundary_expiry != claim_expiry:
+                messages.append(
+                    f"{label}: Capability Claim Boundary Expiry {boundary_expiry!r} "
+                    f"does not match bounded judgment Expiry {claim_expiry!r}"
+                )
             boundary_result_match = re.search(
                 r"^\| Result \| (Supported|Partially supported|Not supported|Inconclusive) \|$",
                 text,
@@ -1027,6 +1063,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if line.startswith("| `REA-CAP-")
     ]
     reassessments: dict[str, tuple[set[str], set[str], str]] = {}
+    reassessment_dates: dict[str, str] = {}
     for cells in reassessment_rows:
         if len(cells) != 8:
             messages.append(f"{label}: malformed Reassessment row {cells!r}")
@@ -1037,6 +1074,19 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         evidence_ids = set(re.findall(r"ART-EVD-CAP-\d{3}-R2", cells[3]))
         task_ids = set(re.findall(r"TASK-CAP-\d{3}", cells[4]))
         status = cells[7]
+        scheduled_date = cells[1]
+        if reassessment_id in reassessment_dates:
+            messages.append(
+                f"{label}: duplicate Reassessment scheduled date for {reassessment_id}"
+            )
+        reassessment_dates[reassessment_id] = scheduled_date
+        try:
+            date.fromisoformat(scheduled_date)
+        except ValueError:
+            messages.append(
+                f"{label}: {reassessment_id} Scheduled date is not a valid ISO date: "
+                f"{scheduled_date!r}"
+            )
         reassessments[reassessment_id] = (evidence_ids, task_ids, status)
         if status not in REASSESSMENT_STATUS_SET:
             messages.append(
@@ -1066,6 +1116,31 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             messages.append(
                 f"{label}: {reassessment_id} tasks {sorted(task_ids)} "
                 f"do not match {sorted(expected_tasks)}"
+            )
+
+    expected_reassessment_dates = {
+        "REA-CAP-001": "2026-08-13",
+        "REA-CAP-002": "2026-08-20",
+        "REA-CAP-003": "2026-08-27",
+        "REA-CAP-CLAIM-003": "2026-11-05",
+    }
+    if reassessment_dates != expected_reassessment_dates:
+        messages.append(
+            f"{label}: Reassessment scheduled dates {reassessment_dates!r} do not match "
+            f"{expected_reassessment_dates!r}"
+        )
+    if claim_expiry:
+        try:
+            claim_expiry_date = datetime.fromisoformat(claim_expiry).date().isoformat()
+        except ValueError:
+            claim_expiry_date = ""
+        if (
+            claim_expiry_date
+            and reassessment_dates.get("REA-CAP-CLAIM-003") != claim_expiry_date
+        ):
+            messages.append(
+                f"{label}: claim reassessment date must match claim Expiry date "
+                f"{claim_expiry_date!r}"
             )
 
     expected_entries = set(expected_work_decomposition)
@@ -1413,6 +1488,17 @@ def verify_negative_regressions(
         "session IDを取得して追加benign recordを作る",
         "JWTを取得して追加benign recordを作る",
         "Bearer JWT retrieved for replay",
+        "メールアドレスを収集する",
+        "email address collected for additional benign record",
+        "電話番号を収集する",
+        "phone number collected for additional benign record",
+        "氏名を収集する",
+        "full name collected for additional benign record",
+        "住所を収集する",
+        "home address collected for additional benign record",
+        "生年月日を収集する",
+        "date of birth collected for additional benign record",
+        "synthetic email address used",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1534,6 +1620,49 @@ def verify_negative_regressions(
         invalid_reassessment_status, "negative invalid Reassessment status"
     ):
         error("negative regression accepted Reassessment status outside finite set")
+
+    invalid_reassessment_date = case.replace(
+        "| `REA-CAP-002` | 2026-08-20 |",
+        "| `REA-CAP-002` | 2026-09-99 |",
+        1,
+    )
+    invalid_reassessment_date_errors = case_contract_errors(
+        invalid_reassessment_date, "negative invalid Reassessment date"
+    )
+    if not any(
+        "Scheduled date is not a valid ISO date" in message
+        for message in invalid_reassessment_date_errors
+    ):
+        error("negative regression accepted an invalid Reassessment scheduled date")
+
+    claim_reassessment_date_drift = case.replace(
+        "| `REA-CAP-CLAIM-003` | 2026-11-05 |",
+        "| `REA-CAP-CLAIM-003` | 2026-11-06 |",
+        1,
+    )
+    claim_reassessment_date_drift_errors = case_contract_errors(
+        claim_reassessment_date_drift,
+        "negative claim Reassessment date drift",
+    )
+    if not any(
+        "claim reassessment date must match claim Expiry date" in message
+        for message in claim_reassessment_date_drift_errors
+    ):
+        error("negative regression accepted a claim Reassessment date drift")
+
+    claim_expiry_date_drift = case.replace(
+        "2026-11-05T17:00:00+09:00",
+        "2026-11-06T17:00:00+09:00",
+    )
+    claim_expiry_date_drift_errors = case_contract_errors(
+        claim_expiry_date_drift,
+        "negative claim Expiry date drift",
+    )
+    if not any(
+        "claim reassessment date must match claim Expiry date" in message
+        for message in claim_expiry_date_drift_errors
+    ):
+        error("negative regression accepted claim Expiry date drift")
 
     practice_status_in_reassessment = case.replace(
         "| `REA-CAP-001` | 2026-08-13 | 再承認Triggerの修正完了 | `ART-EVD-CAP-001-R2` | `TASK-CAP-001` | Synthetic Safety Reviewer | Scope変更時の停止・再承認が一意 | Planned |",
