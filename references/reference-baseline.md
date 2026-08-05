@@ -28,8 +28,8 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-OWASP-LLM-001 | OWASP GenAI Security Project | [Top 10 for LLM and GenAI Applications](https://genai.owasp.org/llm-top-10/) | 2025 / released | 2026-07-25 | 2026-10-25 | 27, 28 |
 | SRC-OWASP-AGENT-001 | OWASP GenAI Security Project | [Top 10 Risks and Mitigations for Agentic AI Security](https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/) | 2026 guidance / released | 2026-07-25 | 2026-10-25 | 27, 28 |
 | SRC-AISVS-001 | OWASP | [Artificial Intelligence Security Verification Standard](https://owasp.org/www-project-artificial-intelligence-security-verification-standard-aisvs-docs/) | 1.0 / live | 2026-07-25 | 2026-10-25 | 27 |
-| SRC-JP-LAW-001 | e-Gov | [不正アクセス行為の禁止等に関する法律](https://laws.e-gov.go.jp/law/411AC0000000128) | current-law | 2026-07-25 | 2026-10-25 | 2, 9 |
-| SRC-IPA-VDP-001 | IPA / JPCERT/CC | [情報セキュリティ早期警戒パートナーシップガイドライン](https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html) | current-guidance | 2026-07-25 | 2026-10-25 | 2, 15 |
+| SRC-JP-LAW-001 | e-Gov | [不正アクセス行為の禁止等に関する法律](https://laws.e-gov.go.jp/law/411AC0000000128) | current display effective 2025-06-01 / current-law | 2026-08-05 | 2026-11-05 | 2, 9 |
+| SRC-IPA-VDP-001 | IPA / JPCERT/CC | [情報セキュリティ早期警戒パートナーシップガイドライン](https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html) | 2024 edition / current-guidance | 2026-08-05 | 2026-11-05 | 2, 15 |
 | SRC-IANA-TLD-001 | Internet Assigned Numbers Authority (IANA) | [Root Zone Database — TLDs alpha by domain](https://data.iana.org/TLD/tlds-alpha-by-domain.txt) | 2026080300 / current-snapshot | 2026-08-03 | 2026-11-03 | 25 |
 
 ## 運用

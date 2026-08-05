@@ -6,6 +6,13 @@
   ],
   "pages": [
     {
+      "source": "manuscript/02-law-ethics-authorization.md",
+      "destination": "chapters/chapter-02/index.md",
+      "section": "chapters",
+      "order": 45,
+      "title": "第2章 法、倫理、許可、責任ある開示"
+    },
+    {
       "source": "manuscript/11-web-api-hypothesis.md",
       "destination": "chapters/chapter-11/index.md",
       "section": "chapters",
@@ -25,6 +32,27 @@
       "section": "additional",
       "order": 230,
       "title": "第1章 合成記入例：請求書連携OAuthアプリの権限見直し"
+    },
+    {
+      "source": "templates/authorization-checklist.md",
+      "destination": "templates/authorization-checklist/index.md",
+      "section": "additional",
+      "order": 232,
+      "title": "Authorization Checklist"
+    },
+    {
+      "source": "cases/ch02-authorization-decision-example.md",
+      "destination": "cases/chapter-02-authorization-decision/index.md",
+      "section": "additional",
+      "order": 233,
+      "title": "第2章 合成記入例：OAuth連携評価前のAuthorization判断"
+    },
+    {
+      "source": "cases/index.md",
+      "destination": "cases/index.md",
+      "section": "additional",
+      "order": 235,
+      "title": "合成Case索引"
     },
     {
       "source": "templates/web-api-assessment-hypothesis-pack.md",
@@ -60,13 +88,6 @@
       "section": "additional",
       "order": 270,
       "title": "第17章 オフラインfixture：未承認管理者同意変更の検知検証"
-    },
-    {
-      "source": "cases/index.md",
-      "destination": "cases/index.md",
-      "section": "additional",
-      "order": 235,
-      "title": "合成Case索引"
     },
     {
       "source": "templates/analytic-judgment-record.md",
