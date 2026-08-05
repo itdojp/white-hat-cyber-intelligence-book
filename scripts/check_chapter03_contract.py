@@ -965,31 +965,42 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     f"{claim_reassessment_id!r} must be 'REA-CAP-CLAIM-003'"
                 )
 
-    gap_rows = [
-        markdown_row_cells(line)
-        for line in text.splitlines()
-        if line.startswith("| `CAP-ENTRY-") and re.search(r"2026-08-(?:12|19|26)", line)
-    ]
+    gap_section_match = re.search(
+        r"^## 4\. Gap and Learning Action\s*$\n(?P<body>.*?)(?=^## 5\. )",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    gap_rows: list[list[str]] = []
+    if gap_section_match is None:
+        messages.append(f"{label}: missing bounded Gap and Learning Action section")
+    else:
+        gap_rows = [
+            markdown_row_cells(line)
+            for line in gap_section_match.group("body").splitlines()
+            if line.startswith("| `CAP-ENTRY-")
+        ]
     gap_entries = {cells[0].strip("`") for cells in gap_rows if len(cells) == 6}
     gap_next_evidence: dict[str, str] = {}
+    gap_due_dates: dict[str, str] = {}
     for cells in gap_rows:
-        if len(cells) == 6:
-            entry_id = cells[0].strip("`")
-            next_evidence = re.findall(r"ART-EVD-CAP-\d{3}-R2", cells[5])
-            if len(next_evidence) != 1:
-                messages.append(
-                    f"{label}: {entry_id} Gap row requires exactly one next Evidence ID"
-                )
-            else:
-                if entry_id in gap_next_evidence:
-                    messages.append(f"{label}: duplicate Gap entry ID {entry_id}")
-                gap_next_evidence[entry_id] = next_evidence[0]
-            reject_unsafe_operational_field(
-                cells[1], f"{entry_id} Gap"
+        if len(cells) != 6:
+            messages.append(f"{label}: malformed Gap/Learning Action row {cells!r}")
+            continue
+        entry_id = cells[0].strip("`")
+        next_evidence = re.findall(r"ART-EVD-CAP-\d{3}-R2", cells[5])
+        if len(next_evidence) != 1:
+            messages.append(
+                f"{label}: {entry_id} Gap row requires exactly one next Evidence ID"
             )
-            reject_unsafe_operational_field(
-                cells[2], f"{entry_id} Learning Action"
-            )
+        else:
+            if entry_id in gap_next_evidence:
+                messages.append(f"{label}: duplicate Gap entry ID {entry_id}")
+            gap_next_evidence[entry_id] = next_evidence[0]
+        if entry_id in gap_due_dates:
+            messages.append(f"{label}: duplicate Gap due date for {entry_id}")
+        gap_due_dates[entry_id] = cells[4]
+        reject_unsafe_operational_field(cells[1], f"{entry_id} Gap")
+        reject_unsafe_operational_field(cells[2], f"{entry_id} Learning Action")
     for evidence_id, practice in practice_by_evidence.items():
         if practice["result"] in {"Partially meets", "Does not meet", "Inconclusive"}:
             if practice["entry"] not in gap_entries:
@@ -1132,9 +1143,16 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{sorted(expected_final_review_areas)}"
         )
 
-    for date in ("2026-08-12", "2026-08-19", "2026-08-26"):
-        if date not in text:
-            messages.append(f"{label}: missing bounded Learning Action due date {date}")
+    expected_gap_due_dates = {
+        "CAP-ENTRY-001": "2026-08-12",
+        "CAP-ENTRY-002": "2026-08-19",
+        "CAP-ENTRY-003": "2026-08-26",
+    }
+    if gap_due_dates != expected_gap_due_dates:
+        messages.append(
+            f"{label}: Gap due dates {gap_due_dates!r} do not match "
+            f"{expected_gap_due_dates!r}"
+        )
 
     forbidden = (
         "実Targetへの攻撃を実施する",
@@ -1432,6 +1450,30 @@ def verify_negative_regressions(
     )
     if not case_contract_errors(unsafe_gap, "negative unsafe Gap wording"):
         error("negative regression accepted protected input in a Gap cell")
+
+    extra_unsafe_gap_row = case.replace(
+        "| `CAP-ENTRY-003` | Source independenceを支える別系統が不足 | 既存の合成資料から来歴が独立したSource noteを追加する | Synthetic Learning Owner | 2026-08-26 | `ART-EVD-CAP-003-R2` |\n",
+        "| `CAP-ENTRY-003` | Source independenceを支える別系統が不足 | 既存の合成資料から来歴が独立したSource noteを追加する | Synthetic Learning Owner | 2026-08-26 | `ART-EVD-CAP-003-R2` |\n"
+        "| `CAP-ENTRY-004` | 追加Gap | Tokenを取得して再評価 | Synthetic Learning Owner | 2026-08-30 | `ART-EVD-CAP-004-R2` |\n",
+        1,
+    )
+    extra_gap_errors = case_contract_errors(
+        extra_unsafe_gap_row, "negative extra unsafe Gap row"
+    )
+    if not any(
+        "unsafe real-target or sensitive-data input" in message
+        and "CAP-ENTRY-004 Learning Action" in message
+        for message in extra_gap_errors
+    ):
+        error("negative regression accepted an unscanned extra Gap row")
+
+    gap_due_date_drift = case.replace(
+        "2026-08-19 | `ART-EVD-CAP-002-R2` |",
+        "2026-08-30 | `ART-EVD-CAP-002-R2` |",
+        1,
+    )
+    if not case_contract_errors(gap_due_date_drift, "negative Gap due-date drift"):
+        error("negative regression accepted a Gap due-date drift")
 
     work_entry_drift = case.replace(
         "| `CAP-ENTRY-001` | Security engagementの開始判断を支援する |",
