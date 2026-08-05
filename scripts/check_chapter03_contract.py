@@ -703,6 +703,8 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:phishing|C2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|フィッシング|"
     r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール)"
     r"(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
+    r"c[ \t]*&[ \t]*c[ \t　・]*(?:基盤|インフラ|サーバー|チャネル|"
+    r"通信路|通信|接続|制御|運用)|"
     r"c[ \t]*&[ \t]*c(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
     r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール"
     r"(?:基盤|インフラ|サーバー|チャネル|通信路|通信|制御|運用)|"
@@ -2397,6 +2399,9 @@ def verify_negative_regressions(
         "C＆Cを構築する",
         "C & Cを構築する",
         "build C & C for additional benign record",
+        "C&Cサーバーを構築する",
+        "C&Cチャネルを作る",
+        "C & C インフラを構築する",
         "deploy command-and-control for additional benign record",
         "command-and-control channelを作る",
         "lateral movementを実施する",
