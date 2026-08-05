@@ -37,7 +37,7 @@
 | Field | Value |
 |---|---|
 | Capability Claim ID | `CAP-CLAIM-2026-003` |
-| Scope | 合成ScenarioのAuthorization Checklist、offline detection fixture、合成Sourceの分析判断を、宣言済みRubricで作成・説明できる |
+| Scope | 合成ScenarioでTask 2のoffline detection fixtureをRubricどおり検証できる。Task 1は一部条件を満たし、Task 3は結論不能であることを識別し、両者のGapと再評価を説明できる |
 | Conditions | 完全合成資料、Repository提供fixture、Components v2.2.0、Reviewerからの一回の質問機会 |
 | Evidence set | `ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` |
 | Reviewer | Synthetic Capability Panel。各Task reviewerとは別の統合Review role |
@@ -93,7 +93,7 @@ Rubricの判定軸はTask開始前に固定した。結果に合わせた基準�
 
 | Claim ID | Scope | Conditions | Evidence set | Reviewer | Result | Limitations | Expiry | Trigger | Reassessment ID |
 |---|---|---|---|---|---|---|---|---|---|
-| `CAP-CLAIM-2026-003` | 三つの合成TaskにおけるArtifact作成と限界説明 | 合成資料、offline fixture、v2.2.0、宣言済みRubric | `ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` | Synthetic Capability Panel | Partially supported | Task 1は条件不足、Task 3は結論不能。実案件と人物評価へ一般化しない | 2026-11-05T17:00:00+09:00 | Components、Scope、Role、Rubric、期限の変更 | `REA-CAP-CLAIM-003` |
+| `CAP-CLAIM-2026-003` | Task 2のoffline detection fixture検証、およびTask 1 / 3の未達・結論不能の識別と再評価設計 | 合成資料、offline fixture、v2.2.0、宣言済みRubric | `ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` | Synthetic Capability Panel | Partially supported | Task 1は条件不足、Task 3は結論不能。実案件と人物評価へ一般化しない | 2026-11-05T17:00:00+09:00 | Components、Scope、Role、Rubric、期限の変更 | `REA-CAP-CLAIM-003` |
 
 判断根拠は、Task 2が`Meets`、Task 1が`Partially meets`、Task 3が`Inconclusive`であることによる。資格、CTF得点、Tool数、章完了はこの結論のEvidence setに含めていない。
 

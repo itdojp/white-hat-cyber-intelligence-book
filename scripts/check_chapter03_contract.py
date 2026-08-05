@@ -63,6 +63,20 @@ STATUS_SET = {
     "Complete",
 }
 
+REVIEW_RESULT_SET = {
+    "Meets",
+    "Partially meets",
+    "Does not meet",
+    "Inconclusive",
+}
+
+CLAIM_RESULT_SET = {
+    "Supported",
+    "Partially supported",
+    "Not supported",
+    "Inconclusive",
+}
+
 EXPECTED_SOURCE = {
     "title": (
         "Workforce Framework for Cybersecurity (NICE Framework) and "
@@ -233,6 +247,9 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
         "実Targetへの攻撃を学習証拠にする",
         "無許可の実Target操作をPracticeとする",
         "攻撃活動量が多いほど能力が高い",
+        "この章のCapability Judgmentを採用判定に転用できる",
+        "従業員をCapabilityで順位付けする",
+        "Capability Judgmentを公開ランキングに使用できる",
     ):
         if forbidden in text:
             messages.append(f"{label}: unsafe or unsupported assertion {forbidden!r}")
@@ -278,7 +295,18 @@ def template_contract_errors(text: str, label: str) -> list[str]:
         "人事評価、採用、昇進、報酬、資格認定、公開ランキングには使用しない",
         "実在Targetへの攻撃、実Credential、Token、Cookie、個人情報、従業員Data、顧客DataをEvidenceにしない",
     )
-    return [f"{label}: missing required token {x!r}" for x in missing_tokens(text, required)]
+    messages = [
+        f"{label}: missing required token {x!r}"
+        for x in missing_tokens(text, required)
+    ]
+    for forbidden in (
+        "このTemplateを採用判定と公開ランキングに使う",
+        "このTemplateを従業員の順位付けに使う",
+        "Capability Judgmentを報酬決定へ直接使用する",
+    ):
+        if forbidden in text:
+            messages.append(f"{label}: prohibited HR or ranking use {forbidden!r}")
+    return messages
 
 
 def markdown_row_cells(line: str) -> list[str]:
@@ -327,6 +355,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "Synthetic Detection Reviewer",
         "Synthetic Analytic Reviewer",
         "Result | Partially supported",
+        "Task 2のoffline detection fixtureをRubricどおり検証できる",
+        "Task 1は一部条件を満たし、Task 3は結論不能",
         "Limitations",
         "Expiry | 2026-11-05T17:00:00+09:00",
         "Reassessment Trigger",
@@ -350,13 +380,113 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     ]
     if len(entry_rows) != 3:
         messages.append(f"{label}: expected exactly 3 Practice/Evidence entry rows")
+    practice_by_evidence: dict[str, dict[str, str]] = {}
     for cells in entry_rows:
         if len(cells) != 10:
             messages.append(f"{label}: malformed Practice/Evidence row {cells!r}")
             continue
+        evidence_id = cells[3].strip("`")
+        if evidence_id in practice_by_evidence:
+            messages.append(f"{label}: duplicate Practice evidence ID {evidence_id}")
+        practice_by_evidence[evidence_id] = {
+            "entry": cells[0].strip("`"),
+            "reviewer": cells[4],
+            "rubric": cells[5].strip("`"),
+            "result": cells[6],
+            "status": cells[7],
+            "limitations": cells[8],
+            "reassessment": cells[9].strip("`"),
+        }
         status = cells[7]
         if status not in STATUS_SET:
             messages.append(f"{label}: status outside finite set: {status!r}")
+        if cells[6] not in REVIEW_RESULT_SET:
+            messages.append(f"{label}: Practice result outside finite set: {cells[6]!r}")
+
+    review_rows = [
+        markdown_row_cells(line)
+        for line in text.splitlines()
+        if line.startswith("| `REV-CAP-")
+    ]
+    if len(review_rows) != 3:
+        messages.append(f"{label}: expected exactly 3 Review Result rows")
+    reviews_by_evidence: dict[str, dict[str, str]] = {}
+    for cells in review_rows:
+        if len(cells) != 9:
+            messages.append(f"{label}: malformed Review Result row {cells!r}")
+            continue
+        evidence_id = cells[1].strip("`")
+        if evidence_id in reviews_by_evidence:
+            messages.append(f"{label}: duplicate reviewed evidence ID {evidence_id}")
+        reviews_by_evidence[evidence_id] = {
+            "reviewer": cells[3],
+            "rubric": cells[4].strip("`"),
+            "result": cells[5],
+            "findings": cells[7],
+            "disposition": cells[8],
+        }
+        if cells[5] not in REVIEW_RESULT_SET:
+            messages.append(f"{label}: Review Result outside finite set: {cells[5]!r}")
+
+    if set(practice_by_evidence) != set(reviews_by_evidence):
+        messages.append(
+            f"{label}: Practice evidence IDs {sorted(practice_by_evidence)} do not "
+            f"match reviewed evidence IDs {sorted(reviews_by_evidence)}"
+        )
+    for evidence_id in sorted(set(practice_by_evidence) & set(reviews_by_evidence)):
+        practice = practice_by_evidence[evidence_id]
+        review = reviews_by_evidence[evidence_id]
+        for field in ("reviewer", "rubric", "result"):
+            if practice[field] != review[field]:
+                messages.append(
+                    f"{label}: {evidence_id} Practice/Review {field} mismatch: "
+                    f"{practice[field]!r} != {review[field]!r}"
+                )
+        if review["result"] == "Inconclusive":
+            if practice["status"] not in {"Gap identified", "Reassessment due"}:
+                messages.append(
+                    f"{label}: inconclusive {evidence_id} must remain in a Gap or Reassessment status"
+                )
+            if not practice["limitations"] or not practice["reassessment"]:
+                messages.append(
+                    f"{label}: inconclusive {evidence_id} requires limitations and reassessment"
+                )
+
+    claim_rows = [
+        markdown_row_cells(line)
+        for line in text.splitlines()
+        if line.startswith("| `CAP-CLAIM-2026-003`")
+    ]
+    if len(claim_rows) != 1:
+        messages.append(f"{label}: expected exactly one bounded Capability Judgment row")
+    else:
+        cells = claim_rows[0]
+        if len(cells) != 10:
+            messages.append(f"{label}: malformed Capability Judgment row {cells!r}")
+        else:
+            claim_evidence = set(re.findall(r"ART-EVD-CAP-\d{3}", cells[3]))
+            if claim_evidence != set(reviews_by_evidence):
+                messages.append(
+                    f"{label}: Capability Judgment evidence {sorted(claim_evidence)} "
+                    f"must equal reviewed evidence {sorted(reviews_by_evidence)}"
+                )
+            if len(claim_evidence) < 2:
+                messages.append(f"{label}: Capability Judgment requires multiple evidence items")
+            if cells[5] not in CLAIM_RESULT_SET:
+                messages.append(f"{label}: Capability Judgment result outside finite set: {cells[5]!r}")
+
+    gap_rows = [
+        markdown_row_cells(line)
+        for line in text.splitlines()
+        if line.startswith("| `CAP-ENTRY-") and re.search(r"2026-08-(?:12|19|26)", line)
+    ]
+    gap_entries = {cells[0].strip("`") for cells in gap_rows if len(cells) == 6}
+    for evidence_id, practice in practice_by_evidence.items():
+        if practice["result"] in {"Partially meets", "Does not meet", "Inconclusive"}:
+            if practice["entry"] not in gap_entries:
+                messages.append(
+                    f"{label}: {evidence_id} result {practice['result']!r} requires a Gap/Learning Action row"
+                )
 
     for date in ("2026-08-12", "2026-08-19", "2026-08-26"):
         if date not in text:
@@ -374,18 +504,40 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     return messages
 
 
-def check_reserved_names(relative: str, text: str) -> None:
-    allowed_suffixes = (".example", ".test", ".invalid", ".localhost")
+def reserved_name_contract_errors(relative: str, text: str) -> list[str]:
+    messages: list[str] = []
+    allowed_suffixes = (".example", ".test", ".invalid")
     for raw_url in re.findall(r"https?://[^\s`)\]>]+", text):
         host = (urlparse(raw_url).hostname or "").lower()
         if host and not host.endswith(allowed_suffixes):
-            error(f"{relative}: non-reserved URL in synthetic content: {raw_url}")
+            messages.append(f"{relative}: non-reserved URL in synthetic content: {raw_url}")
     domain_pattern = re.compile(
         r"(?<![A-Za-z0-9_-])(?:[A-Za-z0-9-]+\.)+(?:com|net|org|jp|io|dev|app|cloud)(?![A-Za-z0-9_-])",
         re.IGNORECASE,
     )
     for domain in domain_pattern.findall(text):
-        error(f"{relative}: possible real domain in synthetic content: {domain}")
+        messages.append(f"{relative}: possible real domain in synthetic content: {domain}")
+    return messages
+
+
+def sensitive_content_errors(relative: str, text: str) -> list[str]:
+    messages: list[str] = []
+    secret_patterns = (
+        re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
+        re.compile(r"AKIA[0-9A-Z]{16}"),
+        re.compile(r"gh[pousr]_[A-Za-z0-9_]{20,}"),
+        re.compile(
+            r"(?i)(?:password|api[_-]?key|secret|token)\s*[:=]\s*[A-Za-z0-9+/=_-]{16,}"
+        ),
+    )
+    for pattern in secret_patterns:
+        if pattern.search(text):
+            messages.append(f"{relative}: possible real credential or secret pattern detected")
+    for email in re.findall(r"[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})", text):
+        domain = email.lower()
+        if not domain.endswith((".example", ".test", ".invalid")):
+            messages.append(f"{relative}: possible real personal email address detected")
+    return messages
 
 
 def source_contract_errors(registry: dict, label: str) -> list[str]:
@@ -483,6 +635,7 @@ def verify_negative_regressions(
     case: str,
     sources: dict,
     raw_registry: dict,
+    audit_note: str,
 ) -> None:
     chapter_without_trace = chapter.replace(CORE_TRACE, "Task → Evidence")
     if not chapter_contract_errors(chapter_without_trace, "negative chapter core trace"):
@@ -497,6 +650,10 @@ def verify_negative_regressions(
     ):
         error("negative regression accepted a false universal NICE level assertion")
 
+    chapter_with_hr_use = chapter + "\nこの章のCapability Judgmentを採用判定に転用できる。\n"
+    if not chapter_contract_errors(chapter_with_hr_use, "negative Chapter HR use"):
+        error("negative regression accepted Chapter 3 Capability Judgment for hiring")
+
     template_status_drift = template.replace(
         "Planned / In practice / Evidence submitted / Reviewed / Gap identified / Reassessment due / Complete",
         "Planned / In practice / Ranked / Complete",
@@ -504,9 +661,47 @@ def verify_negative_regressions(
     if not template_contract_errors(template_status_drift, "negative status drift"):
         error("negative regression accepted Capability Evidence status drift")
 
+    template_with_hr_use = template + "\nこのTemplateを採用判定と公開ランキングに使う。\n"
+    if not template_contract_errors(template_with_hr_use, "negative Template HR use"):
+        error("negative regression accepted ART-14 for hiring or public ranking")
+
     unsafe_case = case + "\n実Targetへの攻撃を実施する\n"
     if not case_contract_errors(unsafe_case, "negative real-target practice"):
         error("negative regression accepted real-target activity as learning evidence")
+
+    evidence_shrink = case.replace(
+        "`ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` | Synthetic Capability Panel | Partially supported",
+        "`ART-EVD-CAP-002` | Synthetic Capability Panel | Partially supported",
+    )
+    if not case_contract_errors(evidence_shrink, "negative single-evidence claim"):
+        error("negative regression accepted a single-evidence Capability Judgment")
+
+    result_mismatch = case.replace(
+        "`ART-EVD-CAP-001` | Synthetic Safety Reviewer | `RUBRIC-CAP-001` | Partially meets | Gap identified",
+        "`ART-EVD-CAP-001` | Synthetic Safety Reviewer | `RUBRIC-CAP-001` | Meets | Gap identified",
+        1,
+    )
+    if not case_contract_errors(result_mismatch, "negative Practice/Review mismatch"):
+        error("negative regression accepted a Practice/Review Result mismatch")
+
+    invalid_result = case.replace(
+        "`RUBRIC-CAP-003` | Inconclusive | 2026-08-05T15:00:00+09:00",
+        "`RUBRIC-CAP-003` | Pass | 2026-08-05T15:00:00+09:00",
+    )
+    if not case_contract_errors(invalid_result, "negative invalid Review Result"):
+        error("negative regression accepted a Review Result outside the finite set")
+
+    if not reserved_name_contract_errors(
+        "negative synthetic domain", "https://admin.localhost/runbook"
+    ):
+        error("negative regression accepted .localhost outside the Case domain policy")
+
+    leaked_audit = audit_note + "\napi_key=0123456789abcdef0123456789abcdef\n"
+    if not sensitive_content_errors("negative source audit secret", leaked_audit):
+        error("negative regression accepted a secret-like value in the source audit")
+    pii_audit = audit_note + "\nreviewer=person@real-company.com\n"
+    if not sensitive_content_errors("negative source audit PII", pii_audit):
+        error("negative regression accepted a real-domain email in the source audit")
 
     source_mutations: list[tuple[str, dict]] = []
     for field, value in (
@@ -601,20 +796,27 @@ def main() -> int:
         error(message)
     for message in case_contract_errors(case, case_path):
         error(message)
-    check_reserved_names(case_path, case)
+    for message in reserved_name_contract_errors(case_path, case):
+        error(message)
 
-    secret_patterns = (
-        re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
-        re.compile(r"AKIA[0-9A-Z]{16}"),
-        re.compile(r"gh[pousr]_[A-Za-z0-9_]{20,}"),
-        re.compile(
-            r"(?i)(?:password|api[_-]?key|secret|token)\s*[:=]\s*[A-Za-z0-9+/=_-]{16,}"
-        ),
+    safety_scan_files = (
+        chapter_path,
+        template_path,
+        case_path,
+        "references/ch03-source-review-2026-08-05.md",
+        "references/sources.json",
+        "references/reference-baseline.md",
+        "artifact-index.md",
+        "cases/index.md",
+        "figure-index.md",
+        "glossary.md",
+        "index.md",
+        "site-pages.json",
+        "package.json",
     )
-    for relative, text in ((chapter_path, chapter), (template_path, template), (case_path, case)):
-        for pattern in secret_patterns:
-            if pattern.search(text):
-                error(f"{relative}: possible real credential or secret pattern detected")
+    for relative in safety_scan_files:
+        for message in sensitive_content_errors(relative, read_text(relative)):
+            error(message)
 
     raw_registry = load_json("site-pages.json")
     try:
@@ -712,7 +914,9 @@ def main() -> int:
         error("package.json: npm test does not include check:chapter03")
 
     if chapter and template and case and sources and raw_registry:
-        verify_negative_regressions(chapter, template, case, sources, raw_registry)
+        verify_negative_regressions(
+            chapter, template, case, sources, raw_registry, audit_note
+        )
 
     for message in ERRORS:
         print(f"ERROR: {message}")
