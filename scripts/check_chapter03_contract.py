@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import html
+import ipaddress
 import re
 import sys
 import unicodedata
@@ -667,6 +668,7 @@ def template_contract_errors(text: str, label: str) -> list[str]:
             f"{label} ART-14 Template",
         )
     )
+    messages.extend(reserved_name_contract_errors(label, text))
     return messages
 
 
@@ -684,6 +686,9 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:deployable[- ]?)?malware|ransomware|wiper|"
     r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
     r"[- ](?:infrastructure|server|site|page|channel)|"
+    r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
+    r"[ \t　・]*(?:攻撃|詐欺|基盤|インフラ|サイト|ページ|"
+    r"サーバー|チャネル|通信路|通信|接続|制御|運用)|"
     r"\b(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|"
     r"c[ \t]*&[ \t]*c)\b|"
     r"lateral[- ]movement|defen[cs]e[- ]evasion|"
@@ -693,6 +698,8 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:distributed[- ])?denial[- ]of[- ]service|\b(?:dos|ddos)\b|"
     r"(?:unauthorized[- ])?(?:data[- ])?(?:modification|encryption)|"
     r"resource[- ]exhaustion|mfa[- ]fatigue|"
+    r"brute[- ]force[- ](?:login|authentication)|"
+    r"(?:login|authentication)[- ]attempts?|"
     r"stealth[- ]tool(?:ing)?|impersonation|social[- ]engineering|"
     r"doxx(?:ing)?|tracking[- ](?:a[- ])?real[- ]person|"
     r"anonymi[sz]ation[- ]infrastructure|dark[- ]web[- ]infiltration|"
@@ -714,6 +721,8 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"破壊的(?:操作|行為)|データ破壊|サービス拒否|DoS攻撃|DDoS攻撃|"
     r"無許可(?:データ)?(?:変更|改変|暗号化)|データ(?:変更|改変|改ざん|暗号化)|"
     r"資源枯渇|MFA疲労(?:攻撃)?|ステルスツール|なりすまし|"
+    r"認証(?:試行|総当たり)|ログイン(?:試行|総当たり)|"
+    r"総当たり(?:攻撃|ログイン|認証)|"
     r"ソーシャルエンジニアリング|ドキシング|晒し|"
     r"実在人物(?:の)?(?:追跡|位置推定)|匿名化基盤|"
     r"ダークウェブ(?:への)?直接潜入|弱いEvidenceからの断定的帰属|"
@@ -1981,15 +1990,45 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{label} synthetic Case",
         )
     )
+    messages.extend(reserved_name_contract_errors(label, text))
     return messages
 
 
 def reserved_name_contract_errors(relative: str, text: str) -> list[str]:
     messages: list[str] = []
     allowed_suffixes = (".example", ".test", ".invalid")
-    for raw_url in re.findall(r"https?://[^\s`)\]>]+", text):
-        host = (urlparse(raw_url).hostname or "").lower()
-        if host and not host.endswith(allowed_suffixes):
+    documentation_networks = (
+        ipaddress.ip_network("192.0.2.0/24"),
+        ipaddress.ip_network("198.51.100.0/24"),
+        ipaddress.ip_network("203.0.113.0/24"),
+        ipaddress.ip_network("2001:db8::/32"),
+    )
+
+    def parse_ip(value: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | None:
+        try:
+            return ipaddress.ip_address(value.strip("[]"))
+        except ValueError:
+            return None
+
+    def is_documentation_address(
+        address: ipaddress.IPv4Address | ipaddress.IPv6Address,
+    ) -> bool:
+        return any(address in network for network in documentation_networks)
+
+    for raw_url in re.findall(r"https?://[^\s`)>]+", text):
+        try:
+            host = (urlparse(raw_url).hostname or "").lower()
+        except ValueError:
+            messages.append(f"{relative}: malformed URL in synthetic content: {raw_url}")
+            continue
+        address = parse_ip(host)
+        if address is not None:
+            if not is_documentation_address(address):
+                messages.append(
+                    f"{relative}: non-documentation IP URL in synthetic content: "
+                    f"{raw_url}"
+                )
+        elif host and not host.endswith(allowed_suffixes):
             messages.append(f"{relative}: non-reserved URL in synthetic content: {raw_url}")
     domain_pattern = re.compile(
         r"(?<![A-Za-z0-9_-])(?:[A-Za-z0-9-]+\.)+(?:com|net|org|jp|io|dev|app|cloud)(?![A-Za-z0-9_-])",
@@ -1997,6 +2036,40 @@ def reserved_name_contract_errors(relative: str, text: str) -> list[str]:
     )
     for domain in domain_pattern.findall(text):
         messages.append(f"{relative}: possible real domain in synthetic content: {domain}")
+
+    detected_addresses: dict[str, ipaddress.IPv4Address | ipaddress.IPv6Address] = {}
+    normalized_text = unicodedata.normalize("NFKC", text)
+    for raw_token in re.findall(r"[A-Za-z0-9_.:\[\]-]+", normalized_text):
+        token = raw_token.rstrip(".,;")
+        forms = {token}
+        if token.startswith(":") and not token.startswith("::"):
+            forms.add(token[1:])
+        labelled = re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.-]*:(.+)", token)
+        if labelled:
+            forms.add(labelled.group(1))
+        for form in forms:
+            if "." not in form and ":" not in form:
+                continue
+            bracketed = re.fullmatch(r"\[([0-9A-Fa-f:.]+)\](?::\d+)?", form)
+            ipv4_with_port = re.fullmatch(
+                r"((?:\d{1,3}\.){3}\d{1,3})(?::\d*)?",
+                form,
+            )
+            if bracketed:
+                address_text = bracketed.group(1)
+            elif ipv4_with_port:
+                address_text = ipv4_with_port.group(1)
+            else:
+                address_text = form
+            address = parse_ip(address_text)
+            if address is not None:
+                detected_addresses[str(address)] = address
+    for address_text, address in sorted(detected_addresses.items()):
+        if not is_documentation_address(address):
+            messages.append(
+                f"{relative}: non-documentation IP literal in synthetic content: "
+                f"{address_text}"
+            )
     return messages
 
 
@@ -2384,6 +2457,8 @@ def verify_negative_regressions(
         "phishing infrastructureを構築する",
         "phishing siteを構築する",
         "phishing pageを作る",
+        "phishingインフラを構築する",
+        "command-and-controlサーバーを構築する",
         "phishingを実施する",
         "perform phishing for additional benign record",
         "フィッシングを実施する",
@@ -2415,6 +2490,9 @@ def verify_negative_regressions(
         "encryptionを実行する",
         "resource exhaustionを発生させる",
         "MFA fatigueを実施する",
+        "authentication attemptを実施する",
+        "brute force loginを実施する",
+        "brute-force loginを実施する",
         "stealth toolingを作成する",
         "impersonationを実施する",
         "social engineeringを実施する",
@@ -2446,6 +2524,8 @@ def verify_negative_regressions(
         "無許可データ改変を実行する",
         "資源枯渇を発生させる",
         "MFA疲労攻撃を実施する",
+        "認証試行を実施する",
+        "ログイン総当たりを実施する",
         "ステルスツールを作成する",
         "なりすましを実施する",
         "ソーシャルエンジニアリングを実施する",
@@ -2957,6 +3037,90 @@ def verify_negative_regressions(
     ):
         error("negative regression accepted .localhost outside the Case domain policy")
 
+    for documentation_address in (
+        "192.0.2.10",
+        "198.51.100.10",
+        "203.0.113.10",
+        "2001:db8::10",
+        "https://[2001:db8::10]/fixture",
+    ):
+        if reserved_name_contract_errors(
+            "documentation address positive regression", documentation_address
+        ):
+            error(
+                "positive regression rejected a documentation address: "
+                f"{documentation_address}"
+            )
+
+    for non_documentation_address in (
+        "8.8.8.8",
+        "8.8.8.8.",
+        "8.8.8.8:53",
+        "8.8.8.8:53.",
+        "8.8.8.8:",
+        "接続先:8.8.8.8",
+        "接続先：8.8.8.8",
+        "接続先:8.8.8.8:",
+        "接続先：8.8.8.8：",
+        "接続先:2606:4700:4700::1111",
+        "resolver:8.8.8.8",
+        "resolver:8.8.8.8:",
+        "resolver=8.8.8.8:53",
+        "2606:4700:4700::1111",
+        "2606:4700:4700::1111.",
+        "::ffff:8.8.8.8",
+        "https://8.8.8.8/fixture",
+    ):
+        address_errors = reserved_name_contract_errors(
+            "non-documentation address negative regression",
+            non_documentation_address,
+        )
+        if not any("non-documentation IP" in message for message in address_errors):
+            error(
+                "negative regression accepted a non-documentation address: "
+                f"{non_documentation_address}"
+            )
+
+    for non_address_identifier in ("key::1", "::1test"):
+        if reserved_name_contract_errors(
+            "non-address identifier positive regression",
+            non_address_identifier,
+        ):
+            error(
+                "positive regression misclassified a non-address identifier: "
+                f"{non_address_identifier}"
+            )
+
+    non_documentation_ip_template = template.replace(
+        "| `CAP-ENTRY-001` |  |  |  | ISO 8601 |  |",
+        "| `CAP-ENTRY-001` | 追加Gap | 8.8.8.8へ接続する | Owner | ISO 8601 | Evidence |",
+        1,
+    )
+    non_documentation_template_errors = template_contract_errors(
+        non_documentation_ip_template,
+        "negative bare non-documentation IP Template",
+    )
+    if not any(
+        "non-documentation IP literal" in message
+        for message in non_documentation_template_errors
+    ):
+        error("negative regression accepted a bare non-documentation IP in Template")
+
+    non_documentation_ip_case = case.replace(
+        "既存fixtureの追加benign recordをofflineで再評価する",
+        "8.8.8.8へ接続して追加benign recordを作る",
+        1,
+    )
+    non_documentation_ip_errors = case_contract_errors(
+        non_documentation_ip_case,
+        "negative bare non-documentation IP Case",
+    )
+    if not any(
+        "non-documentation IP literal" in message
+        for message in non_documentation_ip_errors
+    ):
+        error("negative regression accepted a bare non-documentation IP in Case")
+
     leaked_audit = audit_note + "\napi_key=0123456789abcdef0123456789abcdef\n"
     if not sensitive_content_errors("negative source audit secret", leaked_audit):
         error("negative regression accepted a secret-like value in the source audit")
@@ -3074,8 +3238,6 @@ def main() -> int:
     for message in template_contract_errors(template, template_path):
         error(message)
     for message in case_contract_errors(case, case_path):
-        error(message)
-    for message in reserved_name_contract_errors(case_path, case):
         error(message)
 
     safety_scan_files = (
