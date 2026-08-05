@@ -408,17 +408,28 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
     r"real[- ]?(?:credential|token|cookie)|"
     r"(?:credential|token|cookie|secret|password|passphrase)s?|"
-    r"api(?:[- _]?key|キー)|access[- _]?key|アクセス(?:・)?キー|PII|"
+    r"api[- _]?(?:key|キー)|"
+    r"(?:access|private|ssh|session|authentication|auth|signing|encryption)"
+    r"[- _]?(?:key|id)|"
+    r"アクセス(?:[- _・]?(?:キー|鍵))|"
+    r"(?:秘密|SSH|セッション|認証|署名|暗号)"
+    r"(?:[- _・]?(?:キー|鍵|ID|識別子))|PII|"
     r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|シークレット|"
-    r"パスワード|パスフレーズ|個人情報|個人データ|"
-    r"従業員(?:Data|データ|情報)|顧客(?:Data|データ|情報)|"
-    r"personal[- ](?:data|information)|employee[- ](?:data|information)|"
-    r"customer[- ](?:data|information)|personally[- ]identifiable[- ]information)",
+    r"パスワード|パスフレーズ|個人(?:の)?(?:情報|データ)|"
+    r"従業員(?:の)?(?:Data|データ|情報)|"
+    r"顧客(?:の)?(?:Data|データ|情報)|"
+    r"(?:personal|employee|customer|staff)[- ](?:data|info(?:rmation)?)|"
+    r"personally[- ]identifiable[- ]info(?:rmation)?)",
     re.IGNORECASE,
 )
 SYNTHETIC_QUALIFIABLE_INPUT = re.compile(
     r"(?:(?:credential|token|cookie|secret|password|passphrase)s?|"
-    r"api(?:[- _]?key|キー)|access[- _]?key|アクセス(?:・)?キー|"
+    r"api[- _]?(?:key|キー)|"
+    r"(?:access|private|ssh|session|authentication|auth|signing|encryption)"
+    r"[- _]?(?:key|id)|"
+    r"アクセス(?:[- _・]?(?:キー|鍵))|"
+    r"(?:秘密|SSH|セッション|認証|署名|暗号)"
+    r"(?:[- _・]?(?:キー|鍵|ID|識別子))|"
     r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|シークレット|"
     r"パスワード|パスフレーズ)",
     re.IGNORECASE,
@@ -1082,6 +1093,43 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{claim_reassessment_id!r} is not defined"
         )
 
+    expected_final_review_areas = {
+        "Technical correctness",
+        "Safety / authorization",
+        "Source quality / freshness",
+        "Evidence / traceability",
+        "Decision usefulness",
+    }
+    final_review_section_match = re.search(
+        r"^## 9\. Review\s*$\n(?P<body>.*)\Z",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    final_review_rows: dict[str, list[str]] = {}
+    if final_review_section_match is None:
+        messages.append(f"{label}: missing bounded final Review section")
+    else:
+        for line in final_review_section_match.group("body").splitlines():
+            if not line.startswith("|"):
+                continue
+            cells = markdown_row_cells(line)
+            if not cells or cells[0] not in expected_final_review_areas:
+                continue
+            if len(cells) != 6:
+                messages.append(f"{label}: malformed final Review row {cells!r}")
+                continue
+            if cells[0] in final_review_rows:
+                messages.append(f"{label}: duplicate final Review area {cells[0]!r}")
+            final_review_rows[cells[0]] = cells
+            reject_unsafe_operational_field(
+                cells[5], f"final Review {cells[0]} Notes"
+            )
+    if set(final_review_rows) != expected_final_review_areas:
+        messages.append(
+            f"{label}: final Review areas {sorted(final_review_rows)} do not match "
+            f"{sorted(expected_final_review_areas)}"
+        )
+
     for date in ("2026-08-12", "2026-08-19", "2026-08-26"):
         if date not in text:
             messages.append(f"{label}: missing bounded Learning Action due date {date}")
@@ -1332,10 +1380,17 @@ def verify_negative_regressions(
         "合成個人情報を使用する",
         "API keyを取得して追加benign recordを作る",
         "APIキーを取得する",
+        "API キーを取得する",
         "access-key retrieved for replay",
         "アクセスキーを取得する",
         "顧客情報を収集する",
         "従業員情報を収集する",
+        "顧客の情報を収集する",
+        "従業員の情報を収集する",
+        "personal info collected for additional benign record",
+        "private key retrieved for additional benign record",
+        "SSH keyを取得して追加benign recordを作る",
+        "session IDを取得して追加benign recordを作る",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1351,7 +1406,10 @@ def verify_negative_regressions(
         "合成Tokenを使用する",
         "Synthetic Cookie fixtureを使用する",
         "合成APIキーを使用する",
+        "合成API キーを使用する",
         "Synthetic access-key fixture used",
+        "Synthetic private key fixture used",
+        "Synthetic session ID fixture used",
         "Tokenを使用しない",
     ):
         if unsafe_operational_field_errors(
@@ -1556,6 +1614,16 @@ def verify_negative_regressions(
             mutated_case, f"negative unsafe {field_name}"
         ):
             error(f"negative regression accepted protected input in {field_name}")
+
+    unsafe_final_review_notes = case.replace(
+        "合成・offline条件と停止条件を確認",
+        "合成・offline条件と停止条件を確認。Tokenを取得して確認",
+        1,
+    )
+    if not case_contract_errors(
+        unsafe_final_review_notes, "negative unsafe final Review Notes"
+    ):
+        error("negative regression accepted protected input in final Review Notes")
 
     fixture_without_required_field_negative = case.replace(
         "| `FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert | 欠損Fieldの補完処理は未評価 |\n",
