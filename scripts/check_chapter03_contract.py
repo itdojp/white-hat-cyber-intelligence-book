@@ -685,7 +685,9 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
     r"外部(?:組織|企業|団体)(?:の)?(?:System|システム|環境|Data|データ|API|"
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
+    r"外部(?:Service|サービス|SaaS|Site|サイト)|"
     r"third[- ]party[- ]?(?:system|data|environment|api(?:[- ]endpoint)?s?|service|saas|site)s?|"
+    r"external[- ](?:service|saas|site)s?|"
     r"(?:deployable[- ]?)?malware|ransomware|wiper|"
     r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
     r"[- ](?:infrastructure|server|site|page|channel)|"
@@ -727,10 +729,11 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"無許可(?:データ)?(?:変更|改変|暗号化)|データ(?:変更|改変|改ざん|暗号化)|"
     r"資源枯渇|MFA疲労(?:攻撃)?|ステルスツール|なりすまし|"
     r"認証(?:試行|総当たり)|ログイン(?:試行|総当たり)|"
-    r"(?:ログイン|認証)(?:を|へ)?(?:試す|試行する|試みる)|"
+    r"(?:ログイン|認証)(?:(?:を|へ)?(?:試す|試行する|試みる|"
+    r"実施する|行う)|する)|"
     r"総当たり(?:攻撃|ログイン|認証)|"
     r"ブルート[ \t　・-]*フォース(?:ログイン|認証|攻撃)|"
-    r"セッション(?:ハイジャック|ハイジャッキング|固定|"
+    r"セッション[ \t　・-]*(?:ハイジャック|ハイジャッキング|固定|"
     r"フィクセーション|リプレイ|再利用|乗っ取り)|"
     r"ソーシャルエンジニアリング|ドキシング|晒し|"
     r"実在人物(?:の)?(?:追跡|位置推定)|匿名化基盤|"
@@ -2470,9 +2473,11 @@ def verify_negative_regressions(
         "第三者APIエンドポイントへ接続する",
         "第三者サービスへ接続する",
         "他社サービスへ接続する",
+        "外部サービスへ接続する",
         "third-party API accessed for additional benign record",
         "third-party API endpoint accessed for additional benign record",
         "third-party service accessed for additional benign record",
+        "external service accessed for additional benign record",
         "他社システムを追加走査する",
         "実**Target**を走査する",
         "実ターゲットを走査する",
@@ -2558,11 +2563,17 @@ def verify_negative_regressions(
         "認証試行を実施する",
         "ログインを試す",
         "認証を試す",
+        "ログインする",
+        "ログインを実施する",
+        "認証を行う",
         "ログイン総当たりを実施する",
         "ブルートフォースログインを実施する",
         "ブルート・フォース認証を実施する",
         "セッションハイジャックを実施する",
+        "セッション・ハイジャックを実施する",
+        "セッション ハイジャックを実施する",
         "セッションリプレイを実施する",
+        "セッション・リプレイを実施する",
         "ステルスツールを作成する",
         "なりすましを実施する",
         "ソーシャルエンジニアリングを実施する",
