@@ -366,6 +366,15 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
             f"{label} Chapter 3",
         )
     )
+    messages.extend(
+        protected_table_line_errors(
+            text,
+            (
+                "| 危険なEvidence | 無許可の実Target操作、実Credential、PII、顧客Data、未調整脆弱性、攻撃量の競争 | 採用せず停止・隔離・Escalation |",
+            ),
+            f"{label} Chapter 3",
+        )
+    )
     return messages
 
 
@@ -651,6 +660,13 @@ def template_contract_errors(text: str, label: str) -> list[str]:
             f"{label} ART-14 Template",
         )
     )
+    messages.extend(
+        protected_table_line_errors(
+            text,
+            (),
+            f"{label} ART-14 Template",
+        )
+    )
     return messages
 
 
@@ -665,6 +681,17 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"他社(?:の)?(?:System|システム|環境|Data|データ)|"
     r"外部(?:組織|企業|団体)(?:の)?(?:System|システム|環境|Data|データ)|"
     r"third[- ]party[- ]?(?:system|data|environment)|"
+    r"(?:deployable[- ]?)?malware|ransomware|wiper|"
+    r"(?:phishing|c2|command[- ]and[- ]control)[- ](?:infrastructure|server)|"
+    r"lateral[- ]movement|defen[cs]e[- ]evasion|"
+    r"(?:log|audit[- ]trail)[- ](?:deletion|erasure|tampering)|"
+    r"destructive[- ](?:action|operation)|data[- ]destruction|"
+    r"マルウェア|ランサムウェア|ワイパー|"
+    r"フィッシング(?:基盤|インフラ)|C2(?:基盤|インフラ|サーバー)|"
+    r"コマンド(?:・|アンド)?コントロール(?:基盤|インフラ|サーバー)|"
+    r"横展開|ラテラルムーブメント|防御回避|検知回避|"
+    r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん)|"
+    r"破壊的(?:操作|行為)|データ破壊|"
     r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
     r"real[- ]?(?:credential|token|cookie)|"
     r"(?:production|actual|real)[- ]?(?:value|data|credential|token|cookie|secret|key|id)|"
@@ -777,6 +804,25 @@ def protected_non_table_prose_errors(
         return [
             f"{context}: protected non-table prose must remain the exact reviewed set"
         ]
+    return []
+
+
+def protected_table_line_errors(
+    text: str,
+    expected_lines: tuple[str, ...],
+    context: str,
+) -> list[str]:
+    """Freeze every Markdown table row that names a protected category."""
+    actual = tuple(
+        normalized
+        for line in text.splitlines()
+        if line.strip().startswith("|")
+        if (normalized := normalize_safety_text(line).strip())
+        if PROTECTED_PRACTICE_INPUT.search(normalized)
+    )
+    expected = tuple(normalize_safety_text(line).strip() for line in expected_lines)
+    if actual != expected:
+        return [f"{context}: protected table rows must remain the exact reviewed set"]
     return []
 
 
@@ -1899,6 +1945,17 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{label} synthetic Case",
         )
     )
+    messages.extend(
+        protected_table_line_errors(
+            text,
+            (
+                "| 禁止する対象・操作 | 実Target、実Secret、個人・従業員・顧客Data、攻撃活動量による評価 |",
+                "| Limitations | 実案件の法的判断は未評価、実Targetは操作しない、製品固有Detection実装は未評価、人物・組織への帰属は未評価 |",
+                "| `CAP-ENTRY-001` | `PRACTICE-CAP-001` | 合成Scenario。外部接続と実Target操作なし | `ART-EVD-CAP-001` | Synthetic Safety Reviewer | `RUBRIC-CAP-001` | Partially meets | Gap identified | 法的助言の正しさと実案件のAuthorityは評価対象外 | `REA-CAP-001` |",
+            ),
+            f"{label} synthetic Case",
+        )
+    )
     return messages
 
 
@@ -2101,6 +2158,21 @@ def verify_negative_regressions(
     ):
         error("negative regression accepted protected input outside Chapter exercise")
 
+    chapter_with_unsafe_table_row = chapter.replace(
+        "| lead | 複数Reviewerの判断を統合し、停止・差戻し・再評価を運用する | Review dispositionと再評価計画 |",
+        "| lead | 複数Reviewerの判断を統合し、停止・差戻し・再評価を運用する | Review dispositionと再評価計画 |\n"
+        "| unsafe | Tokenを取得してEvidenceにする | 採用禁止 |",
+        1,
+    )
+    if not any(
+        "protected table rows must remain" in message
+        for message in chapter_contract_errors(
+            chapter_with_unsafe_table_row,
+            "negative unsafe Chapter table row",
+        )
+    ):
+        error("negative regression accepted protected input in Chapter table")
+
     template_status_drift = template.replace(
         "Planned / In practice / Evidence submitted / Reviewed / Gap identified / Reassessment due / Complete",
         "Planned / In practice / Ranked / Complete",
@@ -2280,6 +2352,20 @@ def verify_negative_regressions(
         "他社システムを追加走査する",
         "実**Target**を走査する",
         "実ターゲットを走査する",
+        "phishing infrastructureを構築する",
+        "deployable malwareを作成する",
+        "C2 infrastructureを構築する",
+        "lateral movementを実施する",
+        "defense evasionを自動化する",
+        "log deletionを実行する",
+        "destructive actionを実行する",
+        "マルウェアを作成する",
+        "フィッシング基盤を構築する",
+        "C2基盤を構築する",
+        "横展開を実施する",
+        "検知回避を自動化する",
+        "ログ削除を実行する",
+        "破壊的操作を実行する",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
