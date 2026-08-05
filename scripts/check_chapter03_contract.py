@@ -698,14 +698,15 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:distributed[- ])?denial[- ]of[- ]service|\b(?:dos|ddos)\b|"
     r"(?:unauthorized[- ])?(?:data[- ])?(?:modification|encryption)|"
     r"resource[- ]exhaustion|mfa[- ]fatigue|"
-    r"brute[- ]force[- ](?:login|authentication)|"
-    r"(?:login|authentication)[- ]attempts?|"
+    r"brute[- ]force[- ](?:login|authentication|auth)|"
+    r"(?:login|authentication|auth)[- ](?:attempts?|brute[- ]force)|"
     r"stealth[- ]tool(?:ing)?|impersonation|social[- ]engineering|"
     r"doxx(?:ing)?|tracking[- ](?:a[- ])?real[- ]person|"
     r"anonymi[sz]ation[- ]infrastructure|dark[- ]web[- ]infiltration|"
     r"confident[- ]attribution[- ]from[- ]weak[- ]evidence|"
     r"マルウェア|ランサムウェア|ワイパー|"
-    r"フィッシング[ \t　・]*(?:攻撃|詐欺|基盤|インフラ|サイト|ページ)|"
+    r"フィッシング[ \t　・]*(?:攻撃|詐欺|基盤|インフラ|サイト|ページ|"
+    r"サーバー|チャネル|通信路|通信|接続|制御|運用)|"
     r"C2(?:基盤|インフラ|サーバー|チャネル|通信路|通信|接続|制御|運用)|"
     r"(?:phishing|C2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|フィッシング|"
     r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール)"
@@ -2491,8 +2492,10 @@ def verify_negative_regressions(
         "resource exhaustionを発生させる",
         "MFA fatigueを実施する",
         "authentication attemptを実施する",
+        "auth attemptを実施する",
         "brute force loginを実施する",
         "brute-force loginを実施する",
+        "login brute forceを実施する",
         "stealth toolingを作成する",
         "impersonationを実施する",
         "social engineeringを実施する",
@@ -2504,6 +2507,8 @@ def verify_negative_regressions(
         "マルウェアを作成する",
         "フィッシング基盤を構築する",
         "フィッシングサイトを構築する",
+        "フィッシングサーバーを構築する",
+        "フィッシングチャネルを作る",
         "フィッシング サイトを構築する",
         "フィッシング・ページを作る",
         "C2基盤を構築する",
