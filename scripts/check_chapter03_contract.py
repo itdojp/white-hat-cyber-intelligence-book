@@ -381,8 +381,8 @@ def markdown_row_cells(line: str) -> list[str]:
 
 
 PROTECTED_PRACTICE_INPUT = re.compile(
-    r"(?:実(?:在)?Target|実標的|real[- ]target|"
-    r"第三者(?:System|システム|環境|Data|データ)|"
+    r"(?:実(?:際|在)?の?(?:Target|標的)|現実の(?:Target|標的)|real[- ]target|"
+    r"第三者(?:の)?(?:System|システム|環境|Data|データ)|"
     r"third[- ]party[- ]?(?:system|data|environment)|"
     r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
     r"real[- ]?(?:credential|token|cookie)|"
@@ -990,6 +990,7 @@ def verify_negative_regressions(
         "従業員データを使用する",
         "real token used",
         "real cookie collected",
+        "第三者のシステムを実際の標的として追加走査する",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
