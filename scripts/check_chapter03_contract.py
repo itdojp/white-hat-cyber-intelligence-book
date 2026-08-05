@@ -394,7 +394,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
 )
 EXPLICIT_SYNTHETIC_QUALIFIER = re.compile(
     r"(?:合成|架空|ダミー|模擬|テスト用|予約済み|"
-    r"synthetic|dummy|mock|test[- ]only|reserved)",
+    r"synthetic|dummy|mock|test[- ]only|reserved)(?:の|[- ]+)?$",
     re.IGNORECASE,
 )
 EXPLICIT_NEGATION = re.compile(
@@ -406,17 +406,17 @@ EXPLICIT_NEGATION = re.compile(
 
 
 def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
-    """Reject protected inputs unless every mention is explicitly negated in its clause."""
+    """Reject protected inputs unless directly synthetic or explicitly negated."""
     messages: list[str] = []
     for match in PROTECTED_PRACTICE_INPUT.finditer(field):
         prefix = field[: match.start()]
         clause_start = max(prefix.rfind(mark) for mark in "、,。;；\n") + 1
+        protected_prefix = field[clause_start : match.start()]
         suffix = field[match.end() :]
         clause_tail = re.split(r"[、,。;；\n]", suffix, maxsplit=1)[0]
-        clause = field[clause_start : match.end() + len(clause_tail)]
         if not (
             EXPLICIT_NEGATION.search(clause_tail)
-            or EXPLICIT_SYNTHETIC_QUALIFIER.search(clause)
+            or EXPLICIT_SYNTHETIC_QUALIFIER.search(protected_prefix)
         ):
             messages.append(
                 f"unsafe real-target or sensitive-data input in {context}: "
@@ -788,6 +788,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     for cells in gap_rows:
         if len(cells) == 6:
             reject_unsafe_operational_field(
+                cells[1], f"{cells[0].strip('`')} Gap"
+            )
+            reject_unsafe_operational_field(
                 cells[2], f"{cells[0].strip('`')} Learning Action"
             )
     for evidence_id, practice in practice_by_evidence.items():
@@ -1009,6 +1012,7 @@ def verify_negative_regressions(
         "Cookieを保存する",
         "production credentials used",
         "PIIを収集する",
+        "Synthetic lab uses production credentials to add a benign record",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1032,6 +1036,14 @@ def verify_negative_regressions(
                 "negative regression rejected an explicitly negated safety statement: "
                 f"{explicitly_negated_field}"
             )
+
+    unsafe_gap = case.replace(
+        "Source independenceを支える別系統が不足",
+        "第三者Dataを収集する必要がある",
+        1,
+    )
+    if not case_contract_errors(unsafe_gap, "negative unsafe Gap wording"):
+        error("negative regression accepted protected input in a Gap cell")
 
     fixture_without_required_field_negative = case.replace(
         "| `FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert | 欠損Fieldの補完処理は未評価 |\n",
