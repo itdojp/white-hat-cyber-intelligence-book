@@ -74,6 +74,12 @@ STATUS_SET = {
     "Complete",
 }
 
+REASSESSMENT_STATUS_SET = {
+    "Planned",
+    "Reassessment due",
+    "Complete",
+}
+
 REVIEW_RESULT_SET = {
     "Meets",
     "Partially meets",
@@ -401,8 +407,8 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"third[- ]party[- ]?(?:system|data|environment)|"
     r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
     r"real[- ]?(?:credential|token|cookie)|"
-    r"(?:credential|token|cookie|secret)s?|PII|"
-    r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|"
+    r"(?:credential|token|cookie|secret|password|passphrase)s?|PII|"
+    r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|パスワード|パスフレーズ|"
     r"個人情報|従業員(?:Data|データ)|顧客(?:Data|データ)|"
     r"personal[- ]data|employee[- ]data|customer[- ]data)",
     re.IGNORECASE,
@@ -424,12 +430,18 @@ EXPLICIT_NEGATION = re.compile(
 def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
     """Reject protected inputs unless directly synthetic or explicitly negated."""
     messages: list[str] = []
-    for match in PROTECTED_PRACTICE_INPUT.finditer(field):
+    matches = list(PROTECTED_PRACTICE_INPUT.finditer(field))
+    for index, match in enumerate(matches):
         prefix = field[: match.start()]
         clause_start = max(prefix.rfind(mark) for mark in "、,。;；\n") + 1
         protected_prefix = field[clause_start : match.start()]
         suffix = field[match.end() :]
         clause_tail = re.split(r"[、,。;；\n]", suffix, maxsplit=1)[0]
+        if index + 1 < len(matches):
+            next_match = matches[index + 1]
+            next_relative_start = next_match.start() - match.end()
+            if next_relative_start < len(clause_tail):
+                clause_tail = clause_tail[:next_relative_start]
         if not (
             EXPLICIT_NEGATION.search(clause_tail)
             or EXPLICIT_SYNTHETIC_QUALIFIER.search(protected_prefix)
@@ -846,9 +858,16 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         task_ids = set(re.findall(r"TASK-CAP-\d{3}", cells[4]))
         status = cells[7]
         reassessments[reassessment_id] = (evidence_ids, task_ids, status)
-        if status not in STATUS_SET:
+        if status not in REASSESSMENT_STATUS_SET:
             messages.append(
                 f"{label}: Reassessment status outside finite set: {status!r}"
+            )
+        for field_name, field_value in (
+            ("Reassessment Trigger", cells[2]),
+            ("Closure criteria", cells[6]),
+        ):
+            reject_unsafe_operational_field(
+                field_value, f"{reassessment_id} {field_name}"
             )
     if set(reassessments) != set(expected_reassessments):
         messages.append(
@@ -1092,6 +1111,9 @@ def verify_negative_regressions(
         "production credentials used",
         "PIIを収集する",
         "Synthetic lab uses production credentials to add a benign record",
+        "Tokenを取得してCookieを使用しない追加benign recordを作る",
+        "passwordを取得して追加benign recordを作る",
+        "パスワードを取得して追加benign recordを作る",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1133,6 +1155,37 @@ def verify_negative_regressions(
         invalid_reassessment_status, "negative invalid Reassessment status"
     ):
         error("negative regression accepted Reassessment status outside finite set")
+
+    practice_status_in_reassessment = case.replace(
+        "| `REA-CAP-001` | 2026-08-13 | 再承認Triggerの修正完了 | `ART-EVD-CAP-001-R2` | `TASK-CAP-001` | Synthetic Safety Reviewer | Scope変更時の停止・再承認が一意 | Planned |",
+        "| `REA-CAP-001` | 2026-08-13 | 再承認Triggerの修正完了 | `ART-EVD-CAP-001-R2` | `TASK-CAP-001` | Synthetic Safety Reviewer | Scope変更時の停止・再承認が一意 | Reviewed |",
+        1,
+    )
+    if not case_contract_errors(
+        practice_status_in_reassessment,
+        "negative Practice status in Reassessment row",
+    ):
+        error("negative regression accepted Practice-only status in Reassessment row")
+
+    unsafe_reassessment_trigger = case.replace(
+        "再承認Triggerの修正完了",
+        "Tokenを取得して再評価",
+        1,
+    )
+    if not case_contract_errors(
+        unsafe_reassessment_trigger, "negative unsafe Reassessment Trigger"
+    ):
+        error("negative regression accepted protected input in Reassessment Trigger")
+
+    unsafe_reassessment_closure = case.replace(
+        "来歴と独立性を分離して再判定",
+        "第三者Dataを収集して確認",
+        1,
+    )
+    if not case_contract_errors(
+        unsafe_reassessment_closure, "negative unsafe Reassessment Closure"
+    ):
+        error("negative regression accepted protected input in Reassessment Closure")
 
     fixture_without_required_field_negative = case.replace(
         "| `FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert | 欠損Fieldの補完処理は未評価 |\n",
