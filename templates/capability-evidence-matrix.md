@@ -56,6 +56,24 @@ Work Roleは仕事のGroupingであり、Job titleまたは個人ではない。
 |---|---|---|---|---|---|
 | `CAP-ENTRY-001` |  | `TASK-CAP-001`:  | `KN-CAP-001` | `SK-CAP-001` | Version + Work Role / Competency Area / Task / K / S identifier、または`Not mapped`と理由 |
 
+確認済みidentifierの記入形式例は、`v2.2.0; Work Role OG-WRL-017; local Task / K / S: Not mapped（対応未確認）`である。Components上の存在確認と、Local Taskへの意味的な対応確認を分離する。
+
+### 2.1 Rubric Definitions
+
+Artifact Evidence用とCapability Claim用のRubricを、評価対象、有限Result、判定条件が分かる形でEvidence提出前に固定する。空欄の判定条件をReviewerの裁量で補わない。
+
+#### Artifact Evidence Rubric
+
+| Rubric ID | Applies to | Meets | Partially meets | Does not meet | Inconclusive |
+|---|---|---|---|---|---|
+| `RUBRIC-CAP-001` | `TASK-CAP-001` / `ART-EVD-CAP-001` |  |  |  |  |
+
+#### Capability Claim Rubric
+
+| Rubric ID | Applies to | Supported | Partially supported | Not supported | Inconclusive |
+|---|---|---|---|---|---|
+| `RUBRIC-CAP-CLAIM-001` | `CAP-CLAIM-YYYY-NNN` |  |  |  |  |
+
 ## 3. Practice and Evidence Trace
 
 | Entry ID | Practice ID | Authority / Environment | Artifact / Evidence ID | Reviewer | Rubric | Result | Status | Limitations | Reassessment ID |
@@ -88,13 +106,13 @@ Review Resultは、対象Artifact一つをRubricで評価した結果である�
 
 Capability Judgmentは、一つのReview Resultではなく、複数Evidence itemを対象にする。
 
-| Claim ID | Scope | Conditions | Evidence set | Reviewer | Result | Limitations | Expiry | Trigger | Reassessment ID |
+| Claim ID | Scope | Conditions | Evidence set | Reviewer / Rubric | Result | Limitations | Expiry | Reassessment Trigger | Reassessment ID |
 |---|---|---|---|---|---|---|---|---|---|
-| `CAP-CLAIM-YYYY-NNN` |  |  |  |  | Supported / Partially supported / Not supported / Inconclusive |  | ISO 8601 |  | `REA-CAP-001` |
+| `CAP-CLAIM-YYYY-NNN` |  |  |  |  / `RUBRIC-CAP-CLAIM-001` | Supported / Partially supported / Not supported / Inconclusive |  | ISO 8601 |  | `REA-CAP-001` |
 
 ## 7. Reassessment
 
-| Reassessment ID | Scheduled date | Trigger | Evidence to recollect | Task to revisit | Owner | Closure criteria | Status |
+| Reassessment ID | Scheduled date | Reassessment Trigger | Evidence to recollect | Task to revisit | Owner | Closure criteria | Status |
 |---|---|---|---|---|---|---|---|
 | `REA-CAP-001` | ISO 8601 |  |  | `TASK-CAP-001` |  |  | Planned / Reassessment due / Complete |
 

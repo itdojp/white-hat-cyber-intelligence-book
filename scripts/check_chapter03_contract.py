@@ -88,6 +88,21 @@ CLAIM_RESULT_SET = {
     "Inconclusive",
 }
 
+ARTIFACT_RUBRIC_HEADER = (
+    "| Rubric ID | Applies to | Meets | Partially meets | Does not meet | Inconclusive |"
+)
+CLAIM_RUBRIC_HEADER = (
+    "| Rubric ID | Applies to | Supported | Partially supported | Not supported | Inconclusive |"
+)
+CLAIM_JUDGMENT_HEADER = (
+    "| Claim ID | Scope | Conditions | Evidence set | Reviewer / Rubric | Result | "
+    "Limitations | Expiry | Reassessment Trigger | Reassessment ID |"
+)
+REASSESSMENT_HEADER = (
+    "| Reassessment ID | Scheduled date | Reassessment Trigger | Evidence to recollect | "
+    "Task to revisit | Owner | Closure criteria | Status |"
+)
+
 EXPECTED_SOURCES = {
     "SRC-NICE-001": {
         "fields": {
@@ -226,6 +241,8 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
         "identifierを一つ割り当てただけで個人の能力を証明する",
         "`NICE Components references`欄",
         "`Not mapped`と理由を残す",
+        "v2.2.0; Work Role OG-WRL-017; local Task / K / S: Not mapped（当該Taskとの対応未確認）",
+        "本章の合成Taskや学習者の能力を当該Work Roleへ対応付けない",
         "T-03-01 Evidenceの四分類",
         "良いEvidence",
         "弱いEvidence",
@@ -310,6 +327,7 @@ def template_contract_errors(text: str, label: str) -> list[str]:
         "Skill reference",
         "NICE Components references（optional）",
         "`Not mapped`と理由",
+        "v2.2.0; Work Role OG-WRL-017; local Task / K / S: Not mapped（対応未確認）",
         "Practice ID",
         "Authority / Environment",
         "Artifact / Evidence ID",
@@ -321,8 +339,17 @@ def template_contract_errors(text: str, label: str) -> list[str]:
         "Due date",
         "Reassessment ID",
         "Planned / In practice / Evidence submitted / Reviewed / Gap identified / Reassessment due / Complete",
+        "### 2.1 Rubric Definitions",
+        "#### Artifact Evidence Rubric",
+        ARTIFACT_RUBRIC_HEADER,
+        "`RUBRIC-CAP-001` | `TASK-CAP-001` / `ART-EVD-CAP-001`",
+        "#### Capability Claim Rubric",
+        CLAIM_RUBRIC_HEADER,
+        "`RUBRIC-CAP-CLAIM-001` | `CAP-CLAIM-YYYY-NNN`",
         "## 5. Review Result",
         "## 6. Bounded Capability Judgment",
+        CLAIM_JUDGMENT_HEADER,
+        REASSESSMENT_HEADER,
         "複数Evidence item",
         "Scope",
         "Conditions",
@@ -344,6 +371,8 @@ def template_contract_errors(text: str, label: str) -> list[str]:
     ):
         if forbidden in text:
             messages.append(f"{label}: prohibited HR or ranking use {forbidden!r}")
+    if text.find("### 2.1 Rubric Definitions") > text.find("## 3. Practice and Evidence Trace"):
+        messages.append(f"{label}: Rubric definitions must precede Practice/Evidence trace")
     return messages
 
 
@@ -381,6 +410,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "RUBRIC-CAP-001",
         "RUBRIC-CAP-002",
         "RUBRIC-CAP-003",
+        "RUBRIC-CAP-CLAIM-003",
         "REV-CAP-001",
         "REV-CAP-002",
         "REV-CAP-003",
@@ -398,10 +428,18 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "SN-CAP-003-A",
         "SN-CAP-003-B",
         "SN-CAP-003-C",
+        "#### Artifact Evidence Rubric",
+        ARTIFACT_RUBRIC_HEADER,
+        "#### Capability Claim Rubric",
+        CLAIM_RUBRIC_HEADER,
+        CLAIM_JUDGMENT_HEADER,
+        REASSESSMENT_HEADER,
         "NICE Components references（optional）",
         "Not mapped。合成の横断Task",
         "Not mapped。学習用Task",
         "Not mapped。Components identifierへの対応を推測しない",
+        "v2.2.0; Work Role OG-WRL-017; local Task / K / S: Not mapped（当該Taskとの対応未確認）",
+        "本CaseのTaskやCapability Claimを`OG-WRL-017`へ対応付けない",
         "Synthetic Safety Reviewer",
         "Synthetic Detection Reviewer",
         "Synthetic Analytic Reviewer",
@@ -424,6 +462,45 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     )
     for token in missing_tokens(text, required):
         messages.append(f"{label}: missing required token {token!r}")
+
+    artifact_rubric_rows = [
+        markdown_row_cells(line)
+        for line in text.splitlines()
+        if line.startswith("| `RUBRIC-CAP-")
+        and not line.startswith("| `RUBRIC-CAP-CLAIM-")
+    ]
+    if len(artifact_rubric_rows) != 3:
+        messages.append(f"{label}: expected exactly 3 Artifact Evidence rubric rows")
+    artifact_rubrics: dict[str, str] = {}
+    for cells in artifact_rubric_rows:
+        if len(cells) != 6 or any(not cell for cell in cells[1:]):
+            messages.append(
+                f"{label}: Artifact Evidence rubric must define Applies to and all four results: {cells!r}"
+            )
+            continue
+        rubric_id = cells[0].strip("`")
+        if rubric_id in artifact_rubrics:
+            messages.append(f"{label}: duplicate Artifact Evidence rubric ID {rubric_id}")
+        artifact_rubrics[rubric_id] = cells[1]
+
+    claim_rubric_rows = [
+        markdown_row_cells(line)
+        for line in text.splitlines()
+        if line.startswith("| `RUBRIC-CAP-CLAIM-")
+    ]
+    if len(claim_rubric_rows) != 1:
+        messages.append(f"{label}: expected exactly one Capability Claim rubric row")
+    claim_rubrics: dict[str, str] = {}
+    for cells in claim_rubric_rows:
+        if len(cells) != 6 or any(not cell for cell in cells[1:]):
+            messages.append(
+                f"{label}: Capability Claim rubric must define Applies to and all four results: {cells!r}"
+            )
+            continue
+        rubric_id = cells[0].strip("`")
+        if rubric_id in claim_rubrics:
+            messages.append(f"{label}: duplicate Capability Claim rubric ID {rubric_id}")
+        claim_rubrics[rubric_id] = cells[1]
 
     entry_rows = [
         markdown_row_cells(line)
@@ -454,6 +531,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             messages.append(f"{label}: status outside finite set: {status!r}")
         if cells[6] not in REVIEW_RESULT_SET:
             messages.append(f"{label}: Practice result outside finite set: {cells[6]!r}")
+        if cells[5].strip("`") not in artifact_rubrics:
+            messages.append(
+                f"{label}: Practice references undefined Artifact Evidence rubric {cells[5]!r}"
+            )
+        elif evidence_id not in artifact_rubrics[cells[5].strip("`")]:
+            messages.append(
+                f"{label}: rubric {cells[5]!r} does not apply to {evidence_id}"
+            )
 
     review_rows = [
         markdown_row_cells(line)
@@ -479,6 +564,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         }
         if cells[5] not in REVIEW_RESULT_SET:
             messages.append(f"{label}: Review Result outside finite set: {cells[5]!r}")
+        if cells[4].strip("`") not in artifact_rubrics:
+            messages.append(
+                f"{label}: Review references undefined Artifact Evidence rubric {cells[4]!r}"
+            )
 
     if set(practice_by_evidence) != set(reviews_by_evidence):
         messages.append(
@@ -524,6 +613,23 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 )
             if len(claim_evidence) < 2:
                 messages.append(f"{label}: Capability Judgment requires multiple evidence items")
+            claim_rubric_match = re.search(r"RUBRIC-CAP-CLAIM-\d{3}", cells[4])
+            claim_rubric = claim_rubric_match.group(0) if claim_rubric_match else ""
+            if claim_rubric not in claim_rubrics:
+                messages.append(
+                    f"{label}: Capability Judgment references undefined rubric in {cells[4]!r}"
+                )
+            elif "CAP-CLAIM-2026-003" not in claim_rubrics[claim_rubric]:
+                messages.append(
+                    f"{label}: rubric {claim_rubric!r} does not apply to CAP-CLAIM-2026-003"
+                )
+            boundary_match = re.search(
+                r"^\| Rubric \| `([^`]+)` \|$", text, re.MULTILINE
+            )
+            if boundary_match is None or boundary_match.group(1) != claim_rubric:
+                messages.append(
+                    f"{label}: Capability Claim Boundary rubric must match {claim_rubric!r}"
+                )
             if cells[5] not in CLAIM_RESULT_SET:
                 messages.append(f"{label}: Capability Judgment result outside finite set: {cells[5]!r}")
 
@@ -720,8 +826,8 @@ def verify_negative_regressions(
         error("negative regression accepted real-target activity as learning evidence")
 
     evidence_shrink = case.replace(
-        "`ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` | Synthetic Capability Panel | Partially supported",
-        "`ART-EVD-CAP-002` | Synthetic Capability Panel | Partially supported",
+        "`ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` | Synthetic Capability Panel / `RUBRIC-CAP-CLAIM-003` | Partially supported",
+        "`ART-EVD-CAP-002` | Synthetic Capability Panel / `RUBRIC-CAP-CLAIM-003` | Partially supported",
     )
     if not case_contract_errors(evidence_shrink, "negative single-evidence claim"):
         error("negative regression accepted a single-evidence Capability Judgment")
@@ -740,6 +846,36 @@ def verify_negative_regressions(
     )
     if not case_contract_errors(invalid_result, "negative invalid Review Result"):
         error("negative regression accepted a Review Result outside the finite set")
+
+    missing_claim_rubric = "\n".join(
+        line
+        for line in case.splitlines()
+        if not line.startswith("| `RUBRIC-CAP-CLAIM-003`")
+    )
+    if not case_contract_errors(
+        missing_claim_rubric, "negative missing Capability Claim rubric"
+    ):
+        error("negative regression accepted an undefined Capability Claim rubric")
+
+    incomplete_artifact_rubric = case.replace(
+        ARTIFACT_RUBRIC_HEADER,
+        "| Rubric ID | Applies to | Meets | Partially meets | Inconclusive |",
+        1,
+    )
+    if not case_contract_errors(
+        incomplete_artifact_rubric, "negative incomplete Artifact Evidence rubric"
+    ):
+        error("negative regression accepted an Artifact rubric without Does not meet")
+
+    trigger_header_drift = case.replace(
+        CLAIM_JUDGMENT_HEADER,
+        CLAIM_JUDGMENT_HEADER.replace("Reassessment Trigger", "Trigger"),
+        1,
+    )
+    if not case_contract_errors(
+        trigger_header_drift, "negative Capability Judgment header drift"
+    ):
+        error("negative regression accepted Trigger in place of Reassessment Trigger")
 
     if not reserved_name_contract_errors(
         "negative synthetic domain", "https://admin.localhost/runbook"
@@ -974,6 +1110,7 @@ def main() -> int:
         audit_note,
         (
             "Checked at | 2026-08-05",
+            "対象章 | 第3章（`SRC-NICE-001`の既存mappingとして第0章・第1章も監査）",
             "NIST SP 800-181 Rev.1",
             "SRC-NICE-001",
             "SRC-NICE-COMP-001",

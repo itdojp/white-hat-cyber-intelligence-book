@@ -5,7 +5,7 @@
 | 項目 | 値 |
 |---|---|
 | Source Note ID | `SRC-NICE-001`（構造文書）、`SRC-NICE-COMP-001`（現行Components） |
-| 対象章 | 第0章、第1章、第3章 |
+| 対象章 | 第3章（`SRC-NICE-001`の既存mappingとして第0章・第1章も監査） |
 | Checked at | 2026-08-05 |
 | 次回確認日 | 2026-11-05 |
 | 目的 | NICE Frameworkの構造文書と、別管理される現行Componentsの版・用途・識別子を分離して確認する |

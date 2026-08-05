@@ -60,6 +60,8 @@
 
 Work Role / ResponsibilityはTaskを整理する入口であり、合成学習者のJob titleまたは人物像ではない。Knowledge / Skill referenceは本Case内の識別子であり、NICE identifierとの同一性を主張しない。
 
+三つのTaskはComponents identifierとの意味的対応を確認していないため、推測で割り当てない。一方、確認済みidentifierの記入形式例は`v2.2.0; Work Role OG-WRL-017; local Task / K / S: Not mapped（当該Taskとの対応未確認）`である。これはComponents上のWork Role存在確認を示すだけで、本CaseのTaskやCapability Claimを`OG-WRL-017`へ対応付けない。
+
 ### 2.1 完全合成Practice packet
 
 この節だけで三つのTaskを再現できる。第17章または第25章の読了、外部Network、別Datasetを前提にしない。
@@ -89,13 +91,19 @@ Work Role / ResponsibilityはTaskを整理する入口であり、合成学習�
 
 `SN-CAP-003-A`と`SN-CAP-003-B`を独立した二件に数えない。`SN-CAP-003-C`は対象期間外であるため、現在の問いを独立に裏付けない。したがって現時点のResultは`Inconclusive`である。
 
-#### Rubric
+#### Artifact Evidence Rubric
 
-| Rubric ID | Meets | Partially meets | Inconclusive |
-|---|---|---|---|
-| `RUBRIC-CAP-001` | 四Gate、停止、再承認Triggerが再現可能 | Gateは分離したが非Critical条件が不足 | Authority根拠またはScopeが確認不能 |
-| `RUBRIC-CAP-002` | 三Fixtureが期待結果と一致し、Coverage limitationを説明 | 一部結果または限界説明が不足 | Fixture版、期待結果、必須Fieldが不明 |
-| `RUBRIC-CAP-003` | 独立Sourceと反対仮説を評価し限定判断を作成 | 判断は限定したが非Criticalな来歴Gapが残る | 独立Sourceがなく、現在の問いを支持・反証できない |
+| Rubric ID | Applies to | Meets | Partially meets | Does not meet | Inconclusive |
+|---|---|---|---|---|---|
+| `RUBRIC-CAP-001` | `TASK-CAP-001` / `ART-EVD-CAP-001` | 四Gate、停止、再承認Triggerが再現可能 | Gateは分離したが非Critical条件が不足 | Authority、Scope、停止条件のいずれかを無視し、安全に開始判断できない | Authority根拠またはScopeが確認不能 |
+| `RUBRIC-CAP-002` | `TASK-CAP-002` / `ART-EVD-CAP-002` | 三Fixtureが期待結果と一致し、Coverage limitationを説明 | 一部結果または限界説明が不足 | 期待結果と実測が矛盾するか、offline replayを実施していない | Fixture版、期待結果、必須Fieldが不明 |
+| `RUBRIC-CAP-003` | `TASK-CAP-003` / `ART-EVD-CAP-003` | 独立Sourceと反対仮説を評価し限定判断を作成 | 判断は限定したが非Criticalな来歴Gapが残る | Fact、Assumption、Judgmentを混在させるか、Source lineageを無視する | 独立Sourceがなく、現在の問いを支持・反証できない |
+
+#### Capability Claim Rubric
+
+| Rubric ID | Applies to | Supported | Partially supported | Not supported | Inconclusive |
+|---|---|---|---|---|---|
+| `RUBRIC-CAP-CLAIM-003` | `CAP-CLAIM-2026-003` | 三TaskがすべてMeetsで、宣言ScopeにCritical gapがない | 複数EvidenceをReview済みで、未達または結論不能をLimitations、Gap、Reassessmentへ閉じている | Critical TaskがDoes not meet、またはEvidence setが宣言Scopeを支持しない | 必須EvidenceまたはReview Resultが不足・矛盾し、限定結論も作れない |
 
 ## 3. Practice and Evidence Trace
 
@@ -129,15 +137,15 @@ Rubricの判定軸はTask開始前に固定した。結果に合わせた基準�
 
 ## 6. Bounded Capability Judgment
 
-| Claim ID | Scope | Conditions | Evidence set | Reviewer | Result | Limitations | Expiry | Trigger | Reassessment ID |
+| Claim ID | Scope | Conditions | Evidence set | Reviewer / Rubric | Result | Limitations | Expiry | Reassessment Trigger | Reassessment ID |
 |---|---|---|---|---|---|---|---|---|---|
-| `CAP-CLAIM-2026-003` | Task 2のoffline detection fixture検証、およびTask 1 / 3の未達・結論不能の識別と再評価設計 | 合成資料、offline fixture、v2.2.0、宣言済みRubric | `ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` | Synthetic Capability Panel | Partially supported | Task 1は条件不足、Task 3は結論不能。実案件と人物評価へ一般化しない | 2026-11-05T17:00:00+09:00 | Components、Scope、Role、Rubric、期限の変更 | `REA-CAP-CLAIM-003` |
+| `CAP-CLAIM-2026-003` | Task 2のoffline detection fixture検証、およびTask 1 / 3の未達・結論不能の識別と再評価設計 | 合成資料、offline fixture、v2.2.0、宣言済みRubric | `ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` | Synthetic Capability Panel / `RUBRIC-CAP-CLAIM-003` | Partially supported | Task 1は条件不足、Task 3は結論不能。実案件と人物評価へ一般化しない | 2026-11-05T17:00:00+09:00 | Components、Scope、Role、Rubric、期限の変更 | `REA-CAP-CLAIM-003` |
 
 判断根拠は、Task 2が`Meets`、Task 1が`Partially meets`、Task 3が`Inconclusive`であることによる。資格、CTF得点、Tool数、章完了はこの結論のEvidence setに含めていない。
 
 ## 7. Reassessment
 
-| Reassessment ID | Scheduled date | Trigger | Evidence to recollect | Task to revisit | Owner | Closure criteria | Status |
+| Reassessment ID | Scheduled date | Reassessment Trigger | Evidence to recollect | Task to revisit | Owner | Closure criteria | Status |
 |---|---|---|---|---|---|---|---|
 | `REA-CAP-001` | 2026-08-13 | 再承認Triggerの修正完了 | `ART-EVD-CAP-001-R2` | `TASK-CAP-001` | Synthetic Safety Reviewer | Scope変更時の停止・再承認が一意 | Planned |
 | `REA-CAP-002` | 2026-08-20 | benign fixture追加 | `ART-EVD-CAP-002-R2` | `TASK-CAP-002` | Synthetic Detection Reviewer | 期待検知と非検知限界を再現可能 | Planned |

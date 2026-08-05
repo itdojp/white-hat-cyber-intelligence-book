@@ -154,7 +154,7 @@ flowchart LR
 
 ## 3. NICE Frameworkを使う範囲
 
-NICE Frameworkは、Cybersecurity workを共通語彙で記述するための参照である。構造文書は`NIST SP 800-181 Rev.1`として確認した。`SRC-NICE-001` 別管理される現行Componentsは`v2.2.0`として確認し、Work Role、Competency Area、Task / Knowledge / Skill等を収録する。`SRC-NICE-COMP-001`
+NICE Frameworkは、Cybersecurity workを共通語彙で記述するための参照である。構造文書は`NIST SP 800-181 Rev.1`として確認した（`SRC-NICE-001`）。別管理される現行Componentsは`v2.2.0`として確認した。ComponentsにはWork Role、Competency Area、Task / Knowledge / Skill等が収録される（`SRC-NICE-COMP-001`）。
 
 本章では、NICEを次の用途に限定する。
 
@@ -173,6 +173,8 @@ NICE Frameworkは、Cybersecurity workを共通語彙で記述するための参
 Chapter 3のTemplateと合成CaseでComponents identifierを使う場合、`NICE Framework Components v2.2.0`へ版を固定する。Sourceの版が変わった場合は、対応付けが維持されるかを再評価する。
 
 `ART-14`では、Components identifierを使う場合だけ`NICE Components references`欄へ版とidentifierを記録する。対応を確認できないTaskへ推測でidentifierを割り当てず、`Not mapped`と理由を残す。Matrix内のTask ID、Knowledge reference、Skill referenceはArtifact内の追跡IDであり、NICE identifierと同一とは限らない。
+
+確認済みidentifierの記入形式は、例えば`v2.2.0; Work Role OG-WRL-017; local Task / K / S: Not mapped（当該Taskとの対応未確認）`とする。この例は`OG-WRL-017`の存在を記録するだけで、本章の合成Taskや学習者の能力を当該Work Roleへ対応付けない。
 
 ## 4. Evidenceの品質を判定する
 
