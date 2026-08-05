@@ -684,14 +684,28 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:deployable[- ]?)?malware|ransomware|wiper|"
     r"(?:phishing|c2|command[- ]and[- ]control)[- ](?:infrastructure|server)|"
     r"lateral[- ]movement|defen[cs]e[- ]evasion|"
+    r"persistence|persistent[- ]access|backdoor|privilege[- ]escalation|"
     r"(?:log|audit[- ]trail)[- ](?:deletion|erasure|tampering)|"
     r"destructive[- ](?:action|operation)|data[- ]destruction|"
+    r"(?:distributed[- ])?denial[- ]of[- ]service|\b(?:dos|ddos)\b|"
+    r"(?:unauthorized[- ])?(?:data[- ])?(?:modification|encryption)|"
+    r"resource[- ]exhaustion|mfa[- ]fatigue|"
+    r"stealth[- ]tool(?:ing)?|impersonation|social[- ]engineering|"
+    r"doxx(?:ing)?|tracking[- ](?:a[- ])?real[- ]person|"
+    r"anonymi[sz]ation[- ]infrastructure|dark[- ]web[- ]infiltration|"
+    r"confident[- ]attribution[- ]from[- ]weak[- ]evidence|"
     r"マルウェア|ランサムウェア|ワイパー|"
     r"フィッシング(?:基盤|インフラ)|C2(?:基盤|インフラ|サーバー)|"
     r"コマンド(?:・|アンド)?コントロール(?:基盤|インフラ|サーバー)|"
-    r"横展開|ラテラルムーブメント|防御回避|検知回避|"
+    r"横展開|ラテラルムーブメント|永続化|永続的アクセス|バックドア|"
+    r"権限昇格|防御回避|検知回避|"
     r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん)|"
-    r"破壊的(?:操作|行為)|データ破壊|"
+    r"破壊的(?:操作|行為)|データ破壊|サービス拒否|DoS攻撃|DDoS攻撃|"
+    r"無許可(?:データ)?(?:変更|改変|暗号化)|データ(?:変更|改変|改ざん|暗号化)|"
+    r"資源枯渇|MFA疲労(?:攻撃)?|ステルスツール|なりすまし|"
+    r"ソーシャルエンジニアリング|ドキシング|晒し|"
+    r"実在人物(?:の)?(?:追跡|位置推定)|匿名化基盤|"
+    r"ダークウェブ(?:への)?直接潜入|弱いEvidenceからの断定的帰属|"
     r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
     r"real[- ]?(?:credential|token|cookie)|"
     r"(?:production|actual|real)[- ]?(?:value|data|credential|token|cookie|secret|key|id)|"
@@ -2359,13 +2373,42 @@ def verify_negative_regressions(
         "defense evasionを自動化する",
         "log deletionを実行する",
         "destructive actionを実行する",
+        "denial of serviceを実行する",
+        "persistenceを実装する",
+        "privilege escalationを実施する",
+        "unauthorized data modificationを実行する",
+        "encryptionを実行する",
+        "resource exhaustionを発生させる",
+        "MFA fatigueを実施する",
+        "stealth toolingを作成する",
+        "impersonationを実施する",
+        "social engineeringを実施する",
+        "doxxingを実施する",
+        "tracking a real personを実施する",
+        "anonymization infrastructureを運用する",
+        "dark web infiltrationを実施する",
+        "confident attribution from weak evidenceを公表する",
         "マルウェアを作成する",
         "フィッシング基盤を構築する",
         "C2基盤を構築する",
         "横展開を実施する",
+        "永続化を実装する",
+        "権限昇格を実施する",
         "検知回避を自動化する",
         "ログ削除を実行する",
         "破壊的操作を実行する",
+        "サービス拒否を実行する",
+        "データ暗号化を実行する",
+        "無許可データ改変を実行する",
+        "資源枯渇を発生させる",
+        "MFA疲労攻撃を実施する",
+        "ステルスツールを作成する",
+        "なりすましを実施する",
+        "ソーシャルエンジニアリングを実施する",
+        "実在人物の追跡を実施する",
+        "匿名化基盤を運用する",
+        "ダークウェブへの直接潜入を実施する",
+        "弱いEvidenceからの断定的帰属を公表する",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
