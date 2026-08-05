@@ -338,6 +338,12 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
                 line, f"safe exercise line {line_number}"
             ):
                 messages.append(f"{label}: {message}")
+        messages.extend(
+            reserved_name_contract_errors(
+                f"{label} safe exercise",
+                exercise_match.group("body"),
+            )
+        )
     messages.extend(
         protected_non_table_prose_errors(
             text,
@@ -2265,6 +2271,25 @@ def verify_negative_regressions(
         chapter_with_unsafe_exercise, "negative unsafe Chapter exercise"
     ):
         error("negative regression accepted real-target activity in Chapter exercise")
+
+    for target, expected_marker in (
+        ("agency.gov", "possible real domain"),
+        ("8.8.8.8", "non-documentation IP literal"),
+    ):
+        chapter_with_real_host_exercise = chapter.replace(
+            "合成または明示的許可済みのPractice Environmentを指定する。",
+            f"{target}へ接続してEvidenceを作る。",
+            1,
+        )
+        real_host_errors = chapter_contract_errors(
+            chapter_with_real_host_exercise,
+            "negative real-host Chapter exercise",
+        )
+        if not any(expected_marker in message for message in real_host_errors):
+            error(
+                "negative regression accepted a non-reserved host in Chapter exercise: "
+                f"{target}"
+            )
 
     chapter_with_unsafe_evaluation_prose = chapter.replace(
         "### Safety / authorization\n",
