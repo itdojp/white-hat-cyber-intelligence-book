@@ -677,12 +677,12 @@ def markdown_row_cells(line: str) -> list[str]:
 PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:実(?:際|在)?の?(?:Target|標的|ターゲット)|現実の(?:Target|標的|ターゲット)|"
     r"real[- ]target|実運用(?:環境|System|システム)|"
-    r"第三者(?:の)?(?:System|システム|環境|Data|データ)|"
-    r"他社(?:の)?(?:System|システム|環境|Data|データ)|"
-    r"外部(?:組織|企業|団体)(?:の)?(?:System|システム|環境|Data|データ)|"
-    r"third[- ]party[- ]?(?:system|data|environment)|"
+    r"第三者(?:の)?(?:System|システム|環境|Data|データ|API|API(?:エンドポイント|端点))|"
+    r"他社(?:の)?(?:System|システム|環境|Data|データ|API|API(?:エンドポイント|端点))|"
+    r"外部(?:組織|企業|団体)(?:の)?(?:System|システム|環境|Data|データ|API|API(?:エンドポイント|端点))|"
+    r"third[- ]party[- ]?(?:system|data|environment|api(?:[- ]endpoint)?s?)|"
     r"(?:deployable[- ]?)?malware|ransomware|wiper|"
-    r"(?:phishing|c2|command[- ]and[- ]control)[- ](?:infrastructure|server)|"
+    r"(?:phishing|c2|command[- ]and[- ]control)[- ](?:infrastructure|server|site|page|channel)|"
     r"lateral[- ]movement|defen[cs]e[- ]evasion|"
     r"persistence|persistent[- ]access|backdoor|privilege[- ]escalation|"
     r"(?:log|audit[- ]trail)[- ](?:deletion|erasure|tampering)|"
@@ -695,8 +695,8 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"anonymi[sz]ation[- ]infrastructure|dark[- ]web[- ]infiltration|"
     r"confident[- ]attribution[- ]from[- ]weak[- ]evidence|"
     r"マルウェア|ランサムウェア|ワイパー|"
-    r"フィッシング(?:基盤|インフラ)|C2(?:基盤|インフラ|サーバー)|"
-    r"コマンド(?:・|アンド)?コントロール(?:基盤|インフラ|サーバー)|"
+    r"フィッシング(?:基盤|インフラ|サイト|ページ)|C2(?:基盤|インフラ|サーバー|チャネル|通信路)|"
+    r"コマンド(?:・|アンド)?コントロール(?:基盤|インフラ|サーバー|チャネル|通信路)|"
     r"横展開|ラテラルムーブメント|永続化|永続的アクセス|バックドア|"
     r"権限昇格|防御回避|検知回避|"
     r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん)|"
@@ -2363,12 +2363,20 @@ def verify_negative_regressions(
         "Tokenを使用しない。なお、それを取得する",
         "合成Tokenを使用する。ただし本番値へ置換して外部APIへ送信する",
         "第三者**System**へ接続する",
+        "第三者APIへ接続する",
+        "第三者APIエンドポイントへ接続する",
+        "third-party API accessed for additional benign record",
+        "third-party API endpoint accessed for additional benign record",
         "他社システムを追加走査する",
         "実**Target**を走査する",
         "実ターゲットを走査する",
         "phishing infrastructureを構築する",
+        "phishing siteを構築する",
+        "phishing pageを作る",
         "deployable malwareを作成する",
         "C2 infrastructureを構築する",
+        "C2 channelを作る",
+        "command-and-control channelを作る",
         "lateral movementを実施する",
         "defense evasionを自動化する",
         "log deletionを実行する",
@@ -2390,7 +2398,9 @@ def verify_negative_regressions(
         "confident attribution from weak evidenceを公表する",
         "マルウェアを作成する",
         "フィッシング基盤を構築する",
+        "フィッシングサイトを構築する",
         "C2基盤を構築する",
+        "C2チャネルを作る",
         "横展開を実施する",
         "永続化を実装する",
         "権限昇格を実施する",
