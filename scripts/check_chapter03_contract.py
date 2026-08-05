@@ -688,7 +688,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"[- ](?:infrastructure|server|site|page|channel)|"
     r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
     r"[ \t　・]*(?:攻撃|詐欺|基盤|インフラ|サイト|ページ|"
-    r"サーバー|チャネル|通信路|通信|接続|制御|運用)|"
+    r"サーバー?|チャ(?:ネル|ンネル)|通信路|通信|接続|制御|運用)|"
     r"\b(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|"
     r"c[ \t]*&[ \t]*c)\b|"
     r"lateral[- ]movement|defen[cs]e[- ]evasion|"
@@ -706,16 +706,16 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"confident[- ]attribution[- ]from[- ]weak[- ]evidence|"
     r"マルウェア|ランサムウェア|ワイパー|"
     r"フィッシング[ \t　・]*(?:攻撃|詐欺|基盤|インフラ|サイト|ページ|"
-    r"サーバー|チャネル|通信路|通信|接続|制御|運用)|"
-    r"C2(?:基盤|インフラ|サーバー|チャネル|通信路|通信|接続|制御|運用)|"
+    r"サーバー?|チャ(?:ネル|ンネル)|通信路|通信|接続|制御|運用)|"
+    r"C2(?:基盤|インフラ|サーバー?|チャ(?:ネル|ンネル)|通信路|通信|接続|制御|運用)|"
     r"(?:phishing|C2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|フィッシング|"
     r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール)"
     r"(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
-    r"c[ \t]*&[ \t]*c[ \t　・]*(?:基盤|インフラ|サーバー|チャネル|"
+    r"c[ \t]*&[ \t]*c[ \t　・]*(?:基盤|インフラ|サーバー?|チャ(?:ネル|ンネル)|"
     r"通信路|通信|接続|制御|運用)|"
     r"c[ \t]*&[ \t]*c(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
     r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール"
-    r"(?:基盤|インフラ|サーバー|チャネル|通信路|通信|制御|運用)|"
+    r"(?:基盤|インフラ|サーバー?|チャ(?:ネル|ンネル)|通信路|通信|制御|運用)|"
     r"横展開|ラテラルムーブメント|永続化|永続的アクセス|バックドア|"
     r"権限昇格|防御回避|検知回避|"
     r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん)|"
@@ -724,6 +724,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"資源枯渇|MFA疲労(?:攻撃)?|ステルスツール|なりすまし|"
     r"認証(?:試行|総当たり)|ログイン(?:試行|総当たり)|"
     r"総当たり(?:攻撃|ログイン|認証)|"
+    r"ブルート[ \t　・-]*フォース(?:ログイン|認証|攻撃)|"
     r"ソーシャルエンジニアリング|ドキシング|晒し|"
     r"実在人物(?:の)?(?:追跡|位置推定)|匿名化基盤|"
     r"ダークウェブ(?:への)?直接潜入|弱いEvidenceからの断定的帰属|"
@@ -2016,7 +2017,10 @@ def reserved_name_contract_errors(relative: str, text: str) -> list[str]:
     ) -> bool:
         return any(address in network for network in documentation_networks)
 
-    for raw_url in re.findall(r"https?://[^\s`)>]+", text):
+    for raw_url in re.findall(
+        r"(?:(?:[A-Za-z][A-Za-z0-9+.-]*:)?//)[^\s`)>]+",
+        text,
+    ):
         try:
             host = (urlparse(raw_url).hostname or "").lower()
         except ValueError:
@@ -2031,12 +2035,19 @@ def reserved_name_contract_errors(relative: str, text: str) -> list[str]:
                 )
         elif host and not host.endswith(allowed_suffixes):
             messages.append(f"{relative}: non-reserved URL in synthetic content: {raw_url}")
+    visible_text = normalize_safety_text(text)
     domain_pattern = re.compile(
-        r"(?<![A-Za-z0-9_-])(?:[A-Za-z0-9-]+\.)+(?:com|net|org|jp|io|dev|app|cloud)(?![A-Za-z0-9_-])",
+        r"(?<![A-Za-z0-9_-])"
+        r"(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+"
+        r"[A-Za-z]{2,63}"
+        r"(?![A-Za-z0-9_-])",
         re.IGNORECASE,
     )
-    for domain in domain_pattern.findall(text):
-        messages.append(f"{relative}: possible real domain in synthetic content: {domain}")
+    for domain in domain_pattern.findall(visible_text):
+        if not domain.lower().endswith(allowed_suffixes):
+            messages.append(
+                f"{relative}: possible real domain in synthetic content: {domain}"
+            )
 
     detected_addresses: dict[str, ipaddress.IPv4Address | ipaddress.IPv6Address] = {}
     normalized_text = unicodedata.normalize("NFKC", text)
@@ -2508,7 +2519,9 @@ def verify_negative_regressions(
         "フィッシング基盤を構築する",
         "フィッシングサイトを構築する",
         "フィッシングサーバーを構築する",
+        "フィッシングサーバを構築する",
         "フィッシングチャネルを作る",
+        "フィッシングチャンネルを作る",
         "フィッシング サイトを構築する",
         "フィッシング・ページを作る",
         "C2基盤を構築する",
@@ -2531,6 +2544,8 @@ def verify_negative_regressions(
         "MFA疲労攻撃を実施する",
         "認証試行を実施する",
         "ログイン総当たりを実施する",
+        "ブルートフォースログインを実施する",
+        "ブルート・フォース認証を実施する",
         "ステルスツールを作成する",
         "なりすましを実施する",
         "ソーシャルエンジニアリングを実施する",
@@ -3041,6 +3056,61 @@ def verify_negative_regressions(
         "negative synthetic domain", "https://admin.localhost/runbook"
     ):
         error("negative regression accepted .localhost outside the Case domain policy")
+
+    for non_reserved_domain in (
+        "agency.gov",
+        "target.co.uk",
+        "[guide](//agency.gov/runbook)",
+        "[guide](ftp://agency.gov/runbook)",
+    ):
+        domain_errors = reserved_name_contract_errors(
+            "non-reserved domain negative regression",
+            non_reserved_domain,
+        )
+        if not any(
+            marker in message
+            for marker in ("possible real domain", "non-reserved URL")
+            for message in domain_errors
+        ):
+            error(
+                "negative regression accepted a non-reserved bare domain: "
+                f"{non_reserved_domain}"
+            )
+    for reserved_domain in ("lab.example", "lab.test", "lab.invalid"):
+        if reserved_name_contract_errors(
+            "reserved domain positive regression",
+            reserved_domain,
+        ):
+            error(f"positive regression rejected reserved domain {reserved_domain}")
+    if reserved_name_contract_errors(
+        "relative file link positive regression",
+        "[guide](../artifact.json)",
+    ):
+        error("positive regression rejected an unambiguous relative file link")
+    for dotted_identifier in ("module.v2", "artifact.c0m", "alpha.x-y"):
+        if reserved_name_contract_errors(
+            "non-domain dotted identifier positive regression",
+            dotted_identifier,
+        ):
+            error(
+                "positive regression rejected a non-domain dotted identifier: "
+                f"{dotted_identifier}"
+            )
+
+    non_reserved_domain_template = template.replace(
+        "| `CAP-ENTRY-001` |  |  |  | ISO 8601 |  |",
+        "| `CAP-ENTRY-001` | 追加Gap | agency.govへ接続する | Owner | ISO 8601 | Evidence |",
+        1,
+    )
+    non_reserved_domain_template_errors = template_contract_errors(
+        non_reserved_domain_template,
+        "negative bare non-reserved domain Template",
+    )
+    if not any(
+        "possible real domain" in message
+        for message in non_reserved_domain_template_errors
+    ):
+        error("negative regression accepted a bare non-reserved domain in Template")
 
     for documentation_address in (
         "192.0.2.10",
