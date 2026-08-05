@@ -411,7 +411,14 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|シークレット|"
     r"パスワード|パスフレーズ|個人情報|個人データ|"
     r"従業員(?:Data|データ)|顧客(?:Data|データ)|"
-    r"personal[- ]data|employee[- ]data|customer[- ]data)",
+    r"personal[- ](?:data|information)|employee[- ](?:data|information)|"
+    r"customer[- ](?:data|information)|personally[- ]identifiable[- ]information)",
+    re.IGNORECASE,
+)
+SYNTHETIC_QUALIFIABLE_INPUT = re.compile(
+    r"(?:(?:credential|token|cookie|secret|password|passphrase)s?|"
+    r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|シークレット|"
+    r"パスワード|パスフレーズ)",
     re.IGNORECASE,
 )
 EXPLICIT_SYNTHETIC_QUALIFIER = re.compile(
@@ -451,10 +458,11 @@ def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
             next_relative_start = next_match.start() - match.end()
             if next_relative_start < len(clause_tail):
                 clause_tail = clause_tail[:next_relative_start]
-        if not (
-            EXPLICIT_NEGATED_USE.fullmatch(clause_tail)
-            or EXPLICIT_SYNTHETIC_QUALIFIER.search(protected_prefix)
-        ):
+        synthetic_qualified = bool(
+            SYNTHETIC_QUALIFIABLE_INPUT.fullmatch(match.group(0))
+            and EXPLICIT_SYNTHETIC_QUALIFIER.fullmatch(protected_prefix)
+        )
+        if not (EXPLICIT_NEGATED_USE.fullmatch(clause_tail) or synthetic_qualified):
             messages.append(
                 f"unsafe real-target or sensitive-data input in {context}: "
                 f"{match.group(0)!r} is neither explicitly synthetic nor negated"
@@ -591,6 +599,21 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(
             f"{label}: authoritative Practice packet ID must occur exactly 6 times"
         )
+    packet_match = re.search(
+        r"^### 2\.1 完全合成Practice packet\s*$\n(?P<body>.*?)(?=^## 3\. )",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    if packet_match is None:
+        messages.append(f"{label}: missing bounded authoritative Practice packet")
+    else:
+        for line_number, line in enumerate(
+            packet_match.group("body").splitlines(), start=1
+        ):
+            for message in unsafe_operational_field_errors(
+                line, f"Practice packet line {line_number}"
+            ):
+                messages.append(f"{label}: {message}")
 
     expected_work_decomposition = {
         "CAP-ENTRY-001": ("TASK-CAP-001", "KN-CAP-001", "SK-CAP-001"),
@@ -1246,6 +1269,13 @@ def verify_negative_regressions(
         "実Credentialを持ち込まないが閲覧する",
         "PII not collected but stored",
         "secret not shared but retrieved",
+        "not synthetic token used for additional benign record",
+        "非合成Tokenを使用する",
+        "personal information collected for additional benign record",
+        "customer information collected for additional benign record",
+        "employee information collected for additional benign record",
+        "synthetic personally identifiable information used",
+        "合成個人情報を使用する",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1379,6 +1409,14 @@ def verify_negative_regressions(
         "negative missing required-fields fixture",
     ):
         error("negative regression accepted detector fixtures without required_fields gate coverage")
+
+    unsafe_replay_step = case.replace(
+        "3. Task 2はdetector contractを四Fixtureへ順に適用し、ExpectedとObservedを比較する。",
+        "3. Task 2はdetector contractを四Fixtureへ順に適用し、ExpectedとObservedを比較する。第三者Systemを実Targetとして追加走査する。",
+        1,
+    )
+    if not case_contract_errors(unsafe_replay_step, "negative unsafe replay step"):
+        error("negative regression accepted real-target activity in R1 replay procedure")
 
     evidence_shrink = case.replace(
         "`ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` | Synthetic Capability Panel / `RUBRIC-CAP-CLAIM-003` | Partially supported",
