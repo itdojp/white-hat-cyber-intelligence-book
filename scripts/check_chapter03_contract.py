@@ -386,8 +386,15 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"third[- ]party[- ]?(?:system|data|environment)|"
     r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
     r"real[- ]?(?:credential|token|cookie)|"
+    r"(?:credential|token|cookie|secret)s?|PII|"
+    r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|"
     r"個人情報|従業員(?:Data|データ)|顧客(?:Data|データ)|"
     r"personal[- ]data|employee[- ]data|customer[- ]data)",
+    re.IGNORECASE,
+)
+EXPLICIT_SYNTHETIC_QUALIFIER = re.compile(
+    r"(?:合成|架空|ダミー|模擬|テスト用|予約済み|"
+    r"synthetic|dummy|mock|test[- ]only|reserved)",
     re.IGNORECASE,
 )
 EXPLICIT_NEGATION = re.compile(
@@ -402,11 +409,18 @@ def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
     """Reject protected inputs unless every mention is explicitly negated in its clause."""
     messages: list[str] = []
     for match in PROTECTED_PRACTICE_INPUT.finditer(field):
-        clause_tail = re.split(r"[、,。;；\n]", field[match.end() :], maxsplit=1)[0]
-        if not EXPLICIT_NEGATION.search(clause_tail):
+        prefix = field[: match.start()]
+        clause_start = max(prefix.rfind(mark) for mark in "、,。;；\n") + 1
+        suffix = field[match.end() :]
+        clause_tail = re.split(r"[、,。;；\n]", suffix, maxsplit=1)[0]
+        clause = field[clause_start : match.end() + len(clause_tail)]
+        if not (
+            EXPLICIT_NEGATION.search(clause_tail)
+            or EXPLICIT_SYNTHETIC_QUALIFIER.search(clause)
+        ):
             messages.append(
                 f"unsafe real-target or sensitive-data input in {context}: "
-                f"{match.group(0)!r} is not explicitly negated"
+                f"{match.group(0)!r} is neither explicitly synthetic nor negated"
             )
             break
     return messages
@@ -991,6 +1005,10 @@ def verify_negative_regressions(
         "real token used",
         "real cookie collected",
         "第三者のシステムを実際の標的として追加走査する",
+        "Tokenを取得して追加benign recordを作る",
+        "Cookieを保存する",
+        "production credentials used",
+        "PIIを収集する",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1003,6 +1021,9 @@ def verify_negative_regressions(
         "第三者Systemへ接続しない",
         "実Targetではなく合成Tenantを使用する",
         "個人情報を含まない合成入力のみを使う",
+        "合成Tokenを使用する",
+        "Synthetic Cookie fixtureを使用する",
+        "Tokenを使用しない",
     ):
         if unsafe_operational_field_errors(
             explicitly_negated_field, "negative-form safety statement"
