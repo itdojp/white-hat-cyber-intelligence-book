@@ -67,7 +67,7 @@
 | Reviewer | Synthetic Capability Panel。各Task reviewerとは別の統合Review role |
 | Rubric | `RUBRIC-CAP-CLAIM-003` |
 | Result | Partially supported |
-| Limitations | 実案件の法的判断、実Target操作、製品固有Detection実装、人物・組織への帰属は未評価 |
+| Limitations | 実案件の法的判断は未評価、実Targetは操作しない、製品固有Detection実装は未評価、人物・組織への帰属は未評価 |
 | Expiry | 2026-11-05T17:00:00+09:00 |
 | Reassessment Trigger | NICE Components版、Practice Scope、Reviewer rubric、担当Responsibilityの変更、または期限到来 |
 

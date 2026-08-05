@@ -617,6 +617,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             ):
                 messages.append(f"{label}: {message}")
 
+    def reject_unsafe_operational_field(field: str, context: str) -> None:
+        messages.extend(
+            f"{label}: {message}"
+            for message in unsafe_operational_field_errors(field, context)
+        )
+
     expected_work_decomposition = {
         "CAP-ENTRY-001": ("TASK-CAP-001", "KN-CAP-001", "SK-CAP-001"),
         "CAP-ENTRY-002": ("TASK-CAP-002", "KN-CAP-002", "SK-CAP-002"),
@@ -636,6 +642,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             messages.append(f"{label}: malformed Work Decomposition row {cells!r}")
             continue
         entry_id = cells[0].strip("`")
+        for field_name, field_value in (
+            ("Work Role / Responsibility", cells[1]),
+            ("Task statement", cells[2]),
+            ("Skill reference", cells[4]),
+        ):
+            reject_unsafe_operational_field(
+                field_value, f"{entry_id} {field_name}"
+            )
         identifiers: list[str] = []
         for pattern, cell in (
             (r"TASK-CAP-\d{3}", cells[2]),
@@ -712,11 +726,6 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(f"{label}: expected exactly 3 Practice/Evidence entry rows")
     practice_by_evidence: dict[str, dict[str, str]] = {}
     practice_by_entry: dict[str, dict[str, str]] = {}
-    def reject_unsafe_operational_field(field: str, context: str) -> None:
-        messages.extend(
-            f"{label}: {message}"
-            for message in unsafe_operational_field_errors(field, context)
-        )
 
     for cells in entry_rows:
         if len(cells) != 10:
@@ -725,6 +734,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         evidence_id = cells[3].strip("`")
         reject_unsafe_operational_field(
             cells[2], f"{cells[0].strip('`')} Authority / Environment"
+        )
+        reject_unsafe_operational_field(
+            cells[8], f"{cells[0].strip('`')} Practice Limitations"
         )
         if evidence_id in practice_by_evidence:
             messages.append(f"{label}: duplicate Practice evidence ID {evidence_id}")
@@ -778,6 +790,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "disposition": cells[8],
         }
         reject_unsafe_operational_field(
+            cells[7], f"{cells[0].strip('`')} Review Findings"
+        )
+        reject_unsafe_operational_field(
             cells[8], f"{cells[0].strip('`')} Review Disposition"
         )
         if cells[5] not in REVIEW_RESULT_SET:
@@ -811,6 +826,31 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     f"{label}: inconclusive {evidence_id} requires limitations and reassessment"
                 )
 
+    boundary_section_match = re.search(
+        r"^## 1\. Capability Claim Boundary\s*$\n(?P<body>.*?)(?=^## 2\. )",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    boundary_text = ""
+    if boundary_section_match is None:
+        messages.append(f"{label}: missing bounded Capability Claim Boundary section")
+    else:
+        boundary_text = boundary_section_match.group("body")
+    for field_name in ("Scope", "Conditions", "Limitations", "Reassessment Trigger"):
+        boundary_field_matches = re.findall(
+            rf"^\| {re.escape(field_name)} \| (.+) \|$",
+            boundary_text,
+            re.MULTILINE,
+        )
+        if len(boundary_field_matches) != 1:
+            messages.append(
+                f"{label}: Capability Claim Boundary requires exactly one {field_name} field"
+            )
+            continue
+        reject_unsafe_operational_field(
+            boundary_field_matches[0], f"Capability Claim Boundary {field_name}"
+        )
+
     claim_reassessment_id = ""
     claim_rows = [
         markdown_row_cells(line)
@@ -824,6 +864,15 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if len(cells) != 10:
             messages.append(f"{label}: malformed Capability Judgment row {cells!r}")
         else:
+            for field_name, field_value in (
+                ("Scope", cells[1]),
+                ("Conditions", cells[2]),
+                ("Limitations", cells[6]),
+                ("Reassessment Trigger", cells[8]),
+            ):
+                reject_unsafe_operational_field(
+                    field_value, f"Bounded Capability Judgment {field_name}"
+                )
             claim_evidence = set(re.findall(r"ART-EVD-CAP-\d{3}", cells[3]))
             if claim_evidence != set(reviews_by_evidence):
                 messages.append(
@@ -879,22 +928,6 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     f"{label}: Capability Claim Boundary result {boundary_result_match.group(1)!r} "
                     f"does not match bounded judgment result {cells[5]!r}"
                 )
-
-            boundary_trigger_match = re.search(
-                r"^\| Reassessment Trigger \| (.+) \|$", text, re.MULTILINE
-            )
-            if boundary_trigger_match is None:
-                messages.append(
-                    f"{label}: missing Capability Claim Boundary Reassessment Trigger"
-                )
-            else:
-                reject_unsafe_operational_field(
-                    boundary_trigger_match.group(1),
-                    "Capability Claim Boundary Reassessment Trigger",
-                )
-            reject_unsafe_operational_field(
-                cells[8], "Bounded Capability Judgment Reassessment Trigger"
-            )
 
             review_results = [item["result"] for item in reviews_by_evidence.values()]
             if any(result == "Does not meet" for result in review_results):
@@ -1457,6 +1490,72 @@ def verify_negative_regressions(
         unsafe_judgment_trigger, "negative unsafe Judgment Trigger"
     ):
         error("negative regression accepted protected input in Judgment Trigger")
+
+    unsafe_action_field_mutations = (
+        (
+            "Claim Boundary Scope",
+            "合成ScenarioでTask 2のoffline detection fixtureをRubricどおり検証できる。Task 1は一部条件を満たし、Task 3は結論不能であることを識別し、両者のGapと再評価を説明できる",
+            "合成ScenarioでTask 2のoffline detection fixtureをRubricどおり検証できる。Task 1は一部条件を満たし、Task 3は結論不能であることを識別し、両者のGapと再評価を説明できる。Tokenを取得して検証する",
+        ),
+        (
+            "Claim Boundary Conditions",
+            "完全合成資料、Repository提供fixture、Components v2.2.0、Reviewerからの一回の質問機会",
+            "完全合成資料、Repository提供fixture、Components v2.2.0、Reviewerからの一回の質問機会、API keyを取得する",
+        ),
+        (
+            "Claim Boundary Limitations",
+            "実案件の法的判断は未評価、実Targetは操作しない、製品固有Detection実装は未評価、人物・組織への帰属は未評価",
+            "実案件の法的判断は未評価、実Targetは操作しない、製品固有Detection実装は未評価、人物・組織への帰属は未評価。個人情報を収集する",
+        ),
+        (
+            "Work Responsibility",
+            "Security engagementの開始判断を支援する",
+            "Security engagementの開始判断を支援する。API keyを取得する",
+        ),
+        (
+            "Task statement",
+            "`TASK-CAP-002`: 本Caseのoffline fixtureを期待結果と照合し、Coverageと限界を記録する",
+            "`TASK-CAP-002`: 本Caseのoffline fixtureを期待結果と照合し、Coverageと限界を記録する。実Targetを走査する",
+        ),
+        (
+            "Skill reference",
+            "`SK-CAP-003`: Fact、Assumption、Judgmentを分離する",
+            "`SK-CAP-003`: Fact、Assumption、Judgmentを分離する。個人情報を収集する",
+        ),
+        (
+            "Practice Limitations",
+            "Product固有設定、Production scale、未知Telemetryは未評価",
+            "Product固有設定、Production scale、未知Telemetryは未評価。API keyを取得する",
+        ),
+        (
+            "Review Findings",
+            "四Gateは分離したが再承認Triggerが不足",
+            "四Gateは分離したが再承認Triggerが不足。Tokenを取得して確認した",
+        ),
+        (
+            "Judgment Scope",
+            "Task 2のoffline detection fixture検証、およびTask 1 / 3の未達・結論不能の識別と再評価設計",
+            "Task 2のoffline detection fixture検証、およびTask 1 / 3の未達・結論不能の識別と再評価設計。access-keyを取得する",
+        ),
+        (
+            "Judgment Conditions",
+            "合成資料、offline fixture、v2.2.0、宣言済みRubric",
+            "合成資料、offline fixture、v2.2.0、宣言済みRubric、APIキーを取得する",
+        ),
+        (
+            "Judgment Limitations",
+            "Task 1は条件不足、Task 3は結論不能。実案件と人物評価へ一般化しない",
+            "Task 1は条件不足、Task 3は結論不能。実案件と人物評価へ一般化しない。顧客情報を収集する",
+        ),
+    )
+    for field_name, safe_value, unsafe_value in unsafe_action_field_mutations:
+        mutated_case = case.replace(safe_value, unsafe_value, 1)
+        if mutated_case == case:
+            error(f"negative regression fixture missing for {field_name}")
+        if not case_contract_errors(
+            mutated_case, f"negative unsafe {field_name}"
+        ):
+            error(f"negative regression accepted protected input in {field_name}")
 
     fixture_without_required_field_negative = case.replace(
         "| `FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert | 欠損Fieldの補完処理は未評価 |\n",
