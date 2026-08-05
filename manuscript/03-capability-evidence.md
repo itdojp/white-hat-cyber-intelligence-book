@@ -287,7 +287,13 @@ Capability claimのScopeとExpiryが、業務を任せる、追加Reviewを求�
 
 - 第2章のAuthorization Checklistを読了している
 - 合成ScenarioまたはRepository提供のoffline fixtureだけを使う
-- 実Target、実Credential、実個人・従業員・顧客Dataを持ち込まない
+- 実Targetを持ち込まない
+- 実Credentialを持ち込まない
+- Tokenを持ち込まない
+- Cookieを持ち込まない
+- PIIを持ち込まない
+- 従業員Dataを持ち込まない
+- 顧客Dataを持ち込まない
 
 ### 手順
 
@@ -301,9 +307,14 @@ Capability claimのScopeとExpiryが、業務を任せる、追加Reviewを求�
 
 ### 停止条件
 
-- 実Target操作が必要になる
+- 実Target操作を行わない。必要になった時点で停止する
 - AuthorityまたはPractice Scopeが説明できない
-- 実Credential、Token、Cookie、PII、従業員Data、顧客Dataが必要になる
+- 実Credentialを持ち込まない。必要になった時点で停止する
+- Tokenを持ち込まない。必要になった時点で停止する
+- Cookieを持ち込まない。必要になった時点で停止する
+- PIIを持ち込まない。必要になった時点で停止する
+- 従業員Dataを持ち込まない。必要になった時点で停止する
+- 顧客Dataを持ち込まない。必要になった時点で停止する
 - RubricまたはReviewerを後付けしなければResultを作れない
 - 攻撃活動の量をCapability指標にしようとしている
 

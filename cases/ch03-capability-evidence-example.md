@@ -201,7 +201,7 @@ Rubricの判定軸はTask開始前に固定した。結果に合わせた基準�
 | `REA-CAP-001` | 2026-08-13 | 再承認Triggerの修正完了 | `ART-EVD-CAP-001-R2` | `TASK-CAP-001` | Synthetic Safety Reviewer | Scope変更時の停止・再承認が一意 | Planned |
 | `REA-CAP-002` | 2026-08-20 | benign fixture追加 | `ART-EVD-CAP-002-R2` | `TASK-CAP-002` | Synthetic Detection Reviewer | 期待検知と非検知限界を再現可能 | Planned |
 | `REA-CAP-003` | 2026-08-27 | 独立合成Source追加 | `ART-EVD-CAP-003-R2` | `TASK-CAP-003` | Synthetic Analytic Reviewer | 来歴と独立性を分離して再判定 | Reassessment due |
-| `REA-CAP-CLAIM-003` | 2026-11-05 | 最短の個別再評価またはCapability expiry | R2 Evidence一式 | `TASK-CAP-001` / `TASK-CAP-002` / `TASK-CAP-003` | Synthetic Capability Panel | Scope、Limitations、Expiryを含む新しい限定結論 | Planned |
+| `REA-CAP-CLAIM-003` | 2026-11-05 | 最短の個別再評価またはCapability expiry | `ART-EVD-CAP-001-R2` / `ART-EVD-CAP-002-R2` / `ART-EVD-CAP-003-R2` | `TASK-CAP-001` / `TASK-CAP-002` / `TASK-CAP-003` | Synthetic Capability Panel | Scope、Limitations、Expiryを含む新しい限定結論 | Planned |
 
 ## 8. Traceability Check
 

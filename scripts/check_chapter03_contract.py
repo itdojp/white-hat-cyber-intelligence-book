@@ -264,7 +264,7 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
         "Expiry",
         "Reassessment Trigger",
         "実Targetへの攻撃回数",
-        "実Target操作が必要になる",
+        "実Target操作を行わない。必要になった時点で停止する",
         "ART-14 Capability Evidence Matrix",
         "Planned / In practice / Evidence submitted / Reviewed / Gap identified / Reassessment due / Complete",
         "## 10. 評価基準",
@@ -309,6 +309,21 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
         messages.append(
             f"{label}: mutable GitHub blob/main URL must not be a delegated target"
         )
+    exercise_match = re.search(
+        r"^## 8\. 安全な演習\s*$\n(?P<body>.*?)(?=^## 9\. )",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    if exercise_match is None:
+        messages.append(f"{label}: missing bounded safe exercise section")
+    else:
+        for line_number, line in enumerate(
+            exercise_match.group("body").splitlines(), start=1
+        ):
+            for message in unsafe_operational_field_errors(
+                line, f"safe exercise line {line_number}"
+            ):
+                messages.append(f"{label}: {message}")
     return messages
 
 
@@ -399,7 +414,8 @@ EXPLICIT_SYNTHETIC_QUALIFIER = re.compile(
 )
 EXPLICIT_NEGATION = re.compile(
     r"(?:なし|しない|せず|ではなく|禁止|対象外|除外|未使用|非使用|不要|"
-    r"要求しない|使わない|使わず|用いない|含めない|含まない|行わない|許可しない|"
+    r"要求しない|使わない|使わず|用いない|含めない|含まない|持ち込まない|"
+    r"行わない|許可しない|"
     r"not\s+(?:used|allowed|required|included|accessed|collected))",
     re.IGNORECASE,
 )
@@ -800,6 +816,59 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     f"{label}: {evidence_id} result {practice['result']!r} requires a Gap/Learning Action row"
                 )
 
+    expected_reassessments = {
+        "REA-CAP-001": ({"ART-EVD-CAP-001-R2"}, {"TASK-CAP-001"}),
+        "REA-CAP-002": ({"ART-EVD-CAP-002-R2"}, {"TASK-CAP-002"}),
+        "REA-CAP-003": ({"ART-EVD-CAP-003-R2"}, {"TASK-CAP-003"}),
+        "REA-CAP-CLAIM-003": (
+            {
+                "ART-EVD-CAP-001-R2",
+                "ART-EVD-CAP-002-R2",
+                "ART-EVD-CAP-003-R2",
+            },
+            {"TASK-CAP-001", "TASK-CAP-002", "TASK-CAP-003"},
+        ),
+    }
+    reassessment_rows = [
+        markdown_row_cells(line)
+        for line in text.splitlines()
+        if line.startswith("| `REA-CAP-")
+    ]
+    reassessments: dict[str, tuple[set[str], set[str], str]] = {}
+    for cells in reassessment_rows:
+        if len(cells) != 8:
+            messages.append(f"{label}: malformed Reassessment row {cells!r}")
+            continue
+        reassessment_id = cells[0].strip("`")
+        if reassessment_id in reassessments:
+            messages.append(f"{label}: duplicate Reassessment ID {reassessment_id}")
+        evidence_ids = set(re.findall(r"ART-EVD-CAP-\d{3}-R2", cells[3]))
+        task_ids = set(re.findall(r"TASK-CAP-\d{3}", cells[4]))
+        status = cells[7]
+        reassessments[reassessment_id] = (evidence_ids, task_ids, status)
+        if status not in STATUS_SET:
+            messages.append(
+                f"{label}: Reassessment status outside finite set: {status!r}"
+            )
+    if set(reassessments) != set(expected_reassessments):
+        messages.append(
+            f"{label}: Reassessment IDs {sorted(reassessments)} do not match "
+            f"{sorted(expected_reassessments)}"
+        )
+    for reassessment_id in sorted(set(reassessments) & set(expected_reassessments)):
+        evidence_ids, task_ids, _ = reassessments[reassessment_id]
+        expected_evidence, expected_tasks = expected_reassessments[reassessment_id]
+        if evidence_ids != expected_evidence:
+            messages.append(
+                f"{label}: {reassessment_id} evidence {sorted(evidence_ids)} "
+                f"does not match {sorted(expected_evidence)}"
+            )
+        if task_ids != expected_tasks:
+            messages.append(
+                f"{label}: {reassessment_id} tasks {sorted(task_ids)} "
+                f"do not match {sorted(expected_tasks)}"
+            )
+
     for date in ("2026-08-12", "2026-08-19", "2026-08-26"):
         if date not in text:
             messages.append(f"{label}: missing bounded Learning Action due date {date}")
@@ -964,6 +1033,16 @@ def verify_negative_regressions(
     if not chapter_contract_errors(chapter_with_hr_use, "negative Chapter HR use"):
         error("negative regression accepted Chapter 3 Capability Judgment for hiring")
 
+    chapter_with_unsafe_exercise = chapter.replace(
+        "合成または明示的許可済みのPractice Environmentを指定する。",
+        "第三者Systemを実Targetとして追加走査する。",
+        1,
+    )
+    if not chapter_contract_errors(
+        chapter_with_unsafe_exercise, "negative unsafe Chapter exercise"
+    ):
+        error("negative regression accepted real-target activity in Chapter exercise")
+
     template_status_drift = template.replace(
         "Planned / In practice / Evidence submitted / Reviewed / Gap identified / Reassessment due / Complete",
         "Planned / In practice / Ranked / Complete",
@@ -1044,6 +1123,16 @@ def verify_negative_regressions(
     )
     if not case_contract_errors(unsafe_gap, "negative unsafe Gap wording"):
         error("negative regression accepted protected input in a Gap cell")
+
+    invalid_reassessment_status = case.replace(
+        "| `REA-CAP-003` | 2026-08-27 | 独立合成Source追加 | `ART-EVD-CAP-003-R2` | `TASK-CAP-003` | Synthetic Analytic Reviewer | 来歴と独立性を分離して再判定 | Reassessment due |",
+        "| `REA-CAP-003` | 2026-08-27 | 独立合成Source追加 | `ART-EVD-CAP-003-R2` | `TASK-CAP-003` | Synthetic Analytic Reviewer | 来歴と独立性を分離して再判定 | Ranked |",
+        1,
+    )
+    if not case_contract_errors(
+        invalid_reassessment_status, "negative invalid Reassessment status"
+    ):
+        error("negative regression accepted Reassessment status outside finite set")
 
     fixture_without_required_field_negative = case.replace(
         "| `FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert | 欠損Fieldの補完処理は未評価 |\n",
