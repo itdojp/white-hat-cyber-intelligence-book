@@ -407,16 +407,18 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"third[- ]party[- ]?(?:system|data|environment)|"
     r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
     r"real[- ]?(?:credential|token|cookie)|"
-    r"(?:credential|token|cookie|secret|password|passphrase)s?|PII|"
+    r"(?:credential|token|cookie|secret|password|passphrase)s?|"
+    r"api(?:[- _]?key|キー)|access[- _]?key|アクセス(?:・)?キー|PII|"
     r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|シークレット|"
     r"パスワード|パスフレーズ|個人情報|個人データ|"
-    r"従業員(?:Data|データ)|顧客(?:Data|データ)|"
+    r"従業員(?:Data|データ|情報)|顧客(?:Data|データ|情報)|"
     r"personal[- ](?:data|information)|employee[- ](?:data|information)|"
     r"customer[- ](?:data|information)|personally[- ]identifiable[- ]information)",
     re.IGNORECASE,
 )
 SYNTHETIC_QUALIFIABLE_INPUT = re.compile(
     r"(?:(?:credential|token|cookie|secret|password|passphrase)s?|"
+    r"api(?:[- _]?key|キー)|access[- _]?key|アクセス(?:・)?キー|"
     r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|シークレット|"
     r"パスワード|パスフレーズ)",
     re.IGNORECASE,
@@ -775,6 +777,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "findings": cells[7],
             "disposition": cells[8],
         }
+        reject_unsafe_operational_field(
+            cells[8], f"{cells[0].strip('`')} Review Disposition"
+        )
         if cells[5] not in REVIEW_RESULT_SET:
             messages.append(f"{label}: Review Result outside finite set: {cells[5]!r}")
         if cells[4].strip("`") not in artifact_rubrics:
@@ -874,6 +879,22 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     f"{label}: Capability Claim Boundary result {boundary_result_match.group(1)!r} "
                     f"does not match bounded judgment result {cells[5]!r}"
                 )
+
+            boundary_trigger_match = re.search(
+                r"^\| Reassessment Trigger \| (.+) \|$", text, re.MULTILINE
+            )
+            if boundary_trigger_match is None:
+                messages.append(
+                    f"{label}: missing Capability Claim Boundary Reassessment Trigger"
+                )
+            else:
+                reject_unsafe_operational_field(
+                    boundary_trigger_match.group(1),
+                    "Capability Claim Boundary Reassessment Trigger",
+                )
+            reject_unsafe_operational_field(
+                cells[8], "Bounded Capability Judgment Reassessment Trigger"
+            )
 
             review_results = [item["result"] for item in reviews_by_evidence.values()]
             if any(result == "Does not meet" for result in review_results):
@@ -1276,6 +1297,12 @@ def verify_negative_regressions(
         "employee information collected for additional benign record",
         "synthetic personally identifiable information used",
         "合成個人情報を使用する",
+        "API keyを取得して追加benign recordを作る",
+        "APIキーを取得する",
+        "access-key retrieved for replay",
+        "アクセスキーを取得する",
+        "顧客情報を収集する",
+        "従業員情報を収集する",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1290,6 +1317,8 @@ def verify_negative_regressions(
         "個人情報を含まない",
         "合成Tokenを使用する",
         "Synthetic Cookie fixtureを使用する",
+        "合成APIキーを使用する",
+        "Synthetic access-key fixture used",
         "Tokenを使用しない",
     ):
         if unsafe_operational_field_errors(
@@ -1398,6 +1427,36 @@ def verify_negative_regressions(
         unsafe_reassessment_closure, "negative unsafe Reassessment Closure"
     ):
         error("negative regression accepted protected input in Reassessment Closure")
+
+    unsafe_review_disposition = case.replace(
+        "GapとしてR2を要求",
+        "Tokenを取得して再評価",
+        1,
+    )
+    if not case_contract_errors(
+        unsafe_review_disposition, "negative unsafe Review Disposition"
+    ):
+        error("negative regression accepted protected input in Review Disposition")
+
+    unsafe_boundary_trigger = case.replace(
+        "NICE Components版、Practice Scope、Reviewer rubric、担当Responsibilityの変更、または期限到来",
+        "Tokenを取得してCapabilityを再評価する",
+        1,
+    )
+    if not case_contract_errors(
+        unsafe_boundary_trigger, "negative unsafe Claim Boundary Trigger"
+    ):
+        error("negative regression accepted protected input in Claim Boundary Trigger")
+
+    unsafe_judgment_trigger = case.replace(
+        "Components、Scope、Role、Rubric、期限の変更",
+        "Tokenを取得してCapabilityを再評価する",
+        1,
+    )
+    if not case_contract_errors(
+        unsafe_judgment_trigger, "negative unsafe Judgment Trigger"
+    ):
+        error("negative regression accepted protected input in Judgment Trigger")
 
     fixture_without_required_field_negative = case.replace(
         "| `FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert | 欠損Fieldの補完処理は未評価 |\n",
