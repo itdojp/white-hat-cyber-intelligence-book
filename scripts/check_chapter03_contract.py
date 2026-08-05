@@ -408,8 +408,9 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
     r"real[- ]?(?:credential|token|cookie)|"
     r"(?:credential|token|cookie|secret|password|passphrase)s?|PII|"
-    r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|パスワード|パスフレーズ|"
-    r"個人情報|従業員(?:Data|データ)|顧客(?:Data|データ)|"
+    r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|シークレット|"
+    r"パスワード|パスフレーズ|個人情報|個人データ|"
+    r"従業員(?:Data|データ)|顧客(?:Data|データ)|"
     r"personal[- ]data|employee[- ]data|customer[- ]data)",
     re.IGNORECASE,
 )
@@ -418,11 +419,19 @@ EXPLICIT_SYNTHETIC_QUALIFIER = re.compile(
     r"synthetic|dummy|mock|test[- ]only|reserved)(?:の|[- ]+)?$",
     re.IGNORECASE,
 )
-EXPLICIT_NEGATION = re.compile(
-    r"(?:なし|しない|せず|ではなく|禁止|対象外|除外|未使用|非使用|不要|"
-    r"要求しない|使わない|使わず|用いない|含めない|含まない|持ち込まない|"
-    r"行わない|許可しない|"
-    r"not\s+(?:used|allowed|required|included|accessed|collected))",
+EXPLICIT_NEGATED_USE = re.compile(
+    r"^(?:"
+    r"ではなく|ではない|"
+    r"(?:を|は|が|へ|に|として|の|も)?"
+    r"(?:攻撃|操作|調査|走査|スキャン|観測|閲覧|参照|分析|取得|使用|利用|"
+    r"投入|保存|収集|接続|検証|公開|記録)?"
+    r"(?:を|は|が|も)?"
+    r"(?:なし|しない|せず|禁止|対象外|除外|未使用|非使用|不要|要求しない|"
+    r"使わない|使わず|用いない|含めない|含まない|持ち込まない|行わない|"
+    r"許可しない)|"
+    r"\s*(?:(?:is|are|was|were)\s+not|must\s+not\s+be|not)\s+"
+    r"(?:used|allowed|required|included|accessed|collected|stored|retrieved|shared)"
+    r")",
     re.IGNORECASE,
 )
 
@@ -443,7 +452,7 @@ def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
             if next_relative_start < len(clause_tail):
                 clause_tail = clause_tail[:next_relative_start]
         if not (
-            EXPLICIT_NEGATION.search(clause_tail)
+            EXPLICIT_NEGATED_USE.fullmatch(clause_tail)
             or EXPLICIT_SYNTHETIC_QUALIFIER.search(protected_prefix)
         ):
             messages.append(
@@ -583,6 +592,53 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{label}: authoritative Practice packet ID must occur exactly 6 times"
         )
 
+    expected_work_decomposition = {
+        "CAP-ENTRY-001": ("TASK-CAP-001", "KN-CAP-001", "SK-CAP-001"),
+        "CAP-ENTRY-002": ("TASK-CAP-002", "KN-CAP-002", "SK-CAP-002"),
+        "CAP-ENTRY-003": ("TASK-CAP-003", "KN-CAP-003", "SK-CAP-003"),
+    }
+    work_rows = [
+        markdown_row_cells(line)
+        for line in text.splitlines()
+        if line.startswith("| `CAP-ENTRY-")
+        and "TASK-CAP-" in line
+        and "KN-CAP-" in line
+        and "SK-CAP-" in line
+    ]
+    work_by_entry: dict[str, tuple[str, str, str]] = {}
+    for cells in work_rows:
+        if len(cells) != 6:
+            messages.append(f"{label}: malformed Work Decomposition row {cells!r}")
+            continue
+        entry_id = cells[0].strip("`")
+        identifiers: list[str] = []
+        for pattern, cell in (
+            (r"TASK-CAP-\d{3}", cells[2]),
+            (r"KN-CAP-\d{3}", cells[3]),
+            (r"SK-CAP-\d{3}", cells[4]),
+        ):
+            matches = re.findall(pattern, cell)
+            identifiers.append(matches[0] if len(matches) == 1 else "")
+            if len(matches) != 1:
+                messages.append(
+                    f"{label}: {entry_id} Work Decomposition requires exactly one {pattern}"
+                )
+        if entry_id in work_by_entry:
+            messages.append(f"{label}: duplicate Work Decomposition entry {entry_id}")
+        work_by_entry[entry_id] = tuple(identifiers)  # type: ignore[assignment]
+    if set(work_by_entry) != set(expected_work_decomposition):
+        messages.append(
+            f"{label}: Work Decomposition entries {sorted(work_by_entry)} do not match "
+            f"{sorted(expected_work_decomposition)}"
+        )
+    for entry_id in sorted(set(work_by_entry) & set(expected_work_decomposition)):
+        if work_by_entry[entry_id] != expected_work_decomposition[entry_id]:
+            messages.append(
+                f"{label}: {entry_id} Work Decomposition IDs "
+                f"{work_by_entry[entry_id]!r} do not match "
+                f"{expected_work_decomposition[entry_id]!r}"
+            )
+
     artifact_rubric_rows = [
         markdown_row_cells(line)
         for line in text.splitlines()
@@ -630,6 +686,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     if len(entry_rows) != 3:
         messages.append(f"{label}: expected exactly 3 Practice/Evidence entry rows")
     practice_by_evidence: dict[str, dict[str, str]] = {}
+    practice_by_entry: dict[str, dict[str, str]] = {}
     def reject_unsafe_operational_field(field: str, context: str) -> None:
         messages.extend(
             f"{label}: {message}"
@@ -655,6 +712,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "limitations": cells[8],
             "reassessment": cells[9].strip("`"),
         }
+        entry_id = cells[0].strip("`")
+        if entry_id in practice_by_entry:
+            messages.append(f"{label}: duplicate Practice entry ID {entry_id}")
+        practice_by_entry[entry_id] = practice_by_evidence[evidence_id]
         status = cells[7]
         if status not in STATUS_SET:
             messages.append(f"{label}: status outside finite set: {status!r}")
@@ -722,6 +783,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     f"{label}: inconclusive {evidence_id} requires limitations and reassessment"
                 )
 
+    claim_reassessment_id = ""
     claim_rows = [
         markdown_row_cells(line)
         for line in text.splitlines()
@@ -806,6 +868,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     f"{label}: Capability Judgment result {cells[5]!r} is inconsistent "
                     f"with Review Results {review_results!r}; expected {expected_claim_result!r}"
                 )
+            claim_reassessment_id = cells[9].strip("`")
+            if claim_reassessment_id != "REA-CAP-CLAIM-003":
+                messages.append(
+                    f"{label}: Capability Judgment Reassessment ID "
+                    f"{claim_reassessment_id!r} must be 'REA-CAP-CLAIM-003'"
+                )
 
     gap_rows = [
         markdown_row_cells(line)
@@ -813,13 +881,24 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if line.startswith("| `CAP-ENTRY-") and re.search(r"2026-08-(?:12|19|26)", line)
     ]
     gap_entries = {cells[0].strip("`") for cells in gap_rows if len(cells) == 6}
+    gap_next_evidence: dict[str, str] = {}
     for cells in gap_rows:
         if len(cells) == 6:
+            entry_id = cells[0].strip("`")
+            next_evidence = re.findall(r"ART-EVD-CAP-\d{3}-R2", cells[5])
+            if len(next_evidence) != 1:
+                messages.append(
+                    f"{label}: {entry_id} Gap row requires exactly one next Evidence ID"
+                )
+            else:
+                if entry_id in gap_next_evidence:
+                    messages.append(f"{label}: duplicate Gap entry ID {entry_id}")
+                gap_next_evidence[entry_id] = next_evidence[0]
             reject_unsafe_operational_field(
-                cells[1], f"{cells[0].strip('`')} Gap"
+                cells[1], f"{entry_id} Gap"
             )
             reject_unsafe_operational_field(
-                cells[2], f"{cells[0].strip('`')} Learning Action"
+                cells[2], f"{entry_id} Learning Action"
             )
     for evidence_id, practice in practice_by_evidence.items():
         if practice["result"] in {"Partially meets", "Does not meet", "Inconclusive"}:
@@ -887,6 +966,44 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 f"{label}: {reassessment_id} tasks {sorted(task_ids)} "
                 f"do not match {sorted(expected_tasks)}"
             )
+
+    expected_entries = set(expected_work_decomposition)
+    if set(practice_by_entry) != expected_entries:
+        messages.append(
+            f"{label}: Practice entries {sorted(practice_by_entry)} do not match "
+            f"Work Decomposition {sorted(expected_entries)}"
+        )
+    if gap_entries != expected_entries:
+        messages.append(
+            f"{label}: Gap entries {sorted(gap_entries)} do not match "
+            f"Work Decomposition {sorted(expected_entries)}"
+        )
+    for entry_id in sorted(expected_entries & set(practice_by_entry)):
+        suffix = entry_id.rsplit("-", 1)[1]
+        expected_reassessment_id = f"REA-CAP-{suffix}"
+        expected_next_evidence = f"ART-EVD-CAP-{suffix}-R2"
+        if practice_by_entry[entry_id]["reassessment"] != expected_reassessment_id:
+            messages.append(
+                f"{label}: {entry_id} Practice Reassessment ID "
+                f"{practice_by_entry[entry_id]['reassessment']!r} must be "
+                f"{expected_reassessment_id!r}"
+            )
+        if gap_next_evidence.get(entry_id) != expected_next_evidence:
+            messages.append(
+                f"{label}: {entry_id} Gap next Evidence "
+                f"{gap_next_evidence.get(entry_id)!r} must be {expected_next_evidence!r}"
+            )
+        reassessment = reassessments.get(expected_reassessment_id)
+        if reassessment is not None and reassessment[0] != {expected_next_evidence}:
+            messages.append(
+                f"{label}: {entry_id} Gap next Evidence does not match "
+                f"{expected_reassessment_id} recollection Evidence"
+            )
+    if claim_reassessment_id and claim_reassessment_id not in reassessments:
+        messages.append(
+            f"{label}: Capability Judgment Reassessment ID "
+            f"{claim_reassessment_id!r} is not defined"
+        )
 
     for date in ("2026-08-12", "2026-08-19", "2026-08-26"):
         if date not in text:
@@ -1114,6 +1231,21 @@ def verify_negative_regressions(
         "Tokenを取得してCookieを使用しない追加benign recordを作る",
         "passwordを取得して追加benign recordを作る",
         "パスワードを取得して追加benign recordを作る",
+        "個人情報を収集するが公開しない",
+        "実Targetを走査するが記録しない",
+        "第三者Systemへ接続するが保存しない",
+        "シークレットを取得する",
+        "個人データを収集する",
+        "個人情報は収集しないが保存する",
+        "実Targetを走査しないが観測する",
+        "第三者Systemへ接続しないが閲覧する",
+        "シークレットは未使用だが参照する",
+        "個人データを含めないが分析する",
+        "Tokenを取得せず保存する",
+        "Cookieを使用しないが収集する",
+        "実Credentialを持ち込まないが閲覧する",
+        "PII not collected but stored",
+        "secret not shared but retrieved",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1122,10 +1254,10 @@ def verify_negative_regressions(
 
     for explicitly_negated_field in (
         "合成Scenario。外部接続と実Target操作なし",
-        "個人情報を使用しないことを確認する",
+        "個人情報を使用しない",
         "第三者Systemへ接続しない",
-        "実Targetではなく合成Tenantを使用する",
-        "個人情報を含まない合成入力のみを使う",
+        "実Targetではない",
+        "個人情報を含まない",
         "合成Tokenを使用する",
         "Synthetic Cookie fixtureを使用する",
         "Tokenを使用しない",
@@ -1145,6 +1277,56 @@ def verify_negative_regressions(
     )
     if not case_contract_errors(unsafe_gap, "negative unsafe Gap wording"):
         error("negative regression accepted protected input in a Gap cell")
+
+    work_entry_drift = case.replace(
+        "| `CAP-ENTRY-001` | Security engagementの開始判断を支援する |",
+        "| `CAP-ENTRY-999` | Security engagementの開始判断を支援する |",
+        1,
+    )
+    if not case_contract_errors(
+        work_entry_drift, "negative Work Decomposition entry drift"
+    ):
+        error("negative regression accepted Work Decomposition entry drift")
+
+    work_task_drift = case.replace(
+        "`TASK-CAP-001`: 合成ScenarioからAuthorization Checklistを作り、停止・Escalation条件を説明する",
+        "`TASK-CAP-999`: 合成ScenarioからAuthorization Checklistを作り、停止・Escalation条件を説明する",
+        1,
+    )
+    if not case_contract_errors(
+        work_task_drift, "negative Work Decomposition Task drift"
+    ):
+        error("negative regression accepted Work Decomposition Task drift")
+
+    practice_reassessment_drift = case.replace(
+        "法的助言の正しさと実案件のAuthorityは評価対象外 | `REA-CAP-001` |",
+        "法的助言の正しさと実案件のAuthorityは評価対象外 | `REA-CAP-003` |",
+        1,
+    )
+    if not case_contract_errors(
+        practice_reassessment_drift, "negative Practice Reassessment drift"
+    ):
+        error("negative regression accepted a mismatched Practice Reassessment ID")
+
+    claim_reassessment_drift = case.replace(
+        "Components、Scope、Role、Rubric、期限の変更 | `REA-CAP-CLAIM-003` |",
+        "Components、Scope、Role、Rubric、期限の変更 | `REA-CAP-001` |",
+        1,
+    )
+    if not case_contract_errors(
+        claim_reassessment_drift, "negative Claim Reassessment drift"
+    ):
+        error("negative regression accepted a mismatched Claim Reassessment ID")
+
+    gap_next_evidence_drift = case.replace(
+        "2026-08-12 | `ART-EVD-CAP-001-R2` |",
+        "2026-08-12 | `ART-EVD-CAP-999-R2` |",
+        1,
+    )
+    if not case_contract_errors(
+        gap_next_evidence_drift, "negative Gap next Evidence drift"
+    ):
+        error("negative regression accepted a mismatched Gap next Evidence ID")
 
     invalid_reassessment_status = case.replace(
         "| `REA-CAP-003` | 2026-08-27 | 独立合成Source追加 | `ART-EVD-CAP-003-R2` | `TASK-CAP-003` | Synthetic Analytic Reviewer | 来歴と独立性を分離して再判定 | Reassessment due |",
