@@ -337,6 +337,35 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
                 line, f"safe exercise line {line_number}"
             ):
                 messages.append(f"{label}: {message}")
+    messages.extend(
+        protected_non_table_prose_errors(
+            text,
+            (
+                "実Targetへの攻撃回数、取得したAccount数、回避できたControl数、収集した個人情報量を能力Metricにしてはならない。危険なEvidenceは能力を示すのではなく、Authority、Safety、Data handlingの失敗を示す。",
+                "- Production credential、Token、Cookie、Personal Data、Customer Dataが含まれる",
+                "- 第三者Systemへの能動操作が必要になる",
+                "一つのReview Resultから人物全体の能力を結論付けない。例えば、合成ScenarioのAuthorization Checklistが`Meets`でも、実案件の法的判断、実Target操作、認証Protocol実装、Incident指揮能力までは証明しない。",
+                "Taskが成立条件と悪用可能性を理解しているかを確認する。ただし、実Targetへの攻撃量や侵害深度を能力Metricにしない。",
+                "- 実Targetを持ち込まない",
+                "- 実Credentialを持ち込まない",
+                "- Tokenを持ち込まない",
+                "- Cookieを持ち込まない",
+                "- PIIを持ち込まない",
+                "- 従業員Dataを持ち込まない",
+                "- 顧客Dataを持ち込まない",
+                "- 実Target操作を行わない。必要になった時点で停止する",
+                "- 実Credentialを持ち込まない。必要になった時点で停止する",
+                "- Tokenを持ち込まない。必要になった時点で停止する",
+                "- Cookieを持ち込まない。必要になった時点で停止する",
+                "- PIIを持ち込まない。必要になった時点で停止する",
+                "- 従業員Dataを持ち込まない。必要になった時点で停止する",
+                "- 顧客Dataを持ち込まない。必要になった時点で停止する",
+                "- 実Target操作、Credential、PII、従業員・顧客DataをEvidenceにしていない",
+                "- 実Target操作、実Data、攻撃活動量を学習Evidenceにしない",
+            ),
+            f"{label} Chapter 3",
+        )
+    )
     return messages
 
 
@@ -612,6 +641,16 @@ def template_contract_errors(text: str, label: str) -> list[str]:
             messages.append(
                 f"{label}: Template Traceability Check must remain the exact frozen checklist"
             )
+    messages.extend(
+        protected_non_table_prose_errors(
+            text,
+            (
+                "- 実在Targetへの攻撃、実Credential、Token、Cookie、個人情報、従業員Data、顧客DataをEvidenceにしない。",
+                "- [ ] 実Target、実Secret、個人・従業員・顧客Data、公開ランキングを使用していない",
+            ),
+            f"{label} ART-14 Template",
+        )
+    )
     return messages
 
 
@@ -718,6 +757,27 @@ def normalize_safety_text(text: str) -> str:
     normalized = re.sub(r"<[^>]+>", "", normalized)
     normalized = re.sub(r"[*_~`]", "", normalized)
     return normalized.replace("\\", "")
+
+
+def protected_non_table_prose_errors(
+    text: str,
+    expected_lines: tuple[str, ...],
+    context: str,
+) -> list[str]:
+    """Freeze every reader-visible prose line that names a protected input."""
+    actual = tuple(
+        normalized
+        for line in text.splitlines()
+        if not line.strip().startswith("|")
+        if (normalized := normalize_safety_text(line).strip())
+        if PROTECTED_PRACTICE_INPUT.search(normalized)
+    )
+    expected = tuple(normalize_safety_text(line).strip() for line in expected_lines)
+    if actual != expected:
+        return [
+            f"{context}: protected non-table prose must remain the exact reviewed set"
+        ]
+    return []
 
 
 def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
@@ -1828,6 +1888,17 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     for assertion in forbidden:
         if assertion in text:
             messages.append(f"{label}: unsafe synthetic example {assertion!r}")
+    messages.extend(
+        protected_non_table_prose_errors(
+            text,
+            (
+                "- 実Target、実Credential、Token、Cookie、個人情報、従業員Data、顧客Dataを使用しない。",
+                "Learning Actionは、実Target調査、実Credential取得、第三者Data収集を要求しない。不足Evidenceを安全な合成入力で作れない場合は、Task Scopeを縮小する。",
+                "- [x] 実Target、実Secret、個人・従業員・顧客Data、公開ランキングを使用していない",
+            ),
+            f"{label} synthetic Case",
+        )
+    )
     return messages
 
 
@@ -2016,6 +2087,20 @@ def verify_negative_regressions(
     ):
         error("negative regression accepted real-target activity in Chapter exercise")
 
+    chapter_with_unsafe_evaluation_prose = chapter.replace(
+        "### Safety / authorization\n",
+        "### Safety / authorization\n\n- Tokenを取得してEvidenceにする\n",
+        1,
+    )
+    if not any(
+        "protected non-table prose must remain" in message
+        for message in chapter_contract_errors(
+            chapter_with_unsafe_evaluation_prose,
+            "negative unsafe Chapter evaluation prose",
+        )
+    ):
+        error("negative regression accepted protected input outside Chapter exercise")
+
     template_status_drift = template.replace(
         "Planned / In practice / Evidence submitted / Reviewed / Gap identified / Reassessment due / Complete",
         "Planned / In practice / Ranked / Complete",
@@ -2026,6 +2111,20 @@ def verify_negative_regressions(
     template_with_hr_use = template + "\nこのTemplateを採用判定と公開ランキングに使う。\n"
     if not template_contract_errors(template_with_hr_use, "negative Template HR use"):
         error("negative regression accepted ART-14 for hiring or public ranking")
+
+    template_with_unsafe_usage_prose = template.replace(
+        "## 使用条件\n",
+        "## 使用条件\n\n- Tokenを取得してEvidenceにする。\n",
+        1,
+    )
+    if not any(
+        "protected non-table prose must remain" in message
+        for message in template_contract_errors(
+            template_with_unsafe_usage_prose,
+            "negative unsafe Template usage prose",
+        )
+    ):
+        error("negative regression accepted protected input in Template prose")
 
     template_with_unsafe_action = template.replace(
         "| `CAP-ENTRY-001` |  |  |  | ISO 8601 |  |",
