@@ -386,6 +386,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "ART-14",
         "CAP-MATRIX-2026-003",
         "SYNTH-LEARNER-003",
+        "### Parent ART-01 Learning Route Plan instance",
+        "| Plan ID | `LRP-2026-003` |",
+        "| 現在の役割 | 合成学習者。実在の従業員・応募者ではない |",
+        "| 目標とするResponsibility | 許可判断支援、offline detection検証、Source評価済み分析判断を、安全境界内で説明する |",
+        "| 判断・業務上の目的 | 三Taskの学習優先度と再評価条件を決める。採用・配置・報酬判断には使わない |",
+        "| 6か月後の成果物 | `ART-14`と`ART-EVD-CAP-001`〜`003`のReview済み版 |",
+        "| 使用する隔離ラボ | `CAP-PACKET-2026-003-R1`。外部Networkなし |",
+        "| 学習の証拠 | `ART-EVD-CAP-001`、`ART-EVD-CAP-002`、`ART-EVD-CAP-003` |",
         "Parent Artifact ID | `ART-01`",
         "Parent Plan ID | `LRP-2026-003`",
         "Relation | `refines`",
@@ -492,9 +500,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(
             f"{label}: rubric must use explicit conditions instead of undefined Critical labels"
         )
-    if text.count("CAP-PACKET-2026-003-R1") != 5:
+    if text.count("CAP-PACKET-2026-003-R1") != 6:
         messages.append(
-            f"{label}: authoritative Practice packet ID must occur exactly 5 times"
+            f"{label}: authoritative Practice packet ID must occur exactly 6 times"
         )
 
     artifact_rubric_rows = [
@@ -647,6 +655,22 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 )
             if len(claim_evidence) < 2:
                 messages.append(f"{label}: Capability Judgment requires multiple evidence items")
+            boundary_evidence_match = re.search(
+                r"^\| Evidence set \| (.+) \|$", text, re.MULTILINE
+            )
+            if boundary_evidence_match is None:
+                messages.append(f"{label}: missing Capability Claim Boundary evidence set")
+            else:
+                boundary_evidence = set(
+                    re.findall(
+                        r"ART-EVD-CAP-\d{3}", boundary_evidence_match.group(1)
+                    )
+                )
+                if boundary_evidence != claim_evidence:
+                    messages.append(
+                        f"{label}: Capability Claim Boundary evidence {sorted(boundary_evidence)} "
+                        f"does not match bounded judgment evidence {sorted(claim_evidence)}"
+                    )
             claim_rubric_match = re.search(r"RUBRIC-CAP-CLAIM-\d{3}", cells[4])
             claim_rubric = claim_rubric_match.group(0) if claim_rubric_match else ""
             if claim_rubric not in claim_rubrics:
@@ -983,6 +1007,24 @@ def verify_negative_regressions(
         missing_authorization_stub, "negative missing Authorization Checklist stub"
     ):
         error("negative regression accepted a non-self-contained Task 1 exercise")
+
+    missing_parent_plan = case.replace(
+        "### Parent ART-01 Learning Route Plan instance",
+        "### Parent plan omitted",
+        1,
+    )
+    if not case_contract_errors(missing_parent_plan, "negative missing parent Plan"):
+        error("negative regression accepted ART-14 without its parent LRP instance")
+
+    boundary_evidence_drift = case.replace(
+        "| Evidence set | `ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` |",
+        "| Evidence set | `ART-EVD-CAP-002` |",
+        1,
+    )
+    if not case_contract_errors(
+        boundary_evidence_drift, "negative Capability Claim Boundary evidence drift"
+    ):
+        error("negative regression accepted conflicting Boundary and Judgment evidence sets")
 
     if not reserved_name_contract_errors(
         "negative synthetic domain", "https://admin.localhost/runbook"

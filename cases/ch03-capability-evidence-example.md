@@ -13,6 +13,28 @@
 
 参照する空Templateは[Capability Evidence Matrix](../templates/capability-evidence-matrix.md)である。
 
+### Parent ART-01 Learning Route Plan instance
+
+この合成Caseがrefineする親Planは次の実体である。Job titleや配置判定ではなく、学習TaskとEvidenceを選ぶためのPlanである。
+
+| Learning Route Plan field | Value |
+|---|---|
+| Artifact ID | `ART-01` |
+| Plan ID | `LRP-2026-003` |
+| Learner Profile ID | `SYNTH-LEARNER-003` |
+| 現在の役割 | 合成学習者。実在の従業員・応募者ではない |
+| 目標とするResponsibility | 許可判断支援、offline detection検証、Source評価済み分析判断を、安全境界内で説明する |
+| 判断・業務上の目的 | 三Taskの学習優先度と再評価条件を決める。採用・配置・報酬判断には使わない |
+| 6か月後の成果物 | `ART-14`と`ART-EVD-CAP-001`〜`003`のReview済み版 |
+| 強い前提知識 | 合成Scenarioの読解、表形式Evidenceの記録 |
+| 補強が必要な前提知識 | Authority gate、fixture比較、Source lineage |
+| 最初に読む章 | 第1章、第2章、第3章 |
+| 委譲先の専門書 | Chapter 3のDELEGATE先をTaskごとに使用 |
+| 使用する隔離ラボ | `CAP-PACKET-2026-003-R1`。外部Networkなし |
+| 禁止する対象・操作 | 実Target、実Secret、個人・従業員・顧客Data、攻撃活動量による評価 |
+| 月次レビュー日 | 2026-09-05、2026-10-05、2026-11-05 |
+| 学習の証拠 | `ART-EVD-CAP-001`、`ART-EVD-CAP-002`、`ART-EVD-CAP-003` |
+
 ## 0. Document Control
 
 | Field | Value |
