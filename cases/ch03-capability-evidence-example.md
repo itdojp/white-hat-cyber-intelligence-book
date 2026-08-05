@@ -120,6 +120,7 @@ R1 detector contractは「`operation=admin_change`かつ`actor_authorized=false`
 | `FIX-CAP-002-POS` | `operation=admin_change`, `actor_authorized=false`, `required_fields=complete` | Alert | Alert | 一つのEvent schemaだけを確認 |
 | `FIX-CAP-002-NEG` | `operation=admin_change`, `actor_authorized=true`, `required_fields=complete` | No alert | No alert | 許可Listの鮮度は未評価 |
 | `FIX-CAP-002-BENIGN` | `operation=view`, `actor_authorized=false`, `required_fields=complete` | No alert | No alert | 類似する別操作は未評価 |
+| `FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert | 欠損Fieldの補完処理は未評価 |
 
 #### Synthetic Source Packet
 
@@ -137,7 +138,7 @@ R1 source-evaluation contractは「同じLineage groupの派生Sourceを独立�
 
 1. `CAP-PACKET-2026-003-R1`の表を変更せず入力として使う。
 2. Task 1は最小Checklist stubへScenarioを転記し、空欄の再承認条件をGapとして残す。
-3. Task 2はdetector contractを三Fixtureへ順に適用し、ExpectedとObservedを比較する。
+3. Task 2はdetector contractを四Fixtureへ順に適用し、ExpectedとObservedを比較する。
 4. Task 3はsource-evaluation contractを三Sourceへ適用し、Lineage、期間、独立系統数を記録する。
 5. Packet ID、Artifact版、Rubric、Reviewer、Result、Limitationsを`ART-14`へ記録する。
 
@@ -146,7 +147,7 @@ R1 source-evaluation contractは「同じLineage groupの派生Sourceを独立�
 | Rubric ID | Applies to | Meets | Partially meets | Does not meet | Inconclusive |
 |---|---|---|---|---|---|
 | `RUBRIC-CAP-001` | `TASK-CAP-001` / `ART-EVD-CAP-001` | 四Gate、停止、再承認Triggerが再現可能 | 四Gateと停止は分離したが、再承認Triggerの一部が不足 | Authority、Scope、停止条件のいずれかを無視し、安全に開始判断できない | Authority根拠またはScopeが確認不能 |
-| `RUBRIC-CAP-002` | `TASK-CAP-002` / `ART-EVD-CAP-002` | 三Fixtureが期待結果と一致し、Coverage limitationを説明 | 一部結果または限界説明が不足 | 期待結果と実測が矛盾するか、offline replayを実施していない | Fixture版、期待結果、必須Fieldが不明 |
+| `RUBRIC-CAP-002` | `TASK-CAP-002` / `ART-EVD-CAP-002` | 四Fixtureが期待結果と一致し、Coverage limitationを説明 | 一部結果または限界説明が不足 | 期待結果と実測が矛盾するか、offline replayを実施していない | Fixture版、期待結果、必須Fieldが不明 |
 | `RUBRIC-CAP-003` | `TASK-CAP-003` / `ART-EVD-CAP-003` | 独立Sourceと反対仮説を評価し限定判断を作成 | 判断は限定したが、結論を反転させない来歴情報が不足 | Fact、Assumption、Judgmentを混在させるか、Source lineageを無視する | 独立Sourceがなく、現在の問いを支持・反証できない |
 
 #### Capability Claim Rubric

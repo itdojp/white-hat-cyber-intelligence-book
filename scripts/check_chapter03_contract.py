@@ -380,6 +380,38 @@ def markdown_row_cells(line: str) -> list[str]:
     return [cell.strip() for cell in line.strip().strip("|").split("|")]
 
 
+PROTECTED_PRACTICE_INPUT = re.compile(
+    r"(?:実(?:在)?Target|実標的|real[- ]target|"
+    r"第三者(?:System|システム|環境|Data|データ)|"
+    r"third[- ]party[- ]?(?:system|data|environment)|"
+    r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
+    r"real[- ]?(?:credential|token|cookie)|"
+    r"個人情報|従業員(?:Data|データ)|顧客(?:Data|データ)|"
+    r"personal[- ]data|employee[- ]data|customer[- ]data)",
+    re.IGNORECASE,
+)
+EXPLICIT_NEGATION = re.compile(
+    r"(?:なし|しない|せず|ではなく|禁止|対象外|除外|未使用|非使用|不要|"
+    r"要求しない|使わない|使わず|用いない|含めない|含まない|行わない|許可しない|"
+    r"not\s+(?:used|allowed|required|included|accessed|collected))",
+    re.IGNORECASE,
+)
+
+
+def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
+    """Reject protected inputs unless every mention is explicitly negated in its clause."""
+    messages: list[str] = []
+    for match in PROTECTED_PRACTICE_INPUT.finditer(field):
+        clause_tail = re.split(r"[、,。;；\n]", field[match.end() :], maxsplit=1)[0]
+        if not EXPLICIT_NEGATION.search(clause_tail):
+            messages.append(
+                f"unsafe real-target or sensitive-data input in {context}: "
+                f"{match.group(0)!r} is not explicitly negated"
+            )
+            break
+    return messages
+
+
 def case_contract_errors(text: str, label: str) -> list[str]:
     messages: list[str] = []
     required = (
@@ -442,11 +474,15 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "FIX-CAP-002-POS",
         "FIX-CAP-002-NEG",
         "FIX-CAP-002-BENIGN",
+        "FIX-CAP-002-INCOMPLETE",
         "R1 detector contractは「`operation=admin_change`かつ`actor_authorized=false`かつ`required_fields=complete`なら`Alert`、それ以外は`No alert`」",
         "Observed in R1",
         "`FIX-CAP-002-POS` | `operation=admin_change`, `actor_authorized=false`, `required_fields=complete` | Alert | Alert",
         "`FIX-CAP-002-NEG` | `operation=admin_change`, `actor_authorized=true`, `required_fields=complete` | No alert | No alert",
         "`FIX-CAP-002-BENIGN` | `operation=view`, `actor_authorized=false`, `required_fields=complete` | No alert | No alert",
+        "`FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert",
+        "detector contractを四Fixtureへ順に適用",
+        "四Fixtureが期待結果と一致し",
         "SN-CAP-003-A",
         "SN-CAP-003-B",
         "SN-CAP-003-C",
@@ -552,11 +588,20 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     if len(entry_rows) != 3:
         messages.append(f"{label}: expected exactly 3 Practice/Evidence entry rows")
     practice_by_evidence: dict[str, dict[str, str]] = {}
+    def reject_unsafe_operational_field(field: str, context: str) -> None:
+        messages.extend(
+            f"{label}: {message}"
+            for message in unsafe_operational_field_errors(field, context)
+        )
+
     for cells in entry_rows:
         if len(cells) != 10:
             messages.append(f"{label}: malformed Practice/Evidence row {cells!r}")
             continue
         evidence_id = cells[3].strip("`")
+        reject_unsafe_operational_field(
+            cells[2], f"{cells[0].strip('`')} Authority / Environment"
+        )
         if evidence_id in practice_by_evidence:
             messages.append(f"{label}: duplicate Practice evidence ID {evidence_id}")
         practice_by_evidence[evidence_id] = {
@@ -726,6 +771,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if line.startswith("| `CAP-ENTRY-") and re.search(r"2026-08-(?:12|19|26)", line)
     ]
     gap_entries = {cells[0].strip("`") for cells in gap_rows if len(cells) == 6}
+    for cells in gap_rows:
+        if len(cells) == 6:
+            reject_unsafe_operational_field(
+                cells[2], f"{cells[0].strip('`')} Learning Action"
+            )
     for evidence_id, practice in practice_by_evidence.items():
         if practice["result"] in {"Partially meets", "Does not meet", "Inconclusive"}:
             if practice["entry"] not in gap_entries:
@@ -911,6 +961,66 @@ def verify_negative_regressions(
     unsafe_case = case + "\n実Targetへの攻撃を実施する\n"
     if not case_contract_errors(unsafe_case, "negative real-target practice"):
         error("negative regression accepted real-target activity as learning evidence")
+
+    unsafe_practice_environment = case.replace(
+        "合成Scenario。外部接続と実Target操作なし",
+        "合成Scenario。実Target操作あり",
+        1,
+    )
+    if not case_contract_errors(
+        unsafe_practice_environment, "negative unsafe Practice Environment"
+    ):
+        error("negative regression accepted affirmative real-target Practice wording")
+
+    unsafe_learning_action = case.replace(
+        "既存fixtureの追加benign recordをofflineで再評価する",
+        "第三者Systemを実Targetとして追加走査する",
+        1,
+    )
+    if not case_contract_errors(
+        unsafe_learning_action, "negative unsafe Learning Action"
+    ):
+        error("negative regression accepted third-party real-target Learning Action")
+
+    for unsafe_field in (
+        "第三者Dataを分析する",
+        "第三者Systemを観測する",
+        "実Targetのログを閲覧する",
+        "実Credentialを参照する",
+        "従業員データを使用する",
+        "real token used",
+        "real cookie collected",
+    ):
+        if not unsafe_operational_field_errors(
+            unsafe_field, "negative broad protected-input wording"
+        ):
+            error(f"negative regression accepted protected Practice input: {unsafe_field}")
+
+    for explicitly_negated_field in (
+        "合成Scenario。外部接続と実Target操作なし",
+        "個人情報を使用しないことを確認する",
+        "第三者Systemへ接続しない",
+        "実Targetではなく合成Tenantを使用する",
+        "個人情報を含まない合成入力のみを使う",
+    ):
+        if unsafe_operational_field_errors(
+            explicitly_negated_field, "negative-form safety statement"
+        ):
+            error(
+                "negative regression rejected an explicitly negated safety statement: "
+                f"{explicitly_negated_field}"
+            )
+
+    fixture_without_required_field_negative = case.replace(
+        "| `FIX-CAP-002-INCOMPLETE` | `operation=admin_change`, `actor_authorized=false`, `required_fields=incomplete` | No alert | No alert | 欠損Fieldの補完処理は未評価 |\n",
+        "",
+        1,
+    )
+    if not case_contract_errors(
+        fixture_without_required_field_negative,
+        "negative missing required-fields fixture",
+    ):
+        error("negative regression accepted detector fixtures without required_fields gate coverage")
 
     evidence_shrink = case.replace(
         "`ART-EVD-CAP-001`, `ART-EVD-CAP-002`, `ART-EVD-CAP-003` | Synthetic Capability Panel / `RUBRIC-CAP-CLAIM-003` | Partially supported",
