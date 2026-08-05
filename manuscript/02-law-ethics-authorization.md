@@ -36,9 +36,11 @@ description: 技術的に可能な操作を、明示的に許可され安全に�
 
 ### DELEGATE
 
-- 個別事案の法的助言と法令解釈
+- 個別事案の法的助言と法令解釈は、適格な法務・契約専門家へ委譲する
 - 業界規制、契約法、紛争の網羅的な取扱い
-- 詳細な攻撃技法、脆弱性の悪用、認証Protocol内部、Infrastructure Hardening
+- 詳細な攻撃技法と脆弱性の悪用は、許可済み評価の専門的な方法、成果物、安全境界を詳述する[実務で使えるペネトレーションテスト大全](https://itdojp.github.io/pentest-learning-book/)へ委譲する
+- 認証・認可Protocol内部と安全な実装は、OAuth、OIDC、SAML等の設計と実装を詳述する[実践 認証認可システム設計](https://itdojp.github.io/practical-auth-book/)へ委譲する
+- Infrastructure Hardeningと防御実装は、Network、OS、Cloud、ContainerのSecurity実装を詳述する[インフラエンジニアのための情報セキュリティ実装ガイド](https://itdojp.github.io/it-infra-security-guide-book/)へ委譲する
 
 ## 学習目標
 

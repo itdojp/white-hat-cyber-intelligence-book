@@ -3,13 +3,46 @@ from __future__ import annotations
 
 import json
 import re
+import sys
+from collections import Counter
+from copy import deepcopy
 from pathlib import Path
 from urllib.parse import urlparse
 
-from render_reference_baseline import render as render_reference_baseline
-
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.render_reference_baseline import (  # noqa: E402
+    render as render_reference_baseline,
+)
+from scripts.sync_book_site import (  # noqa: E402
+    SitePageRegistryError,
+    parse_registry_data,
+)
+
 ERRORS: list[str] = []
+
+EXPECTED_CHAPTER02_PAGES = {
+    (
+        "manuscript/02-law-ethics-authorization.md",
+        "chapters/chapter-02/index.md",
+        "chapters",
+        45,
+    ),
+    (
+        "templates/authorization-checklist.md",
+        "templates/authorization-checklist/index.md",
+        "additional",
+        232,
+    ),
+    (
+        "cases/ch02-authorization-decision-example.md",
+        "cases/chapter-02-authorization-decision/index.md",
+        "additional",
+        233,
+    ),
+}
 
 
 def error(message: str) -> None:
@@ -47,6 +80,48 @@ def require_tokens(relative: str, text: str, tokens: tuple[str, ...]) -> None:
     for token in tokens:
         if token not in text:
             error(f"{relative}: missing required token {token!r}")
+
+
+def chapter02_page_contract_errors(registry: dict, label: str) -> list[str]:
+    messages: list[str] = []
+    pages = registry.get("pages", [])
+    if not isinstance(pages, list):
+        return [f"{label}: pages must be an array"]
+
+    actual_tuples = [
+        (
+            item.get("source"),
+            item.get("destination"),
+            item.get("section"),
+            item.get("order"),
+        )
+        for item in pages
+        if isinstance(item, dict)
+    ]
+    tuple_counts = Counter(actual_tuples)
+    route_counts = Counter(item[:2] for item in actual_tuples)
+    for expected in sorted(EXPECTED_CHAPTER02_PAGES):
+        tuple_count = tuple_counts[expected]
+        if tuple_count != 1:
+            messages.append(
+                f"{label}: expected Chapter 2 page tuple exactly once: "
+                f"{expected!r}; found {tuple_count}"
+            )
+        route_count = route_counts[expected[:2]]
+        if route_count != 1:
+            messages.append(
+                f"{label}: expected Chapter 2 source/destination exactly once: "
+                f"{expected[:2]!r}; found {route_count}"
+            )
+    return messages
+
+
+def registry_mutation_is_rejected(registry: dict, label: str) -> bool:
+    try:
+        parsed = parse_registry_data(registry, label)
+    except SitePageRegistryError:
+        return True
+    return bool(chapter02_page_contract_errors(parsed, label))
 
 
 def source_ids(text: str) -> set[str]:
@@ -162,13 +237,34 @@ def main() -> int:
             "本書は、実務上のAuthorization Gateと後続工程へのHandoffに責任を持つ。",
             "本章は法的助言を提供せず、個別事案の法的判断と法令解釈は専門家へ委譲する。",
             "委譲先へのリンクを読まなくても、第2章の論旨と運用判断は単独で成立する。",
+            "個別事案の法的助言と法令解釈は、適格な法務・契約専門家へ委譲する",
             "第8章の安全なLabとEvidence取扱い",
             "第9章のRules of Engagement",
             "第10章のReconnaissance / OSINT境界",
             "第15章のFinding、Remediation、Retest、Responsible Disclosure",
             "第19章のIncidentとPersonal Data対応",
+            (
+                "詳細な攻撃技法と脆弱性の悪用は、許可済み評価の専門的な方法、"
+                "成果物、安全境界を詳述する[実務で使えるペネトレーションテスト大全]"
+                "(https://itdojp.github.io/pentest-learning-book/)へ委譲する"
+            ),
+            (
+                "認証・認可Protocol内部と安全な実装は、OAuth、OIDC、SAML等の設計と"
+                "実装を詳述する[実践 認証認可システム設計]"
+                "(https://itdojp.github.io/practical-auth-book/)へ委譲する"
+            ),
+            (
+                "Infrastructure Hardeningと防御実装は、Network、OS、Cloud、Containerの"
+                "Security実装を詳述する[インフラエンジニアのための情報セキュリティ実装ガイド]"
+                "(https://itdojp.github.io/it-infra-security-guide-book/)へ委譲する"
+            ),
         ),
     )
+    if re.search(r"https://github\.com/[^\s)]+/blob/main(?:/|\b)", chapter):
+        error(
+            f"{chapter_path}: mutable GitHub blob/main URL must not be used as a "
+            "delegated publication target"
+        )
     for forbidden in (
         "善意の研究であれば明示的な許可は不要である。",
         "管理者権限があれば業務上の承認も不要である。",
@@ -264,32 +360,76 @@ def main() -> int:
         if pattern.search(example):
             error(f"{example_path}: possible real credential or secret pattern detected")
 
-    registry = load_json("site-pages.json")
-    pages = registry.get("pages", [])
-    if not isinstance(pages, list):
-        error("site-pages.json: pages must be an array")
-        pages = []
-    expected_pages = {
+    raw_registry = load_json("site-pages.json")
+    try:
+        registry = parse_registry_data(raw_registry)
+    except SitePageRegistryError as exc:
+        error(f"site-pages.json: invalid registry: {exc}")
+        registry = {}
+    for message in chapter02_page_contract_errors(registry, "site-pages.json"):
+        error(message)
+
+    pages = raw_registry.get("pages", [])
+    chapter_page = next(
         (
-            "manuscript/02-law-ethics-authorization.md",
-            "chapters/chapter-02/index.md",
+            item
+            for item in pages
+            if isinstance(item, dict)
+            and item.get("source") == "manuscript/02-law-ethics-authorization.md"
         ),
-        (
-            "templates/authorization-checklist.md",
-            "templates/authorization-checklist/index.md",
-        ),
-        (
-            "cases/ch02-authorization-decision-example.md",
-            "cases/chapter-02-authorization-decision/index.md",
-        ),
-    }
-    actual_pages = {
-        (item.get("source"), item.get("destination"))
-        for item in pages
-        if isinstance(item, dict)
-    }
-    for page in sorted(expected_pages - actual_pages):
-        error(f"site-pages.json: missing chapter 2 page mapping {page}")
+        None,
+    ) if isinstance(pages, list) else None
+    if chapter_page is None:
+        error("site-pages.json: missing Chapter 2 manuscript page for negative regressions")
+    else:
+        negative_registries: list[tuple[str, dict]] = []
+
+        mutation = deepcopy(raw_registry)
+        mutation["schemaVersion"] = "0.0.0"
+        negative_registries.append(("schemaVersion drift", mutation))
+
+        mutation = deepcopy(raw_registry)
+        next(
+            item
+            for item in mutation["pages"]
+            if item.get("source") == "manuscript/02-law-ethics-authorization.md"
+        )["section"] = "additional"
+        negative_registries.append(("section drift", mutation))
+
+        mutation = deepcopy(raw_registry)
+        next(
+            item
+            for item in mutation["pages"]
+            if item.get("source") == "manuscript/02-law-ethics-authorization.md"
+        )["order"] = 46
+        negative_registries.append(("order drift", mutation))
+
+        mutation = deepcopy(raw_registry)
+        duplicated_page = next(
+            item
+            for item in mutation["pages"]
+            if item.get("source") == "manuscript/02-law-ethics-authorization.md"
+        )
+        mutation["pages"].append(deepcopy(duplicated_page))
+        negative_registries.append(("duplicate page", mutation))
+
+        mutation = deepcopy(raw_registry)
+        next(
+            item
+            for item in mutation["pages"]
+            if item.get("source") == "manuscript/02-law-ethics-authorization.md"
+        )["unexpectedKey"] = True
+        negative_registries.append(("unknown page key", mutation))
+
+        for mutation_name, mutated_registry in negative_registries:
+            if not registry_mutation_is_rejected(
+                mutated_registry,
+                f"site-pages.json negative regression ({mutation_name})",
+            ):
+                error(
+                    "site-pages.json: negative registry mutation was accepted: "
+                    f"{mutation_name}"
+                )
 
     artifact_index = read_text("artifact-index.md")
     require_tokens(
