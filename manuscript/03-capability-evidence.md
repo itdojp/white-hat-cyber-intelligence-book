@@ -293,7 +293,7 @@ Capability claimのScopeとExpiryが、業務を任せる、追加Reviewを求�
 
 1. 学習Goalから二つまたは三つのbounded Taskを定義する。
 2. 各TaskにKnowledge / Skill referenceを割り当て、対応を確認できる場合だけComponents版とNICE identifierを記録する。
-3. 合成または明示的許可済みのPractice Environmentを指定する。最初の演習では、第3章合成Case内のPractice packetを使える。
+3. 合成または明示的許可済みのPractice Environmentを指定する。最初の演習では、第3章合成Case内の正本Practice packet `CAP-PACKET-2026-003-R1`を使える。
 4. Expected Artifact、Evidence ID、Rubric、Reviewer roleを決める。
 5. Result、Limitations、Gap、Learning Action、Due dateを記録する。
 6. 複数Evidenceから限定Capability Judgmentを作る。

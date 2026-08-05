@@ -243,6 +243,7 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
         "`Not mapped`と理由を残す",
         "v2.2.0; Work Role OG-WRL-017; local Task / K / S: Not mapped（当該Taskとの対応未確認）",
         "本章の合成Taskや学習者の能力を当該Work Roleへ対応付けない",
+        "正本Practice packet `CAP-PACKET-2026-003-R1`",
         "T-03-01 Evidenceの四分類",
         "良いEvidence",
         "弱いEvidence",
@@ -390,6 +391,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "Relation | `refines`",
         "LEARN-CASE-2026-003",
         "NICE Components baseline | `v2.2.0`",
+        "Practice packet | `CAP-PACKET-2026-003-R1`",
         "CAP-CLAIM-2026-003",
         "TASK-CAP-001",
         "TASK-CAP-002",
@@ -432,9 +434,22 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "FIX-CAP-002-POS",
         "FIX-CAP-002-NEG",
         "FIX-CAP-002-BENIGN",
+        "R1 detector contractは「`operation=admin_change`かつ`actor_authorized=false`かつ`required_fields=complete`なら`Alert`、それ以外は`No alert`」",
+        "Observed in R1",
+        "`FIX-CAP-002-POS` | `operation=admin_change`, `actor_authorized=false`, `required_fields=complete` | Alert | Alert",
+        "`FIX-CAP-002-NEG` | `operation=admin_change`, `actor_authorized=true`, `required_fields=complete` | No alert | No alert",
+        "`FIX-CAP-002-BENIGN` | `operation=view`, `actor_authorized=false`, `required_fields=complete` | No alert | No alert",
         "SN-CAP-003-A",
         "SN-CAP-003-B",
         "SN-CAP-003-C",
+        "`SN-CAP-003-A` | 合成技術Cluster `CL-CAP-003`の同一特徴を報告 | 合成一次観測 | Group A",
+        "`SN-CAP-003-B` | `SN-CAP-003-A`を要約して同じ特徴を報告 | derived-from `SN-CAP-003-A` | Group A",
+        "`SN-CAP-003-C` | 反対仮説に整合する別特徴を報告 | 合成一次観測だが対象期間外 | Group B / scope mismatch",
+        "R1 source-evaluation contract",
+        "独立したin-scope Sourceが二系統未満なら`Inconclusive`",
+        "#### R1 replay procedure",
+        "Packet ID、Artifact版、Rubric、Reviewer、Result、Limitationsを`ART-14`へ記録する",
+        "正本Practice packet `CAP-PACKET-2026-003-R1`",
         "#### Artifact Evidence Rubric",
         ARTIFACT_RUBRIC_HEADER,
         "#### Capability Claim Rubric",
@@ -476,6 +491,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     if re.search(r"(?:非)?Critical", text):
         messages.append(
             f"{label}: rubric must use explicit conditions instead of undefined Critical labels"
+        )
+    if text.count("CAP-PACKET-2026-003-R1") != 5:
+        messages.append(
+            f"{label}: authoritative Practice packet ID must occur exactly 5 times"
         )
 
     artifact_rubric_rows = [

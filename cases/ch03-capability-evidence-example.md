@@ -27,6 +27,7 @@
 | Title | Authority、Detection、分析判断のEvidenceを作る合成学習計画 |
 | NICE structural publication | `NIST SP 800-181 Rev.1` |
 | NICE Components baseline | `v2.2.0` |
+| Practice packet | `CAP-PACKET-2026-003-R1` |
 | Status | Gap identified |
 | Owner | Synthetic Learning Owner |
 | Classification | Public |
@@ -66,6 +67,8 @@ Work Role / ResponsibilityはTaskを整理する入口であり、合成学習�
 
 この節だけで三つのTaskを再現できる。第17章または第25章の読了、外部Network、別Datasetを前提にしない。
 
+この節のScenario、Checklist stub、Fixture表、Source Packet表、判定Ruleを、正本Practice packet `CAP-PACKET-2026-003-R1`とする。R1の入力はこの文書内の表そのものであり、外部fileを必要としない。入力またはRuleを変更する場合はpacket版を上げ、旧Review Resultを流用せずReassessmentを行う。
+
 #### Authorization Scenario
 
 - System ownerとData ownerは合成人物Roleとして定義済みである。
@@ -88,11 +91,13 @@ Task 1では次の最小stubを使う。第2章の完全なTemplateを参照し�
 
 #### Offline Detection Fixture
 
-| Fixture ID | Input | Expected observation | Coverage limitation |
-|---|---|---|---|
-| `FIX-CAP-002-POS` | 合成管理操作、未承認Actor、必須Field完備 | Alert | 一つのEvent schemaだけを確認 |
-| `FIX-CAP-002-NEG` | 合成管理操作、承認済みActor、必須Field完備 | No alert | 許可Listの鮮度は未評価 |
-| `FIX-CAP-002-BENIGN` | 合成閲覧操作、未承認Actor、必須Field完備 | No alert | 類似する別操作は未評価 |
+R1 detector contractは「`operation=admin_change`かつ`actor_authorized=false`かつ`required_fields=complete`なら`Alert`、それ以外は`No alert`」である。各行へこのRuleを適用し、ObservedとExpectedが一致するかをofflineで確認する。
+
+| Fixture ID | Input | Expected observation | Observed in R1 | Coverage limitation |
+|---|---|---|---|---|
+| `FIX-CAP-002-POS` | `operation=admin_change`, `actor_authorized=false`, `required_fields=complete` | Alert | Alert | 一つのEvent schemaだけを確認 |
+| `FIX-CAP-002-NEG` | `operation=admin_change`, `actor_authorized=true`, `required_fields=complete` | No alert | No alert | 許可Listの鮮度は未評価 |
+| `FIX-CAP-002-BENIGN` | `operation=view`, `actor_authorized=false`, `required_fields=complete` | No alert | No alert | 類似する別操作は未評価 |
 
 #### Synthetic Source Packet
 
@@ -103,6 +108,16 @@ Task 1では次の最小stubを使う。第2章の完全なTemplateを参照し�
 | `SN-CAP-003-C` | 反対仮説に整合する別特徴を報告 | 合成一次観測だが対象期間外 | Group B / scope mismatch |
 
 `SN-CAP-003-A`と`SN-CAP-003-B`を独立した二件に数えない。`SN-CAP-003-C`は対象期間外であるため、現在の問いを独立に裏付けない。したがって現時点のResultは`Inconclusive`である。
+
+R1 source-evaluation contractは「同じLineage groupの派生Sourceを独立件数へ重複加算せず、対象期間外のSourceを現在の問いの支持・反証へ使わない。独立したin-scope Sourceが二系統未満なら`Inconclusive`」である。
+
+#### R1 replay procedure
+
+1. `CAP-PACKET-2026-003-R1`の表を変更せず入力として使う。
+2. Task 1は最小Checklist stubへScenarioを転記し、空欄の再承認条件をGapとして残す。
+3. Task 2はdetector contractを三Fixtureへ順に適用し、ExpectedとObservedを比較する。
+4. Task 3はsource-evaluation contractを三Sourceへ適用し、Lineage、期間、独立系統数を記録する。
+5. Packet ID、Artifact版、Rubric、Reviewer、Result、Limitationsを`ART-14`へ記録する。
 
 #### Artifact Evidence Rubric
 
@@ -123,8 +138,8 @@ Task 1では次の最小stubを使う。第2章の完全なTemplateを参照し�
 | Entry ID | Practice ID | Authority / Environment | Artifact / Evidence ID | Reviewer | Rubric | Result | Status | Limitations | Reassessment ID |
 |---|---|---|---|---|---|---|---|---|---|
 | `CAP-ENTRY-001` | `PRACTICE-CAP-001` | 合成Scenario。外部接続と実Target操作なし | `ART-EVD-CAP-001` | Synthetic Safety Reviewer | `RUBRIC-CAP-001` | Partially meets | Gap identified | 法的助言の正しさと実案件のAuthorityは評価対象外 | `REA-CAP-001` |
-| `CAP-ENTRY-002` | `PRACTICE-CAP-002` | Section 2.1のoffline fixture。Network accessなし | `ART-EVD-CAP-002` | Synthetic Detection Reviewer | `RUBRIC-CAP-002` | Meets | Reviewed | Product固有設定、Production scale、未知Telemetryは未評価 | `REA-CAP-002` |
-| `CAP-ENTRY-003` | `PRACTICE-CAP-003` | Section 2.1の合成Source packet。追加収集なし | `ART-EVD-CAP-003` | Synthetic Analytic Reviewer | `RUBRIC-CAP-003` | Inconclusive | Reassessment due | 独立Sourceが一系統不足し、帰属判断は対象外 | `REA-CAP-003` |
+| `CAP-ENTRY-002` | `PRACTICE-CAP-002` | `CAP-PACKET-2026-003-R1`のoffline fixture。Network accessなし | `ART-EVD-CAP-002` | Synthetic Detection Reviewer | `RUBRIC-CAP-002` | Meets | Reviewed | Product固有設定、Production scale、未知Telemetryは未評価 | `REA-CAP-002` |
+| `CAP-ENTRY-003` | `PRACTICE-CAP-003` | `CAP-PACKET-2026-003-R1`の合成Source packet。追加収集なし | `ART-EVD-CAP-003` | Synthetic Analytic Reviewer | `RUBRIC-CAP-003` | Inconclusive | Reassessment due | 独立Sourceが一系統不足し、帰属判断は対象外 | `REA-CAP-003` |
 
 Statusは`Planned / In practice / Evidence submitted / Reviewed / Gap identified / Reassessment due / Complete`の有限集合から選んでいる。`Reviewed`はTask 2のEvidence lifecycleを示すだけで、人物全体のCapabilityがCompleteであることを意味しない。
 
