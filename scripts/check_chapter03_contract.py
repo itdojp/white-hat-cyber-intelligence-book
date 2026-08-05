@@ -408,6 +408,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
     r"real[- ]?(?:credential|token|cookie)|"
     r"(?:credential|token|cookie|secret|password|passphrase)s?|"
+    r"(?:jwt|json[- ]web[- ]token)|"
     r"api[- _]?(?:key|キー)|"
     r"(?:access|private|ssh|session|authentication|auth|signing|encryption)"
     r"[- _]?(?:key|id)|"
@@ -424,6 +425,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
 )
 SYNTHETIC_QUALIFIABLE_INPUT = re.compile(
     r"(?:(?:credential|token|cookie|secret|password|passphrase)s?|"
+    r"(?:jwt|json[- ]web[- ]token)|"
     r"api[- _]?(?:key|キー)|"
     r"(?:access|private|ssh|session|authentication|auth|signing|encryption)"
     r"[- _]?(?:key|id)|"
@@ -1391,6 +1393,8 @@ def verify_negative_regressions(
         "private key retrieved for additional benign record",
         "SSH keyを取得して追加benign recordを作る",
         "session IDを取得して追加benign recordを作る",
+        "JWTを取得して追加benign recordを作る",
+        "Bearer JWT retrieved for replay",
     ):
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
@@ -1410,6 +1414,7 @@ def verify_negative_regressions(
         "Synthetic access-key fixture used",
         "Synthetic private key fixture used",
         "Synthetic session ID fixture used",
+        "Synthetic JWT fixture used",
         "Tokenを使用しない",
     ):
         if unsafe_operational_field_errors(
