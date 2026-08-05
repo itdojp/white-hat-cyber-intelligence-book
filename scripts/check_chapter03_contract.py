@@ -682,7 +682,9 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"外部(?:組織|企業|団体)(?:の)?(?:System|システム|環境|Data|データ|API|API(?:エンドポイント|端点))|"
     r"third[- ]party[- ]?(?:system|data|environment|api(?:[- ]endpoint)?s?)|"
     r"(?:deployable[- ]?)?malware|ransomware|wiper|"
-    r"(?:phishing|c2|command[- ]and[- ]control)[- ](?:infrastructure|server|site|page|channel)|"
+    r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
+    r"[- ](?:infrastructure|server|site|page|channel)|"
+    r"\b(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)\b|"
     r"lateral[- ]movement|defen[cs]e[- ]evasion|"
     r"persistence|persistent[- ]access|backdoor|privilege[- ]escalation|"
     r"(?:log|audit[- ]trail)[- ](?:deletion|erasure|tampering)|"
@@ -695,8 +697,13 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"anonymi[sz]ation[- ]infrastructure|dark[- ]web[- ]infiltration|"
     r"confident[- ]attribution[- ]from[- ]weak[- ]evidence|"
     r"マルウェア|ランサムウェア|ワイパー|"
-    r"フィッシング(?:基盤|インフラ|サイト|ページ)|C2(?:基盤|インフラ|サーバー|チャネル|通信路)|"
-    r"コマンド(?:・|アンド)?コントロール(?:基盤|インフラ|サーバー|チャネル|通信路)|"
+    r"フィッシング(?:攻撃|詐欺|基盤|インフラ|サイト|ページ)|"
+    r"C2(?:基盤|インフラ|サーバー|チャネル|通信路|通信|接続|制御|運用)|"
+    r"(?:phishing|C2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|フィッシング|"
+    r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール)"
+    r"(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
+    r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール"
+    r"(?:基盤|インフラ|サーバー|チャネル|通信路|通信|制御|運用)|"
     r"横展開|ラテラルムーブメント|永続化|永続的アクセス|バックドア|"
     r"権限昇格|防御回避|検知回避|"
     r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん)|"
@@ -2373,9 +2380,18 @@ def verify_negative_regressions(
         "phishing infrastructureを構築する",
         "phishing siteを構築する",
         "phishing pageを作る",
+        "phishingを実施する",
+        "perform phishing for additional benign record",
+        "フィッシングを実施する",
+        "フィッシング を実施する",
+        "フィッシング攻撃を実施する",
+        "フィッシング詐欺を実施する",
         "deployable malwareを作成する",
         "C2 infrastructureを構築する",
         "C2 channelを作る",
+        "C2を構築する",
+        "build C2 for additional benign record",
+        "deploy command-and-control for additional benign record",
         "command-and-control channelを作る",
         "lateral movementを実施する",
         "defense evasionを自動化する",
@@ -2401,6 +2417,11 @@ def verify_negative_regressions(
         "フィッシングサイトを構築する",
         "C2基盤を構築する",
         "C2チャネルを作る",
+        "C2通信を確立する",
+        "C2接続を確立する",
+        "コマンド・アンド・コントロールを構築する",
+        "コマンド・アンド・コントロール を構築する",
+        "command & controlを構築する",
         "横展開を実施する",
         "永続化を実装する",
         "権限昇格を実施する",
