@@ -685,9 +685,11 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
     r"外部(?:組織|企業|団体)(?:の)?(?:System|システム|環境|Data|データ|API|"
     r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
-    r"外部(?:Service|サービス|SaaS|Site|サイト)|"
+    r"外部(?:の)?[ \t　]*(?:System|システム|環境|Data|データ|API|"
+    r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
     r"third[- ]party[- ]?(?:system|data|environment|api(?:[- ]endpoint)?s?|service|saas|site)s?|"
     r"external[- ](?:service|saas|site)s?|"
+    r"external[- ](?:system|data|environment|api(?:[- ]endpoint)?s?)s?|"
     r"(?:deployable[- ]?)?malware|ransomware|wiper|"
     r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
     r"[- ](?:infrastructure|server|site|page|channel)|"
@@ -705,7 +707,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"resource[- ]exhaustion|mfa[- ]fatigue|"
     r"brute[- ]force[- ](?:login|authentication|auth)|"
     r"(?:login|authentication|auth)[- ](?:attempts?|brute[- ]force)|"
-    r"session[- ](?:hijack(?:ing)?|fixation|replay)|"
+    r"session[- ](?:hijack(?:ing)?|fixation|replay|reuse|takeover|theft)|"
     r"stealth[- ]tool(?:ing)?|impersonation|social[- ]engineering|"
     r"doxx(?:ing)?|tracking[- ](?:a[- ])?real[- ]person|"
     r"anonymi[sz]ation[- ]infrastructure|dark[- ]web[- ]infiltration|"
@@ -2474,10 +2476,14 @@ def verify_negative_regressions(
         "第三者サービスへ接続する",
         "他社サービスへ接続する",
         "外部サービスへ接続する",
+        "外部システムへ接続する",
+        "外部APIへ接続する",
+        "外部の APIへ接続する",
         "third-party API accessed for additional benign record",
         "third-party API endpoint accessed for additional benign record",
         "third-party service accessed for additional benign record",
         "external service accessed for additional benign record",
+        "external API accessed for additional benign record",
         "他社システムを追加走査する",
         "実**Target**を走査する",
         "実ターゲットを走査する",
@@ -2525,6 +2531,8 @@ def verify_negative_regressions(
         "session hijackingを実施する",
         "session fixationを実施する",
         "session replayを実施する",
+        "session reuseを実施する",
+        "session takeoverを実施する",
         "stealth toolingを作成する",
         "impersonationを実施する",
         "social engineeringを実施する",
