@@ -10,7 +10,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-ATTACK-DS-001 | MITRE | [ATT&CK Data Sources](https://attack.mitre.org/datasources/) | Deprecated in ATT&CK v18 / deprecated-reference | 2026-08-03 | 2026-11-03 | 17 |
 | SRC-ATTACK-DET-001 | MITRE | [ATT&CK Detection Strategies](https://attack.mitre.org/detectionstrategies/) | current | 2026-08-03 | 2026-11-03 | 17 |
 | SRC-SIGMA-001 | SigmaHQ | [Sigma Rules Specification](https://sigmahq.io/sigma-specification/specification/sigma-rules-specification.html) | 2.1.0 / current | 2026-08-03 | 2027-08-03 | 17 |
-| SRC-NICE-001 | NIST | [Workforce Framework for Cybersecurity (NICE Framework)](https://csrc.nist.gov/pubs/sp/800/181/r1/final) | SP 800-181 Rev.1 / final | 2026-07-25 | 2027-07-25 | 0, 1, 3 |
+| SRC-NICE-001 | NIST | [Workforce Framework for Cybersecurity (NICE Framework) and NICE Framework Components](https://csrc.nist.gov/pubs/sp/800/181/r1/final) | SP 800-181 Rev.1; Components v2.2.0 / final | 2026-08-05 | 2026-11-05 | 0, 1, 3 |
 | SRC-CSF-001 | NIST | [Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework) | 2.0 / final | 2026-07-25 | 2027-07-25 | 1, 19, 22 |
 | SRC-IR-001 | NIST | [Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | SP 800-61 Rev.3 / final | 2026-08-03 | 2027-08-03 | 1, 17, 19, 20, 22 |
 | SRC-BERKELEY-001 | OHCHR / UC Berkeley | [Berkeley Protocol on Digital Open Source Investigations](https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source) | 2022 edition / published | 2026-07-25 | 2027-07-25 | 8, 24, 25 |
