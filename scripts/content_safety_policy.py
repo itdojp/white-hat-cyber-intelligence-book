@@ -86,7 +86,7 @@ _CONFUSABLE_FOLD = str.maketrans(
         "τ": "t",
     }
 )
-_CLAUSE_SPLIT = re.compile(r"([,;、。；!?！？\n]+)")
+_CLAUSE_SPLIT = re.compile(r"([,;、。；!?！？\n]+|[.:：](?=\s|$))")
 _CONTRAST_PREFIX = re.compile(
     r"^\s*(?:(?:but|however|yet|nevertheless|still|then|and)\b|"
     r"しかし|ただし|だが|一方で|それでも|その後|そして)[,:、\s]*",
@@ -392,7 +392,6 @@ def _action_is_prohibited(
 ) -> bool:
     action_start, action_end, _, action_text = action
     before = clause[max(0, scope_start - 48) : scope_start]
-    after = clause[action_end : action_end + 80]
     whole = clause.strip()
     action_before = clause[max(0, action_start - 48) : action_start]
 
@@ -405,27 +404,15 @@ def _action_is_prohibited(
         return True
     if re.search(r"(?:is|are|was|were)\s+forbidden\s+to\s*$", action_before):
         return True
+    if _coordinated_pre_action_prohibition_controls_action(clause, action):
+        return True
     if _forbidden_to_controls_action(clause, action):
         return True
     if re.search(r"(?:しない|せず|行わない|使わない|作らない)$", action_text):
         return True
-    if re.search(
-        r"\b(?:is|are|was|were|should be|must be)\s+(?:prohibited|forbidden|not allowed|outside)\b",
-        after,
-    ):
+    if _trailing_prohibition_controls_action(clause, action, _TRAILING_EN_PROHIBITION):
         return True
-    if re.search(r"\b(?:creation|use|deployment|access)\s+is\s+outside\b", whole):
-        return True
-    if re.search(
-        r"(?:禁止(?:する|される|している)|対象外(?!ではない)|許可しない|要求しない)",
-        after,
-    ):
-        return True
-    if re.search(
-        r"(?:しない|せず|行わない|使わない|用いない|含めない|記載しない|"
-        r"接続しない|実施しない|作らない|作ることを禁止する)",
-        after,
-    ):
+    if _trailing_prohibition_controls_action(clause, action, _TRAILING_JA_PROHIBITION):
         return True
     if re.search(r"(?:禁止する対象|prohibited (?:operation|method|data))", before + whole):
         return True
@@ -441,6 +428,82 @@ _PROHIBITION_SCOPE_BREAK = re.compile(
     re.IGNORECASE,
 )
 _PROHIBITION_COORDINATOR = re.compile(r"\b(?:and|or|nor)\b", re.IGNORECASE)
+_NEGATION_COORDINATOR = re.compile(r"\b(?:or|nor)\b", re.IGNORECASE)
+_DIRECT_ACTION_PREFIX = re.compile(
+    r"\s*(?:(?:to|also|directly|explicitly|only|ever|immediately)\s+)*",
+    re.IGNORECASE,
+)
+_TRAILING_EN_PROHIBITION = re.compile(
+    r"\b(?:is|are|was|were|should be|must be)\s+"
+    r"(?:prohibited|forbidden|not allowed|outside)\b",
+    re.IGNORECASE,
+)
+_TRAILING_JA_PROHIBITION = re.compile(
+    r"(?:禁止(?:する|される|している)|対象外(?!ではない)|許可しない|要求しない)|"
+    r"(?:しない|せず|行わない|使わない|用いない|含めない|記載しない|"
+    r"接続しない|実施しない|作らない|作ることを禁止する)"
+)
+
+
+def _all_action_matches(clause: str) -> list[tuple[int, int, str, str]]:
+    return _action_matches(clause, frozenset(rule.kind for rule in ACTION_RULES))
+
+
+def _is_direct_action_coordination(
+    text: str,
+    *,
+    coordinator: Pattern[str] = _PROHIBITION_COORDINATOR,
+) -> bool:
+    """Recognize a bounded coordinator that leads directly to another action."""
+
+    if _PROHIBITION_SCOPE_BREAK.search(text):
+        return False
+    coordinators = list(coordinator.finditer(text))
+    if not coordinators:
+        return False
+    tail = text[coordinators[-1].end() :]
+    return bool(_DIRECT_ACTION_PREFIX.fullmatch(tail))
+
+
+def _trailing_prohibition_controls_action(
+    clause: str,
+    action: tuple[int, int, str, str],
+    expression: Pattern[str],
+) -> bool:
+    """Bind a trailing prohibition to this action, not a later action."""
+
+    action_end = action[1]
+    trailing = clause[action_end : action_end + 80]
+    marker = expression.search(trailing)
+    if marker is None:
+        return False
+    marker_start = action_end + marker.start()
+    return not any(
+        action_end <= candidate[0] < marker_start
+        for candidate in _all_action_matches(clause)
+    )
+
+
+def _coordinated_pre_action_prohibition_controls_action(
+    clause: str,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Carry a local prohibition across a direct action coordination chain."""
+
+    action_start = action[0]
+    preceding_actions = [
+        candidate for candidate in _all_action_matches(clause)
+        if candidate[0] < action_start
+    ]
+    if not preceding_actions:
+        return False
+    previous = preceding_actions[-1]
+    if not _is_direct_action_coordination(
+        clause[previous[1] : action_start],
+        coordinator=_NEGATION_COORDINATOR,
+    ):
+        return False
+    return _action_is_prohibited(clause, previous, scope_start=previous[0])
 
 
 def _forbidden_to_controls_action(
@@ -465,18 +528,14 @@ def _forbidden_to_controls_action(
         return False
 
     preceding_actions = [
-        match
-        for match in _action_matches(
-            clause,
-            frozenset(rule.kind for rule in ACTION_RULES),
-        )
+        match for match in _all_action_matches(clause)
         if marker.end() <= match[0] < action_start
     ]
     if not preceding_actions:
-        return True
+        return bool(_DIRECT_ACTION_PREFIX.fullmatch(governed_prefix))
 
     coordination = clause[preceding_actions[-1][1] : action_start]
-    return bool(_PROHIBITION_COORDINATOR.search(coordination))
+    return _is_direct_action_coordination(coordination)
 
 
 def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, str, str]) -> bool:

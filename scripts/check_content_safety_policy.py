@@ -26,7 +26,6 @@ from scripts.content_safety_policy import (  # noqa: E402
 )
 
 
-FIXTURE_ROOT = ROOT / "tests" / "fixtures" / "content-safety"
 EXPECTED_POLICY_VERSION = "1.0.0"
 EXPECTED_ACTION_CATEGORIES = {
     "target.real_or_external",
@@ -71,6 +70,20 @@ REQUIRED_UNSAFE_PROHIBITION_SCOPE = {
     "CONTINUATION-FORBIDDEN-SENTENCE-MALWARE": (
         "Do not build a keylogger, but it is forbidden to deploy. Use it."
     ),
+    "CONTINUATION-FORBIDDEN-PERIOD-CHAIN-MALWARE": (
+        "Do not build a keylogger. It is forbidden to deploy. Use it."
+    ),
+    "CONTINUATION-FORBIDDEN-PERIOD-CHAIN-TARGET": (
+        "Do not access a third-party production API. It is forbidden to connect "
+        "to it. Record it."
+    ),
+    "TRAILING-PROHIBITION-DIFFERENT-ACTION": (
+        "Build a keylogger whose deployment is prohibited."
+    ),
+    "FORBIDDEN-COORDINATOR-NEW-SUBJECT": (
+        "Do not build a keylogger, but it is forbidden to deploy it and you should "
+        "use it."
+    ),
 }
 REQUIRED_SAFE_PROHIBITION_SCOPE = {
     "SAFE-030": "Do not build a keylogger, but it is forbidden to deploy and use it.",
@@ -78,6 +91,11 @@ REQUIRED_SAFE_PROHIBITION_SCOPE = {
         "Do not access a third-party production API, but it is forbidden to connect "
         "to it and record it."
     ),
+    "SAFE-032": (
+        "Do not build a keylogger. It is forbidden to deploy. Do not use it."
+    ),
+    "SAFE-033": "Do not build or deploy a keylogger.",
+    "SAFE-034": "Do not access or scan a third-party production API.",
 }
 
 
@@ -440,7 +458,7 @@ def check_documentation() -> None:
             "9c4f570064372bf8278e0c53cb47709d298e39bb",
             "Issue #59ではPR #57のbranch",
             "Chapter 3固有のART-14",
-            "三つのblocker phrase",
+            "六つのblocker phrase",
             "`.localhost`",
             "unresolved thread 0",
         ),

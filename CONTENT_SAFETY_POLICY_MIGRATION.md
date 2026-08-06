@@ -17,7 +17,7 @@ Issue #59ではPR #57のbranch、Chapter 3本文、`ART-14`、Case、NICE Source
 | direct synthetic qualifier | Secret/Credentialだけをqualifiableとする正負fixtureへ移行 |
 | PII、Target、危険Operation | syntheticであっても許容しないfixtureへ移行 |
 | negated pre-action | standalone prohibitionをsafe counterpartとして固定 |
-| contradictory continuation | object memoryとpronoun/ellipsisをsix blocker phraseで固定 |
+| contradictory continuation | object memoryとpronoun/ellipsisを六つのblocker phraseで固定 |
 | Host/address | `.example` / `.test` / `.invalid`、documentation IP、`.localhost`診断へ移行 |
 | dotted identifier / relative link | domainと誤分類しないpositive fixtureへ移行 |
 | Chapter 3固有のArtifact/Source/Registry | 共通coreへ移さずfuture adapterに残す |
@@ -28,7 +28,7 @@ Issue #59ではPR #57のbranch、Chapter 3本文、`ART-14`、Case、NICE Source
 2. Chapter 3 checkerは、Artifact/table/sectionからbounded reader-visible fieldを選択し、`scan_fields`へ`(stable location, text)`を渡す。
 3. Chapter 3固有のART-14 referential integrity、NICE Source、Source Registry、Case、site-page、Publication契約はchapter checkerに残す。
 4. 既存のchapter-independent regex/corpusを削除し、generic fixtureと同じSemanticを二重実装しない。
-5. PR #57の現在の三つのblocker phraseを、共通Policy `1.0.0`がunsafeと判定することをadapter regressionで固定する。
+5. PR #57の現在の六つのblocker phraseを、共通Policy `1.0.0`がunsafeと判定することをadapter regressionで固定する。
 6. `.localhost`は「reservedだがRepository Policyでdisallowed」と診断し、`non-reserved`と誤記しない。
 7. full local QA、exact-head Book Contract / Book QA、fresh review、unresolved thread 0を再取得する。
 
