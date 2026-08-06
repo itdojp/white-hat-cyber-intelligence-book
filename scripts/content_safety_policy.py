@@ -416,7 +416,10 @@ def _clauses(text: str) -> list[str]:
     return clauses
 
 
-def _continuation_action(clause: str, remembered: _Match) -> tuple[int, int, str, str] | None:
+def _continuation_action(
+    clause: str,
+    remembered: _Match,
+) -> tuple[str, tuple[int, int, str, str]] | None:
     remainder = _CONTRAST_PREFIX.sub("", clause, count=1)
     if remainder == clause:
         return None
@@ -424,7 +427,32 @@ def _continuation_action(clause: str, remembered: _Match) -> tuple[int, int, str
     actions = _action_matches(pronoun_removed, remembered.action_kinds)
     if not actions:
         return None
-    return actions[0]
+    return pronoun_removed, actions[0]
+
+
+def _continuation_is_prohibited(
+    continuation: str,
+    action: tuple[int, int, str, str],
+) -> bool:
+    action_start, action_end, _, action_text = action
+    before = continuation[max(0, action_start - 48) : action_start]
+    after = continuation[action_end : action_end + 80]
+    if re.search(
+        r"(?:do not|don't|never|must not|shall not|should not|"
+        r"(?:is|are|was|were|must|should|shall|may)\s+not(?:\s+be)?)\s*$",
+        before,
+    ):
+        return True
+    if re.search(r"(?:しない|せず|行わない|使わない|作らない)$", action_text):
+        return True
+    return bool(
+        re.search(
+            r"(?:is|are|was|were|should be|must be)\s+"
+            r"(?:prohibited|forbidden|not allowed)\b|"
+            r"(?:ことを禁止する|禁止される|許可しない|行わない)",
+            after,
+        )
+    )
 
 
 def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
@@ -447,14 +475,19 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
         if remembered is not None:
             continuation = _continuation_action(clause, remembered)
             if continuation is not None:
-                findings.append(
-                    _finding(
-                        remembered.category,
-                        location,
-                        clause,
-                        "a contradictory continuation reuses the protected object after a locally negated or prohibitive clause",
+                continuation_text, continuation_match = continuation
+                if not _continuation_is_prohibited(
+                    continuation_text,
+                    continuation_match,
+                ):
+                    findings.append(
+                        _finding(
+                            remembered.category,
+                            location,
+                            clause,
+                            "a contradictory continuation reuses the protected object after a locally negated or prohibitive clause",
+                        )
                     )
-                )
                 remembered = None
                 continue
 

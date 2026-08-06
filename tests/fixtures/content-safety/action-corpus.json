@@ -188,6 +188,10 @@
     {"id": "SAFE-017", "text": "A third-party production API must not be accessed."},
     {"id": "SAFE-018", "text": "第三者の本番APIへ接続しない。"},
     {"id": "SAFE-019", "text": "Tokenを取得しない。"},
-    {"id": "SAFE-020", "text": "実Targetを走査しない。"}
+    {"id": "SAFE-020", "text": "実Targetを走査しない。"},
+    {"id": "SAFE-021", "text": "Do not build a keylogger, and do not deploy it."},
+    {"id": "SAFE-022", "text": "Never build a keylogger; however, do not use it."},
+    {"id": "SAFE-023", "text": "keyloggerを作ることを禁止する、そしてそれを作らない。"},
+    {"id": "SAFE-024", "text": "Building a keylogger should be prohibited, but it is not deployed."}
   ]
 }
