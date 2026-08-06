@@ -108,6 +108,10 @@ REQUIRED_SAFE_PROHIBITION_SCOPE = {
     ),
     "SAFE-033": "Do not build or deploy a keylogger.",
     "SAFE-034": "Do not access or scan a third-party production API.",
+    "SAFE-035": "Use a sandbox and do not build or deploy a keylogger.",
+    "SAFE-036": (
+        "Do not build a keylogger and use a sandbox because it is isolated."
+    ),
 }
 
 
@@ -288,20 +292,26 @@ def check_action_corpus() -> list[tuple[str, str]]:
             error(f"{relative}.{identifier}: safe text produced findings {findings!r}")
         deterministic_fields.append((identifier, text))
 
-    long_coordination = "Do not build" + " or use" * 1200 + " a keylogger."
-    try:
-        long_findings = scan_action_text(
-            long_coordination,
-            location="LONG-OR-COORDINATION",
+    for coordinator in ("or", "nor"):
+        long_coordination = (
+            "Do not build" + f" {coordinator} use" * 1200 + " a keylogger."
         )
-    except RecursionError:
-        error(f"{relative}: long coordination depends on Python recursion depth")
-    else:
-        if long_findings:
-            error(
-                f"{relative}: explicitly negated long coordination produced "
-                f"{long_findings!r}"
+        try:
+            long_findings = scan_action_text(
+                long_coordination,
+                location=f"LONG-{coordinator.upper()}-COORDINATION",
             )
+        except RecursionError:
+            error(
+                f"{relative}: long {coordinator} coordination depends on "
+                "Python recursion depth"
+            )
+        else:
+            if long_findings:
+                error(
+                    f"{relative}: explicitly negated long {coordinator} "
+                    f"coordination produced {long_findings!r}"
+                )
     return deterministic_fields
 
 

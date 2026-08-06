@@ -307,6 +307,8 @@
     {"id": "SAFE-031", "text": "Do not access a third-party production API, but it is forbidden to connect to it and record it."},
     {"id": "SAFE-032", "text": "Do not build a keylogger. It is forbidden to deploy. Do not use it."},
     {"id": "SAFE-033", "text": "Do not build or deploy a keylogger."},
-    {"id": "SAFE-034", "text": "Do not access or scan a third-party production API."}
+    {"id": "SAFE-034", "text": "Do not access or scan a third-party production API."},
+    {"id": "SAFE-035", "text": "Use a sandbox and do not build or deploy a keylogger."},
+    {"id": "SAFE-036", "text": "Do not build a keylogger and use a sandbox because it is isolated."}
   ]
 }

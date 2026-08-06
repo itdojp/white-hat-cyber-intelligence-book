@@ -498,6 +498,17 @@ def _coordinated_pre_action_prohibition_controls_action(
     if not preceding_actions:
         return False
 
+    def has_direct_prohibition(candidate: tuple[int, int, str, str]) -> bool:
+        before = clause[max(0, candidate[0] - 48) : candidate[0]]
+        if re.search(r"(?:do not|don't|never|must not|shall not|should not)\s*$", before):
+            return True
+        if re.search(
+            r"(?:is|are|was|were|must|should|shall|may)\s+not(?:\s+be)?\s*$",
+            before,
+        ):
+            return True
+        return bool(re.search(r"(?:しない|せず|行わない|使わない|作らない)$", candidate[3]))
+
     for previous in reversed(preceding_actions):
         if not _is_direct_action_coordination(
             clause[previous[1] : current[0]],
@@ -505,16 +516,12 @@ def _coordinated_pre_action_prohibition_controls_action(
         ):
             return False
         current = previous
-
-    before = clause[max(0, current[0] - 48) : current[0]]
-    if re.search(r"(?:do not|don't|never|must not|shall not|should not)\s*$", before):
-        return True
-    if re.search(
-        r"(?:is|are|was|were|must|should|shall|may)\s+not(?:\s+be)?\s*$",
-        before,
-    ):
-        return True
-    return bool(re.search(r"(?:しない|せず|行わない|使わない|作らない)$", current[3]))
+        # Stop as soon as the directly coordinated chain reaches its local
+        # prohibition. Earlier, unrelated actions in the same clause must not
+        # absorb or invalidate this bounded scope.
+        if has_direct_prohibition(current):
+            return True
+    return False
 
 
 def _forbidden_to_controls_action(
@@ -622,7 +629,10 @@ def _actions_bound_to_object(
             continue
         between = clause[anchor[1] : candidate[0]]
         candidate_tail = clause[candidate[1] : candidate[1] + 32]
-        pronoun_bound = bool(_PRONOUN_REFERENCE.search(candidate_tail))
+        # The reference must be the candidate action's direct object. A later
+        # pronoun can belong to a new object (for example, "use a sandbox because
+        # it is isolated") and must not rebind the protected object.
+        pronoun_bound = bool(_PRONOUN_REFERENCE.match(candidate_tail.lstrip()))
         direct_english = _is_direct_action_coordination(between) and pronoun_bound
         direct_japanese = bool(_JA_DIRECT_ACTION_CONTINUATION.fullmatch(between))
         if direct_english or direct_japanese:
