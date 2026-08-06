@@ -405,10 +405,7 @@ def _action_is_prohibited(
         return True
     if re.search(r"(?:is|are|was|were)\s+forbidden\s+to\s*$", action_before):
         return True
-    if re.search(
-        r"(?:is|are|was|were)\s+forbidden\s+to\b",
-        clause[:action_start],
-    ):
+    if _forbidden_to_controls_action(clause, action):
         return True
     if re.search(r"(?:しない|せず|行わない|使わない|作らない)$", action_text):
         return True
@@ -433,6 +430,53 @@ def _action_is_prohibited(
     if re.search(r"(?:禁止する対象|prohibited (?:operation|method|data))", before + whole):
         return True
     return False
+
+
+_FORBIDDEN_TO_MARKER = re.compile(
+    r"(?:is|are|was|were)\s+forbidden\s+to\b",
+    re.IGNORECASE,
+)
+_PROHIBITION_SCOPE_BREAK = re.compile(
+    r"[,.;:!?、。；：！？]|\b(?:but|however|yet|nevertheless|still|then)\b",
+    re.IGNORECASE,
+)
+_PROHIBITION_COORDINATOR = re.compile(r"\b(?:and|or|nor)\b", re.IGNORECASE)
+
+
+def _forbidden_to_controls_action(
+    clause: str,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Return whether a bounded ``forbidden to`` phrase governs *action*.
+
+    The marker governs its first action and a directly coordinated action in the
+    same punctuation-free phrase. A contrast marker, comma, or sentence boundary
+    ends that scope; its mere presence earlier in the clause must not suppress a
+    later contradictory continuation.
+    """
+
+    action_start = action[0]
+    markers = list(_FORBIDDEN_TO_MARKER.finditer(clause, 0, action_start))
+    if not markers:
+        return False
+    marker = markers[-1]
+    governed_prefix = clause[marker.end() : action_start]
+    if _PROHIBITION_SCOPE_BREAK.search(governed_prefix):
+        return False
+
+    preceding_actions = [
+        match
+        for match in _action_matches(
+            clause,
+            frozenset(rule.kind for rule in ACTION_RULES),
+        )
+        if marker.end() <= match[0] < action_start
+    ]
+    if not preceding_actions:
+        return True
+
+    coordination = clause[preceding_actions[-1][1] : action_start]
+    return bool(_PROHIBITION_COORDINATOR.search(coordination))
 
 
 def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, str, str]) -> bool:
@@ -509,14 +553,15 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
             continuation = _continuation_actions(clause, remembered)
             if continuation is not None:
                 continuation_text, continuation_matches = continuation
-                if any(
+                has_unprohibited_action = any(
                     not _action_is_prohibited(
                         continuation_text,
                         action,
                         scope_start=action[0],
                     )
                     for action in continuation_matches
-                ):
+                )
+                if has_unprohibited_action:
                     findings.append(
                         _finding(
                             remembered.category,
@@ -525,7 +570,10 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                             "a contradictory continuation reuses the protected object after a locally negated or prohibitive clause",
                         )
                     )
-                remembered = None
+                    remembered = None
+                # Keep the protected object for one more adjacent continuation
+                # when every action in this clause is prohibited. This prevents
+                # a later contrast or sentence from escaping the local scope.
                 continue
 
         clause_objects = _object_matches(clause)

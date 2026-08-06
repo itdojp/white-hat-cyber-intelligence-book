@@ -43,7 +43,7 @@ Findingは`location / category / normalized_excerpt / reason / policy_version`�
 6. host/address publication policy
 7. diagnostic category
 
-ObjectがActionより前でも後でも検査する。最初の節が禁止・否定でも、`but`、`however`、`しかし`等に続く矛盾Actionを安全扱いしない。`synthetic`、`合成`等は直後のSecret/Credential fixtureだけへ束縛し、`not synthetic`、`non-synthetic`、`非合成`を肯定Qualifierとして扱わない。PIIと危険Operationはsynthetic qualifierの対象外である。
+ObjectがActionより前でも後でも検査する。最初の節が禁止・否定でも、`but`、`however`、`しかし`等に続く矛盾Actionを安全扱いしない。`forbidden to`は同じ句の最初のActionと、句読点や対照接続を挟まない直接の`and / or / nor`協調Actionだけを支配し、comma、sentence boundary、contrast markerでscopeを終了する。`synthetic`、`合成`等は直後のSecret/Credential fixtureだけへ束縛し、`not synthetic`、`non-synthetic`、`非合成`を肯定Qualifierとして扱わない。PIIと危険Operationはsynthetic qualifierの対象外である。
 
 ## Normalization contract
 

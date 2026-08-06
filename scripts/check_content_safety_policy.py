@@ -57,6 +57,28 @@ SAFE_BLOCKER_COUNTERPARTS = {
     "keyloggerを作ることを禁止する。",
     "この語はMalware分類の説明としてのみ記録する。",
 }
+REQUIRED_UNSAFE_PROHIBITION_SCOPE = {
+    "CONTINUATION-FORBIDDEN-CONTRAST-MALWARE": (
+        "Do not build a keylogger, but it is forbidden to deploy but use it."
+    ),
+    "CONTINUATION-FORBIDDEN-CONTRAST-TARGET": (
+        "Do not access a third-party production API, but it is forbidden to connect "
+        "to it but record it."
+    ),
+    "CONTINUATION-FORBIDDEN-COMMA-MALWARE": (
+        "Do not build a keylogger, but it is forbidden to deploy, and use it."
+    ),
+    "CONTINUATION-FORBIDDEN-SENTENCE-MALWARE": (
+        "Do not build a keylogger, but it is forbidden to deploy. Use it."
+    ),
+}
+REQUIRED_SAFE_PROHIBITION_SCOPE = {
+    "SAFE-030": "Do not build a keylogger, but it is forbidden to deploy and use it.",
+    "SAFE-031": (
+        "Do not access a third-party production API, but it is forbidden to connect "
+        "to it and record it."
+    ),
+}
 
 
 errors: list[str] = []
@@ -214,8 +236,17 @@ def check_action_corpus() -> list[tuple[str, str]]:
             f"{sorted(EXPECTED_ACTION_CATEGORIES)!r}"
         )
     required_pair_ids = {"TARGET-OBJECT-FIRST", "TARGET-ACTION-FIRST"}
-    if not required_pair_ids <= {item.get("id") for item in unsafe}:
+    unsafe_by_id = {item.get("id"): item.get("text") for item in unsafe}
+    safe_by_id = {item.get("id"): item.get("text") for item in safe}
+    unsafe_ids = set(unsafe_by_id)
+    if not required_pair_ids <= unsafe_ids:
         error(f"{relative}: action-before/object-before regressions are incomplete")
+    for identifier, expected_text in REQUIRED_UNSAFE_PROHIBITION_SCOPE.items():
+        if unsafe_by_id.get(identifier) != expected_text:
+            error(f"{relative}: unsafe prohibition-scope regression {identifier!r} drifted")
+    for identifier, expected_text in REQUIRED_SAFE_PROHIBITION_SCOPE.items():
+        if safe_by_id.get(identifier) != expected_text:
+            error(f"{relative}: safe prohibition-scope regression {identifier!r} drifted")
 
     for item in safe:
         identifier = item.get("id")
