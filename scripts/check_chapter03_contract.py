@@ -685,17 +685,25 @@ def markdown_row_cells(line: str) -> list[str]:
 PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:実(?:際|在)?の?(?:Target|標的|ターゲット)|現実の(?:Target|標的|ターゲット)|"
     r"real[- ]target|実運用(?:環境|System|システム)|"
-    r"第三者[ \t　]*(?:の[ \t　]*)?(?:System|システム|環境|Data|データ|API|"
-    r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
-    r"他社[ \t　]*(?:の[ \t　]*)?(?:System|システム|環境|Data|データ|API|"
-    r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
-    r"外部(?:組織|企業|団体)[ \t　]*(?:の[ \t　]*)?(?:System|システム|環境|Data|データ|API|"
-    r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
-    r"外部[ \t　]*(?:の[ \t　]*)?(?:System|システム|環境|Data|データ|API|"
-    r"API(?:エンドポイント|端点)|Service|サービス|SaaS|Site|サイト)|"
-    r"third[- ]party[- ]?(?:system|data|environment|api(?:[- ]endpoint)?s?|service|saas|site)s?|"
-    r"external[- ](?:service|saas|site)s?|"
-    r"external[- ](?:system|data|environment|api(?:[- ]endpoint)?s?)s?|"
+    r"第三者[ \t　]*(?:の[ \t　]*)?(?:(?:本番|実運用|production|prod|live)[ \t　・-]*)?"
+    r"(?:System|システム|環境|Data|データ|API(?:エンドポイント|端点)?|Service|サービス|SaaS|Site|サイト)|"
+    r"他社[ \t　]*(?:の[ \t　]*)?(?:(?:本番|実運用|production|prod|live)[ \t　・-]*)?"
+    r"(?:System|システム|環境|Data|データ|API(?:エンドポイント|端点)?|Service|サービス|SaaS|Site|サイト)|"
+    r"外部(?:組織|企業|団体)[ \t　]*(?:の[ \t　]*)?"
+    r"(?:(?:本番|実運用|production|prod|live)[ \t　・-]*)?"
+    r"(?:System|システム|環境|Data|データ|API(?:エンドポイント|端点)?|Service|サービス|SaaS|Site|サイト)|"
+    r"外部[ \t　]*(?:の[ \t　]*)?(?:(?:本番|実運用|production|prod|live)[ \t　・-]*)?"
+    r"(?:System|システム|環境|Data|データ|API(?:エンドポイント|端点)?|Service|サービス|SaaS|Site|サイト)|"
+    r"(?:third[- ]party|external)[- ]+(?:(?:production|prod|live)[- ]+)?"
+    r"(?:systems?|data|environments?|api(?:[- ]endpoints?)?|services?|saas|sites?)|"
+    r"(?:keyloggers?|rootkits?|spyware|info[- ]?stealers?|credential[- ]stealers?|"
+    r"backdoors?|trojans?|キーロガー|ルートキット|スパイウェア|"
+    r"インフォ[ \t　・-]*スティーラー|クレデンシャル[ \t　・-]*スティーラー|"
+    r"認証情報窃取(?:型)?マルウェア|バックドア|トロイ(?:の木馬|アン))"
+    r"(?=[ \t　・-]*(?:(?:(?:を|へ|に|として)[ \t　]*)?"
+    r"(?:作成|構築|開発|配備|導入|実行|使用|利用|運用)(?:する|した|します)|"
+    r"(?:(?:is|are|was|were|be|being)[ \t-]+)?"
+    r"(?:created|built|developed|deployed|installed|executed|run|used|operated)\b))|"
     r"(?:deployable[- ]?)?malware|ransomware|wiper|"
     r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
     r"[- ](?:infrastructure|server|site|page|channel)|"
@@ -705,10 +713,11 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"\b(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|"
     r"c[ \t]*&[ \t]*c)\b|"
     r"lateral[- ]movement|defen[cs]e[- ]evasion|"
-    r"persistence|persistent[- ]access|backdoor|privilege[- ]escalation|"
+    r"persistence|persistent[- ]access|privilege[- ]escalation|"
     r"(?:log|audit[- ]trail)[- ](?:deletion|erasure|tampering)|"
     r"destructive[- ](?:action|operation)|data[- ]destruction|"
-    r"(?:distributed[- ])?denial[- ]of[- ]service|\b(?:dos|ddos)\b|"
+    r"(?:distributed[- ])?denial[- ]of[- ]service|"
+    r"\b(?:dos|ddos)(?=\b|[ \t　]*(?:[をへにでのはがも、。；;,.!?！？]|$))|"
     r"(?:unauthorized[- ])?(?:data[- ])?(?:modification|encryption)|"
     r"resource[- ]exhaustion|mfa[- ]fatigue|"
     r"brute[- ]force[- ](?:login|authentication|auth)|"
@@ -730,7 +739,7 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"c[ \t]*&[ \t]*c(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
     r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール"
     r"(?:基盤|インフラ|サーバー?|チャ(?:ネル|ンネル)|通信路|通信|接続|制御|運用)|"
-    r"横展開|ラテラルムーブメント|永続化|永続的アクセス|バックドア|"
+    r"横展開|ラテラルムーブメント|永続化|永続的アクセス|"
     r"権限昇格|防御回避|検知回避|"
     r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん)|"
     r"破壊的(?:操作|行為)|データ破壊|サービス拒否|DoS攻撃|DDoS攻撃|"
@@ -799,7 +808,7 @@ EXPLICIT_SYNTHETIC_QUALIFIER = re.compile(
     re.IGNORECASE,
 )
 EXPLICIT_NEGATED_USE = re.compile(
-    r"^(?:"
+    r"^\s*(?:"
     r"ではなく|ではない|"
     r"(?:を|は|が|へ|に|として|の|も)?"
     r"(?:攻撃|操作|調査|走査|スキャン|観測|閲覧|参照|分析|取得|使用|利用|"
@@ -2017,6 +2026,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
 def reserved_name_contract_errors(relative: str, text: str) -> list[str]:
     messages: list[str] = []
     allowed_suffixes = (".example", ".test", ".invalid")
+    reserved_but_policy_disallowed_suffixes = (".localhost",)
     documentation_networks = (
         ipaddress.ip_network("192.0.2.0/24"),
         ipaddress.ip_network("198.51.100.0/24"),
@@ -2052,7 +2062,15 @@ def reserved_name_contract_errors(relative: str, text: str) -> list[str]:
                     f"{raw_url}"
                 )
         elif host and not host.endswith(allowed_suffixes):
-            messages.append(f"{relative}: non-reserved URL in synthetic content: {raw_url}")
+            if host.endswith(reserved_but_policy_disallowed_suffixes):
+                messages.append(
+                    f"{relative}: host suffix is disallowed by the synthetic "
+                    f"publication policy: {raw_url}"
+                )
+            else:
+                messages.append(
+                    f"{relative}: non-reserved URL in synthetic content: {raw_url}"
+                )
     visible_text = normalize_safety_text(text)
     domain_pattern = re.compile(
         r"(?<![A-Za-z0-9_-])"
@@ -2063,9 +2081,15 @@ def reserved_name_contract_errors(relative: str, text: str) -> list[str]:
     )
     for domain in domain_pattern.findall(visible_text):
         if not domain.lower().endswith(allowed_suffixes):
-            messages.append(
-                f"{relative}: possible real domain in synthetic content: {domain}"
-            )
+            if domain.lower().endswith(reserved_but_policy_disallowed_suffixes):
+                messages.append(
+                    f"{relative}: host suffix is disallowed by the synthetic "
+                    f"publication policy: {domain}"
+                )
+            else:
+                messages.append(
+                    f"{relative}: possible real domain in synthetic content: {domain}"
+                )
 
     detected_addresses: dict[str, ipaddress.IPv4Address | ipaddress.IPv6Address] = {}
     normalized_text = unicodedata.normalize("NFKC", text)
@@ -2512,8 +2536,15 @@ def verify_negative_regressions(
         "third-party API accessed for additional benign record",
         "third-party API endpoint accessed for additional benign record",
         "third-party service accessed for additional benign record",
+        "third-party production system accessed for additional benign record",
+        "third-party production API accessed for additional benign record",
+        "external prod environment accessed for additional benign record",
+        "external live API endpoint accessed for additional benign record",
         "external service accessed for additional benign record",
         "external API accessed for additional benign record",
+        "第三者の本番システムへ接続する",
+        "第三者の本番APIへ接続する",
+        "外部の本番APIへ接続する",
         "他社システムを追加走査する",
         "実**Target**を走査する",
         "実ターゲットを走査する",
@@ -2529,6 +2560,22 @@ def verify_negative_regressions(
         "フィッシング攻撃を実施する",
         "フィッシング詐欺を実施する",
         "deployable malwareを作成する",
+        "keyloggerを作成する",
+        "rootkitを作成する",
+        "spywareを作成する",
+        "infostealerを配備する",
+        "info-stealerを使用する",
+        "credential stealerを運用する",
+        "backdoorを構築する",
+        "trojanを配備する",
+        "キーロガーを作成する",
+        "ルートキットを導入する",
+        "スパイウェアを使用する",
+        "インフォスティーラーを配備する",
+        "クレデンシャルスティーラーを運用する",
+        "バックドアを構築する",
+        "トロイの木馬を配備する",
+        "synthetic keyloggerを作成する",
         "C2 infrastructureを構築する",
         "C2 channelを作る",
         "C2を構築する",
@@ -2548,6 +2595,10 @@ def verify_negative_regressions(
         "log deletionを実行する",
         "destructive actionを実行する",
         "denial of serviceを実行する",
+        "DoSを実行する",
+        "DDoSを実行する",
+        "DoS を実行する",
+        "DDoS　を実行する",
         "persistenceを実装する",
         "privilege escalationを実施する",
         "unauthorized data modificationを実行する",
@@ -2653,6 +2704,18 @@ def verify_negative_regressions(
         "外部 の APIへ接続しない",
         "外部　の　APIへ接続しない",
         "第三者 の APIへ接続しない",
+        "第三者の本番APIへ接続しない",
+        "外部の本番APIへ接続しない",
+        "third-party production system is not accessed",
+        "external live API is not used",
+        "DoSを実行しない",
+        "DDoS を実行しない",
+        "keyloggerを作成しない",
+        "rootkit is not deployed",
+        "keyloggerの仕組みを説明する",
+        "keyloggerの作成を禁止する",
+        "バックドアの概念を説明する",
+        "トロイの木馬の配備を禁止する",
         "loginを実施しない",
         "サインインしない",
         "コマンド・アンド・コントロール接続を確立しない",
@@ -3135,10 +3198,22 @@ def verify_negative_regressions(
     ):
         error("negative regression accepted conflicting Boundary and Judgment evidence sets")
 
-    if not reserved_name_contract_errors(
+    localhost_errors = reserved_name_contract_errors(
         "negative synthetic domain", "https://admin.localhost/runbook"
-    ):
+    )
+    if not localhost_errors:
         error("negative regression accepted .localhost outside the Case domain policy")
+    if not any(
+        "host suffix is disallowed by the synthetic publication policy" in message
+        for message in localhost_errors
+    ):
+        error("negative regression omitted the .localhost publication-policy reason")
+    if any(
+        marker in message
+        for marker in ("non-reserved URL", "possible real domain")
+        for message in localhost_errors
+    ):
+        error("negative regression misclassified reserved .localhost as non-reserved")
 
     for non_reserved_domain in (
         "agency.gov",
@@ -3165,6 +3240,11 @@ def verify_negative_regressions(
             reserved_domain,
         ):
             error(f"positive regression rejected reserved domain {reserved_domain}")
+        if reserved_name_contract_errors(
+            "reserved URL positive regression",
+            f"https://{reserved_domain}/runbook",
+        ):
+            error(f"positive regression rejected reserved URL {reserved_domain}")
     if reserved_name_contract_errors(
         "relative file link positive regression",
         "[guide](../artifact.json)",
