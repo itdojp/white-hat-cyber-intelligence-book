@@ -490,20 +490,31 @@ def _coordinated_pre_action_prohibition_controls_action(
 ) -> bool:
     """Carry a local prohibition across a direct action coordination chain."""
 
-    action_start = action[0]
+    current = action
     preceding_actions = [
         candidate for candidate in _all_action_matches(clause)
-        if candidate[0] < action_start
+        if candidate[0] < action[0]
     ]
     if not preceding_actions:
         return False
-    previous = preceding_actions[-1]
-    if not _is_direct_action_coordination(
-        clause[previous[1] : action_start],
-        coordinator=_NEGATION_COORDINATOR,
+
+    for previous in reversed(preceding_actions):
+        if not _is_direct_action_coordination(
+            clause[previous[1] : current[0]],
+            coordinator=_NEGATION_COORDINATOR,
+        ):
+            return False
+        current = previous
+
+    before = clause[max(0, current[0] - 48) : current[0]]
+    if re.search(r"(?:do not|don't|never|must not|shall not|should not)\s*$", before):
+        return True
+    if re.search(
+        r"(?:is|are|was|were|must|should|shall|may)\s+not(?:\s+be)?\s*$",
+        before,
     ):
-        return False
-    return _action_is_prohibited(clause, previous, scope_start=previous[0])
+        return True
+    return bool(re.search(r"(?:しない|せず|行わない|使わない|作らない)$", current[3]))
 
 
 def _forbidden_to_controls_action(
@@ -591,6 +602,34 @@ def _continuation_actions(
     return remainder, actions
 
 
+_JA_DIRECT_ACTION_CONTINUATION = re.compile(r"^(?:で|て|し|して|つつ)\s*$")
+
+
+def _actions_bound_to_object(
+    clause: str,
+    protected: _Match,
+    actions: list[tuple[int, int, str, str]],
+) -> list[tuple[int, int, str, str]]:
+    """Select the nearest action plus bounded same-object continuations."""
+
+    anchor = min(
+        actions,
+        key=lambda item: min(abs(item[0] - protected.end), abs(protected.start - item[1])),
+    )
+    bound = [anchor]
+    for candidate in actions:
+        if candidate == anchor or candidate[0] <= anchor[0]:
+            continue
+        between = clause[anchor[1] : candidate[0]]
+        candidate_tail = clause[candidate[1] : candidate[1] + 32]
+        pronoun_bound = bool(_PRONOUN_REFERENCE.search(candidate_tail))
+        direct_english = _is_direct_action_coordination(between) and pronoun_bound
+        direct_japanese = bool(_JA_DIRECT_ACTION_CONTINUATION.fullmatch(between))
+        if direct_english or direct_japanese:
+            bound.append(candidate)
+    return bound
+
+
 def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
     """Scan one bounded reader-visible field for action-bearing unsafe semantics."""
 
@@ -641,11 +680,11 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
             actions = _action_matches(clause, protected.action_kinds)
             if not actions:
                 continue
-            nearest = min(
-                actions,
-                key=lambda item: min(abs(item[0] - protected.end), abs(protected.start - item[1])),
-            )
-            if _locally_prohibited(clause, protected, nearest):
+            bound_actions = _actions_bound_to_object(clause, protected, actions)
+            if all(
+                _locally_prohibited(clause, protected, action)
+                for action in bound_actions
+            ):
                 next_remembered = protected
                 continue
             if _direct_synthetic(clause, protected):

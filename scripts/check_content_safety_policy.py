@@ -84,6 +84,13 @@ REQUIRED_UNSAFE_PROHIBITION_SCOPE = {
         "Do not build a keylogger, but it is forbidden to deploy it and you should "
         "use it."
     ),
+    "SAME-CLAUSE-AMBIGUOUS-AND-MALWARE": (
+        "Do not build a keylogger and use it."
+    ),
+    "SAME-CLAUSE-AMBIGUOUS-AND-TARGET": (
+        "Do not access a third-party production API and scan it."
+    ),
+    "SAME-CLAUSE-AMBIGUOUS-JA-MALWARE": "keyloggerを作らないで使用する",
 }
 REQUIRED_SAFE_PROHIBITION_SCOPE = {
     "SAFE-030": "Do not build a keylogger, but it is forbidden to deploy and use it.",
@@ -275,6 +282,21 @@ def check_action_corpus() -> list[tuple[str, str]]:
         if findings:
             error(f"{relative}.{identifier}: safe text produced findings {findings!r}")
         deterministic_fields.append((identifier, text))
+
+    long_coordination = "Do not build" + " or use" * 1200 + " a keylogger."
+    try:
+        long_findings = scan_action_text(
+            long_coordination,
+            location="LONG-OR-COORDINATION",
+        )
+    except RecursionError:
+        error(f"{relative}: long coordination depends on Python recursion depth")
+    else:
+        if long_findings:
+            error(
+                f"{relative}: explicitly negated long coordination produced "
+                f"{long_findings!r}"
+            )
     return deterministic_fields
 
 
