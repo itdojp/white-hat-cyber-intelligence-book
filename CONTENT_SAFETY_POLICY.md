@@ -43,7 +43,7 @@ Findingは`location / category / normalized_excerpt / reason / policy_version`�
 6. host/address publication policy
 7. diagnostic category
 
-ObjectがActionより前でも後でも検査する。同じbounded clauseでは、Objectの片側にある最短Actionだけへ縮約せず、直接のAction/Object gap、relative predicate、既存のsame-object continuationで束縛できる各Actionを個別に評価する。Action-to-Object gapはEnglish最大7 token / 96文字、Japanese最大32文字の有限modifier grammarとし、gap内に別Action、sentence boundary、またはmodifierとして許可しないcase particleがあれば束縛しない。`but`は原則contrast boundaryだが、後方にProtected Object、前方に関連Actionがあり、その間に別Actionがなく有限modifier grammarを満たす場合だけnoun modifierとして保持する。これは日本語の完全なdependency parsingを意味せず、別Objectを持つ後続Actionは再束縛しない。最初の節が禁止・否定でも、`but`、`however`、`しかし`等に続く矛盾Actionを安全扱いしない。`forbidden to`は同じ句の最初のActionと、句読点や対照接続を挟まない直接の`and / or / nor`協調Actionだけを支配し、comma、sentence boundary、contrast marker、またはcoordinator後の新しいsubject / modalでscopeを終了する。`do not A or/nor B`の局所否定は直接協調Actionへ引き継ぐ一方、`do not A and B`は曖昧なため後続Actionをfail closedに扱う。Actionの後ろにある禁止表現は、その途中に別Actionがなければ当該Actionへ束縛する。`synthetic`、`合成`等は直後のSecret/Credential fixtureだけへ束縛し、`not synthetic`、`non-synthetic`、`非合成`を肯定Qualifierとして扱わない。PIIと危険Operationはsynthetic qualifierの対象外である。
+ObjectがActionより前でも後でも検査する。同じbounded clauseでは、Objectの片側にある最短Actionだけへ縮約せず、直接のAction/Object gap、relative predicate、既存のsame-object continuationで束縛できる各Actionを個別に評価する。Action-to-Object gapはEnglish最大7 token / 96文字、Japanese最大32文字の有限modifier grammarとし、gap内に別Action、sentence boundary、またはmodifierとして許可しないcase particleがあれば束縛しない。`but`は原則contrast boundaryだが、後方にProtected Object、前方に関連Actionがあり、その間に別Actionがなく有限modifier grammarを満たす場合だけnoun modifierとして保持する。Action後のbounded冠詞句が時間headではなく別Objectを直接導入する場合も、Object-first associationから除外する。これは日本語の完全なdependency parsingを意味せず、別Objectを持つ後続Actionは再束縛しない。最初の節が禁止・否定でも、`but`、`however`、`しかし`等に続く矛盾Actionを安全扱いしない。`forbidden to`は同じ句の最初のActionと、句読点や対照接続を挟まない直接の`and / or / nor`協調Actionだけを支配し、comma、sentence boundary、contrast marker、またはcoordinator後の新しいsubject / modalでscopeを終了する。`do not A or/nor B`の局所否定は直接協調Actionへ引き継ぐ一方、`do not A and B`は曖昧なため後続Actionをfail closedに扱う。Actionの後ろにある禁止表現は、その途中に別Actionがなければ当該Actionへ束縛する。`synthetic`、`合成`等は直後のSecret/Credential fixtureだけへ束縛し、`not synthetic`、`non-synthetic`、`非合成`を肯定Qualifierとして扱わない。PIIと危険Operationはsynthetic qualifierの対象外である。
 
 ## Normalization contract
 
@@ -61,7 +61,7 @@ ObjectがActionより前でも後でも検査する。同じbounded clauseでは
 10. Unicode case-fold
 11. protected vocabularyの回避に使われやすいGreek / Cyrillic Latin-lookalikeのbounded fold
 
-URL destinationはAction scanの読者表示textから除外する一方、`scan_host_policy`で別途検査する。HTML attribute内のURL tokenはdecode後もsingle/double quote、whitespace、angle bracket等のdelimiter手前で終了し、path/query/fragmentはdelimiterまで保持する。ASCII word boundaryだけへ依存せず、DoS / DDoSの直後に日本語particleが続く場合と、英語Actionへ日本語suffixが続くmixed-script形式も扱う。Confusable foldはUnicode全体の同形異字判定を主張せず、Policy corpusに固定したbounded mappingだけを適用する。
+URL destinationはAction scanの読者表示textから除外する一方、`scan_host_policy`で別途検査する。HTML attribute内のURL tokenはdecode後もsingle/double quote、whitespace、angle bracket等のdelimiter手前で終了し、path/query/fragmentとquoted value内の末尾punctuationはdelimiterまで保持する。Prose URLの外側にある末尾punctuationだけをtrimする。ASCII word boundaryだけへ依存せず、DoS / DDoSの直後に日本語particleが続く場合と、英語Actionへ日本語suffixが続くmixed-script形式も扱う。Confusable foldはUnicode全体の同形異字判定を主張せず、Policy corpusに固定したbounded mappingだけを適用する。
 
 ## Protected categories
 

@@ -18,7 +18,10 @@
     {"id": "HTML-DOUBLE-QUOTED-EXAMPLE", "text": "<a href=\"https://lab.example\">"},
     {"id": "HTML-SINGLE-QUOTED-TEST", "text": "<a href='https://lab.test/path?q=1#x'>"},
     {"id": "HTML-DOUBLE-QUOTED-INVALID", "text": "<img src=\"https://assets.invalid/image.png\">"},
-    {"id": "HTML-ENTITY-ENCODED-EXAMPLE", "text": "<a href=\"https&#58;&#47;&#47;lab&#46;example/runbook\">"}
+    {"id": "HTML-ENTITY-ENCODED-EXAMPLE", "text": "<a href=\"https&#58;&#47;&#47;lab&#46;example/runbook\">"},
+    {"id": "HTML-QUOTED-PUNCTUATED-EXAMPLE", "text": "<a href=\"https://lab.example/runbook;\">"},
+    {"id": "HTML-QUOTED-PARENTHESIS-EXAMPLE", "text": "<a href=\"https://lab.example/run(book).\">"},
+    {"id": "HTML-QUOTED-LEADING-SPACE-EXAMPLE", "text": "<a href=\" https://lab.example/runbook.\">"}
   ],
   "unsafe": [
     {
@@ -102,6 +105,42 @@
     {
       "id": "HTML-PROTOCOL-RELATIVE-CO-UK",
       "text": "<a href=\"//target.co.uk/runbook\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-QUOTED-TERMINAL-PERIOD",
+      "text": "<a href=\"https://example.com/runbook.\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-QUOTED-TERMINAL-COMMA",
+      "text": "<a href=\"https://example.com/runbook,\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-QUOTED-TERMINAL-SEMICOLON",
+      "text": "<a href=\"https://example.com/runbook;\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "PROSE-TERMINAL-PUNCTUATION",
+      "text": "See https://example.com/runbook.;",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-QUOTED-PARENTHESIS",
+      "text": "<a href=\"https://example.com/run(book).\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-QUOTED-LEADING-SPACE",
+      "text": "<a href=\" https://example.com/runbook.\">",
       "requiredReason": "non-approved host suffix",
       "forbiddenReason": ""
     }

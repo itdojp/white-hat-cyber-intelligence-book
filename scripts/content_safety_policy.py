@@ -130,7 +130,8 @@ def _mixed_script_action(pattern: str) -> str:
     return (
         rf"\b(?:{pattern})\b|"
         rf"(?<![a-z0-9_-])(?:{pattern})"
-        r"(?:する|した|します|しない|せず)(?![a-z0-9_-])"
+        r"(?:してください|して(?!ください)|する|した|します|しない|せず)"
+        r"(?![a-z0-9_-])"
     )
 
 
@@ -779,6 +780,32 @@ _EN_RELATIVE_PREDICATE_GAP = re.compile(
     r"will|would|not|never|also|directly|explicitly|only|ever|immediately|then)\s+)*",
     re.IGNORECASE,
 )
+_EN_DIRECT_OBJECT_PREFIX = re.compile(
+    r"\s+(?:a|an|the|this|that|these|those)\s+",
+    re.IGNORECASE,
+)
+_EN_DIRECT_OBJECT_TOKEN = re.compile(r"[a-z][a-z0-9-]*\b", re.IGNORECASE)
+_EN_DIRECT_OBJECT_BREAKERS = frozenset(
+    {"to", "in", "on", "at", "for", "from", "with", "without", "by", "because"}
+)
+_EN_TEMPORAL_HEADS = frozenset(
+    {
+        "second",
+        "minute",
+        "hour",
+        "day",
+        "week",
+        "month",
+        "quarter",
+        "year",
+        "morning",
+        "afternoon",
+        "evening",
+        "night",
+        "time",
+        "moment",
+    }
+)
 _JA_DIRECT_ACTION_CONTINUATION = re.compile(
     r"^(?:で|て|し|して|つつ|が|けれど|けれども|ものの)\s*$"
 )
@@ -845,11 +872,41 @@ def _action_directly_follows_object(
 ) -> bool:
     if action[0] < protected.end:
         return action[1] > protected.start
+    if _action_introduces_distinct_english_object(clause, action):
+        return False
     gap = clause[protected.end : action[0]]
     return bool(
         _EN_OBJECT_TO_ACTION_GAP.fullmatch(gap)
         or _JA_REFERENCE_TO_ACTION_GAP.fullmatch(gap)
     )
+
+
+def _action_introduces_distinct_english_object(
+    clause: str,
+    action: tuple[int, int, str, str],
+) -> bool:
+    tail = clause[action[1] :]
+    prefix = _EN_DIRECT_OBJECT_PREFIX.match(tail)
+    if prefix is None:
+        return False
+    words: list[str] = []
+    cursor = prefix.end()
+    while len(words) < 4:
+        token = _EN_DIRECT_OBJECT_TOKEN.match(tail, cursor)
+        if token is None:
+            break
+        word = token.group(0).casefold()
+        if word in _EN_DIRECT_OBJECT_BREAKERS:
+            break
+        words.append(word)
+        cursor = token.end()
+        whitespace = re.match(r"\s+", tail[cursor:])
+        if whitespace is None:
+            break
+        cursor += whitespace.end()
+    if not words:
+        return False
+    return words[-1] not in _EN_TEMPORAL_HEADS
 
 
 def _actions_bound_to_object(
@@ -1001,6 +1058,15 @@ _URL_PATTERN = re.compile(
     "(?:(?:[a-z][a-z0-9+.-]*:)?//)[^\\s`\\\"'<>)]+",
     re.IGNORECASE,
 )
+_QUOTED_URL_ATTRIBUTE = re.compile(
+    r"(?:href|src|action|formaction|poster|cite)\s*=\s*"
+    r"(?P<quote>['\"])(?P<value>.*?)(?P=quote)",
+    re.IGNORECASE | re.DOTALL,
+)
+_ATTRIBUTE_URL_PATTERN = re.compile(
+    r"(?:(?:[a-z][a-z0-9+.-]*:)?//)[^\s<>]+",
+    re.IGNORECASE,
+)
 _DOMAIN_PATTERN = re.compile(
     r"(?<![a-z0-9_-])(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}(?![a-z0-9_-])",
     re.IGNORECASE,
@@ -1026,6 +1092,40 @@ def _host_finding(location: str, excerpt: str, reason: str) -> SafetyFinding:
     return _finding("network.host_or_address", location, excerpt, reason)
 
 
+def _record_url_policy(
+    raw_url: str,
+    *,
+    location: str,
+    findings: list[SafetyFinding],
+    url_hosts: set[str],
+    url_addresses: set[str],
+) -> None:
+    try:
+        host = (urlparse(raw_url).hostname or "").casefold()
+    except ValueError:
+        findings.append(_host_finding(location, raw_url, "malformed URL in synthetic content"))
+        return
+    if not host:
+        findings.append(_host_finding(location, raw_url, "URL does not expose a parseable host"))
+        return
+    url_hosts.add(host)
+    address = _parse_ip(host)
+    if address is not None:
+        url_addresses.add(str(address))
+        if not _is_documentation_address(address):
+            findings.append(_host_finding(location, raw_url, "non-documentation IP URL is disallowed"))
+    elif host.endswith(_POLICY_DISALLOWED_RESERVED_SUFFIXES):
+        findings.append(
+            _host_finding(
+                location,
+                raw_url,
+                "host suffix is technically reserved but disallowed by the synthetic publication policy",
+            )
+        )
+    elif not host.endswith(_ALLOWED_HOST_SUFFIXES):
+        findings.append(_host_finding(location, raw_url, "non-approved host suffix in synthetic content"))
+
+
 def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
     """Enforce the repository's synthetic host/address publication policy."""
 
@@ -1042,32 +1142,31 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
     url_hosts: set[str] = set()
     url_addresses: set[str] = set()
     decoded_source = html.unescape(unicodedata.normalize("NFKC", text))
-    for match in _URL_PATTERN.finditer(decoded_source):
-        raw_url = match.group(0).rstrip(".,;、。")
-        try:
-            host = (urlparse(raw_url).hostname or "").casefold()
-        except ValueError:
-            findings.append(_host_finding(location, raw_url, "malformed URL in synthetic content"))
-            continue
-        if not host:
-            findings.append(_host_finding(location, raw_url, "URL does not expose a parseable host"))
-            continue
-        url_hosts.add(host)
-        address = _parse_ip(host)
-        if address is not None:
-            url_addresses.add(str(address))
-            if not _is_documentation_address(address):
-                findings.append(_host_finding(location, raw_url, "non-documentation IP URL is disallowed"))
-        elif host.endswith(_POLICY_DISALLOWED_RESERVED_SUFFIXES):
-            findings.append(
-                _host_finding(
-                    location,
-                    raw_url,
-                    "host suffix is technically reserved but disallowed by the synthetic publication policy",
-                )
+    quoted_url_spans: list[tuple[int, int]] = []
+    for attribute in _QUOTED_URL_ATTRIBUTE.finditer(decoded_source):
+        value = attribute.group("value")
+        value_start = attribute.start("value")
+        for url_match in _ATTRIBUTE_URL_PATTERN.finditer(value):
+            start = value_start + url_match.start()
+            end = value_start + url_match.end()
+            quoted_url_spans.append((start, end))
+            _record_url_policy(
+                url_match.group(0),
+                location=location,
+                findings=findings,
+                url_hosts=url_hosts,
+                url_addresses=url_addresses,
             )
-        elif not host.endswith(_ALLOWED_HOST_SUFFIXES):
-            findings.append(_host_finding(location, raw_url, "non-approved host suffix in synthetic content"))
+    for match in _URL_PATTERN.finditer(decoded_source):
+        if any(start <= match.start() < end for start, end in quoted_url_spans):
+            continue
+        _record_url_policy(
+            match.group(0).rstrip(".,;、。"),
+            location=location,
+            findings=findings,
+            url_hosts=url_hosts,
+            url_addresses=url_addresses,
+        )
 
     for match in _DOMAIN_PATTERN.finditer(normalized):
         domain = match.group(0).casefold()
