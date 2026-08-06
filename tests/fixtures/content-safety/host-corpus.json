@@ -21,7 +21,9 @@
     {"id": "HTML-ENTITY-ENCODED-EXAMPLE", "text": "<a href=\"https&#58;&#47;&#47;lab&#46;example/runbook\">"},
     {"id": "HTML-QUOTED-PUNCTUATED-EXAMPLE", "text": "<a href=\"https://lab.example/runbook;\">"},
     {"id": "HTML-QUOTED-PARENTHESIS-EXAMPLE", "text": "<a href=\"https://lab.example/run(book).\">"},
-    {"id": "HTML-QUOTED-LEADING-SPACE-EXAMPLE", "text": "<a href=\" https://lab.example/runbook.\">"}
+    {"id": "HTML-QUOTED-LEADING-SPACE-EXAMPLE", "text": "<a href=\" https://lab.example/runbook.\">"},
+    {"id": "HTML-MAILTO-EXAMPLE", "text": "<a href=\"mailto:user@lab.example\">mail</a>"},
+    {"id": "HTML-MAILTO-MULTI-EXAMPLE", "text": "<a href=\"mailto:user@lab.example,other@service.test?to=forward@node.invalid&cc=copy@assets.invalid&bcc=blind@audit.example\">mail</a>"}
   ],
   "unsafe": [
     {
@@ -141,6 +143,36 @@
     {
       "id": "HTML-QUOTED-LEADING-SPACE",
       "text": "<a href=\" https://example.com/runbook.\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-MAILTO-DISALLOWED",
+      "text": "<a href=\"mailto:user@example.com\">mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-MAILTO-SECOND-RECIPIENT-DISALLOWED",
+      "text": "<a href=\"mailto:user@lab.example,other@example.com\">mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-MAILTO-CC-DISALLOWED",
+      "text": "<a href=\"mailto:user@lab.example?cc=other@example.com\">mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-MAILTO-TO-DISALLOWED",
+      "text": "<a href=\"mailto:user@lab.example?to=other@example.com\">mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-MAILTO-BCC-DISALLOWED",
+      "text": "<a href=\"mailto:user@lab.example?bcc=other@example.com\">mail</a>",
       "requiredReason": "non-approved host suffix",
       "forbiddenReason": ""
     }

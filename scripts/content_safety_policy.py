@@ -13,7 +13,7 @@ import ipaddress
 import re
 from typing import Iterable, Pattern
 import unicodedata
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, urlparse
 
 
 POLICY_VERSION = "1.0.0"
@@ -521,6 +521,29 @@ _TRAILING_JA_PROHIBITION = re.compile(
 )
 
 
+def _direct_trailing_prohibition_end(
+    clause: str,
+    action: tuple[int, int, str, str],
+) -> int | None:
+    """Return a local trailing marker end before any intervening action."""
+
+    action_end = action[1]
+    trailing = clause[action_end : action_end + 80]
+    ends: list[int] = []
+    for expression in (_TRAILING_EN_PROHIBITION, _TRAILING_JA_PROHIBITION):
+        marker = expression.search(trailing)
+        if marker is None:
+            continue
+        marker_start = action_end + marker.start()
+        if any(
+            action_end <= candidate[0] < marker_start
+            for candidate in _all_action_matches(clause)
+        ):
+            continue
+        ends.append(action_end + marker.end())
+    return min(ends) if ends else None
+
+
 def _all_action_matches(clause: str) -> list[tuple[int, int, str, str]]:
     return _action_matches(clause, frozenset(rule.kind for rule in ACTION_RULES))
 
@@ -554,10 +577,40 @@ def _trailing_prohibition_controls_action(
     if marker is None:
         return False
     marker_start = action_end + marker.start()
-    return not any(
+    if any(
         action_end <= candidate[0] < marker_start
         for candidate in _all_action_matches(clause)
-    )
+    ):
+        return False
+    marker_end = action_end + marker.end()
+    suffix = clause[marker_end:]
+    scope_break = _PROHIBITION_SCOPE_BREAK.search(suffix)
+    scope_end = marker_end + (scope_break.start() if scope_break else len(suffix))
+    later_actions = [
+        candidate
+        for candidate in _all_action_matches(clause)
+        if marker_end <= candidate[0] < scope_end
+    ]
+    if not later_actions:
+        return True
+
+    # A marker complement such as ``prohibited from deployment`` introduces a
+    # different action and cannot prohibit the earlier one.  Preserve a bounded
+    # list of independently prohibited coordinated actions by requiring each
+    # later action to have its own direct marker.
+    cursor = marker_end
+    for candidate in later_actions:
+        if not re.fullmatch(
+            r"\s*(?:and|or|nor)\s+(?:(?:its|their|the)\s+)?",
+            clause[cursor : candidate[0]],
+            re.IGNORECASE,
+        ):
+            return False
+        own_marker_end = _direct_trailing_prohibition_end(clause, candidate)
+        if own_marker_end is None:
+            return False
+        cursor = own_marker_end
+    return True
 
 
 def _coordinated_pre_action_prohibition_controls_action(
@@ -806,6 +859,27 @@ _EN_TEMPORAL_HEADS = frozenset(
         "moment",
     }
 )
+_EN_TEMPORAL_QUALIFIERS = frozenset(
+    {
+        "this",
+        "that",
+        "these",
+        "those",
+        "next",
+        "last",
+        "following",
+        "same",
+        "each",
+        "every",
+        "very",
+        "business",
+        "calendar",
+        "working",
+        "previous",
+        "coming",
+        "current",
+    }
+)
 _JA_DIRECT_ACTION_CONTINUATION = re.compile(
     r"^(?:で|て|し|して|つつ|が|けれど|けれども|ものの)\s*$"
 )
@@ -906,7 +980,14 @@ def _action_introduces_distinct_english_object(
         cursor += whitespace.end()
     if not words:
         return False
-    return words[-1] not in _EN_TEMPORAL_HEADS
+    # A trailing temporal phrase modifies the action; it is not the action's
+    # direct object.  Remove that bounded phrase before deciding whether an
+    # earlier noun remains (for example, ``the sandbox this week``).
+    if words[-1] in _EN_TEMPORAL_HEADS:
+        words.pop()
+        while words and words[-1] in _EN_TEMPORAL_QUALIFIERS:
+            words.pop()
+    return bool(words)
 
 
 def _actions_bound_to_object(
@@ -988,11 +1069,11 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
         return []
 
     findings: list[SafetyFinding] = []
-    remembered: _Match | None = None
+    remembered: tuple[_Match, ...] = ()
     for clause in _clauses(normalized):
-        retained_continuation: _Match | None = None
-        if remembered is not None:
-            continuation = _continuation_actions(clause, remembered)
+        retained_continuations: list[_Match] = []
+        for remembered_object in remembered:
+            continuation = _continuation_actions(clause, remembered_object)
             if continuation is not None:
                 continuation_text, continuation_matches = continuation
                 has_unprohibited_action = any(
@@ -1006,21 +1087,20 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                 if has_unprohibited_action:
                     findings.append(
                         _finding(
-                            remembered.category,
+                            remembered_object.category,
                             location,
                             clause,
                             "a contradictory continuation reuses the protected object after a locally negated or prohibitive clause",
                         )
                     )
-                    remembered = None
                 else:
                     # Keep the protected object for one more adjacent continuation
                     # when every action in this clause is prohibited. Still scan
                     # explicit objects in this clause before carrying it forward.
-                    retained_continuation = remembered
+                    retained_continuations.append(remembered_object)
 
         clause_objects = _object_matches(clause)
-        next_remembered: _Match | None = None
+        next_remembered: list[_Match] = []
         for protected in clause_objects:
             actions = _action_matches(clause, protected.action_kinds)
             if not actions:
@@ -1030,7 +1110,7 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                 _locally_prohibited(clause, protected, action)
                 for action in bound_actions
             ):
-                next_remembered = protected
+                next_remembered.append(protected)
                 continue
             if _direct_synthetic(clause, protected):
                 continue
@@ -1042,7 +1122,18 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                     "protected object is paired with an action without a local prohibition or permitted direct synthetic qualifier",
                 )
             )
-        remembered = next_remembered or retained_continuation
+        remembered = tuple(
+            sorted(
+                set(next_remembered + retained_continuations),
+                key=lambda item: (
+                    item.start,
+                    item.end,
+                    item.category,
+                    item.text,
+                    tuple(sorted(item.action_kinds)),
+                ),
+            )
+        )
     return _ordered_unique(findings)
 
 
@@ -1064,7 +1155,7 @@ _QUOTED_URL_ATTRIBUTE = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 _ATTRIBUTE_URL_PATTERN = re.compile(
-    r"(?:(?:[a-z][a-z0-9+.-]*:)?//)[^\s<>]+",
+    r"(?:(?:(?:[a-z][a-z0-9+.-]*:)?//)[^\s<>]+|mailto:[^\s<>]+)",
     re.IGNORECASE,
 )
 _DOMAIN_PATTERN = re.compile(
@@ -1101,29 +1192,61 @@ def _record_url_policy(
     url_addresses: set[str],
 ) -> None:
     try:
-        host = (urlparse(raw_url).hostname or "").casefold()
+        parsed = urlparse(raw_url)
     except ValueError:
         findings.append(_host_finding(location, raw_url, "malformed URL in synthetic content"))
         return
-    if not host:
+
+    hosts: list[str] = []
+    malformed_mailto = False
+    if parsed.scheme.casefold() == "mailto":
+        # Check every direct recipient and the standard recipient-bearing query
+        # fields, while leaving non-recipient fields such as subject/body opaque.
+        recipients = parsed.path.split(",")
+        for key, value in parse_qsl(parsed.query, keep_blank_values=True):
+            if key.casefold() in {"to", "cc", "bcc"}:
+                recipients.extend(value.split(","))
+        for recipient in recipients:
+            address = recipient.strip()
+            if not address:
+                continue
+            if "@" not in address or not address.rsplit("@", 1)[1]:
+                malformed_mailto = True
+                continue
+            hosts.append(address.rsplit("@", 1)[1].casefold())
+    else:
+        host = (parsed.hostname or "").casefold()
+        if host:
+            hosts.append(host)
+
+    if malformed_mailto:
+        findings.append(_host_finding(location, raw_url, "malformed URL in synthetic content"))
+    if not hosts:
         findings.append(_host_finding(location, raw_url, "URL does not expose a parseable host"))
         return
-    url_hosts.add(host)
-    address = _parse_ip(host)
-    if address is not None:
-        url_addresses.add(str(address))
-        if not _is_documentation_address(address):
-            findings.append(_host_finding(location, raw_url, "non-documentation IP URL is disallowed"))
-    elif host.endswith(_POLICY_DISALLOWED_RESERVED_SUFFIXES):
-        findings.append(
-            _host_finding(
-                location,
-                raw_url,
-                "host suffix is technically reserved but disallowed by the synthetic publication policy",
+    for host in sorted(set(hosts)):
+        url_hosts.add(host)
+        address = _parse_ip(host)
+        if address is not None:
+            url_addresses.add(str(address))
+            if not _is_documentation_address(address):
+                findings.append(
+                    _host_finding(
+                        location,
+                        raw_url,
+                        "non-documentation IP URL is disallowed",
+                    )
+                )
+        elif host.endswith(_POLICY_DISALLOWED_RESERVED_SUFFIXES):
+            findings.append(
+                _host_finding(
+                    location,
+                    raw_url,
+                    "host suffix is technically reserved but disallowed by the synthetic publication policy",
+                )
             )
-        )
-    elif not host.endswith(_ALLOWED_HOST_SUFFIXES):
-        findings.append(_host_finding(location, raw_url, "non-approved host suffix in synthetic content"))
+        elif not host.endswith(_ALLOWED_HOST_SUFFIXES):
+            findings.append(_host_finding(location, raw_url, "non-approved host suffix in synthetic content"))
 
 
 def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
