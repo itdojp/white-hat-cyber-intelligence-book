@@ -405,6 +405,11 @@ def _action_is_prohibited(
         return True
     if re.search(r"(?:is|are|was|were)\s+forbidden\s+to\s*$", action_before):
         return True
+    if re.search(
+        r"(?:is|are|was|were)\s+forbidden\s+to\b",
+        clause[:action_start],
+    ):
+        return True
     if re.search(r"(?:しない|せず|行わない|使わない|作らない)$", action_text):
         return True
     if re.search(

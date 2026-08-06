@@ -232,6 +232,8 @@
     {"id": "SAFE-026", "text": "Do not build a keylogger, but its deployment is outside this book's scope."},
     {"id": "SAFE-027", "text": "keyloggerを作ることを禁止する、しかしその使用は対象外とする。"},
     {"id": "SAFE-028", "text": "Do not access a third-party production API, but it is forbidden to connect to it."},
-    {"id": "SAFE-029", "text": "Do not build a keylogger. Do not deploy it."}
+    {"id": "SAFE-029", "text": "Do not build a keylogger. Do not deploy it."},
+    {"id": "SAFE-030", "text": "Do not build a keylogger, but it is forbidden to deploy and use it."},
+    {"id": "SAFE-031", "text": "Do not access a third-party production API, but it is forbidden to connect to it and record it."}
   ]
 }
