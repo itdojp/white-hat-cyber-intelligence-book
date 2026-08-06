@@ -12,7 +12,9 @@
     {"id": "RELATIVE-LINK", "text": "[guide](../artifact.json)"},
     {"id": "DOTTED-ID-VERSION", "text": "module.v2"},
     {"id": "DOTTED-ID-NUMERIC", "text": "artifact.c0m"},
-    {"id": "DOTTED-ID-HYPHEN", "text": "alpha.x-y"}
+    {"id": "DOTTED-ID-HYPHEN", "text": "alpha.x-y"},
+    {"id": "IDN-EXAMPLE-SUFFIX", "text": "例え.example"},
+    {"id": "PUNYCODE-EXAMPLE-SUFFIX", "text": "xn--r8jz45g.example"}
   ],
   "unsafe": [
     {

@@ -87,7 +87,7 @@ Repositoryのsynthetic publication policyとして次を許容する。
 - IPv4 documentation range: `192.0.2.0/24`、`198.51.100.0/24`、`203.0.113.0/24`
 - IPv6 documentation range: `2001:db8::/32`
 
-`.localhost`は技術的にはreservedだが、このRepositoryの公開Policyでは許容しない。診断は`non-reserved`とは記載せず、技術的reserved statusとRepository permissionを分離する。bare IDN / punycode hostも許容suffixの文字列契約を満たさないためfail closedにする。曖昧なbare host/addressはfail closedにでき、明示的な`.example` / `.test` / `.invalid`、URL形式、IPv6 bracket形式への書換えを案内する。
+`.localhost`は技術的にはreservedだが、このRepositoryの公開Policyでは許容しない。診断は`non-reserved`とは記載せず、技術的reserved statusとRepository permissionを分離する。bare IDN / punycode hostも検査し、明示的な`.example` / `.test` / `.invalid` suffixだけを許容する。曖昧なbare host/addressはfail closedにでき、許容suffix、URL形式、IPv6 bracket形式への書換えを案内する。
 
 Chapter 2の既存chapter-specific checkerには`.localhost`を許容する旧suffix listが残るが、現行canonical contentに`.localhost`はない。共通coreをchapter adapterへ導入する際は、Policy `1.0.0`を正本としてこの差を解消し、canonical本文を警告回避だけの目的では変更しない。
 

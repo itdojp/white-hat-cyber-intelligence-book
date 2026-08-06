@@ -650,6 +650,8 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
         domain = match.group(0).casefold()
         if domain in url_hosts or _DOMAIN_PATTERN.fullmatch(domain):
             continue
+        if domain.endswith(_ALLOWED_HOST_SUFFIXES):
+            continue
         if not (any(ord(character) > 127 for character in domain) or "xn--" in domain):
             continue
         findings.append(
