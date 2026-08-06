@@ -38,6 +38,41 @@
       "expectedCategories": ["operation.malware"]
     },
     {
+      "id": "CONTINUATION-ADJACENT-SENTENCE",
+      "text": "do not build a keylogger. deploy it",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-MULTI-ACTION-MALWARE",
+      "text": "do not build a keylogger, but do not deploy it and use it",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-MULTI-ACTION-TARGET",
+      "text": "do not access a third-party production API, but do not connect to it and record it",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "NORMALIZATION-ZERO-WIDTH-MALWARE",
+      "text": "key\u200bloggerを作る",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "NORMALIZATION-ZERO-WIDTH-SECRET",
+      "text": "toke\u200bnを取得する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "NORMALIZATION-HTML-COMMENT-SECRET",
+      "text": "to<!--bounded-comment-->ken used",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "NORMALIZATION-CONFUSABLE-SECRET",
+      "text": "tоkenを取得する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
       "id": "TARGET-OBJECT-FIRST",
       "text": "third-party production system accessed for additional benign record",
       "expectedCategories": ["target.real_or_external"]
@@ -192,6 +227,11 @@
     {"id": "SAFE-021", "text": "Do not build a keylogger, and do not deploy it."},
     {"id": "SAFE-022", "text": "Never build a keylogger; however, do not use it."},
     {"id": "SAFE-023", "text": "keyloggerを作ることを禁止する、そしてそれを作らない。"},
-    {"id": "SAFE-024", "text": "Building a keylogger should be prohibited, but it is not deployed."}
+    {"id": "SAFE-024", "text": "Building a keylogger should be prohibited, but it is not deployed."},
+    {"id": "SAFE-025", "text": "Do not access a third-party production API, but record the evidence."},
+    {"id": "SAFE-026", "text": "Do not build a keylogger, but its deployment is outside this book's scope."},
+    {"id": "SAFE-027", "text": "keyloggerを作ることを禁止する、しかしその使用は対象外とする。"},
+    {"id": "SAFE-028", "text": "Do not access a third-party production API, but it is forbidden to connect to it."},
+    {"id": "SAFE-029", "text": "Do not build a keylogger. Do not deploy it."}
   ]
 }

@@ -60,15 +60,42 @@ class _Match:
 
 _DASHES = "\u058a\u05be\u1400\u1806\u2010\u2011\u2012\u2013\u2014\u2015\u2e17\u2e1a\u2e3a\u2e3b\u2e40\u301c\u3030\u30a0\ufe31\ufe32\ufe58\ufe63\uff0d"
 _SEPARATORS = "_・･"
+_CONFUSABLE_FOLD = str.maketrans(
+    {
+        # Bounded high-risk Latin lookalikes, not a complete confusable map.
+        "а": "a",  # Cyrillic
+        "е": "e",
+        "о": "o",
+        "р": "p",
+        "с": "c",
+        "х": "x",
+        "у": "y",
+        "і": "i",
+        "ј": "j",
+        "к": "k",
+        "м": "m",
+        "т": "t",
+        "в": "b",
+        "н": "h",
+        "α": "a",  # Greek
+        "ε": "e",
+        "ο": "o",
+        "ρ": "p",
+        "χ": "x",
+        "κ": "k",
+        "τ": "t",
+    }
+)
 _CLAUSE_SPLIT = re.compile(r"([,;、。；!?！？\n]+)")
 _CONTRAST_PREFIX = re.compile(
     r"^\s*(?:(?:but|however|yet|nevertheless|still|then|and)\b|"
     r"しかし|ただし|だが|一方で|それでも|その後|そして)[,:、\s]*",
     re.IGNORECASE,
 )
-_PRONOUN_PREFIX = re.compile(
-    r"^\s*(?:(?:it|them|they|the same(?: object| item)?)\b|"
-    r"(?:これ|それ|当該(?:対象|情報|値|もの)|同じ(?:対象|もの|情報))(?=[をはもへに\s]))",
+_PRONOUN_REFERENCE = re.compile(
+    r"\b(?:it|its|them|they|the[ ]same(?:[ ](?:object|item|target|data|material))?)\b|"
+    r"(?:これ|それ|その(?:使用|利用|配備|導入|実行|作成|構築)|"
+    r"当該(?:対象|情報|値|もの)|同じ(?:対象|もの|情報))(?=[をはもへにがの\s])",
     re.IGNORECASE,
 )
 
@@ -277,6 +304,12 @@ def normalize_visible_text(text: str) -> str:
     if not isinstance(text, str):
         raise TypeError("text must be str")
     value = html.unescape(unicodedata.normalize("NFKC", text))
+    value = "".join(
+        character
+        for character in value
+        if unicodedata.category(character) != "Cf"
+    )
+    value = re.sub(r"<!--.*?-->", "", value, flags=re.DOTALL)
     value = re.sub(r"!\[([^\]]*)\]\([^)]+\)", r"\1", value)
     value = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", value)
     value = re.sub(r"<[^>]+>", " ", value)
@@ -286,7 +319,7 @@ def normalize_visible_text(text: str) -> str:
     value = value.translate(str.maketrans({character: "-" for character in _SEPARATORS}))
     value = re.sub(r"[\t\r\f\v\u00a0 ]+", " ", value)
     value = re.sub(r" *\n *", "\n", value)
-    return value.strip().casefold()
+    return value.strip().casefold().translate(_CONFUSABLE_FOLD)
 
 
 def _finding(category: str, location: str, excerpt: str, reason: str) -> SafetyFinding:
@@ -351,12 +384,15 @@ def _direct_synthetic(clause: str, protected: _Match) -> bool:
     return bool(_SYNTHETIC_PREFIX.search(prefix))
 
 
-def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, str, str]) -> bool:
+def _action_is_prohibited(
+    clause: str,
+    action: tuple[int, int, str, str],
+    *,
+    scope_start: int,
+) -> bool:
     action_start, action_end, _, action_text = action
-    span_start = min(protected.start, action_start)
-    span_end = max(protected.end, action_end)
-    before = clause[max(0, span_start - 48) : span_start]
-    after = clause[span_end : span_end + 80]
+    before = clause[max(0, scope_start - 48) : scope_start]
+    after = clause[action_end : action_end + 80]
     whole = clause.strip()
     action_before = clause[max(0, action_start - 48) : action_start]
 
@@ -367,6 +403,8 @@ def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, 
         action_before,
     ):
         return True
+    if re.search(r"(?:is|are|was|were)\s+forbidden\s+to\s*$", action_before):
+        return True
     if re.search(r"(?:しない|せず|行わない|使わない|作らない)$", action_text):
         return True
     if re.search(
@@ -376,7 +414,10 @@ def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, 
         return True
     if re.search(r"\b(?:creation|use|deployment|access)\s+is\s+outside\b", whole):
         return True
-    if re.search(r"(?:禁止(?:する|される|している)?|対象外|許可しない|要求しない)", after):
+    if re.search(
+        r"(?:禁止(?:する|される|している)|対象外(?!ではない)|許可しない|要求しない)",
+        after,
+    ):
         return True
     if re.search(
         r"(?:しない|せず|行わない|使わない|用いない|含めない|記載しない|"
@@ -387,6 +428,14 @@ def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, 
     if re.search(r"(?:禁止する対象|prohibited (?:operation|method|data))", before + whole):
         return True
     return False
+
+
+def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, str, str]) -> bool:
+    return _action_is_prohibited(
+        clause,
+        action,
+        scope_start=min(protected.start, action[0]),
+    )
 
 
 def _clauses(text: str) -> list[str]:
@@ -416,43 +465,22 @@ def _clauses(text: str) -> list[str]:
     return clauses
 
 
-def _continuation_action(
+def _continuation_actions(
     clause: str,
     remembered: _Match,
-) -> tuple[str, tuple[int, int, str, str]] | None:
+) -> tuple[str, list[tuple[int, int, str, str]]] | None:
     remainder = _CONTRAST_PREFIX.sub("", clause, count=1)
-    if remainder == clause:
-        return None
-    pronoun_removed = _PRONOUN_PREFIX.sub("", remainder, count=1)
-    actions = _action_matches(pronoun_removed, remembered.action_kinds)
+    explicit_contrast = remainder != clause
+    actions = _action_matches(remainder, remembered.action_kinds)
     if not actions:
         return None
-    return pronoun_removed, actions[0]
-
-
-def _continuation_is_prohibited(
-    continuation: str,
-    action: tuple[int, int, str, str],
-) -> bool:
-    action_start, action_end, _, action_text = action
-    before = continuation[max(0, action_start - 48) : action_start]
-    after = continuation[action_end : action_end + 80]
-    if re.search(
-        r"(?:do not|don't|never|must not|shall not|should not|"
-        r"(?:is|are|was|were|must|should|shall|may)\s+not(?:\s+be)?)\s*$",
-        before,
-    ):
-        return True
-    if re.search(r"(?:しない|せず|行わない|使わない|作らない)$", action_text):
-        return True
-    return bool(
-        re.search(
-            r"(?:is|are|was|were|should be|must be)\s+"
-            r"(?:prohibited|forbidden|not allowed)\b|"
-            r"(?:ことを禁止する|禁止される|許可しない|行わない)",
-            after,
-        )
-    )
+    pronoun_bound = bool(_PRONOUN_REFERENCE.search(remainder))
+    new_objects = _object_matches(remainder)
+    trailing = remainder[actions[-1][1] :].strip()
+    ellipsis_bound = explicit_contrast and not new_objects and not trailing
+    if not (pronoun_bound or ellipsis_bound):
+        return None
+    return remainder, actions
 
 
 def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
@@ -473,12 +501,16 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
     remembered: _Match | None = None
     for clause in _clauses(normalized):
         if remembered is not None:
-            continuation = _continuation_action(clause, remembered)
+            continuation = _continuation_actions(clause, remembered)
             if continuation is not None:
-                continuation_text, continuation_match = continuation
-                if not _continuation_is_prohibited(
-                    continuation_text,
-                    continuation_match,
+                continuation_text, continuation_matches = continuation
+                if any(
+                    not _action_is_prohibited(
+                        continuation_text,
+                        action,
+                        scope_start=action[0],
+                    )
+                    for action in continuation_matches
                 ):
                     findings.append(
                         _finding(
@@ -529,6 +561,10 @@ _DOCUMENTATION_NETWORKS = (
 _URL_PATTERN = re.compile(r"(?:(?:[a-z][a-z0-9+.-]*:)?//)[^\s`)>)]+", re.IGNORECASE)
 _DOMAIN_PATTERN = re.compile(
     r"(?<![a-z0-9_-])(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}(?![a-z0-9_-])",
+    re.IGNORECASE,
+)
+_IDN_DOMAIN_PATTERN = re.compile(
+    r"(?<![\w-])(?:[\w-]+\.)+[\w-]+(?![\w-])",
     re.IGNORECASE,
 )
 
@@ -604,6 +640,20 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
             )
         elif not domain.endswith(_ALLOWED_HOST_SUFFIXES):
             findings.append(_host_finding(location, domain, "possible real domain in synthetic content"))
+
+    for match in _IDN_DOMAIN_PATTERN.finditer(normalized):
+        domain = match.group(0).casefold()
+        if domain in url_hosts or _DOMAIN_PATTERN.fullmatch(domain):
+            continue
+        if not (any(ord(character) > 127 for character in domain) or "xn--" in domain):
+            continue
+        findings.append(
+            _host_finding(
+                location,
+                domain,
+                "non-approved bare IDN or punycode host in synthetic content",
+            )
+        )
 
     detected_addresses: dict[str, ipaddress.IPv4Address | ipaddress.IPv6Address] = {}
     raw_normalized = unicodedata.normalize("NFKC", text)

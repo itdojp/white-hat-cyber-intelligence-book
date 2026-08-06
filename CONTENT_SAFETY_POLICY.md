@@ -51,14 +51,17 @@ ObjectがActionより前でも後でも検査する。最初の節が禁止・�
 
 1. Unicode NFKC
 2. HTML entity decode
-3. Markdown link/imageの読者表示label抽出
-4. HTML tagとMarkdown emphasis/code delimiterの除去
-5. backslash unescape
-6. hyphen、underscore、middle-dot variantをASCII hyphenへ統一
-7. horizontal whitespaceを単一spaceへ統一し、newlineを保持
-8. Unicode case-fold
+3. Unicode category `Cf`のzero-width format characterを除去
+4. HTML commentを空文字へ変換し、commentで分断された読者表示tokenを再結合
+5. Markdown link/imageの読者表示label抽出
+6. HTML tagとMarkdown emphasis/code delimiterの除去
+7. backslash unescape
+8. hyphen、underscore、middle-dot variantをASCII hyphenへ統一
+9. horizontal whitespaceを単一spaceへ統一し、newlineを保持
+10. Unicode case-fold
+11. protected vocabularyの回避に使われやすいGreek / Cyrillic Latin-lookalikeのbounded fold
 
-URL destinationはAction scanの読者表示textから除外する一方、`scan_host_policy`で別途検査する。ASCII word boundaryだけへ依存せず、DoS / DDoSの直後に日本語particleが続く場合も扱う。
+URL destinationはAction scanの読者表示textから除外する一方、`scan_host_policy`で別途検査する。ASCII word boundaryだけへ依存せず、DoS / DDoSの直後に日本語particleが続く場合も扱う。Confusable foldはUnicode全体の同形異字判定を主張せず、Policy corpusに固定したbounded mappingだけを適用する。
 
 ## Protected categories
 
@@ -84,7 +87,7 @@ Repositoryのsynthetic publication policyとして次を許容する。
 - IPv4 documentation range: `192.0.2.0/24`、`198.51.100.0/24`、`203.0.113.0/24`
 - IPv6 documentation range: `2001:db8::/32`
 
-`.localhost`は技術的にはreservedだが、このRepositoryの公開Policyでは許容しない。診断は`non-reserved`とは記載せず、技術的reserved statusとRepository permissionを分離する。曖昧なbare host/addressはfail closedにでき、明示的な`.example` / `.test` / `.invalid`、URL形式、IPv6 bracket形式への書換えを案内する。
+`.localhost`は技術的にはreservedだが、このRepositoryの公開Policyでは許容しない。診断は`non-reserved`とは記載せず、技術的reserved statusとRepository permissionを分離する。bare IDN / punycode hostも許容suffixの文字列契約を満たさないためfail closedにする。曖昧なbare host/addressはfail closedにでき、明示的な`.example` / `.test` / `.invalid`、URL形式、IPv6 bracket形式への書換えを案内する。
 
 Chapter 2の既存chapter-specific checkerには`.localhost`を許容する旧suffix listが残るが、現行canonical contentに`.localhost`はない。共通coreをchapter adapterへ導入する際は、Policy `1.0.0`を正本としてこの差を解消し、canonical本文を警告回避だけの目的では変更しない。
 

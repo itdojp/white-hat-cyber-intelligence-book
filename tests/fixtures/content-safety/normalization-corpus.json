@@ -26,6 +26,21 @@
       "id": "NEWLINE-DETERMINISM",
       "input": "Token  used\n  Cookie stored",
       "expected": "token used\ncookie stored"
+    },
+    {
+      "id": "ZERO-WIDTH-FORMAT",
+      "input": "key\u200blogger toke\u200bn",
+      "expected": "keylogger token"
+    },
+    {
+      "id": "HTML-COMMENT-SPLIT",
+      "input": "to<!--bounded-comment-->ken used",
+      "expected": "token used"
+    },
+    {
+      "id": "BOUNDED-CONFUSABLE-FOLD",
+      "input": "tоken",
+      "expected": "token"
     }
   ]
 }

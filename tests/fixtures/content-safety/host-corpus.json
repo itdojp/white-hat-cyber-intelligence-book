@@ -40,6 +40,18 @@
       "forbiddenReason": ""
     },
     {
+      "id": "BARE-PUNYCODE-DISALLOWED",
+      "text": "xn--r8jz45g.xn--zckzah",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "BARE-IDN-DISALLOWED",
+      "text": "例え.テスト",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
       "id": "UNSPECIFIED-IPV4",
       "text": "http://0.0.0.0/status",
       "requiredReason": "non-documentation IP",
