@@ -682,6 +682,30 @@ def markdown_row_cells(line: str) -> list[str]:
     return [cell.strip() for cell in line.strip().strip("|").split("|")]
 
 
+DEPLOYABLE_MALWARE_FAMILY = (
+    r"(?:keyloggers?|rootkits?|spyware|info[- ]?stealers?|credential[- ]stealers?|"
+    r"backdoors?|trojans?|キーロガー|ルートキット|スパイウェア|"
+    r"インフォ[ \t　・-]*スティーラー|クレデンシャル[ \t　・-]*スティーラー|"
+    r"認証情報窃取(?:型)?マルウェア|バックドア|トロイ(?:の木馬|アン))"
+)
+DEPLOYABLE_MALWARE_POST_ACTION = (
+    r"(?=[ \t　・-]*(?:(?:(?:を|へ|に|として)[ \t　]*)?"
+    r"(?:(?:作成|構築|開発|配備|導入|実装|実行|使用|利用|運用)"
+    r"(?:する|した|します)|作(?:る|った|ります))|"
+    r"(?:(?:is|are|was|were|be|being)[ \t-]+)?"
+    r"(?:created|built|developed|deployed|installed|executed|run|used|operated)\b))"
+)
+DEPLOYABLE_MALWARE_PRE_ACTION = (
+    r"(?<!not[ \t])(?<!never[ \t])\b(?:"
+    r"creat(?:e|es|ed|ing)|build(?:s|ing)?|built|develop(?:s|ed|ing)?|"
+    r"deploy(?:s|ed|ing)?|install(?:s|ed|ing)?|execut(?:e|es|ed|ing)|"
+    r"run(?:s|ning)?|ran|us(?:e|es|ed|ing)|operat(?:e|es|ed|ing))\b"
+    r"[ \t]+(?:(?:a|an|the)[ \t]+)?"
+    + DEPLOYABLE_MALWARE_FAMILY
+    + r"(?=$|[ \t　、。;,.!?！？])"
+)
+
+
 PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:実(?:際|在)?の?(?:Target|標的|ターゲット)|現実の(?:Target|標的|ターゲット)|"
     r"real[- ]target|実運用(?:環境|System|システム)|"
@@ -696,14 +720,11 @@ PROTECTED_PRACTICE_INPUT = re.compile(
     r"(?:System|システム|環境|Data|データ|API(?:エンドポイント|端点)?|Service|サービス|SaaS|Site|サイト)|"
     r"(?:third[- ]party|external)[- ]+(?:(?:production|prod|live)[- ]+)?"
     r"(?:systems?|data|environments?|api(?:[- ]endpoints?)?|services?|saas|sites?)|"
-    r"(?:keyloggers?|rootkits?|spyware|info[- ]?stealers?|credential[- ]stealers?|"
-    r"backdoors?|trojans?|キーロガー|ルートキット|スパイウェア|"
-    r"インフォ[ \t　・-]*スティーラー|クレデンシャル[ \t　・-]*スティーラー|"
-    r"認証情報窃取(?:型)?マルウェア|バックドア|トロイ(?:の木馬|アン))"
-    r"(?=[ \t　・-]*(?:(?:(?:を|へ|に|として)[ \t　]*)?"
-    r"(?:作成|構築|開発|配備|導入|実行|使用|利用|運用)(?:する|した|します)|"
-    r"(?:(?:is|are|was|were|be|being)[ \t-]+)?"
-    r"(?:created|built|developed|deployed|installed|executed|run|used|operated)\b))|"
+    + DEPLOYABLE_MALWARE_FAMILY
+    + DEPLOYABLE_MALWARE_POST_ACTION
+    + r"|"
+    + DEPLOYABLE_MALWARE_PRE_ACTION
+    + r"|"
     r"(?:deployable[- ]?)?malware|ransomware|wiper|"
     r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
     r"[- ](?:infrastructure|server|site|page|channel)|"
@@ -809,6 +830,14 @@ EXPLICIT_SYNTHETIC_QUALIFIER = re.compile(
 )
 EXPLICIT_NEGATED_USE = re.compile(
     r"^\s*(?:"
+    r"(?:(?:を|へ|に|として)[ \t　]*)?"
+    r"(?:(?:作成|構築|開発|配備|導入|実装|実行|使用|利用|運用)"
+    r"(?:する|した|します)|作(?:る|った|ります))[ \t　]*"
+    r"(?:ことを禁止する|べきではない)|"
+    r"(?:is|are|was|were)[ \t]+(?:prohibited|forbidden|"
+    r"not[ \t]+(?:allowed|permitted))|"
+    r"(?:should|must)[ \t]+(?:be[ \t]+)?(?:prohibited|forbidden|"
+    r"not[ \t]+(?:allowed|permitted))|"
     r"ではなく|ではない|"
     r"(?:を|は|が|へ|に|として|の|も)?"
     r"(?:攻撃|操作|調査|走査|スキャン|観測|閲覧|参照|分析|取得|使用|利用|"
@@ -2561,7 +2590,9 @@ def verify_negative_regressions(
         "フィッシング詐欺を実施する",
         "deployable malwareを作成する",
         "keyloggerを作成する",
+        "keyloggerを作る",
         "rootkitを作成する",
+        "rootkitを実装する",
         "spywareを作成する",
         "infostealerを配備する",
         "info-stealerを使用する",
@@ -2576,6 +2607,16 @@ def verify_negative_regressions(
         "バックドアを構築する",
         "トロイの木馬を配備する",
         "synthetic keyloggerを作成する",
+        "keyloggerを作ることを禁止する、しかしそれを使用する",
+        "building a keylogger should be prohibited, but it is used",
+        "build a keylogger",
+        "create a rootkit",
+        "deploy spyware",
+        "use an infostealer",
+        "install a backdoor",
+        "operate a trojan",
+        "キーロガーを作る",
+        "ルートキットを実装する",
         "C2 infrastructureを構築する",
         "C2 channelを作る",
         "C2を構築する",
@@ -2711,7 +2752,18 @@ def verify_negative_regressions(
         "DoSを実行しない",
         "DDoS を実行しない",
         "keyloggerを作成しない",
+        "keyloggerを作らない",
+        "rootkitを実装しない",
         "rootkit is not deployed",
+        "do not build a keylogger",
+        "never deploy spyware",
+        "building a keylogger is prohibited",
+        "keyloggerを作ることを禁止する",
+        "rootkitを実装することを禁止する",
+        "keyloggerを作るべきではない",
+        "rootkitを実装するべきではない",
+        "building a keylogger should be prohibited",
+        "building a keylogger must be prohibited",
         "keyloggerの仕組みを説明する",
         "keyloggerの作成を禁止する",
         "バックドアの概念を説明する",
