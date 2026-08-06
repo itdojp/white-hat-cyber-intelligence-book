@@ -56,6 +56,48 @@ SAFE_BLOCKER_COUNTERPARTS = {
     "keyloggerを作ることを禁止する。",
     "この語はMalware分類の説明としてのみ記録する。",
 }
+REQUIRED_UNSAFE_BIDIRECTIONAL_ACTIONS = {
+    "ACTION-BOTH-SIDES-JA-USE-PRE": "使用しないマルウェアを構築する",
+    "ACTION-BOTH-SIDES-JA-CREATE-PRE": "構築しないマルウェアを使用する",
+    "ACTION-BOTH-SIDES-MIXED-SCRIPT": "使用しないkeyloggerをdeployする",
+    "ACTION-BOTH-SIDES-EN-THEN": "Do not use the keylogger that we then deploy.",
+    "ACTION-RELATIVE-EN-SAFE-FIRST": "A keylogger that is not used is deployed.",
+    "ACTION-POST-JA-UNSAFE-FIRST": "マルウェアを構築するが使用しない",
+    "ACTION-BOTH-SIDES-JA-UNSAFE-PRE": "構築するマルウェアを使用しない",
+    "ACTION-RELATIVE-EN-UNSAFE-FIRST": "A keylogger that is built is not deployed.",
+    "ACTION-MODIFIER-EN-UNSAFE-PRE": "Build the new keylogger that is not deployed.",
+    "ACTION-MODIFIER-JA-UNSAFE-PRE": "構築する危険なマルウェアを使用しない",
+    "ACTION-MODIFIER-EN-AND": (
+        "Build the new and improved keylogger that is not deployed."
+    ),
+    "ACTION-MODIFIER-EN-OR": (
+        "Build the new or improved keylogger that is not deployed."
+    ),
+    "ACTION-MODIFIER-EN-BUT": (
+        "Build the new but improved keylogger that is not deployed."
+    ),
+    "ACTION-MODIFIER-JA-COORDINATED": (
+        "構築する高度で危険なマルウェアを使用しない"
+    ),
+}
+REQUIRED_SAFE_BIDIRECTIONAL_ACTIONS = {
+    "SAFE-002": "Building a keylogger is prohibited.",
+    "SAFE-033": "Do not build or deploy a keylogger.",
+    "SAFE-040": "マルウェアを使用しない。",
+    "SAFE-041": "マルウェアを構築しない。",
+    "SAFE-042": "使用しないマルウェアを説明する。",
+    "SAFE-043": "使用しないマルウェアを構築しない。",
+    "SAFE-044": "A keylogger that is not used is described.",
+    "SAFE-045": "Do not build the new keylogger that is not deployed.",
+    "SAFE-046": "構築しない危険なマルウェアを使用しない",
+    "SAFE-047": "Use a sandbox to describe a keylogger that is not deployed.",
+    "SAFE-048": "predeployするkeyloggerという識別子を説明する。",
+    "SAFE-049": "Do not build the new and improved keylogger that is not deployed.",
+    "SAFE-050": "Do not build the new or improved keylogger that is not deployed.",
+    "SAFE-051": "Do not build the new but improved keylogger that is not deployed.",
+    "SAFE-052": "構築しない高度で危険なマルウェアを使用しない",
+    "SAFE-053": "Use a sandbox but describe a keylogger that is not deployed.",
+}
 REQUIRED_UNSAFE_PROHIBITION_SCOPE = {
     "CONTINUATION-FORBIDDEN-CONTRAST-MALWARE": (
         "Do not build a keylogger, but it is forbidden to deploy but use it."
@@ -139,6 +181,36 @@ REQUIRED_UNSAFE_HOST_CASES = {
         "[external](https&#58;&#47;&#47;example&#46;com/runbook)",
         "non-approved host suffix",
     ),
+    "HTML-DOUBLE-QUOTED-COM": (
+        '<a href="https://example.com">',
+        "non-approved host suffix",
+    ),
+    "HTML-SINGLE-QUOTED-GOV": (
+        "<a href='https://agency.gov/path'>",
+        "non-approved host suffix",
+    ),
+    "HTML-ENTITY-ENCODED-COM": (
+        '<img src="https&#58;&#47;&#47;example&#46;com/image.png">',
+        "non-approved host suffix",
+    ),
+    "HTML-PROTOCOL-RELATIVE-CO-UK": (
+        '<a href="//target.co.uk/runbook">',
+        "non-approved host suffix",
+    ),
+}
+REQUIRED_SAFE_HOST_CASES = {
+    "HTML-DOUBLE-QUOTED-EXAMPLE": '<a href="https://lab.example">',
+    "HTML-SINGLE-QUOTED-TEST": "<a href='https://lab.test/path?q=1#x'>",
+    "HTML-DOUBLE-QUOTED-INVALID": '<img src="https://assets.invalid/image.png">',
+    "HTML-ENTITY-ENCODED-EXAMPLE": (
+        '<a href="https&#58;&#47;&#47;lab&#46;example/runbook">'
+    ),
+}
+REQUIRED_UNSAFE_HOST_EXCERPTS = {
+    "HTML-DOUBLE-QUOTED-COM": "https://example.com",
+    "HTML-SINGLE-QUOTED-GOV": "https://agency.gov/path",
+    "HTML-ENTITY-ENCODED-COM": "https://example.com/image.png",
+    "HTML-PROTOCOL-RELATIVE-CO-UK": "//target.co.uk/runbook",
 }
 
 
@@ -305,9 +377,15 @@ def check_action_corpus() -> list[tuple[str, str]]:
     for identifier, expected_text in REQUIRED_UNSAFE_PROHIBITION_SCOPE.items():
         if unsafe_by_id.get(identifier) != expected_text:
             error(f"{relative}: unsafe prohibition-scope regression {identifier!r} drifted")
+    for identifier, expected_text in REQUIRED_UNSAFE_BIDIRECTIONAL_ACTIONS.items():
+        if unsafe_by_id.get(identifier) != expected_text:
+            error(f"{relative}: bidirectional unsafe regression {identifier!r} drifted")
     for identifier, expected_text in REQUIRED_SAFE_PROHIBITION_SCOPE.items():
         if safe_by_id.get(identifier) != expected_text:
             error(f"{relative}: safe prohibition-scope regression {identifier!r} drifted")
+    for identifier, expected_text in REQUIRED_SAFE_BIDIRECTIONAL_ACTIONS.items():
+        if safe_by_id.get(identifier) != expected_text:
+            error(f"{relative}: bidirectional safe regression {identifier!r} drifted")
 
     for item in safe:
         identifier = item.get("id")
@@ -396,6 +474,10 @@ def check_host_corpus() -> list[tuple[str, str]]:
         item.get("id"): (item.get("text"), item.get("requiredReason"))
         for item in unsafe
     }
+    safe_by_id = {item.get("id"): item.get("text") for item in safe}
+    for identifier, expected_text in REQUIRED_SAFE_HOST_CASES.items():
+        if safe_by_id.get(identifier) != expected_text:
+            error(f"{relative}: required safe host regression {identifier!r} drifted")
     for identifier, expected_case in REQUIRED_UNSAFE_HOST_CASES.items():
         if unsafe_by_id.get(identifier) != expected_case:
             error(f"{relative}: required host regression {identifier!r} drifted")
@@ -422,6 +504,14 @@ def check_host_corpus() -> list[tuple[str, str]]:
             error(f"{relative}.{identifier}: forbidden diagnostic {forbidden!r} was used")
         if any(finding.category != "network.host_or_address" for finding in findings):
             error(f"{relative}.{identifier}: host finding category drift")
+        required_excerpt = REQUIRED_UNSAFE_HOST_EXCERPTS.get(identifier)
+        if required_excerpt is not None and not any(
+            finding.normalized_excerpt == required_excerpt for finding in findings
+        ):
+            error(
+                f"{relative}.{identifier}: quoted URL excerpt was not preserved as "
+                f"{required_excerpt!r}"
+            )
         deterministic_fields.append((identifier, text))
     return deterministic_fields
 

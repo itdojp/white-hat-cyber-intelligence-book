@@ -118,36 +118,61 @@ def _rx(pattern: str) -> Pattern[str]:
     return re.compile(pattern, re.IGNORECASE)
 
 
+def _mixed_script_action(pattern: str) -> str:
+    """Preserve English word bounds and add only a Japanese-suffix form.
+
+    Python treats Japanese letters as word characters, so ``\b`` cannot see the
+    boundary in reader-visible forms such as ``deployする``.  The repository's
+    bounded mixed-script contract adds that explicit form without widening the
+    existing English branch or accepting a suffix inside an ASCII identifier.
+    """
+
+    return (
+        rf"\b(?:{pattern})\b|"
+        rf"(?<![a-z0-9_-])(?:{pattern})"
+        r"(?:する|した|します|しない|せず)(?![a-z0-9_-])"
+    )
+
+
 ACTION_RULES = (
     ActionRule(
         "create",
         _rx(
-            r"\b(?:write|code|create|creates|created|creating|creation|"
-            r"build|builds|built|building|develop|develops|developed|developing|"
-            r"implement|implements|implemented|implementing)\b|"
+            _mixed_script_action(
+                r"write|code|create|creates|created|creating|creation|"
+                r"build|builds|built|building|develop|develops|developed|developing|"
+                r"implement|implements|implemented|implementing"
+            )
+            + r"|"
             r"(?:作(?:る|った|ります|らない)|作成|構築|開発|実装)(?:する|した|します|しない|せず)?"
         ),
     ),
     ActionRule(
         "deploy-use",
         _rx(
-            r"\b(?:deploy|deploys|deployed|deploying|deployment|install|installs|"
-            r"installed|installing|run|runs|ran|running|execute|executes|executed|"
-            r"executing|use|uses|used|using|operate|operates|operated|operating)\b|"
+            _mixed_script_action(
+                r"deploy|deploys|deployed|deploying|deployment|install|installs|"
+                r"installed|installing|run|runs|ran|running|execute|executes|executed|"
+                r"executing|use|uses|used|using|operate|operates|operated|operating"
+            )
+            + r"|"
             r"(?:配備|導入|実行|使用|利用|運用)(?:する|した|します|しない|せず)?"
         ),
     ),
     ActionRule(
         "access-collect",
         _rx(
-            r"\b(?:access|accesses|accessed|accessing|connect|connects|connected|"
-            r"connecting|scan|scans|scanned|scanning|probe|probes|probed|probing|"
-            r"attack|attacks|attacked|attacking|attempt|attempts|attempted|attempting|"
-            r"retrieve|retrieves|retrieved|retrieving|collect|collects|collected|"
-            r"collecting|store|stores|stored|storing|share|shares|shared|sharing|"
-            r"record|records|recorded|recording|view|views|viewed|viewing|"
-            r"modify|modifies|modified|modifying|encrypt|encrypts|encrypted|encrypting|"
-            r"delete|deletes|deleted|deleting|steal|steals|stole|stolen|stealing)\b|"
+            _mixed_script_action(
+                r"access|accesses|accessed|accessing|connect|connects|connected|"
+                r"connecting|scan|scans|scanned|scanning|probe|probes|probed|probing|"
+                r"attack|attacks|attacked|attacking|attempt|attempts|attempted|attempting|"
+                r"retrieve|retrieves|retrieved|retrieving|collect|collects|collected|"
+                r"collecting|store|stores|stored|storing|share|shares|shared|sharing|"
+                r"record|records|recorded|recording|view|views|viewed|viewing|"
+                r"modify|modifies|modified|modifying|encrypt|encrypts|encrypted|encrypting|"
+                r"delete|deletes|deleted|deleting|steal|steals|stole|stolen|stealing"
+            )
+            + r"|"
             r"(?:接続|アクセス|走査|スキャン|攻撃|試行|取得|収集|保存|共有|記録|"
             r"閲覧|観測|参照|変更|改変|暗号化|削除|窃取)(?:する|した|します|しない|せず|行う|実施する)?"
         ),
@@ -155,17 +180,23 @@ ACTION_RULES = (
     ActionRule(
         "perform",
         _rx(
-            r"\b(?:perform|performs|performed|performing|conduct|conducts|conducted|"
-            r"conducting|launch|launches|launched|launching|cause|causes|caused|causing)\b|"
+            _mixed_script_action(
+                r"perform|performs|performed|performing|conduct|conducts|conducted|"
+                r"conducting|launch|launches|launched|launching|cause|causes|caused|causing"
+            )
+            + r"|"
             r"(?:行う|行わない|実施する|実施しない|仕掛ける|起こす)"
         ),
     ),
     ActionRule(
         "attribute",
         _rx(
-            r"\b(?:attribute|attributes|attributed|attributing|identify|identifies|"
-            r"identified|identifying|assert|asserts|asserted|conclude|concludes|"
-            r"concluded|claim|claims|claimed)\b|"
+            _mixed_script_action(
+                r"attribute|attributes|attributed|attributing|identify|identifies|"
+                r"identified|identifying|assert|asserts|asserted|conclude|concludes|"
+                r"concluded|claim|claims|claimed"
+            )
+            + r"|"
             r"(?:帰属|特定|断定|同定)(?:する|した|します|しない|せず)?"
         ),
     ),
@@ -608,7 +639,60 @@ def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, 
     )
 
 
+_MODIFIER_CONTRAST_SENTINEL = "__bounded_modifier_contrast__"
+_CLAUSE_BOUNDARY = re.compile(r"[,;、。；!?！？\n]+|[.:：](?=\s|$)")
+
+
+def _mask_bounded_modifier_contrasts(text: str) -> str:
+    """Keep ``but`` inside a bounded action-to-object modifier span.
+
+    Contrast splitting remains the default.  The exception requires a protected
+    object after ``but``, a relevant action before it, no intervening relevant
+    action, and a modifier-only gap accepted by the finite gap grammar.
+    """
+
+    masked = text
+    offset = 0
+    for marker in list(re.finditer(r"\bbut\b", text, re.IGNORECASE)):
+        preceding_boundaries = list(_CLAUSE_BOUNDARY.finditer(text, 0, marker.start()))
+        segment_start = preceding_boundaries[-1].end() if preceding_boundaries else 0
+        following_boundary = _CLAUSE_BOUNDARY.search(text, marker.end())
+        segment_end = following_boundary.start() if following_boundary else len(text)
+        segment = text[segment_start:segment_end]
+        local_marker_start = marker.start() - segment_start
+        local_marker_end = marker.end() - segment_start
+
+        protect = False
+        for protected in _object_matches(segment):
+            if protected.start <= local_marker_end:
+                continue
+            actions = _action_matches(segment, protected.action_kinds)
+            if any(
+                local_marker_end <= action[0] < protected.start
+                for action in actions
+            ):
+                continue
+            for action in reversed(actions):
+                if action[1] > local_marker_start:
+                    continue
+                if _bounded_action_to_object_gap(
+                    segment[action[1] : protected.start]
+                ):
+                    protect = True
+                    break
+            if protect:
+                break
+        if not protect:
+            continue
+        start = marker.start() + offset
+        end = marker.end() + offset
+        masked = masked[:start] + _MODIFIER_CONTRAST_SENTINEL + masked[end:]
+        offset += len(_MODIFIER_CONTRAST_SENTINEL) - (end - start)
+    return masked
+
+
 def _clauses(text: str) -> list[str]:
+    text = _mask_bounded_modifier_contrasts(text)
     text = re.sub(
         r"\s+(?=(?:but|however|yet|nevertheless|still|then|and[ ]+then)\b)",
         ",",
@@ -621,7 +705,11 @@ def _clauses(text: str) -> list[str]:
         text,
     )
     parts = _CLAUSE_SPLIT.split(text)
-    raw = [part.strip() for index, part in enumerate(parts) if index % 2 == 0 and part.strip()]
+    raw = [
+        part.strip().replace(_MODIFIER_CONTRAST_SENTINEL, "but")
+        for index, part in enumerate(parts)
+        if index % 2 == 0 and part.strip()
+    ]
     clauses: list[str] = []
     index = 0
     while index < len(raw):
@@ -655,7 +743,113 @@ def _continuation_actions(
     return remainder, actions
 
 
-_JA_DIRECT_ACTION_CONTINUATION = re.compile(r"^(?:で|て|し|して|つつ)\s*$")
+_ACTION_TO_OBJECT_DETERMINERS = frozenset(
+    {"a", "an", "the", "this", "that", "these", "those"}
+)
+_ACTION_TO_OBJECT_COORDINATORS = frozenset({"and", "or", "nor", "but"})
+_ACTION_TO_OBJECT_BREAKERS = frozenset(
+    {
+        "to",
+        "because",
+        "while",
+        "although",
+        "though",
+        "unless",
+        "if",
+        "when",
+        "where",
+        "whose",
+        "who",
+        "which",
+    }
+)
+_ASCII_MODIFIER = re.compile(r"[a-z][a-z0-9-]*", re.IGNORECASE)
+_JA_MODIFIER = re.compile(r"[ぁ-んァ-ヶ一-龯a-z0-9 -]+", re.IGNORECASE)
+_JA_STANDALONE_MODIFIERS = frozenset(
+    {"この", "その", "当該", "合成", "架空", "ダミー", "模擬", "テスト用"}
+)
+_EN_OBJECT_TO_ACTION_GAP = re.compile(
+    r"\s*(?:(?:that|which|who|we|it|is|are|was|were|be|been|being|must|should|"
+    r"shall|may|can|could|will|would|not|never|also|directly|explicitly|only|"
+    r"ever|immediately|then)\s+)*",
+    re.IGNORECASE,
+)
+_EN_RELATIVE_PREDICATE_GAP = re.compile(
+    r"\s*(?:(?:is|are|was|were|be|been|being|must|should|shall|may|can|could|"
+    r"will|would|not|never|also|directly|explicitly|only|ever|immediately|then)\s+)*",
+    re.IGNORECASE,
+)
+_JA_DIRECT_ACTION_CONTINUATION = re.compile(
+    r"^(?:で|て|し|して|つつ|が|けれど|けれども|ものの)\s*$"
+)
+
+
+def _bounded_action_to_object_gap(gap: str) -> bool:
+    """Recognize a finite noun-modifier span without parsing a full sentence."""
+
+    stripped = gap.strip()
+    if not stripped:
+        return True
+    if len(stripped) > 96 or re.search(r"[,.;:!?、。；：！？\n]", stripped):
+        return False
+    if _all_action_matches(stripped):
+        return False
+
+    tokens = stripped.casefold().split()
+    if tokens and all(_ASCII_MODIFIER.fullmatch(token) for token in tokens):
+        if tokens[0] in _ACTION_TO_OBJECT_DETERMINERS:
+            tokens = tokens[1:]
+        if not tokens:
+            return True
+        if any(token in _ACTION_TO_OBJECT_DETERMINERS for token in tokens):
+            return False
+        if len(tokens) > 7 or any(
+            token in _ACTION_TO_OBJECT_BREAKERS for token in tokens
+        ):
+            return False
+        for index, token in enumerate(tokens):
+            if token not in _ACTION_TO_OBJECT_COORDINATORS:
+                continue
+            if index == 0 or index == len(tokens) - 1:
+                return False
+            if tokens[index - 1] in _ACTION_TO_OBJECT_COORDINATORS:
+                return False
+            if tokens[index + 1] in _ACTION_TO_OBJECT_COORDINATORS:
+                return False
+        return True
+
+    if not _JA_MODIFIER.fullmatch(stripped) or len(stripped) > 32:
+        return False
+    if any(particle in stripped for particle in ("を", "へ", "は", "も", "が")):
+        return False
+    return stripped in _JA_STANDALONE_MODIFIERS or stripped.endswith(
+        ("な", "の", "い", "用", "型", "的")
+    )
+
+
+def _action_directly_precedes_object(
+    clause: str,
+    action: tuple[int, int, str, str],
+    protected: _Match,
+) -> bool:
+    if action[1] > protected.start:
+        return action[0] < protected.end
+    gap = clause[action[1] : protected.start]
+    return _bounded_action_to_object_gap(gap)
+
+
+def _action_directly_follows_object(
+    clause: str,
+    protected: _Match,
+    action: tuple[int, int, str, str],
+) -> bool:
+    if action[0] < protected.end:
+        return action[1] > protected.start
+    gap = clause[protected.end : action[0]]
+    return bool(
+        _EN_OBJECT_TO_ACTION_GAP.fullmatch(gap)
+        or _JA_REFERENCE_TO_ACTION_GAP.fullmatch(gap)
+    )
 
 
 def _actions_bound_to_object(
@@ -663,25 +857,63 @@ def _actions_bound_to_object(
     protected: _Match,
     actions: list[tuple[int, int, str, str]],
 ) -> list[tuple[int, int, str, str]]:
-    """Select the nearest action plus bounded same-object continuations."""
+    """Select bounded action candidates on both sides of one protected object.
 
-    anchor = min(
-        actions,
-        key=lambda item: min(abs(item[0] - protected.end), abs(protected.start - item[1])),
+    This is deliberately not a dependency parser.  Direct action/object gaps seed
+    the association, then only a bounded relative-predicate or existing
+    same-object continuation can extend it.  This keeps an unrelated later action
+    (for example, using a sandbox) from rebinding the protected object.
+    """
+
+    bound = [
+        action
+        for action in actions
+        if _action_directly_precedes_object(clause, action, protected)
+        or _action_directly_follows_object(clause, protected, action)
+    ]
+    if not bound:
+        # Preserve the previous fail-closed behavior for an unusual bounded field
+        # that contains an object and action but no recognized direct gap.
+        bound.append(
+            min(
+                actions,
+                key=lambda item: min(
+                    abs(item[0] - protected.end),
+                    abs(protected.start - item[1]),
+                ),
+            )
+        )
+
+    relative_after_object = bool(
+        re.search(
+            r"\b(?:that|which|who)\b",
+            clause[protected.end : max(action[1] for action in bound)],
+            re.IGNORECASE,
+        )
     )
-    bound = [anchor]
-    for candidate in actions:
-        if candidate == anchor or candidate[0] <= anchor[0]:
-            continue
-        between = clause[anchor[1] : candidate[0]]
-        # A later pronoun can belong to a new object (for example, "use a sandbox
-        # because it is isolated") and must not rebind the protected object.
-        pronoun_bound = _action_has_direct_reference(clause, candidate)
-        direct_english = _is_direct_action_coordination(between) and pronoun_bound
-        direct_japanese = bool(_JA_DIRECT_ACTION_CONTINUATION.fullmatch(between))
-        if direct_english or direct_japanese:
-            bound.append(candidate)
-    return bound
+    changed = True
+    while changed:
+        changed = False
+        for anchor in tuple(sorted(bound)):
+            for candidate in actions:
+                if candidate in bound or candidate[0] <= anchor[0]:
+                    continue
+                between = clause[anchor[1] : candidate[0]]
+                # A later pronoun can belong to a new object (for example, "use a
+                # sandbox because it is isolated") and must not rebind the
+                # protected object without direct coordination.
+                pronoun_bound = _action_has_direct_reference(clause, candidate)
+                direct_english = _is_direct_action_coordination(between) and pronoun_bound
+                direct_japanese = bool(_JA_DIRECT_ACTION_CONTINUATION.fullmatch(between))
+                relative_predicate = (
+                    relative_after_object
+                    and anchor[0] >= protected.end
+                    and bool(_EN_RELATIVE_PREDICATE_GAP.fullmatch(between))
+                )
+                if direct_english or direct_japanese or relative_predicate:
+                    bound.append(candidate)
+                    changed = True
+    return sorted(set(bound))
 
 
 def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
@@ -765,7 +997,10 @@ _DOCUMENTATION_NETWORKS = (
     ipaddress.ip_network("203.0.113.0/24"),
     ipaddress.ip_network("2001:db8::/32"),
 )
-_URL_PATTERN = re.compile(r"(?:(?:[a-z][a-z0-9+.-]*:)?//)[^\s`)>)]+", re.IGNORECASE)
+_URL_PATTERN = re.compile(
+    "(?:(?:[a-z][a-z0-9+.-]*:)?//)[^\\s`\\\"'<>)]+",
+    re.IGNORECASE,
+)
 _DOMAIN_PATTERN = re.compile(
     r"(?<![a-z0-9_-])(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}(?![a-z0-9_-])",
     re.IGNORECASE,

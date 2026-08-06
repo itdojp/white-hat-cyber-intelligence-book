@@ -14,7 +14,11 @@
     {"id": "DOTTED-ID-NUMERIC", "text": "artifact.c0m"},
     {"id": "DOTTED-ID-HYPHEN", "text": "alpha.x-y"},
     {"id": "IDN-EXAMPLE-SUFFIX", "text": "例え.example"},
-    {"id": "PUNYCODE-EXAMPLE-SUFFIX", "text": "xn--r8jz45g.example"}
+    {"id": "PUNYCODE-EXAMPLE-SUFFIX", "text": "xn--r8jz45g.example"},
+    {"id": "HTML-DOUBLE-QUOTED-EXAMPLE", "text": "<a href=\"https://lab.example\">"},
+    {"id": "HTML-SINGLE-QUOTED-TEST", "text": "<a href='https://lab.test/path?q=1#x'>"},
+    {"id": "HTML-DOUBLE-QUOTED-INVALID", "text": "<img src=\"https://assets.invalid/image.png\">"},
+    {"id": "HTML-ENTITY-ENCODED-EXAMPLE", "text": "<a href=\"https&#58;&#47;&#47;lab&#46;example/runbook\">"}
   ],
   "unsafe": [
     {
@@ -74,6 +78,30 @@
     {
       "id": "ENTITY-ENCODED-MARKDOWN-URL",
       "text": "[external](https&#58;&#47;&#47;example&#46;com/runbook)",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-DOUBLE-QUOTED-COM",
+      "text": "<a href=\"https://example.com\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-SINGLE-QUOTED-GOV",
+      "text": "<a href='https://agency.gov/path'>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-ENTITY-ENCODED-COM",
+      "text": "<img src=\"https&#58;&#47;&#47;example&#46;com/image.png\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-PROTOCOL-RELATIVE-CO-UK",
+      "text": "<a href=\"//target.co.uk/runbook\">",
       "requiredReason": "non-approved host suffix",
       "forbiddenReason": ""
     }
