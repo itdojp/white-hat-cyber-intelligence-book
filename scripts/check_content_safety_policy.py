@@ -96,6 +96,14 @@ REQUIRED_UNSAFE_PROHIBITION_SCOPE = {
     "CONTINUATION-SONOGO-JA-MALWARE": (
         "keyloggerを作らないその後それを使用する"
     ),
+    "CONTINUATION-ADDITIONAL-PROTECTED-TARGET": (
+        "Do not build a keylogger, but deploy it and access a third-party "
+        "production API."
+    ),
+    "UNBOUND-GENERIC-PROHIBITION": (
+        "Describe a prohibited operation and build a keylogger."
+    ),
+    "INLINE-HTML-SPLIT-MALWARE": "<span>key</span><span>logger</span>を作る",
 }
 REQUIRED_SAFE_PROHIBITION_SCOPE = {
     "SAFE-030": "Do not build a keylogger, but it is forbidden to deploy and use it.",
@@ -111,6 +119,25 @@ REQUIRED_SAFE_PROHIBITION_SCOPE = {
     "SAFE-035": "Use a sandbox and do not build or deploy a keylogger.",
     "SAFE-036": (
         "Do not build a keylogger and use a sandbox because it is isolated."
+    ),
+    "SAFE-037": (
+        "Do not build a keylogger. Use a sandbox because it is isolated."
+    ),
+    "SAFE-038": "Keylogger creation is a prohibited operation.",
+    "SAFE-039": (
+        "Do not build a keylogger. Use a sandbox because it is deployed."
+    ),
+}
+REQUIRED_NORMALIZATION_CASES = {
+    "INLINE-HTML-ADJACENT": (
+        "<span>key</span><span>logger</span>を作る",
+        "keyloggerを作る",
+    ),
+}
+REQUIRED_UNSAFE_HOST_CASES = {
+    "ENTITY-ENCODED-MARKDOWN-URL": (
+        "[external](https&#58;&#47;&#47;example&#46;com/runbook)",
+        "non-approved host suffix",
     ),
 }
 
@@ -326,6 +353,7 @@ def check_normalization_corpus() -> None:
         error(f"{relative}.cases: must be an array")
         return
     ids: set[str] = set()
+    observed: dict[str, tuple[str, str]] = {}
     for index, item in enumerate(cases):
         context = f"{relative}.cases[{index}]"
         if not isinstance(item, dict):
@@ -339,9 +367,13 @@ def check_normalization_corpus() -> None:
         if identifier in ids:
             error(f"{context}: duplicate id {identifier!r}")
         ids.add(identifier)
+        observed[identifier] = (text, expected)
         actual = normalize_visible_text(text)
         if actual != expected:
             error(f"{context}: normalized value {actual!r} does not match {expected!r}")
+    for identifier, expected_case in REQUIRED_NORMALIZATION_CASES.items():
+        if observed.get(identifier) != expected_case:
+            error(f"{relative}: required normalization regression {identifier!r} drifted")
 
 
 def check_host_corpus() -> list[tuple[str, str]]:
@@ -360,6 +392,13 @@ def check_host_corpus() -> list[tuple[str, str]]:
         expected_keys={"id", "text", "requiredReason", "forbiddenReason"},
         context=f"{relative}.unsafe",
     )
+    unsafe_by_id = {
+        item.get("id"): (item.get("text"), item.get("requiredReason"))
+        for item in unsafe
+    }
+    for identifier, expected_case in REQUIRED_UNSAFE_HOST_CASES.items():
+        if unsafe_by_id.get(identifier) != expected_case:
+            error(f"{relative}: required host regression {identifier!r} drifted")
     deterministic_fields: list[tuple[str, str]] = []
     for item in safe:
         identifier, text = item.get("id"), item.get("text")

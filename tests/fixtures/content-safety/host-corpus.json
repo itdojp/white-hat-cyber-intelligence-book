@@ -70,6 +70,12 @@
       "text": "https://[2001:db8::10",
       "requiredReason": "malformed URL",
       "forbiddenReason": ""
+    },
+    {
+      "id": "ENTITY-ENCODED-MARKDOWN-URL",
+      "text": "[external](https&#58;&#47;&#47;example&#46;com/runbook)",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
     }
   ]
 }

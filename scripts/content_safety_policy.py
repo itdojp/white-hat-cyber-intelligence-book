@@ -98,6 +98,20 @@ _PRONOUN_REFERENCE = re.compile(
     r"当該(?:対象|情報|値|もの)|同じ(?:対象|もの|情報))(?=[をはもへにがの\s])",
     re.IGNORECASE,
 )
+_BLOCK_HTML_TAG = re.compile(
+    r"</?(?:address|article|aside|blockquote|br|dd|div|dl|dt|fieldset|figcaption|"
+    r"figure|footer|form|h[1-6]|header|hr|li|main|nav|ol|p|pre|section|table|"
+    r"tbody|td|tfoot|th|thead|tr|ul)\b[^>]*>",
+    re.IGNORECASE,
+)
+_EN_REFERENCE_TO_ACTION_GAP = re.compile(
+    r"\s*(?:(?:is|are|was|were|be|been|being|must|should|shall|may|can|could|"
+    r"will|would|not|never|also|directly|explicitly|only|ever|immediately|"
+    r"forbidden|prohibited|to)\s+)*",
+    re.IGNORECASE,
+)
+_JA_REFERENCE_TO_ACTION_GAP = re.compile(r"[をはもへにがの、\s]*(?:直接|明示的に)?\s*")
+_EN_ACTION_TO_REFERENCE_GAP = re.compile(r"^(?:(?:to|with|on|from)\s+)?", re.IGNORECASE)
 
 
 def _rx(pattern: str) -> Pattern[str]:
@@ -312,7 +326,10 @@ def normalize_visible_text(text: str) -> str:
     value = re.sub(r"<!--.*?-->", "", value, flags=re.DOTALL)
     value = re.sub(r"!\[([^\]]*)\]\([^)]+\)", r"\1", value)
     value = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", value)
-    value = re.sub(r"<[^>]+>", " ", value)
+    # Block tags create a rendered boundary. Inline tags do not: adjacent inline
+    # nodes such as ``<span>key</span><span>logger</span>`` render as one token.
+    value = _BLOCK_HTML_TAG.sub("\n", value)
+    value = re.sub(r"<[^>]+>", "", value)
     value = re.sub(r"[*~`]", "", value)
     value = value.replace("\\", "")
     value = value.translate(str.maketrans({character: "-" for character in _DASHES}))
@@ -375,6 +392,36 @@ def _action_matches(clause: str, allowed: frozenset[str]) -> list[tuple[int, int
     return sorted(matches)
 
 
+def _action_has_direct_reference(
+    text: str,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Bind a pronoun only when it is the action's direct object or subject."""
+
+    action_start, action_end, _, _ = action
+    tail = text[action_end : action_end + 32].lstrip()
+    tail = _EN_ACTION_TO_REFERENCE_GAP.sub("", tail, count=1)
+    if _PRONOUN_REFERENCE.match(tail):
+        return True
+
+    window_start = max(0, action_start - 48)
+    window = text[window_start:action_end]
+    for reference in _PRONOUN_REFERENCE.finditer(window):
+        absolute_start = window_start + reference.start()
+        absolute_end = window_start + reference.end()
+        if absolute_start <= action_start < absolute_end:
+            return True
+        if absolute_end > action_start:
+            continue
+        gap = text[absolute_end:action_start]
+        if reference.group(0).isascii():
+            if _EN_REFERENCE_TO_ACTION_GAP.fullmatch(gap):
+                return True
+        elif _JA_REFERENCE_TO_ACTION_GAP.fullmatch(gap):
+            return True
+    return False
+
+
 def _direct_synthetic(clause: str, protected: _Match) -> bool:
     if not protected.synthetic_qualifiable:
         return False
@@ -392,7 +439,6 @@ def _action_is_prohibited(
 ) -> bool:
     action_start, action_end, _, action_text = action
     before = clause[max(0, scope_start - 48) : scope_start]
-    whole = clause.strip()
     action_before = clause[max(0, action_start - 48) : action_start]
 
     if re.search(r"(?:do not|don't|never|must not|shall not|should not)\s*$", before):
@@ -414,8 +460,6 @@ def _action_is_prohibited(
         return True
     if _trailing_prohibition_controls_action(clause, action, _TRAILING_JA_PROHIBITION):
         return True
-    if re.search(r"(?:禁止する対象|prohibited (?:operation|method|data))", before + whole):
-        return True
     return False
 
 
@@ -435,7 +479,7 @@ _DIRECT_ACTION_PREFIX = re.compile(
 )
 _TRAILING_EN_PROHIBITION = re.compile(
     r"\b(?:is|are|was|were|should be|must be)\s+"
-    r"(?:prohibited|forbidden|not allowed|outside)\b",
+    r"(?:a\s+)?(?:prohibited|forbidden|not allowed|outside)\b",
     re.IGNORECASE,
 )
 _TRAILING_JA_PROHIBITION = re.compile(
@@ -600,7 +644,9 @@ def _continuation_actions(
     actions = _action_matches(remainder, remembered.action_kinds)
     if not actions:
         return None
-    pronoun_bound = bool(_PRONOUN_REFERENCE.search(remainder))
+    # The first relevant action must bind the remembered object directly. A
+    # pronoun attached to a later action may refer to a new intervening object.
+    pronoun_bound = _action_has_direct_reference(remainder, actions[0])
     new_objects = _object_matches(remainder)
     trailing = remainder[actions[-1][1] :].strip()
     ellipsis_bound = explicit_contrast and not new_objects and not trailing
@@ -628,11 +674,9 @@ def _actions_bound_to_object(
         if candidate == anchor or candidate[0] <= anchor[0]:
             continue
         between = clause[anchor[1] : candidate[0]]
-        candidate_tail = clause[candidate[1] : candidate[1] + 32]
-        # The reference must be the candidate action's direct object. A later
-        # pronoun can belong to a new object (for example, "use a sandbox because
-        # it is isolated") and must not rebind the protected object.
-        pronoun_bound = bool(_PRONOUN_REFERENCE.match(candidate_tail.lstrip()))
+        # A later pronoun can belong to a new object (for example, "use a sandbox
+        # because it is isolated") and must not rebind the protected object.
+        pronoun_bound = _action_has_direct_reference(clause, candidate)
         direct_english = _is_direct_action_coordination(between) and pronoun_bound
         direct_japanese = bool(_JA_DIRECT_ACTION_CONTINUATION.fullmatch(between))
         if direct_english or direct_japanese:
@@ -657,6 +701,7 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
     findings: list[SafetyFinding] = []
     remembered: _Match | None = None
     for clause in _clauses(normalized):
+        retained_continuation: _Match | None = None
         if remembered is not None:
             continuation = _continuation_actions(clause, remembered)
             if continuation is not None:
@@ -679,10 +724,11 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                         )
                     )
                     remembered = None
-                # Keep the protected object for one more adjacent continuation
-                # when every action in this clause is prohibited. This prevents
-                # a later contrast or sentence from escaping the local scope.
-                continue
+                else:
+                    # Keep the protected object for one more adjacent continuation
+                    # when every action in this clause is prohibited. Still scan
+                    # explicit objects in this clause before carrying it forward.
+                    retained_continuation = remembered
 
         clause_objects = _object_matches(clause)
         next_remembered: _Match | None = None
@@ -707,7 +753,7 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                     "protected object is paired with an action without a local prohibition or permitted direct synthetic qualifier",
                 )
             )
-        remembered = next_remembered
+        remembered = next_remembered or retained_continuation
     return _ordered_unique(findings)
 
 
@@ -760,7 +806,8 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
     findings: list[SafetyFinding] = []
     url_hosts: set[str] = set()
     url_addresses: set[str] = set()
-    for match in _URL_PATTERN.finditer(unicodedata.normalize("NFKC", text)):
+    decoded_source = html.unescape(unicodedata.normalize("NFKC", text))
+    for match in _URL_PATTERN.finditer(decoded_source):
         raw_url = match.group(0).rstrip(".,;、。")
         try:
             host = (urlparse(raw_url).hostname or "").casefold()
@@ -819,7 +866,7 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
         )
 
     detected_addresses: dict[str, ipaddress.IPv4Address | ipaddress.IPv6Address] = {}
-    raw_normalized = unicodedata.normalize("NFKC", text)
+    raw_normalized = decoded_source
     for raw_token in re.findall(r"[A-Za-z0-9_.:\[\]-]+", raw_normalized):
         token = raw_token.rstrip(".,;")
         forms = {token}

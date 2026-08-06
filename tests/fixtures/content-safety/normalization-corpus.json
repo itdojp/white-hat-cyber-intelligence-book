@@ -41,6 +41,11 @@
       "id": "BOUNDED-CONFUSABLE-FOLD",
       "input": "tоken",
       "expected": "token"
+    },
+    {
+      "id": "INLINE-HTML-ADJACENT",
+      "input": "<span>key</span><span>logger</span>を作る",
+      "expected": "keyloggerを作る"
     }
   ]
 }
