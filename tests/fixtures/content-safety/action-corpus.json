@@ -1,0 +1,193 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyVersion": "1.0.0",
+  "unsafe": [
+    {
+      "id": "BLOCKER-001",
+      "text": "do not build a keylogger, but deploy it",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "BLOCKER-002",
+      "text": "never build a keylogger; however, use it",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "BLOCKER-003",
+      "text": "keyloggerを作ることを禁止する、しかしそれを作る",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "BLOCKER-004",
+      "text": "building a keylogger should be prohibited, but it is deployed",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "BLOCKER-005",
+      "text": "write a keylogger",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "BLOCKER-006",
+      "text": "code a rootkit",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-NO-PUNCTUATION",
+      "text": "do not build a keylogger but deploy it",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "TARGET-OBJECT-FIRST",
+      "text": "third-party production system accessed for additional benign record",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "TARGET-ACTION-FIRST",
+      "text": "access third-party production API for an additional benign record",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "TARGET-JA",
+      "text": "第三者の本番APIへ接続する",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "SECRET-DIRECT",
+      "text": "use token",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "SECRET-NOT-SYNTHETIC",
+      "text": "not synthetic token used",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "SECRET-NOT-A-SYNTHETIC",
+      "text": "not a synthetic token used",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "SECRET-NON-SYNTHETIC",
+      "text": "non-synthetic API key stored",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "SECRET-NON-SYNTHETIC-JA",
+      "text": "非合成Tokenを使用する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "PII-NON-QUALIFIABLE",
+      "text": "synthetic personal information stored",
+      "expectedCategories": ["data.pii"]
+    },
+    {
+      "id": "PII-NON-QUALIFIABLE-JA",
+      "text": "合成個人情報を使用する",
+      "expectedCategories": ["data.pii"]
+    },
+    {
+      "id": "AUTH-SESSION",
+      "text": "perform session replay",
+      "expectedCategories": ["operation.authentication_or_session"]
+    },
+    {
+      "id": "MALWARE-SYNTHETIC-NOT-QUALIFIABLE",
+      "text": "synthetic spyware deployed",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "MALWARE-FAMILY-INFO-STEALER",
+      "text": "build an info-stealer",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "MALWARE-FAMILY-BACKDOOR",
+      "text": "deploy a backdoor",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "MALWARE-FAMILY-TROJAN",
+      "text": "use a trojan",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "C2-PHISHING",
+      "text": "deploy phishing infrastructure",
+      "expectedCategories": ["operation.c2_or_phishing"]
+    },
+    {
+      "id": "PRIVILEGE-EVASION",
+      "text": "perform privilege escalation",
+      "expectedCategories": ["operation.privilege_or_evasion"]
+    },
+    {
+      "id": "DISRUPTION-DOS-JA",
+      "text": "DoSを実行する",
+      "expectedCategories": ["operation.disruption_or_destruction"]
+    },
+    {
+      "id": "DISRUPTION-DDOS-JA",
+      "text": "DDoSを実行する",
+      "expectedCategories": ["operation.disruption_or_destruction"]
+    },
+    {
+      "id": "SOCIAL-DOXXING",
+      "text": "conduct doxxing",
+      "expectedCategories": ["operation.social_engineering_or_tracking"]
+    },
+    {
+      "id": "WEAK-EVIDENCE-ATTRIBUTION",
+      "text": "attribute an actor confidently from weak evidence",
+      "expectedCategories": ["analysis.weak_evidence_attribution"]
+    },
+    {
+      "id": "PR57-TOKEN-RETRIEVAL-JA",
+      "text": "Tokenを取得して再評価する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "PR57-THIRD-PARTY-DATA-JA",
+      "text": "第三者Dataを収集して確認する",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "PR57-REAL-TARGET-SCAN-JA",
+      "text": "実Targetを走査する",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "PR57-API-KEY-JA",
+      "text": "API keyを取得する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "PR57-CUSTOMER-PII-JA",
+      "text": "顧客情報を収集する",
+      "expectedCategories": ["data.pii"]
+    }
+  ],
+  "safe": [
+    {"id": "SAFE-001", "text": "Do not build a keylogger."},
+    {"id": "SAFE-002", "text": "Building a keylogger is prohibited."},
+    {"id": "SAFE-003", "text": "Keylogger creation is outside this book's scope."},
+    {"id": "SAFE-004", "text": "この教材ではkeyloggerを作らない。"},
+    {"id": "SAFE-005", "text": "keyloggerを作ることを禁止する。"},
+    {"id": "SAFE-006", "text": "この語はMalware分類の説明としてのみ記録する。"},
+    {"id": "SAFE-007", "text": "Do not access a third-party production API."},
+    {"id": "SAFE-008", "text": "Synthetic token used in an offline fixture."},
+    {"id": "SAFE-009", "text": "合成APIキーを使用する。"},
+    {"id": "SAFE-010", "text": "Personal information collection is prohibited."},
+    {"id": "SAFE-011", "text": "Authentication attempts are prohibited."},
+    {"id": "SAFE-012", "text": "Deploying phishing infrastructure is prohibited."},
+    {"id": "SAFE-013", "text": "Privilege escalation is outside this book's scope."},
+    {"id": "SAFE-014", "text": "DoSを実行しない。"},
+    {"id": "SAFE-015", "text": "Doxxing is prohibited."},
+    {"id": "SAFE-016", "text": "Confident attribution from weak evidence is prohibited."},
+    {"id": "SAFE-017", "text": "A third-party production API must not be accessed."},
+    {"id": "SAFE-018", "text": "第三者の本番APIへ接続しない。"},
+    {"id": "SAFE-019", "text": "Tokenを取得しない。"},
+    {"id": "SAFE-020", "text": "実Targetを走査しない。"}
+  ]
+}

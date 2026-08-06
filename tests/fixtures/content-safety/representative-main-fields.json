@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyVersion": "1.0.0",
+  "baselineMain": "2c40869febd75b9e13fec544aec9bf90552e1556",
+  "scope": "Selected reader-visible safety/action fields only; not whole-book natural-language coverage.",
+  "fields": [
+    {
+      "id": "CH02-MANUSCRIPT-EXTERNAL-API",
+      "source": "manuscript/02-law-ethics-authorization.md",
+      "text": "- 外部APIへの通信を禁止し、Mock endpointを使う"
+    },
+    {
+      "id": "CH02-TEMPLATE-TARGET",
+      "source": "templates/authorization-checklist.md",
+      "text": "- 実在する第三者Targetを無断で対象にしない。"
+    },
+    {
+      "id": "CH02-TEMPLATE-SECRET",
+      "source": "templates/authorization-checklist.md",
+      "text": "- 実Credential、Token、Cookie、Personal Data、Secret valueを記載しない。"
+    },
+    {
+      "id": "CH02-CASE-SAFETY",
+      "source": "cases/ch02-authorization-decision-example.md",
+      "text": "- 実Credential、Token、Cookie、個人情報、第三者Systemを使用しない。"
+    },
+    {
+      "id": "CH02-CASE-HOST-TEST",
+      "source": "cases/ch02-authorization-decision-example.md",
+      "text": "tenant-auth-lab-01.test"
+    },
+    {
+      "id": "CH02-CASE-HOST-EXAMPLE",
+      "source": "cases/ch02-authorization-decision-example.md",
+      "text": "billing-bridge.example"
+    },
+    {
+      "id": "CH11-MANUSCRIPT-TARGET",
+      "source": "manuscript/11-web-api-hypothesis.md",
+      "text": "- 実在Service、実Tenant、実Webhook先を使わない"
+    },
+    {
+      "id": "CH11-MANUSCRIPT-SECRET",
+      "source": "manuscript/11-web-api-hypothesis.md",
+      "text": "- 実Token、Cookie、個人情報を含めない"
+    },
+    {
+      "id": "CH11-MANUSCRIPT-THIRD-PARTY",
+      "source": "manuscript/11-web-api-hypothesis.md",
+      "text": "- 第三者Systemへ接続しない"
+    },
+    {
+      "id": "CH11-CASE-SAFETY",
+      "source": "cases/ch11-web-api-assessment-example.md",
+      "text": "- 実Credential、実Token、実Cookie、個人情報、第三者Systemは使用しない。"
+    },
+    {
+      "id": "CH11-TEMPLATE-SAFETY",
+      "source": "templates/web-api-assessment-hypothesis-pack.md",
+      "text": "- 実在する第三者Systemを対象にしない。"
+    },
+    {
+      "id": "CH17-MANUSCRIPT-SCOPE",
+      "source": "manuscript/17-detection-engineering.md",
+      "text": "本章では、実環境に対する検知Rule投入や第三者環境への試験は扱わない。合成データとオフラインfixtureのみを用いる。"
+    },
+    {
+      "id": "CH17-MANUSCRIPT-CONNECTION",
+      "source": "manuscript/17-detection-engineering.md",
+      "text": "- 実環境、外部Tenant、外部APIへ接続しないこと"
+    },
+    {
+      "id": "CH17-CASE-SAFETY",
+      "source": "cases/ch17-detection-validation-example.md",
+      "text": "- 実Credential、実Tenant ID、個人情報、第三者システムは使用しない。"
+    },
+    {
+      "id": "CH17-TEMPLATE-SAFETY",
+      "source": "templates/detection-validation.md",
+      "text": "noRealCredentialsOrPII:"
+    },
+    {
+      "id": "CH25-MANUSCRIPT-SAFETY",
+      "source": "manuscript/25-structured-analysis-attribution.md",
+      "text": "- 実在Target、実在Actor、実在個人、実Credentialを含まない"
+    },
+    {
+      "id": "CH25-TEMPLATE-TARGET",
+      "source": "templates/analytic-judgment-record.md",
+      "text": "- 実在第三者Systemへの追加調査を前提にしない。"
+    },
+    {
+      "id": "CH25-TEMPLATE-SECRET",
+      "source": "templates/analytic-judgment-record.md",
+      "text": "- 実Credential、Token、Cookie、個人情報を含めない。"
+    },
+    {
+      "id": "CH25-CASE-SAFETY",
+      "source": "cases/ch25-structured-analysis-attribution-example.md",
+      "text": "- 実Credential、Token、Cookie、個人情報、第三者Systemは使用しない。"
+    },
+    {
+      "id": "CH25-CASE-HOST-SIGNIN",
+      "source": "cases/ch25-structured-analysis-attribution-example.md",
+      "text": "signin-bridge.example"
+    },
+    {
+      "id": "CH25-CASE-HOST-PORTAL",
+      "source": "cases/ch25-structured-analysis-attribution-example.md",
+      "text": "portal-reset.example"
+    }
+  ]
+}

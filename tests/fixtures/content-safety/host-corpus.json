@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyVersion": "1.0.0",
+  "safe": [
+    {"id": "DOMAIN-EXAMPLE", "text": "https://api.example/v1"},
+    {"id": "DOMAIN-TEST", "text": "https://service.test/status"},
+    {"id": "DOMAIN-INVALID", "text": "node.invalid"},
+    {"id": "IPV4-DOC-1", "text": "http://192.0.2.10/status"},
+    {"id": "IPV4-DOC-2", "text": "198.51.100.20"},
+    {"id": "IPV4-DOC-3", "text": "203.0.113.30:443"},
+    {"id": "IPV6-DOC", "text": "http://[2001:db8::10]/status"},
+    {"id": "RELATIVE-LINK", "text": "[guide](../artifact.json)"},
+    {"id": "DOTTED-ID-VERSION", "text": "module.v2"},
+    {"id": "DOTTED-ID-NUMERIC", "text": "artifact.c0m"},
+    {"id": "DOTTED-ID-HYPHEN", "text": "alpha.x-y"}
+  ],
+  "unsafe": [
+    {
+      "id": "LOCALHOST-POLICY",
+      "text": "https://api.localhost/status",
+      "requiredReason": "technically reserved but disallowed by the synthetic publication policy",
+      "forbiddenReason": "non-reserved"
+    },
+    {
+      "id": "REAL-DOMAIN",
+      "text": "https://example.com/status",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "PROTOCOL-RELATIVE-DISALLOWED",
+      "text": "[guide](//example.com/runbook)",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "FTP-DISALLOWED",
+      "text": "[guide](ftp://example.com/runbook)",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "UNSPECIFIED-IPV4",
+      "text": "http://0.0.0.0/status",
+      "requiredReason": "non-documentation IP",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "LOOPBACK-IPV6",
+      "text": "::1",
+      "requiredReason": "non-documentation IP",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "MALFORMED-URL",
+      "text": "https://[2001:db8::10",
+      "requiredReason": "malformed URL",
+      "forbiddenReason": ""
+    }
+  ]
+}
