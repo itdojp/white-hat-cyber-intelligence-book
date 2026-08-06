@@ -559,13 +559,13 @@ def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, 
 
 def _clauses(text: str) -> list[str]:
     text = re.sub(
-        r"\s+(?=(?:but|however|yet|nevertheless|and[ ]+then)\b)",
+        r"\s+(?=(?:but|however|yet|nevertheless|still|then|and[ ]+then)\b)",
         ",",
         text,
         flags=re.IGNORECASE,
     )
     text = re.sub(
-        r"(?<!^)(?=(?:しかし|ただし|だが|一方で|それでも|そして))",
+        r"(?<!^)(?=(?:しかし|ただし|だが|一方で|それでも|その後|そして))",
         "、",
         text,
     )
