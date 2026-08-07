@@ -203,7 +203,9 @@ ACTION_RULES = (
             )
             + r"|"
             r"(?:行う|行わない|実施する|実施しない|仕掛ける|起こす|確立する|自動化する|"
-            r"公開|発生させる|公表する|試す|ログインする|サインインする|認証する|操作する|操作)"
+            r"公開(?:する|した|します|しない|せず)|発生させる|公表する|試す|"
+            r"ログインする|サインインする|認証する|"
+            r"操作(?:する|した|します|しない|せず)|操作(?=なし))"
             r"(?:する|した|します|しない|せず)?"
         ),
     ),
@@ -1440,7 +1442,7 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
         # A dotted version/identifier can contain non-ASCII prose before a
         # numeric terminal component (for example, ``Identifier...v2.2.0``).
         # DNS TLDs are not numeric-only, so retain fail-closed IDN handling only
-        # when the final label has at least one Unicode letter.
+        # when the final label has at least one letter.
         if not any(character.isalpha() for character in domain.rsplit(".", 1)[-1]):
             continue
         if domain.endswith(_ALLOWED_HOST_SUFFIXES):
