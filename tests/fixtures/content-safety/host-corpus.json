@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyVersion": "1.0.0",
+  "safe": [
+    {"id": "DOMAIN-EXAMPLE", "text": "https://api.example/v1"},
+    {"id": "DOMAIN-TEST", "text": "https://service.test/status"},
+    {"id": "DOMAIN-INVALID", "text": "node.invalid"},
+    {"id": "IPV4-DOC-1", "text": "http://192.0.2.10/status"},
+    {"id": "IPV4-DOC-2", "text": "198.51.100.20"},
+    {"id": "IPV4-DOC-3", "text": "203.0.113.30:443"},
+    {"id": "IPV6-DOC", "text": "http://[2001:db8::10]/status"},
+    {"id": "RELATIVE-LINK", "text": "[guide](../artifact.json)"},
+    {"id": "DOTTED-ID-VERSION", "text": "module.v2"},
+    {"id": "DOTTED-ID-NUMERIC", "text": "artifact.c0m"},
+    {"id": "DOTTED-ID-HYPHEN", "text": "alpha.x-y"},
+    {"id": "IDN-EXAMPLE-SUFFIX", "text": "例え.example"},
+    {"id": "PUNYCODE-EXAMPLE-SUFFIX", "text": "xn--r8jz45g.example"},
+    {"id": "HTML-DOUBLE-QUOTED-EXAMPLE", "text": "<a href=\"https://lab.example\">"},
+    {"id": "HTML-SINGLE-QUOTED-TEST", "text": "<a href='https://lab.test/path?q=1#x'>"},
+    {"id": "HTML-DOUBLE-QUOTED-INVALID", "text": "<img src=\"https://assets.invalid/image.png\">"},
+    {"id": "HTML-ENTITY-ENCODED-EXAMPLE", "text": "<a href=\"https&#58;&#47;&#47;lab&#46;example/runbook\">"},
+    {"id": "HTML-QUOTED-PUNCTUATED-EXAMPLE", "text": "<a href=\"https://lab.example/runbook;\">"},
+    {"id": "HTML-QUOTED-PARENTHESIS-EXAMPLE", "text": "<a href=\"https://lab.example/run(book).\">"},
+    {"id": "HTML-QUOTED-LEADING-SPACE-EXAMPLE", "text": "<a href=\" https://lab.example/runbook.\">"},
+    {"id": "HTML-MAILTO-EXAMPLE", "text": "<a href=\"mailto:user@lab.example\">mail</a>"},
+    {"id": "HTML-MAILTO-MULTI-EXAMPLE", "text": "<a href=\"mailto:user@lab.example,other@service.test?to=forward@node.invalid&cc=copy@assets.invalid&bcc=blind@audit.example\">mail</a>"},
+    {"id": "HTML-UNQUOTED-MAILTO-EXAMPLE", "text": "<a href=mailto:user@lab.example>mail</a>"},
+    {"id": "MARKDOWN-AUTOLINK-MAILTO-EXAMPLE", "text": "<mailto:user@lab.example>"}
+  ],
+  "unsafe": [
+    {
+      "id": "LOCALHOST-POLICY",
+      "text": "https://api.localhost/status",
+      "requiredReason": "technically reserved but disallowed by the synthetic publication policy",
+      "forbiddenReason": "non-reserved"
+    },
+    {
+      "id": "REAL-DOMAIN",
+      "text": "https://example.com/status",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "PROTOCOL-RELATIVE-DISALLOWED",
+      "text": "[guide](//example.com/runbook)",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "FTP-DISALLOWED",
+      "text": "[guide](ftp://example.com/runbook)",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "BARE-PUNYCODE-DISALLOWED",
+      "text": "xn--r8jz45g.xn--zckzah",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "BARE-IDN-DISALLOWED",
+      "text": "例え.テスト",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "UNSPECIFIED-IPV4",
+      "text": "http://0.0.0.0/status",
+      "requiredReason": "non-documentation IP",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "LOOPBACK-IPV6",
+      "text": "::1",
+      "requiredReason": "non-documentation IP",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "MALFORMED-URL",
+      "text": "https://[2001:db8::10",
+      "requiredReason": "malformed URL",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "ENTITY-ENCODED-MARKDOWN-URL",
+      "text": "[external](https&#58;&#47;&#47;example&#46;com/runbook)",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-DOUBLE-QUOTED-COM",
+      "text": "<a href=\"https://example.com\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-SINGLE-QUOTED-GOV",
+      "text": "<a href='https://agency.gov/path'>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-ENTITY-ENCODED-COM",
+      "text": "<img src=\"https&#58;&#47;&#47;example&#46;com/image.png\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-PROTOCOL-RELATIVE-CO-UK",
+      "text": "<a href=\"//target.co.uk/runbook\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-QUOTED-TERMINAL-PERIOD",
+      "text": "<a href=\"https://example.com/runbook.\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-QUOTED-TERMINAL-COMMA",
+      "text": "<a href=\"https://example.com/runbook,\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-QUOTED-TERMINAL-SEMICOLON",
+      "text": "<a href=\"https://example.com/runbook;\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "PROSE-TERMINAL-PUNCTUATION",
+      "text": "See https://example.com/runbook.;",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-QUOTED-PARENTHESIS",
+      "text": "<a href=\"https://example.com/run(book).\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-QUOTED-LEADING-SPACE",
+      "text": "<a href=\" https://example.com/runbook.\">",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-MAILTO-DISALLOWED",
+      "text": "<a href=\"mailto:user@example.com\">mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-MAILTO-SECOND-RECIPIENT-DISALLOWED",
+      "text": "<a href=\"mailto:user@lab.example,other@example.com\">mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-MAILTO-CC-DISALLOWED",
+      "text": "<a href=\"mailto:user@lab.example?cc=other@example.com\">mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-MAILTO-TO-DISALLOWED",
+      "text": "<a href=\"mailto:user@lab.example?to=other@example.com\">mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-MAILTO-BCC-DISALLOWED",
+      "text": "<a href=\"mailto:user@lab.example?bcc=other@example.com\">mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-UNQUOTED-MAILTO-DISALLOWED",
+      "text": "<a href=mailto:user@example.com>mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "MARKDOWN-AUTOLINK-MAILTO-DISALLOWED",
+      "text": "<mailto:user@example.com>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    }
+  ]
+}
