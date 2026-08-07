@@ -286,16 +286,16 @@ OPERATION_RULES = (
 
 
 _JA_LEXICAL_LEFT = r"(?<![ぁ-んァ-ヶ一-龯a-z0-9])"
-_JA_BOUNDED_POSSESSOR = (
-    r"(?:[ぁ-んァ-ヶ一-龯a-z0-9][ぁ-んァ-ヶ一-龯a-z0-9 -]{0,15})\s*の\s*"
+_JA_BOUNDED_NOUN_MODIFIER = r"(?:システム|対象|本番|顧客|無許可)"
+_JA_OPTIONAL_NOUN_MODIFIER = (
+    rf"(?:(?:{_JA_BOUNDED_NOUN_MODIFIER})\s*(?:の\s*)?)?"
 )
 JAPANESE_PARTICLE_FRAMES = (
     JapaneseParticleFrame(
         category="operation.privilege_or_evasion",
         protected_object=_rx(
             _JA_LEXICAL_LEFT
-            + rf"(?:(?:{_JA_BOUNDED_POSSESSOR})(?:監査ログ|監査証跡|ログ)|"
-            r"監査ログ|監査証跡|ログ)"
+            + rf"{_JA_OPTIONAL_NOUN_MODIFIER}(?:監査ログ|監査証跡|ログ)"
         ),
         action=_rx(r"(?:削除|消去|改ざん)"),
         action_kind="access-collect",
@@ -304,7 +304,7 @@ JAPANESE_PARTICLE_FRAMES = (
         category="operation.disruption_or_destruction",
         protected_object=_rx(
             _JA_LEXICAL_LEFT
-            + rf"(?:(?:{_JA_BOUNDED_POSSESSOR})データ|(?:本番|顧客|無許可)データ|データ)"
+            + rf"{_JA_OPTIONAL_NOUN_MODIFIER}データ"
         ),
         action=_rx(r"(?:破壊|変更|改変|暗号化|無許可変更)"),
         action_kind="access-collect",
@@ -1151,6 +1151,10 @@ _EN_BARE_MODAL_PASSIVE_CONTINUATION = re.compile(
     r"(?:not\s+)?be\s+",
     re.IGNORECASE,
 )
+_EN_BARE_COPULA_PASSIVE_CONTINUATION = re.compile(
+    r"\s*(?:and|or|nor)\s+(?:is|are|was|were)\s+",
+    re.IGNORECASE,
+)
 _EN_DIRECT_OBJECT_PREFIX = re.compile(
     r"\s+(?:a|an|the|this|that|these|those)\s+",
     re.IGNORECASE,
@@ -1327,6 +1331,31 @@ def _actions_bound_to_object(
         if _action_directly_precedes_object(clause, action, protected)
         or _action_directly_follows_object(clause, protected, action)
     ]
+    if protected.category == "data.pii":
+        # A direct action coordinated immediately before a frozen meta-analysis
+        # frame still governs the protected PII object.  Only the embedded
+        # operation inside the frame may be suppressed later.
+        for expression in _ENGLISH_PII_META_ANALYSIS_PATTERNS:
+            for meta_match in expression.finditer(clause):
+                object_group = (
+                    "object"
+                    if meta_match.group("object") is not None
+                    else "whether_object"
+                )
+                object_start, object_end = meta_match.span(object_group)
+                if not (
+                    protected.start < object_end and object_start < protected.end
+                ):
+                    continue
+                for action in actions:
+                    if action[1] > meta_match.start("meta"):
+                        continue
+                    if re.fullmatch(
+                        r"\s*(?:and|or|but)\s*",
+                        clause[action[1] : meta_match.start("meta")],
+                        re.IGNORECASE,
+                    ):
+                        bound.append(action)
     if not bound:
         # Preserve the previous fail-closed behavior for an unusual bounded field
         # that contains an object and action but no recognized direct gap.
@@ -1367,23 +1396,34 @@ def _actions_bound_to_object(
                         else anchor[1]
                     ) : candidate[0]
                 ]
+                bare_passive_continuation = (
+                    not _action_introduces_distinct_english_object(
+                        clause, candidate
+                    )
+                    and bool(
+                        _EN_BARE_MODAL_PASSIVE_CONTINUATION.fullmatch(
+                            scope_break_gap
+                        )
+                        or _EN_BARE_COPULA_PASSIVE_CONTINUATION.fullmatch(
+                            scope_break_gap
+                        )
+                    )
+                )
                 scope_break_english = (
                     (
                         pronoun_bound
-                        or (
-                            not _action_introduces_distinct_english_object(
-                                clause, candidate
-                            )
-                            and bool(
-                                _EN_BARE_MODAL_PASSIVE_CONTINUATION.fullmatch(
-                                    scope_break_gap
-                                )
+                        or bare_passive_continuation
+                    )
+                    and (
+                        bool(
+                            _EN_NEW_SUBJECT_OR_MODAL_CONTINUATION.fullmatch(
+                                scope_break_gap
                             )
                         )
-                    )
-                    and bool(
-                        _EN_NEW_SUBJECT_OR_MODAL_CONTINUATION.fullmatch(
-                            scope_break_gap
+                        or bool(
+                            _EN_BARE_COPULA_PASSIVE_CONTINUATION.fullmatch(
+                                scope_break_gap
+                            )
                         )
                     )
                 )

@@ -510,6 +510,8 @@ REQUIRED_FINITE_GRAMMAR_1_2 = {
             ),
             "A-UNSAFE-005": ("監査ログを改ざんする", ("operation.privilege_or_evasion",)),
             "A-UNSAFE-006": ("本番データを破壊", ("operation.disruption_or_destruction",)),
+            "A-UNSAFE-007": ("対象ログを削除する", ("operation.privilege_or_evasion",)),
+            "A-UNSAFE-008": ("本番ログを削除する", ("operation.privilege_or_evasion",)),
         },
         "safe": {
             "A-SAFE-001": "システムのログを削除しない",
@@ -518,12 +520,16 @@ REQUIRED_FINITE_GRAMMAR_1_2 = {
             "A-SAFE-004": "システムのログを削除しない。しかし監査ログを改ざんしない",
             "A-SAFE-005": "システムのログを削除しない。しかし監査証跡を消去しない",
             "A-SAFE-006": "本番データを破壊しない",
+            "A-SAFE-007": "対象ログを削除しない",
+            "A-SAFE-008": "本番ログを削除しない",
         },
         "nearMiss": {
             "A-NEAR-001": "ログ削除の危険性を分析する",
             "A-NEAR-002": "カタログを削除する",
             "A-NEAR-003": "ブログを削除する",
             "A-NEAR-004": "メタデータの取扱いを説明する",
+            "A-NEAR-005": "対象カタログを削除する",
+            "A-NEAR-006": "本番ブログを削除する",
         },
         "continuation": {
             "A-CONT-001": (
@@ -570,6 +576,9 @@ REQUIRED_FINITE_GRAMMAR_1_2 = {
             "B-SAFE-007": "合成認証情報を流出させない",
             "B-SAFE-008": "synthetic credentialsをexfiltrateしない",
             "B-SAFE-009": "synthetic sessionをreplayしない",
+            "B-SAFE-010": (
+                "Synthetic credentials must not be stolen and are not reused"
+            ),
         },
         "nearMiss": {
             "B-NEAR-001": "合成Tokenをoffline fixtureで使用する",
@@ -590,6 +599,10 @@ REQUIRED_FINITE_GRAMMAR_1_2 = {
                 "合成認証情報を持ち出さない。しかし再利用する",
                 ("operation.authentication_or_session",),
             ),
+            "B-CONT-004": (
+                "Synthetic credentials must not be stolen and are reused",
+                ("operation.authentication_or_session",),
+            ),
         },
     },
     "C": {
@@ -600,6 +613,7 @@ REQUIRED_FINITE_GRAMMAR_1_2 = {
             "C-SAFE-004": "review whether collecting PII is necessary",
             "C-SAFE-005": "document the consequences of exposing employee information",
             "C-SAFE-006": "discuss controls related to processing personal data",
+            "C-SAFE-007": "do not collect and analyze the risk of storing PII",
         },
         "unsafe": {
             "C-UNSAFE-001": ("analyze PII", ("data.pii",)),
@@ -611,12 +625,19 @@ REQUIRED_FINITE_GRAMMAR_1_2 = {
                 "assess the impact and retain customer information",
                 ("data.pii",),
             ),
+            "C-UNSAFE-007": (
+                "collect and analyze the risk of storing PII",
+                ("data.pii",),
+            ),
         },
         "nearMiss": {
             "C-NEAR-001": "analyze the risk of collecting telemetry",
             "C-NEAR-002": "review whether storing fixture output is necessary",
             "C-NEAR-003": (
                 "analyze the risk of collecting PII and store the same report"
+            ),
+            "C-NEAR-004": (
+                "collect telemetry and analyze the risk of storing PII"
             ),
         },
         "continuation": {

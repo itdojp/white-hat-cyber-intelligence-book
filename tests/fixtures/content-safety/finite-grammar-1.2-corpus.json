@@ -46,6 +46,20 @@
           "expectedCategories": [
             "operation.disruption_or_destruction"
           ]
+        },
+        {
+          "id": "A-UNSAFE-007",
+          "text": "対象ログを削除する",
+          "expectedCategories": [
+            "operation.privilege_or_evasion"
+          ]
+        },
+        {
+          "id": "A-UNSAFE-008",
+          "text": "本番ログを削除する",
+          "expectedCategories": [
+            "operation.privilege_or_evasion"
+          ]
         }
       ],
       "safe": [
@@ -72,6 +86,14 @@
         {
           "id": "A-SAFE-006",
           "text": "本番データを破壊しない"
+        },
+        {
+          "id": "A-SAFE-007",
+          "text": "対象ログを削除しない"
+        },
+        {
+          "id": "A-SAFE-008",
+          "text": "本番ログを削除しない"
         }
       ],
       "nearMiss": [
@@ -90,6 +112,14 @@
         {
           "id": "A-NEAR-004",
           "text": "メタデータの取扱いを説明する"
+        },
+        {
+          "id": "A-NEAR-005",
+          "text": "対象カタログを削除する"
+        },
+        {
+          "id": "A-NEAR-006",
+          "text": "本番ブログを削除する"
         }
       ],
       "continuation": [
@@ -232,6 +262,10 @@
         {
           "id": "B-SAFE-009",
           "text": "synthetic sessionをreplayしない"
+        },
+        {
+          "id": "B-SAFE-010",
+          "text": "Synthetic credentials must not be stolen and are not reused"
         }
       ],
       "nearMiss": [
@@ -273,6 +307,13 @@
           "expectedCategories": [
             "operation.authentication_or_session"
           ]
+        },
+        {
+          "id": "B-CONT-004",
+          "text": "Synthetic credentials must not be stolen and are reused",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
         }
       ]
     },
@@ -301,6 +342,10 @@
         {
           "id": "C-SAFE-006",
           "text": "discuss controls related to processing personal data"
+        },
+        {
+          "id": "C-SAFE-007",
+          "text": "do not collect and analyze the risk of storing PII"
         }
       ],
       "unsafe": [
@@ -345,6 +390,13 @@
           "expectedCategories": [
             "data.pii"
           ]
+        },
+        {
+          "id": "C-UNSAFE-007",
+          "text": "collect and analyze the risk of storing PII",
+          "expectedCategories": [
+            "data.pii"
+          ]
         }
       ],
       "nearMiss": [
@@ -359,6 +411,10 @@
         {
           "id": "C-NEAR-003",
           "text": "analyze the risk of collecting PII and store the same report"
+        },
+        {
+          "id": "C-NEAR-004",
+          "text": "collect telemetry and analyze the risk of storing PII"
         }
       ],
       "continuation": [

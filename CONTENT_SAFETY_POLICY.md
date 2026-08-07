@@ -49,9 +49,9 @@ ObjectがActionより前でも後でも検査する。同じbounded clauseでは
 
 `1.2.0 finite grammar`は、既存の11 categoryとStable APIを維持したまま、次の三つの有限構造を追加する。
 
-1. `JapaneseParticleFrame`: boundedな名詞句と`の`を任意に持つ`ログ / 監査証跡 / データ + を + 破壊的Action`を検査する。`カタログ`、`ブログ`、`メタデータ`のsuffixはProtected Objectにしない。
-2. `OperationRule`: theft、exfiltration、reuse、replay、hijack、takeoverと、有限日本語形`窃取 / 持ち出す / 流出させる / 再利用 / リプレイ / 乗っ取る`を、Synthetic qualifierで許容できないOperationとして分類する。Specific Operationのprecedenceはgeneric Secret qualifierより高い。英語Operationへ日本語の`する / しない`等が直接続くmixed-script形式も同じ有限Operationとして扱う。能動否定に加え、`窃取されない`や`再利用されない`の有限受動否定は局所的禁止として扱う。
-3. `MetaAnalysisFrame`: `meta verb + risk / policy / control等 + relation + PII operation + PII object`の有限英語frameでは、埋め込まれたOperationだけを分析対象として抑制する。直接PII操作、協調Action、矛盾continuation、後続pronoun Actionは抑制しない。
+1. `JapaneseParticleFrame`: boundedな名詞句と`の`を任意に持つ`ログ / 監査証跡 / データ + を + 破壊的Action`を検査する。名詞修飾は凍結した`システム / 対象 / 本番 / 顧客 / 無許可`に限定し、`の`を伴う形と直接複合する形を区別せず検査する。`カタログ`、`ブログ`、`メタデータ`のsuffixはProtected Objectにしない。
+2. `OperationRule`: theft、exfiltration、reuse、replay、hijack、takeoverと、有限日本語形`窃取 / 持ち出す / 流出させる / 再利用 / リプレイ / 乗っ取る`を、Synthetic qualifierで許容できないOperationとして分類する。Specific Operationのprecedenceはgeneric Secret qualifierより高い。英語Operationへ日本語の`する / しない`等が直接続くmixed-script形式も同じ有限Operationとして扱う。能動否定に加え、`窃取されない`や`再利用されない`の有限受動否定は局所的禁止として扱う。Object-firstの受動表現では、`and are reused`のように主語を省略した有限copula continuationも直前のProtected Objectへ束縛し、先行Actionの局所否定を後続Actionへ伝播させない。
+3. `MetaAnalysisFrame`: `meta verb + risk / policy / control等 + relation + PII operation + PII object`の有限英語frameでは、埋め込まれたOperationだけを分析対象として抑制する。直接PII操作、協調Action、矛盾continuation、後続pronoun Actionは抑制しない。特に、frame直前の`collect and analyze ...`のような直接協調Actionは同じPII Objectへ束縛し、meta-analysis suppressionの対象に含めない。
 
 Object classification、Operation classification、qualifier precedence、meta-analysis suppressionは独立した型とfixtureで検証する。English meta-analysis後の`it / the same`は単独または有限Protected Object headのときだけ継続参照とし、`the same report`のように別の明示Objectが続く場合はPIIへ再束縛しない。章名、Artifact ID、固有行番号、無制限の同義語はruleへ持ち込まない。
 
