@@ -471,6 +471,21 @@
       "id": "PII-COLLECTION-RISK-ANALYSIS-CONTRAST-CONTINUATION-JA",
       "text": "個人情報の収集リスクを分析する。しかし収集する。",
       "expectedCategories": ["data.pii"]
+    },
+    {
+      "id": "PARTICLE-LOG-DELETION-JA",
+      "text": "ログを削除する。",
+      "expectedCategories": ["operation.privilege_or_evasion"]
+    },
+    {
+      "id": "PARTICLE-AUDIT-TRAIL-DELETION-JA",
+      "text": "監査証跡を削除する。",
+      "expectedCategories": ["operation.privilege_or_evasion"]
+    },
+    {
+      "id": "PARTICLE-DATA-DESTRUCTION-JA",
+      "text": "データを破壊する。",
+      "expectedCategories": ["operation.disruption_or_destruction"]
     }
   ],
   "safe": [
@@ -548,6 +563,15 @@
     {"id": "SAFE-072", "text": "マルウェア操作なし。"},
     {"id": "SAFE-073", "text": "個人情報の公開方針を説明する。"},
     {"id": "SAFE-074", "text": "個人情報の収集リスクを分析する。"},
-    {"id": "SAFE-075", "text": "PIIの収集を分析する。"}
+    {"id": "SAFE-075", "text": "PIIの収集を分析する。"},
+    {"id": "SAFE-076", "text": "ログを削除しない。"},
+    {"id": "SAFE-077", "text": "監査証跡を削除しない。"},
+    {"id": "SAFE-078", "text": "データを破壊しない。"},
+    {"id": "SAFE-079", "text": "ログを削除することを禁止する。"},
+    {"id": "SAFE-080", "text": "データを破壊することを禁止する。"},
+    {"id": "SAFE-081", "text": "ブログを削除する。"},
+    {"id": "SAFE-082", "text": "カタログを削除する。"},
+    {"id": "SAFE-083", "text": "メタデータを変更する。"},
+    {"id": "SAFE-084", "text": "メタデータを暗号化する。"}
   ]
 }

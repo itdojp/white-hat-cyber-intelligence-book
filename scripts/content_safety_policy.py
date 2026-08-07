@@ -181,7 +181,8 @@ ACTION_RULES = (
             )
             + r"|"
             r"(?:接続|アクセス|走査|スキャン|攻撃|試行|取得|収集|保存|共有|記録|"
-            r"閲覧|観測|参照|変更|改変|暗号化|削除|窃取|送信|置換)(?:する|した|します|しない|せず|行う|実施する)?"
+            r"閲覧|観測|参照|変更|改変|暗号化|削除|窃取|送信|置換)(?:する|した|します|しない|せず|行う|実施する)?|"
+            r"破壊(?:する|した|します|しない|せず)"
         ),
     ),
     ActionRule(
@@ -278,15 +279,16 @@ _PRIVILEGE_EVASION = _rx(
     r"defen[cs]e[ -]evasion|log[ -](?:deletion|erasure|tampering)|"
     r"audit[ -]trail[ -](?:deletion|erasure|tampering))" + _LATIN_RIGHT + r"|"
     r"(?:権限昇格|横展開|ラテラルムーブメント|永続化|永続的アクセス|防御回避|検知回避|"
-    r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん))"
+    r"ログ(?:削除|消去|改ざん)|(?<!\w)ログを(?:削除|消去|改ざん)|"
+    r"監査証跡(?:削除|消去|改ざん)|(?<!\w)監査証跡を(?:削除|消去|改ざん))"
 )
 _DISRUPTION = _rx(
     _LATIN_LEFT + r"(?:(?:distributed[ -])?denial[ -]of[ -]service|ddos|dos|resource[ -]exhaustion|"
     r"(?:unauthorized[ -])?data[ -](?:destruction|modification|encryption)|destructive[ -](?:action|operation)|encryption|"
     r"encrypt(?:s|ing)?(?:[ ]+the)?[ ]+data|encrypted[ ]+the[ ]+data)" + _LATIN_RIGHT + r"|"
     r"(?:ddos|dos)(?=[をへにでのはがも、。；;,.!?！？\s]|$)|"
-    r"(?:サービス拒否|資源枯渇|データ(?:を)?暗号化(?:する|した|します)?|"
-    r"データ(?:破壊|変更|改変|暗号化)|破壊的(?:操作|行為))"
+    r"(?:サービス拒否|資源枯渇|データ(?:破壊|変更|改変|暗号化)|"
+    r"(?<!\w)データを(?:破壊|変更|改変|暗号化)|破壊的(?:操作|行為))"
 )
 _SOCIAL = _rx(
     _LATIN_LEFT + r"(?:social[ -]engineering|doxx(?:ing)?|tracking[ -](?:a[ -])?real[ -]person|"
