@@ -2,16 +2,12 @@
 from __future__ import annotations
 
 import json
-import html
-import ipaddress
 import re
 import sys
-import unicodedata
 from collections import Counter
 from copy import deepcopy
 from datetime import date, datetime
 from pathlib import Path
-from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -19,6 +15,13 @@ if str(ROOT) not in sys.path:
 
 from scripts.render_reference_baseline import (  # noqa: E402
     render as render_reference_baseline,
+)
+from scripts.content_safety_policy import (  # noqa: E402
+    POLICY_VERSION as CONTENT_SAFETY_POLICY_VERSION,
+    SafetyFinding,
+    normalize_visible_text,
+    scan_action_text,
+    scan_host_policy,
 )
 from scripts.sync_book_site import (  # noqa: E402
     SitePageRegistryError,
@@ -682,200 +685,81 @@ def markdown_row_cells(line: str) -> list[str]:
     return [cell.strip() for cell in line.strip().strip("|").split("|")]
 
 
-DEPLOYABLE_MALWARE_FAMILY = (
-    r"(?:keyloggers?|rootkits?|spyware|info[- ]?stealers?|credential[- ]stealers?|"
-    r"backdoors?|trojans?|キーロガー|ルートキット|スパイウェア|"
-    r"インフォ[ \t　・-]*スティーラー|クレデンシャル[ \t　・-]*スティーラー|"
-    r"認証情報窃取(?:型)?マルウェア|バックドア|トロイ(?:の木馬|アン))"
-)
-DEPLOYABLE_MALWARE_POST_ACTION = (
-    r"(?=[ \t　・-]*(?:(?:(?:を|へ|に|として)[ \t　]*)?"
-    r"(?:(?:作成|構築|開発|配備|導入|実装|実行|使用|利用|運用)"
-    r"(?:する|した|します)|作(?:る|った|ります))|"
-    r"(?:(?:is|are|was|were|be|being)[ \t-]+)?"
-    r"(?:created|built|developed|deployed|installed|executed|run|used|operated)\b))"
-)
-DEPLOYABLE_MALWARE_PRE_ACTION = (
-    r"(?<!not[ \t])(?<!never[ \t])\b(?:"
-    r"creat(?:e|es|ed|ing)|build(?:s|ing)?|built|develop(?:s|ed|ing)?|"
-    r"deploy(?:s|ed|ing)?|install(?:s|ed|ing)?|execut(?:e|es|ed|ing)|"
-    r"run(?:s|ning)?|ran|us(?:e|es|ed|ing)|operat(?:e|es|ed|ing))\b"
-    r"[ \t]+(?:(?:a|an|the)[ \t]+)?"
-    + DEPLOYABLE_MALWARE_FAMILY
-    + r"(?=$|[ \t　、。;,.!?！？])"
-)
-
-
-PROTECTED_PRACTICE_INPUT = re.compile(
-    r"(?:実(?:際|在)?の?(?:Target|標的|ターゲット)|現実の(?:Target|標的|ターゲット)|"
-    r"real[- ]target|実運用(?:環境|System|システム)|"
-    r"第三者[ \t　]*(?:の[ \t　]*)?(?:(?:本番|実運用|production|prod|live)[ \t　・-]*)?"
-    r"(?:System|システム|環境|Data|データ|API(?:エンドポイント|端点)?|Service|サービス|SaaS|Site|サイト)|"
-    r"他社[ \t　]*(?:の[ \t　]*)?(?:(?:本番|実運用|production|prod|live)[ \t　・-]*)?"
-    r"(?:System|システム|環境|Data|データ|API(?:エンドポイント|端点)?|Service|サービス|SaaS|Site|サイト)|"
-    r"外部(?:組織|企業|団体)[ \t　]*(?:の[ \t　]*)?"
-    r"(?:(?:本番|実運用|production|prod|live)[ \t　・-]*)?"
-    r"(?:System|システム|環境|Data|データ|API(?:エンドポイント|端点)?|Service|サービス|SaaS|Site|サイト)|"
-    r"外部[ \t　]*(?:の[ \t　]*)?(?:(?:本番|実運用|production|prod|live)[ \t　・-]*)?"
-    r"(?:System|システム|環境|Data|データ|API(?:エンドポイント|端点)?|Service|サービス|SaaS|Site|サイト)|"
-    r"(?:third[- ]party|external)[- ]+(?:(?:production|prod|live)[- ]+)?"
-    r"(?:systems?|data|environments?|api(?:[- ]endpoints?)?|services?|saas|sites?)|"
-    + DEPLOYABLE_MALWARE_FAMILY
-    + DEPLOYABLE_MALWARE_POST_ACTION
-    + r"|"
-    + DEPLOYABLE_MALWARE_PRE_ACTION
-    + r"|"
-    r"(?:deployable[- ]?)?malware|ransomware|wiper|"
-    r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
-    r"[- ](?:infrastructure|server|site|page|channel)|"
-    r"(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control)"
-    r"[ \t　・]*(?:攻撃|詐欺|基盤|インフラ|サイト|ページ|"
-    r"サーバー?|チャ(?:ネル|ンネル)|通信路|通信|接続|制御|運用)|"
-    r"\b(?:phishing|c2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|"
-    r"c[ \t]*&[ \t]*c)\b|"
-    r"lateral[- ]movement|defen[cs]e[- ]evasion|"
-    r"persistence|persistent[- ]access|privilege[- ]escalation|"
-    r"(?:log|audit[- ]trail)[- ](?:deletion|erasure|tampering)|"
-    r"destructive[- ](?:action|operation)|data[- ]destruction|"
-    r"(?:distributed[- ])?denial[- ]of[- ]service|"
-    r"\b(?:dos|ddos)(?=\b|[ \t　]*(?:[をへにでのはがも、。；;,.!?！？]|$))|"
-    r"(?:unauthorized[- ])?(?:data[- ])?(?:modification|encryption)|"
-    r"resource[- ]exhaustion|mfa[- ]fatigue|"
-    r"brute[- ]force[- ](?:login|authentication|auth)|"
-    r"(?:login|sign[- ]?in|authentication|auth)[- ](?:attempts?|brute[- ]force)|"
-    r"session[- ](?:hijack(?:ing)?|fixation|replay|reuse|takeover|theft)|"
-    r"stealth[- ]tool(?:ing)?|impersonation|social[- ]engineering|"
-    r"doxx(?:ing)?|tracking[- ](?:a[- ])?real[- ]person|"
-    r"anonymi[sz]ation[- ]infrastructure|dark[- ]web[- ]infiltration|"
-    r"confident[- ]attribution[- ]from[- ]weak[- ]evidence|"
-    r"マルウェア|ランサムウェア|ワイパー|"
-    r"フィッシング[ \t　・]*(?:攻撃|詐欺|基盤|インフラ|サイト|ページ|"
-    r"サーバー?|チャ(?:ネル|ンネル)|通信路|通信|接続|制御|運用)|"
-    r"C2(?:基盤|インフラ|サーバー?|チャ(?:ネル|ンネル)|通信路|通信|接続|制御|運用)|"
-    r"(?:phishing|C2|command(?:(?:[- ]*(?:and|&)[- ]*)|[- ]*)control|フィッシング|"
-    r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール)"
-    r"(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
-    r"c[ \t]*&[ \t]*c[ \t　・]*(?:基盤|インフラ|サーバー?|チャ(?:ネル|ンネル)|"
-    r"通信路|通信|接続|制御|運用)|"
-    r"c[ \t]*&[ \t]*c(?=[ \t　]*(?:[をへにでのはがも、。]|$))|"
-    r"コマンド(?:(?:[ ・]*(?:アンド|&)[ ・]*)|[ ・]*)コントロール"
-    r"(?:基盤|インフラ|サーバー?|チャ(?:ネル|ンネル)|通信路|通信|接続|制御|運用)|"
-    r"横展開|ラテラルムーブメント|永続化|永続的アクセス|"
-    r"権限昇格|防御回避|検知回避|"
-    r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん)|"
-    r"破壊的(?:操作|行為)|データ破壊|サービス拒否|DoS攻撃|DDoS攻撃|"
-    r"無許可(?:データ)?(?:変更|改変|暗号化)|データ(?:変更|改変|改ざん|暗号化)|"
-    r"資源枯渇|MFA疲労(?:攻撃)?|ステルスツール|なりすまし|"
-    r"認証(?:試行|総当たり)|ログイン(?:試行|総当たり)|"
-    r"(?:ログイン|サインイン|login|sign[- ]?in|認証)(?:(?:を|へ)?(?:試す|試行する|試みる|"
-    r"実施する|行う)|する)|"
-    r"総当たり(?:攻撃|ログイン|認証)|"
-    r"ブルート[ \t　・-]*フォース(?:ログイン|認証|攻撃)|"
-    r"(?:セッション|session)[ \t　・-]*(?:(?:を|の)[ \t　]*)?(?:ハイジャック|ハイジャッキング|固定|"
-    r"フィクセーション|リプレイ|再利用|乗っ取り)|"
-    r"ソーシャルエンジニアリング|ドキシング|晒し|"
-    r"実在人物(?:の)?(?:追跡|位置推定)|匿名化基盤|"
-    r"ダークウェブ(?:への)?直接潜入|弱いEvidenceからの断定的帰属|"
-    r"実(?:Credential|クレデンシャル|認証情報|資格情報|Token|トークン|Cookie|クッキー)|"
-    r"real[- ]?(?:credential|token|cookie)|"
-    r"(?:production|actual|real)[- ]?(?:value|data|credential|token|cookie|secret|key|id)|"
-    r"本番(?:値|Data|データ|Credential|認証情報|資格情報|Token|トークン|Cookie|"
-    r"クッキー|Secret|シークレット|キー|鍵|ID|識別子)?|"
-    r"(?:credential|token|cookie|secret|password|passphrase)s?|"
-    r"(?:jwt|json[- ]web[- ]token)|"
-    r"api[- _]?(?:key|キー)|"
-    r"(?:access|private|ssh|session|authentication|auth|signing|encryption)"
-    r"[- _]?(?:key|id)|"
-    r"アクセス(?:[- _・]?(?:キー|鍵))|"
-    r"(?:秘密|SSH|セッション|認証|署名|暗号)"
-    r"(?:[- _・]?(?:キー|鍵|ID|識別子))|PII|"
-    r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|シークレット|"
-    r"パスワード|パスフレーズ|個人(?:の)?(?:情報|データ)|"
-    r"従業員(?:の)?(?:Data|データ|情報)|"
-    r"顧客(?:の)?(?:Data|データ|情報)|"
-    r"(?:personal|employee|customer|staff)[- ](?:data|info(?:rmation)?)|"
-    r"personally[- ]identifiable[- ]info(?:rmation)?|"
-    r"e[- ]?mail(?:[- ]address)?|"
-    r"(?:phone|telephone|mobile)[- ](?:number|no\.?)|"
-    r"(?:full|legal|person)[- ]name|"
-    r"(?:home|postal|mailing|street)[- ]address|"
-    r"date[- ]of[- ]birth|birth[- ]date|dob|"
-    r"ssn|social[- ]security[- ]number|passport[- ]number|national[- ]id|"
-    r"driver(?:'s)?[- ]licen[cs]e[- ]number|"
-    r"(?:credit|debit|payment)[- ]card[- ](?:number|no\.?)|"
-    r"bank(?:ing)?[- ]account[- ](?:number|no\.?)|"
-    r"メールアドレス|Eメールアドレス|電子メールアドレス|"
-    r"電話番号|携帯番号|氏名|本名|姓名|住所|生年月日|"
-    r"マイナンバー|個人番号|パスポート番号|運転免許証番号|"
-    r"クレジットカード番号|デビットカード番号|銀行口座番号|口座番号)",
-    re.IGNORECASE,
-)
-SYNTHETIC_QUALIFIABLE_INPUT = re.compile(
-    r"(?:(?:credential|token|cookie|secret|password|passphrase)s?|"
-    r"(?:jwt|json[- ]web[- ]token)|"
-    r"api[- _]?(?:key|キー)|"
-    r"(?:access|private|ssh|session|authentication|auth|signing|encryption)"
-    r"[- _]?(?:key|id)|"
-    r"アクセス(?:[- _・]?(?:キー|鍵))|"
-    r"(?:秘密|SSH|セッション|認証|署名|暗号)"
-    r"(?:[- _・]?(?:キー|鍵|ID|識別子))|"
-    r"認証情報|資格情報|トークン|クッキー|秘密(?:情報)?|シークレット|"
-    r"パスワード|パスフレーズ)",
-    re.IGNORECASE,
-)
-EXPLICIT_SYNTHETIC_QUALIFIER = re.compile(
-    r"(?:合成|架空|ダミー|模擬|テスト用|予約済み|"
-    r"synthetic|dummy|mock|test[- ]only|reserved)(?:の|[- ]+)?$",
-    re.IGNORECASE,
-)
-EXPLICIT_NEGATED_USE = re.compile(
-    r"^\s*(?:"
-    r"(?:(?:を|へ|に|として)[ \t　]*)?"
-    r"(?:(?:作成|構築|開発|配備|導入|実装|実行|使用|利用|運用)"
-    r"(?:する|した|します)|作(?:る|った|ります))[ \t　]*"
-    r"(?:ことを禁止する|べきではない)|"
-    r"(?:is|are|was|were)[ \t]+(?:prohibited|forbidden|"
-    r"not[ \t]+(?:allowed|permitted))|"
-    r"(?:should|must)[ \t]+(?:be[ \t]+)?(?:prohibited|forbidden|"
-    r"not[ \t]+(?:allowed|permitted))|"
-    r"ではなく|ではない|"
-    r"(?:を|は|が|へ|に|として|の|も)?"
-    r"(?:攻撃|操作|調査|走査|スキャン|観測|閲覧|参照|分析|取得|使用|利用|"
-    r"投入|保存|収集|接続|検証|公開|記録|実施|実行|確立)?"
-    r"(?:を|は|が|も)?"
-    r"(?:なし|しない|せず|禁止|対象外|除外|未使用|非使用|不要|要求しない|"
-    r"使わない|使わず|用いない|含めない|含まない|持ち込まない|行わない|"
-    r"許可しない)|"
-    r"\s*(?:(?:is|are|was|were)\s+not|must\s+not\s+be|not)\s+"
-    r"(?:used|allowed|required|included|accessed|collected|stored|retrieved|shared)"
-    r")",
-    re.IGNORECASE,
-)
-ELIDED_POST_NEGATION_ACTION = re.compile(
-    r"^\s*(?:(?:しかし|ただし|一方で|また|その後|そして|なお|もっとも|だが|が)"
-    r"[、,\s]*)*"
-    r"(?:(?:これ|それ|当該(?:値|情報|Data|データ)|同じ(?:もの|情報|Data|データ))"
-    r"(?:を|は|も)?\s*)?"
-    r"(?:攻撃|操作|調査|走査|スキャン|観測|閲覧|参照|分析|取得|使用|利用|"
-    r"投入|保存|収集|接続|検証|公開|記録|共有)"
-    r"(?:する|した|します|行う|実施する)|"
-    r"^\s*(?:(?:but|then|and|yet|however|later|subsequently|afterwards?)"
-    r"[,\s]+)*"
-    r"(?:(?:it|they|them|the[- ]same(?:[- ](?:data|material|token))?)\s+)?"
-    r"(?:(?:is|are|was|were|be|being)\s+)?"
-    r"(?:used|retrieved|collected|stored|accessed|shared|recorded|analyzed|"
-    r"scanned|observed|tested)\b",
-    re.IGNORECASE,
-)
-
-
 def normalize_safety_text(text: str) -> str:
-    """Normalize reader-visible text before applying fail-closed safety grammar."""
-    normalized = html.unescape(unicodedata.normalize("NFKC", text))
-    normalized = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", normalized)
-    normalized = re.sub(r"<[^>]+>", "", normalized)
-    normalized = re.sub(r"[*_~`]", "", normalized)
-    return normalized.replace("\\", "")
+    """Compatibility wrapper around the shared reader-visible normalization."""
+    return normalize_visible_text(text)
+
+
+def _format_action_policy_finding(finding: SafetyFinding, context: str) -> str:
+    return (
+        f"unsafe real-target or sensitive-data input in {context}: "
+        f"[{finding.category}] {finding.reason}: "
+        f"{finding.normalized_excerpt!r} "
+        f"(content-safety Policy {finding.policy_version})"
+    )
+
+
+def _format_host_policy_finding(finding: SafetyFinding) -> str:
+    return (
+        f"{finding.location}: [{finding.category}] {finding.reason}: "
+        f"{finding.normalized_excerpt!r} "
+        f"(content-safety Policy {finding.policy_version})"
+    )
+
+
+def _reviewed_line_policy_errors(
+    text: str,
+    expected_lines: tuple[str, ...],
+    context: str,
+    *,
+    table_rows: bool,
+) -> list[str]:
+    """Verify the frozen lines and scan every line selected by this adapter.
+
+    Chapter 3 owns the bounded line selection and the exact reviewed statements.
+    The shared Policy owns normalization and the protected action semantics.  This
+    deliberately scans all selected lines rather than reproducing the Policy's
+    protected-object grammar in the chapter contract.
+    """
+
+    selected_lines: list[tuple[int, str]] = []
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        is_table = line.strip().startswith("|")
+        if is_table != table_rows:
+            continue
+        normalized = normalize_visible_text(line).strip()
+        if normalized:
+            selected_lines.append((line_number, normalized))
+
+    expected = tuple(normalize_visible_text(line).strip() for line in expected_lines)
+    expected_set = set(expected)
+    actual_reviewed = tuple(
+        line for _, line in selected_lines if line in expected_set
+    )
+    messages: list[str] = []
+    if actual_reviewed != expected:
+        if table_rows:
+            messages.append(
+                f"{context}: protected table rows must remain the exact reviewed set"
+            )
+        else:
+            messages.append(
+                f"{context}: protected non-table prose must remain the exact reviewed set"
+            )
+
+    for line_number, line in selected_lines:
+        # These exact statements are the frozen, independently reviewed safety
+        # boundary.  Scan every newly introduced line instead; otherwise a
+        # bounded prohibition such as "攻撃回数をMetricにしない" is reduced to
+        # an isolated action/object fragment by the line-level adapter.
+        if line in expected_set:
+            continue
+        location = f"{context} line {line_number}"
+        messages.extend(
+            _format_action_policy_finding(finding, location)
+            for finding in scan_action_text(line, location=location)
+        )
+    return messages
 
 
 def protected_non_table_prose_errors(
@@ -883,20 +767,12 @@ def protected_non_table_prose_errors(
     expected_lines: tuple[str, ...],
     context: str,
 ) -> list[str]:
-    """Freeze every reader-visible prose line that names a protected input."""
-    actual = tuple(
-        normalized
-        for line in text.splitlines()
-        if not line.strip().startswith("|")
-        if (normalized := normalize_safety_text(line).strip())
-        if PROTECTED_PRACTICE_INPUT.search(normalized)
+    return _reviewed_line_policy_errors(
+        text,
+        expected_lines,
+        context,
+        table_rows=False,
     )
-    expected = tuple(normalize_safety_text(line).strip() for line in expected_lines)
-    if actual != expected:
-        return [
-            f"{context}: protected non-table prose must remain the exact reviewed set"
-        ]
-    return []
 
 
 def protected_table_line_errors(
@@ -904,61 +780,20 @@ def protected_table_line_errors(
     expected_lines: tuple[str, ...],
     context: str,
 ) -> list[str]:
-    """Freeze every Markdown table row that names a protected category."""
-    actual = tuple(
-        normalized
-        for line in text.splitlines()
-        if line.strip().startswith("|")
-        if (normalized := normalize_safety_text(line).strip())
-        if PROTECTED_PRACTICE_INPUT.search(normalized)
+    return _reviewed_line_policy_errors(
+        text,
+        expected_lines,
+        context,
+        table_rows=True,
     )
-    expected = tuple(normalize_safety_text(line).strip() for line in expected_lines)
-    if actual != expected:
-        return [f"{context}: protected table rows must remain the exact reviewed set"]
-    return []
 
 
 def unsafe_operational_field_errors(field: str, context: str) -> list[str]:
-    """Reject protected inputs unless directly synthetic or explicitly negated."""
-    messages: list[str] = []
-    field = normalize_safety_text(field)
-    matches = list(PROTECTED_PRACTICE_INPUT.finditer(field))
-    for index, match in enumerate(matches):
-        prefix = field[: match.start()]
-        clause_start = max(prefix.rfind(mark) for mark in "、,。;；\n") + 1
-        protected_prefix = field[clause_start : match.start()]
-        suffix = field[match.end() :]
-        separator = re.search(r"[、,。;；\n]", suffix)
-        if separator:
-            clause_tail = suffix[: separator.start()]
-            continuation = suffix[separator.end() :]
-        else:
-            clause_tail = suffix
-            continuation = ""
-        if index + 1 < len(matches):
-            next_match = matches[index + 1]
-            next_relative_start = next_match.start() - match.end()
-            if next_relative_start < len(clause_tail):
-                clause_tail = clause_tail[:next_relative_start]
-        synthetic_qualified = bool(
-            SYNTHETIC_QUALIFIABLE_INPUT.fullmatch(match.group(0))
-            and EXPLICIT_SYNTHETIC_QUALIFIER.fullmatch(protected_prefix)
-        )
-        explicitly_negated = bool(EXPLICIT_NEGATED_USE.fullmatch(clause_tail))
-        if explicitly_negated and ELIDED_POST_NEGATION_ACTION.search(continuation):
-            messages.append(
-                f"unsafe real-target or sensitive-data input in {context}: "
-                f"{match.group(0)!r} is followed by an elided unsafe action"
-            )
-            break
-        if not (explicitly_negated or synthetic_qualified):
-            messages.append(
-                f"unsafe real-target or sensitive-data input in {context}: "
-                f"{match.group(0)!r} is neither explicitly synthetic nor negated"
-            )
-            break
-    return messages
-
+    """Delegate bounded Chapter 3 action fields to the shared Policy core."""
+    return [
+        _format_action_policy_finding(finding, context)
+        for finding in scan_action_text(field, location=context)
+    ]
 
 def case_contract_errors(text: str, label: str) -> list[str]:
     messages: list[str] = []
@@ -2053,107 +1888,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
 
 
 def reserved_name_contract_errors(relative: str, text: str) -> list[str]:
-    messages: list[str] = []
-    allowed_suffixes = (".example", ".test", ".invalid")
-    reserved_but_policy_disallowed_suffixes = (".localhost",)
-    documentation_networks = (
-        ipaddress.ip_network("192.0.2.0/24"),
-        ipaddress.ip_network("198.51.100.0/24"),
-        ipaddress.ip_network("203.0.113.0/24"),
-        ipaddress.ip_network("2001:db8::/32"),
-    )
-
-    def parse_ip(value: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | None:
-        try:
-            return ipaddress.ip_address(value.strip("[]"))
-        except ValueError:
-            return None
-
-    def is_documentation_address(
-        address: ipaddress.IPv4Address | ipaddress.IPv6Address,
-    ) -> bool:
-        return any(address in network for network in documentation_networks)
-
-    for raw_url in re.findall(
-        r"(?:(?:[A-Za-z][A-Za-z0-9+.-]*:)?//)[^\s`)>]+",
-        text,
-    ):
-        try:
-            host = (urlparse(raw_url).hostname or "").lower()
-        except ValueError:
-            messages.append(f"{relative}: malformed URL in synthetic content: {raw_url}")
-            continue
-        address = parse_ip(host)
-        if address is not None:
-            if not is_documentation_address(address):
-                messages.append(
-                    f"{relative}: non-documentation IP URL in synthetic content: "
-                    f"{raw_url}"
-                )
-        elif host and not host.endswith(allowed_suffixes):
-            if host.endswith(reserved_but_policy_disallowed_suffixes):
-                messages.append(
-                    f"{relative}: host suffix is disallowed by the synthetic "
-                    f"publication policy: {raw_url}"
-                )
-            else:
-                messages.append(
-                    f"{relative}: non-reserved URL in synthetic content: {raw_url}"
-                )
-    visible_text = normalize_safety_text(text)
-    domain_pattern = re.compile(
-        r"(?<![A-Za-z0-9_-])"
-        r"(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+"
-        r"[A-Za-z]{2,63}"
-        r"(?![A-Za-z0-9_-])",
-        re.IGNORECASE,
-    )
-    for domain in domain_pattern.findall(visible_text):
-        if not domain.lower().endswith(allowed_suffixes):
-            if domain.lower().endswith(reserved_but_policy_disallowed_suffixes):
-                messages.append(
-                    f"{relative}: host suffix is disallowed by the synthetic "
-                    f"publication policy: {domain}"
-                )
-            else:
-                messages.append(
-                    f"{relative}: possible real domain in synthetic content: {domain}"
-                )
-
-    detected_addresses: dict[str, ipaddress.IPv4Address | ipaddress.IPv6Address] = {}
-    normalized_text = unicodedata.normalize("NFKC", text)
-    for raw_token in re.findall(r"[A-Za-z0-9_.:\[\]-]+", normalized_text):
-        token = raw_token.rstrip(".,;")
-        forms = {token}
-        if token.startswith(":") and not token.startswith("::"):
-            forms.add(token[1:])
-        labelled = re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.-]*:(.+)", token)
-        if labelled:
-            forms.add(labelled.group(1))
-        for form in forms:
-            if "." not in form and ":" not in form:
-                continue
-            bracketed = re.fullmatch(r"\[([0-9A-Fa-f:.]+)\](?::\d+)?", form)
-            ipv4_with_port = re.fullmatch(
-                r"((?:\d{1,3}\.){3}\d{1,3})(?::\d*)?",
-                form,
-            )
-            if bracketed:
-                address_text = bracketed.group(1)
-            elif ipv4_with_port:
-                address_text = ipv4_with_port.group(1)
-            else:
-                address_text = form
-            address = parse_ip(address_text)
-            if address is not None:
-                detected_addresses[str(address)] = address
-    for address_text, address in sorted(detected_addresses.items()):
-        if not is_documentation_address(address):
-            messages.append(
-                f"{relative}: non-documentation IP literal in synthetic content: "
-                f"{address_text}"
-            )
-    return messages
+    """Delegate the Chapter 3 synthetic host boundary to the shared Policy."""
+    return [
+        _format_host_policy_finding(finding)
+        for finding in scan_host_policy(text, location=relative)
+    ]
 
 
 def sensitive_content_errors(relative: str, text: str) -> list[str]:
@@ -2350,7 +2089,7 @@ def verify_negative_regressions(
         1,
     )
     if not any(
-        "protected non-table prose must remain" in message
+        "unsafe real-target or sensitive-data input" in message
         for message in chapter_contract_errors(
             chapter_with_unsafe_evaluation_prose,
             "negative unsafe Chapter evaluation prose",
@@ -2365,7 +2104,7 @@ def verify_negative_regressions(
         1,
     )
     if not any(
-        "protected table rows must remain" in message
+        "unsafe real-target or sensitive-data input" in message
         for message in chapter_contract_errors(
             chapter_with_unsafe_table_row,
             "negative unsafe Chapter table row",
@@ -2390,7 +2129,7 @@ def verify_negative_regressions(
         1,
     )
     if not any(
-        "protected non-table prose must remain" in message
+        "unsafe real-target or sensitive-data input" in message
         for message in template_contract_errors(
             template_with_unsafe_usage_prose,
             "negative unsafe Template usage prose",
@@ -2469,7 +2208,7 @@ def verify_negative_regressions(
     ):
         error("negative regression accepted third-party real-target Learning Action")
 
-    for unsafe_field in (
+    legacy_unsafe_fields = (
         "第三者Dataを分析する",
         "第三者Systemを観測する",
         "実Targetのログを閲覧する",
@@ -2719,13 +2458,27 @@ def verify_negative_regressions(
         "匿名化基盤を運用する",
         "ダークウェブへの直接潜入を実施する",
         "弱いEvidenceからの断定的帰属を公表する",
-    ):
+    )
+    blocked_thread_unsafe_fields = (
+        "do not build a keylogger, but deploy it",
+        "never build a keylogger; however, use it",
+        "keyloggerを作ることを禁止する、しかしそれを作る",
+        "building a keylogger should be prohibited, but it is deployed",
+        "write a keylogger",
+        "code a rootkit",
+    )
+    if len(legacy_unsafe_fields) != 249:
+        error("legacy Chapter 3 unsafe corpus count drifted: expected 249")
+    if len(blocked_thread_unsafe_fields) != 6:
+        error("blocked review unsafe corpus count drifted: expected 6")
+
+    for unsafe_field in legacy_unsafe_fields + blocked_thread_unsafe_fields:
         if not unsafe_operational_field_errors(
             unsafe_field, "negative broad protected-input wording"
         ):
             error(f"negative regression accepted protected Practice input: {unsafe_field}")
 
-    for explicitly_negated_field in (
+    legacy_safe_fields = (
         "合成Scenario。外部接続と実Target操作なし",
         "個人情報を使用しない",
         "第三者Systemへ接続しない",
@@ -2775,7 +2528,21 @@ def verify_negative_regressions(
         "セッションを再利用しない",
         "セッションの再利用を実施しない",
         "合成Tokenを使用する。本番値は使用しない",
-    ):
+    )
+    blocked_thread_safe_fields = (
+        "Do not build a keylogger.",
+        "Building a keylogger is prohibited.",
+        "Keylogger creation is outside this book's scope.",
+        "この教材ではkeyloggerを作らない。",
+        "keyloggerを作ることを禁止する。",
+        "この語はMalware分類の説明としてのみ記録する。",
+    )
+    if len(legacy_safe_fields) != 49:
+        error("legacy Chapter 3 safe corpus count drifted: expected 49")
+    if len(blocked_thread_safe_fields) != 6:
+        error("blocked review safe corpus count drifted: expected 6")
+
+    for explicitly_negated_field in legacy_safe_fields + blocked_thread_safe_fields:
         if unsafe_operational_field_errors(
             explicitly_negated_field, "negative-form safety statement"
         ):
@@ -3256,7 +3023,7 @@ def verify_negative_regressions(
     if not localhost_errors:
         error("negative regression accepted .localhost outside the Case domain policy")
     if not any(
-        "host suffix is disallowed by the synthetic publication policy" in message
+        "disallowed by the synthetic publication policy" in message
         for message in localhost_errors
     ):
         error("negative regression omitted the .localhost publication-policy reason")
@@ -3279,7 +3046,11 @@ def verify_negative_regressions(
         )
         if not any(
             marker in message
-            for marker in ("possible real domain", "non-reserved URL")
+            for marker in (
+                "possible real domain",
+                "non-reserved URL",
+                "non-approved host suffix",
+            )
             for message in domain_errors
         ):
             error(
@@ -3302,6 +3073,24 @@ def verify_negative_regressions(
         "[guide](../artifact.json)",
     ):
         error("positive regression rejected an unambiguous relative file link")
+    ambiguous_bare_file_errors = reserved_name_contract_errors(
+        "ambiguous bare file negative regression",
+        "artifact.json",
+    )
+    if not any(
+        "possible real domain" in message
+        for message in ambiguous_bare_file_errors
+    ):
+        error("negative regression accepted ambiguous bare artifact.json")
+    ambiguous_labelled_ipv6_errors = reserved_name_contract_errors(
+        "ambiguous labelled IPv6 negative regression",
+        "db:2001:db8::10",
+    )
+    if not any(
+        "non-documentation IP literal" in message
+        for message in ambiguous_labelled_ipv6_errors
+    ):
+        error("negative regression accepted ambiguous labelled bare IPv6")
     for dotted_identifier in ("module.v2", "artifact.c0m", "alpha.x-y"):
         if reserved_name_contract_errors(
             "non-domain dotted identifier positive regression",
@@ -3476,6 +3265,10 @@ def verify_negative_regressions(
 
 
 def main() -> int:
+    if not re.fullmatch(r"\d+\.\d+\.\d+", CONTENT_SAFETY_POLICY_VERSION):
+        error(
+            "shared content-safety Policy version must use semantic-version form"
+        )
     required_files = (
         "manuscript/03-capability-evidence.md",
         "templates/capability-evidence-matrix.md",
@@ -3696,7 +3489,8 @@ def main() -> int:
 
     print(
         "chapter 3 contract passed: manuscript, ART-14, synthetic learner case, "
-        "NICE source state, publication registry, safety boundary, and fail-closed regressions"
+        "NICE source state, publication registry, safety boundary, "
+        f"shared Policy {CONTENT_SAFETY_POLICY_VERSION} adapter, and fail-closed regressions"
     )
     return 0
 
