@@ -1107,6 +1107,36 @@ def _actions_bound_to_object(
     return sorted(set(bound))
 
 
+_JA_PII_COLLECTION_ANALYSIS_TAIL = re.compile(
+    r"\s*(?:リスク)?を"
+    r"(?:分析|解析)(?:する|した|します|しない|せず)?\s*$",
+    re.IGNORECASE,
+)
+
+
+def _is_bounded_pii_collection_analysis(
+    clause: str,
+    protected: _Match,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Do not treat a nominal collection practice as collected PII.
+
+    This is a finite Japanese exception, not a general semantic parser.  It
+    applies only when the protected PII is followed by the bare nominal action
+    ``収集`` and the remainder of the bounded clause analyzes that collection
+    or its explicitly named risk/property.  Direct PII analysis, an inflected
+    collection action, or a later operational action remains unsafe.
+    """
+
+    if protected.category != "data.pii" or action[2] != "access-collect":
+        return False
+    if action[3] != "収集":
+        return False
+    if not re.fullmatch(r"\s*の?\s*", clause[protected.end : action[0]]):
+        return False
+    return bool(_JA_PII_COLLECTION_ANALYSIS_TAIL.fullmatch(clause[action[1] :]))
+
+
 def _shared_trailing_object_findings(
     previous_clause: str,
     clause: str,
@@ -1218,7 +1248,7 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                             remembered_object.category,
                             location,
                             clause,
-                            "a contradictory continuation reuses the protected object after a locally negated or prohibitive clause",
+                            "a contradictory continuation reuses the protected object after an earlier bounded safe, locally negated, or prohibitive clause",
                         )
                     )
                 else:
@@ -1233,7 +1263,35 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
             actions = _action_matches(clause, protected.action_kinds)
             if not actions:
                 continue
-            bound_actions = _actions_bound_to_object(clause, protected, actions)
+            candidate_actions = _actions_bound_to_object(
+                clause,
+                protected,
+                actions,
+            )
+            bound_actions = [
+                action
+                for action in candidate_actions
+                if not _is_bounded_pii_collection_analysis(
+                    clause,
+                    protected,
+                    action,
+                )
+            ]
+            if not bound_actions:
+                if candidate_actions and all(
+                    _is_bounded_pii_collection_analysis(
+                        clause,
+                        protected,
+                        action,
+                    )
+                    for action in candidate_actions
+                ):
+                    # The bounded analysis statement is safe by itself, but the
+                    # protected object must remain available to the adjacent
+                    # continuation contract (for example, a later bare
+                    # ``収集する`` action).
+                    next_remembered.append(protected)
+                continue
             if all(
                 _locally_prohibited(clause, protected, action)
                 for action in bound_actions
@@ -1293,6 +1351,10 @@ _DOMAIN_PATTERN = re.compile(
 )
 _IDN_DOMAIN_PATTERN = re.compile(
     r"(?<![\w-])(?:[\w-]+\.)+[\w-]+(?![\w-])",
+    re.IGNORECASE,
+)
+_DOTTED_VERSION_TAIL = re.compile(
+    r"(?<![a-z0-9.-])v?\d+\.\d+\.\d+(?:-[0-9a-z]+(?:\.[0-9a-z-]+)*)?$",
     re.IGNORECASE,
 )
 
@@ -1439,11 +1501,11 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
         domain = match.group(0).casefold()
         if domain in url_hosts or _DOMAIN_PATTERN.fullmatch(domain):
             continue
-        # A dotted version/identifier can contain non-ASCII prose before a
-        # numeric terminal component (for example, ``Identifier...v2.2.0``).
-        # DNS TLDs are not numeric-only, so retain fail-closed IDN handling only
-        # when the final label has at least one letter.
-        if not any(character.isalpha() for character in domain.rsplit(".", 1)[-1]):
+        # Unicode prose can be consumed with a dotted version/identifier (for
+        # example, ``Identifier...v2.2.0`` or ``Identifier...v2.2.0-rc1``).
+        # Exclude only an exact three-component version tail; unrelated
+        # digit-led or letter-bearing IDN labels remain fail closed.
+        if _DOTTED_VERSION_TAIL.search(domain):
             continue
         if domain.endswith(_ALLOWED_HOST_SUFFIXES):
             continue

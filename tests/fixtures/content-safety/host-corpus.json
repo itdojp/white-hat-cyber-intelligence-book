@@ -14,6 +14,7 @@
     {"id": "DOTTED-ID-NUMERIC", "text": "artifact.c0m"},
     {"id": "DOTTED-ID-HYPHEN", "text": "alpha.x-y"},
     {"id": "VERSIONED-IDENTIFIER-WITH-UNICODE-PROSE", "text": "確認済みIdentifierの記入形式例はv2.2.0"},
+    {"id": "PRERELEASE-VERSION-WITH-UNICODE-PROSE", "text": "確認済みIdentifierはv2.2.0-rc1"},
     {"id": "IDN-EXAMPLE-SUFFIX", "text": "例え.example"},
     {"id": "PUNYCODE-EXAMPLE-SUFFIX", "text": "xn--r8jz45g.example"},
     {"id": "HTML-DOUBLE-QUOTED-EXAMPLE", "text": "<a href=\"https://lab.example\">"},
@@ -62,6 +63,24 @@
     {
       "id": "BARE-IDN-DISALLOWED",
       "text": "例え.テスト",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "BARE-IDN-DIGIT-LED-LABEL-DISALLOWED",
+      "text": "例え.0-rc1",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "BARE-IDN-VERSION-TAIL-DISALLOWED",
+      "text": "例え.v2.2.0-rc1",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "BARE-PUNYCODE-VERSION-TAIL-DISALLOWED",
+      "text": "xn--r8jz45g.v2.2.0-rc1",
       "requiredReason": "non-approved bare IDN or punycode host",
       "forbiddenReason": ""
     },
