@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "policyVersion": "1.0.0",
+  "policyVersion": "1.1.0",
   "baselineMain": "2c40869febd75b9e13fec544aec9bf90552e1556",
   "scope": "Selected reader-visible safety/action fields only; not whole-book natural-language coverage.",
   "fields": [

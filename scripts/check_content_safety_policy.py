@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 from dataclasses import fields, is_dataclass
 import json
 from pathlib import Path
@@ -26,7 +27,10 @@ from scripts.content_safety_policy import (  # noqa: E402
 )
 
 
-EXPECTED_POLICY_VERSION = "1.0.0"
+EXPECTED_POLICY_VERSION = "1.1.0"
+FIXTURE_SCHEMA_VERSION = "1.0.0"
+EXPECTED_LEGACY_UNSAFE_COUNT = 249
+EXPECTED_LEGACY_SAFE_COUNT = 49
 EXPECTED_ACTION_CATEGORIES = {
     "target.real_or_external",
     "secret.credential",
@@ -368,6 +372,34 @@ REQUIRED_UNSAFE_HOST_EXCERPTS = {
     "MARKDOWN-AUTOLINK-MAILTO-DISALLOWED": "mailto:user@example.com",
 }
 
+REQUIRED_STRUCTURAL_GAP_UNSAFE = {
+    "TARGET-JA-WHITESPACE-ANALYSIS": "第三者 の APIを分析する",
+    "TARGET-OTHER-ORGANIZATION": "他社サービスへ接続する",
+    "PII-LATIN-JAPANESE-BOUNDARY": "PIIを収集する",
+    "PII-GENERIC-FIELD-SHAPE": "credit card number collected",
+    "PII-CUSTOMER-INFO-MIXED-SCRIPT": "customer infoを分析する",
+    "PII-EMPLOYEE-INFO-MIXED-SCRIPT": "employee infoを収集する",
+    "SECRET-ANALYSIS": "Tokenを分析する",
+    "NEGATED-FIRST-ACTION-JA-CHAIN": "Tokenを取得せず保存する",
+    "NEGATED-OBJECT-BARE-ELLIPSIS": "Tokenは使用しない、取得する",
+    "PRIVILEGE-MIXED-SCRIPT": "lateral movementを実施する",
+    "AUTH-LOGIN-MIXED-SCRIPT": "sign-inする",
+    "WEAK-EVIDENCE-PUBLICATION": "弱いEvidenceからの断定的帰属を公表する",
+    "WEAK-EVIDENCE-EN-JA-PUBLICATION": "weak evidenceからの断定的帰属を公表する",
+    "WEAK-EVIDENCE-EN-JA-IDENTIFICATION": "weak evidenceから断定的に国家を特定する",
+    "DISRUPTION-ENCRYPT-DATA-EN": "encrypt data",
+    "DISRUPTION-ENCRYPT-DATA-JA": "データを暗号化する",
+}
+REQUIRED_STRUCTURAL_GAP_SAFE = {
+    "TARGET-NO-OPERATION-STATEMENT": "合成Scenario。外部接続と実Target操作なし",
+    "JAPANESE-NORMATIVE-NEGATION-CREATE": "keyloggerを作るべきではない",
+    "JAPANESE-NORMATIVE-NEGATION-IMPLEMENT": "rootkitを実装するべきではない",
+    "RESULT-RECORD-NOT-SECRET-ELLIPSIS": "Tokenを使用しない、結果だけを記録する",
+    "SECRET-NEGATED-ANALYSIS": "Tokenを分析しない",
+    "SECRET-SYNTHETIC-ANALYSIS": "合成Tokenを分析する",
+    "AUTH-EXPLANATORY-OUT-OF-SCOPE": "サインインする処理は扱わない",
+}
+
 
 errors: list[str] = []
 
@@ -454,7 +486,9 @@ def check_public_api() -> None:
             f"protected object categories {sorted(model_categories)!r} do not match "
             f"{sorted(EXPECTED_ACTION_CATEGORIES)!r}"
         )
-    required_action_kinds = {"create", "deploy-use", "access-collect", "perform", "attribute"}
+    required_action_kinds = {
+        "create", "deploy-use", "access-collect", "analyze", "perform", "attribute"
+    }
     action_kinds = {rule.kind for rule in ACTION_RULES}
     if action_kinds != required_action_kinds:
         error(f"action kinds {sorted(action_kinds)!r} do not match {sorted(required_action_kinds)!r}")
@@ -464,7 +498,7 @@ def check_action_corpus() -> list[tuple[str, str]]:
     relative = "tests/fixtures/content-safety/action-corpus.json"
     corpus = load_json(relative)
     exact_keys(corpus, {"schemaVersion", "policyVersion", "unsafe", "safe"}, relative)
-    if corpus.get("schemaVersion") != "1.0.0" or corpus.get("policyVersion") != POLICY_VERSION:
+    if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
         error(f"{relative}: schemaVersion/policyVersion mismatch")
 
     unsafe = checked_entries(
@@ -575,11 +609,62 @@ def check_action_corpus() -> list[tuple[str, str]]:
     return deterministic_fields
 
 
+def check_structural_gap_corpus() -> list[tuple[str, str]]:
+    """Exercise finite grammar shapes added by the 1.1 minor re-audit.
+
+    These are category- and language-structure regressions, not chapter fields or
+    a per-chapter exception list.  The external legacy parity corpus is accepted
+    only by the explicit probe below.
+    """
+
+    relative = "tests/fixtures/content-safety/structural-gap-corpus.json"
+    corpus = load_json(relative)
+    exact_keys(corpus, {"schemaVersion", "policyVersion", "unsafe", "safe"}, relative)
+    if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
+        error(f"{relative}: schemaVersion/policyVersion mismatch")
+    unsafe = checked_entries(
+        corpus.get("unsafe"),
+        expected_keys={"id", "text", "expectedCategories"},
+        context=f"{relative}.unsafe",
+    )
+    safe = checked_entries(
+        corpus.get("safe"),
+        expected_keys={"id", "text"},
+        context=f"{relative}.safe",
+    )
+    unsafe_by_id = {item.get("id"): item.get("text") for item in unsafe}
+    safe_by_id = {item.get("id"): item.get("text") for item in safe}
+    if unsafe_by_id != REQUIRED_STRUCTURAL_GAP_UNSAFE:
+        error(f"{relative}: unsafe structural regression inventory drifted")
+    if safe_by_id != REQUIRED_STRUCTURAL_GAP_SAFE:
+        error(f"{relative}: safe structural regression inventory drifted")
+
+    deterministic_fields: list[tuple[str, str]] = []
+    for item in unsafe:
+        identifier, text, expected = item.get("id"), item.get("text"), item.get("expectedCategories")
+        if not isinstance(identifier, str) or not isinstance(text, str) or not isinstance(expected, list):
+            continue
+        findings = scan_action_text(text, location=identifier)
+        actual = {finding.category for finding in findings}
+        if not set(expected) <= actual:
+            error(f"{relative}.{identifier}: expected {expected!r}, got {sorted(actual)!r}")
+        deterministic_fields.append((identifier, text))
+    for item in safe:
+        identifier, text = item.get("id"), item.get("text")
+        if not isinstance(identifier, str) or not isinstance(text, str):
+            continue
+        findings = scan_action_text(text, location=identifier)
+        if findings:
+            error(f"{relative}.{identifier}: safe text produced findings {findings!r}")
+        deterministic_fields.append((identifier, text))
+    return deterministic_fields
+
+
 def check_normalization_corpus() -> None:
     relative = "tests/fixtures/content-safety/normalization-corpus.json"
     corpus = load_json(relative)
     exact_keys(corpus, {"schemaVersion", "policyVersion", "cases"}, relative)
-    if corpus.get("schemaVersion") != "1.0.0" or corpus.get("policyVersion") != POLICY_VERSION:
+    if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
         error(f"{relative}: schemaVersion/policyVersion mismatch")
     cases = corpus.get("cases")
     if not isinstance(cases, list):
@@ -613,7 +698,7 @@ def check_host_corpus() -> list[tuple[str, str]]:
     relative = "tests/fixtures/content-safety/host-corpus.json"
     corpus = load_json(relative)
     exact_keys(corpus, {"schemaVersion", "policyVersion", "safe", "unsafe"}, relative)
-    if corpus.get("schemaVersion") != "1.0.0" or corpus.get("policyVersion") != POLICY_VERSION:
+    if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
         error(f"{relative}: schemaVersion/policyVersion mismatch")
     safe = checked_entries(
         corpus.get("safe"),
@@ -671,6 +756,43 @@ def check_host_corpus() -> list[tuple[str, str]]:
     return deterministic_fields
 
 
+def check_legacy_parity_corpus(path: Path) -> tuple[int, int]:
+    """Probe an explicitly supplied historical corpus without making it Policy data."""
+
+    try:
+        corpus = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        error(f"{path}: cannot load legacy parity corpus: {exc}")
+        return (0, 0)
+    if not isinstance(corpus, dict) or set(corpus) != {"unsafe_field", "explicitly_negated_field"}:
+        error(f"{path}: legacy parity corpus must contain unsafe_field and explicitly_negated_field")
+        return (0, 0)
+    unsafe = corpus["unsafe_field"]
+    safe = corpus["explicitly_negated_field"]
+    if not isinstance(unsafe, list) or not isinstance(safe, list) or not all(
+        isinstance(text, str) and text for text in unsafe + safe
+    ):
+        error(f"{path}: legacy parity entries must be non-empty strings")
+        return (0, 0)
+    if len(unsafe) != EXPECTED_LEGACY_UNSAFE_COUNT:
+        error(
+            f"{path}: legacy unsafe count {len(unsafe)} does not match "
+            f"{EXPECTED_LEGACY_UNSAFE_COUNT}"
+        )
+    if len(safe) != EXPECTED_LEGACY_SAFE_COUNT:
+        error(
+            f"{path}: legacy safe count {len(safe)} does not match "
+            f"{EXPECTED_LEGACY_SAFE_COUNT}"
+        )
+    misses = [text for text in unsafe if not scan_action_text(text, location="legacy-unsafe")]
+    false_positives = [text for text in safe if scan_action_text(text, location="legacy-safe")]
+    if misses:
+        error(f"{path}: legacy unsafe misses={len(misses)} examples={misses[:3]!r}")
+    if false_positives:
+        error(f"{path}: legacy safe false_positives={len(false_positives)} examples={false_positives[:3]!r}")
+    return (len(unsafe), len(safe))
+
+
 def check_representative_main_fields() -> list[tuple[str, str]]:
     relative = "tests/fixtures/content-safety/representative-main-fields.json"
     corpus = load_json(relative)
@@ -679,7 +801,7 @@ def check_representative_main_fields() -> list[tuple[str, str]]:
         {"schemaVersion", "policyVersion", "baselineMain", "scope", "fields"},
         relative,
     )
-    if corpus.get("schemaVersion") != "1.0.0" or corpus.get("policyVersion") != POLICY_VERSION:
+    if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
         error(f"{relative}: schemaVersion/policyVersion mismatch")
     if corpus.get("baselineMain") != "2c40869febd75b9e13fec544aec9bf90552e1556":
         error(f"{relative}: reference baseline main changed without explicit audit")
@@ -760,7 +882,7 @@ def check_determinism_and_malformed(fields_to_scan: list[tuple[str, str]]) -> No
 def check_documentation() -> None:
     required_files = {
         "CONTENT_SAFETY_POLICY.md": (
-            "Policy version: `1.0.0`",
+            "Policy version: `1.1.0`",
             "## Stable API",
             "## Structured policy model",
             "## Normalization contract",
@@ -770,6 +892,7 @@ def check_documentation() -> None:
             "## Versioning and re-audit",
             "patch:",
             "minor:",
+            "1.1.0 re-audit",
             "major:",
             "## Non-goals",
             "自然言語安全性の完全な判定",
@@ -782,6 +905,7 @@ def check_documentation() -> None:
             "六つのblocker phrase",
             "`.localhost`",
             "unresolved thread 0",
+            "1.1.0 parity re-audit",
         ),
     }
     for relative, markers in required_files.items():
@@ -795,25 +919,43 @@ def check_documentation() -> None:
                 error(f"{relative}: missing required marker {marker!r}")
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--legacy-parity-corpus",
+        type=Path,
+        help="read-only historical unsafe/safe corpus to probe; not Policy input",
+    )
+    args = parser.parse_args(argv)
     check_public_api()
     deterministic_fields = check_action_corpus()
+    deterministic_fields.extend(check_structural_gap_corpus())
     check_normalization_corpus()
     deterministic_fields.extend(check_host_corpus())
     representative_fields = check_representative_main_fields()
     deterministic_fields.extend(representative_fields)
     check_determinism_and_malformed(deterministic_fields)
     check_documentation()
+    parity_counts: tuple[int, int] | None = None
+    if args.legacy_parity_corpus is not None:
+        parity_counts = check_legacy_parity_corpus(args.legacy_parity_corpus)
     if errors:
         for message in errors:
             print(f"ERROR: {message}", file=sys.stderr)
         print(f"content safety policy contract failed with {len(errors)} error(s)", file=sys.stderr)
         return 1
-    print(
+    summary = (
         "content safety policy contract passed: "
         f"version={POLICY_VERSION}, categories={len(EXPECTED_ALL_CATEGORIES)}, "
         f"blockers={len(BLOCKER_TEXTS)}, representative_fields={len(representative_fields)}"
     )
+    if parity_counts is not None:
+        summary += (
+            "; legacy parity passed: "
+            f"unsafe={parity_counts[0]}, explicitly_negated={parity_counts[1]}, "
+            "misses=0, false_positives=0"
+        )
+    print(summary)
     return 0
 
 

@@ -4,7 +4,7 @@
 
 - Blocked consumer: PR #57 / Issue #28
 - Read-only reference head audited for Issue #59: `9c4f570064372bf8278e0c53cb47709d298e39bb`
-- Shared Policy target: `scripts/content_safety_policy.py`, version `1.0.0`
+- Shared Policy target: `scripts/content_safety_policy.py`, version `1.1.0`
 
 Issue #59ではPR #57のbranch、Chapter 3本文、`ART-14`、Case、NICE Source、index、site-page registryを変更しない。PR #57の`check_chapter03_contract.py`からは、chapter-independentなnormalization、protected category、正負regressionだけをIssue #59のgeneric corpusへ抽出した。
 
@@ -28,8 +28,14 @@ Issue #59ではPR #57のbranch、Chapter 3本文、`ART-14`、Case、NICE Source
 2. Chapter 3 checkerは、Artifact/table/sectionからbounded reader-visible fieldを選択し、`scan_fields`へ`(stable location, text)`を渡す。
 3. Chapter 3固有のART-14 referential integrity、NICE Source、Source Registry、Case、site-page、Publication契約はchapter checkerに残す。
 4. 既存のchapter-independent regex/corpusを削除し、generic fixtureと同じSemanticを二重実装しない。
-5. PR #57の現在の六つのblocker phraseを、共通Policy `1.0.0`がunsafeと判定することをadapter regressionで固定する。
+5. PR #57の現在の六つのblocker phraseを、共通Policy `1.1.0`がunsafeと判定することをadapter regressionで固定する。
 6. `.localhost`は「reservedだがRepository Policyでdisallowed」と診断し、`non-reserved`と誤記しない。
 7. full local QA、exact-head Book Contract / Book QA、fresh review、unresolved thread 0を再取得する。
 
 Adapterは書籍全体の自由文を無選別にscanしない。Chapter 3が所有するAction-bearing fieldとreader-visible safe-boundary fieldを明示し、locationをArtifact ID、section、row ID等へ固定する。
+
+## 1.1.0 parity re-audit
+
+Policy `1.1.0`はstable APIと11 categoryを維持したminor updateである。旧Chapter 3のread-only safety corpusをPolicy inputやChapter固有denylistにはせず、`--legacy-parity-corpus`のread-only probeで249 unsafe / 49 explicitly negated fieldを照合する。generic structural fixtureは、mixed-script境界、日本語空白、bounded action chain、bare ellipsis、standalone prohibition、versioned identifierを対象とし、Chapter名・`ART-14`・固有行番号をruleへ持ち込まない。
+
+新adapterはbounded Chapter 3 fieldに対して、`合成Scenario。外部接続と実Target操作なし`、`keyloggerを作るべきではない`、`rootkitを実装するべきではない`をPolicy由来で0 findingとする。Case全体をhost scanする場合も、`確認済みIdentifierの記入形式例はv2.2.0`をhost/IDNと誤認しない。ambiguous labelled IPv6とbare `artifact.json`は既存のfail-closed contractどおり許容へ緩和しない。

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "policyVersion": "1.0.0",
+  "policyVersion": "1.1.0",
   "safe": [
     {"id": "DOMAIN-EXAMPLE", "text": "https://api.example/v1"},
     {"id": "DOMAIN-TEST", "text": "https://service.test/status"},
@@ -13,6 +13,7 @@
     {"id": "DOTTED-ID-VERSION", "text": "module.v2"},
     {"id": "DOTTED-ID-NUMERIC", "text": "artifact.c0m"},
     {"id": "DOTTED-ID-HYPHEN", "text": "alpha.x-y"},
+    {"id": "VERSIONED-IDENTIFIER-WITH-UNICODE-PROSE", "text": "確認済みIdentifierの記入形式例はv2.2.0"},
     {"id": "IDN-EXAMPLE-SUFFIX", "text": "例え.example"},
     {"id": "PUNYCODE-EXAMPLE-SUFFIX", "text": "xn--r8jz45g.example"},
     {"id": "HTML-DOUBLE-QUOTED-EXAMPLE", "text": "<a href=\"https://lab.example\">"},

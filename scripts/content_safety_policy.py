@@ -16,7 +16,9 @@ import unicodedata
 from urllib.parse import parse_qsl, urlparse
 
 
-POLICY_VERSION = "1.0.0"
+# 1.1.0 expands the bounded structural grammar and protected-data shapes.  This is
+# a semantic extension, so it is deliberately a minor rather than a patch release.
+POLICY_VERSION = "1.1.0"
 
 
 @dataclass(frozen=True)
@@ -89,7 +91,7 @@ _CONFUSABLE_FOLD = str.maketrans(
 _CLAUSE_SPLIT = re.compile(r"([,;、。；!?！？\n]+|[.:：](?=\s|$))")
 _CONTRAST_PREFIX = re.compile(
     r"^\s*(?:(?:but|however|yet|nevertheless|still|then|and)\b|"
-    r"しかし|ただし|だが|一方で|それでも|その後|そして)[,:、\s]*",
+    r"しかし|ただし|だが|一方で|それでも|その後|そして|なお)[,:、\s]*",
     re.IGNORECASE,
 )
 _PRONOUN_REFERENCE = re.compile(
@@ -142,7 +144,9 @@ ACTION_RULES = (
             _mixed_script_action(
                 r"write|code|create|creates|created|creating|creation|"
                 r"build|builds|built|building|develop|develops|developed|developing|"
-                r"implement|implements|implemented|implementing"
+                r"implement|implements|implemented|implementing|"
+                r"establish|establishes|established|establishing|automate|automates|"
+                r"automated|automating"
             )
             + r"|"
             r"(?:作(?:る|った|って(?:ください)?|ります|らない)|作成|構築|開発|実装)(?:する|した|します|しない|せず)?"
@@ -154,7 +158,8 @@ ACTION_RULES = (
             _mixed_script_action(
                 r"deploy|deploys|deployed|deploying|deployment|install|installs|"
                 r"installed|installing|run|runs|ran|running|execute|executes|executed|"
-                r"executing|use|uses|used|using|operate|operates|operated|operating"
+                r"executing|use|uses|used|using|operate|operates|operated|operating|"
+                r"log[ -]?in|sign[ -]?in|authenticate|authenticates|authenticated|authenticating"
             )
             + r"|"
             r"(?:配備|導入|実行|使用|利用|運用)(?:する|した|します|しない|せず)?"
@@ -170,12 +175,22 @@ ACTION_RULES = (
                 r"retrieve|retrieves|retrieved|retrieving|collect|collects|collected|"
                 r"collecting|store|stores|stored|storing|share|shares|shared|sharing|"
                 r"record|records|recorded|recording|view|views|viewed|viewing|"
+                r"send|sends|sent|sending|replace|replaces|replaced|replacing|"
                 r"modify|modifies|modified|modifying|encrypt|encrypts|encrypted|encrypting|"
                 r"delete|deletes|deleted|deleting|steal|steals|stole|stolen|stealing"
             )
             + r"|"
             r"(?:接続|アクセス|走査|スキャン|攻撃|試行|取得|収集|保存|共有|記録|"
-            r"閲覧|観測|参照|変更|改変|暗号化|削除|窃取)(?:する|した|します|しない|せず|行う|実施する)?"
+            r"閲覧|観測|参照|変更|改変|暗号化|削除|窃取|送信|置換)(?:する|した|します|しない|せず|行う|実施する)?"
+        ),
+    ),
+    ActionRule(
+        "analyze",
+        _rx(
+            _mixed_script_action(
+                r"analy[sz]e|analy[sz]es|analy[sz]ed|analy[sz]ing|analysis"
+            )
+            + r"|(?:分析|解析)(?:する|した|します|しない|せず|行う|実施する)?"
         ),
     ),
     ActionRule(
@@ -183,10 +198,13 @@ ACTION_RULES = (
         _rx(
             _mixed_script_action(
                 r"perform|performs|performed|performing|conduct|conducts|conducted|"
-                r"conducting|launch|launches|launched|launching|cause|causes|caused|causing"
+                r"conducting|launch|launches|launched|launching|cause|causes|caused|causing|"
+                r"publish|publishes|published|publishing|announce|announces|announced|announcing"
             )
             + r"|"
-            r"(?:行う|行わない|実施する|実施しない|仕掛ける|起こす)"
+            r"(?:行う|行わない|実施する|実施しない|仕掛ける|起こす|確立する|自動化する|"
+            r"公開|発生させる|公表する|試す|ログインする|サインインする|認証する|操作する|操作)"
+            r"(?:する|した|します|しない|せず)?"
         ),
     ),
     ActionRule(
@@ -204,73 +222,84 @@ ACTION_RULES = (
 )
 
 
+_LATIN_LEFT = r"(?<![a-z0-9])"
+_LATIN_RIGHT = r"(?![a-z0-9])"
+
+
 _TARGET = _rx(
     r"(?:real|actual)[ -]?(?:target|system|environment|service|site|tenant|api(?:[ -]endpoint)?)s?|"
     r"(?:third[ -]party|external)[ -]+(?:(?:production|prod|live)[ -]+)?"
     r"(?:targets?|systems?|environments?|data|apis?|api[ -]endpoints?|services?|saas|sites?|tenants?)|"
-    r"実(?:在|際)?(?:の)?(?:target|標的|ターゲット|system|システム|環境|tenant|テナント|service|サービス|api)|"
-    r"第三者(?:の)?(?:(?:本番|実運用)[ -]*)?(?:target|標的|system|システム|環境|data|データ|api|service|サービス|saas|site|サイト|tenant|テナント)|"
-    r"外部(?:の)?(?:(?:本番|実運用)[ -]*)?(?:target|標的|system|システム|環境|data|データ|api|service|サービス|saas|site|サイト|tenant|テナント)"
+    r"実(?:在|際)?\s*(?:の\s*)?(?:target|標的|ターゲット|system|システム|環境|tenant|テナント|service|サービス|api)|"
+    r"(?:第三者|外部|他社)\s*(?:の\s*)?(?:(?:本番|実運用)\s*[ -]*)?(?:target|標的|system|システム|環境|data|データ|api(?:\s*エンドポイント)?|service|サービス|saas|site|サイト|tenant|テナント)"
 )
 _SECRET = _rx(
-    r"\b(?:credentials?|passwords?|passphrases?|tokens?|cookies?|sessions?|secrets?|"
-    r"api[ -]?keys?|private[ -]?keys?|access[ -]?keys?|ssh[ -]?keys?)\b|"
+    _LATIN_LEFT + r"(?:credentials?|passwords?|passphrases?|tokens?|cookies?|sessions?|secrets?|"
+    r"api[ -]?keys?|private[ -]?keys?|access[ -]?keys?|ssh[ -]?keys?|"
+    r"bearer[ -]?(?:tokens?|jwt)|jwts?|session[ -]?ids?)" + _LATIN_RIGHT + r"|"
     r"(?:実)?(?:credential|クレデンシャル|認証情報|資格情報|token|トークン|cookie|クッキー|"
     r"session|セッション|secret|シークレット|password|パスワード|passphrase|パスフレーズ|"
     r"api[ -]?(?:key|キー)|private[ -]?(?:key|キー|鍵)|アクセス[ -]?(?:キー|鍵))"
 )
 _PII = _rx(
-    r"\b(?:pii|personally[ -]identifiable[ -]information|personal[ -](?:data|information)|"
-    r"employee[ -](?:data|information)|customer[ -](?:data|information)|"
+    _LATIN_LEFT + r"(?:pii|personally[ -]identifiable[ -]information|personal[ -](?:data|information|info)|"
+    r"employee[ -](?:data|information|info)|customer[ -](?:data|information|info)|"
     r"e[ -]?mail[ -]address|phone[ -]number|date[ -]of[ -]birth|passport[ -]number|"
     r"national[ -]id|social[ -]security[ -]number|payment[ -]card[ -]number|"
-    r"bank[ -]account[ -]number)\b|"
-    r"(?:個人(?:情報|データ)|従業員(?:情報|データ)|顧客(?:情報|データ)|メールアドレス|"
-    r"電話番号|生年月日|マイナンバー|個人番号|パスポート番号|カード番号|口座番号)"
+    r"bank[ -]account[ -]number|full[ -]name|home[ -]address|credit[ -]card[ -]number)" + _LATIN_RIGHT + r"|"
+    r"(?:個人(?:情報|データ)|(?:従業員|顧客)\s*(?:の\s*)?(?:情報|データ)|メールアドレス|"
+    r"電話番号|氏名|住所|生年月日|マイナンバー|個人番号|パスポート番号|(?:クレジット\s*)?カード番号|口座番号)"
 )
 _AUTH_SESSION = _rx(
-    r"\b(?:authentication[ -]attempts?|login[ -]attempts?|brute[ -]force|"
+    _LATIN_LEFT + r"(?:authentication[ -]attempts?|auth[ -]attempts?|login[ -]attempts?|"
+    r"(?:login|authentication)[ -]brute[ -]force|brute[ -]force[ -](?:login|authentication)|"
+    r"mfa[ -]fatigue|(?:login|sign[ -]in)(?=(?:する|を(?:試す|行う|実施する)))|"
     r"session[ -](?:theft|stealing|hijack(?:ing)?|fixation|replay|reuse|takeover)|"
-    r"credential[ -](?:theft|stealing|reuse))\b|"
-    r"(?:認証試行|ログイン試行|総当たり|ブルート[ -]フォース|"
+    r"credential[ -](?:theft|stealing|reuse))" + _LATIN_RIGHT + r"|"
+    r"(?:mfa\s*疲労(?:攻撃)?|認証試行|ログイン試行|(?:認証|ログイン|サインイン)(?=(?:を)?(?:試す|行う|実施する|する))|総当たり|ブルート[ -]?フォース(?:ログイン|認証)?|"
     r"セッション(?:窃取|乗っ取り|固定|リプレイ|再利用)|認証情報(?:窃取|再利用))"
 )
 _MALWARE = _rx(
-    r"(?<![a-z0-9])(?:deployable[ -]malware|malware|ransomware|wiper|keyloggers?|rootkits?|spyware|"
-    r"info[ -]?stealers?|credential[ -]stealers?|backdoors?|trojans?)(?![a-z0-9])|"
+    _LATIN_LEFT + r"(?:deployable[ -]malware|malware|ransomware|wiper|keyloggers?|rootkits?|spyware|"
+    r"info[ -]?stealers?|credential[ -]stealers?|backdoors?|trojans?|stealth[ -]tooling)" + _LATIN_RIGHT + r"|"
     r"(?:マルウェア|ランサムウェア|ワイパー|キーロガー|ルートキット|スパイウェア|"
-    r"インフォ[ -]スティーラー|認証情報窃取(?:型)?マルウェア|バックドア|トロイの木馬)"
+    r"インフォ[ -]?スティーラー|認証情報窃取(?:型)?マルウェア|バックドア|トロイの木馬|ステルスツール)"
 )
 _C2_PHISHING = _rx(
-    r"\b(?:c2|c[ ]*&[ ]*c|command[ -](?:and|&)[ -]control|phishing)"
-    r"(?:[ -](?:infrastructure|server|site|page|channel|operation|campaign))?\b|"
-    r"(?:c2|c[ ]*&[ ]*c|コマンド[ -]アンド[ -]コントロール|フィッシング)"
+    _LATIN_LEFT + r"(?:c2|c[ ]*&[ ]*c|command[ -](?:and|&)[ -]control|phishing)"
+    r"(?:[ -](?:infrastructure|server|site|page|channel|operation|campaign))?" + _LATIN_RIGHT + r"|"
+    r"(?:c2|c\s*&\s*c|コマンド\s*[ -]?\s*アンド\s*[ -]?\s*コントロール|フィッシング)"
     r"(?:基盤|インフラ|サーバー|サイト|ページ|通信|接続|運用|攻撃)?"
 )
 _PRIVILEGE_EVASION = _rx(
-    r"\b(?:privilege[ -]escalation|lateral[ -]movement|persistence|persistent[ -]access|"
+    _LATIN_LEFT + r"(?:privilege[ -]escalation|lateral[ -]movement|persistence|persistent[ -]access|"
     r"defen[cs]e[ -]evasion|log[ -](?:deletion|erasure|tampering)|"
-    r"audit[ -]trail[ -](?:deletion|erasure|tampering))\b|"
+    r"audit[ -]trail[ -](?:deletion|erasure|tampering))" + _LATIN_RIGHT + r"|"
     r"(?:権限昇格|横展開|ラテラルムーブメント|永続化|永続的アクセス|防御回避|検知回避|"
     r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん))"
 )
 _DISRUPTION = _rx(
-    r"\b(?:(?:distributed[ -])?denial[ -]of[ -]service|ddos|dos|resource[ -]exhaustion|"
-    r"data[ -](?:destruction|modification|encryption)|destructive[ -](?:action|operation))\b|"
+    _LATIN_LEFT + r"(?:(?:distributed[ -])?denial[ -]of[ -]service|ddos|dos|resource[ -]exhaustion|"
+    r"(?:unauthorized[ -])?data[ -](?:destruction|modification|encryption)|destructive[ -](?:action|operation)|encryption|"
+    r"encrypt(?:s|ing)?(?:[ ]+the)?[ ]+data|encrypted[ ]+the[ ]+data)" + _LATIN_RIGHT + r"|"
     r"(?:ddos|dos)(?=[をへにでのはがも、。；;,.!?！？\s]|$)|"
-    r"(?:サービス拒否|資源枯渇|データ(?:破壊|変更|改変|暗号化)|破壊的(?:操作|行為))"
+    r"(?:サービス拒否|資源枯渇|データ(?:を)?暗号化(?:する|した|します)?|"
+    r"データ(?:破壊|変更|改変|暗号化)|破壊的(?:操作|行為))"
 )
 _SOCIAL = _rx(
-    r"\b(?:social[ -]engineering|doxx(?:ing)?|tracking[ -](?:a[ -])?real[ -]person|"
-    r"real[ -]person[ -]tracking)\b|"
-    r"(?:ソーシャルエンジニアリング|ドキシング|晒し|実在人物(?:の)?(?:追跡|位置推定))"
+    _LATIN_LEFT + r"(?:social[ -]engineering|doxx(?:ing)?|tracking[ -](?:a[ -])?real[ -]person|"
+    r"real[ -]person[ -]tracking|impersonation|anonymi[sz]ation[ -]infrastructure|dark[ -]web[ -]infiltration)" + _LATIN_RIGHT + r"|"
+    r"(?:ソーシャルエンジニアリング|ドキシング|晒し|なりすまし|匿名化基盤|ダークウェブ(?:への)?直接潜入|実在人物(?:の)?(?:追跡|位置推定))"
 )
 _WEAK_ATTRIBUTION = _rx(
-    r"\b(?:confident(?:ly)?[ -](?:attribute|attribution)|definitive[ -]attribution)"
-    r"(?:[ -](?:from|using))?[ -]weak[ -]evidence\b|"
-    r"\battribute\b.{0,80}\bconfidently\b.{0,80}\bweak[ -]evidence\b|"
-    r"(?:弱い|不十分な)(?:evidence|証拠|根拠)(?:だけ)?(?:から|で)"
-    r"(?:断定的に)?(?:帰属|主体|組織|国家)(?:を)?(?:断定|特定|同定)"
+    _LATIN_LEFT + r"(?:confident(?:ly)?[ -](?:attribute|attribution)|definitive[ -]attribution)"
+    r"(?:[ -](?:from|using))?[ -]weak[ -]evidence" + _LATIN_RIGHT + r"|" +
+    _LATIN_LEFT + r"attribute" + _LATIN_RIGHT + r".{0,80}" + _LATIN_LEFT + r"confidently" + _LATIN_RIGHT + r".{0,80}" + _LATIN_LEFT + r"weak[ -]evidence" + _LATIN_RIGHT + r"|"
+    + _LATIN_LEFT + r"weak[ -]evidence" + _LATIN_RIGHT
+    + r"(?:から(?:の)?|で)(?:断定的(?:に)?(?:帰属|主体|組織|国家)|"
+    + r"(?:断定的(?:に)?)?(?:帰属|主体|組織|国家)(?:を)?(?:断定|特定|同定))|"
+    r"(?:弱い|不十分な)(?:evidence|証拠|根拠)(?:だけ)?(?:から(?:の)?|で)"
+    r"(?:断定的(?:に)?(?:帰属|主体|組織|国家)|(?:断定的(?:に)?)?(?:帰属|主体|組織|国家)(?:を)?(?:断定|特定|同定))"
 )
 
 
@@ -278,18 +307,18 @@ PROTECTED_OBJECT_RULES = (
     ProtectedObjectRule(
         "target.real_or_external",
         _TARGET,
-        frozenset({"create", "deploy-use", "access-collect", "perform"}),
+        frozenset({"create", "deploy-use", "access-collect", "perform", "analyze"}),
     ),
     ProtectedObjectRule(
         "secret.credential",
         _SECRET,
-        frozenset({"create", "deploy-use", "access-collect", "perform"}),
+        frozenset({"create", "deploy-use", "access-collect", "analyze", "perform"}),
         synthetic_qualifiable=True,
     ),
     ProtectedObjectRule(
         "data.pii",
         _PII,
-        frozenset({"create", "deploy-use", "access-collect", "perform"}),
+        frozenset({"create", "deploy-use", "access-collect", "perform", "analyze"}),
     ),
     ProtectedObjectRule(
         "operation.authentication_or_session",
@@ -488,6 +517,12 @@ def _action_is_prohibited(
         return True
     if re.search(r"(?:しない|せず|行わない|使わない|作らない)$", action_text):
         return True
+    # Japanese negative predicates can follow a bare action stem (for example,
+    # ``作るべきではない`` and ``実Target操作なし``).  Keep this local: a later
+    # action or a clause boundary still ends the negative scope.
+    direct_tail = clause[action_end : action_end + 24]
+    if re.match(r"\s*(?:べきではない|べからず|なし)(?=$|[、。；;,.!?！？\s])", direct_tail):
+        return True
     if _trailing_prohibition_controls_action(clause, action, _TRAILING_EN_PROHIBITION):
         return True
     if _trailing_prohibition_controls_action(clause, action, _TRAILING_JA_PROHIBITION):
@@ -519,7 +554,7 @@ _TRAILING_JA_PROHIBITION = re.compile(
     r"(?:禁止(?:する|される|している)|対象外(?!ではない)|許可しない|要求しない)|"
     r"(?:しない|せず|行わない|使わない|用いない|含めない|記載しない|"
     r"接続しない|実施しない|作らない|作ることを禁止する|"
-    r"はいけない|はならない)"
+    r"はいけない|はならない|(?:処理|操作|機能|方法|手順)(?:は|を)?扱わない)"
 )
 
 
@@ -794,7 +829,18 @@ def _continuation_actions(
     pronoun_bound = _action_has_direct_reference(remainder, actions[0])
     new_objects = _object_matches(remainder)
     trailing = remainder[actions[-1][1] :].strip()
-    ellipsis_bound = explicit_contrast and not new_objects and not trailing
+    # A punctuation-separated Japanese action stem can omit the already-negated
+    # object only when the continuation is itself just that action.  This rejects
+    # ``Tokenは使用しない、取得する`` without rebinding benign prose such as
+    # ``結果だけを記録する`` to Token.
+    bare_ellipsis = (
+        not explicit_contrast
+        and not new_objects
+        and len(actions) == 1
+        and not remainder[: actions[0][0]].strip()
+        and not trailing
+    )
+    ellipsis_bound = (explicit_contrast and not new_objects and not trailing) or bare_ellipsis
     if not (pronoun_bound or ellipsis_bound):
         return None
     return remainder, actions
@@ -884,7 +930,7 @@ _EN_TEMPORAL_QUALIFIERS = frozenset(
     }
 )
 _JA_DIRECT_ACTION_CONTINUATION = re.compile(
-    r"^(?:で|て|し|して|つつ|が|けれど|けれども|ものの)\s*$"
+    r"^(?:で|て|し|して|せず|つつ|が|けれど|けれども|ものの)\s*$"
 )
 
 
@@ -1045,7 +1091,9 @@ def _actions_bound_to_object(
                 # protected object without direct coordination.
                 pronoun_bound = _action_has_direct_reference(clause, candidate)
                 direct_english = _is_direct_action_coordination(between) and pronoun_bound
-                direct_japanese = bool(_JA_DIRECT_ACTION_CONTINUATION.fullmatch(between))
+                direct_japanese = bool(_JA_DIRECT_ACTION_CONTINUATION.fullmatch(between)) or (
+                    not between and anchor[3].endswith("せず")
+                )
                 relative_predicate = (
                     relative_after_object
                     and anchor[0] >= protected.end
@@ -1388,6 +1436,12 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
     for match in _IDN_DOMAIN_PATTERN.finditer(normalized):
         domain = match.group(0).casefold()
         if domain in url_hosts or _DOMAIN_PATTERN.fullmatch(domain):
+            continue
+        # A dotted version/identifier can contain non-ASCII prose before a
+        # numeric terminal component (for example, ``Identifier...v2.2.0``).
+        # DNS TLDs are not numeric-only, so retain fail-closed IDN handling only
+        # when the final label has at least one Unicode letter.
+        if not any(character.isalpha() for character in domain.rsplit(".", 1)[-1]):
             continue
         if domain.endswith(_ALLOWED_HOST_SUFFIXES):
             continue

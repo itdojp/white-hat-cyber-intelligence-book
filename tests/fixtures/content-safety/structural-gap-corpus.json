@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyVersion": "1.1.0",
+  "unsafe": [
+    {
+      "id": "TARGET-JA-WHITESPACE-ANALYSIS",
+      "text": "第三者 の APIを分析する",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "TARGET-OTHER-ORGANIZATION",
+      "text": "他社サービスへ接続する",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "PII-LATIN-JAPANESE-BOUNDARY",
+      "text": "PIIを収集する",
+      "expectedCategories": ["data.pii"]
+    },
+    {
+      "id": "PII-GENERIC-FIELD-SHAPE",
+      "text": "credit card number collected",
+      "expectedCategories": ["data.pii"]
+    },
+    {
+      "id": "PII-CUSTOMER-INFO-MIXED-SCRIPT",
+      "text": "customer infoを分析する",
+      "expectedCategories": ["data.pii"]
+    },
+    {
+      "id": "PII-EMPLOYEE-INFO-MIXED-SCRIPT",
+      "text": "employee infoを収集する",
+      "expectedCategories": ["data.pii"]
+    },
+    {
+      "id": "SECRET-ANALYSIS",
+      "text": "Tokenを分析する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "NEGATED-FIRST-ACTION-JA-CHAIN",
+      "text": "Tokenを取得せず保存する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "NEGATED-OBJECT-BARE-ELLIPSIS",
+      "text": "Tokenは使用しない、取得する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "PRIVILEGE-MIXED-SCRIPT",
+      "text": "lateral movementを実施する",
+      "expectedCategories": ["operation.privilege_or_evasion"]
+    },
+    {
+      "id": "AUTH-LOGIN-MIXED-SCRIPT",
+      "text": "sign-inする",
+      "expectedCategories": ["operation.authentication_or_session"]
+    },
+    {
+      "id": "WEAK-EVIDENCE-PUBLICATION",
+      "text": "弱いEvidenceからの断定的帰属を公表する",
+      "expectedCategories": ["analysis.weak_evidence_attribution"]
+    },
+    {
+      "id": "WEAK-EVIDENCE-EN-JA-PUBLICATION",
+      "text": "weak evidenceからの断定的帰属を公表する",
+      "expectedCategories": ["analysis.weak_evidence_attribution"]
+    },
+    {
+      "id": "WEAK-EVIDENCE-EN-JA-IDENTIFICATION",
+      "text": "weak evidenceから断定的に国家を特定する",
+      "expectedCategories": ["analysis.weak_evidence_attribution"]
+    },
+    {
+      "id": "DISRUPTION-ENCRYPT-DATA-EN",
+      "text": "encrypt data",
+      "expectedCategories": ["operation.disruption_or_destruction"]
+    },
+    {
+      "id": "DISRUPTION-ENCRYPT-DATA-JA",
+      "text": "データを暗号化する",
+      "expectedCategories": ["operation.disruption_or_destruction"]
+    }
+  ],
+  "safe": [
+    {
+      "id": "TARGET-NO-OPERATION-STATEMENT",
+      "text": "合成Scenario。外部接続と実Target操作なし"
+    },
+    {
+      "id": "JAPANESE-NORMATIVE-NEGATION-CREATE",
+      "text": "keyloggerを作るべきではない"
+    },
+    {
+      "id": "JAPANESE-NORMATIVE-NEGATION-IMPLEMENT",
+      "text": "rootkitを実装するべきではない"
+    },
+    {
+      "id": "RESULT-RECORD-NOT-SECRET-ELLIPSIS",
+      "text": "Tokenを使用しない、結果だけを記録する"
+    },
+    {
+      "id": "SECRET-NEGATED-ANALYSIS",
+      "text": "Tokenを分析しない"
+    },
+    {
+      "id": "SECRET-SYNTHETIC-ANALYSIS",
+      "text": "合成Tokenを分析する"
+    },
+    {
+      "id": "AUTH-EXPLANATORY-OUT-OF-SCOPE",
+      "text": "サインインする処理は扱わない"
+    }
+  ]
+}
