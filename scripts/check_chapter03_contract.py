@@ -30,6 +30,7 @@ from scripts.sync_book_site import (  # noqa: E402
 from scripts.sync_site_source import PAGES, rewrite_links  # noqa: E402
 
 ERRORS: list[str] = []
+EXPECTED_CONTENT_SAFETY_POLICY_VERSION = "1.1.0"
 
 EXPECTED_CHAPTER03_PAGES = {
     (
@@ -3268,6 +3269,13 @@ def main() -> int:
     if not re.fullmatch(r"\d+\.\d+\.\d+", CONTENT_SAFETY_POLICY_VERSION):
         error(
             "shared content-safety Policy version must use semantic-version form"
+        )
+    elif CONTENT_SAFETY_POLICY_VERSION != EXPECTED_CONTENT_SAFETY_POLICY_VERSION:
+        error(
+            "shared content-safety Policy version changed without the required "
+            "Chapter 3 adapter re-audit: "
+            f"expected {EXPECTED_CONTENT_SAFETY_POLICY_VERSION}, "
+            f"got {CONTENT_SAFETY_POLICY_VERSION}"
         )
     required_files = (
         "manuscript/03-capability-evidence.md",
