@@ -17,6 +17,12 @@ if str(ROOT) not in sys.path:
 
 from scripts.content_safety_policy import (  # noqa: E402
     ACTION_RULES,
+    JAPANESE_PARTICLE_FRAMES,
+    JapaneseParticleFrame,
+    META_ANALYSIS_FRAMES,
+    MetaAnalysisFrame,
+    OPERATION_RULES,
+    OperationRule,
     POLICY_VERSION,
     PROTECTED_OBJECT_RULES,
     SafetyFinding,
@@ -27,7 +33,7 @@ from scripts.content_safety_policy import (  # noqa: E402
 )
 
 
-EXPECTED_POLICY_VERSION = "1.1.0"
+EXPECTED_POLICY_VERSION = "1.2.0"
 FIXTURE_SCHEMA_VERSION = "1.0.0"
 EXPECTED_LEGACY_UNSAFE_COUNT = 249
 EXPECTED_LEGACY_SAFE_COUNT = 49
@@ -44,6 +50,29 @@ EXPECTED_ACTION_CATEGORIES = {
     "analysis.weak_evidence_attribution",
 }
 EXPECTED_ALL_CATEGORIES = EXPECTED_ACTION_CATEGORIES | {"network.host_or_address"}
+EXPECTED_REPRESENTATIVE_IDS = {
+    "CH02-MANUSCRIPT-EXTERNAL-API",
+    "CH02-TEMPLATE-TARGET",
+    "CH02-TEMPLATE-SECRET",
+    "CH02-CASE-SAFETY",
+    "CH02-CASE-HOST-TEST",
+    "CH02-CASE-HOST-EXAMPLE",
+    "CH11-MANUSCRIPT-TARGET",
+    "CH11-MANUSCRIPT-SECRET",
+    "CH11-MANUSCRIPT-THIRD-PARTY",
+    "CH11-CASE-SAFETY",
+    "CH11-TEMPLATE-SAFETY",
+    "CH17-MANUSCRIPT-SCOPE",
+    "CH17-MANUSCRIPT-CONNECTION",
+    "CH17-CASE-SAFETY",
+    "CH17-TEMPLATE-SAFETY",
+    "CH25-MANUSCRIPT-SAFETY",
+    "CH25-TEMPLATE-TARGET",
+    "CH25-TEMPLATE-SECRET",
+    "CH25-CASE-SAFETY",
+    "CH25-CASE-HOST-SIGNIN",
+    "CH25-CASE-HOST-PORTAL",
+}
 BLOCKER_TEXTS = {
     "do not build a keylogger, but deploy it",
     "never build a keylogger; however, use it",
@@ -64,6 +93,7 @@ REQUIRED_UNSAFE_PARTICLE_DESTRUCTIVE_ACTIONS = {
     "PARTICLE-LOG-DELETION-JA": "ログを削除する。",
     "PARTICLE-AUDIT-TRAIL-DELETION-JA": "監査証跡を削除する。",
     "PARTICLE-DATA-DESTRUCTION-JA": "データを破壊する。",
+    "PARTICLE-DATA-BARE-DESTRUCTION-JA": "本番データを破壊",
 }
 REQUIRED_SAFE_PARTICLE_DESTRUCTIVE_ACTIONS = {
     "SAFE-076": "ログを削除しない。",
@@ -75,6 +105,7 @@ REQUIRED_SAFE_PARTICLE_DESTRUCTIVE_ACTIONS = {
     "SAFE-082": "カタログを削除する。",
     "SAFE-083": "メタデータを変更する。",
     "SAFE-084": "メタデータを暗号化する。",
+    "SAFE-096": "本番データを破壊しない",
 }
 REQUIRED_UNSAFE_BIDIRECTIONAL_ACTIONS = {
     "ACTION-BOTH-SIDES-JA-USE-PRE": "使用しないマルウェアを構築する",
@@ -204,6 +235,30 @@ REQUIRED_UNSAFE_PROHIBITION_SCOPE = {
     "PRE-ACTION-PROHIBITION-CONTRADICTION": (
         "You are prohibited from building a keylogger, but deploy it."
     ),
+    "PRE-ACTION-BARE-PROHIBITION-CONTRADICTION": (
+        "Forbidden to replay the synthetic session, but reuse it."
+    ),
+    "PRE-ACTION-BARE-PROHIBITION-NEW-SUBJECT": (
+        "Prohibited from replaying the synthetic session and you should reuse it."
+    ),
+    "PRE-ACTION-BARE-PROHIBITION-NEW-MODAL": (
+        "Forbidden from replaying the synthetic session and should reuse it."
+    ),
+    "PRE-ACTION-BARE-PROHIBITION-PASSIVE-MODAL": (
+        "Prohibited from replaying the synthetic session and it should be reused."
+    ),
+    "OBJECT-FIRST-PROHIBITION-NEW-SUBJECT": (
+        "The synthetic session is prohibited from replaying and you should reuse it."
+    ),
+    "OBJECT-FIRST-NEGATION-NEW-SUBJECT": (
+        "Synthetic credentials must not be stolen and you should reuse them."
+    ),
+    "ACTION-FIRST-BARE-MODAL-PASSIVE": (
+        "Forbidden from replaying the synthetic session and should be reused."
+    ),
+    "OBJECT-FIRST-BARE-MODAL-PASSIVE": (
+        "The synthetic session is prohibited from replaying and should be reused."
+    ),
     "INLINE-HTML-SPLIT-MALWARE": "<span>key</span><span>logger</span>を作る",
     "CONTINUATION-MULTI-OBJECT-TARGET": (
         "Do not access a third-party production API and do not build a keylogger. "
@@ -255,6 +310,33 @@ REQUIRED_SAFE_PROHIBITION_SCOPE = {
     "SAFE-066": "You are prohibited from building a keylogger.",
     "SAFE-067": "You are forbidden from building a keylogger.",
     "SAFE-068": "You are prohibited from building or deploying a keylogger.",
+    "SAFE-085": "Forbidden to replay the synthetic session or reuse it.",
+    "SAFE-086": "Prohibited from replaying the synthetic session or reusing it.",
+    "SAFE-087": "Forbidden from replaying the synthetic session or reusing it.",
+    "SAFE-088": (
+        "Prohibited from replaying the synthetic session and you should not reuse it."
+    ),
+    "SAFE-089": (
+        "Forbidden from replaying the synthetic session and should not reuse it."
+    ),
+    "SAFE-090": (
+        "Prohibited from replaying the synthetic session and it should not be reused."
+    ),
+    "SAFE-091": (
+        "Prohibited from replaying the synthetic session and it could not be reused."
+    ),
+    "SAFE-092": (
+        "The synthetic session is prohibited from replaying and you should not reuse it."
+    ),
+    "SAFE-093": (
+        "Synthetic credentials must not be stolen and you should not reuse them."
+    ),
+    "SAFE-094": (
+        "Forbidden from replaying the synthetic session and should not be reused."
+    ),
+    "SAFE-095": (
+        "The synthetic session is prohibited from replaying and should not be reused."
+    ),
 }
 REQUIRED_NORMALIZATION_CASES = {
     "INLINE-HTML-ADJACENT": (
@@ -416,6 +498,140 @@ REQUIRED_STRUCTURAL_GAP_SAFE = {
     "AUTH-EXPLANATORY-OUT-OF-SCOPE": "サインインする処理は扱わない",
 }
 
+REQUIRED_FINITE_GRAMMAR_1_2 = {
+    "A": {
+        "unsafe": {
+            "A-UNSAFE-001": ("システムのログを削除する", ("operation.privilege_or_evasion",)),
+            "A-UNSAFE-002": ("対象の監査証跡を消去する", ("operation.privilege_or_evasion",)),
+            "A-UNSAFE-003": ("本番データを破壊する", ("operation.disruption_or_destruction",)),
+            "A-UNSAFE-004": (
+                "顧客のデータを暗号化する",
+                ("data.pii", "operation.disruption_or_destruction"),
+            ),
+            "A-UNSAFE-005": ("監査ログを改ざんする", ("operation.privilege_or_evasion",)),
+            "A-UNSAFE-006": ("本番データを破壊", ("operation.disruption_or_destruction",)),
+        },
+        "safe": {
+            "A-SAFE-001": "システムのログを削除しない",
+            "A-SAFE-002": "本番データを破壊することを禁止する",
+            "A-SAFE-003": "監査ログを改ざんしない",
+            "A-SAFE-004": "システムのログを削除しない。しかし監査ログを改ざんしない",
+            "A-SAFE-005": "システムのログを削除しない。しかし監査証跡を消去しない",
+            "A-SAFE-006": "本番データを破壊しない",
+        },
+        "nearMiss": {
+            "A-NEAR-001": "ログ削除の危険性を分析する",
+            "A-NEAR-002": "カタログを削除する",
+            "A-NEAR-003": "ブログを削除する",
+            "A-NEAR-004": "メタデータの取扱いを説明する",
+        },
+        "continuation": {
+            "A-CONT-001": (
+                "システムのログを削除して監査証跡を消去する",
+                ("operation.privilege_or_evasion",),
+            ),
+            "A-CONT-002": (
+                "システムのログを削除しない。しかし監査ログを改ざんする",
+                ("operation.privilege_or_evasion",),
+            ),
+            "A-CONT-003": (
+                "システムのログを削除しない。しかし監査証跡を消去する",
+                ("operation.privilege_or_evasion",),
+            ),
+        },
+    },
+    "B": {
+        "unsafe": {
+            "B-UNSAFE-001": ("合成認証情報を窃取する", ("operation.authentication_or_session",)),
+            "B-UNSAFE-002": ("合成セッションを再利用する", ("operation.authentication_or_session",)),
+            "B-UNSAFE-003": ("synthetic sessionを再利用する", ("operation.authentication_or_session",)),
+            "B-UNSAFE-004": ("mock tokenをリプレイする", ("operation.authentication_or_session",)),
+            "B-UNSAFE-005": ("test cookieを乗っ取る", ("operation.authentication_or_session",)),
+            "B-UNSAFE-006": ("synthetic credentials are stolen", ("operation.authentication_or_session",)),
+            "B-UNSAFE-007": ("synthetic JWT is replayed", ("operation.authentication_or_session",)),
+            "B-UNSAFE-008": ("合成認証情報を持ち出す", ("operation.authentication_or_session",)),
+            "B-UNSAFE-009": ("合成認証情報を流出させる", ("operation.authentication_or_session",)),
+            "B-UNSAFE-010": (
+                "synthetic credentialsをexfiltrateする",
+                ("operation.authentication_or_session",),
+            ),
+            "B-UNSAFE-011": (
+                "synthetic sessionをreplayする",
+                ("operation.authentication_or_session",),
+            ),
+        },
+        "safe": {
+            "B-SAFE-001": "合成認証情報を窃取しない",
+            "B-SAFE-002": "Session reuseは禁止される",
+            "B-SAFE-003": "synthetic session replay is prohibited",
+            "B-SAFE-004": "合成認証情報は窃取されない",
+            "B-SAFE-005": "合成セッションは再利用されない",
+            "B-SAFE-006": "合成認証情報を持ち出さない",
+            "B-SAFE-007": "合成認証情報を流出させない",
+            "B-SAFE-008": "synthetic credentialsをexfiltrateしない",
+            "B-SAFE-009": "synthetic sessionをreplayしない",
+        },
+        "nearMiss": {
+            "B-NEAR-001": "合成Tokenをoffline fixtureで使用する",
+            "B-NEAR-002": "mock Cookieの分類結果を記録する",
+            "B-NEAR-003": "認証情報の窃取を検知する",
+            "B-NEAR-004": "The fixture records a synthetic JWT literal.",
+        },
+        "continuation": {
+            "B-CONT-001": (
+                "Do not replay the synthetic session, but reuse it.",
+                ("operation.authentication_or_session",),
+            ),
+            "B-CONT-002": (
+                "合成認証情報を窃取しない。しかし再利用する",
+                ("operation.authentication_or_session",),
+            ),
+            "B-CONT-003": (
+                "合成認証情報を持ち出さない。しかし再利用する",
+                ("operation.authentication_or_session",),
+            ),
+        },
+    },
+    "C": {
+        "safe": {
+            "C-SAFE-001": "analyze the risk of collecting PII",
+            "C-SAFE-002": "assess the privacy impact of storing personal information",
+            "C-SAFE-003": "evaluate safeguards against sharing customer information",
+            "C-SAFE-004": "review whether collecting PII is necessary",
+            "C-SAFE-005": "document the consequences of exposing employee information",
+            "C-SAFE-006": "discuss controls related to processing personal data",
+        },
+        "unsafe": {
+            "C-UNSAFE-001": ("analyze PII", ("data.pii",)),
+            "C-UNSAFE-002": ("collect PII for analysis", ("data.pii",)),
+            "C-UNSAFE-003": ("analyze and collect PII", ("data.pii",)),
+            "C-UNSAFE-004": ("analyze the risk, then collect PII", ("data.pii",)),
+            "C-UNSAFE-005": ("review PII and share it", ("data.pii",)),
+            "C-UNSAFE-006": (
+                "assess the impact and retain customer information",
+                ("data.pii",),
+            ),
+        },
+        "nearMiss": {
+            "C-NEAR-001": "analyze the risk of collecting telemetry",
+            "C-NEAR-002": "review whether storing fixture output is necessary",
+            "C-NEAR-003": (
+                "analyze the risk of collecting PII and store the same report"
+            ),
+        },
+        "continuation": {
+            "C-CONT-001": (
+                "analyze the risk of collecting PII, then store it",
+                ("data.pii",),
+            ),
+            "C-CONT-002": (
+                "analyze the risk of collecting PII and use it",
+                ("data.pii",),
+            ),
+        },
+    },
+}
+
 
 errors: list[str] = []
 
@@ -508,6 +724,58 @@ def check_public_api() -> None:
     action_kinds = {rule.kind for rule in ACTION_RULES}
     if action_kinds != required_action_kinds:
         error(f"action kinds {sorted(action_kinds)!r} do not match {sorted(required_action_kinds)!r}")
+
+    for model in (JapaneseParticleFrame, OperationRule, MetaAnalysisFrame):
+        if not is_dataclass(model) or not model.__dataclass_params__.frozen:
+            error(f"{model.__name__} must remain a frozen dataclass")
+    if {frame.category for frame in JAPANESE_PARTICLE_FRAMES} != {
+        "operation.privilege_or_evasion",
+        "operation.disruption_or_destruction",
+    }:
+        error("Japanese particle frame categories drifted")
+    if {frame.action_kind for frame in JAPANESE_PARTICLE_FRAMES} != {"access-collect"}:
+        error("Japanese particle frame action kinds drifted")
+    if len(OPERATION_RULES) != 1:
+        error("finite non-qualifiable operation inventory drifted")
+    else:
+        operation = OPERATION_RULES[0]
+        if (
+            operation.kind != "theft-reuse"
+            or operation.category != "operation.authentication_or_session"
+            or operation.synthetic_qualifiable
+            or operation.precedence <= 0
+        ):
+            error("theft/reuse operation precedence contract drifted")
+    if len(META_ANALYSIS_FRAMES) != 1:
+        error("finite PII meta-analysis frame inventory drifted")
+    else:
+        frame = META_ANALYSIS_FRAMES[0]
+        expected_frame = (
+            (
+                "analyze", "assess", "evaluate", "review", "examine", "model",
+                "discuss", "document",
+            ),
+            (
+                "risk", "risks", "impact", "impacts", "implications", "policy",
+                "policies", "control", "controls", "safeguard", "safeguards",
+                "necessity", "consequences",
+            ),
+            ("of", "associated with", "related to", "against", "whether"),
+            ("collecting", "storing", "sharing", "using", "processing", "exposing", "retaining"),
+            (
+                "pii", "personal information", "personal data", "employee information",
+                "employee data", "customer information", "customer data",
+            ),
+        )
+        actual_frame = (
+            frame.meta_verbs,
+            frame.meta_heads,
+            frame.relations,
+            frame.embedded_operations,
+            frame.protected_objects,
+        )
+        if actual_frame != expected_frame:
+            error("finite PII meta-analysis vocabulary drifted")
 
 
 def check_action_corpus() -> list[tuple[str, str]]:
@@ -682,6 +950,96 @@ def check_structural_gap_corpus() -> list[tuple[str, str]]:
     return deterministic_fields
 
 
+def check_finite_grammar_1_2_corpus() -> list[tuple[str, str]]:
+    """Freeze Issue #61's three semantic classes as exact table inventories."""
+
+    relative = "tests/fixtures/content-safety/finite-grammar-1.2-corpus.json"
+    corpus = load_json(relative)
+    exact_keys(corpus, {"schemaVersion", "policyVersion", "clusters"}, relative)
+    if (
+        corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION
+        or corpus.get("policyVersion") != POLICY_VERSION
+    ):
+        error(f"{relative}: schemaVersion/policyVersion mismatch")
+    clusters = corpus.get("clusters")
+    if not isinstance(clusters, dict):
+        error(f"{relative}.clusters: must be an object")
+        return []
+    exact_keys(clusters, set(REQUIRED_FINITE_GRAMMAR_1_2), f"{relative}.clusters")
+
+    deterministic_fields: list[tuple[str, str]] = []
+    seen_ids: set[str] = set()
+    for cluster_name, required_groups in REQUIRED_FINITE_GRAMMAR_1_2.items():
+        cluster = clusters.get(cluster_name)
+        if not isinstance(cluster, dict):
+            error(f"{relative}.clusters.{cluster_name}: must be an object")
+            continue
+        exact_keys(
+            cluster,
+            set(required_groups),
+            f"{relative}.clusters.{cluster_name}",
+        )
+        for group_name, required_inventory in required_groups.items():
+            unsafe_group = group_name in {"unsafe", "continuation"}
+            entries = checked_entries(
+                cluster.get(group_name),
+                expected_keys=(
+                    {"id", "text", "expectedCategories"}
+                    if unsafe_group
+                    else {"id", "text"}
+                ),
+                context=f"{relative}.clusters.{cluster_name}.{group_name}",
+            )
+            duplicates = seen_ids & {str(item.get("id")) for item in entries}
+            if duplicates:
+                error(f"{relative}: duplicate IDs across clusters {sorted(duplicates)!r}")
+            seen_ids.update(str(item.get("id")) for item in entries)
+
+            if unsafe_group:
+                actual_inventory = {
+                    item.get("id"): (
+                        item.get("text"),
+                        tuple(item.get("expectedCategories", [])),
+                    )
+                    for item in entries
+                }
+            else:
+                actual_inventory = {
+                    item.get("id"): item.get("text")
+                    for item in entries
+                }
+            if actual_inventory != required_inventory:
+                error(
+                    f"{relative}.{cluster_name}.{group_name}: finite inventory drifted"
+                )
+
+            for item in entries:
+                identifier, text = item.get("id"), item.get("text")
+                if not isinstance(identifier, str) or not isinstance(text, str):
+                    continue
+                findings = scan_action_text(text, location=identifier)
+                if unsafe_group:
+                    expected = item.get("expectedCategories")
+                    if not isinstance(expected, list) or not all(
+                        isinstance(category, str) for category in expected
+                    ):
+                        error(f"{relative}.{identifier}: invalid expectedCategories")
+                    else:
+                        actual = sorted({finding.category for finding in findings})
+                        if actual != sorted(expected):
+                            error(
+                                f"{relative}.{identifier}: expected exactly "
+                                f"{sorted(expected)!r}, got {actual!r}"
+                            )
+                elif findings:
+                    error(
+                        f"{relative}.{identifier}: safe/near-miss text produced "
+                        f"findings {findings!r}"
+                    )
+                deterministic_fields.append((identifier, text))
+    return deterministic_fields
+
+
 def check_normalization_corpus() -> None:
     relative = "tests/fixtures/content-safety/normalization-corpus.json"
     corpus = load_json(relative)
@@ -825,7 +1183,7 @@ def check_representative_main_fields() -> list[tuple[str, str]]:
     )
     if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
         error(f"{relative}: schemaVersion/policyVersion mismatch")
-    if corpus.get("baselineMain") != "2c40869febd75b9e13fec544aec9bf90552e1556":
+    if corpus.get("baselineMain") != "a1dfadae153bfe36b88f72e503f5a5be9c64bddf":
         error(f"{relative}: reference baseline main changed without explicit audit")
     if "not whole-book natural-language coverage" not in str(corpus.get("scope", "")):
         error(f"{relative}: bounded-scope disclaimer is missing")
@@ -834,6 +1192,12 @@ def check_representative_main_fields() -> list[tuple[str, str]]:
         expected_keys={"id", "source", "text"},
         context=f"{relative}.fields",
     )
+    actual_ids = {item.get("id") for item in entries}
+    if actual_ids != EXPECTED_REPRESENTATIVE_IDS:
+        error(
+            f"{relative}: representative field inventory drifted: "
+            f"expected {len(EXPECTED_REPRESENTATIVE_IDS)}, got {len(actual_ids)}"
+        )
     expected_chapters = {"CH02", "CH11", "CH17", "CH25"}
     seen_chapters: set[str] = set()
     seen_source_kinds: dict[str, set[str]] = {chapter: set() for chapter in expected_chapters}
@@ -904,7 +1268,7 @@ def check_determinism_and_malformed(fields_to_scan: list[tuple[str, str]]) -> No
 def check_documentation() -> None:
     required_files = {
         "CONTENT_SAFETY_POLICY.md": (
-            "Policy version: `1.1.0`",
+            "Policy version: `1.2.0`",
             "## Stable API",
             "## Structured policy model",
             "## Normalization contract",
@@ -914,7 +1278,10 @@ def check_documentation() -> None:
             "## Versioning and re-audit",
             "patch:",
             "minor:",
-            "1.1.0 re-audit",
+            "1.2.0 finite grammar",
+            "## Finite review acceptance contract",
+            "Blocking",
+            "Non-blocking backlog",
             "major:",
             "## Non-goals",
             "自然言語安全性の完全な判定",
@@ -927,7 +1294,7 @@ def check_documentation() -> None:
             "六つのblocker phrase",
             "`.localhost`",
             "unresolved thread 0",
-            "1.1.0 parity re-audit",
+            "1.2.0 finite grammar re-audit",
         ),
     }
     for relative, markers in required_files.items():
@@ -952,6 +1319,8 @@ def main(argv: list[str] | None = None) -> int:
     check_public_api()
     deterministic_fields = check_action_corpus()
     deterministic_fields.extend(check_structural_gap_corpus())
+    finite_grammar_fields = check_finite_grammar_1_2_corpus()
+    deterministic_fields.extend(finite_grammar_fields)
     check_normalization_corpus()
     deterministic_fields.extend(check_host_corpus())
     representative_fields = check_representative_main_fields()
@@ -969,7 +1338,8 @@ def main(argv: list[str] | None = None) -> int:
     summary = (
         "content safety policy contract passed: "
         f"version={POLICY_VERSION}, categories={len(EXPECTED_ALL_CATEGORIES)}, "
-        f"blockers={len(BLOCKER_TEXTS)}, representative_fields={len(representative_fields)}"
+        f"blockers={len(BLOCKER_TEXTS)}, finite_grammar_cases={len(finite_grammar_fields)}, "
+        f"representative_fields={len(representative_fields)}"
     )
     if parity_counts is not None:
         summary += (

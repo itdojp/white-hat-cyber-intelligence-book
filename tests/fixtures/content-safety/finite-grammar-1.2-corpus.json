@@ -1,0 +1,382 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyVersion": "1.2.0",
+  "clusters": {
+    "A": {
+      "unsafe": [
+        {
+          "id": "A-UNSAFE-001",
+          "text": "システムのログを削除する",
+          "expectedCategories": [
+            "operation.privilege_or_evasion"
+          ]
+        },
+        {
+          "id": "A-UNSAFE-002",
+          "text": "対象の監査証跡を消去する",
+          "expectedCategories": [
+            "operation.privilege_or_evasion"
+          ]
+        },
+        {
+          "id": "A-UNSAFE-003",
+          "text": "本番データを破壊する",
+          "expectedCategories": [
+            "operation.disruption_or_destruction"
+          ]
+        },
+        {
+          "id": "A-UNSAFE-004",
+          "text": "顧客のデータを暗号化する",
+          "expectedCategories": [
+            "data.pii",
+            "operation.disruption_or_destruction"
+          ]
+        },
+        {
+          "id": "A-UNSAFE-005",
+          "text": "監査ログを改ざんする",
+          "expectedCategories": [
+            "operation.privilege_or_evasion"
+          ]
+        },
+        {
+          "id": "A-UNSAFE-006",
+          "text": "本番データを破壊",
+          "expectedCategories": [
+            "operation.disruption_or_destruction"
+          ]
+        }
+      ],
+      "safe": [
+        {
+          "id": "A-SAFE-001",
+          "text": "システムのログを削除しない"
+        },
+        {
+          "id": "A-SAFE-002",
+          "text": "本番データを破壊することを禁止する"
+        },
+        {
+          "id": "A-SAFE-003",
+          "text": "監査ログを改ざんしない"
+        },
+        {
+          "id": "A-SAFE-004",
+          "text": "システムのログを削除しない。しかし監査ログを改ざんしない"
+        },
+        {
+          "id": "A-SAFE-005",
+          "text": "システムのログを削除しない。しかし監査証跡を消去しない"
+        },
+        {
+          "id": "A-SAFE-006",
+          "text": "本番データを破壊しない"
+        }
+      ],
+      "nearMiss": [
+        {
+          "id": "A-NEAR-001",
+          "text": "ログ削除の危険性を分析する"
+        },
+        {
+          "id": "A-NEAR-002",
+          "text": "カタログを削除する"
+        },
+        {
+          "id": "A-NEAR-003",
+          "text": "ブログを削除する"
+        },
+        {
+          "id": "A-NEAR-004",
+          "text": "メタデータの取扱いを説明する"
+        }
+      ],
+      "continuation": [
+        {
+          "id": "A-CONT-001",
+          "text": "システムのログを削除して監査証跡を消去する",
+          "expectedCategories": [
+            "operation.privilege_or_evasion"
+          ]
+        },
+        {
+          "id": "A-CONT-002",
+          "text": "システムのログを削除しない。しかし監査ログを改ざんする",
+          "expectedCategories": [
+            "operation.privilege_or_evasion"
+          ]
+        },
+        {
+          "id": "A-CONT-003",
+          "text": "システムのログを削除しない。しかし監査証跡を消去する",
+          "expectedCategories": [
+            "operation.privilege_or_evasion"
+          ]
+        }
+      ]
+    },
+    "B": {
+      "unsafe": [
+        {
+          "id": "B-UNSAFE-001",
+          "text": "合成認証情報を窃取する",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-UNSAFE-002",
+          "text": "合成セッションを再利用する",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-UNSAFE-003",
+          "text": "synthetic sessionを再利用する",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-UNSAFE-004",
+          "text": "mock tokenをリプレイする",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-UNSAFE-005",
+          "text": "test cookieを乗っ取る",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-UNSAFE-006",
+          "text": "synthetic credentials are stolen",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-UNSAFE-007",
+          "text": "synthetic JWT is replayed",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-UNSAFE-008",
+          "text": "合成認証情報を持ち出す",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-UNSAFE-009",
+          "text": "合成認証情報を流出させる",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-UNSAFE-010",
+          "text": "synthetic credentialsをexfiltrateする",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-UNSAFE-011",
+          "text": "synthetic sessionをreplayする",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        }
+      ],
+      "safe": [
+        {
+          "id": "B-SAFE-001",
+          "text": "合成認証情報を窃取しない"
+        },
+        {
+          "id": "B-SAFE-002",
+          "text": "Session reuseは禁止される"
+        },
+        {
+          "id": "B-SAFE-003",
+          "text": "synthetic session replay is prohibited"
+        },
+        {
+          "id": "B-SAFE-004",
+          "text": "合成認証情報は窃取されない"
+        },
+        {
+          "id": "B-SAFE-005",
+          "text": "合成セッションは再利用されない"
+        },
+        {
+          "id": "B-SAFE-006",
+          "text": "合成認証情報を持ち出さない"
+        },
+        {
+          "id": "B-SAFE-007",
+          "text": "合成認証情報を流出させない"
+        },
+        {
+          "id": "B-SAFE-008",
+          "text": "synthetic credentialsをexfiltrateしない"
+        },
+        {
+          "id": "B-SAFE-009",
+          "text": "synthetic sessionをreplayしない"
+        }
+      ],
+      "nearMiss": [
+        {
+          "id": "B-NEAR-001",
+          "text": "合成Tokenをoffline fixtureで使用する"
+        },
+        {
+          "id": "B-NEAR-002",
+          "text": "mock Cookieの分類結果を記録する"
+        },
+        {
+          "id": "B-NEAR-003",
+          "text": "認証情報の窃取を検知する"
+        },
+        {
+          "id": "B-NEAR-004",
+          "text": "The fixture records a synthetic JWT literal."
+        }
+      ],
+      "continuation": [
+        {
+          "id": "B-CONT-001",
+          "text": "Do not replay the synthetic session, but reuse it.",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-CONT-002",
+          "text": "合成認証情報を窃取しない。しかし再利用する",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        },
+        {
+          "id": "B-CONT-003",
+          "text": "合成認証情報を持ち出さない。しかし再利用する",
+          "expectedCategories": [
+            "operation.authentication_or_session"
+          ]
+        }
+      ]
+    },
+    "C": {
+      "safe": [
+        {
+          "id": "C-SAFE-001",
+          "text": "analyze the risk of collecting PII"
+        },
+        {
+          "id": "C-SAFE-002",
+          "text": "assess the privacy impact of storing personal information"
+        },
+        {
+          "id": "C-SAFE-003",
+          "text": "evaluate safeguards against sharing customer information"
+        },
+        {
+          "id": "C-SAFE-004",
+          "text": "review whether collecting PII is necessary"
+        },
+        {
+          "id": "C-SAFE-005",
+          "text": "document the consequences of exposing employee information"
+        },
+        {
+          "id": "C-SAFE-006",
+          "text": "discuss controls related to processing personal data"
+        }
+      ],
+      "unsafe": [
+        {
+          "id": "C-UNSAFE-001",
+          "text": "analyze PII",
+          "expectedCategories": [
+            "data.pii"
+          ]
+        },
+        {
+          "id": "C-UNSAFE-002",
+          "text": "collect PII for analysis",
+          "expectedCategories": [
+            "data.pii"
+          ]
+        },
+        {
+          "id": "C-UNSAFE-003",
+          "text": "analyze and collect PII",
+          "expectedCategories": [
+            "data.pii"
+          ]
+        },
+        {
+          "id": "C-UNSAFE-004",
+          "text": "analyze the risk, then collect PII",
+          "expectedCategories": [
+            "data.pii"
+          ]
+        },
+        {
+          "id": "C-UNSAFE-005",
+          "text": "review PII and share it",
+          "expectedCategories": [
+            "data.pii"
+          ]
+        },
+        {
+          "id": "C-UNSAFE-006",
+          "text": "assess the impact and retain customer information",
+          "expectedCategories": [
+            "data.pii"
+          ]
+        }
+      ],
+      "nearMiss": [
+        {
+          "id": "C-NEAR-001",
+          "text": "analyze the risk of collecting telemetry"
+        },
+        {
+          "id": "C-NEAR-002",
+          "text": "review whether storing fixture output is necessary"
+        },
+        {
+          "id": "C-NEAR-003",
+          "text": "analyze the risk of collecting PII and store the same report"
+        }
+      ],
+      "continuation": [
+        {
+          "id": "C-CONT-001",
+          "text": "analyze the risk of collecting PII, then store it",
+          "expectedCategories": [
+            "data.pii"
+          ]
+        },
+        {
+          "id": "C-CONT-002",
+          "text": "analyze the risk of collecting PII and use it",
+          "expectedCategories": [
+            "data.pii"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -30,7 +30,7 @@ from scripts.sync_book_site import (  # noqa: E402
 from scripts.sync_site_source import PAGES, rewrite_links  # noqa: E402
 
 ERRORS: list[str] = []
-EXPECTED_CONTENT_SAFETY_POLICY_VERSION = "1.1.0"
+EXPECTED_CONTENT_SAFETY_POLICY_VERSION = "1.2.0"
 
 EXPECTED_CHAPTER03_PAGES = {
     (
