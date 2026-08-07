@@ -145,7 +145,7 @@ ACTION_RULES = (
                 r"implement|implements|implemented|implementing"
             )
             + r"|"
-            r"(?:作(?:る|った|ります|らない)|作成|構築|開発|実装)(?:する|した|します|しない|せず)?"
+            r"(?:作(?:る|った|って(?:ください)?|ります|らない)|作成|構築|開発|実装)(?:する|した|します|しない|せず)?"
         ),
     ),
     ActionRule(
@@ -484,7 +484,7 @@ def _action_is_prohibited(
         return True
     if _coordinated_pre_action_prohibition_controls_action(clause, action):
         return True
-    if _forbidden_to_controls_action(clause, action):
+    if _pre_action_prohibition_controls_action(clause, action):
         return True
     if re.search(r"(?:しない|せず|行わない|使わない|作らない)$", action_text):
         return True
@@ -495,8 +495,9 @@ def _action_is_prohibited(
     return False
 
 
-_FORBIDDEN_TO_MARKER = re.compile(
-    r"(?:is|are|was|were)\s+forbidden\s+to\b",
+_PRE_ACTION_PROHIBITION_MARKER = re.compile(
+    r"(?:is|are|was|were)\s+"
+    r"(?:forbidden\s+to|(?:forbidden|prohibited)\s+from)\b",
     re.IGNORECASE,
 )
 _PROHIBITION_SCOPE_BREAK = re.compile(
@@ -517,7 +518,8 @@ _TRAILING_EN_PROHIBITION = re.compile(
 _TRAILING_JA_PROHIBITION = re.compile(
     r"(?:禁止(?:する|される|している)|対象外(?!ではない)|許可しない|要求しない)|"
     r"(?:しない|せず|行わない|使わない|用いない|含めない|記載しない|"
-    r"接続しない|実施しない|作らない|作ることを禁止する)"
+    r"接続しない|実施しない|作らない|作ることを禁止する|"
+    r"はいけない|はならない)"
 )
 
 
@@ -653,20 +655,21 @@ def _coordinated_pre_action_prohibition_controls_action(
     return False
 
 
-def _forbidden_to_controls_action(
+def _pre_action_prohibition_controls_action(
     clause: str,
     action: tuple[int, int, str, str],
 ) -> bool:
-    """Return whether a bounded ``forbidden to`` phrase governs *action*.
+    """Return whether a bounded pre-action prohibition governs *action*.
 
-    The marker governs its first action and a directly coordinated action in the
-    same punctuation-free phrase. A contrast marker, comma, or sentence boundary
-    ends that scope; its mere presence earlier in the clause must not suppress a
-    later contradictory continuation.
+    ``forbidden to`` and ``prohibited/forbidden from`` govern their first action
+    and a directly coordinated action in the same punctuation-free phrase. A
+    contrast marker, comma, or sentence boundary ends that scope; its mere
+    presence earlier in the clause must not suppress a later contradictory
+    continuation.
     """
 
     action_start = action[0]
-    markers = list(_FORBIDDEN_TO_MARKER.finditer(clause, 0, action_start))
+    markers = list(_PRE_ACTION_PROHIBITION_MARKER.finditer(clause, 0, action_start))
     if not markers:
         return False
     marker = markers[-1]
@@ -1054,6 +1057,72 @@ def _actions_bound_to_object(
     return sorted(set(bound))
 
 
+def _shared_trailing_object_findings(
+    previous_clause: str,
+    clause: str,
+    *,
+    location: str,
+) -> list[SafetyFinding]:
+    """Check an omitted object immediately before a contrasting safe action.
+
+    In a bounded relation such as ``Build but do not deploy a keylogger``, the
+    trailing object belongs to both coordinated actions even though contrast
+    splitting separates them. Carry it backward only when the prior clause ends
+    at a compatible action and does not introduce its own direct object. This
+    avoids rebinding ``Use a sandbox, but do not deploy a keylogger``.
+    """
+
+    remainder = _CONTRAST_PREFIX.sub("", clause, count=1)
+    if remainder == clause or _object_matches(previous_clause):
+        return []
+
+    findings: list[SafetyFinding] = []
+    for protected in _object_matches(remainder):
+        current_actions = _action_matches(remainder, protected.action_kinds)
+        if not current_actions or not any(
+            action[1] <= protected.start
+            and _action_directly_precedes_object(remainder, action, protected)
+            for action in current_actions
+        ):
+            continue
+        current_bound = _actions_bound_to_object(
+            remainder,
+            protected,
+            current_actions,
+        )
+        if not current_bound or not all(
+            _locally_prohibited(remainder, protected, action)
+            for action in current_bound
+        ):
+            # The ordinary clause scan reports an affirmative current action.
+            continue
+
+        previous_actions = [
+            action
+            for action in _action_matches(previous_clause, protected.action_kinds)
+            if not previous_clause[action[1] :].strip()
+            and not _action_introduces_distinct_english_object(previous_clause, action)
+        ]
+        if not previous_actions or all(
+            _action_is_prohibited(
+                previous_clause,
+                action,
+                scope_start=action[0],
+            )
+            for action in previous_actions
+        ):
+            continue
+        findings.append(
+            _finding(
+                protected.category,
+                location,
+                f"{previous_clause} {clause}",
+                "an affirmative action shares a trailing protected object with a contrasting locally prohibited action",
+            )
+        )
+    return _ordered_unique(findings)
+
+
 def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
     """Scan one bounded reader-visible field for action-bearing unsafe semantics."""
 
@@ -1070,7 +1139,16 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
 
     findings: list[SafetyFinding] = []
     remembered: tuple[_Match, ...] = ()
-    for clause in _clauses(normalized):
+    clauses = _clauses(normalized)
+    for clause_index, clause in enumerate(clauses):
+        if clause_index:
+            findings.extend(
+                _shared_trailing_object_findings(
+                    clauses[clause_index - 1],
+                    clause,
+                    location=location,
+                )
+            )
         retained_continuations: list[_Match] = []
         for remembered_object in remembered:
             continuation = _continuation_actions(clause, remembered_object)
@@ -1146,7 +1224,8 @@ _DOCUMENTATION_NETWORKS = (
     ipaddress.ip_network("2001:db8::/32"),
 )
 _URL_PATTERN = re.compile(
-    "(?:(?:[a-z][a-z0-9+.-]*:)?//)[^\\s`\\\"'<>)]+",
+    r"(?:(?:(?:[a-z][a-z0-9+.-]*:)?//)[^\s`\"'<>)]+|"
+    r"(?<![a-z0-9+.-])mailto:[^\s`\"'<>)]+)",
     re.IGNORECASE,
 )
 _QUOTED_URL_ATTRIBUTE = re.compile(

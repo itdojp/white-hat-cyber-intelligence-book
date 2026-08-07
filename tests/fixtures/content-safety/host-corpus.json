@@ -23,7 +23,9 @@
     {"id": "HTML-QUOTED-PARENTHESIS-EXAMPLE", "text": "<a href=\"https://lab.example/run(book).\">"},
     {"id": "HTML-QUOTED-LEADING-SPACE-EXAMPLE", "text": "<a href=\" https://lab.example/runbook.\">"},
     {"id": "HTML-MAILTO-EXAMPLE", "text": "<a href=\"mailto:user@lab.example\">mail</a>"},
-    {"id": "HTML-MAILTO-MULTI-EXAMPLE", "text": "<a href=\"mailto:user@lab.example,other@service.test?to=forward@node.invalid&cc=copy@assets.invalid&bcc=blind@audit.example\">mail</a>"}
+    {"id": "HTML-MAILTO-MULTI-EXAMPLE", "text": "<a href=\"mailto:user@lab.example,other@service.test?to=forward@node.invalid&cc=copy@assets.invalid&bcc=blind@audit.example\">mail</a>"},
+    {"id": "HTML-UNQUOTED-MAILTO-EXAMPLE", "text": "<a href=mailto:user@lab.example>mail</a>"},
+    {"id": "MARKDOWN-AUTOLINK-MAILTO-EXAMPLE", "text": "<mailto:user@lab.example>"}
   ],
   "unsafe": [
     {
@@ -173,6 +175,18 @@
     {
       "id": "HTML-MAILTO-BCC-DISALLOWED",
       "text": "<a href=\"mailto:user@lab.example?bcc=other@example.com\">mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "HTML-UNQUOTED-MAILTO-DISALLOWED",
+      "text": "<a href=mailto:user@example.com>mail</a>",
+      "requiredReason": "non-approved host suffix",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "MARKDOWN-AUTOLINK-MAILTO-DISALLOWED",
+      "text": "<mailto:user@example.com>",
       "requiredReason": "non-approved host suffix",
       "forbiddenReason": ""
     }
