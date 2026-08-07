@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyVersion": "1.0.0",
+  "cases": [
+    {
+      "id": "NFKC-MIXED-SCRIPT",
+      "input": "**ＤｏＳ**を実行する",
+      "expected": "dosを実行する"
+    },
+    {
+      "id": "MARKDOWN-LINK-LABEL",
+      "input": "[Keylogger](https://malware.example/reference)",
+      "expected": "keylogger"
+    },
+    {
+      "id": "HTML-ENTITY-SEPARATORS",
+      "input": "<strong>Token</strong>&nbsp;＿ Mock・Value — test",
+      "expected": "token - mock-value - test"
+    },
+    {
+      "id": "MARKDOWN-CODE-AND-SPACE",
+      "input": "`API_KEY`\tと　Cookie",
+      "expected": "api-key と cookie"
+    },
+    {
+      "id": "NEWLINE-DETERMINISM",
+      "input": "Token  used\n  Cookie stored",
+      "expected": "token used\ncookie stored"
+    },
+    {
+      "id": "ZERO-WIDTH-FORMAT",
+      "input": "key\u200blogger toke\u200bn",
+      "expected": "keylogger token"
+    },
+    {
+      "id": "HTML-COMMENT-SPLIT",
+      "input": "to<!--bounded-comment-->ken used",
+      "expected": "token used"
+    },
+    {
+      "id": "BOUNDED-CONFUSABLE-FOLD",
+      "input": "tоken",
+      "expected": "token"
+    },
+    {
+      "id": "INLINE-HTML-ADJACENT",
+      "input": "<span>key</span><span>logger</span>を作る",
+      "expected": "keyloggerを作る"
+    }
+  ]
+}

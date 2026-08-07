@@ -1,0 +1,506 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyVersion": "1.0.0",
+  "unsafe": [
+    {
+      "id": "BLOCKER-001",
+      "text": "do not build a keylogger, but deploy it",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "BLOCKER-002",
+      "text": "never build a keylogger; however, use it",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "BLOCKER-003",
+      "text": "keyloggerを作ることを禁止する、しかしそれを作る",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "BLOCKER-004",
+      "text": "building a keylogger should be prohibited, but it is deployed",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "BLOCKER-005",
+      "text": "write a keylogger",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "BLOCKER-006",
+      "text": "code a rootkit",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-BOTH-SIDES-JA-USE-PRE",
+      "text": "使用しないマルウェアを構築する",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-BOTH-SIDES-JA-CREATE-PRE",
+      "text": "構築しないマルウェアを使用する",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-BOTH-SIDES-MIXED-SCRIPT",
+      "text": "使用しないkeyloggerをdeployする",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-BOTH-SIDES-EN-THEN",
+      "text": "Do not use the keylogger that we then deploy.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-RELATIVE-EN-SAFE-FIRST",
+      "text": "A keylogger that is not used is deployed.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-POST-JA-UNSAFE-FIRST",
+      "text": "マルウェアを構築するが使用しない",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-BOTH-SIDES-JA-UNSAFE-PRE",
+      "text": "構築するマルウェアを使用しない",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-RELATIVE-EN-UNSAFE-FIRST",
+      "text": "A keylogger that is built is not deployed.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-MODIFIER-EN-UNSAFE-PRE",
+      "text": "Build the new keylogger that is not deployed.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-MODIFIER-JA-UNSAFE-PRE",
+      "text": "構築する危険なマルウェアを使用しない",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-MODIFIER-EN-AND",
+      "text": "Build the new and improved keylogger that is not deployed.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-MODIFIER-EN-OR",
+      "text": "Build the new or improved keylogger that is not deployed.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-MODIFIER-EN-BUT",
+      "text": "Build the new but improved keylogger that is not deployed.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-MODIFIER-JA-COORDINATED",
+      "text": "構築する高度で危険なマルウェアを使用しない",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-MIXED-CONJUNCTIVE",
+      "text": "キーロガーをdeployして",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-MIXED-POLITE-REQUEST",
+      "text": "キーロガーをdeployしてください",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-SEPARATE-OBJECT-UNSAFE-PRE",
+      "text": "Build a keylogger that we can use a sandbox to analyze.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-TEMPORAL-NEXT-DAY",
+      "text": "Do not build a keylogger that we deploy the next day.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-TEMPORAL-THIS-WEEK",
+      "text": "Do not build a keylogger that we deploy this week.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-NO-PUNCTUATION",
+      "text": "do not build a keylogger but deploy it",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-ADJACENT-SENTENCE",
+      "text": "do not build a keylogger. deploy it",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-MULTI-ACTION-MALWARE",
+      "text": "do not build a keylogger, but do not deploy it and use it",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-MULTI-ACTION-TARGET",
+      "text": "do not access a third-party production API, but do not connect to it and record it",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "CONTINUATION-FORBIDDEN-CONTRAST-MALWARE",
+      "text": "Do not build a keylogger, but it is forbidden to deploy but use it.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-FORBIDDEN-CONTRAST-TARGET",
+      "text": "Do not access a third-party production API, but it is forbidden to connect to it but record it.",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "CONTINUATION-FORBIDDEN-COMMA-MALWARE",
+      "text": "Do not build a keylogger, but it is forbidden to deploy, and use it.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-FORBIDDEN-SENTENCE-MALWARE",
+      "text": "Do not build a keylogger, but it is forbidden to deploy. Use it.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-FORBIDDEN-PERIOD-CHAIN-MALWARE",
+      "text": "Do not build a keylogger. It is forbidden to deploy. Use it.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-FORBIDDEN-PERIOD-CHAIN-TARGET",
+      "text": "Do not access a third-party production API. It is forbidden to connect to it. Record it.",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "TRAILING-PROHIBITION-DIFFERENT-ACTION",
+      "text": "Build a keylogger whose deployment is prohibited.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "FORBIDDEN-COORDINATOR-NEW-SUBJECT",
+      "text": "Do not build a keylogger, but it is forbidden to deploy it and you should use it.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "SAME-CLAUSE-AMBIGUOUS-AND-MALWARE",
+      "text": "Do not build a keylogger and use it.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "SAME-CLAUSE-AMBIGUOUS-AND-TARGET",
+      "text": "Do not access a third-party production API and scan it.",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "SAME-CLAUSE-AMBIGUOUS-JA-MALWARE",
+      "text": "keyloggerを作らないで使用する",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-THEN-MALWARE",
+      "text": "Do not build a keylogger then use it.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-STILL-MALWARE",
+      "text": "Do not build a keylogger still use it.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-SONOGO-JA-MALWARE",
+      "text": "keyloggerを作らないその後それを使用する",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "NORMALIZATION-ZERO-WIDTH-MALWARE",
+      "text": "key\u200bloggerを作る",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "NORMALIZATION-ZERO-WIDTH-SECRET",
+      "text": "toke\u200bnを取得する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "NORMALIZATION-HTML-COMMENT-SECRET",
+      "text": "to<!--bounded-comment-->ken used",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "NORMALIZATION-CONFUSABLE-SECRET",
+      "text": "tоkenを取得する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "TARGET-OBJECT-FIRST",
+      "text": "third-party production system accessed for additional benign record",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "TARGET-ACTION-FIRST",
+      "text": "access third-party production API for an additional benign record",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "TARGET-JA",
+      "text": "第三者の本番APIへ接続する",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "SECRET-DIRECT",
+      "text": "use token",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "SECRET-NOT-SYNTHETIC",
+      "text": "not synthetic token used",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "SECRET-NOT-A-SYNTHETIC",
+      "text": "not a synthetic token used",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "SECRET-NON-SYNTHETIC",
+      "text": "non-synthetic API key stored",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "SECRET-NON-SYNTHETIC-JA",
+      "text": "非合成Tokenを使用する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "PII-NON-QUALIFIABLE",
+      "text": "synthetic personal information stored",
+      "expectedCategories": ["data.pii"]
+    },
+    {
+      "id": "PII-NON-QUALIFIABLE-JA",
+      "text": "合成個人情報を使用する",
+      "expectedCategories": ["data.pii"]
+    },
+    {
+      "id": "AUTH-SESSION",
+      "text": "perform session replay",
+      "expectedCategories": ["operation.authentication_or_session"]
+    },
+    {
+      "id": "MALWARE-SYNTHETIC-NOT-QUALIFIABLE",
+      "text": "synthetic spyware deployed",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "MALWARE-FAMILY-INFO-STEALER",
+      "text": "build an info-stealer",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "MALWARE-FAMILY-BACKDOOR",
+      "text": "deploy a backdoor",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "MALWARE-FAMILY-TROJAN",
+      "text": "use a trojan",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "C2-PHISHING",
+      "text": "deploy phishing infrastructure",
+      "expectedCategories": ["operation.c2_or_phishing"]
+    },
+    {
+      "id": "PRIVILEGE-EVASION",
+      "text": "perform privilege escalation",
+      "expectedCategories": ["operation.privilege_or_evasion"]
+    },
+    {
+      "id": "DISRUPTION-DOS-JA",
+      "text": "DoSを実行する",
+      "expectedCategories": ["operation.disruption_or_destruction"]
+    },
+    {
+      "id": "DISRUPTION-DDOS-JA",
+      "text": "DDoSを実行する",
+      "expectedCategories": ["operation.disruption_or_destruction"]
+    },
+    {
+      "id": "SOCIAL-DOXXING",
+      "text": "conduct doxxing",
+      "expectedCategories": ["operation.social_engineering_or_tracking"]
+    },
+    {
+      "id": "WEAK-EVIDENCE-ATTRIBUTION",
+      "text": "attribute an actor confidently from weak evidence",
+      "expectedCategories": ["analysis.weak_evidence_attribution"]
+    },
+    {
+      "id": "PR57-TOKEN-RETRIEVAL-JA",
+      "text": "Tokenを取得して再評価する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "PR57-THIRD-PARTY-DATA-JA",
+      "text": "第三者Dataを収集して確認する",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "PR57-REAL-TARGET-SCAN-JA",
+      "text": "実Targetを走査する",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "PR57-API-KEY-JA",
+      "text": "API keyを取得する",
+      "expectedCategories": ["secret.credential"]
+    },
+    {
+      "id": "PR57-CUSTOMER-PII-JA",
+      "text": "顧客情報を収集する",
+      "expectedCategories": ["data.pii"]
+    },
+    {
+      "id": "CONTINUATION-ADDITIONAL-PROTECTED-TARGET",
+      "text": "Do not build a keylogger, but deploy it and access a third-party production API.",
+      "expectedCategories": ["operation.malware", "target.real_or_external"]
+    },
+    {
+      "id": "TRAILING-PROHIBITION-LATER-ACTION",
+      "text": "Build a keylogger that is prohibited from deployment.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-MULTI-OBJECT-TARGET",
+      "text": "Do not access a third-party production API and do not build a keylogger. Scan the same target.",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "ACTION-SEPARATE-OBJECT-TEMPORAL-UNSAFE",
+      "text": "Build a keylogger that we can use the sandbox this week to analyze.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-TEMPORAL-VERY-NEXT-DAY",
+      "text": "Do not build a keylogger that we deploy the very next day.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "ACTION-TEMPORAL-NEXT-BUSINESS-DAY",
+      "text": "Do not build a keylogger that we deploy the next business day.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "CONTINUATION-MULTI-OBJECT-GENERIC-PRONOUN",
+      "text": "Do not access a third-party production API and do not build a keylogger. Scan it.",
+      "expectedCategories": ["target.real_or_external"]
+    },
+    {
+      "id": "UNBOUND-GENERIC-PROHIBITION",
+      "text": "Describe a prohibited operation and build a keylogger.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "INLINE-HTML-SPLIT-MALWARE",
+      "text": "<span>key</span><span>logger</span>を作る",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "SHARED-TRAILING-OBJECT-CONTRAST",
+      "text": "Build but do not deploy a keylogger.",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "JAPANESE-TE-FORM-CREATE",
+      "text": "キーロガーを作って",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "JAPANESE-TE-FORM-CREATE-REQUEST",
+      "text": "キーロガーを作ってください",
+      "expectedCategories": ["operation.malware"]
+    },
+    {
+      "id": "PRE-ACTION-PROHIBITION-CONTRADICTION",
+      "text": "You are prohibited from building a keylogger, but deploy it.",
+      "expectedCategories": ["operation.malware"]
+    }
+  ],
+  "safe": [
+    {"id": "SAFE-001", "text": "Do not build a keylogger."},
+    {"id": "SAFE-002", "text": "Building a keylogger is prohibited."},
+    {"id": "SAFE-003", "text": "Keylogger creation is outside this book's scope."},
+    {"id": "SAFE-004", "text": "この教材ではkeyloggerを作らない。"},
+    {"id": "SAFE-005", "text": "keyloggerを作ることを禁止する。"},
+    {"id": "SAFE-006", "text": "この語はMalware分類の説明としてのみ記録する。"},
+    {"id": "SAFE-007", "text": "Do not access a third-party production API."},
+    {"id": "SAFE-008", "text": "Synthetic token used in an offline fixture."},
+    {"id": "SAFE-009", "text": "合成APIキーを使用する。"},
+    {"id": "SAFE-010", "text": "Personal information collection is prohibited."},
+    {"id": "SAFE-011", "text": "Authentication attempts are prohibited."},
+    {"id": "SAFE-012", "text": "Deploying phishing infrastructure is prohibited."},
+    {"id": "SAFE-013", "text": "Privilege escalation is outside this book's scope."},
+    {"id": "SAFE-014", "text": "DoSを実行しない。"},
+    {"id": "SAFE-015", "text": "Doxxing is prohibited."},
+    {"id": "SAFE-016", "text": "Confident attribution from weak evidence is prohibited."},
+    {"id": "SAFE-017", "text": "A third-party production API must not be accessed."},
+    {"id": "SAFE-018", "text": "第三者の本番APIへ接続しない。"},
+    {"id": "SAFE-019", "text": "Tokenを取得しない。"},
+    {"id": "SAFE-020", "text": "実Targetを走査しない。"},
+    {"id": "SAFE-021", "text": "Do not build a keylogger, and do not deploy it."},
+    {"id": "SAFE-022", "text": "Never build a keylogger; however, do not use it."},
+    {"id": "SAFE-023", "text": "keyloggerを作ることを禁止する、そしてそれを作らない。"},
+    {"id": "SAFE-024", "text": "Building a keylogger should be prohibited, but it is not deployed."},
+    {"id": "SAFE-025", "text": "Do not access a third-party production API, but record the evidence."},
+    {"id": "SAFE-026", "text": "Do not build a keylogger, but its deployment is outside this book's scope."},
+    {"id": "SAFE-027", "text": "keyloggerを作ることを禁止する、しかしその使用は対象外とする。"},
+    {"id": "SAFE-028", "text": "Do not access a third-party production API, but it is forbidden to connect to it."},
+    {"id": "SAFE-029", "text": "Do not build a keylogger. Do not deploy it."},
+    {"id": "SAFE-030", "text": "Do not build a keylogger, but it is forbidden to deploy and use it."},
+    {"id": "SAFE-031", "text": "Do not access a third-party production API, but it is forbidden to connect to it and record it."},
+    {"id": "SAFE-032", "text": "Do not build a keylogger. It is forbidden to deploy. Do not use it."},
+    {"id": "SAFE-033", "text": "Do not build or deploy a keylogger."},
+    {"id": "SAFE-034", "text": "Do not access or scan a third-party production API."},
+    {"id": "SAFE-035", "text": "Use a sandbox and do not build or deploy a keylogger."},
+    {"id": "SAFE-036", "text": "Do not build a keylogger and use a sandbox because it is isolated."},
+    {"id": "SAFE-037", "text": "Do not build a keylogger. Use a sandbox because it is isolated."},
+    {"id": "SAFE-038", "text": "Keylogger creation is a prohibited operation."},
+    {"id": "SAFE-039", "text": "Do not build a keylogger. Use a sandbox because it is deployed."},
+    {"id": "SAFE-040", "text": "マルウェアを使用しない。"},
+    {"id": "SAFE-041", "text": "マルウェアを構築しない。"},
+    {"id": "SAFE-042", "text": "使用しないマルウェアを説明する。"},
+    {"id": "SAFE-043", "text": "使用しないマルウェアを構築しない。"},
+    {"id": "SAFE-044", "text": "A keylogger that is not used is described."},
+    {"id": "SAFE-045", "text": "Do not build the new keylogger that is not deployed."},
+    {"id": "SAFE-046", "text": "構築しない危険なマルウェアを使用しない"},
+    {"id": "SAFE-047", "text": "Use a sandbox to describe a keylogger that is not deployed."},
+    {"id": "SAFE-048", "text": "predeployするkeyloggerという識別子を説明する。"},
+    {"id": "SAFE-049", "text": "Do not build the new and improved keylogger that is not deployed."},
+    {"id": "SAFE-050", "text": "Do not build the new or improved keylogger that is not deployed."},
+    {"id": "SAFE-051", "text": "Do not build the new but improved keylogger that is not deployed."},
+    {"id": "SAFE-052", "text": "構築しない高度で危険なマルウェアを使用しない"},
+    {"id": "SAFE-053", "text": "Use a sandbox but describe a keylogger that is not deployed."},
+    {"id": "SAFE-054", "text": "Do not build a keylogger that we can use a sandbox to analyze."},
+    {"id": "SAFE-055", "text": "predeployしてくださいという識別子とkeyloggerを説明する。"},
+    {"id": "SAFE-056", "text": "deployしてくださいIDという識別子とkeyloggerを説明する。"},
+    {"id": "SAFE-057", "text": "deployしてください_idという識別子とkeyloggerを説明する。"},
+    {"id": "SAFE-058", "text": "Do not access a third-party production API and do not build a keylogger. Do not scan the same target."},
+    {"id": "SAFE-059", "text": "Do not build a keylogger that we can use the sandbox this week to analyze."},
+    {"id": "SAFE-060", "text": "Building a keylogger is prohibited and deploying it is prohibited."},
+    {"id": "SAFE-061", "text": "Do not access a third-party production API and do not build a keylogger. Do not scan it."},
+    {"id": "SAFE-062", "text": "Building a keylogger is prohibited and its deployment is prohibited."},
+    {"id": "SAFE-063", "text": "Do not build but do not deploy a keylogger."},
+    {"id": "SAFE-064", "text": "Use a sandbox, but do not deploy a keylogger."},
+    {"id": "SAFE-065", "text": "キーロガーを作ってはいけない。"},
+    {"id": "SAFE-066", "text": "You are prohibited from building a keylogger."},
+    {"id": "SAFE-067", "text": "You are forbidden from building a keylogger."},
+    {"id": "SAFE-068", "text": "You are prohibited from building or deploying a keylogger."}
+  ]
+}
