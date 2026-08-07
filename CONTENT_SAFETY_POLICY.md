@@ -87,7 +87,7 @@ URL destinationはAction scanの読者表示textから除外する一方、`scan
 10. `operation.social_engineering_or_tracking`
 11. `analysis.weak_evidence_attribution`
 
-説明または明示的な禁止だけの文は許容する。危険Operationを`synthetic`と呼んでも許容しない。実Target操作量、Malware作成量、認証試行数を学習Evidenceへ変換しない。
+説明または明示的な禁止だけの文は許容する。`publish / announce + phishing / malware + report / analysis / guidance`および`フィッシング / マルウェア + 報告 / 分析 / ガイダンス / 指針 + 公開 / 公表`は、節全体がこの有限な防御文書Publication frameで完結する場合だけ説明文として許容する。`infrastructure / server / site / page / channel / operation / campaign`または対応する日本語の実運用対象語、bare Operation、PII、弱いEvidenceによる断定的帰属、同じ節の追加Operation、`deployable malware`はこの例外に含めない。危険Operationを`synthetic`と呼んでも許容しない。実Target操作量、Malware作成量、認証試行数を学習Evidenceへ変換しない。
 
 ## Host and address policy
 
