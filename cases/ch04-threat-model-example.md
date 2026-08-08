@@ -80,9 +80,9 @@
 | Knowledge state | `Unknown / Assumed / Confirmed / Not Applicable` | Asset、Boundary、Exposure、Assumptionで使用 |
 | Threat hypothesis status | `Candidate / Supported / Partially Supported / Disconfirmed / Inconclusive` | `TH-2026-001`〜`003`で使用 |
 | Control assurance | `Unknown / Documented / Implemented / Observed / Validated` | `CTRL-2026-001`〜`005`で使用 |
-| Evidence Requirement status | `Required / Deferred / Replaced / Not Applicable` | `EREQ-2026-001`〜`003`で使用 |
+| Evidence Requirement status | `Required / Deferred / Replaced / Not Applicable` | `EREQ-2026-001`〜`004`で使用 |
 | Collected Evidence status | `Planned / Collected / Rejected / Inconclusive` | FlowとCollected Evidence Registerで使用 |
-| Gap status | `Open / Accepted temporarily / Escalated / Closed` | `GAP-2026-001`〜`003`で使用 |
+| Gap status | `Open / Accepted temporarily / Escalated / Closed` | `GAP-2026-001`〜`004`で使用 |
 
 ## 2. Asset Register
 
@@ -208,7 +208,7 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 | `CTRL-2026-001` | `ASSET-2026-004`, `ASSET-2026-005`, `TB-2026-001`, `TH-2026-001`, `PATH-2026-001` | 業務要件とscopeの対応表をReviewする | Business Systems | Documented | `EVD-2026-002` | 自動突合がなく人手差分に依存する | `GAP-2026-002` | scopeまたは業務要件変更 |
 | `CTRL-2026-002` | `ASSET-2026-005`, `ASSET-2026-007`, `TB-2026-004`, `TH-2026-001`, `PATH-2026-001` | Workload identityをHuman identityから分離しrotation手順を管理する | Platform | Implemented | `EVD-2026-001` | 利用観測とrotation結果のEvidenceが不足する | `GAP-2026-001` | Identity bindingまたはrotation変更 |
 | `CTRL-2026-003` | `ASSET-2026-002`, `ASSET-2026-003`, `TB-2026-003`, `TH-2026-002`, `PATH-2026-002` | Admin consentとApp identity lifecycle EventのAudit coverageを維持する | SOC | Observed | `EVD-2026-003` | Rule testとCoverage基準が未完了である | `GAP-2026-003` | Rule、Fieldまたはretention変更 |
-| `CTRL-2026-004` | `ASSET-2026-003`, `TB-2026-006`, `TH-2026-002`, `PATH-2026-002` | no outbound、停止条件、Cleanupを一体で検証する | Lab Operator | Documented | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` | 設計とAuthorization条件はReview済みだが、preflight、default-deny、Cleanupの実施結果は未収集であり、Controlの挙動は未観測である | `GAP-2026-003` | AUTH条件、Lab boundaryまたは実施Evidence変更 |
+| `CTRL-2026-004` | `ASSET-2026-003`, `TB-2026-006`, `TH-2026-002`, `PATH-2026-002` | no outbound、停止条件、Cleanupを一体で検証する | Lab Operator | Documented | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` | 設計とAuthorization条件はReview済みだが、preflight、default-deny、Cleanupの実施結果は未収集であり、Controlの挙動は未観測である | `GAP-2026-004` | AUTH条件、Lab boundaryまたは実施Evidence変更 |
 | `CTRL-2026-005` | `ASSET-2026-006`, `TB-2026-007`, `TH-2026-003`, `PATH-2026-002` | Vendor管理のsummary-only Field normalizationを説明可能にする | Vendor Management | Unknown | `NEG-2026-001` | no outbound条件下ではVendor内部補正の完全性を直接確認しない | `GAP-2026-001` | Field仕様またはVendor責任分界変更 |
 
 ## 9. Assumptions, Unknowns and Gaps
@@ -228,6 +228,7 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 | `GAP-2026-001` | `TH-2026-003` / `CTRL-2026-005`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない | Platform | 2026-08-18 | Open | `EREQ-2026-003` | `ACT-TM-2026-003` | `REA-TM-2026-002` |
 | `GAP-2026-002` | `TH-2026-001` / `CTRL-2026-001`: scope matrixと実設定の機械的突合がない | `DR-2026-001`: 過大権限の再発防止が人手依存になる | Business Systems | 2026-08-21 | Accepted temporarily | `EREQ-2026-001` | `ACT-TM-2026-001`, `ACT-TM-2026-004` | `REA-TM-2026-001` |
 | `GAP-2026-003` | `TH-2026-002` / `TH-2026-003` / `CTRL-2026-003`: 90日窓の完全Coverageと保持証跡が不足する | `DR-2026-001`: 未観測を未発生と誤解しやすい | SOC | 2026-08-20 | Escalated | `EREQ-2026-002`, `EREQ-2026-003` | `ACT-TM-2026-002`, `ACT-TM-2026-005` | `REA-TM-2026-002` |
+| `GAP-2026-004` | `CTRL-2026-004`: 合成Labのpreflight、default-deny、Cleanup実施結果が未収集である | `DR-2026-001`: 安全境界の挙動を確認できるまでLab検証を開始できない | Lab Operator | 2026-08-13 | Open | `EREQ-2026-004` | `ACT-TM-2026-006` | `REA-TM-2026-004` |
 
 ### Decision handoff summary for `DR-2026-001`
 
@@ -250,6 +251,7 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 | `EREQ-2026-001` | 現行scopeは業務要件を超えているか | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` | App registration export、要件表、scope差分表 | 実Tokenを取得しない。実Dataを取得しない。Productionを変更しない。 | Platform | 2026-08-12 | Required | `EVD-2026-001`, `EVD-2026-002` |
 | `EREQ-2026-002` | 同意EventとApp identity lifecycle Eventの監査Coverageは十分か | `TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003` | 合成同意Event、Audit export、Rule test結果 | 無害化summaryを超える追加Data exportを要求しない | SOC | 2026-08-14 | Required | `EVD-2026-003`, `EVD-AUTH-2026-001` |
 | `EREQ-2026-003` | 保持範囲内で既往影響をどこまで評価できるか | `TH-2026-001`, `TH-2026-003`, `CTRL-2026-005`, `GAP-2026-001`, `GAP-2026-003` | 90日窓のTelemetry summary、Coverage表、negative finding、retention note | PIIを収集しない。実Tenantへ接続しない。scope外Targetを追跡しない。 | SOC、Platform | 2026-08-18 | Required | `EVD-2026-004`, `NEG-2026-001` |
+| `EREQ-2026-004` | 合成Labはno outbound、停止条件、Cleanupを実施結果で示せるか | `TH-2026-002`, `CTRL-2026-004`, `GAP-2026-004` | 署名済みpreflight report、default-deny dry-run結果、Cleanup verification | 新Authorization Record / RoE承認前に実行しない。実Target、実Credential、実Data、外向き通信を使用しない。 | Lab Operator | 2026-08-13 | Required | 未収集（承認後に新Evidence IDを割り当てる） |
 
 ### Collected Evidence Register
 
@@ -283,11 +285,12 @@ Collected Evidence statusは `Planned / Collected / Rejected / Inconclusive` の
 
 | Action ID | Related Gap / Control / Threat | Action | Owner | Due date | Success evidence | Status |
 |---|---|---|---|---|---|---|
-| `ACT-TM-2026-001` | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` | App permissionを必要最小限へ縮小し、scope matrixとの差分をゼロにする | Platform | 2026-08-12 | 更新後Export、差分表、承認ticket | Open |
+| `ACT-TM-2026-001` | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` | App permissionの必要最小scope案とscope matrix更新案を作成する。実設定変更は新Authorization Record / RoE承認後の別工程とする | Platform | 2026-08-12 | 最小scope案、要件との差分表、新Authorization Record / RoE申請ticket（実設定変更なし） | Open |
 | `ACT-TM-2026-002` | `TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003` | Admin consent change Eventの合成Rule testを第17章の形式で再実施する | SOC | 2026-08-14 | Detection test結果、query version、coverage note | Open |
 | `ACT-TM-2026-003` | `TH-2026-003`, `CTRL-2026-005`, `GAP-2026-001` | API利用Telemetryにresource / operation粒度を追加する | Platform | 2026-08-18 | field contract、sample summary、Gap更新 | Open |
 | `ACT-TM-2026-004` | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` | 合成Tenant bindingのBoundary owner、停止条件、fallback判断をscope matrixへ構造化し、実設定との機械的突合対象に追加する | Finance Operations | 2026-08-15 | 更新scope matrix、機械的突合結果、承認runbook | Open |
 | `ACT-TM-2026-005` | `TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003` | SOC query申請に90日Coverageとretention証跡の必須Fieldおよび欠損時のdeny条件を追加する | SOC | 2026-08-16 | query approval template、Coverage表、retention record、deny例、review sign-off | Open |
+| `ACT-TM-2026-006` | `TH-2026-002`, `CTRL-2026-004`, `GAP-2026-004` | 合成Labのpreflight、default-deny、Cleanup実施計画を作成し、新Authorization Record / RoE承認後にのみ実行して結果を収集する | Lab Operator | 2026-08-13 | 新Authorization Record、RoE、署名済みpreflight report、default-deny結果、Cleanup verification | Open |
 
 ## 11. Reassessment and Handoff
 
@@ -295,13 +298,15 @@ Collected Evidence statusは `Planned / Collected / Rejected / Inconclusive` の
 
 | Reassessment ID | Trigger | Scope | Owner | Scheduled date | Inputs required | Closure criteria | Destination chapter / artifact |
 |---|---|---|---|---|---|---|---|
-| `REA-TM-2026-001` | scope変更、承認ticket改定、manual import要件更新 | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` | Platform | 2026-08-19 | App export、scope matrix、approval ticket | 差分ゼロ、`CTRL-2026-001`が少なくともImplemented | 第15章 `Finding Report` / `Retest Record` |
+| `REA-TM-2026-001` | scope変更、承認ticket改定、manual import要件更新 | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` | Platform | 2026-08-19 | App export、scope matrix、approval ticket、新Authorization Record / RoE | 最小scope案と要件の差分ゼロ。新Authorization Record / RoE承認後にのみ変更し、`CTRL-2026-001`が少なくともImplemented | 第15章 `Finding Report` / `Retest Record` |
 | `REA-TM-2026-002` | Rule導入、Field追加、retention変更 | `TH-2026-002`, `TH-2026-003`, `CTRL-2026-003`, `CTRL-2026-005` | SOC | 2026-08-20 | Audit export、Rule test、coverage表、retention note | `CTRL-2026-003`がValidated、Gap ownerと期限が更新済み | 第6章 観測設計、第17章 Detection Validation |
 | `REA-TM-2026-003` | AUTH条件変更、Target追加、Production操作要請 | 全仮説、全Boundary、全Exposure | Security Program Lead | 条件発生時に即時 | 新Authorization Record、更新Scope、RoE案 | `AUTH-CASE-2026-001`からの逸脱が閉じ、新条件で再承認済み | 第9章 `Rules of Engagement` |
+| `REA-TM-2026-004` | 新Authorization / RoE承認、Lab boundary変更、preflight / default-deny / Cleanup結果収集 | `CTRL-2026-004`, `GAP-2026-004`, `EREQ-2026-004` | Synthetic Safety Reviewer | 2026-08-14 | 新Authorization Record、RoE、署名済みpreflight report、default-deny結果、Cleanup verification | 全結果が収集され`CTRL-2026-004`が少なくともObserved。失敗時は検証を停止する | 第2章 `Authorization Checklist` / 第9章 `Rules of Engagement` |
 
 ### 再承認が必要な変更
 
 - Production Tenant、実Credential、実Customer Data、外部API callを追加する場合。
+- 合成TenantであってもApp permission、consent、Identity bindingなどの設定変更を行う場合。
 - 追加Boundaryを越えるValidationが必要になった場合。
 - 想定外脆弱性を発見し、Disclosure routeを実運用へ接続する場合。
 
@@ -310,25 +315,25 @@ Collected Evidence statusは `Planned / Collected / Rejected / Inconclusive` の
 | Handoff ID | Target chapter | Deliverable / consumer | What this artifact provides | Acceptance criteria | Reject / return condition |
 |---|---|---|---|---|---|
 | `HO-TM-2026-005` | 第5章 ATT&CK | Behavior記述 | `TH-2026-001`〜`003`の成立条件、Flow、Boundary、Exposure、観測点 | Technique名ではなく行動条件へ落とせる | Campaign名や主体帰属だけで具体性がない |
-| `HO-TM-2026-006` | 第6章 観測可能性 | Telemetry / logging設計 | `EREQ-2026-001`〜`003`、`GAP-2026-001`〜`003`、Negative finding原則 | Field、retention、coverage、Gap ownerがある | 「ログを増やす」だけでField contractがない |
-| `HO-TM-2026-009` | 第9章 RoE | Rules of Engagement | `AUTH-CASE-2026-001`継承条件、停止条件、no outbound、対象外一覧 | Allowed / prohibited / stop / cleanupが明示される | Production操作や外部通信が紛れ込む |
+| `HO-TM-2026-006` | 第6章 観測可能性 | Telemetry / logging設計 | `EREQ-2026-001`〜`004`、`GAP-2026-001`〜`004`、Negative finding原則 | Field、retention、coverage、Lab safety Evidence、Gap ownerがある | 「ログを増やす」だけでField contractがない |
+| `HO-TM-2026-009` | 第9章 RoE | Rules of Engagement | `AUTH-CASE-2026-001`継承条件、`ACT-TM-2026-001` / `ACT-TM-2026-006`の再Authorization依存、停止条件、no outbound、対象外一覧 | Allowed / prohibited / stop / cleanupと設定変更・Lab実行の再Authorization gateが明示される | Production操作、外部通信または未承認の設定変更が紛れ込む |
 | `HO-TM-2026-011` | 第11章 Web/API評価 | Web/API Assessment Hypothesis Pack | `TB-2026-002`、`FLOW-2026-003`、`PATH-2026-001` | Entry point、state、property境界へ変換できる | endpointやstateが曖昧 |
 | `HO-TM-2026-012` | 第12章 Identity評価 | Identity Attack Path Review | `ASSET-2026-007`、`TB-2026-004`、`FLOW-2026-002`、`FLOW-2026-006` | 人・サービス・workloadの委任関係が追跡できる | 人とworkload identityが混在したまま |
 | `HO-TM-2026-013` | 第13章 Platform / Supply Chain | Platform and Supply Chain Assessment | `ASSET-2026-002`、`ASSET-2026-005`、Credential lifecycle、control plane依存 | Control planeとruntimeの境界が整理される | SaaS連携の境界が説明不能 |
-| `HO-TM-2026-014` | 第14章 最小影響Validation | Minimal-Impact Validation Record | `EREQ-2026-001`〜`003`、禁止操作、stop条件、fallback | 最小証拠、停止、Cleanupが一致する | 証拠のためにData取得を要求する |
-| `HO-TM-2026-015` | 第15章 Finding / Retest | Finding Report、Retest Record | `GAP-2026-001`〜`003`、`ACT-TM-2026-001`〜`005`、`REA-TM-2026-001`〜`003` | 根本原因、暫定対策、恒久対策、再評価が追跡できる | 影響、Owner、再テスト条件がない |
+| `HO-TM-2026-014` | 第14章 最小影響Validation | Minimal-Impact Validation Record | `EREQ-2026-001`〜`004`、特に`EREQ-2026-004`のpreflight / default-deny / Cleanup証拠、禁止操作、stop条件、fallback | 最小証拠、再Authorization、停止、Cleanupが一致する | 証拠のためにData取得または未承認実行を要求する |
+| `HO-TM-2026-015` | 第15章 Finding / Retest | Finding Report、Retest Record | `GAP-2026-001`〜`004`、`ACT-TM-2026-001`〜`006`、`REA-TM-2026-001`〜`004` | 根本原因、暫定対策、恒久対策、再Authorization、再評価が追跡できる | 影響、Owner、再テスト条件またはAuthorization gateがない |
 | `HO-TM-2026-027` | 第27章 AI / Agent固有Threat Model | AI / Agent Threat Model拡張 | 本CaseではN/A。AI / Agent component追加時に再利用するAsset、Flow、Boundary、Threat、Gap ID | AI / Agent固有Surfaceを既存IDへ接続し、本章の一般Modelを置換しない | AI / Agent固有論点を一般Threat Modelだけで完了扱いにする |
 
 ### Handoff interpretation
 
 - 第5章では、`TH-2026-001`〜`003`をATT&CKの行動言語へ変換する。
-- 第6章では、`EREQ-2026-003`と`GAP-2026-001`〜`003`を観測設計へ渡す。
-- 第9章では、`AUTH-CASE-2026-001`継承条件をRoEへ具体化する。
+- 第6章では、`EREQ-2026-003` / `EREQ-2026-004`と`GAP-2026-001`〜`004`を観測設計へ渡す。
+- 第9章では、`AUTH-CASE-2026-001`継承条件と`ACT-TM-2026-001` / `ACT-TM-2026-006`の再Authorization依存をRoEへ具体化する。
 - 第11章では、`TB-2026-002`と`PATH-2026-001`をWeb/APIの仮説パックへ分解する。
 - 第12章では、`ASSET-2026-007`と`TB-2026-004`をIdentity attack pathとして再評価する。
 - 第13章では、`ASSET-2026-002`と`ASSET-2026-005`のcontrol plane依存をPlatform評価へ渡す。
-- 第14章では、最小影響で必要Evidenceだけを集めるValidation設計へ接続する。
-- 第15章では、GapをFinding、Action、Retest、Residual riskへ変換する。
+- 第14章では、`EREQ-2026-004`を含む最小影響で必要Evidenceだけを集めるValidation設計へ接続する。
+- 第15章では、`GAP-2026-004`を含むGapをFinding、Action、Retest、Residual riskへ変換する。
 
 ## 12. Review and Rubric
 

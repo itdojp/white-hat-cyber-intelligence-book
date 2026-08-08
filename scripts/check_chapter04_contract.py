@@ -91,10 +91,10 @@ EXPECTED_CASE_IDS: dict[str, set[str]] = {
     "EDGE": {f"EDGE-2026-{number:03d}" for number in range(1, 8)},
     "CTRL": {f"CTRL-2026-{number:03d}" for number in range(1, 6)},
     "ASM": {f"ASM-2026-{number:03d}" for number in range(1, 4)},
-    "GAP": {f"GAP-2026-{number:03d}" for number in range(1, 4)},
-    "EREQ": {f"EREQ-2026-{number:03d}" for number in range(1, 4)},
-    "ACT-TM": {f"ACT-TM-2026-{number:03d}" for number in range(1, 6)},
-    "REA-TM": {f"REA-TM-2026-{number:03d}" for number in range(1, 4)},
+    "GAP": {f"GAP-2026-{number:03d}" for number in range(1, 5)},
+    "EREQ": {f"EREQ-2026-{number:03d}" for number in range(1, 5)},
+    "ACT-TM": {f"ACT-TM-2026-{number:03d}" for number in range(1, 7)},
+    "REA-TM": {f"REA-TM-2026-{number:03d}" for number in range(1, 5)},
 }
 
 EXPECTED_DEPENDENCY_IDS = {f"DEP-2026-{number:03d}" for number in range(1, 6)}
@@ -111,15 +111,51 @@ EXPECTED_INHERITED_COLLECTED_EVIDENCE_IDS = EXPECTED_INHERITED_EVIDENCE_IDS - {"
 INHERITED_REVIEWER_VALUE = "Not recorded in inherited source"
 INHERITED_TH_003_PROPOSITION = "既に同型の不正利用が発生した"
 EXPECTED_HANDOFF_ROWS = {
-    "HO-TM-2026-005": ("第5章 ATT&CK", "Behavior記述"),
-    "HO-TM-2026-006": ("第6章 観測可能性", "Telemetry / logging設計"),
-    "HO-TM-2026-009": ("第9章 RoE", "Rules of Engagement"),
-    "HO-TM-2026-011": ("第11章 Web/API評価", "Web/API Assessment Hypothesis Pack"),
-    "HO-TM-2026-012": ("第12章 Identity評価", "Identity Attack Path Review"),
-    "HO-TM-2026-013": ("第13章 Platform / Supply Chain", "Platform and Supply Chain Assessment"),
-    "HO-TM-2026-014": ("第14章 最小影響Validation", "Minimal-Impact Validation Record"),
-    "HO-TM-2026-015": ("第15章 Finding / Retest", "Finding Report、Retest Record"),
-    "HO-TM-2026-027": ("第27章 AI / Agent固有Threat Model", "AI / Agent Threat Model拡張"),
+    "HO-TM-2026-005": (
+        "第5章 ATT&CK",
+        "Behavior記述",
+        "`TH-2026-001`〜`003`の成立条件、Flow、Boundary、Exposure、観測点",
+    ),
+    "HO-TM-2026-006": (
+        "第6章 観測可能性",
+        "Telemetry / logging設計",
+        "`EREQ-2026-001`〜`004`、`GAP-2026-001`〜`004`、Negative finding原則",
+    ),
+    "HO-TM-2026-009": (
+        "第9章 RoE",
+        "Rules of Engagement",
+        "`AUTH-CASE-2026-001`継承条件、`ACT-TM-2026-001` / `ACT-TM-2026-006`の再Authorization依存、停止条件、no outbound、対象外一覧",
+    ),
+    "HO-TM-2026-011": (
+        "第11章 Web/API評価",
+        "Web/API Assessment Hypothesis Pack",
+        "`TB-2026-002`、`FLOW-2026-003`、`PATH-2026-001`",
+    ),
+    "HO-TM-2026-012": (
+        "第12章 Identity評価",
+        "Identity Attack Path Review",
+        "`ASSET-2026-007`、`TB-2026-004`、`FLOW-2026-002`、`FLOW-2026-006`",
+    ),
+    "HO-TM-2026-013": (
+        "第13章 Platform / Supply Chain",
+        "Platform and Supply Chain Assessment",
+        "`ASSET-2026-002`、`ASSET-2026-005`、Credential lifecycle、control plane依存",
+    ),
+    "HO-TM-2026-014": (
+        "第14章 最小影響Validation",
+        "Minimal-Impact Validation Record",
+        "`EREQ-2026-001`〜`004`、特に`EREQ-2026-004`のpreflight / default-deny / Cleanup証拠、禁止操作、stop条件、fallback",
+    ),
+    "HO-TM-2026-015": (
+        "第15章 Finding / Retest",
+        "Finding Report、Retest Record",
+        "`GAP-2026-001`〜`004`、`ACT-TM-2026-001`〜`006`、`REA-TM-2026-001`〜`004`",
+    ),
+    "HO-TM-2026-027": (
+        "第27章 AI / Agent固有Threat Model",
+        "AI / Agent Threat Model拡張",
+        "本CaseではN/A。AI / Agent component追加時に再利用するAsset、Flow、Boundary、Threat、Gap ID",
+    ),
 }
 EXPECTED_HANDOFF_IDS = set(EXPECTED_HANDOFF_ROWS)
 
@@ -1244,11 +1280,15 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "GAP-2026-001",
         "GAP-2026-002",
         "GAP-2026-003",
+        "GAP-2026-004",
         "EREQ-2026-001",
         "EREQ-2026-002",
         "EREQ-2026-003",
+        "EREQ-2026-004",
         "ACT-TM-2026-001",
+        "ACT-TM-2026-006",
         "REA-TM-2026-001",
+        "REA-TM-2026-004",
     )
     messages.extend(require_tokens(label, text, required))
 
@@ -1585,6 +1625,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         assurance = lab_control[control_header.index("Assurance state")]
         evidence_ids = lab_control[control_header.index("Evidence IDs")]
         limitation = lab_control[control_header.index("Limitation")]
+        gap_id = lab_control[control_header.index("Gap ID")]
         if assurance != "Documented":
             messages.append(
                 f"{label}: CTRL-2026-004 must remain Documented until explicit synthetic "
@@ -1592,6 +1633,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             )
         if evidence_ids != "`EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001`":
             messages.append(f"{label}: CTRL-2026-004 review Evidence binding drift: {evidence_ids!r}")
+        if gap_id != "`GAP-2026-004`":
+            messages.append(
+                f"{label}: CTRL-2026-004 must link to its dedicated lab-safety Gap "
+                f"GAP-2026-004; found {gap_id!r}"
+            )
         for marker in (
             "preflight",
             "default-deny",
@@ -1654,6 +1700,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "ACT-TM-2026-003": "`TH-2026-003`, `CTRL-2026-005`, `GAP-2026-001`",
         "ACT-TM-2026-004": "`TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002`",
         "ACT-TM-2026-005": "`TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003`",
+        "ACT-TM-2026-006": "`TH-2026-002`, `CTRL-2026-004`, `GAP-2026-004`",
     }
     action_relation_index = action_header.index("Related Gap / Control / Threat")
     observed_action_relations = {
@@ -1682,6 +1729,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "GAP-2026-001": "`ACT-TM-2026-003`",
         "GAP-2026-002": "`ACT-TM-2026-001`, `ACT-TM-2026-004`",
         "GAP-2026-003": "`ACT-TM-2026-002`, `ACT-TM-2026-005`",
+        "GAP-2026-004": "`ACT-TM-2026-006`",
     }
     gap_action_index = gap_header.index("Action ID")
     observed_gap_actions = {
@@ -1701,6 +1749,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     action_text_index = action_header.index("Action")
     success_evidence_index = action_header.index("Success evidence")
     expected_action_semantics = {
+        "ACT-TM-2026-001": {
+            "action": ("必要最小scope案", "実設定変更", "新Authorization Record / RoE承認後の別工程"),
+            "success": ("最小scope案", "新Authorization Record / RoE申請ticket", "実設定変更なし"),
+        },
         "ACT-TM-2026-004": {
             "action": ("Boundary owner", "scope matrix", "機械的突合"),
             "success": ("scope matrix", "機械的突合結果", "承認runbook"),
@@ -1708,6 +1760,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "ACT-TM-2026-005": {
             "action": ("90日Coverage", "retention証跡", "deny条件"),
             "success": ("Coverage表", "retention record", "deny例"),
+        },
+        "ACT-TM-2026-006": {
+            "action": ("preflight", "default-deny", "Cleanup", "新Authorization Record / RoE承認後にのみ実行"),
+            "success": ("新Authorization Record", "RoE", "preflight report", "default-deny結果", "Cleanup verification"),
         },
     }
     for action_id, requirements in expected_action_semantics.items():
@@ -1721,6 +1777,87 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for marker in requirements["success"]:
             if marker not in row[success_evidence_index]:
                 messages.append(f"{label}: {action_id} Success evidence missing marker {marker!r}")
+
+    gap_rows_by_id = {
+        row[0].strip("`"): row
+        for row in case_tables.get(gap_header, [])
+        if len(row) == len(gap_header)
+    }
+    lab_gap = gap_rows_by_id.get("GAP-2026-004")
+    if lab_gap is None:
+        messages.append(f"{label}: missing dedicated lab-safety Gap GAP-2026-004")
+    else:
+        expected_lab_gap_fields = {
+            "Owner": "Lab Operator",
+            "Due date": "2026-08-13",
+            "Evidence Requirement ID": "`EREQ-2026-004`",
+            "Action ID": "`ACT-TM-2026-006`",
+            "Reassessment ID": "`REA-TM-2026-004`",
+        }
+        for field, expected in expected_lab_gap_fields.items():
+            actual = lab_gap[gap_header.index(field)]
+            if actual != expected:
+                messages.append(f"{label}: GAP-2026-004 {field} {actual!r} != {expected!r}")
+        missing_information = lab_gap[gap_header.index("Missing information / control / telemetry")]
+        for marker in ("CTRL-2026-004", "preflight", "default-deny", "Cleanup", "未収集"):
+            if marker not in missing_information:
+                messages.append(f"{label}: GAP-2026-004 missing lab-safety marker {marker!r}")
+
+    evidence_rows_by_id = {
+        row[0].strip("`"): row
+        for row in case_tables.get(evidence_requirement_header, [])
+        if len(row) == len(evidence_requirement_header)
+    }
+    lab_requirement = evidence_rows_by_id.get("EREQ-2026-004")
+    if lab_requirement is None:
+        messages.append(f"{label}: missing lab-safety Evidence Requirement EREQ-2026-004")
+    else:
+        relation = lab_requirement[evidence_requirement_header.index("Related Threat / Control / Gap")]
+        if relation != "`TH-2026-002`, `CTRL-2026-004`, `GAP-2026-004`":
+            messages.append(f"{label}: EREQ-2026-004 source trace drift: {relation!r}")
+        minimum = lab_requirement[evidence_requirement_header.index("Minimum sufficient evidence")]
+        forbidden = lab_requirement[evidence_requirement_header.index("Forbidden / over-collection boundary")]
+        resulting = lab_requirement[evidence_requirement_header.index("Resulting Evidence IDs")]
+        for marker in ("preflight report", "default-deny", "Cleanup verification"):
+            if marker not in minimum:
+                messages.append(f"{label}: EREQ-2026-004 minimum evidence missing {marker!r}")
+        for marker in ("新Authorization Record / RoE承認前に実行しない", "実Target", "実Credential", "外向き通信"):
+            if marker not in forbidden:
+                messages.append(f"{label}: EREQ-2026-004 safety boundary missing {marker!r}")
+        if resulting != "未収集（承認後に新Evidence IDを割り当てる）":
+            messages.append(f"{label}: EREQ-2026-004 must not invent collected Evidence: {resulting!r}")
+
+    reassessment_header = count_contracts[6][0]
+    reassessment_rows_by_id = {
+        row[0].strip("`"): row
+        for row in case_tables.get(reassessment_header, [])
+        if len(row) == len(reassessment_header)
+    }
+    expected_reassessment_markers = {
+        "REA-TM-2026-001": {
+            "Inputs required": ("新Authorization Record / RoE",),
+            "Closure criteria": ("新Authorization Record / RoE承認後にのみ変更",),
+        },
+        "REA-TM-2026-004": {
+            "Scope": ("CTRL-2026-004", "GAP-2026-004", "EREQ-2026-004"),
+            "Inputs required": ("新Authorization Record", "RoE", "preflight report", "default-deny結果", "Cleanup verification"),
+            "Closure criteria": ("CTRL-2026-004", "Observed", "失敗時は検証を停止"),
+        },
+    }
+    for reassessment_id, fields in expected_reassessment_markers.items():
+        row = reassessment_rows_by_id.get(reassessment_id)
+        if row is None:
+            messages.append(f"{label}: missing Reassessment contract {reassessment_id}")
+            continue
+        for field, markers in fields.items():
+            value = row[reassessment_header.index(field)]
+            for marker in markers:
+                if marker not in value:
+                    messages.append(f"{label}: {reassessment_id} {field} missing {marker!r}")
+
+    reauthorization_marker = "合成TenantであってもApp permission、consent、Identity bindingなどの設定変更を行う場合。"
+    if reauthorization_marker not in text:
+        messages.append(f"{label}: missing synthetic configuration-change reauthorization gate")
 
     definition_contracts: tuple[tuple[str, list[list[str]], int, bool], ...] = (
         ("ASSET", parsed.get(asset_header, []), 0, True),
@@ -1792,7 +1929,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     handoff_rows, handoff_messages = table_by_header(text, HANDOFF_HEADER, label)
     messages.extend(handoff_messages)
     observed_handoffs = {
-        row[0].strip("`"): (row[1], row[2])
+        row[0].strip("`"): (row[1], row[2], row[3])
         for row in handoff_rows
         if len(row) == len(HANDOFF_HEADER)
     }
@@ -2228,6 +2365,38 @@ def negative_regressions(
                 ),
             ),
             (
+                "ACT-TM-2026-001 bypasses reauthorization",
+                case.replace(
+                    "App permissionの必要最小scope案とscope matrix更新案を作成する。実設定変更は新Authorization Record / RoE承認後の別工程とする",
+                    "App permissionを必要最小限へ縮小し、scope matrixとの差分をゼロにする",
+                    1,
+                ),
+            ),
+            (
+                "CTRL-2026-004 orphaned from lab-safety Gap",
+                case.replace(
+                    "| `GAP-2026-004` | AUTH条件、Lab boundaryまたは実施Evidence変更 |",
+                    "| `GAP-2026-003` | AUTH条件、Lab boundaryまたは実施Evidence変更 |",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-006 executes before authorization",
+                case.replace(
+                    "合成Labのpreflight、default-deny、Cleanup実施計画を作成し、新Authorization Record / RoE承認後にのみ実行して結果を収集する",
+                    "合成Labのpreflight、default-deny、Cleanupを実行して結果を収集する",
+                    1,
+                ),
+            ),
+            (
+                "synthetic configuration reauthorization gate omitted",
+                case.replace(
+                    "- 合成TenantであってもApp permission、consent、Identity bindingなどの設定変更を行う場合。\n",
+                    "",
+                    1,
+                ),
+            ),
+            (
                 "Action source type drift",
                 case.replace(
                     "| `ACT-TM-2026-004` | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` |",
@@ -2290,6 +2459,22 @@ def negative_regressions(
             (
                 "Handoff semantic target drift",
                 case.replace("| `HO-TM-2026-012` | 第12章 Identity評価 |", "| `HO-TM-2026-012` | 第27章 AI評価 |", 1),
+            ),
+            (
+                "Chapter 14 lab-safety Evidence handoff drift",
+                case.replace(
+                    "`EREQ-2026-001`〜`004`、特に`EREQ-2026-004`のpreflight / default-deny / Cleanup証拠、禁止操作、stop条件、fallback",
+                    "`EREQ-2026-001`〜`003`、禁止操作、stop条件、fallback",
+                    1,
+                ),
+            ),
+            (
+                "Chapter 15 lab-safety trace handoff drift",
+                case.replace(
+                    "`GAP-2026-001`〜`004`、`ACT-TM-2026-001`〜`006`、`REA-TM-2026-001`〜`004`",
+                    "`GAP-2026-001`〜`003`、`ACT-TM-2026-001`〜`005`、`REA-TM-2026-001`〜`003`",
+                    1,
+                ),
             ),
         )
         for name, mutation in case_mutations:
