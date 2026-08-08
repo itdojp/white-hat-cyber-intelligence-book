@@ -29,8 +29,41 @@ SCHEMA_VERSION = "1.1.0"
 DIRECTORY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 STATIC_PATH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]*\.json$")
 LINE_TERMINATOR_RE = re.compile(r"[\r\n\u2028\u2029]")
+PAGE_TITLE_FORMAT_CONTROL_RANGES = (
+    (0x00AD, 0x00AD),
+    (0x0600, 0x0605),
+    (0x061C, 0x061C),
+    (0x06DD, 0x06DD),
+    (0x070F, 0x070F),
+    (0x0890, 0x0891),
+    (0x08E2, 0x08E2),
+    (0x180E, 0x180E),
+    (0x200B, 0x200F),
+    (0x202A, 0x202E),
+    (0x2060, 0x2064),
+    (0x2066, 0x206F),
+    (0xFEFF, 0xFEFF),
+    (0xFFF9, 0xFFFB),
+    (0x110BD, 0x110BD),
+    (0x110CD, 0x110CD),
+    (0x13430, 0x1343F),
+    (0x1BCA0, 0x1BCA3),
+    (0x1D173, 0x1D17A),
+    (0xE0001, 0xE0001),
+    (0xE0020, 0xE007F),
+)
+PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS = frozenset(
+    codepoint
+    for start, end in PAGE_TITLE_FORMAT_CONTROL_RANGES
+    for codepoint in range(start, end + 1)
+)
+PAGE_TITLE_FORMAT_CONTROL_SCHEMA_CLASS = "".join(
+    chr(start) if start == end else f"{chr(start)}-{chr(end)}"
+    for start, end in PAGE_TITLE_FORMAT_CONTROL_RANGES
+)
 PAGE_TITLE_SCHEMA_PATTERN = (
-    r"^(?=.*[^\s\u200B\u2060\uFEFF])[^<>\r\n\u2028\u2029]+$"
+    f"^(?=.*[^\\s{PAGE_TITLE_FORMAT_CONTROL_SCHEMA_CLASS}])"
+    r"[^<>\r\n\u2028\u2029]+$"
 )
 PAGE_TITLE_HTML_DELIMITER_RE = re.compile(r"[<>]")
 ALLOWED_SECTIONS = set(base.SECTION_ORDER)
@@ -336,7 +369,8 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
                 f"pages[{index}].title must contain a non-whitespace character"
             )
         if not any(
-            not character.isspace() and unicodedata.category(character) != "Cf"
+            not character.isspace()
+            and ord(character) not in PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS
             for character in title
         ):
             raise SitePageRegistryError(
@@ -1108,6 +1142,34 @@ def run_registry_security_regressions() -> list[str]:
                 failures.append(
                     f"site-pages schema title pattern accepted {name}-only/unsafe title"
                 )
+        runtime_format_controls = frozenset(
+            codepoint
+            for codepoint in range(sys.maxunicode + 1)
+            if unicodedata.category(chr(codepoint)) == "Cf"
+        )
+        if runtime_format_controls != PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS:
+            failures.append(
+                "site-pages title format-control table does not match Python Unicode "
+                f"{unicodedata.unidata_version} Cf data"
+            )
+        all_format_controls = "".join(
+            chr(codepoint) for codepoint in sorted(PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS)
+        )
+        if title_pattern.fullmatch(all_format_controls):
+            failures.append(
+                "site-pages schema title pattern accepted the complete format-control corpus"
+            )
+        try:
+            parse_registry_data(
+                page_title_fixture(all_format_controls),
+                "complete format-control title corpus",
+            )
+        except SitePageRegistryError:
+            pass
+        else:
+            failures.append(
+                "site-pages parser accepted the complete format-control title corpus"
+            )
     except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
         failures.append(f"site-pages schema title contract cannot be read: {exc}")
 
