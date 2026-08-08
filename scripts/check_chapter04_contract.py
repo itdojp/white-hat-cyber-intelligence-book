@@ -88,6 +88,11 @@ SAFE_PAGE_TITLES = (
     "第4章 Source Review",
     "第三者の本番システムへ接続しない",
     "マルウェア分類の危険性を分析する",
+    "e\u0301vidence title",
+    "क\u093f",
+    "か\u3099",
+    "𐀀\U000101fd",
+    "😀\ufe0f",
 )
 
 MODEL_STATUSES = {
@@ -216,6 +221,12 @@ CHAPTER_WALKTHROUGH_TRACE = (
     "`EREQ-2026-001`、`ACT-TM-2026-001` / `ACT-TM-2026-004`、"
     "`REA-TM-2026-001`へつなぐ。"
 )
+DECISION_CONFIDENCE_VALUE = (
+    "低。これは推奨の確からしさでありseverityではない。2026-07-25のhistorical "
+    "scope縮小`Passed`はあるが、post-remediation current scope Snapshotが未収集で、"
+    "`GAP-2026-001` / `GAP-2026-003`がOpen / Escalatedのため、再評価前の確信は限定される"
+)
+DECISION_CONFIDENCE_ROW = f"| Confidence | {DECISION_CONFIDENCE_VALUE} |"
 FLOW_006_EVIDENCE_STATUS = "Planned"
 FLOW_006_OBSERVATION_POINT = (
     "収集予定: post-remediation Workload identity binding snapshot、"
@@ -1212,7 +1223,30 @@ _READER_VISIBLE_FENCE_LANGUAGES = {
     "yml": "structured-data",
     "mermaid": "diagram-source",
 }
-_MARKDOWN_REFERENCE_DEFINITION = re.compile(r"^\s*\[[^]]+\]:\s*")
+_MARKDOWN_LINK_TITLE_TOKEN = r'(?:"[^"\r\n]*"|\'[^\'\r\n]*\'|\([^()\r\n]*\))'
+_MARKDOWN_LINK_TITLE = rf"(?P<title>{_MARKDOWN_LINK_TITLE_TOKEN})"
+_MARKDOWN_LINK_DESTINATION = r"(?:<[^>\r\n]*>|[^\s()\r\n]+)"
+_MARKDOWN_INLINE_LINK_OPENING = re.compile(r"\]\(")
+_MARKDOWN_INLINE_LINK = re.compile(
+    r"\]\("
+    rf"[ \t]*(?P<destination>{_MARKDOWN_LINK_DESTINATION})"
+    rf"(?:[ \t]+{_MARKDOWN_LINK_TITLE})?[ \t]*\)"
+)
+_MARKDOWN_DIRECT_LABEL_BEFORE_TAIL = re.compile(r"!?\[[^\]\r\n]*\]$")
+_MARKDOWN_NESTED_IMAGE_LABEL_BEFORE_TAIL = re.compile(
+    r"\[!\[[^\]\r\n]*\]\("
+    rf"[ \t]*{_MARKDOWN_LINK_DESTINATION}"
+    rf"(?:[ \t]+{_MARKDOWN_LINK_TITLE_TOKEN})?[ \t]*\)\]$"
+)
+_MARKDOWN_REFERENCE_DEFINITION_PREFIX = re.compile(r"^\s{0,3}\[[^]\r\n]+\]:")
+_MARKDOWN_REFERENCE_DEFINITION = re.compile(
+    r"^\s{0,3}\[(?P<reference>[^]\r\n]+)\]:[ \t]*"
+    r"(?P<destination><[^>\r\n]+>|[^\s\r\n]+)"
+    rf"(?:[ \t]+{_MARKDOWN_LINK_TITLE})?[ \t]*$"
+)
+_MARKDOWN_CONTINUED_LINK_TITLE = re.compile(
+    r"^[ \t]+(?:\"[^\"\r\n]*\"|'[^'\r\n]*'|\([^()\r\n]*\))[ \t]*$"
+)
 _MARKDOWN_AUTOLINK_URL = re.compile(
     r"<(?P<url>(?:(?:https?):)?//[^<>\s]+)>",
     re.IGNORECASE,
@@ -1625,6 +1659,70 @@ def _literal_fence_visible_fields(
     return fields
 
 
+def _markdown_title_value(token: str) -> str:
+    """Remove one finite Markdown title delimiter pair."""
+
+    if len(token) < 2 or (token[0], token[-1]) not in {
+        ('"', '"'),
+        ("'", "'"),
+        ("(", ")"),
+    }:
+        raise ValueError(f"unsupported Markdown link title token: {token!r}")
+    return token[1:-1]
+
+
+def _markdown_character_is_escaped(value: str, index: int) -> bool:
+    """Return whether a Markdown delimiter has an odd backslash prefix."""
+
+    backslashes = 0
+    cursor = index - 1
+    while cursor >= 0 and value[cursor] == "\\":
+        backslashes += 1
+        cursor -= 1
+    return backslashes % 2 == 1
+
+
+def _finite_inline_label_before_tail(value: str, closing_index: int) -> bool:
+    """Recognize a direct label or one finite nested-image label before `](`."""
+
+    if _markdown_character_is_escaped(value, closing_index):
+        return False
+    label_prefix = value[: closing_index + 1]
+    direct = _MARKDOWN_DIRECT_LABEL_BEFORE_TAIL.search(label_prefix)
+    if direct is not None:
+        bracket_index = direct.start() + (1 if direct.group(0).startswith("!") else 0)
+        if not _markdown_character_is_escaped(value, bracket_index):
+            return True
+    nested = _MARKDOWN_NESTED_IMAGE_LABEL_BEFORE_TAIL.search(label_prefix)
+    return nested is not None and not _markdown_character_is_escaped(
+        value, nested.start()
+    )
+
+
+def _inline_link_title_fields(value: str, *, location: str) -> list[tuple[str, str]]:
+    """Select same-line finite inline/image-link titles as rendered tooltips."""
+
+    fields: list[tuple[str, str]] = []
+    occurrence = 0
+    for opening in _MARKDOWN_INLINE_LINK_OPENING.finditer(value):
+        if not _finite_inline_label_before_tail(value, opening.start()):
+            continue
+        occurrence += 1
+        link = _MARKDOWN_INLINE_LINK.match(value, opening.start())
+        if link is None:
+            raise ValueError(
+                f"{location}: unsupported or multiline Markdown inline-link shape"
+            )
+        title = link.group("title")
+        if title is not None:
+            visible_title = _markdown_title_value(title)
+            if visible_title:
+                fields.append(
+                    (f"{location}/inline-link-title[{occurrence}]", visible_title)
+                )
+    return fields
+
+
 def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str]]:
     """Select rendered headings, prose, lists, and finite code-block contents.
 
@@ -1699,6 +1797,39 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
             selected.append((span.opening_index + 1, field))
 
     lines = _strip_html_comments(renderable_lines)
+    for line_number, line in lines:
+        reference_prefix = _MARKDOWN_REFERENCE_DEFINITION_PREFIX.match(line)
+        if reference_prefix:
+            definition = _MARKDOWN_REFERENCE_DEFINITION.fullmatch(line)
+            if definition is None:
+                raise ValueError(
+                    f"{label}:{line_number}: malformed Markdown reference definition"
+                )
+            title = definition.group("title")
+            if title is not None:
+                visible_title = _markdown_title_value(title)
+                if visible_title:
+                    selected.append(
+                        (
+                            line_number,
+                            (
+                                f"{label}:{line_number}-{line_number} reference-link-title",
+                                visible_title,
+                            ),
+                        )
+                    )
+            elif line_number < len(source_lines):
+                next_line = source_lines[line_number]
+                if _MARKDOWN_CONTINUED_LINK_TITLE.fullmatch(next_line):
+                    raise ValueError(
+                        f"{label}:{line_number}-{line_number + 1}: multiline "
+                        "Markdown reference title is outside the finite contract"
+                    )
+            continue
+        for field in _inline_link_title_fields(
+            line, location=f"{label}:{line_number}-{line_number}"
+        ):
+            selected.append((line_number, field))
     index = 0
 
     def structural(line: str) -> bool:
@@ -1707,7 +1838,7 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
             not stripped
             or _MARKDOWN_HEADING.match(stripped)
             or _MARKDOWN_FENCE.match(line)
-            or _MARKDOWN_REFERENCE_DEFINITION.match(line)
+            or _MARKDOWN_REFERENCE_DEFINITION.fullmatch(line)
             or stripped in {"---", "***", "___"}
         )
 
@@ -1950,18 +2081,25 @@ def classified_table_fields(
                 column_index = table.header.index(column)
                 value = row[column_index]
                 if value:
-                    fields.append(
-                        (
-                            adapter_field_location(
-                                label,
-                                table,
-                                occurrences[table.header],
-                                column,
-                                row_index,
-                            ),
-                            value,
-                        )
+                    location = adapter_field_location(
+                        label,
+                        table,
+                        occurrences[table.header],
+                        column,
+                        row_index,
                     )
+                    fields.append(
+                        (location, value)
+                    )
+                    try:
+                        fields.extend(
+                            _inline_link_title_fields(value, location=location)
+                        )
+                    except (TypeError, ValueError, UnicodeError) as exc:
+                        messages.append(
+                            f"{location}: reader-visible Markdown table-cell "
+                            f"adapter failed closed: {exc}"
+                        )
     return fields, messages
 
 
@@ -2297,6 +2435,189 @@ continues with [visible label](https://example.com/path).
     link_paragraph = dict(expected_fields)["adapter fixture:5-6 paragraph"]
     if visible_host_tokens(link_paragraph):
         error("reader-visible prose adapter must not scan hidden Markdown link destinations as visible hosts")
+
+    for syntax, unsafe_link, safe_link in (
+        (
+            "reference double-quoted title",
+            '[safe]: /local "第三者の本番システムへ接続する。"\n\n[safe]\n',
+            '[safe]: /local "第三者の本番システムへ接続しない。"\n\n[safe]\n',
+        ),
+        (
+            "reference single-quoted title",
+            "[safe]: /local '第三者の本番システムへ接続する。'\n\n[safe]\n",
+            "[safe]: /local '第三者の本番システムへ接続しない。'\n\n[safe]\n",
+        ),
+        (
+            "reference parenthesized title",
+            "[safe]: /local (第三者の本番システムへ接続する。)\n\n[safe]\n",
+            "[safe]: /local (第三者の本番システムへ接続しない。)\n\n[safe]\n",
+        ),
+        (
+            "inline double-quoted title",
+            '[safe](/local "第三者の本番システムへ接続する。")\n',
+            '[safe](/local "第三者の本番システムへ接続しない。")\n',
+        ),
+        (
+            "inline single-quoted title",
+            "[safe](/local '第三者の本番システムへ接続する。')\n",
+            "[safe](/local '第三者の本番システムへ接続しない。')\n",
+        ),
+        (
+            "inline parenthesized title",
+            "[safe](/local (第三者の本番システムへ接続する。))\n",
+            "[safe](/local (第三者の本番システムへ接続しない。))\n",
+        ),
+        (
+            "inline image title",
+            '![diagram](/local "第三者の本番システムへ接続する。")\n',
+            '![diagram](/local "第三者の本番システムへ接続しない。")\n',
+        ),
+        (
+            "nested-image outer-link title",
+            '[![diagram](/assets/diagram.svg)](/local "第三者の本番システムへ接続する。")\n',
+            '[![diagram](/assets/diagram.svg)](/local "第三者の本番システムへ接続しない。")\n',
+        ),
+    ):
+        unsafe_findings = document_reader_visible_policy_errors(
+            unsafe_link, f"unsafe {syntax}"
+        )
+        if not any(
+            "[target.real_or_external]" in finding
+            and "link-title" in finding
+            for finding in unsafe_findings
+        ):
+            error(f"reader-visible Markdown adapter did not scan {syntax}")
+        safe_findings = document_reader_visible_policy_errors(
+            safe_link, f"safe {syntax}"
+        )
+        if safe_findings:
+            error(
+                f"reader-visible Markdown adapter rejected safe {syntax}: "
+                f"{safe_findings!r}"
+            )
+
+    for disposition, title, expect_finding in (
+        ("unsafe", "第三者の本番システムへ接続する。", True),
+        ("safe", "第三者の本番システムへ接続しない。", False),
+    ):
+        table_with_title = (
+            "| Field | Value |\n|---|---|\n"
+            f'| Link | [safe](/local "{title}") |\n'
+        )
+        table_fields, table_messages = classified_table_fields(
+            table_with_title,
+            f"{disposition} table link-title fixture",
+            {FIELD_VALUE_HEADER: 1},
+        )
+        if table_messages:
+            error(
+                f"{disposition} table link-title fixture invalidated the table "
+                f"adapter: {table_messages!r}"
+            )
+            continue
+        table_findings = policy_errors(table_fields)
+        observed = any(
+            "[target.real_or_external]" in finding and "link-title" in finding
+            for finding in table_findings
+        )
+        if observed != expect_finding:
+            error(
+                f"{disposition} table link-title Policy result {observed} "
+                f"!= {expect_finding}: {table_findings!r}"
+            )
+
+    malformed_table_title = (
+        "| Field | Value |\n|---|---|\n"
+        '| Link | [safe](/local "unterminated) |\n'
+    )
+    _, malformed_table_messages = classified_table_fields(
+        malformed_table_title,
+        "malformed table link-title fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    if not any(
+        "table-cell adapter failed closed" in message
+        for message in malformed_table_messages
+    ):
+        error("reader-visible table adapter accepted a malformed inline link title")
+
+    literal_tail = (
+        'これはリンクではなく ](/local "第三者の本番システムへ接続する。") '
+        "というreader-visible文字列です。\n"
+    )
+    literal_fields = reader_visible_markdown_fields(
+        literal_tail, "literal non-link tail fixture"
+    )
+    if any("inline-link-title" in location for location, _ in literal_fields):
+        error("reader-visible adapter treated a literal ](...) tail as a link title")
+    literal_findings = document_reader_visible_policy_errors(
+        literal_tail, "literal non-link tail fixture"
+    )
+    if not any(
+        "paragraph" in finding and "[target.real_or_external]" in finding
+        for finding in literal_findings
+    ) or any("inline-link-title" in finding for finding in literal_findings):
+        error(
+            "literal ](...) tail did not remain ordinary reader-visible prose: "
+            f"{literal_findings!r}"
+        )
+
+    for escaped_name, escaped_link in (
+        (
+            "opening bracket",
+            '\\[safe](/local "第三者の本番システムへ接続する。")\n',
+        ),
+        (
+            "closing bracket",
+            '[safe\\](/local "第三者の本番システムへ接続する。")\n',
+        ),
+    ):
+        escaped_fields = reader_visible_markdown_fields(
+            escaped_link, f"escaped {escaped_name} non-link fixture"
+        )
+        if any("inline-link-title" in location for location, _ in escaped_fields):
+            error(
+                f"reader-visible adapter treated an escaped {escaped_name} "
+                "literal as a link title"
+            )
+
+    literal_table_tail = (
+        "| Field | Value |\n|---|---|\n"
+        '| Note | 文字列 ](/local "第三者の本番システムへ接続する。") |\n'
+    )
+    literal_table_fields, literal_table_messages = classified_table_fields(
+        literal_table_tail,
+        "literal table non-link tail fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    if literal_table_messages:
+        error(
+            "literal table non-link tail invalidated the finite table adapter: "
+            f"{literal_table_messages!r}"
+        )
+    if any("inline-link-title" in location for location, _ in literal_table_fields):
+        error("table adapter treated a literal ](...) tail as a link title")
+    literal_table_findings = policy_errors(literal_table_fields)
+    if not any(
+        " Value row 1:" in finding and "[target.real_or_external]" in finding
+        for finding in literal_table_findings
+    ) or any("inline-link-title" in finding for finding in literal_table_findings):
+        error(
+            "literal table ](...) tail did not remain an ordinary scanned cell: "
+            f"{literal_table_findings!r}"
+        )
+
+    for name, malformed_link in (
+        ("unterminated reference title", '[safe]: /local "unterminated\n'),
+        ("multiline reference title", '[safe]: /local\n    "title"\n'),
+        ("unterminated inline title", '[safe](/local "unterminated)\n'),
+        ("multiline inline link", '[safe](/local\n "title")\n'),
+    ):
+        failures = document_reader_visible_policy_errors(
+            malformed_link, f"malformed {name}"
+        )
+        if not any("failed closed" in failure for failure in failures):
+            error(f"reader-visible Markdown adapter accepted {name}")
 
     table = "| Field | Value |\n|---|---|\n| row | ordinary table value |"
     separated_fields = reader_visible_markdown_fields(
@@ -4727,6 +5048,58 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             messages.append(
                 f"{label}: Decision handoff summary does not distinguish {marker!r}"
             )
+    decision_rows, decision_messages = table_by_header(
+        decision_summary, FIELD_VALUE_HEADER, label
+    )
+    messages.extend(decision_messages)
+    expected_decision_fields = (
+        "Supported option",
+        "Confidence",
+        "Why not immediate unrestricted continuation",
+        "Why not direct production validation here",
+        "Strongest confirmed point",
+        "Strongest uncertainty",
+        "Permitted conclusion",
+        "Prohibited conclusion",
+    )
+    observed_decision_fields = tuple(
+        row[0] for row in decision_rows if len(row) == len(FIELD_VALUE_HEADER)
+    )
+    if observed_decision_fields != expected_decision_fields:
+        messages.append(
+            f"{label}: Decision handoff fields/order {observed_decision_fields!r} "
+            f"!= {expected_decision_fields!r}"
+        )
+    decision_values = {
+        row[0]: row[1]
+        for row in decision_rows
+        if len(row) == len(FIELD_VALUE_HEADER)
+    }
+    confidence = decision_values.get("Confidence", "")
+    for marker in (
+        "低。",
+        "推奨の確からしさ",
+        "severityではない",
+        "2026-07-25",
+        "post-remediation current scope Snapshotが未収集",
+        "GAP-2026-001",
+        "GAP-2026-003",
+        "Open / Escalated",
+        "再評価前",
+    ):
+        if marker not in confidence:
+            messages.append(
+                f"{label}: Decision handoff Confidence missing bounded marker {marker!r}"
+            )
+    if confidence.startswith("高") or "不確実性はない" in confidence:
+        messages.append(
+            f"{label}: Decision handoff Confidence overclaims uncollected current Evidence"
+        )
+    if confidence != DECISION_CONFIDENCE_VALUE:
+        messages.append(
+            f"{label}: Decision handoff Confidence drifted from the bounded "
+            "evidence/limitation contract"
+        )
 
     control_consumer_contracts = (
         (
@@ -5651,6 +6024,18 @@ def negative_regressions(
             (
                 "Decision Context field drift",
                 case.replace("| Decision deadline | 2026-08-19T18:00:00+09:00 |", "| Review date | 2026-08-19T18:00:00+09:00 |", 1),
+            ),
+            (
+                "Decision handoff Confidence missing",
+                case.replace(f"{DECISION_CONFIDENCE_ROW}\n", "", 1),
+            ),
+            (
+                "Decision handoff Confidence unsupported overclaim",
+                case.replace(
+                    DECISION_CONFIDENCE_ROW,
+                    "| Confidence | 高。既存のhistorical Evidenceだけで不確実性はない |",
+                    1,
+                ),
             ),
             (
                 "top-level ART-03 section drift",
@@ -6948,14 +7333,20 @@ def negative_regressions(
         # Exercise the generic parser directly.  The Chapter 4 exact-title
         # comparator would also reject these values and could otherwise mask
         # a parser/schema regression.
-        for whitespace_name, whitespace_title in (
+        for title_name, invalid_title in (
             ("spaces", "   "),
             ("tabs", "\t\t"),
             ("Unicode spaces", "\u3000\u00a0"),
+            ("C0 separator whitespace", "\u001c\u001d\u001e\u001f"),
+            ("NEXT LINE whitespace", "\u0085"),
             ("zero-width format controls", "\u200b\u2060"),
+            ("variation selector Mark", "\ufe0f"),
+            ("combining grapheme joiner Mark", "\u034f"),
+            ("combining acute Mark", "\u0301"),
+            ("Mongolian variation selector Mark", "\u180b"),
             ("raw HTML", "<span>Visible title</span>"),
         ):
-            whitespace_registry = {
+            invalid_title_registry = {
                 "schemaVersion": "1.1.0",
                 "canonicalDirectories": [],
                 "pages": [
@@ -6964,21 +7355,47 @@ def negative_regressions(
                         "destination": "cases/whitespace-title/index.md",
                         "section": "additional",
                         "order": 1,
-                        "title": whitespace_title,
+                        "title": invalid_title,
                     }
                 ],
                 "directoryRoutes": {},
             }
             try:
                 parse_registry_data(
-                    whitespace_registry,
-                    f"negative Chapter 4 {whitespace_name}-only page title",
+                    invalid_title_registry,
+                    f"negative Chapter 4 {title_name}-only page title",
                 )
             except SitePageRegistryError:
                 pass
             else:
                 error(
-                    f"generic registry parser accepted {whitespace_name}-only page title"
+                    f"generic registry parser accepted {title_name}-only page title"
+                )
+
+        for safe_index, safe_title in enumerate(SAFE_PAGE_TITLES, start=1):
+            safe_title_registry = {
+                "schemaVersion": "1.1.0",
+                "canonicalDirectories": [],
+                "pages": [
+                    {
+                        "source": f"cases/safe-title-{safe_index}.md",
+                        "destination": f"cases/safe-title-{safe_index}/index.md",
+                        "section": "additional",
+                        "order": safe_index,
+                        "title": safe_title,
+                    }
+                ],
+                "directoryRoutes": {},
+            }
+            try:
+                parse_registry_data(
+                    safe_title_registry,
+                    f"safe Chapter 4 page title {safe_index}",
+                )
+            except SitePageRegistryError as exc:
+                error(
+                    "generic registry parser rejected a safe base/Mark title: "
+                    f"{safe_title!r}: {exc}"
                 )
 
         # The generic registry parser owns title safety. Exercise every current

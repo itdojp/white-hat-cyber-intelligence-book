@@ -264,6 +264,7 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 | Field | Value |
 |---|---|
 | Supported option | 権限縮小と監視強化で継続 |
+| Confidence | 低。これは推奨の確からしさでありseverityではない。2026-07-25のhistorical scope縮小`Passed`はあるが、post-remediation current scope Snapshotが未収集で、`GAP-2026-001` / `GAP-2026-003`がOpen / Escalatedのため、再評価前の確信は限定される |
 | Why not immediate unrestricted continuation | `TH-2026-001`、継承命題`TH-2026-002`、summary-only refinementの`TH-2026-004`、lifecycle / summary Field refinementの`TH-2026-005`が残り、`TH-2026-003`はTelemetry Gapで閉じていない |
 | Why not direct production validation here | `AUTH-CASE-2026-001`の条件付き許可は合成Tenantのread-only評価に限定される |
 | Strongest confirmed point | 2026-07-20のhistorical SnapshotではApp scopeと業務要件の差分が確認され、2026-07-25にscope縮小`Passed`が記録された |
