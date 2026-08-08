@@ -144,7 +144,7 @@ EXPECTED_CASE_IDS: dict[str, set[str]] = {
     "TB": {f"TB-2026-{number:03d}" for number in range(1, 10)},
     "EXP": {f"EXP-2026-{number:03d}" for number in range(1, 4)},
     "EP": {f"EP-2026-{number:03d}" for number in range(1, 4)},
-    "TH": {f"TH-2026-{number:03d}" for number in range(1, 6)},
+    "TH": {f"TH-2026-{number:03d}" for number in range(1, 7)},
     "MISUSE": {f"MISUSE-2026-{number:03d}" for number in range(1, 3)},
     "PATH": {f"PATH-2026-{number:03d}" for number in range(1, 3)},
     "EDGE": {f"EDGE-2026-{number:03d}" for number in range(1, 8)},
@@ -203,6 +203,33 @@ INHERITED_TH_002_ALTERNATIVE = (
     "同意Eventは収集済みでもRule欠落により早期検知できない可能性がある"
 )
 INHERITED_TH_003_PROPOSITION = "既に同型の不正利用が発生した"
+INHERITED_TH_003_PRECONDITIONS = "過去の不正Credential利用"
+INHERITED_TH_003_IMPACT = "過去侵害"
+INHERITED_TH_003_ASSETS = "`ASSET-2026-001`, `ASSET-2026-003`"
+INHERITED_TH_003_RELATIONS = "`TB-2026-002`, `TB-2026-003`"
+INHERITED_TH_003_ALTERNATIVE = (
+    "TelemetryとRetentionの制約により、未観測を未発生と判断できない"
+)
+OPPORTUNITY_TH_006_PROPOSITION = (
+    "historical scope、Credential metadata、API到達条件とTelemetry不足により、"
+    "不正利用の機会条件と影響範囲をsummary-only境界まで限定できない可能性がある"
+)
+OPPORTUNITY_TH_006_PRECONDITIONS = (
+    "historical scope、Credential metadata、API到達条件とTelemetry / Retention Coverageの"
+    "確認が不十分である"
+)
+OPPORTUNITY_TH_006_IMPACT = (
+    "既往利用可能性と顧客Dataへの影響範囲の判断がInconclusiveのまま残る"
+)
+OPPORTUNITY_TH_006_RELATIONS = (
+    "`TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `TB-2026-008`, "
+    "`FLOW-2026-003`, `FLOW-2026-004`, `FLOW-2026-005`, `EXP-2026-002`, "
+    "`EXP-2026-003`"
+)
+OPPORTUNITY_TH_006_ALTERNATIVE = (
+    "実際の不正利用は発生しておらず、Telemetry / Retention不足だけが判断を"
+    "Inconclusiveにしている可能性がある"
+)
 SUMMARY_TH_004_PROPOSITION = (
     "業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある"
 )
@@ -271,12 +298,16 @@ LIFECYCLE_TH_005_RELATIONS = (
     "`TB-2026-003`, `TB-2026-007`, `FLOW-2026-004`, `FLOW-2026-005`, "
     "`EXP-2026-002`"
 )
-FRESH_CHAPTER4_HYPOTHESIS_IDS = {"TH-2026-004", "TH-2026-005"}
+FRESH_CHAPTER4_HYPOTHESIS_IDS = {
+    "TH-2026-004",
+    "TH-2026-005",
+    "TH-2026-006",
+}
 EXPECTED_HANDOFF_ROWS = {
     "HO-TM-2026-005": (
         "第5章 ATT&CK",
         "Behavior記述",
-        "`TH-2026-001`〜`005`の成立条件、Flow、Boundary、Exposure、観測点",
+        "`TH-2026-001`〜`006`の成立条件、Flow、Boundary、Exposure、観測点",
     ),
     "HO-TM-2026-006": (
         "第6章 観測可能性",
@@ -338,8 +369,9 @@ HANDOFF_INTERPRETATION_BOUNDARY = (
 
 EXPECTED_HANDOFF_INTERPRETATION_LINES = (
     "- 第5章では、継承命題`TH-2026-001`〜`003`、summary-only refinement "
-    "`TH-2026-004`、lifecycle / summary Field refinement `TH-2026-005`を"
-    "区別してATT&CKの行動言語へ変換する。",
+    "`TH-2026-004`、lifecycle / summary Field refinement `TH-2026-005`、"
+    "機会条件・影響範囲 refinement `TH-2026-006`を区別してATT&CKの行動言語へ"
+    "変換する。",
     "- 第6章では、`CTRL-2026-007` / `CTRL-2026-009`、`EREQ-2026-003` / "
     "`EREQ-2026-004`を主要な観測入力とする。上表の正本どおり"
     "`EREQ-2026-001`〜`004`と`GAP-2026-001`〜`004`を併記して渡すのは、"
@@ -549,6 +581,26 @@ EXPECTED_TH_002_005_ALLOCATION_ROWS = (
         "`PATH-2026-002`, `CTRL-2026-007`, `CTRL-2026-008`, `GAP-2026-003`, "
         "`EREQ-2026-002`, `EREQ-2026-004`, `ACT-TM-2026-006`, `REA-TM-2026-002`",
         "共通のAudit surface、Safety gateまたは再評価単位で両命題を明示的に扱う",
+    ),
+)
+TH_003_006_ALLOCATION_HEADER = (
+    "Occurrence allocation",
+    "Consumer IDs",
+    "Meaning",
+)
+EXPECTED_TH_003_006_ALLOCATION_ROWS = (
+    (
+        "Refinement only",
+        "`CTRL-2026-009`, `ASM-2026-002`, `GAP-2026-001`, `ACT-TM-2026-003`",
+        "summary-only Field、機会条件、影響範囲の限定可能性だけを扱い、"
+        "発生有無を直接判定しない",
+    ),
+    (
+        "Both",
+        "`PATH-2026-002`, `ASM-2026-003`, `GAP-2026-003`, `EREQ-2026-003`, "
+        "`REA-TM-2026-002`",
+        "共通のTelemetry / Retention Evidenceを使うが、発生命題と"
+        "機会条件・影響範囲命題を別々に評価する",
     ),
 )
 ATTACK_PATH_HEADER = (
@@ -876,6 +928,12 @@ TABLE_SAFETY_POLICIES = {
             reader_visible=("Meaning",),
         ),
         table_safety_policy(
+            TH_003_006_ALLOCATION_HEADER,
+            structural=("Occurrence allocation", "Consumer IDs"),
+            finite=(),
+            reader_visible=("Meaning",),
+        ),
+        table_safety_policy(
             ATTACK_PATH_HEADER,
             structural=("Attack Path ID", "Edge ID", "Boundary ID", "Affected Asset IDs", "Required Evidence ID"),
             finite=("Knowledge state",),
@@ -1027,6 +1085,7 @@ CASE_TABLE_OCCURRENCES = {
         ENTRY_POINT_HEADER,
         HYPOTHESIS_HEADER,
         TH_002_005_ALLOCATION_HEADER,
+        TH_003_006_ALLOCATION_HEADER,
         MISUSE_HEADER,
         PATH_SUMMARY_HEADER,
         ATTACK_PATH_HEADER,
@@ -2197,6 +2256,29 @@ def adapter_field_location(
     return f"{label}:{table.line} {table.header[0]}[{occurrence}] {column} row {row}"
 
 
+def is_frozen_inherited_nominal_descriptor(
+    header: tuple[str, ...], row: tuple[str, ...], column: str, value: str
+) -> bool:
+    """Identify a source-exact, non-instructional inherited descriptor.
+
+    Chapter 1 freezes TH-2026-003 Preconditions as the nominal historical
+    phrase ``過去の不正Credential利用``.  The shared Policy correctly treats
+    an unbounded ``Credential利用`` action as unsafe, but this exact table cell
+    is source provenance rather than a reader action.  Keep the exception in
+    this thin Chapter 4 adapter: any changed/appended value remains selected
+    for Policy 1.2.0, and the source-derived structural contract independently
+    requires the exact phrase.
+    """
+
+    return (
+        header == HYPOTHESIS_HEADER
+        and column == "Preconditions"
+        and len(row) == len(header)
+        and row[header.index("Hypothesis ID")].strip("`") == "TH-2026-003"
+        and value == INHERITED_TH_003_PRECONDITIONS
+    )
+
+
 def classified_table_fields(
     text: str,
     label: str,
@@ -2239,6 +2321,10 @@ def classified_table_fields(
                 column_index = table.header.index(column)
                 value = row[column_index]
                 if value:
+                    if is_frozen_inherited_nominal_descriptor(
+                        table.header, row, column, value
+                    ):
+                        continue
                     location = adapter_field_location(
                         label,
                         table,
@@ -3969,19 +4055,90 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"FLOW-2026-005 definition distinct from TH-2026-002"
         )
 
+    source_th_003 = next(
+        (
+            row
+            for row in chapter1_hypothesis_rows
+            if len(row) == len(chapter1_hypothesis_header)
+            and row[0].strip("`") == "TH-2026-003"
+        ),
+        None,
+    )
     inherited_th_003 = hypothesis_rows.get("TH-2026-003")
-    if inherited_th_003 is not None:
-        statement = inherited_th_003[hypothesis_header.index("Statement")]
-        if statement != INHERITED_TH_003_PROPOSITION:
-            messages.append(
-                f"{label}: TH-2026-003 Statement {statement!r} must preserve the inherited proposition "
-                f"{INHERITED_TH_003_PROPOSITION!r}"
-            )
-    if INHERITED_TH_003_PROPOSITION not in chapter1_case:
+    if source_th_003 is None:
+        messages.append(f"{label}: Chapter 1 must define inherited hypothesis TH-2026-003")
+    elif inherited_th_003 is None:
+        messages.append(f"{label}: missing inherited hypothesis TH-2026-003")
+    else:
+        source_frozen_contract = {
+            "Related Decision Requirement ID": "`DR-2026-001`",
+            "Related Asset IDs": INHERITED_TH_003_ASSETS,
+            "Related Boundary IDs": INHERITED_TH_003_RELATIONS,
+            "Statement": INHERITED_TH_003_PROPOSITION,
+            "Preconditions": INHERITED_TH_003_PRECONDITIONS,
+            "Expected impact": INHERITED_TH_003_IMPACT,
+            "Priority": "High",
+            "Status": "Inconclusive",
+        }
+        for field, expected in source_frozen_contract.items():
+            observed = source_th_003[chapter1_hypothesis_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: Chapter 1 TH-2026-003 {field} {observed!r} drifted "
+                    f"from frozen source value {expected!r}"
+                )
+
+        inherited_source_fields = {
+            "Decision Requirement ID": source_th_003[1],
+            "Related Asset IDs": source_th_003[2],
+            "Boundary / Flow / Exposure IDs": source_th_003[3],
+            "Statement": source_th_003[4],
+            "Preconditions": source_th_003[5],
+            "Expected impact": source_th_003[6],
+            "Priority": source_th_003[7],
+            "Hypothesis status": source_th_003[8],
+            "Evidence needed": "`EREQ-2026-003`",
+            "Alternative explanation": INHERITED_TH_003_ALTERNATIVE,
+        }
+        for field, expected in inherited_source_fields.items():
+            observed = inherited_th_003[hypothesis_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: TH-2026-003 {field} {observed!r} must preserve "
+                    f"the Chapter 1 source-derived contract {expected!r}"
+                )
+
+    opportunity_th_006 = hypothesis_rows.get("TH-2026-006")
+    if opportunity_th_006 is None:
         messages.append(
-            f"{label}: Chapter 1 no longer contains the inherited TH-2026-003 proposition "
-            f"{INHERITED_TH_003_PROPOSITION!r}"
+            f"{label}: missing opportunity / summary-only refinement hypothesis TH-2026-006"
         )
+    else:
+        opportunity_contract = {
+            "Decision Requirement ID": "`DR-2026-001`",
+            "Related Asset IDs": (
+                "`ASSET-2026-001`, `ASSET-2026-003`, `ASSET-2026-006`"
+            ),
+            "Boundary / Flow / Exposure IDs": OPPORTUNITY_TH_006_RELATIONS,
+            "Statement": OPPORTUNITY_TH_006_PROPOSITION,
+            "Preconditions": OPPORTUNITY_TH_006_PRECONDITIONS,
+            "Expected impact": OPPORTUNITY_TH_006_IMPACT,
+            "Evidence needed": "`EREQ-2026-003`",
+            "Alternative explanation": OPPORTUNITY_TH_006_ALTERNATIVE,
+            "Priority": "High",
+            "Hypothesis status": "Inconclusive",
+        }
+        for field, expected in opportunity_contract.items():
+            observed = opportunity_th_006[hypothesis_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: TH-2026-006 {field} {observed!r} != frozen "
+                    f"opportunity / summary-only value {expected!r}"
+                )
+        if opportunity_th_006[hypothesis_header.index("Statement")] == INHERITED_TH_003_PROPOSITION:
+            messages.append(
+                f"{label}: TH-2026-006 must remain distinct from inherited TH-2026-003"
+            )
 
     count_contracts = (
         (("Exposure ID", "Related Asset / Boundary / Flow IDs", "Entry Point ID", "Reachability class", "External dependency", "Required authority", "Verification status", "Evidence ID", "Gap ID"), 3),
@@ -4650,6 +4807,13 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             hypothesis_rows.get("TH-2026-003"),
             hypothesis_header,
             "Boundary / Flow / Exposure IDs",
+            {"TB-2026-002", "TB-2026-003"},
+        ),
+        (
+            "TH-2026-006",
+            hypothesis_rows.get("TH-2026-006"),
+            hypothesis_header,
+            "Boundary / Flow / Exposure IDs",
             {"TB-2026-002", "TB-2026-003", "TB-2026-007", "TB-2026-008"},
         ),
     )
@@ -4694,7 +4858,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     expected_action_relations = {
         "ACT-TM-2026-001": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `GAP-2026-002`",
         "ACT-TM-2026-002": "`TH-2026-002`, `CTRL-2026-007`, `GAP-2026-003`",
-        "ACT-TM-2026-003": "`TH-2026-003`, `CTRL-2026-009`, `GAP-2026-001`",
+        "ACT-TM-2026-003": "`TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001`",
         "ACT-TM-2026-004": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002`",
         "ACT-TM-2026-005": "`TH-2026-005`, `CTRL-2026-007`, `GAP-2026-003`",
         "ACT-TM-2026-006": (
@@ -5351,7 +5515,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             assumptions_by_id.get("ASM-2026-002"),
             assumption_header,
             "Related IDs",
-            {"TH-2026-003", "TH-2026-004"},
+            {"TH-2026-004", "TH-2026-006"},
         ),
         (
             "GAP-2026-002",
@@ -5372,7 +5536,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             evidence_rows_by_id.get("EREQ-2026-003"),
             evidence_requirement_header,
             "Related Threat / Control / Gap",
-            {"TH-2026-001", "TH-2026-003", "TH-2026-004"},
+            {"TH-2026-001", "TH-2026-003", "TH-2026-004", "TH-2026-006"},
         ),
         (
             "REA-TM-2026-001",
@@ -5506,6 +5670,116 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     f"{sorted(observed_th_ids)!r} != {sorted(expected_th_ids)!r}"
                 )
 
+    # Freeze every structured consumer of the inherited occurrence
+    # proposition (TH-2026-003) and the Chapter 4 opportunity/summary-only
+    # refinement (TH-2026-006). A shared Telemetry source does not make these
+    # the same proposition: each consumer must explicitly select one or both.
+    th_003_006 = {"TH-2026-003", "TH-2026-006"}
+    th_003_006_consumer_maps = (
+        (
+            "Path summary",
+            path_summaries_by_id,
+            PATH_SUMMARY_HEADER,
+            "Related Threat IDs",
+            {
+                "PATH-2026-001": set(),
+                "PATH-2026-002": {"TH-2026-003", "TH-2026-006"},
+            },
+        ),
+        (
+            "Control",
+            controls_by_id,
+            control_header,
+            "Related Asset / Boundary / Threat / Path IDs",
+            {
+                "CTRL-2026-005": set(),
+                "CTRL-2026-006": set(),
+                "CTRL-2026-007": set(),
+                "CTRL-2026-008": set(),
+                "CTRL-2026-009": {"TH-2026-006"},
+            },
+        ),
+        (
+            "Assumption",
+            assumptions_by_id,
+            assumption_header,
+            "Related IDs",
+            {
+                "ASM-2026-001": set(),
+                "ASM-2026-002": {"TH-2026-006"},
+                "ASM-2026-003": {"TH-2026-003", "TH-2026-006"},
+            },
+        ),
+        (
+            "Gap",
+            gap_rows_by_id,
+            gap_header,
+            "Missing information / control / telemetry",
+            {
+                "GAP-2026-001": {"TH-2026-006"},
+                "GAP-2026-002": set(),
+                "GAP-2026-003": {"TH-2026-003", "TH-2026-006"},
+                "GAP-2026-004": set(),
+            },
+        ),
+        (
+            "Evidence Requirement",
+            evidence_rows_by_id,
+            evidence_requirement_header,
+            "Related Threat / Control / Gap",
+            {
+                "EREQ-2026-001": set(),
+                "EREQ-2026-002": set(),
+                "EREQ-2026-003": {"TH-2026-003", "TH-2026-006"},
+                "EREQ-2026-004": set(),
+            },
+        ),
+        (
+            "Action",
+            action_rows_by_id,
+            action_header,
+            "Related Gap / Control / Threat",
+            {
+                "ACT-TM-2026-001": set(),
+                "ACT-TM-2026-002": set(),
+                "ACT-TM-2026-003": {"TH-2026-006"},
+                "ACT-TM-2026-004": set(),
+                "ACT-TM-2026-005": set(),
+                "ACT-TM-2026-006": set(),
+            },
+        ),
+        (
+            "Reassessment",
+            reassessment_rows_by_id,
+            reassessment_header,
+            "Scope",
+            {
+                "REA-TM-2026-001": set(),
+                "REA-TM-2026-002": {"TH-2026-003", "TH-2026-006"},
+                "REA-TM-2026-003": set(),
+                "REA-TM-2026-004": set(),
+            },
+        ),
+    )
+    for map_name, rows_by_id, header, field, expected_map in th_003_006_consumer_maps:
+        if set(rows_by_id) != set(expected_map):
+            messages.append(
+                f"{label}: {map_name} TH-2026-003/006 consumer-map row coverage "
+                f"{sorted(rows_by_id)!r} != {sorted(expected_map)!r}"
+            )
+        for identifier, expected_th_ids in expected_map.items():
+            row = rows_by_id.get(identifier)
+            if row is None:
+                continue
+            observed_th_ids = set(
+                re.findall(r"\bTH-2026-\d{3}\b", row[header.index(field)])
+            ) & th_003_006
+            if observed_th_ids != expected_th_ids:
+                messages.append(
+                    f"{label}: {identifier} {field} occurrence/refinement Threat map "
+                    f"{sorted(observed_th_ids)!r} != {sorted(expected_th_ids)!r}"
+                )
+
     allocation_rows, allocation_messages = table_by_header(
         text, TH_002_005_ALLOCATION_HEADER, label
     )
@@ -5528,10 +5802,35 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{label}: TH-2026-002/005 allocation boundary must occur exactly once"
         )
 
+    occurrence_allocation_rows, occurrence_allocation_messages = table_by_header(
+        text, TH_003_006_ALLOCATION_HEADER, label
+    )
+    messages.extend(occurrence_allocation_messages)
+    observed_occurrence_allocation_rows = tuple(
+        tuple(row)
+        for row in occurrence_allocation_rows
+        if len(row) == len(TH_003_006_ALLOCATION_HEADER)
+    )
+    if observed_occurrence_allocation_rows != EXPECTED_TH_003_006_ALLOCATION_ROWS:
+        messages.append(
+            f"{label}: TH-2026-003/006 reader-visible consumer allocation "
+            f"{observed_occurrence_allocation_rows!r} != "
+            f"{EXPECTED_TH_003_006_ALLOCATION_ROWS!r}"
+        )
+    occurrence_allocation_boundary = (
+        "発生命題と機会条件・影響範囲命題を別々に評価する"
+    )
+    if text.count(occurrence_allocation_boundary) != 1:
+        messages.append(
+            f"{label}: TH-2026-003/006 allocation boundary must occur exactly once"
+        )
+
     decision_summary = section(text, "### Decision handoff summary for `DR-2026-001`")
     for marker in (
         "継承命題`TH-2026-002`",
         "lifecycle / summary Field refinementの`TH-2026-005`",
+        "発生有無を問う`TH-2026-003`",
+        "機会条件およびsummary-only境界までの影響範囲を問う`TH-2026-006`",
         "2026-07-20のhistorical Snapshot",
         "2026-07-25にscope縮小`Passed`",
         "post-remediation current scope Snapshotが未収集",
@@ -6908,8 +7207,8 @@ def negative_regressions(
             (
                 "PATH-2026-002 falls back from refinement to inherited ID",
                 case.replace(
-                    "| `PATH-2026-002` | `TH-2026-002`, `TH-2026-003`, `TH-2026-005` |",
-                    "| `PATH-2026-002` | `TH-2026-002`, `TH-2026-003` |",
+                    "| `PATH-2026-002` | `TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `TH-2026-006` |",
+                    "| `PATH-2026-002` | `TH-2026-002`, `TH-2026-003`, `TH-2026-006` |",
                     1,
                 ),
             ),
@@ -6942,8 +7241,180 @@ def negative_regressions(
             (
                 "TH-2026-003 inherited proposition drift",
                 case.replace(
-                    "既に同型の不正利用が発生した",
-                    "TelemetryとRetentionの制約により過去の影響範囲を十分に限定できない",
+                    INHERITED_TH_003_PROPOSITION,
+                    OPPORTUNITY_TH_006_PROPOSITION,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-003 inherited precondition drift",
+                case.replace(
+                    INHERITED_TH_003_PRECONDITIONS,
+                    OPPORTUNITY_TH_006_PRECONDITIONS,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-003 inherited impact drift",
+                case.replace(
+                    INHERITED_TH_003_IMPACT,
+                    OPPORTUNITY_TH_006_IMPACT,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-003 inherited Asset set drift",
+                case.replace(
+                    f"| `TH-2026-003` | `DR-2026-001` | {INHERITED_TH_003_ASSETS} |",
+                    "| `TH-2026-003` | `DR-2026-001` | `ASSET-2026-001`, "
+                    "`ASSET-2026-003`, `ASSET-2026-006` |",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-003 inherited Boundary set drift",
+                case.replace(
+                    f"{INHERITED_TH_003_ASSETS} | {INHERITED_TH_003_RELATIONS} | "
+                    f"{INHERITED_TH_003_PROPOSITION}",
+                    f"{INHERITED_TH_003_ASSETS} | `TB-2026-002`, `TB-2026-003`, "
+                    f"`TB-2026-008` | {INHERITED_TH_003_PROPOSITION}",
+                    1,
+                ),
+            ),
+            (
+                "fresh TH-2026-006 definition duplicated",
+                case.replace(
+                    "| `TH-2026-006` | `DR-2026-001` |",
+                    "| `TH-2026-003` | `DR-2026-001` |",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-006 opportunity proposition falls back to occurrence",
+                case.replace(
+                    OPPORTUNITY_TH_006_PROPOSITION,
+                    INHERITED_TH_003_PROPOSITION,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-006 precondition drift",
+                case.replace(
+                    OPPORTUNITY_TH_006_PRECONDITIONS,
+                    INHERITED_TH_003_PRECONDITIONS,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-006 impact drift",
+                case.replace(
+                    OPPORTUNITY_TH_006_IMPACT,
+                    INHERITED_TH_003_IMPACT,
+                    1,
+                ),
+            ),
+            (
+                "PATH-2026-002 drops opportunity refinement",
+                case.replace(
+                    "| `PATH-2026-002` | `TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `TH-2026-006` |",
+                    "| `PATH-2026-002` | `TH-2026-002`, `TH-2026-003`, `TH-2026-005` |",
+                    1,
+                ),
+            ),
+            (
+                "CTRL-2026-009 falls back to inherited occurrence",
+                case.replace(
+                    "`ASSET-2026-006`, `TB-2026-007`, `TH-2026-006`, `PATH-2026-002`",
+                    "`ASSET-2026-006`, `TB-2026-007`, `TH-2026-003`, `PATH-2026-002`",
+                    1,
+                ),
+            ),
+            (
+                "ASM-2026-002 falls back to inherited occurrence",
+                case.replace(
+                    "`TH-2026-004`, `TH-2026-006`, `EREQ-2026-003`",
+                    "`TH-2026-003`, `TH-2026-004`, `EREQ-2026-003`",
+                    1,
+                ),
+            ),
+            (
+                "ASM-2026-003 drops opportunity refinement",
+                case.replace(
+                    "`TH-2026-003`, `TH-2026-006`, `EREQ-2026-003`, `REA-TM-2026-002`",
+                    "`TH-2026-003`, `EREQ-2026-003`, `REA-TM-2026-002`",
+                    1,
+                ),
+            ),
+            (
+                "GAP-2026-001 falls back to inherited occurrence",
+                case.replace(
+                    "`TH-2026-006` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する",
+                    "`TH-2026-003` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する",
+                    1,
+                ),
+            ),
+            (
+                "GAP-2026-003 drops opportunity refinement",
+                case.replace(
+                    "`TH-2026-002` / `TH-2026-003` / `TH-2026-005` / `TH-2026-006` / `CTRL-2026-007`",
+                    "`TH-2026-002` / `TH-2026-003` / `TH-2026-005` / `CTRL-2026-007`",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-003 drops opportunity refinement",
+                case.replace(
+                    "`TH-2026-001`, `TH-2026-003`, `TH-2026-004`, `TH-2026-006`, "
+                    "`CTRL-2026-009`, `GAP-2026-001`, `GAP-2026-003`",
+                    "`TH-2026-001`, `TH-2026-003`, `TH-2026-004`, `CTRL-2026-009`, "
+                    "`GAP-2026-001`, `GAP-2026-003`",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-003 falls back to inherited occurrence",
+                case.replace(
+                    "| `ACT-TM-2026-003` | `TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001` |",
+                    "| `ACT-TM-2026-003` | `TH-2026-003`, `CTRL-2026-009`, `GAP-2026-001` |",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 drops opportunity refinement",
+                case.replace(
+                    "| `REA-TM-2026-002` | Rule導入、Field追加、retention変更 | "
+                    "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `TH-2026-006`, "
+                    "`CTRL-2026-007`, `CTRL-2026-009` |",
+                    "| `REA-TM-2026-002` | Rule導入、Field追加、retention変更 | "
+                    "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, "
+                    "`CTRL-2026-007`, `CTRL-2026-009` |",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-003/006 reader allocation drift",
+                case.replace(
+                    "| Refinement only | `CTRL-2026-009`, `ASM-2026-002`, "
+                    "`GAP-2026-001`, `ACT-TM-2026-003` |",
+                    "| Refinement only | `CTRL-2026-009`, `ASM-2026-002`, "
+                    "`GAP-2026-001` |",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-003/006 Decision handoff conflation",
+                case.replace(
+                    "発生有無を問う`TH-2026-003`と、機会条件およびsummary-only境界までの"
+                    "影響範囲を問う`TH-2026-006`",
+                    "発生有無と機会条件を問う`TH-2026-003`",
+                    1,
+                ),
+            ),
+            (
+                "Chapter 5 handoff omits TH-2026-006",
+                case.replace(
+                    "`TH-2026-001`〜`006`の成立条件、Flow、Boundary、Exposure、観測点",
+                    "`TH-2026-001`〜`005`の成立条件、Flow、Boundary、Exposure、観測点",
                     1,
                 ),
             ),
@@ -7092,10 +7563,11 @@ def negative_regressions(
                 ),
             ),
             (
-                "TH-2026-003 summary-boundary reference drift",
+                "TH-2026-006 summary-boundary reference drift",
                 case.replace(
-                    "`TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `TB-2026-008`, `FLOW-2026-003`",
-                    "`TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `TB-2026-002`, `FLOW-2026-003`",
+                    OPPORTUNITY_TH_006_RELATIONS,
+                    "`TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `FLOW-2026-003`, "
+                    "`FLOW-2026-004`, `FLOW-2026-005`, `EXP-2026-002`, `EXP-2026-003`",
                     1,
                 ),
             ),
@@ -7669,8 +8141,8 @@ def negative_regressions(
             (
                 "Gap missing owner and due date",
                 case.replace(
-                    "| `GAP-2026-001` | `TH-2026-003` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない | Platform | 2026-08-18 |",
-                    "| `GAP-2026-001` | `TH-2026-003` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない |  |  |",
+                    "| `GAP-2026-001` | `TH-2026-006` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない | Platform | 2026-08-18 |",
+                    "| `GAP-2026-001` | `TH-2026-006` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない |  |  |",
                     1,
                 ),
             ),
