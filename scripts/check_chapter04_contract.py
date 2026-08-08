@@ -271,7 +271,7 @@ EXPECTED_HANDOFF_ROWS = {
         "Rules of Engagement",
         "`CTRL-2026-008`、`AUTH-CASE-2026-001`継承条件、`ACT-TM-2026-001` / "
         "`ACT-TM-2026-002` / `ACT-TM-2026-003` / `ACT-TM-2026-004` / "
-        "`ACT-TM-2026-006`の"
+        "`ACT-TM-2026-005` / `ACT-TM-2026-006`の"
         "再Authorization依存、停止条件、no outbound、対象外一覧",
     ),
     "HO-TM-2026-011": (
@@ -328,7 +328,8 @@ EXPECTED_HANDOFF_INTERPRETATION_LINES = (
     "観測点をDecision、scope、Identity contextから切り離さないためである。",
     "- 第9章では、Lab safetyの`CTRL-2026-008`、`AUTH-CASE-2026-001`継承条件と"
     "`ACT-TM-2026-001` / `ACT-TM-2026-002` / `ACT-TM-2026-003` / "
-    "`ACT-TM-2026-004` / `ACT-TM-2026-006`の再Authorization依存をRoEへ具体化する。",
+    "`ACT-TM-2026-004` / `ACT-TM-2026-005` / `ACT-TM-2026-006`の"
+    "再Authorization依存をRoEへ具体化する。",
     "- 第11章では、scope assuranceの`CTRL-2026-005`、継承命題`TH-2026-001`と"
     "summary-only refinement `TH-2026-004`、継承した`TB-2026-002`とsummary-only "
     "refinementの`TB-2026-008`、`PATH-2026-001`をWeb/APIの仮説パックへ分解する。",
@@ -522,7 +523,8 @@ EXPECTED_TH_002_005_ALLOCATION_ROWS = (
     (
         "Refinement only",
         "`ACT-TM-2026-005`",
-        "App identity lifecycle Event / decision summary Field命題とlifecycle Rule test計画だけを扱う",
+        "App identity lifecycle Event / decision summary Field命題とlifecycle Rule testの"
+        "計画・承認後実行・新Evidence ID付き結果だけを扱う",
     ),
     (
         "Both",
@@ -3772,6 +3774,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         },
         "ACT-TM-2026-005": {
             "action": (
+                "Phase A",
                 "query申請template",
                 "App identity lifecycle Event",
                 "decision summary Field",
@@ -3779,16 +3782,47 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "deny条件",
                 "文書化",
                 "合成Rule test計画",
-                "新Authorization Record / RoE承認後にのみ行う",
+                "新Authorization Record / RoE申請",
+                "Phase B",
+                "対象・method・time window",
+                "新Authorization Record / RoEで承認した後に限り",
+                "no-outboundの合成Lab",
+                "no-outboundの合成LabでApp identity lifecycle Eventの合成Rule testを実行",
+                "合成Rule testを実行",
+                "Detection test結果を収集",
+                "新Evidence IDを割り当て",
+                "query version",
+                "review sign-off",
+                "query version、Coverage、90日retention証跡、review sign-offとともに"
+                "`REA-TM-2026-002`へ供給する",
+                "`REA-TM-2026-002`へ供給",
+                "Admin consent change Event側は`ACT-TM-2026-002`が扱い",
+                "App identity lifecycle Event側だけを扱う",
+                "承認前",
+                "外向き通信",
+                "実Target",
+                "実Credential",
+                "実Data",
+                "Production変更",
+                "停止する",
             ),
             "success": (
+                "Phase A",
                 "lifecycle Rule test計画",
-                "新Authorization Record",
-                "RoE",
+                "新Authorization Record / RoE申請ticket",
                 "Coverage表",
                 "retention record",
                 "deny例",
-                "Detection test結果は未収集",
+                "Phase B",
+                "approval ticket",
+                "承認済みの新Authorization Record / RoE",
+                "新Evidence ID付きApp identity lifecycle Event Detection test結果",
+                "query version",
+                "review sign-off",
+                "新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、"
+                "Coverage表、retention record、review sign-off、`REA-TM-2026-002`への供給",
+                "`REA-TM-2026-002`への供給",
+                "Phase B未実施の間はApp identity lifecycle EventのDetection test結果は未収集",
             ),
         },
         "ACT-TM-2026-006": {
@@ -5880,8 +5914,59 @@ def negative_regressions(
             (
                 "ACT-TM-2026-005 bypasses renewed Authorization and RoE",
                 case.replace(
-                    "App identity lifecycle Eventの合成Rule test計画を作成する。Rule testの再実施は新Authorization Record / RoE承認後にのみ行う",
-                    "App identity lifecycle Eventの合成Rule testを再実施する",
+                    "Phase Bでは対象・method・time windowを新Authorization Record / RoEで承認した後に限り",
+                    "Phase Bでは直ちに",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 lifecycle result omits new Evidence ID",
+                case.replace(
+                    "Detection test結果を収集して新Evidence IDを割り当て",
+                    "Detection test結果を収集して",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 lifecycle result overclaims collection before execution",
+                case.replace(
+                    "Phase B未実施の間はApp identity lifecycle EventのDetection test結果は未収集",
+                    "Phase B実施前からApp identity lifecycle EventのDetection test結果は収集済み",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 omits lifecycle event class",
+                case.replace(
+                    "no-outboundの合成LabでApp identity lifecycle Eventの合成Rule testを実行し",
+                    "no-outboundの合成Labで合成Rule testを実行し",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 does not supply lifecycle result to reassessment",
+                case.replace(
+                    "review sign-offとともに`REA-TM-2026-002`へ供給する",
+                    "review sign-offとともに保管する",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 Phase B omits coverage and retention handoff",
+                case.replace(
+                    "query version、Coverage、90日retention証跡、review sign-offとともに"
+                    "`REA-TM-2026-002`へ供給する",
+                    "query version、review sign-offとともに`REA-TM-2026-002`へ供給する",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 Phase B success omits coverage and retention evidence",
+                case.replace(
+                    "新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、"
+                    "Coverage表、retention record、review sign-off、`REA-TM-2026-002`への供給",
+                    "新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、"
+                    "review sign-off、`REA-TM-2026-002`への供給",
                     1,
                 ),
             ),
@@ -6020,16 +6105,27 @@ def negative_regressions(
             (
                 "RoE handoff omits ACT-TM-2026-004 collection authorization",
                 case.replace(
-                    "`ACT-TM-2026-003` / `ACT-TM-2026-004` / `ACT-TM-2026-006`の"
+                    "`ACT-TM-2026-003` / `ACT-TM-2026-004` / `ACT-TM-2026-005` / "
+                    "`ACT-TM-2026-006`の"
                     "再Authorization依存",
-                    "`ACT-TM-2026-003` / `ACT-TM-2026-006`の再Authorization依存",
+                    "`ACT-TM-2026-003` / `ACT-TM-2026-005` / `ACT-TM-2026-006`の"
+                    "再Authorization依存",
+                    1,
+                ),
+            ),
+            (
+                "RoE handoff omits ACT-TM-2026-005 lifecycle execution authorization",
+                case.replace(
+                    "`ACT-TM-2026-004` / `ACT-TM-2026-005` / `ACT-TM-2026-006`の"
+                    "再Authorization依存",
+                    "`ACT-TM-2026-004` / `ACT-TM-2026-006`の再Authorization依存",
                     1,
                 ),
             ),
             (
                 "ACT-TM-2026-005 success evidence does not close its Gap",
                 case.replace(
-                    "query approval template、lifecycle Rule test計画、新Authorization Record、RoE、Coverage表、retention record、deny例、review sign-off（Detection test結果は未収集）",
+                    "Phase A: query approval template、lifecycle Rule test計画、新Authorization Record / RoE申請ticket、Coverage表、retention record、deny例。Phase B: approval ticket、承認済みの新Authorization Record / RoE、新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、Coverage表、retention record、review sign-off、`REA-TM-2026-002`への供給。Phase B未実施の間はApp identity lifecycle EventのDetection test結果は未収集",
                     "query approval template、deny例、review sign-off",
                     1,
                 ),
