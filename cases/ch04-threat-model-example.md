@@ -208,7 +208,7 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 | `CTRL-2026-001` | `ASSET-2026-004`, `ASSET-2026-005`, `TB-2026-001`, `TH-2026-001`, `PATH-2026-001` | 業務要件とscopeの対応表をReviewする | Business Systems | Documented | `EVD-2026-002` | 自動突合がなく人手差分に依存する | `GAP-2026-002` | scopeまたは業務要件変更 |
 | `CTRL-2026-002` | `ASSET-2026-005`, `ASSET-2026-007`, `TB-2026-004`, `TH-2026-001`, `PATH-2026-001` | Workload identityをHuman identityから分離しrotation手順を管理する | Platform | Implemented | `EVD-2026-001` | 利用観測とrotation結果のEvidenceが不足する | `GAP-2026-001` | Identity bindingまたはrotation変更 |
 | `CTRL-2026-003` | `ASSET-2026-002`, `ASSET-2026-003`, `TB-2026-003`, `TH-2026-002`, `PATH-2026-002` | Admin consentとApp identity lifecycle EventのAudit coverageを維持する | SOC | Observed | `EVD-2026-003` | Rule testとCoverage基準が未完了である | `GAP-2026-003` | Rule、Fieldまたはretention変更 |
-| `CTRL-2026-004` | `ASSET-2026-003`, `TB-2026-006`, `TH-2026-002`, `PATH-2026-002` | no outbound、停止条件、Cleanupを一体で検証する | Lab Operator | Observed | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` | 設計とAuthorization条件はReview済みだが、preflight、default-deny、Cleanupの実施結果は未収集である | `GAP-2026-003` | AUTH条件、Lab boundaryまたは実施Evidence変更 |
+| `CTRL-2026-004` | `ASSET-2026-003`, `TB-2026-006`, `TH-2026-002`, `PATH-2026-002` | no outbound、停止条件、Cleanupを一体で検証する | Lab Operator | Documented | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` | 設計とAuthorization条件はReview済みだが、preflight、default-deny、Cleanupの実施結果は未収集であり、Controlの挙動は未観測である | `GAP-2026-003` | AUTH条件、Lab boundaryまたは実施Evidence変更 |
 | `CTRL-2026-005` | `ASSET-2026-006`, `TB-2026-007`, `TH-2026-003`, `PATH-2026-002` | Vendor管理のsummary-only Field normalizationを説明可能にする | Vendor Management | Unknown | `NEG-2026-001` | no outbound条件下ではVendor内部補正の完全性を直接確認しない | `GAP-2026-001` | Field仕様またはVendor責任分界変更 |
 
 ## 9. Assumptions, Unknowns and Gaps
@@ -226,8 +226,8 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 | Gap ID | Missing information / control / telemetry | Decision affected | Owner | Due date | Status | Evidence Requirement ID | Action ID | Reassessment ID |
 |---|---|---|---|---|---|---|---|---|
 | `GAP-2026-001` | `TH-2026-003` / `CTRL-2026-005`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない | Platform | 2026-08-18 | Open | `EREQ-2026-003` | `ACT-TM-2026-003` | `REA-TM-2026-002` |
-| `GAP-2026-002` | `TH-2026-001` / `CTRL-2026-001`: scope matrixと実設定の機械的突合がない | `DR-2026-001`: 過大権限の再発防止が人手依存になる | Business Systems | 2026-08-21 | Accepted temporarily | `EREQ-2026-001` | `ACT-TM-2026-001` | `REA-TM-2026-001` |
-| `GAP-2026-003` | `TH-2026-002` / `TH-2026-003` / `CTRL-2026-003`: 90日窓の完全Coverageと保持証跡が不足する | `DR-2026-001`: 未観測を未発生と誤解しやすい | SOC | 2026-08-20 | Escalated | `EREQ-2026-002`, `EREQ-2026-003` | `ACT-TM-2026-002` | `REA-TM-2026-002` |
+| `GAP-2026-002` | `TH-2026-001` / `CTRL-2026-001`: scope matrixと実設定の機械的突合がない | `DR-2026-001`: 過大権限の再発防止が人手依存になる | Business Systems | 2026-08-21 | Accepted temporarily | `EREQ-2026-001` | `ACT-TM-2026-001`, `ACT-TM-2026-004` | `REA-TM-2026-001` |
+| `GAP-2026-003` | `TH-2026-002` / `TH-2026-003` / `CTRL-2026-003`: 90日窓の完全Coverageと保持証跡が不足する | `DR-2026-001`: 未観測を未発生と誤解しやすい | SOC | 2026-08-20 | Escalated | `EREQ-2026-002`, `EREQ-2026-003` | `ACT-TM-2026-002`, `ACT-TM-2026-005` | `REA-TM-2026-002` |
 
 ### Decision handoff summary for `DR-2026-001`
 
@@ -286,8 +286,8 @@ Collected Evidence statusは `Planned / Collected / Rejected / Inconclusive` の
 | `ACT-TM-2026-001` | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` | App permissionを必要最小限へ縮小し、scope matrixとの差分をゼロにする | Platform | 2026-08-12 | 更新後Export、差分表、承認ticket | Open |
 | `ACT-TM-2026-002` | `TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003` | Admin consent change Eventの合成Rule testを第17章の形式で再実施する | SOC | 2026-08-14 | Detection test結果、query version、coverage note | Open |
 | `ACT-TM-2026-003` | `TH-2026-003`, `CTRL-2026-005`, `GAP-2026-001` | API利用Telemetryにresource / operation粒度を追加する | Platform | 2026-08-18 | field contract、sample summary、Gap更新 | Open |
-| `ACT-TM-2026-004` | `TB-2026-005`, `MISUSE-2026-001` | 合成Tenant bindingのBoundary owner、停止条件、fallback判断をBusiness runbookへ明文化する | Finance Operations | 2026-08-15 | 改訂runbook、承認記録 | Open |
-| `ACT-TM-2026-005` | `TB-2026-007`, `MISUSE-2026-002` | Evidence export requestのdeny条件をSOC query申請に追加する | SOC | 2026-08-16 | query approval template、deny例、review sign-off | Open |
+| `ACT-TM-2026-004` | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` | 合成Tenant bindingのBoundary owner、停止条件、fallback判断をscope matrixへ構造化し、実設定との機械的突合対象に追加する | Finance Operations | 2026-08-15 | 更新scope matrix、機械的突合結果、承認runbook | Open |
+| `ACT-TM-2026-005` | `TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003` | SOC query申請に90日Coverageとretention証跡の必須Fieldおよび欠損時のdeny条件を追加する | SOC | 2026-08-16 | query approval template、Coverage表、retention record、deny例、review sign-off | Open |
 
 ## 11. Reassessment and Handoff
 

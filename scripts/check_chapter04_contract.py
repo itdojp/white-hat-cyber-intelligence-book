@@ -1585,14 +1585,20 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         assurance = lab_control[control_header.index("Assurance state")]
         evidence_ids = lab_control[control_header.index("Evidence IDs")]
         limitation = lab_control[control_header.index("Limitation")]
-        if assurance != "Observed":
+        if assurance != "Documented":
             messages.append(
-                f"{label}: CTRL-2026-004 must remain Observed until explicit synthetic "
-                f"preflight/default-deny/cleanup result Evidence exists; found {assurance!r}"
+                f"{label}: CTRL-2026-004 must remain Documented until explicit synthetic "
+                f"preflight/default-deny/cleanup behavior Evidence exists; found {assurance!r}"
             )
         if evidence_ids != "`EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001`":
             messages.append(f"{label}: CTRL-2026-004 review Evidence binding drift: {evidence_ids!r}")
-        for marker in ("preflight", "default-deny", "Cleanup", "実施結果は未収集"):
+        for marker in (
+            "preflight",
+            "default-deny",
+            "Cleanup",
+            "実施結果は未収集",
+            "Controlの挙動は未観測",
+        ):
             if marker not in limitation:
                 messages.append(f"{label}: CTRL-2026-004 limitation missing {marker!r}")
 
@@ -1641,6 +1647,80 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     messages.extend(action_messages)
     if len(action_rows) < 5:
         messages.append(f"{label}: Action ID table requires at least five rows")
+
+    expected_action_relations = {
+        "ACT-TM-2026-001": "`TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002`",
+        "ACT-TM-2026-002": "`TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003`",
+        "ACT-TM-2026-003": "`TH-2026-003`, `CTRL-2026-005`, `GAP-2026-001`",
+        "ACT-TM-2026-004": "`TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002`",
+        "ACT-TM-2026-005": "`TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003`",
+    }
+    action_relation_index = action_header.index("Related Gap / Control / Threat")
+    observed_action_relations = {
+        row[0].strip("`"): row[action_relation_index]
+        for row in action_rows
+        if len(row) == len(action_header)
+    }
+    if observed_action_relations != expected_action_relations:
+        messages.append(
+            f"{label}: Action source trace {observed_action_relations!r} "
+            f"!= {expected_action_relations!r}"
+        )
+
+    allowed_action_source_ids = (
+        EXPECTED_CASE_IDS["TH"] | EXPECTED_CASE_IDS["CTRL"] | EXPECTED_CASE_IDS["GAP"]
+    )
+    for action_id, relation in observed_action_relations.items():
+        related_ids = set(re.findall(r"\b[A-Z][A-Z-]*-2026-\d{3}\b", relation))
+        if not related_ids or not related_ids <= allowed_action_source_ids:
+            messages.append(
+                f"{label}: {action_id} Related Gap / Control / Threat must contain only "
+                f"declared TH/CTRL/GAP IDs: {sorted(related_ids)!r}"
+            )
+
+    expected_gap_actions = {
+        "GAP-2026-001": "`ACT-TM-2026-003`",
+        "GAP-2026-002": "`ACT-TM-2026-001`, `ACT-TM-2026-004`",
+        "GAP-2026-003": "`ACT-TM-2026-002`, `ACT-TM-2026-005`",
+    }
+    gap_action_index = gap_header.index("Action ID")
+    observed_gap_actions = {
+        row[0].strip("`"): row[gap_action_index]
+        for row in case_tables.get(gap_header, [])
+        if len(row) == len(gap_header)
+    }
+    if observed_gap_actions != expected_gap_actions:
+        messages.append(
+            f"{label}: Gap-to-Action reverse trace {observed_gap_actions!r} "
+            f"!= {expected_gap_actions!r}"
+        )
+
+    action_rows_by_id = {
+        row[0].strip("`"): row for row in action_rows if len(row) == len(action_header)
+    }
+    action_text_index = action_header.index("Action")
+    success_evidence_index = action_header.index("Success evidence")
+    expected_action_semantics = {
+        "ACT-TM-2026-004": {
+            "action": ("Boundary owner", "scope matrix", "機械的突合"),
+            "success": ("scope matrix", "機械的突合結果", "承認runbook"),
+        },
+        "ACT-TM-2026-005": {
+            "action": ("90日Coverage", "retention証跡", "deny条件"),
+            "success": ("Coverage表", "retention record", "deny例"),
+        },
+    }
+    for action_id, requirements in expected_action_semantics.items():
+        row = action_rows_by_id.get(action_id)
+        if row is None:
+            messages.append(f"{label}: missing semantic Action contract for {action_id}")
+            continue
+        for marker in requirements["action"]:
+            if marker not in row[action_text_index]:
+                messages.append(f"{label}: {action_id} Action missing Gap-remediation marker {marker!r}")
+        for marker in requirements["success"]:
+            if marker not in row[success_evidence_index]:
+                messages.append(f"{label}: {action_id} Success evidence missing marker {marker!r}")
 
     definition_contracts: tuple[tuple[str, list[list[str]], int, bool], ...] = (
         ("ASSET", parsed.get(asset_header, []), 0, True),
@@ -2142,8 +2222,40 @@ def negative_regressions(
             (
                 "CTRL-2026-004 assurance overclaim",
                 case.replace(
+                    "| Lab Operator | Documented | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |",
                     "| Lab Operator | Observed | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |",
-                    "| Lab Operator | Validated | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |",
+                    1,
+                ),
+            ),
+            (
+                "Action source type drift",
+                case.replace(
+                    "| `ACT-TM-2026-004` | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` |",
+                    "| `ACT-TM-2026-004` | `TB-2026-005`, `MISUSE-2026-001` |",
+                    1,
+                ),
+            ),
+            (
+                "Gap-to-Action reverse trace drift",
+                case.replace(
+                    "| `EREQ-2026-001` | `ACT-TM-2026-001`, `ACT-TM-2026-004` | `REA-TM-2026-001` |",
+                    "| `EREQ-2026-001` | `ACT-TM-2026-001` | `REA-TM-2026-001` |",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-004 does not remediate its Gap",
+                case.replace(
+                    "合成Tenant bindingのBoundary owner、停止条件、fallback判断をscope matrixへ構造化し、実設定との機械的突合対象に追加する",
+                    "合成Tenant bindingのBoundary owner、停止条件、fallback判断をBusiness runbookへ明文化する",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 success evidence does not close its Gap",
+                case.replace(
+                    "query approval template、Coverage表、retention record、deny例、review sign-off",
+                    "query approval template、deny例、review sign-off",
                     1,
                 ),
             ),
