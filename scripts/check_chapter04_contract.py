@@ -221,6 +221,11 @@ FLOW_006_OBSERVATION_POINT = (
     "収集予定: post-remediation Workload identity binding snapshot、"
     "rotation手順Review記録、offline機械的突合結果"
 )
+FLOW_004_EVIDENCE_STATUS = "Inconclusive"
+FLOW_004_OBSERVATION_POINT = (
+    "収集済み: `EVD-2026-003`のAdmin consent Event audit export。未収集: "
+    "App identity lifecycle Event Coverage、両Event classのRule test結果"
+)
 EP_003_CURRENT_EVIDENCE_BOUNDARY = (
     "`EXP-2026-003` / `EP-2026-003`の`EVD-2026-001`と`EVD-2026-002`は"
     "2026-07-20のhistorical scope / requirement inputだけであり、current Tenant binding"
@@ -265,7 +270,8 @@ EXPECTED_HANDOFF_ROWS = {
         "第9章 RoE",
         "Rules of Engagement",
         "`CTRL-2026-008`、`AUTH-CASE-2026-001`継承条件、`ACT-TM-2026-001` / "
-        "`ACT-TM-2026-002` / `ACT-TM-2026-003` / `ACT-TM-2026-006`の"
+        "`ACT-TM-2026-002` / `ACT-TM-2026-003` / `ACT-TM-2026-004` / "
+        "`ACT-TM-2026-006`の"
         "再Authorization依存、停止条件、no outbound、対象外一覧",
     ),
     "HO-TM-2026-011": (
@@ -322,7 +328,7 @@ EXPECTED_HANDOFF_INTERPRETATION_LINES = (
     "観測点をDecision、scope、Identity contextから切り離さないためである。",
     "- 第9章では、Lab safetyの`CTRL-2026-008`、`AUTH-CASE-2026-001`継承条件と"
     "`ACT-TM-2026-001` / `ACT-TM-2026-002` / `ACT-TM-2026-003` / "
-    "`ACT-TM-2026-006`の再Authorization依存をRoEへ具体化する。",
+    "`ACT-TM-2026-004` / `ACT-TM-2026-006`の再Authorization依存をRoEへ具体化する。",
     "- 第11章では、scope assuranceの`CTRL-2026-005`、継承命題`TH-2026-001`と"
     "summary-only refinement `TH-2026-004`、継承した`TB-2026-002`とsummary-only "
     "refinementの`TB-2026-008`、`PATH-2026-001`をWeb/APIの仮説パックへ分解する。",
@@ -3482,6 +3488,22 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     f"{label}: FLOW-2026-006 {field} {observed!r} != "
                     f"uncollected current-binding contract {expected!r}"
                 )
+    composite_audit_flow = flow_rows_by_id.get("FLOW-2026-004")
+    if composite_audit_flow is None:
+        messages.append(f"{label}: missing composite audit flow FLOW-2026-004")
+    else:
+        expected_composite_audit_flow_fields = {
+            "Purpose": "同意Event・App identity lifecycle Eventの監査Coverage",
+            "Evidence status": FLOW_004_EVIDENCE_STATUS,
+            "Observation point": FLOW_004_OBSERVATION_POINT,
+        }
+        for field, expected in expected_composite_audit_flow_fields.items():
+            observed = composite_audit_flow[flow_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: FLOW-2026-004 {field} {observed!r} != "
+                    f"composite partial-Evidence contract {expected!r}"
+                )
     exposure_header = count_contracts[0][0]
     exposure_rows_by_id = {
         row[0].strip("`"): row
@@ -3708,20 +3730,44 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         },
         "ACT-TM-2026-004": {
             "action": (
+                "Phase A",
                 "Boundary owner",
                 "rotation手順Review field",
                 "scope matrix",
-                "既存Snapshot",
+                "収集計画",
+                "新Authorization Record / RoE申請",
+                "Phase B",
+                "承認した後に限り",
+                "合成Tenant",
+                "read-only configuration export",
+                "post-remediation App registration export",
+                "Workload identity binding snapshot",
+                "Tenant binding snapshot",
+                "rotation手順Review記録",
+                "新Evidence ID",
                 "offline機械的突合",
-                "live Tenantへ接続しない",
+                "承認前",
+                "live Tenant",
+                "実Credential",
+                "実Data",
+                "停止する",
             ),
             "success": (
+                "Phase A",
                 "scope matrix",
+                "収集計画",
+                "新Authorization Record / RoE申請ticket",
+                "Phase B",
+                "approval ticket",
+                "承認済みの新Authorization Record / RoE",
+                "新Evidence ID付きpost-remediation App registration export",
                 "Tenant binding差分",
                 "Workload identity binding snapshot",
+                "Tenant binding snapshot",
                 "rotation手順Review記録",
                 "offline機械的突合結果",
                 "承認runbook",
+                "Phase B未実施の間は未収集",
             ),
         },
         "ACT-TM-2026-005": {
@@ -5227,6 +5273,24 @@ def negative_regressions(
                 ),
             ),
             (
+                "FLOW-2026-004 composite audit Evidence overclaimed",
+                case.replace(
+                    f"| Internal | {FLOW_004_EVIDENCE_STATUS} | "
+                    f"{FLOW_004_OBSERVATION_POINT} |",
+                    f"| Internal | Collected | {FLOW_004_OBSERVATION_POINT} |",
+                    1,
+                ),
+            ),
+            (
+                "FLOW-2026-004 lifecycle Evidence gap hidden",
+                case.replace(
+                    FLOW_004_OBSERVATION_POINT,
+                    "Admin consent EventとApp identity lifecycle Eventの監査Coverage、"
+                    "両Event classのRule test結果を収集済み",
+                    1,
+                ),
+            ),
+            (
                 "TB-2026-004 current binding assurance overclaimed",
                 case.replace(
                     "| HumanとWorkloadの責任境界が曖昧化 | Unknown | - |",
@@ -5355,8 +5419,9 @@ def negative_regressions(
             (
                 "ACT-TM-2026-004 omits Tenant binding evidence",
                 case.replace(
-                    "更新scope matrix、Tenant binding差分、Workload identity binding snapshot",
-                    "更新scope matrix、Workload identity binding snapshot",
+                    "Workload identity binding snapshot、Tenant binding snapshot、"
+                    "rotation手順Review記録、Tenant binding差分",
+                    "Workload identity binding snapshot、rotation手順Review記録",
                     1,
                 ),
             ),
@@ -5920,10 +5985,44 @@ def negative_regressions(
             (
                 "ACT-TM-2026-004 does not remediate its Gap",
                 case.replace(
-                    "合成Tenant bindingのBoundary owner、停止条件、fallback判断、rotation手順Review fieldを"
-                    "scope matrixへ構造化し、承認済みの既存Snapshotとのoffline機械的突合対象に追加する。"
-                    "live Tenantへ接続しない",
+                    "Phase Aでは合成Tenant bindingのBoundary owner、停止条件、fallback判断、"
+                    "rotation手順Review fieldをscope matrixへ構造化し、収集計画と"
+                    "新Authorization Record / RoE申請を作成する。",
                     "合成Tenant bindingのBoundary owner、停止条件、fallback判断をscope matrixへ構造化し、live Tenantへ接続して機械的突合する",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-004 collection phase bypasses renewed authorization",
+                case.replace(
+                    "Phase Bでは対象・method・time windowを新Authorization Record / RoEで"
+                    "承認した後に限り",
+                    "Phase Bでは直ちに",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-004 collection phase omits new Evidence IDs",
+                case.replace("収集し、新Evidence IDを割り当てて", "収集して", 1),
+            ),
+            (
+                "ACT-TM-2026-004 success overclaims unexecuted collection phase",
+                case.replace("Phase B未実施の間は未収集", "Phase BのEvidenceは収集済み", 1),
+            ),
+            (
+                "ACT-TM-2026-004 does not supply reassessment approval ticket",
+                case.replace(
+                    "Phase B: approval ticket、承認済みの新Authorization Record / RoE",
+                    "Phase B: 承認済みの新Authorization Record / RoE",
+                    1,
+                ),
+            ),
+            (
+                "RoE handoff omits ACT-TM-2026-004 collection authorization",
+                case.replace(
+                    "`ACT-TM-2026-003` / `ACT-TM-2026-004` / `ACT-TM-2026-006`の"
+                    "再Authorization依存",
+                    "`ACT-TM-2026-003` / `ACT-TM-2026-006`の再Authorization依存",
                     1,
                 ),
             ),
