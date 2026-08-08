@@ -474,7 +474,7 @@ EXPECTED_TH_002_005_ALLOCATION_ROWS = (
     (
         "Refinement only",
         "`ACT-TM-2026-005`",
-        "App identity lifecycle Event / decision summary Field命題だけを扱う",
+        "App identity lifecycle Event / decision summary Field命題とlifecycle Rule test計画だけを扱う",
     ),
     (
         "Both",
@@ -2788,12 +2788,17 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "`EXP-2026-001`, `EXP-2026-003`"
             ),
             "Statement": SUMMARY_TH_004_PROPOSITION,
-            "Preconditions": "暫定scopeとWorkload identity bindingが残る",
+            "Preconditions": (
+                "2026-07-25 remediation後のcurrent scopeとWorkload identity bindingが未確認である"
+            ),
             "Expected impact": "合成Dataの同期状態と業務判断への影響が拡大する",
             "Evidence needed": "`EREQ-2026-001`, `EREQ-2026-003`",
-            "Alternative explanation": "暫定scopeは残るが実効利用は最小権限かもしれない",
+            "Alternative explanation": (
+                "post-remediation current scopeは必要最小権限で、historical broad scopeが"
+                "解消済みかもしれない"
+            ),
             "Priority": "High",
-            "Hypothesis status": "Supported",
+            "Hypothesis status": "Inconclusive",
         }
         for field, expected in summary_contract.items():
             observed = summary_th_004[hypothesis_header.index(field)]
@@ -3171,6 +3176,42 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{inheritance_boundary!r}"
         )
 
+    # The current-state decision must reconcile the source chronology rather
+    # than treating a pre-remediation snapshot as if it described the model's
+    # August timestamp.  Both values are derived from the Chapter 1 source so
+    # a later edit cannot silently move the dates or manufacture a newer
+    # observation in Chapter 4.
+    source_scope_evidence = expected_inherited_rows.get("EVD-2026-001")
+    if source_scope_evidence is None or source_scope_evidence[4] != "2026-07-20T13:20:00+09:00":
+        messages.append(
+            f"{label}: Chapter 1 EVD-2026-001 must remain the 2026-07-20 scope snapshot"
+        )
+    source_scope_control = source_controls_by_id.get("CTRL-2026-001")
+    if source_scope_control is None:
+        messages.append(f"{label}: missing Chapter 1 CTRL-2026-001 remediation source")
+    else:
+        expected_scope_control = {
+            "Improvement": "必要scopeだけへ縮小",
+            "Due date": "2026-07-25",
+            "Result": "Passed",
+        }
+        for field, expected in expected_scope_control.items():
+            observed = source_scope_control[CHAPTER1_CONTROL_HEADER.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: Chapter 1 CTRL-2026-001 {field} {observed!r} != {expected!r}"
+                )
+    temporal_boundary = (
+        "`EVD-2026-001`は2026-07-20のhistorical scope Snapshotであり、"
+        "第1章`CTRL-2026-001`が2026-07-25にscope縮小`Passed`を記録した後の"
+        "current scopeは、post-remediation Snapshotを収集するまで`Unknown`としてDecisionへ渡す。"
+    )
+    if text.count(temporal_boundary) != 1:
+        messages.append(
+            f"{label}: requires one exact historical/current scope boundary: "
+            f"{temporal_boundary!r}"
+        )
+
     lab_control = controls_by_id.get("CTRL-2026-008")
     if lab_control is None:
         messages.append(f"{label}: missing CTRL-2026-008 assurance contract")
@@ -3229,6 +3270,35 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     f"{label}: CTRL-2026-006 limitation missing {marker!r}"
                 )
 
+    audit_control = controls_by_id.get("CTRL-2026-007")
+    if audit_control is None:
+        messages.append(f"{label}: missing CTRL-2026-007 composite audit-assurance contract")
+    else:
+        expected_audit_fields = {
+            "Control statement": (
+                "Admin consentとApp identity lifecycle EventのAudit coverageを維持する"
+            ),
+            "Assurance state": "Documented",
+            "Evidence IDs": "`EVD-2026-003`",
+            "Gap ID": "`GAP-2026-003`",
+        }
+        for field, expected in expected_audit_fields.items():
+            observed = audit_control[control_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: CTRL-2026-007 {field} {observed!r} != {expected!r}"
+                )
+        audit_limitation = audit_control[control_header.index("Limitation")]
+        for marker in (
+            "EVD-2026-003",
+            "Admin consent Eventだけを観測",
+            "App identity lifecycle EventのCoverage",
+            "Rule test結果は未収集",
+            "複合Control全体の挙動は未観測",
+        ):
+            if marker not in audit_limitation:
+                messages.append(f"{label}: CTRL-2026-007 limitation missing {marker!r}")
+
     assumption_header = count_contracts[3][0]
     for row in case_tables.get(assumption_header, []):
         if len(row) == len(assumption_header) and row[5] not in KNOWLEDGE_STATES:
@@ -3244,8 +3314,47 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if operational_pattern.search(joined):
             messages.append(f"{label}: Attack Path contains an executable command or payload marker: {joined!r}")
     path_rows_by_edge = {row[1].strip("`"): row for row in path_rows if len(row) == len(path_header)}
+    edge001 = path_rows_by_edge.get("EDGE-2026-001")
+    edge002 = path_rows_by_edge.get("EDGE-2026-002")
     edge004 = path_rows_by_edge.get("EDGE-2026-004")
     edge007 = path_rows_by_edge.get("EDGE-2026-007")
+    if edge001 is None:
+        messages.append(f"{label}: missing historical scope edge EDGE-2026-001")
+    else:
+        expected_historical_edge_markers = {
+            "From Asset / State": ("2026-07-20", "historical"),
+            "Condition": ("historical Snapshot",),
+            "To Asset / State": ("historical broad-scope snapshot",),
+            "Observation point": ("2026-07-20 App registration export",),
+        }
+        for field, markers in expected_historical_edge_markers.items():
+            value = edge001[path_header.index(field)]
+            for marker in markers:
+                if marker not in value:
+                    messages.append(f"{label}: EDGE-2026-001 {field} missing {marker!r}")
+        if edge001[path_header.index("Knowledge state")] != "Confirmed":
+            messages.append(
+                f"{label}: EDGE-2026-001 historical snapshot must remain Confirmed"
+            )
+    if edge002 is None:
+        messages.append(f"{label}: missing current-scope edge EDGE-2026-002")
+    else:
+        expected_current_edge_markers = {
+            "From Asset / State": ("post-remediation scope unknown",),
+            "Condition": ("2026-07-25", "Passed", "current App registration exportが未収集"),
+            "To Asset / State": ("current binding scope unknown",),
+            "Expected impact": ("current影響範囲を確定できない",),
+            "Observation point": ("post-remediation App registration export",),
+        }
+        for field, markers in expected_current_edge_markers.items():
+            value = edge002[path_header.index(field)]
+            for marker in markers:
+                if marker not in value:
+                    messages.append(f"{label}: EDGE-2026-002 {field} missing {marker!r}")
+        if edge002[path_header.index("Knowledge state")] != "Unknown":
+            messages.append(
+                f"{label}: EDGE-2026-002 current post-remediation scope must remain Unknown"
+            )
     if edge004 is None or edge004[path_header.index("Boundary ID")] != "`TB-2026-005`":
         messages.append(f"{label}: EDGE-2026-004 must use the Tenant boundary TB-2026-005")
     if edge007 is None or edge007[path_header.index("Boundary ID")] != "`TB-2026-007`":
@@ -3425,8 +3534,23 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     success_evidence_index = action_header.index("Success evidence")
     expected_action_semantics = {
         "ACT-TM-2026-001": {
-            "action": ("必要最小scope案", "実設定変更", "新Authorization Record / RoE承認後の別工程"),
-            "success": ("最小scope案", "新Authorization Record / RoE申請ticket", "実設定変更なし"),
+            "action": (
+                "2026-07-25 remediation後",
+                "current scope Snapshot収集計画と要求",
+                "必要最小scope案",
+                "exportの取得",
+                "実設定変更",
+                "新Authorization Record / RoE承認後の別工程",
+            ),
+            "success": (
+                "post-remediation App registration export収集要求ticket",
+                "収集計画",
+                "最小scope案",
+                "新Authorization Record / RoE申請ticket",
+                "export未収集",
+                "実設定変更なし",
+                "未収集Evidenceを収集済みと扱わない",
+            ),
         },
         "ACT-TM-2026-002": {
             "action": ("合成Rule test計画", "新Authorization Record / RoE承認後にのみ行う"),
@@ -3465,8 +3589,18 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "90日retention証跡",
                 "deny条件",
                 "文書化",
+                "合成Rule test計画",
+                "新Authorization Record / RoE承認後にのみ行う",
             ),
-            "success": ("Coverage表", "retention record", "deny例"),
+            "success": (
+                "lifecycle Rule test計画",
+                "新Authorization Record",
+                "RoE",
+                "Coverage表",
+                "retention record",
+                "deny例",
+                "Detection test結果は未収集",
+            ),
         },
         "ACT-TM-2026-006": {
             "action": ("preflight", "default-deny", "Cleanup", "新Authorization Record / RoE承認後にのみ実行"),
@@ -3490,6 +3624,24 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in case_tables.get(gap_header, [])
         if len(row) == len(gap_header)
     }
+    scope_gap = gap_rows_by_id.get("GAP-2026-002")
+    if scope_gap is None:
+        messages.append(f"{label}: missing post-remediation scope Gap GAP-2026-002")
+    else:
+        scope_gap_markers = {
+            "Missing information / control / telemetry": (
+                "2026-07-25",
+                "Passed",
+                "current App registration export",
+                "未収集",
+            ),
+            "Decision affected": ("current scope", "Confirmed", "人手依存"),
+        }
+        for field, markers in scope_gap_markers.items():
+            value = scope_gap[gap_header.index(field)]
+            for marker in markers:
+                if marker not in value:
+                    messages.append(f"{label}: GAP-2026-002 {field} missing {marker!r}")
     lab_gap = gap_rows_by_id.get("GAP-2026-004")
     if lab_gap is None:
         messages.append(f"{label}: missing dedicated lab-safety Gap GAP-2026-004")
@@ -3515,6 +3667,34 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in case_tables.get(evidence_requirement_header, [])
         if len(row) == len(evidence_requirement_header)
     }
+    scope_requirement = evidence_rows_by_id.get("EREQ-2026-001")
+    if scope_requirement is None:
+        messages.append(f"{label}: missing post-remediation scope requirement EREQ-2026-001")
+    else:
+        expected_scope_requirement_markers = {
+            "Question": ("2026-07-25 remediation後", "current scope"),
+            "Minimum sufficient evidence": (
+                "post-remediation App registration export",
+                "scope差分表",
+                "Workload identity binding snapshot",
+            ),
+            "Resulting Evidence IDs": (
+                "EVD-2026-001",
+                "EVD-2026-002",
+                "Historical inputs only",
+                "current resultではない",
+                "いずれも2026-07-20",
+                "New post-remediation result",
+                "current-scope snapshot",
+                "未収集",
+                "承認後に新Evidence IDを割り当てる",
+            ),
+        }
+        for field, markers in expected_scope_requirement_markers.items():
+            value = scope_requirement[evidence_requirement_header.index(field)]
+            for marker in markers:
+                if marker not in value:
+                    messages.append(f"{label}: EREQ-2026-001 {field} missing {marker!r}")
     rule_test_requirement = evidence_rows_by_id.get("EREQ-2026-002")
     if rule_test_requirement is None:
         messages.append(f"{label}: missing Rule-test Evidence Requirement EREQ-2026-002")
@@ -3534,11 +3714,23 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for marker in (
             "EVD-2026-003",
             "EVD-AUTH-2026-001",
-            "Rule test結果は未収集",
+            "Admin consent Eventのみ",
+            "App identity lifecycle EventのCoverage",
+            "両Event classのRule test結果は未収集",
             "承認後に新Evidence IDを割り当てる",
         ):
             if marker not in rule_test_resulting:
                 messages.append(f"{label}: EREQ-2026-002 Resulting Evidence IDs missing {marker!r}")
+        rule_test_minimum = rule_test_requirement[
+            evidence_requirement_header.index("Minimum sufficient evidence")
+        ]
+        for marker in (
+            "合成同意Event",
+            "合成App identity lifecycle Event",
+            "両Event classのRule test結果",
+        ):
+            if marker not in rule_test_minimum:
+                messages.append(f"{label}: EREQ-2026-002 minimum evidence missing {marker!r}")
 
     lab_requirement = evidence_rows_by_id.get("EREQ-2026-004")
     if lab_requirement is None:
@@ -3570,11 +3762,13 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     expected_reassessment_markers = {
         "REA-TM-2026-001": {
             "Inputs required": (
+                "2026-07-25 remediation後のApp registration export",
                 "Identity binding snapshot",
                 "rotation手順Review記録",
                 "新Authorization Record / RoE",
             ),
             "Closure criteria": (
+                "post-remediation current scopeがEvidenceで`Confirmed`",
                 "新Authorization Record / RoE承認後にのみ変更",
                 "CTRL-2026-005",
                 "Implemented",
@@ -3584,9 +3778,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         },
         "REA-TM-2026-002": {
             "Inputs required": (
+                "Admin consent Event",
+                "App identity lifecycle Event",
                 "Rule test計画",
                 "新Authorization Record / RoE",
-                "Detection test結果",
+                "両Event classのDetection test結果",
                 "query version",
                 "Field contract",
                 "合成sample summary",
@@ -3595,7 +3791,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             ),
             "Closure criteria": (
                 "新Authorization Record / RoE承認後にのみ合成Rule testを再実施",
-                "Detection test結果に新Evidence IDを割り当てる",
+                "Admin consent EventとApp identity lifecycle Event",
+                "両Event classのDetection test結果に新Evidence IDを割り当てる",
+                "両Event classのEvidence",
                 "収集設定変更はchange approval後",
                 "CTRL-2026-007",
                 "Validated",
@@ -3627,6 +3825,27 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in path_summary_rows
         if len(row) == len(PATH_SUMMARY_HEADER)
     }
+    path001_summary = path_summaries_by_id.get("PATH-2026-001")
+    if path001_summary is None:
+        messages.append(f"{label}: missing PATH-2026-001 temporal summary")
+    else:
+        temporal_summary_markers = {
+            "Entry condition": (
+                "2026-07-20",
+                "historical Snapshot",
+                "2026-07-25",
+                "Passed",
+                "post-remediation Snapshot未収集",
+                "`Unknown`",
+            ),
+            "Intermediate condition": ("current", "未確認"),
+            "Undesired end state": ("current状態として確定できない",),
+        }
+        for field, markers in temporal_summary_markers.items():
+            value = path001_summary[PATH_SUMMARY_HEADER.index(field)]
+            for marker in markers:
+                if marker not in value:
+                    messages.append(f"{label}: PATH-2026-001 {field} missing {marker!r}")
     assumption_header = count_contracts[3][0]
     assumptions_by_id = {
         row[0].strip("`"): row
@@ -3848,6 +4067,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     for marker in (
         "継承命題`TH-2026-002`",
         "lifecycle / summary Field refinementの`TH-2026-005`",
+        "2026-07-20のhistorical Snapshot",
+        "2026-07-25にscope縮小`Passed`",
+        "post-remediation current scope Snapshotが未収集",
     ):
         if marker not in decision_summary:
             messages.append(
@@ -4743,9 +4965,9 @@ def negative_regressions(
                 "Control consumer falls back to inherited ID",
                 case.replace(
                     "`TH-2026-001` / `TH-2026-004` / `CTRL-2026-005` / `CTRL-2026-006`: "
-                    "scope matrix、Identity binding、rotation手順と実設定",
+                    "2026-07-25 scope縮小`Passed`後のcurrent App registration export",
                     "`TH-2026-001` / `TH-2026-004` / `CTRL-2026-001` / `CTRL-2026-006`: "
-                    "scope matrix、Identity binding、rotation手順と実設定",
+                    "2026-07-25 scope縮小`Passed`後のcurrent App registration export",
                     1,
                 ),
             ),
@@ -4763,9 +4985,91 @@ def negative_regressions(
                 "CTRL-2026-006 reverse Gap reference omitted",
                 case.replace(
                     "`TH-2026-001` / `TH-2026-004` / `CTRL-2026-005` / `CTRL-2026-006`: "
-                    "scope matrix、Identity binding、rotation手順と実設定",
+                    "2026-07-25 scope縮小`Passed`後のcurrent App registration export",
                     "`TH-2026-001` / `TH-2026-004` / `CTRL-2026-005`: "
-                    "scope matrix、Identity binding、rotation手順と実設定",
+                    "2026-07-25 scope縮小`Passed`後のcurrent App registration export",
+                    1,
+                ),
+            ),
+            (
+                "historical/current scope boundary omitted",
+                case.replace(
+                    "`EVD-2026-001`は2026-07-20のhistorical scope Snapshotであり、"
+                    "第1章`CTRL-2026-001`が2026-07-25にscope縮小`Passed`を記録した後の"
+                    "current scopeは、post-remediation Snapshotを収集するまで`Unknown`としてDecisionへ渡す。",
+                    "`EVD-2026-001`でcurrent scopeはConfirmedである。",
+                    1,
+                ),
+            ),
+            (
+                "post-remediation EDGE-2026-002 assurance overclaim",
+                case.replace(
+                    "| `EREQ-2026-001` | Unknown |\n| `PATH-2026-001` | `EDGE-2026-003` |",
+                    "| `EREQ-2026-001` | Confirmed |\n| `PATH-2026-001` | `EDGE-2026-003` |",
+                    1,
+                ),
+            ),
+            (
+                "PATH-2026-001 temporal split omitted",
+                case.replace(
+                    "2026-07-20のhistorical Snapshotでは要件外scopeが確認されたが、2026-07-25のscope縮小`Passed`後のcurrent scopeはpost-remediation Snapshot未収集で`Unknown`である",
+                    "要件外scopeがcurrent状態としてConfirmedである",
+                    1,
+                ),
+            ),
+            (
+                "GAP-2026-002 omits post-remediation snapshot",
+                case.replace(
+                    "2026-07-25 scope縮小`Passed`後のcurrent App registration export、Identity binding、rotation手順とscope matrixの機械的突合が未収集である",
+                    "scope matrix、Identity binding、rotation手順を確認する",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-001 invents post-remediation evidence",
+                case.replace(
+                    "New post-remediation result: current-scope snapshot、identity binding、rotationの観測結果は未収集（承認後に新Evidence IDを割り当てる）",
+                    "New post-remediation result: current-scope snapshotは収集済み",
+                    1,
+                ),
+            ),
+            (
+                "CTRL-2026-007 composite assurance overclaim",
+                case.replace(
+                    "| SOC | Documented | `EVD-2026-003` | `EVD-2026-003`はAdmin consent Eventだけを観測する。",
+                    "| SOC | Observed | `EVD-2026-003` | `EVD-2026-003`はAdmin consent Eventだけを観測する。",
+                    1,
+                ),
+            ),
+            (
+                "CTRL-2026-007 composite statement narrows to consent only",
+                case.replace(
+                    "Admin consentとApp identity lifecycle EventのAudit coverageを維持する",
+                    "Admin consent EventのAudit coverageを維持する",
+                    1,
+                ),
+            ),
+            (
+                "CTRL-2026-007 invents lifecycle observation",
+                case.replace(
+                    "App identity lifecycle EventのCoverageとRule test結果は未収集であり、複合Control全体の挙動は未観測である",
+                    "App identity lifecycle EventのCoverageもEVD-2026-003で観測済みである",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-002 omits lifecycle evidence class",
+                case.replace(
+                    "合成同意Event、合成App identity lifecycle Event、Audit export、両Event classのRule test結果",
+                    "合成同意Event、Audit export、Rule test結果",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 closes on consent-only evidence",
+                case.replace(
+                    "対象をAdmin consent EventとApp identity lifecycle Eventの両Event classにする。両Event classのDetection test結果に新Evidence IDを割り当てる。",
+                    "対象をAdmin consent Eventだけにする。Detection test結果に新Evidence IDを割り当てる。",
                     1,
                 ),
             ),
@@ -4797,7 +5101,7 @@ def negative_regressions(
                 "TH-2026-001 inherited precondition drift",
                 case.replace(
                     INHERITED_TH_001_CASE_PRECONDITIONS,
-                    "暫定scopeとWorkload identity bindingが残る",
+                    "2026-07-25 remediation後のcurrent scopeとWorkload identity bindingが未確認である",
                     1,
                 ),
             ),
@@ -4975,8 +5279,16 @@ def negative_regressions(
             (
                 "TH-2026-004 evidence-requirement drift",
                 case.replace(
-                    "合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001`, `EREQ-2026-003` | 暫定scopeは残るが実効利用は最小権限かもしれない",
-                    "合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001` | 暫定scopeは残るが実効利用は最小権限かもしれない",
+                    "合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001`, `EREQ-2026-003` | post-remediation current scopeは必要最小権限で、historical broad scopeが解消済みかもしれない",
+                    "合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001` | post-remediation current scopeは必要最小権限で、historical broad scopeが解消済みかもしれない",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-004 current-state assurance overclaim",
+                case.replace(
+                    "post-remediation current scopeは必要最小権限で、historical broad scopeが解消済みかもしれない | High | Inconclusive |",
+                    "post-remediation current scopeは必要最小権限で、historical broad scopeが解消済みかもしれない | High | Supported |",
                     1,
                 ),
             ),
@@ -4999,9 +5311,9 @@ def negative_regressions(
             (
                 "EREQ-2026-001 drops summary refinement hypothesis",
                 case.replace(
-                    "| `EREQ-2026-001` | 現行scope、Identity binding、rotation手順は業務要件と一致するか | "
+                    "| `EREQ-2026-001` | 2026-07-25 remediation後のcurrent scope、Identity binding、rotation手順は業務要件と一致するか | "
                     "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` |",
-                    "| `EREQ-2026-001` | 現行scope、Identity binding、rotation手順は業務要件と一致するか | "
+                    "| `EREQ-2026-001` | 2026-07-25 remediation後のcurrent scope、Identity binding、rotation手順は業務要件と一致するか | "
                     "`TH-2026-001`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` |",
                     1,
                 ),
@@ -5027,7 +5339,7 @@ def negative_regressions(
             (
                 "Attack Path operational marker",
                 case.replace(
-                    "業務要件変更が承認ticketへ十分反映されない",
+                    "業務要件を超えるscopeがhistorical Snapshotで確認された",
                     "command: synthetic-operation",
                     1,
                 ),
@@ -5087,15 +5399,15 @@ def negative_regressions(
             (
                 "Attack Path From Asset State unsafe external action",
                 case.replace(
-                    "| `ASSET-2026-004` / scope-review pending | 業務要件変更が承認ticketへ十分反映されない |",
-                    "| `ASSET-2026-004` / 第三者の本番システムへ接続する | 業務要件変更が承認ticketへ十分反映されない |",
+                    "| `ASSET-2026-004` / 2026-07-20 historical scope-review | 業務要件を超えるscopeがhistorical Snapshotで確認された |",
+                    "| `ASSET-2026-004` / 第三者の本番システムへ接続する | 業務要件を超えるscopeがhistorical Snapshotで確認された |",
                     1,
                 ),
             ),
             (
                 "Attack Path To Asset State unsafe external action",
                 case.replace(
-                    "| `TB-2026-001` | `ASSET-2026-005` / scope matrix未更新 |",
+                    "| `TB-2026-001` | `ASSET-2026-005` / historical broad-scope snapshot |",
                     "| `TB-2026-001` | `ASSET-2026-005` / 第三者の本番システムへ接続する |",
                     1,
                 ),
@@ -5143,8 +5455,16 @@ def negative_regressions(
             (
                 "ACT-TM-2026-001 bypasses reauthorization",
                 case.replace(
-                    "App permissionの必要最小scope案とscope matrix更新案を作成する。実設定変更は新Authorization Record / RoE承認後の別工程とする",
+                    "2026-07-25 remediation後のcurrent scope Snapshot収集計画と要求、App permissionの必要最小scope案、scope matrix更新案を作成する。exportの取得と実設定変更は新Authorization Record / RoE承認後の別工程とする",
                     "App permissionを必要最小限へ縮小し、scope matrixとの差分をゼロにする",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-001 claims export collection instead of request completion",
+                case.replace(
+                    "post-remediation App registration export収集要求ticket、収集計画",
+                    "post-remediation App registration export収集済み",
                     1,
                 ),
             ),
@@ -5153,6 +5473,14 @@ def negative_regressions(
                 case.replace(
                     "Admin consent change Eventの合成Rule test計画を第17章の形式で更新する。Rule testの再実施は新Authorization Record / RoE承認後にのみ行う",
                     "Admin consent change Eventの合成Rule testを第17章の形式で再実施する",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 bypasses renewed Authorization and RoE",
+                case.replace(
+                    "App identity lifecycle Eventの合成Rule test計画を作成する。Rule testの再実施は新Authorization Record / RoE承認後にのみ行う",
+                    "App identity lifecycle Eventの合成Rule testを再実施する",
                     1,
                 ),
             ),
@@ -5175,7 +5503,7 @@ def negative_regressions(
             (
                 "EREQ-2026-002 omits uncollected Rule-test result handoff",
                 case.replace(
-                    "`EVD-2026-003`, `EVD-AUTH-2026-001`; Rule test結果は未収集（承認後に新Evidence IDを割り当てる）",
+                    "`EVD-2026-003`（Admin consent Eventのみ）, `EVD-AUTH-2026-001`; App identity lifecycle EventのCoverageと両Event classのRule test結果は未収集（承認後に新Evidence IDを割り当てる）",
                     "`EVD-2026-003`, `EVD-AUTH-2026-001`",
                     1,
                 ),
@@ -5183,7 +5511,7 @@ def negative_regressions(
             (
                 "REA-TM-2026-002 omits Action result inputs",
                 case.replace(
-                    "Audit export、Rule test計画、新Authorization Record / RoE、Detection test結果、query version、coverage表、retention note、Field contract、合成sample summary、change proposal、Telemetry Field change approval",
+                    "Admin consent EventとApp identity lifecycle EventのAudit export、Rule test計画、新Authorization Record / RoE、両Event classのDetection test結果、query version、coverage表、retention note、Field contract、合成sample summary、change proposal、Telemetry Field change approval",
                     "Audit export、Rule test計画、新Authorization Record / RoE、coverage表、retention note、Telemetry Field change approval",
                     1,
                 ),
@@ -5191,7 +5519,7 @@ def negative_regressions(
             (
                 "REA-TM-2026-002 omits renewed authorization gate",
                 case.replace(
-                    "新Authorization Record / RoE承認後にのみ合成Rule testを再実施し、Detection test結果に新Evidence IDを割り当てる。収集設定変更はchange approval後に行う。`CTRL-2026-007`がValidated、Gap ownerと期限が更新済み",
+                    "新Authorization Record / RoE承認後にのみ合成Rule testを再実施し、対象をAdmin consent EventとApp identity lifecycle Eventの両Event classにする。両Event classのDetection test結果に新Evidence IDを割り当てる。収集設定変更はchange approval後に行う。両Event classのEvidenceで`CTRL-2026-007`がValidated、Gap ownerと期限が更新済み",
                     "`CTRL-2026-007`がValidated、Gap ownerと期限が更新済み",
                     1,
                 ),
@@ -5266,7 +5594,7 @@ def negative_regressions(
             (
                 "ACT-TM-2026-005 success evidence does not close its Gap",
                 case.replace(
-                    "query approval template、Coverage表、retention record、deny例、review sign-off",
+                    "query approval template、lifecycle Rule test計画、新Authorization Record、RoE、Coverage表、retention record、deny例、review sign-off（Detection test結果は未収集）",
                     "query approval template、deny例、review sign-off",
                     1,
                 ),

@@ -167,8 +167,10 @@ Entry PointはExposureの参照列だけで済ませず、Owner、Boundary、Aut
 | `TH-2026-001` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-002` | `TB-2026-001`, `TB-2026-002`, `TB-2026-004`, `FLOW-2026-002`, `FLOW-2026-006`, `EXP-2026-001` | 請求書連携アプリの業務要件超過権限、Credential misuse、顧客Dataへの広範Access可能性が同時に成立するという第1章の命題 | 過大scope、Credentialの有効性、API到達性を成立条件として評価する | 顧客Dataの閲覧・変更可能性 | `EREQ-2026-001`, `EREQ-2026-003` | 暫定scopeは残るが、Credentialの有効性またはAPI到達性が限定される可能性がある | High | Supported |
 | `TH-2026-002` | `DR-2026-001` | `ASSET-2026-002`, `ASSET-2026-003` | `TB-2026-001`, `TB-2026-003`, `FLOW-2026-004`, `EXP-2026-002` | 管理者同意の変更を監視できず、未承認のscope追加を早期検知できない | 同意Eventの未収集またはRule欠落 | 攻撃面拡大の見逃し | `EREQ-2026-002` | 同意Eventは収集済みでもRule欠落により早期検知できない可能性がある | High | Partially Supported |
 | `TH-2026-003` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-003`, `ASSET-2026-006` | `TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `TB-2026-008`, `FLOW-2026-003`, `FLOW-2026-004`, `FLOW-2026-005`, `EXP-2026-002`, `EXP-2026-003` | 既に同型の不正利用が発生した | 過大scope、Credential metadata、API到達条件が同時に存在していた | 過去侵害と顧客Dataへの影響 | `EREQ-2026-003` | TelemetryとRetentionの制約により、未観測を未発生と判断できない | High | Inconclusive |
-| `TH-2026-004` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006`, `ASSET-2026-007` | `TB-2026-001`, `TB-2026-004`, `TB-2026-008`, `FLOW-2026-001`, `FLOW-2026-002`, `FLOW-2026-003`, `FLOW-2026-006`, `EXP-2026-001`, `EXP-2026-003` | 業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある | 暫定scopeとWorkload identity bindingが残る | 合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001`, `EREQ-2026-003` | 暫定scopeは残るが実効利用は最小権限かもしれない | High | Supported |
+| `TH-2026-004` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006`, `ASSET-2026-007` | `TB-2026-001`, `TB-2026-004`, `TB-2026-008`, `FLOW-2026-001`, `FLOW-2026-002`, `FLOW-2026-003`, `FLOW-2026-006`, `EXP-2026-001`, `EXP-2026-003` | 業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある | 2026-07-25 remediation後のcurrent scopeとWorkload identity bindingが未確認である | 合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001`, `EREQ-2026-003` | post-remediation current scopeは必要最小権限で、historical broad scopeが解消済みかもしれない | High | Inconclusive |
 | `TH-2026-005` | `DR-2026-001` | `ASSET-2026-002`, `ASSET-2026-003`, `ASSET-2026-004` | `TB-2026-003`, `TB-2026-007`, `FLOW-2026-004`, `FLOW-2026-005`, `EXP-2026-002` | App identity lifecycle Eventまたはdecision summary Fieldの観測不足により、lifecycle変更と月末判断の対応付けが遅れる可能性がある | lifecycle Audit exportまたはdecision summary Fieldが不足する | Decision遅延とControl assuranceの誤判定 | `EREQ-2026-002` | Eventは存在するがsummary Field不足で見えないだけかもしれない | High | Partially Supported |
+
+`TH-2026-001`〜`003`の命題とstatusは第1章の評価時点を継承したsource snapshotであり、2026-08-06〜08時点のcurrent状態を自動的に表さない。特に`EVD-2026-001`は2026-07-20のhistorical scope Snapshotであり、第1章`CTRL-2026-001`が2026-07-25にscope縮小`Passed`を記録した後のcurrent scopeは、post-remediation Snapshotを収集するまで`Unknown`としてDecisionへ渡す。
 
 ### `TH-2026-002` / `TH-2026-005` Consumer Allocation
 
@@ -177,7 +179,7 @@ Entry PointはExposureの参照列だけで済ませず、Owner、Boundary、Aut
 | Allocation | Consumer IDs | Meaning |
 |---|---|---|
 | Inherited only | `ACT-TM-2026-002` | Admin consent Event / Rule命題だけを扱う |
-| Refinement only | `ACT-TM-2026-005` | App identity lifecycle Event / decision summary Field命題だけを扱う |
+| Refinement only | `ACT-TM-2026-005` | App identity lifecycle Event / decision summary Field命題とlifecycle Rule test計画だけを扱う |
 | Both | `PATH-2026-002`, `CTRL-2026-007`, `CTRL-2026-008`, `GAP-2026-003`, `EREQ-2026-002`, `EREQ-2026-004`, `ACT-TM-2026-006`, `REA-TM-2026-002` | 共通のAudit surface、Safety gateまたは再評価単位で両命題を明示的に扱う |
 
 ### Misuse Case Register
@@ -197,15 +199,15 @@ Attack Pathは成立しうる関係と観測点を整理する表であり、実
 
 | Path ID | Related Threat IDs | Entry condition | Intermediate condition | Undesired end state | Safety note |
 |---|---|---|---|---|---|
-| `PATH-2026-001` | `TH-2026-001`, `TH-2026-004` | 要件外scopeが承認済みとして残存する | OAuth app componentとworkload identityのbindingがsummary境界を越える権限条件を保持する | Data accessまたは状態変更の影響範囲が拡大する | 実Tokenを取得しない。実Dataを参照しない。設定差分と合成metadataだけで評価する。 |
+| `PATH-2026-001` | `TH-2026-001`, `TH-2026-004` | 2026-07-20のhistorical Snapshotでは要件外scopeが確認されたが、2026-07-25のscope縮小`Passed`後のcurrent scopeはpost-remediation Snapshot未収集で`Unknown`である | current App componentとworkload identityのbindingが必要scopeに収まるか未確認である | Data accessまたは状態変更の影響範囲をcurrent状態として確定できない | 実Tokenを取得しない。実Dataを参照しない。設定差分と合成metadataだけで評価する。 |
 | `PATH-2026-002` | `TH-2026-002`, `TH-2026-003`, `TH-2026-005` | 管理者同意またはApp identity lifecycle Eventが発生する | Audit exportまたはDetection coverageが不足する | 未承認変更が長時間未発見となり、既往影響評価が遅れる | 合成Audit export、保持期間差分、Rule test結果だけで評価する |
 
 ### Attack Path edge register
 
 | Attack Path ID | Edge ID | From Asset / State | Condition | Boundary ID | To Asset / State | Affected Asset IDs | Expected impact | Observation point | Required Evidence ID | Knowledge state |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `PATH-2026-001` | `EDGE-2026-001` | `ASSET-2026-004` / scope-review pending | 業務要件変更が承認ticketへ十分反映されない | `TB-2026-001` | `ASSET-2026-005` / scope matrix未更新 | `ASSET-2026-004`, `ASSET-2026-005` | 不要scopeが残る | 承認ticket、scope差分 | `EREQ-2026-001` | Confirmed |
-| `PATH-2026-001` | `EDGE-2026-002` | `ASSET-2026-005` / broad-scope configured | App componentが広い権限を保持したままbindingされる | `TB-2026-004` | `ASSET-2026-007` / binding active | `ASSET-2026-005`, `ASSET-2026-007` | Identity misuse時の影響範囲が広がる | App registration export、identity inventory | `EREQ-2026-001` | Confirmed |
+| `PATH-2026-001` | `EDGE-2026-001` | `ASSET-2026-004` / 2026-07-20 historical scope-review | 業務要件を超えるscopeがhistorical Snapshotで確認された | `TB-2026-001` | `ASSET-2026-005` / historical broad-scope snapshot | `ASSET-2026-004`, `ASSET-2026-005` | remediation前に不要scopeが残っていた | 2026-07-20 App registration export、scope差分 | `EREQ-2026-001` | Confirmed |
+| `PATH-2026-001` | `EDGE-2026-002` | `ASSET-2026-005` / post-remediation scope unknown | 2026-07-25 scope縮小`Passed`後のcurrent App registration exportが未収集で、current bindingのscopeを確認できない | `TB-2026-004` | `ASSET-2026-007` / current binding scope unknown | `ASSET-2026-005`, `ASSET-2026-007` | Identity misuse時のcurrent影響範囲を確定できない | post-remediation App registration export、identity inventory | `EREQ-2026-001` | Unknown |
 | `PATH-2026-001` | `EDGE-2026-003` | `ASSET-2026-007` / binding active | runtime sessionがsummary-only制約と一致しない | `TB-2026-008` | `ASSET-2026-006` / summary boundary uncertain | `ASSET-2026-001`, `ASSET-2026-006`, `ASSET-2026-007` | Data accessまたは状態変更の評価が不十分になる | manifest field inventory、permission diff | `EREQ-2026-003` | Assumed |
 | `PATH-2026-001` | `EDGE-2026-004` | `ASSET-2026-006` / Tenant binding assumed | Tenant bindingのEvidenceが不足する | `TB-2026-005` | `ASSET-2026-006` / Tenant isolation inconclusive | `ASSET-2026-001`, `ASSET-2026-006` | 影響範囲をTenant単位で限定できず判断が遅れる | Tenant binding差分、scope matrix | `EREQ-2026-001` | Assumed |
 | `PATH-2026-002` | `EDGE-2026-005` | `ASSET-2026-002` / consent change issued | control plane変更が監査exportへ完全に反映されない | `TB-2026-003` | `ASSET-2026-003` / audit coverage partial | `ASSET-2026-002`, `ASSET-2026-003` | 未承認変更の早期検知が遅れる | Audit export、retention設定 | `EREQ-2026-002` | Confirmed |
@@ -220,7 +222,7 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 |---|---|---|---|---|---|---|---|---|
 | `CTRL-2026-005` | `ASSET-2026-004`, `ASSET-2026-005`, `TB-2026-001`, `TH-2026-001`, `TH-2026-004`, `PATH-2026-001` | 業務要件とscopeの対応表をReviewする | Business Systems | Documented | `EVD-2026-002` | 自動突合がなく人手差分に依存する | `GAP-2026-002` | scopeまたは業務要件変更 |
 | `CTRL-2026-006` | `ASSET-2026-005`, `ASSET-2026-007`, `TB-2026-004`, `TH-2026-001`, `TH-2026-004`, `PATH-2026-001` | Workload identityをHuman identityから分離しrotation手順を管理する | Platform | Documented | `EVD-2026-001` | `EVD-2026-001`はApp registration scope Snapshotに限られ、Identity binding、利用観測、rotation手順Reviewと実施結果は未収集である | `GAP-2026-002` | Identity bindingまたはrotation変更 |
-| `CTRL-2026-007` | `ASSET-2026-002`, `ASSET-2026-003`, `TB-2026-003`, `TH-2026-002`, `TH-2026-005`, `PATH-2026-002` | Admin consentとApp identity lifecycle EventのAudit coverageを維持する | SOC | Observed | `EVD-2026-003` | Rule testとCoverage基準が未完了である | `GAP-2026-003` | Rule、Fieldまたはretention変更 |
+| `CTRL-2026-007` | `ASSET-2026-002`, `ASSET-2026-003`, `TB-2026-003`, `TH-2026-002`, `TH-2026-005`, `PATH-2026-002` | Admin consentとApp identity lifecycle EventのAudit coverageを維持する | SOC | Documented | `EVD-2026-003` | `EVD-2026-003`はAdmin consent Eventだけを観測する。App identity lifecycle EventのCoverageとRule test結果は未収集であり、複合Control全体の挙動は未観測である | `GAP-2026-003` | Rule、Fieldまたはretention変更 |
 | `CTRL-2026-008` | `ASSET-2026-003`, `TB-2026-006`, `TH-2026-002`, `TH-2026-005`, `PATH-2026-002` | no outbound、停止条件、Cleanupを一体で検証する | Lab Operator | Documented | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` | 設計とAuthorization条件はReview済みだが、preflight、default-deny、Cleanupの実施結果は未収集であり、Controlの挙動は未観測である | `GAP-2026-004` | AUTH条件、Lab boundaryまたは実施Evidence変更 |
 | `CTRL-2026-009` | `ASSET-2026-006`, `TB-2026-007`, `TH-2026-003`, `PATH-2026-002` | Vendor管理のsummary-only Field normalizationを説明可能にする | Vendor Management | Unknown | `NEG-2026-001` | no outbound条件下ではVendor内部補正の完全性を直接確認しない | `GAP-2026-001` | Field仕様またはVendor責任分界変更 |
 
@@ -249,7 +251,7 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 | Gap ID | Missing information / control / telemetry | Decision affected | Owner | Due date | Status | Evidence Requirement ID | Action ID | Reassessment ID |
 |---|---|---|---|---|---|---|---|---|
 | `GAP-2026-001` | `TH-2026-003` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない | Platform | 2026-08-18 | Open | `EREQ-2026-003` | `ACT-TM-2026-003` | `REA-TM-2026-002` |
-| `GAP-2026-002` | `TH-2026-001` / `TH-2026-004` / `CTRL-2026-005` / `CTRL-2026-006`: scope matrix、Identity binding、rotation手順と実設定の機械的突合がない | `DR-2026-001`: 過大権限とIdentity lifecycle不整合の再発防止が人手依存になる | Business Systems | 2026-08-21 | Accepted temporarily | `EREQ-2026-001` | `ACT-TM-2026-001`, `ACT-TM-2026-004` | `REA-TM-2026-001` |
+| `GAP-2026-002` | `TH-2026-001` / `TH-2026-004` / `CTRL-2026-005` / `CTRL-2026-006`: 2026-07-25 scope縮小`Passed`後のcurrent App registration export、Identity binding、rotation手順とscope matrixの機械的突合が未収集である | `DR-2026-001`: current scopeを`Confirmed`にできず、過大権限とIdentity lifecycle不整合の再発防止が人手依存になる | Business Systems | 2026-08-21 | Accepted temporarily | `EREQ-2026-001` | `ACT-TM-2026-001`, `ACT-TM-2026-004` | `REA-TM-2026-001` |
 | `GAP-2026-003` | `TH-2026-002` / `TH-2026-003` / `TH-2026-005` / `CTRL-2026-007`: 90日窓の完全Coverageと保持証跡が不足する | `DR-2026-001`: 未観測を未発生と誤解しやすい | SOC | 2026-08-20 | Escalated | `EREQ-2026-002`, `EREQ-2026-003` | `ACT-TM-2026-002`, `ACT-TM-2026-005` | `REA-TM-2026-002` |
 | `GAP-2026-004` | `CTRL-2026-008`: 合成Labのpreflight、default-deny、Cleanup実施結果が未収集である | `DR-2026-001`: 安全境界の挙動を確認できるまでLab検証を開始できない | Lab Operator | 2026-08-13 | Open | `EREQ-2026-004` | `ACT-TM-2026-006` | `REA-TM-2026-004` |
 
@@ -260,8 +262,8 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 | Supported option | 権限縮小と監視強化で継続 |
 | Why not immediate unrestricted continuation | `TH-2026-001`、継承命題`TH-2026-002`、summary-only refinementの`TH-2026-004`、lifecycle / summary Field refinementの`TH-2026-005`が残り、`TH-2026-003`はTelemetry Gapで閉じていない |
 | Why not direct production validation here | `AUTH-CASE-2026-001`の条件付き許可は合成Tenantのread-only評価に限定される |
-| Strongest confirmed point | App scopeと業務要件の差分はCaseとして明示できる |
-| Strongest uncertainty | 過去利用の完全追跡はできない |
+| Strongest confirmed point | 2026-07-20のhistorical SnapshotではApp scopeと業務要件の差分が確認され、2026-07-25にscope縮小`Passed`が記録された |
+| Strongest uncertainty | post-remediation current scope Snapshotが未収集であり、過去利用の完全追跡もできない |
 | Permitted conclusion | 最小scope化、観測改善、再評価条件を付けた継続判断は支持できる |
 | Prohibited conclusion | Telemetry不足のまま「侵害はなかった」「影響はゼロ」と断定すること |
 
@@ -271,8 +273,8 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 
 | Evidence Requirement ID | Question | Related Threat / Control / Gap | Minimum sufficient evidence | Forbidden / over-collection boundary | Owner | Due date | Status | Resulting Evidence IDs |
 |---|---|---|---|---|---|---|---|---|
-| `EREQ-2026-001` | 現行scope、Identity binding、rotation手順は業務要件と一致するか | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` | App registration export、要件表、scope差分表、Workload identity binding snapshot、rotation手順Review記録 | 実Tokenを取得しない。実Dataを取得しない。Productionを変更しない。 | Platform | 2026-08-12 | Required | `EVD-2026-001`, `EVD-2026-002`; identity bindingとrotationの観測結果は未収集（承認後に新Evidence IDを割り当てる） |
-| `EREQ-2026-002` | 同意EventとApp identity lifecycle Eventの監査Coverageは十分か | `TH-2026-002`, `TH-2026-005`, `CTRL-2026-007`, `GAP-2026-003` | 合成同意Event、Audit export、Rule test結果 | 無害化summaryを超える追加Data exportを要求しない。新Authorization Record / RoE承認前にRule testを再実施しない。 | SOC | 2026-08-14 | Required | `EVD-2026-003`, `EVD-AUTH-2026-001`; Rule test結果は未収集（承認後に新Evidence IDを割り当てる） |
+| `EREQ-2026-001` | 2026-07-25 remediation後のcurrent scope、Identity binding、rotation手順は業務要件と一致するか | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` | post-remediation App registration export、要件表、scope差分表、Workload identity binding snapshot、rotation手順Review記録 | 実Tokenを取得しない。実Dataを取得しない。Productionを変更しない。 | Platform | 2026-08-12 | Required | Historical inputs only（current resultではない）: `EVD-2026-001`, `EVD-2026-002`（いずれも2026-07-20）; New post-remediation result: current-scope snapshot、identity binding、rotationの観測結果は未収集（承認後に新Evidence IDを割り当てる） |
+| `EREQ-2026-002` | 同意EventとApp identity lifecycle Eventの監査Coverageは十分か | `TH-2026-002`, `TH-2026-005`, `CTRL-2026-007`, `GAP-2026-003` | 合成同意Event、合成App identity lifecycle Event、Audit export、両Event classのRule test結果 | 無害化summaryを超える追加Data exportを要求しない。新Authorization Record / RoE承認前にRule testを再実施しない。 | SOC | 2026-08-14 | Required | `EVD-2026-003`（Admin consent Eventのみ）, `EVD-AUTH-2026-001`; App identity lifecycle EventのCoverageと両Event classのRule test結果は未収集（承認後に新Evidence IDを割り当てる） |
 | `EREQ-2026-003` | 保持範囲内で既往影響をどこまで評価できるか | `TH-2026-001`, `TH-2026-003`, `TH-2026-004`, `CTRL-2026-009`, `GAP-2026-001`, `GAP-2026-003` | 90日窓のTelemetry summary、Coverage表、negative finding、retention note | PIIを収集しない。実Tenantへ接続しない。scope外Targetを追跡しない。 | SOC、Platform | 2026-08-18 | Required | `EVD-2026-004`, `NEG-2026-001` |
 | `EREQ-2026-004` | 合成Labはno outbound、停止条件、Cleanupを実施結果で示せるか | `TH-2026-002`, `TH-2026-005`, `CTRL-2026-008`, `GAP-2026-004` | 署名済みpreflight report、default-deny dry-run結果、Cleanup verification | 新Authorization Record / RoE承認前に実行しない。実Target、実Credential、実Data、外向き通信を使用しない。 | Lab Operator | 2026-08-13 | Required | 未収集（承認後に新Evidence IDを割り当てる） |
 
@@ -308,11 +310,11 @@ Collected Evidence statusは `Planned / Collected / Rejected / Inconclusive` の
 
 | Action ID | Related Gap / Control / Threat | Action | Owner | Due date | Success evidence | Status |
 |---|---|---|---|---|---|---|
-| `ACT-TM-2026-001` | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `GAP-2026-002` | App permissionの必要最小scope案とscope matrix更新案を作成する。実設定変更は新Authorization Record / RoE承認後の別工程とする | Platform | 2026-08-12 | 最小scope案、要件との差分表、新Authorization Record / RoE申請ticket（実設定変更なし） | Open |
+| `ACT-TM-2026-001` | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `GAP-2026-002` | 2026-07-25 remediation後のcurrent scope Snapshot収集計画と要求、App permissionの必要最小scope案、scope matrix更新案を作成する。exportの取得と実設定変更は新Authorization Record / RoE承認後の別工程とする | Platform | 2026-08-12 | post-remediation App registration export収集要求ticket、収集計画、最小scope案、要件との差分表、新Authorization Record / RoE申請ticket（export未収集。実設定変更なし。未収集Evidenceを収集済みと扱わない） | Open |
 | `ACT-TM-2026-002` | `TH-2026-002`, `CTRL-2026-007`, `GAP-2026-003` | Admin consent change Eventの合成Rule test計画を第17章の形式で更新する。Rule testの再実施は新Authorization Record / RoE承認後にのみ行う | SOC | 2026-08-14 | Rule test計画、新Authorization Record、RoE、Detection test結果、query version、coverage note | Open |
 | `ACT-TM-2026-003` | `TH-2026-003`, `CTRL-2026-009`, `GAP-2026-001` | API利用Telemetryのresource / operation Field contractと合成sample summaryを作成する。収集設定またはProduction Pipelineの変更は新Authorization Record / change approval後の別工程とする | Platform | 2026-08-18 | Field contract、合成sample summary、change proposal、Gap更新（Production変更なし） | Open |
 | `ACT-TM-2026-004` | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` | 合成Tenant bindingのBoundary owner、停止条件、fallback判断、rotation手順Review fieldをscope matrixへ構造化し、承認済みの既存Snapshotとのoffline機械的突合対象に追加する。live Tenantへ接続しない | Finance Operations | 2026-08-15 | 更新scope matrix、Identity binding snapshot、rotation手順Review記録、offline機械的突合結果、承認runbook | Open |
-| `ACT-TM-2026-005` | `TH-2026-005`, `CTRL-2026-007`, `GAP-2026-003` | SOC query申請templateへApp identity lifecycle Eventとdecision summary FieldのCoverage、90日retention証跡の必須Field、欠損時のdeny条件を文書化する | SOC | 2026-08-16 | query approval template、Coverage表、retention record、deny例、review sign-off | Open |
+| `ACT-TM-2026-005` | `TH-2026-005`, `CTRL-2026-007`, `GAP-2026-003` | SOC query申請templateへApp identity lifecycle Eventとdecision summary FieldのCoverage、90日retention証跡の必須Field、欠損時のdeny条件を文書化し、App identity lifecycle Eventの合成Rule test計画を作成する。Rule testの再実施は新Authorization Record / RoE承認後にのみ行う | SOC | 2026-08-16 | query approval template、lifecycle Rule test計画、新Authorization Record、RoE、Coverage表、retention record、deny例、review sign-off（Detection test結果は未収集） | Open |
 | `ACT-TM-2026-006` | `TH-2026-002`, `TH-2026-005`, `CTRL-2026-008`, `GAP-2026-004` | 合成Labのpreflight、default-deny、Cleanup実施計画を作成し、新Authorization Record / RoE承認後にのみ実行して結果を収集する | Lab Operator | 2026-08-13 | 新Authorization Record、RoE、署名済みpreflight report、default-deny結果、Cleanup verification | Open |
 
 ## 11. Reassessment and Handoff
@@ -321,8 +323,8 @@ Collected Evidence statusは `Planned / Collected / Rejected / Inconclusive` の
 
 | Reassessment ID | Trigger | Scope | Owner | Scheduled date | Inputs required | Closure criteria | Destination chapter / artifact |
 |---|---|---|---|---|---|---|---|
-| `REA-TM-2026-001` | scope、Identity binding、rotationまたは承認ticket変更 | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` | Platform | 2026-08-19 | App export、scope matrix、Identity binding snapshot、rotation手順Review記録、approval ticket、新Authorization Record / RoE | 最小scope案と要件の差分ゼロ。新Authorization Record / RoE承認後にのみ変更し、`CTRL-2026-005`が少なくともImplemented、`CTRL-2026-006`が少なくともObserved | 第15章 `Finding Report` / `Retest Record` |
-| `REA-TM-2026-002` | Rule導入、Field追加、retention変更 | `TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `CTRL-2026-007`, `CTRL-2026-009` | SOC | 2026-08-20 | Audit export、Rule test計画、新Authorization Record / RoE、Detection test結果、query version、coverage表、retention note、Field contract、合成sample summary、change proposal、Telemetry Field change approval | 新Authorization Record / RoE承認後にのみ合成Rule testを再実施し、Detection test結果に新Evidence IDを割り当てる。収集設定変更はchange approval後に行う。`CTRL-2026-007`がValidated、Gap ownerと期限が更新済み | 第6章 観測設計、第17章 Detection Validation |
+| `REA-TM-2026-001` | scope、Identity binding、rotationまたは承認ticket変更 | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` | Platform | 2026-08-19 | 2026-07-25 remediation後のApp registration export、scope matrix、Identity binding snapshot、rotation手順Review記録、approval ticket、新Authorization Record / RoE | post-remediation current scopeがEvidenceで`Confirmed`となり、最小scope案と要件の差分がゼロである。新Authorization Record / RoE承認後にのみ変更し、`CTRL-2026-005`が少なくともImplemented、`CTRL-2026-006`が少なくともObserved | 第15章 `Finding Report` / `Retest Record` |
+| `REA-TM-2026-002` | Rule導入、Field追加、retention変更 | `TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `CTRL-2026-007`, `CTRL-2026-009` | SOC | 2026-08-20 | Admin consent EventとApp identity lifecycle EventのAudit export、Rule test計画、新Authorization Record / RoE、両Event classのDetection test結果、query version、coverage表、retention note、Field contract、合成sample summary、change proposal、Telemetry Field change approval | 新Authorization Record / RoE承認後にのみ合成Rule testを再実施し、対象をAdmin consent EventとApp identity lifecycle Eventの両Event classにする。両Event classのDetection test結果に新Evidence IDを割り当てる。収集設定変更はchange approval後に行う。両Event classのEvidenceで`CTRL-2026-007`がValidated、Gap ownerと期限が更新済み | 第6章 観測設計、第17章 Detection Validation |
 | `REA-TM-2026-003` | AUTH条件変更、Target追加、Production操作要請 | 全仮説、全Boundary、全Exposure | Security Program Lead | 条件発生時に即時 | 新Authorization Record、更新Scope、RoE案 | `AUTH-CASE-2026-001`からの逸脱が閉じ、新条件で再承認済み | 第9章 `Rules of Engagement` |
 | `REA-TM-2026-004` | 新Authorization / RoE承認、Lab boundary変更、preflight / default-deny / Cleanup結果収集 | `CTRL-2026-008`, `GAP-2026-004`, `EREQ-2026-004` | Synthetic Safety Reviewer | 2026-08-14 | 新Authorization Record、RoE、署名済みpreflight report、default-deny結果、Cleanup verification | 全結果が収集され`CTRL-2026-008`が少なくともObserved。失敗時は検証を停止する | 第2章 `Authorization Checklist` / 第9章 `Rules of Engagement` |
 
