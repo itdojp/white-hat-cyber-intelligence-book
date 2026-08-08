@@ -706,6 +706,44 @@ class MarkdownTable:
     header: tuple[str, ...]
     rows: tuple[tuple[str, ...], ...]
     line: int
+    end_line: int
+
+
+CHAPTER_ASSET_TAXONOMY_HEADER = (
+    "型",
+    "何を表すか",
+    "典型例",
+    "最低限の記録項目",
+    "混同しやすい対象",
+    "誤りの例",
+)
+CHAPTER_DISTINCTION_HEADER = (
+    "用語対",
+    "前者",
+    "後者",
+    "実務上の違い",
+    "典型的な誤り",
+)
+CHAPTER_ASSURANCE_HEADER = (
+    "Assurance state",
+    "本章での意味",
+    "次へ進むためのEvidence",
+    "誤った読み方",
+)
+CHAPTER_STATE_DISTINCTION_HEADER = (
+    "対象",
+    "何の状態か",
+    "有限集合",
+    "使い方",
+    "してはいけないこと",
+)
+CHAPTER_HANDOFF_HEADER = (
+    "行先",
+    "本章から渡すもの",
+    "最低限必要なIDまたは情報",
+    "渡した先で何に使うか",
+    "差戻し条件",
+)
 
 
 def table_safety_policy(
@@ -908,6 +946,32 @@ TABLE_SAFETY_POLICIES = {
             finite=(),
             reader_visible=("Scope / condition", "Unsupported claim", "Owner", "Reassessment trigger"),
         ),
+        *(
+            table_safety_policy(
+                header,
+                structural=(),
+                finite=(),
+                reader_visible=header,
+            )
+            for header in (
+                CHAPTER_ASSET_TAXONOMY_HEADER,
+                CHAPTER_DISTINCTION_HEADER,
+                CHAPTER_ASSURANCE_HEADER,
+                CHAPTER_STATE_DISTINCTION_HEADER,
+                CHAPTER_HANDOFF_HEADER,
+            )
+        ),
+    )
+}
+
+CHAPTER_TABLE_OCCURRENCES = {
+    header: 1
+    for header in (
+        CHAPTER_ASSET_TAXONOMY_HEADER,
+        CHAPTER_DISTINCTION_HEADER,
+        CHAPTER_ASSURANCE_HEADER,
+        CHAPTER_STATE_DISTINCTION_HEADER,
+        CHAPTER_HANDOFF_HEADER,
     )
 }
 
@@ -1564,13 +1628,15 @@ def _literal_fence_visible_fields(
 def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str]]:
     """Select rendered headings, prose, lists, and finite code-block contents.
 
-    Table cells are owned by the finite table manifest.  This adapter owns the
-    remaining heading/prose/list/code surface without treating front matter,
-    ordinary Markdown comments, link destinations, or reference definitions as
-    reader instructions.  Fenced and four-space/tab-indented code are literal
-    rendered source, so their delimiters are neutralized and their full contents
-    are sent to shared Policy 1.2.0.  Wrapped lines remain one field so
-    action/object and negation context is not split at an authoring line break.
+    Table cells are owned by the finite table manifest.  A document contract
+    that calls this adapter must therefore also call ``classified_table_fields``
+    with its complete table manifest.  This adapter owns the remaining
+    heading/prose/list/code surface without treating front matter, ordinary
+    Markdown comments, link destinations, or reference definitions as reader
+    instructions.  Fenced and four-space/tab-indented code are literal rendered
+    source, so their delimiters are neutralized and their full contents are sent
+    to shared Policy 1.2.0.  Wrapped lines remain one field so action/object and
+    negation context is not split at an authoring line break.
     """
 
     source_lines = text.splitlines()
@@ -1592,10 +1658,19 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
         for span in indented_spans
         for index in range(span.opening_index, span.closing_index + 1)
     }
+    tables, table_messages = markdown_tables(text, label)
+    if table_messages:
+        raise ValueError("; ".join(table_messages))
+    table_lines = {
+        index
+        for table in tables
+        for index in range(table.line - 1, table.end_line)
+    }
+    covered_lines |= table_lines
     renderable_lines = [
-        (index + 1, line)
+        (index + 1, "" if index in covered_lines else line)
         for index, line in enumerate(source_lines)
-        if index >= content_start and index not in covered_lines
+        if index >= content_start
     ]
     for span in spans:
         opening = span.opening
@@ -1630,7 +1705,6 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
         stripped = line.strip()
         return bool(
             not stripped
-            or stripped.startswith("|")
             or _MARKDOWN_HEADING.match(stripped)
             or _MARKDOWN_FENCE.match(line)
             or _MARKDOWN_REFERENCE_DEFINITION.match(line)
@@ -1781,15 +1855,31 @@ def markdown_tables(text: str, label: str) -> tuple[list[MarkdownTable], list[st
         if not line.strip().startswith("|"):
             continue
         header = tuple(markdown_cells(line))
-        separator = markdown_cells(lines[index + 1])
+        separator = tuple(markdown_cells(lines[index + 1]))
+        separator_candidate = bool(separator) and all(
+            re.fullmatch(r":?-+:?", cell) for cell in separator
+        )
+        if not separator_candidate:
+            continue
         if len(separator) != len(header) or not all(
             re.fullmatch(r":?-{3,}:?", cell) for cell in separator
         ):
+            messages.append(
+                f"{label}:{index + 1}: malformed Markdown table separator: "
+                f"header={header!r}, separator={separator!r}"
+            )
+            continue
+        if not header or any(not cell for cell in header) or len(header) != len(set(header)):
+            messages.append(
+                f"{label}:{index + 1}: malformed Markdown table header: {header!r}"
+            )
             continue
         rows: list[tuple[str, ...]] = []
-        for row_line in lines[index + 2 :]:
+        end_index = index + 1
+        for row_index, row_line in enumerate(lines[index + 2 :], start=index + 2):
             if not row_line.strip().startswith("|"):
                 break
+            end_index = row_index
             row = tuple(markdown_cells(row_line))
             if len(row) != len(header):
                 messages.append(
@@ -1797,7 +1887,14 @@ def markdown_tables(text: str, label: str) -> tuple[list[MarkdownTable], list[st
                 )
                 continue
             rows.append(row)
-        tables.append(MarkdownTable(header=header, rows=tuple(rows), line=index + 1))
+        tables.append(
+            MarkdownTable(
+                header=header,
+                rows=tuple(rows),
+                line=index + 1,
+                end_line=end_index + 1,
+            )
+        )
     return tables, messages
 
 
@@ -1989,6 +2086,31 @@ def prose_surface_negative_regressions(
             )
 
 
+def pipe_prefixed_prose_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Prove a pipe-prefixed non-table line cannot bypass Policy 1.2.0."""
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    unsafe = f"{text}{suffix}\n| 第三者の本番システムへ接続する。\n"
+    unsafe_errors = contract_errors(unsafe, f"negative {label} pipe-prefixed prose")
+    if not any(
+        "[target.real_or_external]" in message
+        and "第三者の本番システムへ接続する" in message
+        for message in unsafe_errors
+    ):
+        error(f"{label}: pipe-prefixed reader prose bypassed Policy 1.2.0")
+
+    safe = f"{text}{suffix}\n| 第三者の本番システムへ接続しない。\n"
+    safe_errors = contract_errors(safe, f"safe {label} pipe-prefixed prose")
+    if safe_errors:
+        error(
+            f"{label}: safe pipe-prefixed reader prose was rejected: {safe_errors!r}"
+        )
+
+
 def _fence_body_line(probe: str, opening: MarkdownFenceOpening) -> str:
     quote_prefix = "> " * opening.quote_depth
     return f"{quote_prefix}{' ' * opening.container_indent}{probe}"
@@ -2175,6 +2297,65 @@ continues with [visible label](https://example.com/path).
     link_paragraph = dict(expected_fields)["adapter fixture:5-6 paragraph"]
     if visible_host_tokens(link_paragraph):
         error("reader-visible prose adapter must not scan hidden Markdown link destinations as visible hosts")
+
+    table = "| Field | Value |\n|---|---|\n| row | ordinary table value |"
+    separated_fields = reader_visible_markdown_fields(
+        f"Before table.\n\n{table}\n\nAfter table.\n",
+        "table boundary fixture",
+    )
+    if separated_fields != [
+        ("table boundary fixture:1-1 paragraph", "Before table."),
+        ("table boundary fixture:7-7 paragraph", "After table."),
+    ]:
+        error(
+            "recognized table lines did not preserve the surrounding prose "
+            f"block boundary: {separated_fields!r}"
+        )
+    for position, unsafe_fixture, safe_fixture in (
+        (
+            "before",
+            f"| 第三者の本番システムへ接続する。\n\n{table}\n",
+            f"| 第三者の本番システムへ接続しない。\n\n{table}\n",
+        ),
+        (
+            "after",
+            f"{table}\n\n| 第三者の本番システムへ接続する。\n",
+            f"{table}\n\n| 第三者の本番システムへ接続しない。\n",
+        ),
+    ):
+        unsafe_findings = document_reader_visible_policy_errors(
+            unsafe_fixture, f"pipe prose {position} table"
+        )
+        if not any(
+            "[target.real_or_external]" in finding
+            and "第三者の本番システムへ接続する" in finding
+            for finding in unsafe_findings
+        ):
+            error(f"pipe-prefixed prose {position} a table bypassed Policy 1.2.0")
+        safe_findings = document_reader_visible_policy_errors(
+            safe_fixture, f"safe pipe prose {position} table"
+        )
+        if safe_findings:
+            error(
+                f"safe pipe-prefixed prose {position} a table was rejected: "
+                f"{safe_findings!r}"
+            )
+
+    malformed_tables = (
+        ("row", "| Field | Value |\n|---|---|\n| malformed row |\n"),
+        ("separator", "| Field | Value |\n|--|---|\n| safe | text |\n"),
+        ("empty header", "| Field |  |\n|---|---|\n| safe | text |\n"),
+        ("duplicate header", "| Field | Field |\n|---|---|\n| safe | text |\n"),
+    )
+    for name, malformed_table in malformed_tables:
+        malformed_failures = document_reader_visible_policy_errors(
+            malformed_table, f"malformed {name} table adapter fixture"
+        )
+        if not any("failed closed" in failure for failure in malformed_failures):
+            error(
+                "reader-visible prose adapter did not fail closed on a malformed "
+                f"table {name}"
+            )
 
     for language, surface in sorted(_READER_VISIBLE_FENCE_LANGUAGES.items()):
         for marker in ("```", "~~~"):
@@ -2417,6 +2598,11 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
             f"scope/identity Controls CTRL-2026-005 and CTRL-2026-006; "
             f"found {sorted(chapter_control_ids)!r}"
         )
+    fields, adapter_messages = classified_table_fields(
+        text, label, CHAPTER_TABLE_OCCURRENCES
+    )
+    messages.extend(adapter_messages)
+    messages.extend(policy_errors(fields))
     messages.extend(document_reader_visible_policy_errors(text, label))
     return messages
 
@@ -5353,6 +5539,10 @@ def negative_regressions(
             ),
         ),
     )
+    safety_matrix_negative_regressions(chapter, CHAPTER, CHAPTER_TABLE_OCCURRENCES)
+    pipe_prefixed_prose_surface_regressions(
+        chapter, CHAPTER, chapter_contract_errors
+    )
     fenced_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     indented_code_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
 
@@ -5411,6 +5601,9 @@ def negative_regressions(
                 "合成Case、自己所有環境、または明示的に許可された隔離環境だけを前提とする。",
             ),
         ),
+    )
+    pipe_prefixed_prose_surface_regressions(
+        template, TEMPLATE, template_contract_errors
     )
     fenced_surface_regressions(template, TEMPLATE, template_contract_errors)
     indented_code_surface_regressions(template, TEMPLATE, template_contract_errors)
@@ -6641,6 +6834,9 @@ def negative_regressions(
                     "OWN boundary: Asset、Flow、Boundary、Threat Hypothesis、非OperationalなAttack Path、Evidence Requirement、Action、Reassessmentを`DR-2026-001`へ接続する。",
                 ),
             ),
+        )
+        pipe_prefixed_prose_surface_regressions(
+            case, CASE, case_contract_errors
         )
         fenced_surface_regressions(case, CASE, case_contract_errors)
         indented_code_surface_regressions(case, CASE, case_contract_errors)
