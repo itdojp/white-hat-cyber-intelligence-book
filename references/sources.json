@@ -135,17 +135,61 @@
       "version": "2.0",
       "url": "https://www.nist.gov/cyberframework",
       "publishedAt": "2024-02-26",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2027-07-25",
+      "checkedAt": "2026-08-08",
+      "nextReviewAt": "2026-11-08",
       "reviewTriggers": [
-        "NIST framework revision"
+        "NIST CSF revision or errata",
+        "NIST CSF 2.0 resource-center or outcome-taxonomy change used by Chapter 4"
       ],
       "chapters": [
         1,
+        4,
         19,
         22
       ],
-      "notes": ""
+      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。"
+    },
+    {
+      "id": "SRC-NIST-RISK-001",
+      "publisher": "NIST",
+      "title": "Guide for Conducting Risk Assessments",
+      "kind": "standard",
+      "status": "final",
+      "version": "SP 800-30 Rev.1",
+      "url": "https://csrc.nist.gov/pubs/sp/800/30/r1/final",
+      "publishedAt": "2012-09-17",
+      "checkedAt": "2026-08-08",
+      "nextReviewAt": "2026-11-08",
+      "reviewTriggers": [
+        "NIST SP 800-30 revision, withdrawal, successor, or errata",
+        "NIST Risk Management publications index status change",
+        "Change to a threat source, threat event, vulnerability, predisposing condition, likelihood, impact, or uncertainty concept used by Chapter 4"
+      ],
+      "chapters": [
+        4
+      ],
+      "notes": "2026-08-08に公式final publication pageとNIST Risk Management publications indexを意味確認した。確認した公式範囲ではRev.1はFinalとして掲載され、後継版または専用errataは確認できなかった。第4章ではRisk assessmentの準備・維持、Threat source/event、Vulnerability/Predisposing condition、Likelihood、Impact、Uncertainty、Decision handoffの限定概念だけに用いる。Federal向けProcessを普遍的必須手順とせず、数値Risk scoreをThreat Modelの完了条件にしない。"
+    },
+    {
+      "id": "SRC-OWASP-TM-001",
+      "publisher": "OWASP Foundation",
+      "title": "OWASP Threat Modeling Project",
+      "kind": "guidance",
+      "status": "maintained-project-guidance",
+      "version": null,
+      "url": "https://owasp.org/www-project-threat-modeling/",
+      "publishedAt": null,
+      "checkedAt": "2026-08-08",
+      "nextReviewAt": "2026-11-08",
+      "reviewTriggers": [
+        "OWASP project status or methodology-neutral guidance change",
+        "OWASP Threat Modeling Project resource, tool, or historical-material classification change",
+        "Project URL relocation or retirement"
+      ],
+      "chapters": [
+        4
+      ],
+      "notes": "2026-08-08に公式Project pageを意味確認し、Maintained Project Guidanceであることと単一の公式OWASP Threat Modeling methodologyを定義しないことを確認した。第4章では方法論中立の補助参照としてのみ用いる。STRIDE、Diagram、Toolまたは生成件数はThreat Modelの完全性、Control有効性または評価品質の証明ではない。"
     },
     {
       "id": "SRC-IR-001",

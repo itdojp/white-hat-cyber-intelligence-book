@@ -46,7 +46,6 @@ PAGES: tuple[Page, ...] = (
     Page("figure-index.md", "figure-index/index.md", "additional", 120),
     Page("templates/learning-route-plan.md", "templates/learning-route-plan/index.md", "additional", 130),
     Page("templates/rules-of-engagement.md", "templates/rules-of-engagement/index.md", "additional", 140),
-    Page("templates/threat-model.md", "templates/threat-model/index.md", "additional", 150),
     Page("templates/finding-report.md", "templates/finding-report/index.md", "additional", 160),
     Page("templates/detection-validation.md", "templates/detection-validation/index.md", "additional", 170),
     Page("templates/hunt-report.md", "templates/hunt-report/index.md", "additional", 180),

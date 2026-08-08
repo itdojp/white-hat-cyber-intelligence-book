@@ -17,6 +17,12 @@
 | F-03-01 | Capability Evidence Trace | `manuscript/03-capability-evidence.md` | Implemented |
 | T-03-01 | Evidenceの四分類 | `manuscript/03-capability-evidence.md` | Implemented |
 | T-03-02 | 本書固有の学習進行 | `manuscript/03-capability-evidence.md` | Implemented |
+| F-04-01 | Decision RequirementからEvidence / ReassessmentまでのTrace | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| F-04-02 | Data / Identity / Control FlowとTrust Boundary | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| T-04-01 | Asset taxonomy | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| T-04-02 | Threat / Vulnerability / Findingの区別 | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| T-04-03 | Control assurance state | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| T-04-04 | Knowledge state、Hypothesis status、Model statusの区別 | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
 | F-11-01 | DecisionからDetectionまでの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | F-11-02 | Request・Evidence・Telemetry・Decisionの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | T-11-01 | ChecklistとHypothesis Packの違い | `manuscript/11-web-api-hypothesis.md` | Implemented |
