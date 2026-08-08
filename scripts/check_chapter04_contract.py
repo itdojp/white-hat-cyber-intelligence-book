@@ -19,7 +19,10 @@ if str(ROOT) not in sys.path:
 from scripts.content_safety_policy import (  # noqa: E402
     POLICY_VERSION as CONTENT_SAFETY_POLICY_VERSION,
     SafetyFinding,
+    normalize_visible_text,
+    scan_action_text,
     scan_fields,
+    scan_host_policy,
 )
 from scripts.render_reference_baseline import render as render_reference_baseline  # noqa: E402
 from scripts.sync_book_site import SitePageRegistryError, parse_registry_data  # noqa: E402
@@ -124,7 +127,7 @@ EXPECTED_HANDOFF_ROWS = {
     "HO-TM-2026-009": (
         "第9章 RoE",
         "Rules of Engagement",
-        "`AUTH-CASE-2026-001`継承条件、`ACT-TM-2026-001` / `ACT-TM-2026-006`の再Authorization依存、停止条件、no outbound、対象外一覧",
+        "`AUTH-CASE-2026-001`継承条件、`ACT-TM-2026-001` / `ACT-TM-2026-002` / `ACT-TM-2026-003` / `ACT-TM-2026-006`の再Authorization依存、停止条件、no outbound、対象外一覧",
     ),
     "HO-TM-2026-011": (
         "第11章 Web/API評価",
@@ -844,6 +847,262 @@ def policy_errors(fields: list[tuple[str, str]]) -> list[str]:
     return [format_finding(finding) for finding in scan_fields(fields)]
 
 
+_MARKDOWN_LIST_ITEM = re.compile(r"^\s*(?:[-+*]|\d+[.)])\s+(?P<body>.*)$")
+_MARKDOWN_HEADING = re.compile(r"^#{1,6}\s+")
+_MARKDOWN_FENCE = re.compile(r"^\s*(?P<marker>`{3,}|~{3,})")
+_MARKDOWN_REFERENCE_DEFINITION = re.compile(r"^\s*\[[^]]+\]:\s*")
+_MARKDOWN_AUTOLINK_URL = re.compile(
+    r"<(?P<url>(?:(?:https?):)?//[^<>\s]+)>",
+    re.IGNORECASE,
+)
+_VISIBLE_URL_TOKEN = re.compile(r"(?:(?:https?):)?//[^\s<>'\"\])}]+", re.IGNORECASE)
+_VISIBLE_ASCII_DOMAIN_TOKEN = re.compile(
+    r"(?<![A-Za-z0-9-])"
+    r"(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+"
+    r"(?:[A-Za-z]{2,63}|xn--[A-Za-z0-9-]{1,59})"
+    r"(?![A-Za-z0-9-])",
+    re.IGNORECASE,
+)
+_VISIBLE_IP_TOKEN = re.compile(
+    r"(?<![A-Za-z0-9_.:])(?:"
+    r"\[(?:[0-9A-Fa-f:.]+)\](?::\d+)?|"
+    r"(?:\d{1,3}\.){3}\d{1,3}(?::\d+)?|"
+    r"[0-9A-Fa-f]{0,4}:[0-9A-Fa-f:.]+"
+    r")(?![A-Za-z0-9_.:])"
+)
+_VISIBLE_IDN_COARSE_TOKEN = re.compile(r"[^\s`<>\"'()\[\]{}、。！？,;]+")
+_VISIBLE_IDN_TRAILING_JAPANESE = re.compile(
+    r"(?:です|である|でした|を|は|が|に|へ|と|から|まで|のみ|だけ)+$"
+)
+_VISIBLE_IDN_LEADING_JAPANESE = re.compile(
+    r"^.*(?:は|が|を|に|へ|で|と|:|：)(?=[^.]+\.)"
+)
+_VISIBLE_IDN_HOST = re.compile(r"(?:[\w-]+\.)+[\w-]+", re.UNICODE)
+_VISIBLE_DOTTED_VERSION = re.compile(
+    r"v?\d+\.\d+\.\d+(?:-[0-9A-Za-z]+(?:\.[0-9A-Za-z-]+)*)?",
+    re.IGNORECASE,
+)
+
+
+def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
+    """Remove non-rendered comments while preserving visible same-line text.
+
+    Comment-only physical lines are omitted so a comment embedded between two
+    wrapped prose lines cannot split the action/object context.  An unclosed
+    comment fails closed instead of hiding the remaining publication surface.
+    """
+
+    visible_lines: list[tuple[int, str]] = []
+    in_comment = False
+    for line_number, line in lines:
+        remainder = line
+        visible_parts: list[str] = []
+        had_comment = in_comment
+        while remainder:
+            if in_comment:
+                close = remainder.find("-->")
+                if close < 0:
+                    remainder = ""
+                    break
+                in_comment = False
+                had_comment = True
+                remainder = remainder[close + 3 :]
+                continue
+            opening = remainder.find("<!--")
+            if opening < 0:
+                visible_parts.append(remainder)
+                remainder = ""
+                break
+            visible_parts.append(remainder[:opening])
+            in_comment = True
+            had_comment = True
+            remainder = remainder[opening + 4 :]
+        visible = "".join(visible_parts)
+        if visible or not had_comment:
+            visible_lines.append((line_number, visible))
+    if in_comment:
+        raise ValueError("unclosed HTML comment hides reader-visible prose")
+    return visible_lines
+
+
+def reader_visible_prose_fields(text: str, label: str) -> list[tuple[str, str]]:
+    """Select ordinary rendered paragraphs and list items outside tables/code.
+
+    Table cells are owned by the finite table manifest.  This adapter owns the
+    remaining ordinary prose/list surface without treating front matter,
+    comments, link destinations, reference definitions, or fenced/indented code
+    as reader instructions.  Wrapped lines remain one field so action/object and
+    negation context is not split at an authoring line break.
+    """
+
+    source_lines = text.splitlines()
+    fields: list[tuple[str, str]] = []
+    index = 0
+    in_front_matter = bool(source_lines and source_lines[0].strip() == "---")
+    if in_front_matter:
+        index = 1
+    fence_marker = ""
+    renderable_lines: list[tuple[int, str]] = []
+
+    while index < len(source_lines):
+        line = source_lines[index]
+        stripped = line.strip()
+        line_number = index + 1
+        if in_front_matter:
+            if stripped == "---":
+                in_front_matter = False
+            index += 1
+            continue
+        fence = _MARKDOWN_FENCE.match(line)
+        if fence:
+            marker = fence.group("marker")
+            if not fence_marker:
+                fence_marker = marker[0]
+            elif marker[0] == fence_marker:
+                fence_marker = ""
+            index += 1
+            continue
+        if fence_marker:
+            index += 1
+            continue
+        renderable_lines.append((line_number, line))
+        index += 1
+    if in_front_matter:
+        raise ValueError("unclosed YAML front matter hides reader-visible prose")
+    if fence_marker:
+        raise ValueError("unclosed Markdown fence hides reader-visible prose")
+
+    lines = _strip_html_comments(renderable_lines)
+    index = 0
+
+    def structural(line: str) -> bool:
+        stripped = line.strip()
+        return bool(
+            not stripped
+            or stripped.startswith("|")
+            or _MARKDOWN_HEADING.match(stripped)
+            or _MARKDOWN_FENCE.match(line)
+            or _MARKDOWN_REFERENCE_DEFINITION.match(line)
+            or stripped in {"---", "***", "___"}
+        )
+
+    while index < len(lines):
+        line_number, line = lines[index]
+        stripped = line.strip()
+        if line.startswith("    ") or line.startswith("\t"):
+            index += 1
+            continue
+        if structural(line):
+            index += 1
+            continue
+
+        list_match = _MARKDOWN_LIST_ITEM.match(line)
+        kind = "list" if list_match else "paragraph"
+        parts = [list_match.group("body").strip() if list_match else stripped]
+        index += 1
+        while index < len(lines):
+            _, continuation = lines[index]
+            if structural(continuation) or _MARKDOWN_LIST_ITEM.match(continuation):
+                break
+            if continuation.startswith("    ") and kind != "list":
+                break
+            parts.append(continuation.strip())
+            index += 1
+        end_line = lines[index - 1][0]
+        rendered = " ".join(part for part in parts if part).strip()
+        if rendered:
+            fields.append((f"{label}:{line_number}-{end_line} {kind}", rendered))
+    return fields
+
+
+def _visible_idn_tokens(text: str) -> set[str]:
+    """Extract bounded visible IDN candidates without scanning dotted prose.
+
+    The shared Policy remains the authority for allow/deny decisions.  This
+    adapter only selects an isolated token, or a token bounded by the finite
+    Japanese topic/case-particle and sentence-ending forms used in reader
+    prose.  It intentionally does not attempt general natural-language host
+    parsing.
+    """
+
+    tokens: set[str] = set()
+    for coarse_match in _VISIBLE_IDN_COARSE_TOKEN.finditer(text):
+        candidate = coarse_match.group(0).rstrip(".:：")
+        if "." not in candidate or not any(ord(character) > 127 for character in candidate):
+            continue
+        if _VISIBLE_ASCII_DOMAIN_TOKEN.search(candidate) or _VISIBLE_IP_TOKEN.search(candidate):
+            continue
+        if any(suffix in candidate.casefold() for suffix in (".example", ".test", ".invalid")):
+            continue
+        candidate = _VISIBLE_IDN_LEADING_JAPANESE.sub("", candidate)
+        candidate = _VISIBLE_IDN_TRAILING_JAPANESE.sub("", candidate)
+        if not candidate or _VISIBLE_DOTTED_VERSION.fullmatch(candidate):
+            continue
+        if not _VISIBLE_IDN_HOST.fullmatch(candidate):
+            continue
+        labels = candidate.split(".")
+        if labels[-1][0].isdigit():
+            continue
+        if ord(labels[-1][0]) < 128 and (
+            len(labels) != 2
+            or not any(ord(character) > 127 for character in labels[0])
+            or any(ord(character) > 127 for character in labels[-1])
+        ):
+            continue
+        tokens.add(candidate)
+    return tokens
+
+
+def visible_host_tokens(text: str) -> tuple[str, ...]:
+    """Return bounded visible URL/domain/IP tokens for the shared host Policy.
+
+    ``normalize_visible_text`` removes Markdown link destinations before this
+    extraction.  Scanning explicit tokens avoids treating dotted prose such as
+    ``SP 800-30 Rev.1`` as a hostname while preserving visible bare hosts,
+    URLs, and documentation/non-documentation address literals.
+    """
+
+    autolinks = {match.group("url") for match in _MARKDOWN_AUTOLINK_URL.finditer(text)}
+    visible = normalize_visible_text(text)
+    tokens = {
+        match.group(0).rstrip(".,;、。")
+        for pattern in (_VISIBLE_URL_TOKEN, _VISIBLE_ASCII_DOMAIN_TOKEN, _VISIBLE_IP_TOKEN)
+        for match in pattern.finditer(visible)
+    }
+    tokens.update(autolinks)
+    tokens.update(_visible_idn_tokens(visible))
+    return tuple(sorted(token for token in tokens if token))
+
+
+def prose_policy_findings(fields: list[tuple[str, str]]) -> list[SafetyFinding]:
+    findings: set[SafetyFinding] = set()
+    for location, value in fields:
+        findings.update(scan_action_text(value, location=location))
+        for token in visible_host_tokens(value):
+            findings.update(scan_host_policy(token, location=location))
+    return sorted(
+        findings,
+        key=lambda finding: (
+            finding.location,
+            finding.category,
+            finding.normalized_excerpt,
+            finding.reason,
+        ),
+    )
+
+
+def prose_policy_errors(fields: list[tuple[str, str]]) -> list[str]:
+    return [format_finding(finding) for finding in prose_policy_findings(fields)]
+
+
+def document_prose_policy_errors(text: str, label: str) -> list[str]:
+    try:
+        fields = reader_visible_prose_fields(text, label)
+        return prose_policy_errors(fields)
+    except (TypeError, ValueError, UnicodeError) as exc:
+        return [f"{label}: reader-visible prose adapter failed closed: {exc}"]
+
+
 def markdown_tables(text: str, label: str) -> tuple[list[MarkdownTable], list[str]]:
     """Parse every Markdown table in document order without guessing its semantics."""
 
@@ -1029,6 +1288,127 @@ def safety_matrix_negative_regressions(
         error(f"{label}: public fields bypassed Policy 1.2.0: {missing!r}")
 
 
+def prose_surface_negative_regressions(
+    text: str,
+    label: str,
+    targets: tuple[tuple[str, str], ...],
+) -> None:
+    """Prove representative paragraph/list locations reach the shared Policy."""
+
+    unsafe = "第三者の本番システムへ接続する。"
+    safe = "第三者の本番システムへ接続しない。"
+    for name, needle in targets:
+        if text.count(needle) != 1:
+            error(f"{label}: prose regression target {name!r} must occur exactly once")
+            continue
+        unsafe_text = text.replace(needle, f"{needle} {unsafe}", 1)
+        unsafe_fields = reader_visible_prose_fields(unsafe_text, f"negative {label} {name}")
+        unsafe_findings = prose_policy_findings(unsafe_fields)
+        if not any(
+            finding.category == "target.real_or_external"
+            and "第三者の本番システムへ接続する" in finding.normalized_excerpt
+            for finding in unsafe_findings
+        ):
+            error(f"{label}: prose/list location bypassed Policy 1.2.0: {name}")
+
+        safe_text = text.replace(needle, f"{needle} {safe}", 1)
+        safe_fields = reader_visible_prose_fields(safe_text, f"safe {label} {name}")
+        safe_findings = prose_policy_findings(safe_fields)
+        if safe_findings:
+            error(
+                f"{label}: safe prose/list counterpart produced findings for {name}: "
+                f"{[format_finding(finding) for finding in safe_findings]!r}"
+            )
+
+
+def prose_adapter_contract_regressions() -> None:
+    fixture = """---
+title: ignored metadata
+---
+# ignored heading
+First paragraph line
+continues with [visible label](https://example.com/path).
+
+- visible list item
+
+| Field | Value |
+|---|---|
+| row | 第三者の本番システムへ接続する |
+
+```text
+第三者の本番システムへ接続する
+```
+<!-- 第三者の本番システムへ接続する -->
+"""
+    expected_fields = [
+        ("adapter fixture:5-6 paragraph", "First paragraph line continues with [visible label](https://example.com/path)."),
+        ("adapter fixture:8-8 list", "visible list item"),
+    ]
+    observed_fields = reader_visible_prose_fields(fixture, "adapter fixture")
+    if observed_fields != expected_fields:
+        error(f"reader-visible prose adapter selection drift: {observed_fields!r} != {expected_fields!r}")
+    if visible_host_tokens(expected_fields[0][1]):
+        error("reader-visible prose adapter must not scan hidden Markdown link destinations as visible hosts")
+    host_probes = {
+        "SP 800-30 Rev.1を参照する": (),
+        "billing-bridge.exampleへ接続しない": ("billing-bridge.example",),
+        "example.comへ接続しない": ("example.com",),
+        "192.0.2.10を記録する": ("192.0.2.10",),
+        "<https://example.com/path>": ("https://example.com/path",),
+        "接続先は例え.localhostです": ("例え.localhost",),
+        "URL: https://例え.example/path": ("https://例え.example/path",),
+    }
+    for sample, expected in host_probes.items():
+        observed = visible_host_tokens(sample)
+        if observed != expected:
+            error(f"visible host-token extraction drift for {sample!r}: {observed!r} != {expected!r}")
+
+    comment_unsafe = (
+        "説明 <!-- hidden --> 第三者の本番システムへ接続する",
+        "第三者の本番システムへ接続する <!-- hidden -->",
+        "<!-- hidden --> 第三者の本番システムへ接続する",
+        "第三者の本番<!-- hidden\n-->システムへ接続する",
+    )
+    for sample in comment_unsafe:
+        findings = document_prose_policy_errors(sample, "inline-comment fixture")
+        if not any("[target.real_or_external]" in finding for finding in findings):
+            error(f"reader-visible prose adapter hid unsafe text beside an HTML comment: {sample!r}")
+    if document_prose_policy_errors(
+        "説明 <!-- hidden --> 第三者の本番システムへ接続しない",
+        "safe inline-comment fixture",
+    ):
+        error("reader-visible prose adapter rejected a locally prohibited action beside an HTML comment")
+
+    unsafe_host_samples = (
+        "<https://example.com/path>",
+        "接続先は例え.localhostです",
+    )
+    for sample in unsafe_host_samples:
+        findings = prose_policy_findings([("visible-host fixture", sample)])
+        if not any(finding.category == "network.host_or_address" for finding in findings):
+            error(f"reader-visible prose adapter accepted a non-approved visible host: {sample!r}")
+    safe_host_samples = (
+        "<https://lab.example/path>",
+        "URL: https://例え.example/path",
+    )
+    for sample in safe_host_samples:
+        findings = prose_policy_findings([("safe visible-host fixture", sample)])
+        if findings:
+            error(
+                f"reader-visible prose adapter rejected an approved visible host: {sample!r}: "
+                f"{[format_finding(finding) for finding in findings]!r}"
+            )
+    malformed = (
+        "---\ntitle: unclosed",
+        "```text\nhidden remainder",
+        "<!-- hidden remainder",
+    )
+    for sample in malformed:
+        failures = document_prose_policy_errors(sample, "malformed prose fixture")
+        if not any("failed closed" in failure for failure in failures):
+            error(f"reader-visible prose adapter accepted malformed Markdown boundary: {sample!r}")
+
+
 def chapter_contract_errors(text: str, label: str) -> list[str]:
     messages: list[str] = []
     messages.extend(require_order(label, text, EXPECTED_HEADINGS))
@@ -1110,13 +1490,7 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
     exercise = section(text, "## 安全な演習")
     if not exercise:
         messages.append(f"{label}: missing bounded safe exercise section")
-    else:
-        fields = [
-            (f"{label} safe exercise line {number}", line)
-            for number, line in enumerate(exercise.splitlines(), start=1)
-            if re.match(r"\s*(?:[-*]|\d+\.)\s+", line)
-        ]
-        messages.extend(policy_errors(fields))
+    messages.extend(document_prose_policy_errors(text, label))
     return messages
 
 
@@ -1221,6 +1595,7 @@ def template_contract_errors(text: str, label: str) -> list[str]:
             f"{label}: Decision Context fields/order {decision_fields!r} != {DECISION_CONTEXT_FIELDS!r}"
         )
     messages.extend(policy_errors(fields))
+    messages.extend(document_prose_policy_errors(text, label))
     return messages
 
 
@@ -1753,12 +2128,24 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "action": ("必要最小scope案", "実設定変更", "新Authorization Record / RoE承認後の別工程"),
             "success": ("最小scope案", "新Authorization Record / RoE申請ticket", "実設定変更なし"),
         },
+        "ACT-TM-2026-002": {
+            "action": ("合成Rule test計画", "新Authorization Record / RoE承認後にのみ行う"),
+            "success": ("Rule test計画", "新Authorization Record", "RoE", "Detection test結果"),
+        },
+        "ACT-TM-2026-003": {
+            "action": (
+                "Field contract",
+                "合成sample summary",
+                "新Authorization Record / change approval後の別工程",
+            ),
+            "success": ("Field contract", "合成sample summary", "change proposal", "Production変更なし"),
+        },
         "ACT-TM-2026-004": {
-            "action": ("Boundary owner", "scope matrix", "機械的突合"),
-            "success": ("scope matrix", "機械的突合結果", "承認runbook"),
+            "action": ("Boundary owner", "scope matrix", "既存Snapshot", "offline機械的突合", "live Tenantへ接続しない"),
+            "success": ("scope matrix", "offline機械的突合結果", "承認runbook"),
         },
         "ACT-TM-2026-005": {
-            "action": ("90日Coverage", "retention証跡", "deny条件"),
+            "action": ("query申請template", "90日Coverage", "retention証跡", "deny条件", "文書化"),
             "success": ("Coverage表", "retention record", "deny例"),
         },
         "ACT-TM-2026-006": {
@@ -1808,6 +2195,31 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in case_tables.get(evidence_requirement_header, [])
         if len(row) == len(evidence_requirement_header)
     }
+    rule_test_requirement = evidence_rows_by_id.get("EREQ-2026-002")
+    if rule_test_requirement is None:
+        messages.append(f"{label}: missing Rule-test Evidence Requirement EREQ-2026-002")
+    else:
+        rule_test_forbidden = rule_test_requirement[
+            evidence_requirement_header.index("Forbidden / over-collection boundary")
+        ]
+        for marker in (
+            "無害化summaryを超える追加Data exportを要求しない",
+            "新Authorization Record / RoE承認前にRule testを再実施しない",
+        ):
+            if marker not in rule_test_forbidden:
+                messages.append(f"{label}: EREQ-2026-002 safety boundary missing {marker!r}")
+        rule_test_resulting = rule_test_requirement[
+            evidence_requirement_header.index("Resulting Evidence IDs")
+        ]
+        for marker in (
+            "EVD-2026-003",
+            "EVD-AUTH-2026-001",
+            "Rule test結果は未収集",
+            "承認後に新Evidence IDを割り当てる",
+        ):
+            if marker not in rule_test_resulting:
+                messages.append(f"{label}: EREQ-2026-002 Resulting Evidence IDs missing {marker!r}")
+
     lab_requirement = evidence_rows_by_id.get("EREQ-2026-004")
     if lab_requirement is None:
         messages.append(f"{label}: missing lab-safety Evidence Requirement EREQ-2026-004")
@@ -1838,6 +2250,25 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "Inputs required": ("新Authorization Record / RoE",),
             "Closure criteria": ("新Authorization Record / RoE承認後にのみ変更",),
         },
+        "REA-TM-2026-002": {
+            "Inputs required": (
+                "Rule test計画",
+                "新Authorization Record / RoE",
+                "Detection test結果",
+                "query version",
+                "Field contract",
+                "合成sample summary",
+                "change proposal",
+                "Telemetry Field change approval",
+            ),
+            "Closure criteria": (
+                "新Authorization Record / RoE承認後にのみ合成Rule testを再実施",
+                "Detection test結果に新Evidence IDを割り当てる",
+                "収集設定変更はchange approval後",
+                "CTRL-2026-003",
+                "Validated",
+            ),
+        },
         "REA-TM-2026-004": {
             "Scope": ("CTRL-2026-004", "GAP-2026-004", "EREQ-2026-004"),
             "Inputs required": ("新Authorization Record", "RoE", "preflight report", "default-deny結果", "Cleanup verification"),
@@ -1855,9 +2286,26 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 if marker not in value:
                     messages.append(f"{label}: {reassessment_id} {field} missing {marker!r}")
 
-    reauthorization_marker = "合成TenantであってもApp permission、consent、Identity bindingなどの設定変更を行う場合。"
-    if reauthorization_marker not in text:
-        messages.append(f"{label}: missing synthetic configuration-change reauthorization gate")
+    reauthorization_markers = (
+        "合成TenantであってもApp permission、consent、Identity bindingなどの設定変更を行う場合。",
+        "RoEのmethod / time windowを越えて合成Rule testを再実施する場合。",
+        "Telemetryの収集設定またはProduction Pipelineを変更する場合。",
+    )
+    for marker in reauthorization_markers:
+        if marker not in text:
+            messages.append(f"{label}: missing reauthorization gate {marker!r}")
+
+    expected_traceability_assertions = (
+        f"- [x] {len(EXPECTED_CASE_IDS['EREQ'])}つのEvidence Requirementがある",
+        f"- [x] {len(EXPECTED_CASE_IDS['ASM'])}つのAssumptionと"
+        f"{len(EXPECTED_CASE_IDS['GAP'])}つのGapがある",
+    )
+    for assertion in expected_traceability_assertions:
+        if text.count(assertion) != 1:
+            messages.append(
+                f"{label}: traceability assertion must occur exactly once and derive from finite ID sets: "
+                f"{assertion!r}"
+            )
 
     definition_contracts: tuple[tuple[str, list[list[str]], int, bool], ...] = (
         ("ASSET", parsed.get(asset_header, []), 0, True),
@@ -1956,12 +2404,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
 
     fields, adapter_messages = classified_table_fields(text, label, CASE_TABLE_OCCURRENCES)
     messages.extend(adapter_messages)
-    fields.extend(
-        (f"{label} Limitation line {number}", line)
-        for number, line in enumerate(section(text, "### Limitations", 3).splitlines(), start=1)
-        if re.match(r"\s*[-*]\s+", line)
-    )
     messages.extend(policy_errors(fields))
+    messages.extend(document_prose_policy_errors(text, label))
     return messages
 
 
@@ -2120,6 +2564,7 @@ def negative_regressions(
     sources: dict,
     note: str,
 ) -> None:
+    prose_adapter_contract_regressions()
     chapter_mutations = (
         ("missing OWN", chapter.replace("### OWN", "### OWNERSHIP", 1)),
         ("inventory conflation", chapter.replace("Componentを列挙するだけでは", "ComponentはBusiness Assetなので列挙すれば", 1)),
@@ -2140,6 +2585,16 @@ def negative_regressions(
     for name, mutation in chapter_mutations:
         if not chapter_contract_errors(mutation, f"negative chapter {name}"):
             error(f"negative regression accepted Chapter 4 mutation: {name}")
+    prose_surface_negative_regressions(
+        chapter,
+        CHAPTER,
+        (
+            (
+                "ordinary chapter prose",
+                "Threat Modelは、図を描く作業ではなく、判断要求をレビュー可能な記録へ変換する作業である。",
+            ),
+        ),
+    )
 
     template_mutations = (
         ("model status", template.replace("Draft / In Review / Approved for Assessment / Needs Evidence / Superseded", "Draft / Complete", 1)),
@@ -2183,6 +2638,16 @@ def negative_regressions(
         if not template_contract_errors(mutation, f"negative template {name}"):
             error(f"negative regression accepted ART-03 mutation: {name}")
     safety_matrix_negative_regressions(template, TEMPLATE, TEMPLATE_TABLE_OCCURRENCES)
+    prose_surface_negative_regressions(
+        template,
+        TEMPLATE,
+        (
+            (
+                "usage-condition list item",
+                "合成Case、自己所有環境、または明示的に許可された隔離環境だけを前提とする。",
+            ),
+        ),
+    )
 
     unsafe_samples = (
         "第三者の本番システムへ接続する",
@@ -2373,6 +2838,54 @@ def negative_regressions(
                 ),
             ),
             (
+                "ACT-TM-2026-002 bypasses renewed Authorization and RoE",
+                case.replace(
+                    "Admin consent change Eventの合成Rule test計画を第17章の形式で更新する。Rule testの再実施は新Authorization Record / RoE承認後にのみ行う",
+                    "Admin consent change Eventの合成Rule testを第17章の形式で再実施する",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-002 permits pre-authorization Rule test",
+                case.replace(
+                    "無害化summaryを超える追加Data exportを要求しない。新Authorization Record / RoE承認前にRule testを再実施しない。",
+                    "無害化summaryを超える追加Data exportを要求しない。",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-003 bypasses change authorization",
+                case.replace(
+                    "API利用Telemetryのresource / operation Field contractと合成sample summaryを作成する。収集設定またはProduction Pipelineの変更は新Authorization Record / change approval後の別工程とする",
+                    "API利用Telemetryにresource / operation粒度を追加する",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-002 omits uncollected Rule-test result handoff",
+                case.replace(
+                    "`EVD-2026-003`, `EVD-AUTH-2026-001`; Rule test結果は未収集（承認後に新Evidence IDを割り当てる）",
+                    "`EVD-2026-003`, `EVD-AUTH-2026-001`",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 omits Action result inputs",
+                case.replace(
+                    "Audit export、Rule test計画、新Authorization Record / RoE、Detection test結果、query version、coverage表、retention note、Field contract、合成sample summary、change proposal、Telemetry Field change approval",
+                    "Audit export、Rule test計画、新Authorization Record / RoE、coverage表、retention note、Telemetry Field change approval",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 omits renewed authorization gate",
+                case.replace(
+                    "新Authorization Record / RoE承認後にのみ合成Rule testを再実施し、Detection test結果に新Evidence IDを割り当てる。収集設定変更はchange approval後に行う。`CTRL-2026-003`がValidated、Gap ownerと期限が更新済み",
+                    "`CTRL-2026-003`がValidated、Gap ownerと期限が更新済み",
+                    1,
+                ),
+            ),
+            (
                 "CTRL-2026-004 orphaned from lab-safety Gap",
                 case.replace(
                     "| `GAP-2026-004` | AUTH条件、Lab boundaryまたは実施Evidence変更 |",
@@ -2397,6 +2910,22 @@ def negative_regressions(
                 ),
             ),
             (
+                "Rule test reauthorization gate omitted",
+                case.replace(
+                    "- RoEのmethod / time windowを越えて合成Rule testを再実施する場合。\n",
+                    "",
+                    1,
+                ),
+            ),
+            (
+                "Telemetry change reauthorization gate omitted",
+                case.replace(
+                    "- Telemetryの収集設定またはProduction Pipelineを変更する場合。\n",
+                    "",
+                    1,
+                ),
+            ),
+            (
                 "Action source type drift",
                 case.replace(
                     "| `ACT-TM-2026-004` | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` |",
@@ -2415,8 +2944,8 @@ def negative_regressions(
             (
                 "ACT-TM-2026-004 does not remediate its Gap",
                 case.replace(
-                    "合成Tenant bindingのBoundary owner、停止条件、fallback判断をscope matrixへ構造化し、実設定との機械的突合対象に追加する",
-                    "合成Tenant bindingのBoundary owner、停止条件、fallback判断をBusiness runbookへ明文化する",
+                    "合成Tenant bindingのBoundary owner、停止条件、fallback判断をscope matrixへ構造化し、承認済みの既存Snapshotとのoffline機械的突合対象に追加する。live Tenantへ接続しない",
+                    "合成Tenant bindingのBoundary owner、停止条件、fallback判断をscope matrixへ構造化し、live Tenantへ接続して機械的突合する",
                     1,
                 ),
             ),
@@ -2476,6 +3005,22 @@ def negative_regressions(
                     1,
                 ),
             ),
+            (
+                "Evidence Requirement traceability count drift",
+                case.replace(
+                    "- [x] 4つのEvidence Requirementがある",
+                    "- [x] 3つのEvidence Requirementがある",
+                    1,
+                ),
+            ),
+            (
+                "Assumption and Gap traceability count drift",
+                case.replace(
+                    "- [x] 3つのAssumptionと4つのGapがある",
+                    "- [x] 3つのAssumptionと3つのGapがある",
+                    1,
+                ),
+            ),
         )
         for name, mutation in case_mutations:
             if mutation == case:
@@ -2483,6 +3028,16 @@ def negative_regressions(
             elif not case_contract_errors(mutation, f"negative Case {name}"):
                 error(f"negative regression accepted Chapter 4 Case mutation: {name}")
         safety_matrix_negative_regressions(case, CASE, CASE_TABLE_OCCURRENCES)
+        prose_surface_negative_regressions(
+            case,
+            CASE,
+            (
+                (
+                    "Decision-note list item",
+                    "OWN boundary: Asset、Flow、Boundary、Threat Hypothesis、非OperationalなAttack Path、Evidence Requirement、Action、Reassessmentを`DR-2026-001`へ接続する。",
+                ),
+            ),
+        )
 
     source_mutation = deepcopy(sources)
     source_entry = next(
