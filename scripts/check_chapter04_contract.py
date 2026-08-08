@@ -542,9 +542,9 @@ def template_contract_errors(text: str, label: str) -> list[str]:
         (template_flow_header, ("Purpose", "Protocol class", "Identity / authorization context", "Observation point")),
         (("Boundary ID", "Boundary type", "From / To", "Owner(s)", "Trust / authority change", "Crossing condition", "Control", "Failure consequence", "Knowledge state", "Evidence IDs"), ("Trust / authority change", "Crossing condition", "Control", "Failure consequence")),
         (("Exposure ID", "Related Asset / Boundary / Flow IDs", "Entry Point ID", "Reachability class", "External dependency", "Required authority", "Verification status", "Evidence ID", "Gap ID"), ("Reachability class", "External dependency", "Required authority")),
-        (("Hypothesis ID", "Decision Requirement ID", "Related Asset IDs", "Boundary / Flow / Exposure IDs", "Statement", "Preconditions", "Expected impact", "Evidence needed", "Alternative explanation", "Priority", "Hypothesis status"), ("Statement", "Preconditions", "Expected impact", "Alternative explanation")),
+        (("Hypothesis ID", "Decision Requirement ID", "Related Asset IDs", "Boundary / Flow / Exposure IDs", "Statement", "Preconditions", "Expected impact", "Evidence needed", "Alternative explanation", "Priority", "Hypothesis status"), ("Statement", "Preconditions", "Expected impact", "Evidence needed", "Alternative explanation")),
         (("Misuse Case ID", "Goal", "Actor capability class", "Preconditions", "Affected assets", "Boundary crossed", "Expected outcome", "Observation points", "Excluded operational detail"), ("Goal", "Actor capability class", "Preconditions", "Expected outcome", "Observation points", "Excluded operational detail")),
-        (("Attack Path ID", "Edge ID", "From Asset / State", "Condition", "Boundary ID", "To Asset / State", "Affected Asset IDs", "Expected impact", "Observation point", "Required Evidence ID", "Knowledge state"), ("Condition", "Expected impact", "Observation point")),
+        (("Attack Path ID", "Edge ID", "From Asset / State", "Condition", "Boundary ID", "To Asset / State", "Affected Asset IDs", "Expected impact", "Observation point", "Required Evidence ID", "Knowledge state"), ("From Asset / State", "Condition", "To Asset / State", "Expected impact", "Observation point")),
         (("Control ID", "Related Asset / Boundary / Threat / Path IDs", "Control statement", "Owner", "Assurance state", "Evidence IDs", "Limitation", "Gap ID", "Reassessment trigger"), ("Control statement", "Limitation", "Reassessment trigger")),
         (("Assumption ID", "Statement", "Owner", "Validation method", "Due date", "Status", "Related IDs"), ("Statement", "Validation method")),
         (GAP_HEADER, ("Missing information / control / telemetry", "Decision affected")),
@@ -1199,6 +1199,30 @@ def negative_regressions(chapter: str, template: str, case: str, raw_registry: d
         (
             "Collected Evidence status",
             template.replace("| Synthetic / Authorized isolated / Inherited | Planned |", "| Synthetic / Authorized isolated / Inherited | Confirmed |", 1),
+        ),
+        (
+            "Threat Hypothesis Evidence needed unsafe external action",
+            template.replace(
+                "|  |  | `EREQ-YYYY-NNN` |  | High / Medium / Low |",
+                "|  |  | `EREQ-YYYY-NNN`。第三者の本番システムへ接続する |  | High / Medium / Low |",
+                1,
+            ),
+        ),
+        (
+            "Attack Path From Asset State unsafe external action",
+            template.replace(
+                "| `PATH-YYYY-NNN` | `EDGE-YYYY-NNN` | `ASSET-YYYY-NNN` / state |  |",
+                "| `PATH-YYYY-NNN` | `EDGE-YYYY-NNN` | `ASSET-YYYY-NNN` / 第三者の本番システムへ接続する |  |",
+                1,
+            ),
+        ),
+        (
+            "Attack Path To Asset State unsafe external action",
+            template.replace(
+                "| `TB-YYYY-NNN` | `ASSET-YYYY-NNN` / state | `ASSET-YYYY-NNN` |",
+                "| `TB-YYYY-NNN` | `ASSET-YYYY-NNN` / 第三者の本番システムへ接続する | `ASSET-YYYY-NNN` |",
+                1,
+            ),
         ),
     )
     for name, mutation in template_mutations:
