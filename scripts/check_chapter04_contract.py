@@ -1251,6 +1251,20 @@ _MARKDOWN_AUTOLINK_URL = re.compile(
     r"<(?P<url>(?:(?:https?):)?//[^<>\s]+)>",
     re.IGNORECASE,
 )
+# Chapter 4 deliberately rejects interpreted raw HTML instead of attempting a
+# second, partial HTML attribute parser.  Comments are removed before this
+# check, rendered fenced/indented code is selected as literal source, and
+# finite same-line code spans are masked.  Autolinks do not match because a
+# tag name must end at whitespace, ``/``, ``>``, or end-of-line.
+_RAW_HTML_TAG_OPENING = re.compile(
+    r"<\/?[A-Za-z][A-Za-z0-9-]*(?=[\t >]|/(?=[\t ]*>)|$)"
+    r"|<\?(?=\S)|<!\[(?:CDATA)\[|<![A-Z]",
+    re.IGNORECASE,
+)
+_HTML_ANGLE_ENTITY = re.compile(
+    r"&(?:lt|gt|#0*(?:60|62)|#x0*(?:3c|3e));",
+    re.IGNORECASE,
+)
 _VISIBLE_URL_TOKEN = re.compile(r"(?:(?:https?):)?//[^\s<>'\"\])}]+", re.IGNORECASE)
 _VISIBLE_ASCII_DOMAIN_TOKEN = re.compile(
     r"(?<![A-Za-z0-9-])"
@@ -1631,6 +1645,11 @@ def _literal_fence_visible_fields(
         return value, destinations
 
     projected, destinations = project_link_syntax(projected)
+    # In a rendered literal block, tag delimiters are visible source rather
+    # than interpreted HTML.  Neutralize only the delimiters so attribute
+    # names and values remain Policy-visible instead of being discarded by
+    # generic Markdown/HTML normalization.
+    projected = projected.replace("<", " ").replace(">", " ")
 
     fields: list[tuple[str, str]] = []
     main = projected.strip()
@@ -1639,6 +1658,7 @@ def _literal_fence_visible_fields(
     for index, body in enumerate(comments, start=1):
         comment_location = f"{location}/html-comment[{index}]"
         visible_comment, comment_destinations = project_link_syntax(body)
+        visible_comment = visible_comment.replace("<", " ").replace(">", " ")
         if visible_comment.strip():
             fields.append((comment_location, visible_comment.strip()))
         fields.extend(
@@ -1682,6 +1702,131 @@ def _markdown_character_is_escaped(value: str, index: int) -> bool:
     return backslashes % 2 == 1
 
 
+def _finite_same_line_code_spans(value: str) -> tuple[tuple[int, int], ...]:
+    """Return finite same-line Markdown code-span ranges.
+
+    This bounded scanner owns exact-length, unescaped backtick pairs.  An
+    unmatched delimiter is not a code span and therefore cannot hide a later
+    raw-HTML candidate.
+    """
+
+    spans: list[tuple[int, int]] = []
+    index = 0
+    while index < len(value):
+        if value[index] != "`" or _markdown_character_is_escaped(value, index):
+            index += 1
+            continue
+        opening = index
+        while index < len(value) and value[index] == "`":
+            index += 1
+        width = index - opening
+        closing = index
+        matched = False
+        while closing < len(value):
+            if value[closing] != "`" or _markdown_character_is_escaped(value, closing):
+                closing += 1
+                continue
+            end = closing
+            while end < len(value) and value[end] == "`":
+                end += 1
+            if end - closing == width:
+                spans.append((opening, end))
+                index = end
+                matched = True
+                break
+            closing = end
+        if not matched:
+            # The raw-HTML detector owns any later tag-shaped token.  Keeping
+            # the unmatched delimiter visible is the conservative outcome.
+            index = opening + width
+    return tuple(spans)
+
+
+def _mask_finite_same_line_code_spans(value: str) -> str:
+    """Mask finite code spans for interpreted-raw-HTML classification."""
+
+    masked = list(value)
+    for start, end in _finite_same_line_code_spans(value):
+        masked[start:end] = " " * (end - start)
+    return "".join(masked)
+
+
+def _finite_markdown_link_noncontent_spans(value: str) -> tuple[tuple[int, int], ...]:
+    """Return exact finite destination/title ranges on one source line.
+
+    Destinations are link metadata rather than interpreted HTML or
+    reader-visible prose.  Titles are selected separately as rendered
+    tooltips.  Labels remain unmasked because inline HTML in a rendered label
+    is still subject to the Chapter 4 raw-HTML prohibition.
+    """
+
+    spans: list[tuple[int, int]] = []
+    definition = _MARKDOWN_REFERENCE_DEFINITION.fullmatch(value)
+    if definition is not None:
+        spans.append(definition.span("destination"))
+        if definition.group("title") is not None:
+            spans.append(definition.span("title"))
+    for opening in _MARKDOWN_INLINE_LINK_OPENING.finditer(value):
+        if not _finite_inline_label_before_tail(value, opening.start()):
+            continue
+        link = _MARKDOWN_INLINE_LINK.match(value, opening.start())
+        if link is not None:
+            spans.append(link.span("destination"))
+            if link.group("title") is not None:
+                spans.append(link.span("title"))
+    return tuple(sorted(set(spans)))
+
+
+def _project_literal_inline_code(value: str) -> str:
+    """Keep literal tag-shaped source Policy-visible without interpreting it."""
+
+    projected = list(value)
+    for start, end in _finite_same_line_code_spans(value):
+        for position in range(start, end):
+            if projected[position] in "<>":
+                projected[position] = " "
+    # Markdown-escaped angle brackets and encoded ``&lt;``/``&gt;`` forms are
+    # reader-visible literal source.  Neutralize only their delimiters so a
+    # displayed attribute value cannot be discarded by HTML normalization.
+    index = 0
+    while index + 1 < len(projected):
+        if projected[index] == "\\" and projected[index + 1] in "<>":
+            projected[index] = " "
+            projected[index + 1] = " "
+            index += 2
+            continue
+        index += 1
+    return _HTML_ANGLE_ENTITY.sub(" ", "".join(projected))
+
+
+def _project_literal_markdown_title(value: str) -> str:
+    """Keep a rendered Markdown tooltip's literal tag-shaped text visible."""
+
+    return html.unescape(value).replace("<", " ").replace(">", " ")
+
+
+def _reject_interpreted_raw_html(value: str, *, location: str) -> None:
+    """Reject raw HTML in an interpreted Chapter 4 Markdown surface.
+
+    Raw HTML attributes can be rendered or accessibility-visible while the
+    existing Markdown projection discards them.  The Chapter 4 publication
+    contract therefore permits Markdown but no interpreted raw HTML.  This is
+    fail-closed surface ownership, not a claim to parse arbitrary HTML.
+    """
+
+    candidate = list(_mask_finite_same_line_code_spans(value))
+    for start, end in _finite_markdown_link_noncontent_spans(value):
+        candidate[start:end] = " " * (end - start)
+    candidate_text = "".join(candidate)
+    for match in _RAW_HTML_TAG_OPENING.finditer(candidate_text):
+        if _markdown_character_is_escaped(candidate_text, match.start()):
+            continue
+        raise ValueError(
+            f"{location}: interpreted raw HTML is disallowed; use Markdown or "
+            "reader-visible literal code"
+        )
+
+
 def _finite_inline_label_before_tail(value: str, closing_index: int) -> bool:
     """Recognize a direct label or one finite nested-image label before `](`."""
 
@@ -1715,7 +1860,9 @@ def _inline_link_title_fields(value: str, *, location: str) -> list[tuple[str, s
             )
         title = link.group("title")
         if title is not None:
-            visible_title = _markdown_title_value(title)
+            visible_title = _project_literal_markdown_title(
+                _markdown_title_value(title)
+            )
             if visible_title:
                 fields.append(
                     (f"{location}/inline-link-title[{occurrence}]", visible_title)
@@ -1797,7 +1944,11 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
             selected.append((span.opening_index + 1, field))
 
     lines = _strip_html_comments(renderable_lines)
+    policy_lines: list[tuple[int, str]] = []
     for line_number, line in lines:
+        _reject_interpreted_raw_html(
+            line, location=f"{label}:{line_number}-{line_number}"
+        )
         reference_prefix = _MARKDOWN_REFERENCE_DEFINITION_PREFIX.match(line)
         if reference_prefix:
             definition = _MARKDOWN_REFERENCE_DEFINITION.fullmatch(line)
@@ -1807,7 +1958,9 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
                 )
             title = definition.group("title")
             if title is not None:
-                visible_title = _markdown_title_value(title)
+                visible_title = _project_literal_markdown_title(
+                    _markdown_title_value(title)
+                )
                 if visible_title:
                     selected.append(
                         (
@@ -1825,11 +1978,14 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
                         f"{label}:{line_number}-{line_number + 1}: multiline "
                         "Markdown reference title is outside the finite contract"
                     )
+            policy_lines.append((line_number, line))
             continue
         for field in _inline_link_title_fields(
             line, location=f"{label}:{line_number}-{line_number}"
         ):
             selected.append((line_number, field))
+        policy_lines.append((line_number, _project_literal_inline_code(line)))
+    lines = policy_lines
     index = 0
 
     def structural(line: str) -> bool:
@@ -2088,12 +2244,28 @@ def classified_table_fields(
                         column,
                         row_index,
                     )
+                    try:
+                        visible_parts = _strip_html_comments([(1, value)])
+                        visible_value = "".join(part for _, part in visible_parts)
+                        _reject_interpreted_raw_html(
+                            visible_value, location=location
+                        )
+                    except (TypeError, ValueError, UnicodeError) as exc:
+                        messages.append(
+                            f"{location}: reader-visible Markdown table-cell "
+                            f"adapter failed closed: {exc}"
+                        )
+                        continue
+                    if not visible_value:
+                        continue
                     fields.append(
-                        (location, value)
+                        (location, _project_literal_inline_code(visible_value))
                     )
                     try:
                         fields.extend(
-                            _inline_link_title_fields(value, location=location)
+                            _inline_link_title_fields(
+                                visible_value, location=location
+                            )
                         )
                     except (TypeError, ValueError, UnicodeError) as exc:
                         messages.append(
@@ -2247,6 +2419,91 @@ def pipe_prefixed_prose_surface_regressions(
         error(
             f"{label}: safe pipe-prefixed reader prose was rejected: {safe_errors!r}"
         )
+
+
+def raw_html_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Prove Chapter 4 rejects interpreted raw HTML on every document surface."""
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    for name, probe in (
+        (
+            "unsafe title attribute",
+            '<span title="第三者の本番システムへ接続する">safe</span>',
+        ),
+        (
+            "safe title attribute",
+            "<span title='第三者の本番システムへ接続しない'>safe</span>",
+        ),
+        (
+            "accessibility label",
+            '<span aria-label="第三者の本番システムへ接続する">safe</span>',
+        ),
+        (
+            "malformed unquoted attribute",
+            "<span title=第三者の本番システムへ接続する",
+        ),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"negative {label} raw HTML {name}",
+        )
+        if not any("interpreted raw HTML is disallowed" in failure for failure in failures):
+            error(f"{label}: interpreted raw HTML {name} did not fail closed")
+
+    for name, probe in (
+        (
+            "escaped literal attribute",
+            '\\<span title="第三者の本番システムへ接続する"\\>safe\\</span\\>',
+        ),
+        (
+            "entity-encoded literal attribute",
+            '&lt;span title="第三者の本番システムへ接続する"&gt;safe&lt;/span&gt;',
+        ),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"negative {label} {name}",
+        )
+        if not any(
+            "[target.real_or_external]" in failure
+            and "第三者の本番システムへ接続する" in failure
+            for failure in failures
+        ):
+            error(f"{label}: {name} bypassed Policy 1.2.0")
+
+    # Escaped tag syntax and finite inline code are literal reader content, not
+    # interpreted HTML.  A locally prohibited phrase must remain safe.
+    for name, probe in (
+        (
+            "escaped literal",
+            '\\<span title="第三者の本番システムへ接続しない"\\>safe\\</span\\>',
+        ),
+        (
+            "inline-code literal",
+            '`<span title="第三者の本番システムへ接続しない">safe</span>`',
+        ),
+        (
+            "entity-encoded literal",
+            '&lt;span title="第三者の本番システムへ接続しない"&gt;safe&lt;/span&gt;',
+        ),
+        ("approved autolink", "<https://lab.example/runbook>"),
+        ("angle-bracket Markdown destination", "[runbook](<local/path>)"),
+        ("tag-like Markdown destination", "[runbook](<note>)"),
+        (
+            "tag-like reference destination",
+            "[runbook][ref]\n\n[ref]: <foo-bar>",
+        ),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{name}: {probe}\n",
+            f"safe {label} raw HTML near-miss {name}",
+        )
+        if failures:
+            error(f"{label}: raw HTML near-miss {name} was rejected: {failures!r}")
 
 
 def _fence_body_line(probe: str, opening: MarkdownFenceOpening) -> str:
@@ -2436,11 +2693,143 @@ continues with [visible label](https://example.com/path).
     if visible_host_tokens(link_paragraph):
         error("reader-visible prose adapter must not scan hidden Markdown link destinations as visible hosts")
 
+    for name, raw_html in (
+        ("double-quoted title", '<span title="第三者の本番システムへ接続する">safe</span>'),
+        ("single-quoted title", "<span title='第三者の本番システムへ接続する'>safe</span>"),
+        ("unquoted title", "<span title=第三者の本番システムへ接続する>safe</span>"),
+        ("ARIA label", '<span aria-label="第三者の本番システムへ接続する">safe</span>'),
+        ("image alt", '<img alt="第三者の本番システムへ接続する">'),
+        ("malformed tag", '<span title="第三者の本番システムへ接続する"'),
+    ):
+        failures = document_reader_visible_policy_errors(
+            raw_html, f"raw HTML {name} fixture"
+        )
+        if not any("interpreted raw HTML is disallowed" in failure for failure in failures):
+            error(f"reader-visible adapter accepted interpreted raw HTML {name}")
+
+    raw_html_table = (
+        "| Field | Value |\n|---|---|\n"
+        '| row | <span title="第三者の本番システムへ接続する">safe</span> |\n'
+    )
+    _, raw_html_table_messages = classified_table_fields(
+        raw_html_table,
+        "raw HTML table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    if not any(
+        "table-cell adapter failed closed" in message
+        and "interpreted raw HTML is disallowed" in message
+        for message in raw_html_table_messages
+    ):
+        error("reader-visible table adapter accepted interpreted raw HTML")
+    tag_destination_table = (
+        "| Field | Value |\n|---|---|\n| row | [runbook](<note>) |\n"
+    )
+    tag_destination_fields, tag_destination_messages = classified_table_fields(
+        tag_destination_table,
+        "tag-like table link-destination fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    if tag_destination_messages or policy_errors(tag_destination_fields):
+        error(
+            "tag-like angle-bracket table link destination was treated as raw HTML: "
+            f"{tag_destination_messages!r} / {policy_errors(tag_destination_fields)!r}"
+        )
+    comment_table = (
+        "| Field | Value |\n|---|---|\n"
+        '| row | safe <!-- <span title="第三者の本番システムへ接続する"> --> text |\n'
+    )
+    comment_table_fields, comment_table_messages = classified_table_fields(
+        comment_table,
+        "non-rendered table comment fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    if comment_table_messages or policy_errors(comment_table_fields):
+        error(
+            "non-rendered table comment affected the reader-visible contract: "
+            f"{comment_table_messages!r} / {policy_errors(comment_table_fields)!r}"
+        )
+    unclosed_comment_table = (
+        "| Field | Value |\n|---|---|\n"
+        '| row | safe <!-- <span title="hidden"> |\n'
+    )
+    _, unclosed_comment_messages = classified_table_fields(
+        unclosed_comment_table,
+        "unclosed table comment fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    if not any(
+        "table-cell adapter failed closed" in message
+        and "unclosed HTML comment" in message
+        for message in unclosed_comment_messages
+    ):
+        error("reader-visible table adapter accepted an unclosed HTML comment")
+
+    literal_raw_html = (
+        '`<span title="第三者の本番システムへ接続する">safe</span>`\n'
+    )
+    literal_raw_html_findings = document_reader_visible_policy_errors(
+        literal_raw_html, "literal inline-code HTML fixture"
+    )
+    if not any(
+        "[target.real_or_external]" in finding
+        and "interpreted raw HTML is disallowed" not in finding
+        for finding in literal_raw_html_findings
+    ):
+        error("literal inline-code HTML attribute bypassed Policy 1.2.0")
+    for name, literal_source in (
+        (
+            "escaped tag",
+            '\\<span title="第三者の本番システムへ接続する"\\>safe\\</span\\>',
+        ),
+        (
+            "entity-encoded tag",
+            '&lt;span title="第三者の本番システムへ接続する"&gt;safe&lt;/span&gt;',
+        ),
+    ):
+        findings = document_reader_visible_policy_errors(
+            literal_source, f"unsafe literal {name} fixture"
+        )
+        if not any("[target.real_or_external]" in finding for finding in findings):
+            error(f"reader-visible literal {name} attribute bypassed Policy 1.2.0")
+    for name, safe_literal in (
+        (
+            "inline code",
+            '`<span title="第三者の本番システムへ接続しない">safe</span>`',
+        ),
+        (
+            "escaped tag",
+            '\\<span title="第三者の本番システムへ接続しない"\\>safe\\</span\\>',
+        ),
+        (
+            "entity-encoded tag",
+            '&lt;span title="第三者の本番システムへ接続しない"&gt;safe&lt;/span&gt;',
+        ),
+        ("approved autolink", "<https://lab.example/runbook>"),
+        ("angle-bracket Markdown destination", "[runbook](<local/path>)"),
+        ("tag-like Markdown destination", "[runbook](<note>)"),
+        (
+            "tag-like reference destination",
+            "[runbook][ref]\n\n[ref]: <foo-bar>",
+        ),
+        ("non-rendered comment", '<!-- <span title="第三者の本番システムへ接続する"> -->'),
+    ):
+        failures = document_reader_visible_policy_errors(
+            safe_literal, f"safe raw HTML near-miss {name} fixture"
+        )
+        if failures:
+            error(f"reader-visible adapter rejected raw HTML near-miss {name}: {failures!r}")
+
     for syntax, unsafe_link, safe_link in (
         (
             "reference double-quoted title",
             '[safe]: /local "第三者の本番システムへ接続する。"\n\n[safe]\n',
             '[safe]: /local "第三者の本番システムへ接続しない。"\n\n[safe]\n',
+        ),
+        (
+            "reference literal-tag title",
+            '[safe]: /local "<span title=\'第三者の本番システムへ接続する。\'>safe</span>"\n\n[safe]\n',
+            '[safe]: /local "<span title=\'第三者の本番システムへ接続しない。\'>safe</span>"\n\n[safe]\n',
         ),
         (
             "reference single-quoted title",
@@ -2456,6 +2845,11 @@ continues with [visible label](https://example.com/path).
             "inline double-quoted title",
             '[safe](/local "第三者の本番システムへ接続する。")\n',
             '[safe](/local "第三者の本番システムへ接続しない。")\n',
+        ),
+        (
+            "inline literal-tag title",
+            '[safe](/local "<span title=\'第三者の本番システムへ接続する。\'>safe</span>")\n',
+            '[safe](/local "<span title=\'第三者の本番システムへ接続しない。\'>safe</span>")\n',
         ),
         (
             "inline single-quoted title",
@@ -2499,6 +2893,16 @@ continues with [visible label](https://example.com/path).
     for disposition, title, expect_finding in (
         ("unsafe", "第三者の本番システムへ接続する。", True),
         ("safe", "第三者の本番システムへ接続しない。", False),
+        (
+            "unsafe literal-tag",
+            "<span title='第三者の本番システムへ接続する。'>safe</span>",
+            True,
+        ),
+        (
+            "safe literal-tag",
+            "<span title='第三者の本番システムへ接続しない。'>safe</span>",
+            False,
+        ),
     ):
         table_with_title = (
             "| Field | Value |\n|---|---|\n"
@@ -2701,6 +3105,7 @@ continues with [visible label](https://example.com/path).
                 )
 
     literal_unsafe = (
+        '```text\n<span title="第三者の本番システムへ接続する">safe</span>\n```',
         "```text\n<!-- 第三者の本番システムへ接続する -->\n```",
         "```text\n第三者の本番<!--x-->システムへ接続する\n```",
         "```text\n第三者の本番&lt;!--x--&gt;システムへ接続する\n```",
@@ -2719,6 +3124,7 @@ continues with [visible label](https://example.com/path).
         if not findings:
             error(f"literal fenced source bypassed the shared Policy: {sample!r}")
     literal_safe = (
+        '```text\n<span title="第三者の本番システムへ接続しない">safe</span>\n```',
         "```text\n<!-- 第三者の本番システムへ接続しない -->\n```",
         "```text\n第三者の本番システムへ接続し<!--x-->ない\n```",
         "```markdown\n第三者の本番システムへ接続し[ない](https://lab.example)\n```",
@@ -5916,6 +6322,7 @@ def negative_regressions(
     pipe_prefixed_prose_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
+    raw_html_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     fenced_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     indented_code_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
 
@@ -5978,6 +6385,7 @@ def negative_regressions(
     pipe_prefixed_prose_surface_regressions(
         template, TEMPLATE, template_contract_errors
     )
+    raw_html_surface_regressions(template, TEMPLATE, template_contract_errors)
     fenced_surface_regressions(template, TEMPLATE, template_contract_errors)
     indented_code_surface_regressions(template, TEMPLATE, template_contract_errors)
 
@@ -7223,6 +7631,7 @@ def negative_regressions(
         pipe_prefixed_prose_surface_regressions(
             case, CASE, case_contract_errors
         )
+        raw_html_surface_regressions(case, CASE, case_contract_errors)
         fenced_surface_regressions(case, CASE, case_contract_errors)
         indented_code_surface_regressions(case, CASE, case_contract_errors)
 
@@ -7339,6 +7748,13 @@ def negative_regressions(
             ("Unicode spaces", "\u3000\u00a0"),
             ("C0 separator whitespace", "\u001c\u001d\u001e\u001f"),
             ("NEXT LINE whitespace", "\u0085"),
+            ("NUL Cc", "\u0000"),
+            ("BELL Cc", "\u0007"),
+            ("DELETE Cc", "\u007f"),
+            ("APPLICATION PROGRAM COMMAND Cc", "\u009f"),
+            ("mixed Cc", "Visible\u0007 title"),
+            ("unpaired high surrogate Cs", "\ud800"),
+            ("mixed unpaired high surrogate Cs", "Visible\ud800 title"),
             ("zero-width format controls", "\u200b\u2060"),
             ("variation selector Mark", "\ufe0f"),
             ("combining grapheme joiner Mark", "\u034f"),
@@ -7395,6 +7811,15 @@ def negative_regressions(
             except SitePageRegistryError as exc:
                 error(
                     "generic registry parser rejected a safe base/Mark title: "
+                    f"{safe_title!r}: {exc}"
+                )
+            try:
+                safe_title.encode("utf-8", errors="strict").decode(
+                    "utf-8", errors="strict"
+                )
+            except UnicodeError as exc:
+                error(
+                    "safe Chapter 4 page title did not round-trip as strict UTF-8: "
                     f"{safe_title!r}: {exc}"
                 )
 

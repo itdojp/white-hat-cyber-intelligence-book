@@ -29,10 +29,14 @@ SCHEMA_VERSION = "1.1.0"
 DIRECTORY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 STATIC_PATH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]*\.json$")
 LINE_TERMINATOR_RE = re.compile(r"[\r\n\u2028\u2029]")
-# Freeze the Python-compatible whitespace set and the Unicode 15.0 Cf and Mark
-# sets used by the schema and parser.  Do not derive these tables from the
-# runner's Unicode database: the publication contract must remain stable when
-# Python or Node ships another Unicode database.
+# Freeze the Python-compatible whitespace set and the Unicode 15.0 Cc, Cs, Cf,
+# and Mark sets used by the schema and parser.  Do not derive these tables from
+# the runner's Unicode database: the publication contract must remain stable
+# when Python or Node ships another Unicode database.  Cc controls are rejected
+# anywhere in a published navigation title because they are not portable,
+# reader-visible navigation content; Cs is rejected because an unpaired
+# surrogate is not a Unicode scalar value and cannot be encoded as strict
+# UTF-8.  Valid astral scalar values and emoji remain allowed.
 PAGE_TITLE_WHITESPACE_UNICODE_VERSION = "15.0.0"
 PAGE_TITLE_WHITESPACE_RANGES = (
     (0x0009, 0x000D),
@@ -45,6 +49,15 @@ PAGE_TITLE_WHITESPACE_RANGES = (
     (0x202F, 0x202F),
     (0x205F, 0x205F),
     (0x3000, 0x3000),
+)
+PAGE_TITLE_CONTROL_UNICODE_VERSION = "15.0.0"
+PAGE_TITLE_CONTROL_RANGES = (
+    (0x0000, 0x001F),
+    (0x007F, 0x009F),
+)
+PAGE_TITLE_SURROGATE_UNICODE_VERSION = "15.0.0"
+PAGE_TITLE_SURROGATE_RANGES = (
+    (0xD800, 0xDFFF),
 )
 PAGE_TITLE_FORMAT_CONTROL_UNICODE_VERSION = "15.0.0"
 PAGE_TITLE_FORMAT_CONTROL_RANGES = (
@@ -388,6 +401,16 @@ PAGE_TITLE_WHITESPACE_CODEPOINTS = frozenset(
     for start, end in PAGE_TITLE_WHITESPACE_RANGES
     for codepoint in range(start, end + 1)
 )
+PAGE_TITLE_CONTROL_CODEPOINTS = frozenset(
+    codepoint
+    for start, end in PAGE_TITLE_CONTROL_RANGES
+    for codepoint in range(start, end + 1)
+)
+PAGE_TITLE_SURROGATE_CODEPOINTS = frozenset(
+    codepoint
+    for start, end in PAGE_TITLE_SURROGATE_RANGES
+    for codepoint in range(start, end + 1)
+)
 PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS = frozenset(
     codepoint
     for start, end in PAGE_TITLE_FORMAT_CONTROL_RANGES
@@ -400,8 +423,12 @@ PAGE_TITLE_MARK_CODEPOINTS = frozenset(
 )
 PAGE_TITLE_NON_BASE_CODEPOINTS = (
     PAGE_TITLE_WHITESPACE_CODEPOINTS
+    | PAGE_TITLE_CONTROL_CODEPOINTS
     | PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS
     | PAGE_TITLE_MARK_CODEPOINTS
+)
+PAGE_TITLE_FORBIDDEN_ANYWHERE_CODEPOINTS = (
+    PAGE_TITLE_CONTROL_CODEPOINTS | PAGE_TITLE_SURROGATE_CODEPOINTS
 )
 
 
@@ -440,9 +467,26 @@ PAGE_TITLE_SCHEMA_NON_BASE_TOKEN = (
     f"(?:[{PAGE_TITLE_NON_BASE_BMP_SCHEMA_CLASS}]|"
     f"(?:{PAGE_TITLE_NON_BASE_ASTRAL_SCHEMA_ALTERNATION}))"
 )
+PAGE_TITLE_CONTROL_BMP_SCHEMA_CLASS = "".join(
+    f"\\u{start:04X}"
+    if start == end
+    else f"\\u{start:04X}-\\u{end:04X}"
+    for start, end in PAGE_TITLE_CONTROL_RANGES
+)
+# In non-Unicode ECMAScript mode, a valid astral scalar is represented by a
+# high/low surrogate pair.  These forward-only gates reject a low surrogate at
+# the start, a high surrogate without a following low surrogate, or a low
+# surrogate whose predecessor is not high.  Avoiding lookbehind keeps the
+# public JSON Schema portable while preserving no-u/u parity.
+PAGE_TITLE_SCHEMA_UNPAIRED_SURROGATE_GATES = (
+    r"(?![\uDC00-\uDFFF])"
+    r"(?!.*[\uD800-\uDBFF](?![\uDC00-\uDFFF]))"
+    r"(?!.*[^\uD800-\uDBFF][\uDC00-\uDFFF])"
+)
 PAGE_TITLE_SCHEMA_PATTERN = (
-    f"^(?!(?:{PAGE_TITLE_SCHEMA_NON_BASE_TOKEN})+$)"
-    r"[^<>\r\n\u2028\u2029]+$"
+    f"^{PAGE_TITLE_SCHEMA_UNPAIRED_SURROGATE_GATES}"
+    f"(?!(?:{PAGE_TITLE_SCHEMA_NON_BASE_TOKEN})+$)"
+    f"[^{PAGE_TITLE_CONTROL_BMP_SCHEMA_CLASS}<>\\r\\n\\u2028\\u2029]+$"
 )
 PAGE_TITLE_HTML_DELIMITER_RE = re.compile(r"[<>]")
 ALLOWED_SECTIONS = set(base.SECTION_ORDER)
@@ -750,6 +794,24 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
             raise SitePageRegistryError(
                 f"pages[{index}].title must contain a non-whitespace character"
             )
+        if LINE_TERMINATOR_RE.search(title):
+            raise SitePageRegistryError(
+                f"pages[{index}].title must not contain CR, LF, U+2028, or U+2029"
+            )
+        if any(
+            ord(character) in PAGE_TITLE_FORBIDDEN_ANYWHERE_CODEPOINTS
+            for character in title
+        ):
+            raise SitePageRegistryError(
+                f"pages[{index}].title must not contain Unicode 15.0 Cc controls "
+                "or Cs surrogate code points"
+            )
+        try:
+            title.encode("utf-8", errors="strict")
+        except UnicodeEncodeError as exc:
+            raise SitePageRegistryError(
+                f"pages[{index}].title must be encodable as strict UTF-8"
+            ) from exc
         if not any(
             ord(character) not in PAGE_TITLE_NON_BASE_CODEPOINTS
             for character in title
@@ -760,10 +822,6 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
         if PAGE_TITLE_HTML_DELIMITER_RE.search(title):
             raise SitePageRegistryError(
                 f"pages[{index}].title must not contain raw HTML delimiters"
-            )
-        if LINE_TERMINATOR_RE.search(title):
-            raise SitePageRegistryError(
-                f"pages[{index}].title must not contain CR, LF, U+2028, or U+2029"
             )
 
     title_findings = published_page_title_findings(registry, label)
@@ -1533,6 +1591,13 @@ def run_registry_security_regressions() -> list[str]:
         ("Unicode-space-only published page title", "\u3000\u00a0"),
         ("C0-separator-whitespace-only published page title", "\u001c\u001d\u001e\u001f"),
         ("NEXT-LINE-whitespace-only published page title", "\u0085"),
+        ("NUL-only published page title", "\u0000"),
+        ("BELL-only published page title", "\u0007"),
+        ("DELETE-only published page title", "\u007f"),
+        ("APPLICATION-PROGRAM-COMMAND-only published page title", "\u009f"),
+        ("mixed Cc published page title", "Visible\u0007 title"),
+        ("unpaired high-surrogate published page title", "\ud800"),
+        ("mixed unpaired-surrogate published page title", "Visible\ud800 title"),
         ("zero-width-only published page title", "\u200b"),
         ("word-joiner-only published page title", "\u2060"),
         ("BOM-only published page title", "\ufeff"),
@@ -1563,7 +1628,7 @@ def run_registry_security_regressions() -> list[str]:
         if title_schema.get("pattern") != PAGE_TITLE_SCHEMA_PATTERN:
             failures.append(
                 "site-pages schema title pattern is not synchronized with the "
-                "frozen whitespace/Cf/Mark parser contract"
+                "frozen whitespace/Cc/Cs/Cf/Mark parser contract"
             )
         title_pattern = re.compile(PAGE_TITLE_SCHEMA_PATTERN)
         for name, title in (
@@ -1572,6 +1637,13 @@ def run_registry_security_regressions() -> list[str]:
             ("Unicode spaces", "\u3000\u00a0"),
             ("C0 separator whitespace", "\u001c\u001d\u001e\u001f"),
             ("NEXT LINE whitespace", "\u0085"),
+            ("NUL control", "\u0000"),
+            ("BELL control", "\u0007"),
+            ("DELETE control", "\u007f"),
+            ("APPLICATION PROGRAM COMMAND control", "\u009f"),
+            ("mixed Cc control", "Visible\u0007 title"),
+            ("unpaired high surrogate", "\ud800"),
+            ("mixed unpaired high surrogate", "Visible\ud800 title"),
             ("zero width", "\u200b"),
             ("word joiner", "\u2060"),
             ("BOM", "\ufeff"),
@@ -1599,6 +1671,24 @@ def run_registry_security_regressions() -> list[str]:
             failures.append(
                 "site-pages title whitespace table drifted from the frozen "
                 "Unicode 15.0/Python-compatible contract (10 ranges / 29 code points)"
+            )
+        if (
+            PAGE_TITLE_CONTROL_UNICODE_VERSION != "15.0.0"
+            or len(PAGE_TITLE_CONTROL_RANGES) != 2
+            or len(PAGE_TITLE_CONTROL_CODEPOINTS) != 65
+        ):
+            failures.append(
+                "site-pages title Cc table drifted from the frozen Unicode 15.0 "
+                "contract (2 ranges / 65 code points)"
+            )
+        if (
+            PAGE_TITLE_SURROGATE_UNICODE_VERSION != "15.0.0"
+            or len(PAGE_TITLE_SURROGATE_RANGES) != 1
+            or len(PAGE_TITLE_SURROGATE_CODEPOINTS) != 2048
+        ):
+            failures.append(
+                "site-pages title Cs table drifted from the frozen Unicode 15.0 "
+                "contract (1 range / 2048 code points)"
             )
         if (
             PAGE_TITLE_FORMAT_CONTROL_UNICODE_VERSION != "15.0.0"
@@ -1636,6 +1726,32 @@ def run_registry_security_regressions() -> list[str]:
             failures.append(
                 "site-pages parser accepted the complete format-control title corpus"
             )
+        all_controls = "".join(
+            chr(codepoint) for codepoint in sorted(PAGE_TITLE_CONTROL_CODEPOINTS)
+        )
+        if title_pattern.fullmatch(all_controls):
+            failures.append(
+                "site-pages schema title pattern accepted the complete Cc corpus"
+            )
+        try:
+            parse_registry_data(page_title_fixture(all_controls), "complete Cc title corpus")
+        except SitePageRegistryError:
+            pass
+        else:
+            failures.append("site-pages parser accepted the complete Cc title corpus")
+        all_surrogates = "".join(
+            chr(codepoint) for codepoint in sorted(PAGE_TITLE_SURROGATE_CODEPOINTS)
+        )
+        if title_pattern.fullmatch(all_surrogates):
+            failures.append(
+                "site-pages schema title pattern accepted the complete Cs corpus"
+            )
+        try:
+            parse_registry_data(page_title_fixture(all_surrogates), "complete Cs title corpus")
+        except SitePageRegistryError:
+            pass
+        else:
+            failures.append("site-pages parser accepted the complete Cs title corpus")
         all_marks = "".join(
             chr(codepoint) for codepoint in sorted(PAGE_TITLE_MARK_CODEPOINTS)
         )
@@ -1674,17 +1790,25 @@ def run_registry_security_regressions() -> list[str]:
             )
 
         ecmascript_unsafe_titles = (
+            "\u0000",
+            "\u0007",
             "\u001c",
             "\u001d",
             "\u001e",
             "\u001f",
             "\u0085",
+            "\u009f",
+            "Visible\u0007 title",
+            "\ud800",
+            "Visible\ud800 title",
             "\u0301",
             "\ufe0f",
             "\u180b",
             "\U000101fd",
             "\U000e0100",
             all_whitespace,
+            all_controls,
+            all_surrogates,
             all_format_controls,
             all_marks,
         )
@@ -1708,6 +1832,15 @@ def run_registry_security_regressions() -> list[str]:
                 failures.append(
                     f"site-pages schema title pattern parser parity drifted in "
                     f"ECMAScript {mode}: {mode_result.get('matches')!r}"
+                )
+        for title in schema_safe_titles:
+            try:
+                encoded = title.encode("utf-8", errors="strict")
+                encoded.decode("utf-8", errors="strict")
+            except UnicodeError as exc:
+                failures.append(
+                    f"safe published title did not round-trip as strict UTF-8: "
+                    f"{title!r}: {exc}"
                 )
     except (
         OSError,
