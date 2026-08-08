@@ -9,6 +9,7 @@ import subprocess
 import sys
 from collections import Counter
 from copy import deepcopy
+from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -106,6 +107,8 @@ EXPECTED_INHERITED_EVIDENCE_IDS = {
     "EVD-AUTH-2026-001",
     "NEG-2026-001",
 }
+EXPECTED_INHERITED_COLLECTED_EVIDENCE_IDS = EXPECTED_INHERITED_EVIDENCE_IDS - {"NEG-2026-001"}
+INHERITED_REVIEWER_VALUE = "Not recorded in inherited source"
 INHERITED_TH_003_PROPOSITION = "既に同型の不正利用が発生した"
 EXPECTED_HANDOFF_ROWS = {
     "HO-TM-2026-005": ("第5章 ATT&CK", "Behavior記述"),
@@ -188,6 +191,475 @@ HANDOFF_HEADER = (
     "Acceptance criteria",
     "Reject / return condition",
 )
+
+FIELD_VALUE_HEADER = ("Field", "Value")
+STATE_FAMILY_HEADER = ("State family", "Exact finite values", "Current usage")
+ASSET_HEADER = (
+    "Asset ID",
+    "Type",
+    "Name",
+    "Business role / outcome",
+    "Owner",
+    "Criticality",
+    "Data classification",
+    "Knowledge state",
+    "Evidence IDs",
+    "Dependency IDs",
+)
+DEPENDENCY_HEADER = (
+    "Dependency ID",
+    "From asset",
+    "To asset",
+    "Why the dependency matters",
+    "Failure consequence",
+)
+FLOW_HEADER = (
+    "Flow ID",
+    "Flow type",
+    "Source Asset ID",
+    "Destination Asset ID",
+    "Purpose",
+    "Protocol class",
+    "Identity / authorization context",
+    "Boundary IDs crossed",
+    "Data classification",
+    "Evidence status",
+    "Observation point",
+)
+BOUNDARY_HEADER = (
+    "Boundary ID",
+    "Boundary type",
+    "From / To",
+    "Owner(s)",
+    "Trust / authority change",
+    "Crossing condition",
+    "Control",
+    "Failure consequence",
+    "Knowledge state",
+    "Evidence IDs",
+)
+EXPOSURE_HEADER = (
+    "Exposure ID",
+    "Related Asset / Boundary / Flow IDs",
+    "Entry Point ID",
+    "Reachability class",
+    "External dependency",
+    "Required authority",
+    "Verification status",
+    "Evidence ID",
+    "Gap ID",
+)
+ENTRY_POINT_HEADER = (
+    "Entry Point ID",
+    "Related Exposure IDs",
+    "Interface class",
+    "Description",
+    "Owner",
+    "Boundary IDs",
+    "Required authority",
+    "Observation point",
+    "Knowledge state",
+    "Evidence IDs",
+)
+HYPOTHESIS_HEADER = (
+    "Hypothesis ID",
+    "Decision Requirement ID",
+    "Related Asset IDs",
+    "Boundary / Flow / Exposure IDs",
+    "Statement",
+    "Preconditions",
+    "Expected impact",
+    "Evidence needed",
+    "Alternative explanation",
+    "Priority",
+    "Hypothesis status",
+)
+MISUSE_HEADER = (
+    "Misuse Case ID",
+    "Goal",
+    "Actor capability class",
+    "Preconditions",
+    "Affected assets",
+    "Boundary crossed",
+    "Expected outcome",
+    "Observation points",
+    "Excluded operational detail",
+)
+PATH_SUMMARY_HEADER = (
+    "Path ID",
+    "Related Threat IDs",
+    "Entry condition",
+    "Intermediate condition",
+    "Undesired end state",
+    "Safety note",
+)
+ATTACK_PATH_HEADER = (
+    "Attack Path ID",
+    "Edge ID",
+    "From Asset / State",
+    "Condition",
+    "Boundary ID",
+    "To Asset / State",
+    "Affected Asset IDs",
+    "Expected impact",
+    "Observation point",
+    "Required Evidence ID",
+    "Knowledge state",
+)
+CONTROL_HEADER = (
+    "Control ID",
+    "Related Asset / Boundary / Threat / Path IDs",
+    "Control statement",
+    "Owner",
+    "Assurance state",
+    "Evidence IDs",
+    "Limitation",
+    "Gap ID",
+    "Reassessment trigger",
+)
+ASSUMPTION_HEADER = (
+    "Assumption ID",
+    "Statement",
+    "Owner",
+    "Validation method",
+    "Due date",
+    "Status",
+    "Related IDs",
+)
+EVIDENCE_REQUIREMENT_HEADER = (
+    "Evidence Requirement ID",
+    "Question",
+    "Related Threat / Control / Gap",
+    "Minimum sufficient evidence",
+    "Forbidden / over-collection boundary",
+    "Owner",
+    "Due date",
+    "Status",
+    "Resulting Evidence IDs",
+)
+ACTION_HEADER = (
+    "Action ID",
+    "Related Gap / Control / Threat",
+    "Action",
+    "Owner",
+    "Due date",
+    "Success evidence",
+    "Status",
+)
+REASSESSMENT_HEADER = (
+    "Reassessment ID",
+    "Trigger",
+    "Scope",
+    "Owner",
+    "Scheduled date",
+    "Inputs required",
+    "Closure criteria",
+    "Destination chapter / artifact",
+)
+REVIEW_HEADER = (
+    "Review area",
+    "Reviewer / role",
+    "Rubric",
+    "Result",
+    "Date",
+    "Evidence reference",
+    "Notes",
+)
+RUBRIC_HEADER = ("Rubric ID", "Criterion", "Meets", "Partially meets", "Does not meet")
+LIMITATION_HEADER = (
+    "Limitation ID",
+    "Scope / condition",
+    "Unsupported claim",
+    "Owner",
+    "Reassessment trigger",
+)
+NEGATIVE_FINDING_HEADER = (
+    "Negative Finding ID",
+    "Related Evidence IDs",
+    "Searched behavior",
+    "Search window",
+    "Available coverage",
+    "Gaps",
+    "Permitted conclusion",
+)
+
+FIELD_STRUCTURAL = "structural identifier/reference"
+FIELD_FINITE = "finite enum/date/metadata"
+FIELD_READER_VISIBLE = "reader-visible descriptive/action-bearing"
+FIELD_CLASSES = {FIELD_STRUCTURAL, FIELD_FINITE, FIELD_READER_VISIBLE}
+
+
+@dataclass(frozen=True)
+class TableSafetyPolicy:
+    """Finite field classification for one public ART-03 Markdown table."""
+
+    header: tuple[str, ...]
+    classifications: tuple[tuple[str, str], ...]
+
+    @property
+    def reader_visible(self) -> tuple[str, ...]:
+        return tuple(name for name, classification in self.classifications if classification == FIELD_READER_VISIBLE)
+
+    @property
+    def scan_required(self) -> tuple[str, ...]:
+        # Every table cell is public. Structural and finite fields are also
+        # scanned as defense in depth so an identifier or date with appended
+        # action prose cannot bypass the adapter before structural validation.
+        return tuple(name for name, _ in self.classifications)
+
+
+@dataclass(frozen=True)
+class MarkdownTable:
+    header: tuple[str, ...]
+    rows: tuple[tuple[str, ...], ...]
+    line: int
+
+
+def table_safety_policy(
+    header: tuple[str, ...],
+    *,
+    structural: tuple[str, ...],
+    finite: tuple[str, ...],
+    reader_visible: tuple[str, ...],
+) -> TableSafetyPolicy:
+    classified = structural + finite + reader_visible
+    if len(classified) != len(set(classified)) or set(classified) != set(header):
+        raise RuntimeError(f"invalid Chapter 4 table safety classification for {header!r}: {classified!r}")
+    classes = {
+        **{name: FIELD_STRUCTURAL for name in structural},
+        **{name: FIELD_FINITE for name in finite},
+        **{name: FIELD_READER_VISIBLE for name in reader_visible},
+    }
+    classifications = tuple((name, classes[name]) for name in header)
+    if {classification for _, classification in classifications} - FIELD_CLASSES:
+        raise RuntimeError(f"unknown Chapter 4 safety field class for {header!r}")
+    return TableSafetyPolicy(header=header, classifications=classifications)
+
+
+TABLE_SAFETY_POLICIES = {
+    policy.header: policy
+    for policy in (
+        table_safety_policy(
+            FIELD_VALUE_HEADER,
+            structural=("Field",),
+            finite=(),
+            reader_visible=("Value",),
+        ),
+        table_safety_policy(
+            STATE_FAMILY_HEADER,
+            structural=("State family",),
+            finite=("Exact finite values",),
+            reader_visible=("Current usage",),
+        ),
+        table_safety_policy(
+            ASSET_HEADER,
+            structural=("Asset ID", "Evidence IDs", "Dependency IDs"),
+            finite=("Type", "Criticality", "Data classification", "Knowledge state"),
+            reader_visible=("Name", "Business role / outcome", "Owner"),
+        ),
+        table_safety_policy(
+            DEPENDENCY_HEADER,
+            structural=("Dependency ID", "From asset", "To asset"),
+            finite=(),
+            reader_visible=("Why the dependency matters", "Failure consequence"),
+        ),
+        table_safety_policy(
+            FLOW_HEADER,
+            structural=("Flow ID", "Source Asset ID", "Destination Asset ID", "Boundary IDs crossed"),
+            finite=("Flow type", "Data classification", "Evidence status"),
+            reader_visible=("Purpose", "Protocol class", "Identity / authorization context", "Observation point"),
+        ),
+        table_safety_policy(
+            BOUNDARY_HEADER,
+            structural=("Boundary ID", "Evidence IDs"),
+            finite=("Boundary type", "Knowledge state"),
+            reader_visible=(
+                "From / To",
+                "Owner(s)",
+                "Trust / authority change",
+                "Crossing condition",
+                "Control",
+                "Failure consequence",
+            ),
+        ),
+        table_safety_policy(
+            EXPOSURE_HEADER,
+            structural=(
+                "Exposure ID",
+                "Related Asset / Boundary / Flow IDs",
+                "Entry Point ID",
+                "Evidence ID",
+                "Gap ID",
+            ),
+            finite=("Verification status",),
+            reader_visible=("Reachability class", "External dependency", "Required authority"),
+        ),
+        table_safety_policy(
+            ENTRY_POINT_HEADER,
+            structural=("Entry Point ID", "Related Exposure IDs", "Boundary IDs", "Evidence IDs"),
+            finite=("Knowledge state",),
+            reader_visible=("Interface class", "Description", "Owner", "Required authority", "Observation point"),
+        ),
+        table_safety_policy(
+            HYPOTHESIS_HEADER,
+            structural=("Hypothesis ID", "Decision Requirement ID", "Related Asset IDs", "Boundary / Flow / Exposure IDs"),
+            finite=("Priority", "Hypothesis status"),
+            reader_visible=("Statement", "Preconditions", "Expected impact", "Evidence needed", "Alternative explanation"),
+        ),
+        table_safety_policy(
+            MISUSE_HEADER,
+            structural=("Misuse Case ID", "Affected assets", "Boundary crossed"),
+            finite=(),
+            reader_visible=(
+                "Goal",
+                "Actor capability class",
+                "Preconditions",
+                "Expected outcome",
+                "Observation points",
+                "Excluded operational detail",
+            ),
+        ),
+        table_safety_policy(
+            PATH_SUMMARY_HEADER,
+            structural=("Path ID", "Related Threat IDs"),
+            finite=(),
+            reader_visible=("Entry condition", "Intermediate condition", "Undesired end state", "Safety note"),
+        ),
+        table_safety_policy(
+            ATTACK_PATH_HEADER,
+            structural=("Attack Path ID", "Edge ID", "Boundary ID", "Affected Asset IDs", "Required Evidence ID"),
+            finite=("Knowledge state",),
+            reader_visible=("From Asset / State", "Condition", "To Asset / State", "Expected impact", "Observation point"),
+        ),
+        table_safety_policy(
+            CONTROL_HEADER,
+            structural=("Control ID", "Related Asset / Boundary / Threat / Path IDs", "Evidence IDs", "Gap ID"),
+            finite=("Assurance state",),
+            reader_visible=("Control statement", "Owner", "Limitation", "Reassessment trigger"),
+        ),
+        table_safety_policy(
+            ASSUMPTION_HEADER,
+            structural=("Assumption ID", "Related IDs"),
+            finite=("Due date", "Status"),
+            reader_visible=("Statement", "Owner", "Validation method"),
+        ),
+        table_safety_policy(
+            GAP_HEADER,
+            structural=("Gap ID", "Evidence Requirement ID", "Action ID", "Reassessment ID"),
+            finite=("Due date", "Status"),
+            reader_visible=("Missing information / control / telemetry", "Decision affected", "Owner"),
+        ),
+        table_safety_policy(
+            EVIDENCE_REQUIREMENT_HEADER,
+            structural=("Evidence Requirement ID", "Related Threat / Control / Gap", "Resulting Evidence IDs"),
+            finite=("Due date", "Status"),
+            reader_visible=("Question", "Minimum sufficient evidence", "Forbidden / over-collection boundary", "Owner"),
+        ),
+        table_safety_policy(
+            COLLECTED_EVIDENCE_HEADER,
+            structural=("Evidence ID", "Related Evidence Requirement IDs"),
+            finite=("Status", "Collected at"),
+            reader_visible=("Evidence description", "Collection conditions / provenance", "Reviewer", "Limitation"),
+        ),
+        table_safety_policy(
+            NEGATIVE_FINDING_HEADER,
+            structural=("Negative Finding ID", "Related Evidence IDs"),
+            finite=(),
+            reader_visible=("Searched behavior", "Search window", "Available coverage", "Gaps", "Permitted conclusion"),
+        ),
+        table_safety_policy(
+            ACTION_HEADER,
+            structural=("Action ID", "Related Gap / Control / Threat"),
+            finite=("Due date", "Status"),
+            reader_visible=("Action", "Owner", "Success evidence"),
+        ),
+        table_safety_policy(
+            REASSESSMENT_HEADER,
+            structural=("Reassessment ID",),
+            finite=("Scheduled date",),
+            reader_visible=("Trigger", "Scope", "Owner", "Inputs required", "Closure criteria", "Destination chapter / artifact"),
+        ),
+        table_safety_policy(
+            HANDOFF_HEADER,
+            structural=("Handoff ID",),
+            finite=(),
+            reader_visible=("Target chapter", "Deliverable / consumer", "What this artifact provides", "Acceptance criteria", "Reject / return condition"),
+        ),
+        table_safety_policy(
+            REVIEW_HEADER,
+            structural=("Evidence reference",),
+            finite=("Result", "Date"),
+            reader_visible=("Review area", "Reviewer / role", "Rubric", "Notes"),
+        ),
+        table_safety_policy(
+            RUBRIC_HEADER,
+            structural=("Rubric ID",),
+            finite=(),
+            reader_visible=("Criterion", "Meets", "Partially meets", "Does not meet"),
+        ),
+        table_safety_policy(
+            LIMITATION_HEADER,
+            structural=("Limitation ID",),
+            finite=(),
+            reader_visible=("Scope / condition", "Unsupported claim", "Owner", "Reassessment trigger"),
+        ),
+    )
+}
+
+TEMPLATE_TABLE_OCCURRENCES = {
+    header: (2 if header == FIELD_VALUE_HEADER else 1)
+    for header in (
+        FIELD_VALUE_HEADER,
+        ASSET_HEADER,
+        DEPENDENCY_HEADER,
+        FLOW_HEADER,
+        BOUNDARY_HEADER,
+        EXPOSURE_HEADER,
+        ENTRY_POINT_HEADER,
+        HYPOTHESIS_HEADER,
+        MISUSE_HEADER,
+        ATTACK_PATH_HEADER,
+        CONTROL_HEADER,
+        ASSUMPTION_HEADER,
+        GAP_HEADER,
+        EVIDENCE_REQUIREMENT_HEADER,
+        COLLECTED_EVIDENCE_HEADER,
+        ACTION_HEADER,
+        REASSESSMENT_HEADER,
+        REVIEW_HEADER,
+        RUBRIC_HEADER,
+        LIMITATION_HEADER,
+    )
+}
+
+CASE_TABLE_OCCURRENCES = {
+    header: (3 if header == FIELD_VALUE_HEADER else 1)
+    for header in (
+        FIELD_VALUE_HEADER,
+        STATE_FAMILY_HEADER,
+        ASSET_HEADER,
+        DEPENDENCY_HEADER,
+        FLOW_HEADER,
+        BOUNDARY_HEADER,
+        EXPOSURE_HEADER,
+        ENTRY_POINT_HEADER,
+        HYPOTHESIS_HEADER,
+        MISUSE_HEADER,
+        PATH_SUMMARY_HEADER,
+        ATTACK_PATH_HEADER,
+        CONTROL_HEADER,
+        ASSUMPTION_HEADER,
+        GAP_HEADER,
+        EVIDENCE_REQUIREMENT_HEADER,
+        COLLECTED_EVIDENCE_HEADER,
+        NEGATIVE_FINDING_HEADER,
+        ACTION_HEADER,
+        REASSESSMENT_HEADER,
+        HANDOFF_HEADER,
+        RUBRIC_HEADER,
+        REVIEW_HEADER,
+    )
+}
 
 EXPECTED_HEADINGS = (
     "# 第4章 資産、信頼境界、攻撃面、脅威モデル",
@@ -336,26 +808,189 @@ def policy_errors(fields: list[tuple[str, str]]) -> list[str]:
     return [format_finding(finding) for finding in scan_fields(fields)]
 
 
-def selected_table_fields(
+def markdown_tables(text: str, label: str) -> tuple[list[MarkdownTable], list[str]]:
+    """Parse every Markdown table in document order without guessing its semantics."""
+
+    lines = text.splitlines()
+    tables: list[MarkdownTable] = []
+    messages: list[str] = []
+    for index, line in enumerate(lines[:-1]):
+        if not line.strip().startswith("|"):
+            continue
+        header = tuple(markdown_cells(line))
+        separator = markdown_cells(lines[index + 1])
+        if len(separator) != len(header) or not all(
+            re.fullmatch(r":?-{3,}:?", cell) for cell in separator
+        ):
+            continue
+        rows: list[tuple[str, ...]] = []
+        for row_line in lines[index + 2 :]:
+            if not row_line.strip().startswith("|"):
+                break
+            row = tuple(markdown_cells(row_line))
+            if len(row) != len(header):
+                messages.append(
+                    f"{label}:{index + 1}: malformed safety-adapter row for {header!r}: {row!r}"
+                )
+                continue
+            rows.append(row)
+        tables.append(MarkdownTable(header=header, rows=tuple(rows), line=index + 1))
+    return tables, messages
+
+
+def adapter_field_location(
+    label: str,
+    table: MarkdownTable,
+    occurrence: int,
+    column: str,
+    row: int,
+) -> str:
+    return f"{label}:{table.line} {table.header[0]}[{occurrence}] {column} row {row}"
+
+
+def classified_table_fields(
     text: str,
     label: str,
-    contracts: tuple[tuple[tuple[str, ...], tuple[str, ...]], ...],
+    expected_occurrences: dict[tuple[str, ...], int],
 ) -> tuple[list[tuple[str, str]], list[str]]:
+    """Select all public fields through one finite Template/Case manifest.
+
+    A new or renamed table/column cannot silently bypass Policy 1.2.0: the
+    complete observed header inventory and its occurrence count must match the
+    document-specific contract, and every column is explicitly classified.
+    """
+
+    tables, messages = markdown_tables(text, label)
+    counts = Counter(table.header for table in tables)
+    observed_headers = set(counts)
+    expected_headers = set(expected_occurrences)
+    for header in sorted(observed_headers - expected_headers):
+        messages.append(f"{label}: unclassified public table header: {header!r}")
+    for header in sorted(expected_headers - observed_headers):
+        messages.append(f"{label}: missing classified public table header: {header!r}")
+    for header, expected_count in expected_occurrences.items():
+        if counts[header] != expected_count:
+            messages.append(
+                f"{label}: classified table occurrence count for {header!r} "
+                f"is {counts[header]}, expected {expected_count}"
+            )
+
     fields: list[tuple[str, str]] = []
-    messages: list[str] = []
-    for header, selected in contracts:
-        rows, table_messages = table_by_header(text, header, label)
-        messages.extend(table_messages)
-        indexes = [header.index(name) for name in selected if name in header]
-        if len(indexes) != len(selected):
-            messages.append(f"{label}: safety adapter selection is not present in {header!r}: {selected!r}")
+    occurrences: Counter[tuple[str, ...]] = Counter()
+    for table in tables:
+        occurrences[table.header] += 1
+        policy = TABLE_SAFETY_POLICIES.get(table.header)
+        if policy is None or table.header not in expected_occurrences:
             continue
-        for row_index, row in enumerate(rows, start=1):
-            for column_index in indexes:
+        if tuple(name for name, _ in policy.classifications) != table.header:
+            messages.append(f"{label}: field-classification order drift for {table.header!r}")
+            continue
+        for row_index, row in enumerate(table.rows, start=1):
+            for column in policy.scan_required:
+                column_index = table.header.index(column)
                 value = row[column_index]
                 if value:
-                    fields.append((f"{label} {header[column_index]} row {row_index}", value))
+                    fields.append(
+                        (
+                            adapter_field_location(
+                                label,
+                                table,
+                                occurrences[table.header],
+                                column,
+                                row_index,
+                            ),
+                            value,
+                        )
+                    )
     return fields, messages
+
+
+def mutate_table_cell(
+    text: str,
+    header: tuple[str, ...],
+    occurrence: int,
+    row: int,
+    column: str,
+    replacement: str,
+) -> str:
+    """Replace one data cell in a specific table occurrence for a regression."""
+
+    expected = "| " + " | ".join(header) + " |"
+    lines = text.splitlines()
+    matches = [index for index, line in enumerate(lines) if line.strip() == expected]
+    if occurrence < 1 or occurrence > len(matches):
+        return text
+    row_index = matches[occurrence - 1] + 1 + row
+    if row_index >= len(lines) or not lines[row_index].strip().startswith("|"):
+        return text
+    cells = markdown_cells(lines[row_index])
+    if len(cells) != len(header) or column not in header:
+        return text
+    cells[header.index(column)] = replacement
+    lines[row_index] = "| " + " | ".join(cells) + " |"
+    suffix = "\n" if text.endswith("\n") else ""
+    return "\n".join(lines) + suffix
+
+
+def safety_matrix_negative_regressions(
+    text: str,
+    label: str,
+    expected_occurrences: dict[tuple[str, ...], int],
+) -> None:
+    """Prove every classified public field reaches Policy 1.2.0."""
+
+    unsafe = "第三者の本番システムへ接続する"
+    canonical_tables, canonical_messages = markdown_tables(text, label)
+    if canonical_messages:
+        error(f"{label}: cannot generate field-matrix regressions: {canonical_messages!r}")
+        return
+    canonical_by_key: dict[tuple[tuple[str, ...], int], MarkdownTable] = {}
+    occurrences: Counter[tuple[str, ...]] = Counter()
+    for table in canonical_tables:
+        occurrences[table.header] += 1
+        canonical_by_key[(table.header, occurrences[table.header])] = table
+
+    mutation = text
+    target_locations: set[str] = set()
+    for header, count in expected_occurrences.items():
+        policy = TABLE_SAFETY_POLICIES[header]
+        for occurrence in range(1, count + 1):
+            table = canonical_by_key.get((header, occurrence))
+            if table is None or not table.rows:
+                error(f"{label}: missing table row for field-matrix regression {header!r}[{occurrence}]")
+                continue
+            for row_index in range(1, len(table.rows) + 1):
+                for column in policy.scan_required:
+                    updated = mutate_table_cell(
+                        mutation,
+                        header,
+                        occurrence,
+                        row_index,
+                        column,
+                        unsafe,
+                    )
+                    if updated == mutation:
+                        error(
+                            f"{label}: field-matrix mutation did not change "
+                            f"{header!r}[{occurrence}] row {row_index} {column!r}"
+                        )
+                        continue
+                    mutation = updated
+                    target_locations.add(
+                        adapter_field_location(
+                            f"negative {label}", table, occurrence, column, row_index
+                        )
+                    )
+    fields, adapter_messages = classified_table_fields(
+        mutation, f"negative {label}", expected_occurrences
+    )
+    if adapter_messages:
+        error(f"{label}: field-matrix mutation invalidated adapter structure: {adapter_messages!r}")
+        return
+    finding_locations = {finding.location for finding in scan_fields(fields)}
+    missing = sorted(target_locations - finding_locations)
+    if missing:
+        error(f"{label}: public fields bypassed Policy 1.2.0: {missing!r}")
 
 
 def chapter_contract_errors(text: str, label: str) -> list[str]:
@@ -538,25 +1173,7 @@ def template_contract_errors(text: str, label: str) -> list[str]:
         if value and value not in COLLECTED_EVIDENCE_STATUSES:
             messages.append(f"{label}: Collected Evidence status outside finite set: {value!r}")
 
-    contracts = (
-        (template_flow_header, ("Purpose", "Protocol class", "Identity / authorization context", "Observation point")),
-        (("Boundary ID", "Boundary type", "From / To", "Owner(s)", "Trust / authority change", "Crossing condition", "Control", "Failure consequence", "Knowledge state", "Evidence IDs"), ("Trust / authority change", "Crossing condition", "Control", "Failure consequence")),
-        (("Exposure ID", "Related Asset / Boundary / Flow IDs", "Entry Point ID", "Reachability class", "External dependency", "Required authority", "Verification status", "Evidence ID", "Gap ID"), ("Reachability class", "External dependency", "Required authority")),
-        (("Hypothesis ID", "Decision Requirement ID", "Related Asset IDs", "Boundary / Flow / Exposure IDs", "Statement", "Preconditions", "Expected impact", "Evidence needed", "Alternative explanation", "Priority", "Hypothesis status"), ("Statement", "Preconditions", "Expected impact", "Evidence needed", "Alternative explanation")),
-        (("Misuse Case ID", "Goal", "Actor capability class", "Preconditions", "Affected assets", "Boundary crossed", "Expected outcome", "Observation points", "Excluded operational detail"), ("Goal", "Actor capability class", "Preconditions", "Expected outcome", "Observation points", "Excluded operational detail")),
-        (("Attack Path ID", "Edge ID", "From Asset / State", "Condition", "Boundary ID", "To Asset / State", "Affected Asset IDs", "Expected impact", "Observation point", "Required Evidence ID", "Knowledge state"), ("From Asset / State", "Condition", "To Asset / State", "Expected impact", "Observation point")),
-        (("Control ID", "Related Asset / Boundary / Threat / Path IDs", "Control statement", "Owner", "Assurance state", "Evidence IDs", "Limitation", "Gap ID", "Reassessment trigger"), ("Control statement", "Limitation", "Reassessment trigger")),
-        (("Assumption ID", "Statement", "Owner", "Validation method", "Due date", "Status", "Related IDs"), ("Statement", "Validation method")),
-        (GAP_HEADER, ("Missing information / control / telemetry", "Decision affected")),
-        (("Evidence Requirement ID", "Question", "Related Threat / Control / Gap", "Minimum sufficient evidence", "Forbidden / over-collection boundary", "Owner", "Due date", "Status", "Resulting Evidence IDs"), ("Minimum sufficient evidence", "Forbidden / over-collection boundary")),
-        (COLLECTED_EVIDENCE_HEADER, ("Evidence description", "Collection conditions / provenance", "Limitation")),
-        (("Action ID", "Related Gap / Control / Threat", "Action", "Owner", "Due date", "Success evidence", "Status"), ("Action", "Success evidence")),
-        (("Reassessment ID", "Trigger", "Scope", "Owner", "Scheduled date", "Inputs required", "Closure criteria", "Destination chapter / artifact"), ("Trigger", "Scope", "Closure criteria")),
-        (("Entry Point ID", "Related Exposure IDs", "Interface class", "Description", "Owner", "Boundary IDs", "Required authority", "Observation point", "Knowledge state", "Evidence IDs"), ("Description", "Required authority", "Observation point")),
-        (("Review area", "Reviewer / role", "Rubric", "Result", "Date", "Evidence reference", "Notes"), ("Notes",)),
-        (("Limitation ID", "Scope / condition", "Unsupported claim", "Owner", "Reassessment trigger"), ("Scope / condition", "Unsupported claim", "Reassessment trigger")),
-    )
-    fields, adapter_messages = selected_table_fields(text, label, contracts)
+    fields, adapter_messages = classified_table_fields(text, label, TEMPLATE_TABLE_OCCURRENCES)
     messages.extend(adapter_messages)
     decision_rows, decision_messages = table_by_header(
         section(text, "## 1. Decision Context"), ("Field", "Value"), label
@@ -567,11 +1184,6 @@ def template_contract_errors(text: str, label: str) -> list[str]:
         messages.append(
             f"{label}: Decision Context fields/order {decision_fields!r} != {DECISION_CONTEXT_FIELDS!r}"
         )
-    fields.extend(
-        (f"{label} Decision Context {row[0]}", row[1])
-        for row in decision_rows
-        if len(row) == 2 and row[1]
-    )
     messages.extend(policy_errors(fields))
     return messages
 
@@ -596,6 +1208,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "Business Assetは8番目のTypeではなく",
         "Evidence Requirement status",
         "Collected Evidence status",
+        "同一Evidence IDは原典の取得時刻、取得主体、条件、制約を置換しない",
+        "Inherited Negative Finding Register",
+        "standaloneの`Collected at`がないため、時刻を創作せず",
         "Gap status",
         "合成Tenant A → 合成Tenant B",
         "Tenant間分離の不確実性",
@@ -816,8 +1431,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
 
     collected_rows, collected_messages = table_by_header(text, COLLECTED_EVIDENCE_HEADER, label)
     messages.extend(collected_messages)
-    if len(collected_rows) != 6:
-        messages.append(f"{label}: Collected Evidence Register must contain exactly six inherited Evidence rows")
+    if len(collected_rows) != 5:
+        messages.append(f"{label}: Collected Evidence Register must contain exactly five inherited Evidence rows")
     collected_status_index = COLLECTED_EVIDENCE_HEADER.index("Status")
     collected_statuses = {
         row[collected_status_index]
@@ -834,11 +1449,152 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in collected_rows
         if len(row) == len(COLLECTED_EVIDENCE_HEADER)
     }
-    if collected_ids != EXPECTED_INHERITED_EVIDENCE_IDS:
+    if collected_ids != EXPECTED_INHERITED_COLLECTED_EVIDENCE_IDS:
         messages.append(
             f"{label}: Collected Evidence IDs {sorted(collected_ids)!r} "
-            f"!= inherited Evidence IDs {sorted(EXPECTED_INHERITED_EVIDENCE_IDS)!r}"
+            f"!= inherited Collected Evidence IDs {sorted(EXPECTED_INHERITED_COLLECTED_EVIDENCE_IDS)!r}"
         )
+
+    chapter1_evidence_header = (
+        "Evidence ID",
+        "Observation ID",
+        "Validation ID",
+        "Authority / RoE ID",
+        "Question supported",
+        "Source / collector",
+        "Collected at",
+        "Integrity / hash",
+        "Limitation",
+        "Classification",
+    )
+    chapter1_case = read_text("cases/ch01-integrated-security-case-example.md")
+    chapter1_evidence_rows, source_messages = table_by_header(
+        chapter1_case,
+        chapter1_evidence_header,
+        "cases/ch01-integrated-security-case-example.md",
+    )
+    messages.extend(source_messages)
+    expected_inherited_rows: dict[str, tuple[str, str, str, str, str, str]] = {}
+    for row in chapter1_evidence_rows:
+        if len(row) != len(chapter1_evidence_header):
+            continue
+        identifier = row[0].strip("`")
+        if identifier not in EXPECTED_INHERITED_COLLECTED_EVIDENCE_IDS:
+            continue
+        expected_inherited_rows[identifier] = (
+            row[4],
+            f"第1章継承: {row[5]}; Observation {row[1]}; Validation {row[2]}; "
+            f"Authority / RoE {row[3]}; Integrity / hash {row[7]}; Classification {row[9]}",
+            "Collected",
+            INHERITED_REVIEWER_VALUE,
+            row[6],
+            row[8],
+        )
+
+    chapter2_evidence_header = (
+        "Evidence ID",
+        "Description",
+        "Source / custodian",
+        "Collected at",
+        "Integrity / reference",
+        "Limitation",
+    )
+    chapter2_case = read_text("cases/ch02-authorization-decision-example.md")
+    chapter2_evidence_rows, source_messages = table_by_header(
+        chapter2_case,
+        chapter2_evidence_header,
+        "cases/ch02-authorization-decision-example.md",
+    )
+    messages.extend(source_messages)
+    for row in chapter2_evidence_rows:
+        if len(row) != len(chapter2_evidence_header) or row[0].strip("`") != "EVD-AUTH-2026-001":
+            continue
+        expected_inherited_rows["EVD-AUTH-2026-001"] = (
+            row[1],
+            f"第2章継承: Source / custodian {row[2]}; Integrity / reference {row[4]}",
+            "Collected",
+            INHERITED_REVIEWER_VALUE,
+            row[3],
+            row[5],
+        )
+
+    if set(expected_inherited_rows) != EXPECTED_INHERITED_COLLECTED_EVIDENCE_IDS:
+        messages.append(
+            f"{label}: source-derived inherited Evidence contracts {sorted(expected_inherited_rows)!r} "
+            f"!= {sorted(EXPECTED_INHERITED_COLLECTED_EVIDENCE_IDS)!r}"
+        )
+    observed_inherited_rows = {
+        row[0].strip("`"): (row[2], row[3], row[4], row[5], row[6], row[7])
+        for row in collected_rows
+        if len(row) == len(COLLECTED_EVIDENCE_HEADER)
+    }
+    requirement_bindings: dict[str, list[str]] = {}
+    for row in case_tables.get(evidence_requirement_header, []):
+        if len(row) != len(evidence_requirement_header):
+            continue
+        requirement_id = row[evidence_requirement_header.index("Evidence Requirement ID")].strip("`")
+        resulting = row[evidence_requirement_header.index("Resulting Evidence IDs")]
+        for identifier in re.findall(r"\b(?:EVD(?:-AUTH)?-2026-\d{3}|NEG-2026-\d{3})\b", resulting):
+            requirement_bindings.setdefault(identifier, []).append(requirement_id)
+    for row in collected_rows:
+        if len(row) != len(COLLECTED_EVIDENCE_HEADER):
+            continue
+        identifier = row[0].strip("`")
+        expected_relation = ", ".join(
+            f"`{requirement_id}`" for requirement_id in requirement_bindings.get(identifier, [])
+        )
+        if row[1] != expected_relation:
+            messages.append(
+                f"{label}: {identifier} Related Evidence Requirement IDs {row[1]!r} "
+                f"!= Resulting Evidence binding {expected_relation!r}"
+            )
+    for identifier, expected_row in expected_inherited_rows.items():
+        if observed_inherited_rows.get(identifier) != expected_row:
+            messages.append(
+                f"{label}: inherited Evidence metadata drift for {identifier}: "
+                f"{observed_inherited_rows.get(identifier)!r} != {expected_row!r}"
+            )
+
+    chapter1_negative_rows, source_messages = table_by_header(
+        chapter1_case,
+        NEGATIVE_FINDING_HEADER,
+        "cases/ch01-integrated-security-case-example.md",
+    )
+    messages.extend(source_messages)
+    case_negative_rows, negative_messages = table_by_header(text, NEGATIVE_FINDING_HEADER, label)
+    messages.extend(negative_messages)
+    inherited_negative = [
+        row for row in chapter1_negative_rows if row and row[0].strip("`") == "NEG-2026-001"
+    ]
+    if len(inherited_negative) != 1 or case_negative_rows != inherited_negative:
+        messages.append(
+            f"{label}: NEG-2026-001 must preserve the exact Chapter 1 Negative Finding row "
+            f"without an invented timestamp"
+        )
+
+    control_header = table_contracts[4][0]
+    controls_by_id = {
+        row[0].strip("`"): row
+        for row in parsed.get(control_header, [])
+        if len(row) == len(control_header)
+    }
+    lab_control = controls_by_id.get("CTRL-2026-004")
+    if lab_control is None:
+        messages.append(f"{label}: missing CTRL-2026-004 assurance contract")
+    else:
+        assurance = lab_control[control_header.index("Assurance state")]
+        evidence_ids = lab_control[control_header.index("Evidence IDs")]
+        limitation = lab_control[control_header.index("Limitation")]
+        if assurance != "Observed":
+            messages.append(
+                f"{label}: CTRL-2026-004 must remain Observed until explicit synthetic "
+                f"preflight/default-deny/cleanup result Evidence exists; found {assurance!r}"
+            )
+        if evidence_ids != "`EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001`":
+            messages.append(f"{label}: CTRL-2026-004 review Evidence binding drift: {evidence_ids!r}")
+        for marker in ("preflight", "default-deny", "Cleanup", "実施結果は未収集"):
+            if marker not in limitation:
+                messages.append(f"{label}: CTRL-2026-004 limitation missing {marker!r}")
 
     assumption_header = count_contracts[3][0]
     for row in case_tables.get(assumption_header, []):
@@ -981,47 +1737,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if missing:
             messages.append(f"{label}: inherited Evidence IDs missing from {relative}: {missing!r}")
 
-    dependency_header = (
-        "Dependency ID",
-        "From asset",
-        "To asset",
-        "Why the dependency matters",
-        "Failure consequence",
-    )
-    rubric_header = ("Rubric ID", "Criterion", "Meets", "Partially meets", "Does not meet")
-    safety_contracts = (
-        (asset_header, ("Name", "Business role / outcome")),
-        (dependency_header, ("Why the dependency matters", "Failure consequence")),
-        (flow_header, ("Purpose", "Protocol class", "Identity / authorization context", "Observation point")),
-        (boundary_header, ("Trust / authority change", "Crossing condition", "Control", "Failure consequence")),
-        (count_contracts[0][0], ("Reachability class", "External dependency", "Required authority", "Verification status")),
-        (entry_point_header, ("Interface class", "Description", "Required authority", "Observation point")),
-        (table_contracts[3][0], ("Statement", "Preconditions", "Expected impact", "Evidence needed", "Alternative explanation")),
-        (count_contracts[1][0], ("Goal", "Actor capability class", "Preconditions", "Expected outcome", "Observation points", "Excluded operational detail")),
-        (count_contracts[2][0], ("From Asset / State", "Condition", "To Asset / State", "Expected impact", "Observation point")),
-        (table_contracts[4][0], ("Control statement", "Limitation", "Reassessment trigger")),
-        (count_contracts[3][0], ("Statement", "Validation method")),
-        (count_contracts[4][0], ("Missing information / control / telemetry", "Decision affected")),
-        (count_contracts[5][0], ("Question", "Minimum sufficient evidence", "Forbidden / over-collection boundary")),
-        (COLLECTED_EVIDENCE_HEADER, ("Evidence description", "Collection conditions / provenance", "Limitation")),
-        (action_header, ("Action", "Success evidence")),
-        (count_contracts[6][0], ("Trigger", "Scope", "Inputs required", "Closure criteria")),
-        (("Path ID", "Related Threat IDs", "Entry condition", "Intermediate condition", "Undesired end state", "Safety note"), ("Entry condition", "Intermediate condition", "Undesired end state", "Safety note")),
-        (HANDOFF_HEADER, ("What this artifact provides", "Acceptance criteria", "Reject / return condition")),
-        (("Review area", "Reviewer / role", "Rubric", "Result", "Date", "Evidence reference", "Notes"), ("Notes",)),
-        (rubric_header, ("Criterion", "Meets", "Partially meets", "Does not meet")),
-    )
-    fields, adapter_messages = selected_table_fields(text, label, safety_contracts)
+    fields, adapter_messages = classified_table_fields(text, label, CASE_TABLE_OCCURRENCES)
     messages.extend(adapter_messages)
     fields.extend(
         (f"{label} Limitation line {number}", line)
         for number, line in enumerate(section(text, "### Limitations", 3).splitlines(), start=1)
         if re.match(r"\s*[-*]\s+", line)
-    )
-    fields.extend(
-        (f"{label} Decision Context {row[0]}", row[1])
-        for row in decision_rows
-        if len(row) == 2 and row[1]
     )
     messages.extend(policy_errors(fields))
     return messages
@@ -1072,7 +1793,16 @@ def source_contract_errors(chapter: str, registry: dict, note: str) -> list[str]
                 "OWASP Threat Modeling Project resource, tool, or historical-material classification change",
                 "Project URL relocation or retirement",
             ],
-            "markers": ("Maintained Project Guidance", "単一", "完全性"),
+            "markers": (
+                "Maintained Project Guidance",
+                "単一の公式OWASP Threat Modeling methodologyを定義しない",
+                "継続更新されるProject pageには固定versionと単一published dateが提示されていない",
+                "versionとpublishedAtは推測せずnullとする",
+                "checkedAt、nextReviewAt、reviewTriggersで現行pageとProject statusを追跡",
+                "公式に固定version、公開日またはreleaseが提示された場合に再監査",
+                "方法論中立の補助参照としてのみ用いる",
+                "Threat Modelの完全性、Control有効性または評価品質の証明ではない",
+            ),
         },
     }
     for source_id, contract in expected.items():
@@ -1165,7 +1895,14 @@ def publication_contract_errors() -> list[str]:
     return messages
 
 
-def negative_regressions(chapter: str, template: str, case: str, raw_registry: dict) -> None:
+def negative_regressions(
+    chapter: str,
+    template: str,
+    case: str,
+    raw_registry: dict,
+    sources: dict,
+    note: str,
+) -> None:
     chapter_mutations = (
         ("missing OWN", chapter.replace("### OWN", "### OWNERSHIP", 1)),
         ("inventory conflation", chapter.replace("Componentを列挙するだけでは", "ComponentはBusiness Assetなので列挙すれば", 1)),
@@ -1228,6 +1965,7 @@ def negative_regressions(chapter: str, template: str, case: str, raw_registry: d
     for name, mutation in template_mutations:
         if not template_contract_errors(mutation, f"negative template {name}"):
             error(f"negative regression accepted ART-03 mutation: {name}")
+    safety_matrix_negative_regressions(template, TEMPLATE, TEMPLATE_TABLE_OCCURRENCES)
 
     unsafe_samples = (
         "第三者の本番システムへ接続する",
@@ -1372,8 +2110,40 @@ def negative_regressions(chapter: str, template: str, case: str, raw_registry: d
             (
                 "Collected Evidence unsafe collection condition",
                 case.replace(
-                    "第1章から継承した合成Snapshot、no outbound",
+                    "第1章継承: App registration export; Observation `OBS-2026-001`; Validation `VAL-2026-001`; Authority / RoE `ROE-2026-001`; Integrity / hash SHA-256をEvidence manifestへ記録; Classification Internal",
                     "実Tokenを取得してEvidenceへ保存する",
+                    1,
+                ),
+            ),
+            (
+                "inherited Evidence timestamp drift",
+                case.replace(
+                    "2026-07-20T13:20:00+09:00",
+                    "2026-08-08T14:00:00+09:00",
+                    1,
+                ),
+            ),
+            (
+                "inherited Evidence provenance drift",
+                case.replace(
+                    "第1章継承: 業務要件とAPI仕様のReview; Observation `OBS-2026-001`; Validation `VAL-2026-001`; Authority / RoE `ROE-2026-001`; Integrity / hash Review承認記録; Classification Internal",
+                    "第4章で再作成した要件fixture",
+                    1,
+                ),
+            ),
+            (
+                "invented Negative Finding timestamp",
+                case.replace(
+                    "原典にはstandaloneの`Collected at`がないため、時刻を創作せず、原典行をそのまま継承する。",
+                    "原典にはstandaloneの`Collected at`がないが、2026-08-08T14:50:00+09:00として記録する。",
+                    1,
+                ),
+            ),
+            (
+                "CTRL-2026-004 assurance overclaim",
+                case.replace(
+                    "| Lab Operator | Observed | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |",
+                    "| Lab Operator | Validated | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |",
                     1,
                 ),
             ),
@@ -1399,7 +2169,11 @@ def negative_regressions(chapter: str, template: str, case: str, raw_registry: d
             ),
             (
                 "Collected Evidence status mixed with Knowledge state",
-                case.replace("| Inconclusive | Synthetic SOC Reviewer | 2026-08-08T14:30:00+09:00 |", "| Confirmed | Synthetic SOC Reviewer | 2026-08-08T14:30:00+09:00 |", 1),
+                case.replace(
+                    "| Collected | Not recorded in inherited source | 2026-07-21T15:40:00+09:00 |",
+                    "| Confirmed | Not recorded in inherited source | 2026-07-21T15:40:00+09:00 |",
+                    1,
+                ),
             ),
             (
                 "Handoff semantic target drift",
@@ -1411,6 +2185,25 @@ def negative_regressions(chapter: str, template: str, case: str, raw_registry: d
                 error(f"negative Case mutation fixture did not match canonical text: {name}")
             elif not case_contract_errors(mutation, f"negative Case {name}"):
                 error(f"negative regression accepted Chapter 4 Case mutation: {name}")
+        safety_matrix_negative_regressions(case, CASE, CASE_TABLE_OCCURRENCES)
+
+    source_mutation = deepcopy(sources)
+    source_entry = next(
+        (
+            item
+            for item in source_mutation.get("sources", [])
+            if isinstance(item, dict) and item.get("id") == "SRC-OWASP-TM-001"
+        ),
+        None,
+    )
+    if source_entry is None:
+        error("negative Source Registry mutation cannot find SRC-OWASP-TM-001")
+    else:
+        source_entry["notes"] = (
+            "2026-08-08に公式Project pageを確認した。第4章では補助参照として用いる。"
+        )
+        if not source_contract_errors(chapter, source_mutation, note):
+            error("negative Source Registry mutation accepted missing OWASP null-metadata rationale")
 
     pages = raw_registry.get("pages", [])
     target = next((item for item in pages if item.get("source") == CHAPTER), None)
@@ -1468,7 +2261,7 @@ def main() -> int:
     if baseline and sources and baseline != render_reference_baseline():
         error("references/reference-baseline.md: out of sync with references/sources.json")
 
-    negative_regressions(chapter, template, case, raw_registry)
+    negative_regressions(chapter, template, case, raw_registry, sources, note)
 
     if ERRORS:
         for message in ERRORS:

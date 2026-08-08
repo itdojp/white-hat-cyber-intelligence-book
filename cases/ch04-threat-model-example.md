@@ -131,7 +131,7 @@ Flow typeは`Data / Identity / Control`の有限集合だけを使用する。Ev
 | `TB-2026-002` | Data Ownership | OAuth app component → invoice-sync-manifestのsummary Data面 | Finance Data Owner、Platform | App権限がData ownerの許容範囲へ変換される | summary-only endpointに対するread/writeが必要 | App permission、Conditional Access相当の制約、summary-only boundary | 顧客Dataや状態変更への広範なAccess | Assumed | `EVD-2026-001`, `EVD-2026-002` |
 | `TB-2026-003` | Control Plane | Identity control plane → Audit log store | Platform、SOC | Control plane変更が観測可能な証跡へ変換される | consent Event、App identity lifecycle Event、retention policy updateの発生時 | Export設定、保持Policy、query approval | 調査に必要なEventの欠落 | Confirmed | `EVD-2026-003`, `EVD-2026-004` |
 | `TB-2026-004` | Identity Authority | Workload identity → OAuth app runtime session | Platform | Service identityの権限主体とruntime execution contextの責任主体を区別する | App componentがidentity bindingを要求 | workload binding、credential inventory、rotation plan | HumanとWorkloadの責任境界が曖昧化 | Confirmed | `EVD-2026-001`, `EVD-2026-003` |
-| `TB-2026-005` | Tenant | `billing-bridge.example`の合成Tenant A → 合成Tenant B | Platform、Finance Data Owner | Tenant AのIdentity / Data authorityがTenant Bへ移らないことを要求する | App bindingまたはsummary Dataが別Tenantへ関連付く条件 | Tenant ID binding、scope matrix、fail-closed停止 | Tenant間分離の不確実性と判断遅延 | Assumed | `EVD-2026-001`, `EVD-2026-002` |
+| `TB-2026-005` | Tenant | `billing-bridge.example` の合成Tenant A → 合成Tenant B | Platform、Finance Data Owner | Tenant AのIdentity / Data authorityがTenant Bへ移らないことを要求する | App bindingまたはsummary Dataが別Tenantへ関連付く条件 | Tenant ID binding、scope matrix、fail-closed停止 | Tenant間分離の不確実性と判断遅延 | Assumed | `EVD-2026-001`, `EVD-2026-002` |
 | `TB-2026-006` | Network | Synthetic lab runtime → no-outbound boundary | Platform、Lab Operator | local-only評価が外部到達不能という保証へ変換される | runtime sessionやqueryが発生 | default deny、preflight check、cleanup verification | Scope外Serviceへの到達 | Confirmed | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |
 | `TB-2026-007` | Third-party Responsibility | Vendor-managed audit behavior → SOC review and decision use | Platform、SOC、Vendor Management | Vendor管理の内部実装に対する説明責任が内部判断に持ち込まれる | query fieldやnormalization結果へ依存する | 無害化export、role separation、契約前提の確認 | Field欠落や責任境界不明で誤判定 | Unknown | `EVD-2026-003`, `NEG-2026-001` |
 
@@ -208,7 +208,7 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 | `CTRL-2026-001` | `ASSET-2026-004`, `ASSET-2026-005`, `TB-2026-001`, `TH-2026-001`, `PATH-2026-001` | 業務要件とscopeの対応表をReviewする | Business Systems | Documented | `EVD-2026-002` | 自動突合がなく人手差分に依存する | `GAP-2026-002` | scopeまたは業務要件変更 |
 | `CTRL-2026-002` | `ASSET-2026-005`, `ASSET-2026-007`, `TB-2026-004`, `TH-2026-001`, `PATH-2026-001` | Workload identityをHuman identityから分離しrotation手順を管理する | Platform | Implemented | `EVD-2026-001` | 利用観測とrotation結果のEvidenceが不足する | `GAP-2026-001` | Identity bindingまたはrotation変更 |
 | `CTRL-2026-003` | `ASSET-2026-002`, `ASSET-2026-003`, `TB-2026-003`, `TH-2026-002`, `PATH-2026-002` | Admin consentとApp identity lifecycle EventのAudit coverageを維持する | SOC | Observed | `EVD-2026-003` | Rule testとCoverage基準が未完了である | `GAP-2026-003` | Rule、Fieldまたはretention変更 |
-| `CTRL-2026-004` | `ASSET-2026-003`, `TB-2026-006`, `TH-2026-002`, `PATH-2026-002` | no outbound、停止条件、Cleanupを一体で検証する | Lab Operator | Validated | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` | 合成隔離環境の限定条件でのみValidatedである | `GAP-2026-003` | AUTH条件またはLab boundary変更 |
+| `CTRL-2026-004` | `ASSET-2026-003`, `TB-2026-006`, `TH-2026-002`, `PATH-2026-002` | no outbound、停止条件、Cleanupを一体で検証する | Lab Operator | Observed | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` | 設計とAuthorization条件はReview済みだが、preflight、default-deny、Cleanupの実施結果は未収集である | `GAP-2026-003` | AUTH条件、Lab boundaryまたは実施Evidence変更 |
 | `CTRL-2026-005` | `ASSET-2026-006`, `TB-2026-007`, `TH-2026-003`, `PATH-2026-002` | Vendor管理のsummary-only Field normalizationを説明可能にする | Vendor Management | Unknown | `NEG-2026-001` | no outbound条件下ではVendor内部補正の完全性を直接確認しない | `GAP-2026-001` | Field仕様またはVendor責任分界変更 |
 
 ## 9. Assumptions, Unknowns and Gaps
@@ -248,7 +248,7 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 | Evidence Requirement ID | Question | Related Threat / Control / Gap | Minimum sufficient evidence | Forbidden / over-collection boundary | Owner | Due date | Status | Resulting Evidence IDs |
 |---|---|---|---|---|---|---|---|---|
 | `EREQ-2026-001` | 現行scopeは業務要件を超えているか | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` | App registration export、要件表、scope差分表 | 実Tokenを取得しない。実Dataを取得しない。Productionを変更しない。 | Platform | 2026-08-12 | Required | `EVD-2026-001`, `EVD-2026-002` |
-| `EREQ-2026-002` | 同意EventとApp identity lifecycle Eventの監査Coverageは十分か | `TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003` | 合成同意Event、Audit export、Rule test結果 | 無害化summaryを超える追加Data exportを要求しない | SOC | 2026-08-14 | Required | `EVD-2026-003` |
+| `EREQ-2026-002` | 同意EventとApp identity lifecycle Eventの監査Coverageは十分か | `TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003` | 合成同意Event、Audit export、Rule test結果 | 無害化summaryを超える追加Data exportを要求しない | SOC | 2026-08-14 | Required | `EVD-2026-003`, `EVD-AUTH-2026-001` |
 | `EREQ-2026-003` | 保持範囲内で既往影響をどこまで評価できるか | `TH-2026-001`, `TH-2026-003`, `CTRL-2026-005`, `GAP-2026-001`, `GAP-2026-003` | 90日窓のTelemetry summary、Coverage表、negative finding、retention note | PIIを収集しない。実Tenantへ接続しない。scope外Targetを追跡しない。 | SOC、Platform | 2026-08-18 | Required | `EVD-2026-004`, `NEG-2026-001` |
 
 ### Collected Evidence Register
@@ -257,12 +257,21 @@ Collected Evidence statusは `Planned / Collected / Rejected / Inconclusive` の
 
 | Evidence ID | Related Evidence Requirement IDs | Evidence description | Collection conditions / provenance | Status | Reviewer | Collected at | Limitation |
 |---|---|---|---|---|---|---|---|
-| `EVD-2026-001` | `EREQ-2026-001` | 合成App registrationとpermission summary | 第1章から継承した合成Snapshot、no outbound | Collected | Synthetic Platform Reviewer | 2026-08-08T14:00:00+09:00 | Production状態または実Credentialを示さない |
-| `EVD-2026-002` | `EREQ-2026-001` | 業務要件表とscope差分 | 合成承認ticketと要件fixture | Collected | Synthetic Business Reviewer | 2026-08-08T14:10:00+09:00 | 実業務の承認を代替しない |
-| `EVD-2026-003` | `EREQ-2026-002` | 無害化Audit summary | 第1章から継承した合成Event、PIIなし | Collected | Synthetic SOC Reviewer | 2026-08-08T14:20:00+09:00 | Vendor内部Eventの完全性を示さない |
-| `EVD-2026-004` | `EREQ-2026-003` | 90日窓のCoverage summary | 合成retention fixtureとField inventory | Inconclusive | Synthetic SOC Reviewer | 2026-08-08T14:30:00+09:00 | 保持範囲外の不存在を証明しない |
-| `EVD-AUTH-2026-001` | `EREQ-2026-002` | Authorization条件のReview記録 | 第2章`AUTH-CASE-2026-001`から継承 | Collected | Synthetic Safety Reviewer | 2026-08-08T14:40:00+09:00 | 条件付き許可を拡張しない |
-| `NEG-2026-001` | `EREQ-2026-003` | 定義済み観測範囲のnegative finding | 合成Audit summaryとCoverage note | Inconclusive | Synthetic SOC Reviewer | 2026-08-08T14:50:00+09:00 | 侵害不存在または影響ゼロを証明しない |
+| `EVD-2026-001` | `EREQ-2026-001` | 現行scopeは何か | 第1章継承: App registration export; Observation `OBS-2026-001`; Validation `VAL-2026-001`; Authority / RoE `ROE-2026-001`; Integrity / hash SHA-256をEvidence manifestへ記録; Classification Internal | Collected | Not recorded in inherited source | 2026-07-20T13:20:00+09:00 | 取得時点のSnapshot |
+| `EVD-2026-002` | `EREQ-2026-001` | 必要scopeは何か | 第1章継承: 業務要件とAPI仕様のReview; Observation `OBS-2026-001`; Validation `VAL-2026-001`; Authority / RoE `ROE-2026-001`; Integrity / hash Review承認記録; Classification Internal | Collected | Not recorded in inherited source | 2026-07-20T14:10:00+09:00 | 将来要件変更は含まない |
+| `EVD-2026-003` | `EREQ-2026-002` | 同意Eventを観測できるか | 第1章継承: 合成Tenant audit export; Observation `OBS-2026-002`; Validation `VAL-2026-002`; Authority / RoE `ROE-2026-001`; Integrity / hash SHA-256を記録; Classification Internal | Collected | Not recorded in inherited source | 2026-07-21T10:05:00+09:00 | Production Pipelineとの差異がある |
+| `EVD-2026-004` | `EREQ-2026-003` | 過去不正利用を評価できるか | 第1章継承: 90日分の無害化Log集計; Observation `OBS-2026-003`; Validation `VAL-2026-003`; Authority / RoE `ROE-2026-001`; Integrity / hash Query versionとHashを記録; Classification Confidential | Collected | Not recorded in inherited source | 2026-07-21T15:40:00+09:00 | API利用Eventの一部が未収集 |
+| `EVD-AUTH-2026-001` | `EREQ-2026-002` | 合成Tenantを対象とした設定Review承認 | 第2章継承: Source / custodian CTO / Ticket system; Integrity / reference `SYNTH-EVD-AUTH-001` | Collected | Not recorded in inherited source | 2026-08-05T10:15:00+09:00 | Production、外部API、実Credentialを含まない |
+
+同一Evidence IDは原典の取得時刻、取得主体、条件、制約を置換しない。第4章固有の要約をEvidenceとして保存する場合は、新しい派生IDと`Derived from`関係を割り当てる。本Caseでは派生Evidenceを作らず、原典metadataをそのまま継承する。
+
+### Inherited Negative Finding Register
+
+`NEG-2026-001`はCollected Evidenceではなく、第1章で定義されたNegative Findingである。原典にはstandaloneの`Collected at`がないため、時刻を創作せず、原典行をそのまま継承する。
+
+| Negative Finding ID | Related Evidence IDs | Searched behavior | Search window | Available coverage | Gaps | Permitted conclusion |
+|---|---|---|---|---|---|---|
+| `NEG-2026-001` | `EVD-2026-004` | 未承認同意変更、異常なApp sign-in、Data API利用 | 過去90日 | 同意変更とsign-inは72日分。API利用は一部のみ | 18日分の保持不足、API利用Field不足 | 取得できた範囲では3つの対象Behaviorに該当するEventを確認していない。侵害不存在は断定しない |
 
 ### Negative findingの原則
 

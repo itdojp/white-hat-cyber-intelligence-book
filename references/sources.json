@@ -189,7 +189,7 @@
       "chapters": [
         4
       ],
-      "notes": "2026-08-08に公式Project pageを意味確認し、Maintained Project Guidanceであることと単一の公式OWASP Threat Modeling methodologyを定義しないことを確認した。第4章では方法論中立の補助参照としてのみ用いる。STRIDE、Diagram、Toolまたは生成件数はThreat Modelの完全性、Control有効性または評価品質の証明ではない。"
+      "notes": "2026-08-08に公式Project pageを意味確認し、Maintained Project Guidanceであることと単一の公式OWASP Threat Modeling methodologyを定義しないことを確認した。継続更新されるProject pageには固定versionと単一published dateが提示されていないため、versionとpublishedAtは推測せずnullとする。checkedAt、nextReviewAt、reviewTriggersで現行pageとProject statusを追跡し、公式に固定version、公開日またはreleaseが提示された場合に再監査する。第4章では方法論中立の補助参照としてのみ用いる。STRIDE、Diagram、Toolまたは生成件数はThreat Modelの完全性、Control有効性または評価品質の証明ではない。"
     },
     {
       "id": "SRC-IR-001",
