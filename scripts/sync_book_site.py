@@ -8,7 +8,6 @@ import posixpath
 import re
 import sys
 import tempfile
-import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -29,6 +28,10 @@ SCHEMA_VERSION = "1.1.0"
 DIRECTORY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 STATIC_PATH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]*\.json$")
 LINE_TERMINATOR_RE = re.compile(r"[\r\n\u2028\u2029]")
+# Freeze the Unicode 15.0 Cf set used by the schema and parser.  Do not derive
+# this table from the runner's unicodedata version: Python 3.11 and 3.12 ship
+# different Unicode databases, while the publication contract must be stable.
+PAGE_TITLE_FORMAT_CONTROL_UNICODE_VERSION = "15.0.0"
 PAGE_TITLE_FORMAT_CONTROL_RANGES = (
     (0x00AD, 0x00AD),
     (0x0600, 0x0605),
@@ -1142,15 +1145,14 @@ def run_registry_security_regressions() -> list[str]:
                 failures.append(
                     f"site-pages schema title pattern accepted {name}-only/unsafe title"
                 )
-        runtime_format_controls = frozenset(
-            codepoint
-            for codepoint in range(sys.maxunicode + 1)
-            if unicodedata.category(chr(codepoint)) == "Cf"
-        )
-        if runtime_format_controls != PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS:
+        if (
+            PAGE_TITLE_FORMAT_CONTROL_UNICODE_VERSION != "15.0.0"
+            or len(PAGE_TITLE_FORMAT_CONTROL_RANGES) != 21
+            or len(PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS) != 170
+        ):
             failures.append(
-                "site-pages title format-control table does not match Python Unicode "
-                f"{unicodedata.unidata_version} Cf data"
+                "site-pages title format-control table drifted from the frozen "
+                "Unicode 15.0 contract (21 ranges / 170 code points)"
             )
         all_format_controls = "".join(
             chr(codepoint) for codepoint in sorted(PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS)
