@@ -97,7 +97,7 @@ EXPECTED_CASE_IDS: dict[str, set[str]] = {
     "TB": {f"TB-2026-{number:03d}" for number in range(1, 9)},
     "EXP": {f"EXP-2026-{number:03d}" for number in range(1, 4)},
     "EP": {f"EP-2026-{number:03d}" for number in range(1, 4)},
-    "TH": {f"TH-2026-{number:03d}" for number in range(1, 4)},
+    "TH": {f"TH-2026-{number:03d}" for number in range(1, 5)},
     "MISUSE": {f"MISUSE-2026-{number:03d}" for number in range(1, 3)},
     "PATH": {f"PATH-2026-{number:03d}" for number in range(1, 3)},
     "EDGE": {f"EDGE-2026-{number:03d}" for number in range(1, 8)},
@@ -121,12 +121,26 @@ EXPECTED_INHERITED_EVIDENCE_IDS = {
 }
 EXPECTED_INHERITED_COLLECTED_EVIDENCE_IDS = EXPECTED_INHERITED_EVIDENCE_IDS - {"NEG-2026-001"}
 INHERITED_REVIEWER_VALUE = "Not recorded in inherited source"
+INHERITED_TH_001_PROPOSITION = (
+    "請求書連携アプリの権限が業務要件を超えており、Credentialが不正利用された場合に"
+    "顧客Dataへ広範にAccessできる"
+)
+INHERITED_TH_001_CASE_PROPOSITION = (
+    "請求書連携アプリの業務要件超過権限、Credential misuse、顧客Dataへの"
+    "広範Access可能性が同時に成立するという第1章の命題"
+)
+INHERITED_TH_001_CASE_PRECONDITIONS = (
+    "過大scope、Credentialの有効性、API到達性を成立条件として評価する"
+)
 INHERITED_TH_003_PROPOSITION = "既に同型の不正利用が発生した"
+SUMMARY_TH_004_PROPOSITION = (
+    "業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある"
+)
 EXPECTED_HANDOFF_ROWS = {
     "HO-TM-2026-005": (
         "第5章 ATT&CK",
         "Behavior記述",
-        "`TH-2026-001`〜`003`の成立条件、Flow、Boundary、Exposure、観測点",
+        "`TH-2026-001`〜`004`の成立条件、Flow、Boundary、Exposure、観測点",
     ),
     "HO-TM-2026-006": (
         "第6章 観測可能性",
@@ -141,7 +155,7 @@ EXPECTED_HANDOFF_ROWS = {
     "HO-TM-2026-011": (
         "第11章 Web/API評価",
         "Web/API Assessment Hypothesis Pack",
-        "`TB-2026-002` / `TB-2026-008`、`FLOW-2026-003`、`PATH-2026-001`",
+        "`TH-2026-001` / `TH-2026-004`、`TB-2026-002` / `TB-2026-008`、`FLOW-2026-003`、`PATH-2026-001`",
     ),
     "HO-TM-2026-012": (
         "第12章 Identity評価",
@@ -940,6 +954,14 @@ class MarkdownFenceSpan:
     content: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class MarkdownIndentedCodeSpan:
+    opening_index: int
+    closing_index: int
+    indentation: str
+    content: tuple[str, ...]
+
+
 def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
     """Remove non-rendered comments while preserving visible same-line text.
 
@@ -1134,6 +1156,88 @@ def _rendered_fence_spans(lines: list[str], *, start_index: int) -> list[Markdow
     return spans
 
 
+def _rendered_indented_code_spans(
+    lines: list[str],
+    *,
+    start_index: int,
+    excluded_lines: set[int],
+) -> list[MarkdownIndentedCodeSpan]:
+    """Select finite four-space/tab reader-visible code blocks.
+
+    This is deliberately a bounded publication adapter rather than a complete
+    CommonMark block parser.  Every nonblank line beginning with four spaces or
+    one tab outside a parsed fenced block is treated as reader-visible literal
+    code.  Blank continuation lines stay inside a span only when another
+    indented line follows, so ordinary paragraph boundaries remain stable.
+    """
+
+    spans: list[MarkdownIndentedCodeSpan] = []
+    index = start_index
+    while index < len(lines):
+        if index in excluded_lines:
+            index += 1
+            continue
+        line = lines[index]
+        if line.startswith("    "):
+            indentation = "spaces"
+        elif line.startswith("\t"):
+            indentation = "tab"
+        else:
+            index += 1
+            continue
+
+        content: list[str] = []
+        indentation_kinds: set[str] = set()
+        closing_index = index
+        while closing_index < len(lines) and closing_index not in excluded_lines:
+            candidate = lines[closing_index]
+            if candidate.startswith("    "):
+                indentation_kinds.add("spaces")
+                content.append(candidate[4:])
+                closing_index += 1
+                continue
+            if candidate.startswith("\t"):
+                indentation_kinds.add("tab")
+                content.append(candidate[1:])
+                closing_index += 1
+                continue
+            if not candidate.strip():
+                lookahead = closing_index + 1
+                while (
+                    lookahead < len(lines)
+                    and lookahead not in excluded_lines
+                    and not lines[lookahead].strip()
+                ):
+                    lookahead += 1
+                if (
+                    lookahead < len(lines)
+                    and lookahead not in excluded_lines
+                    and (
+                        lines[lookahead].startswith("    ")
+                        or lines[lookahead].startswith("\t")
+                    )
+                ):
+                    content.append("")
+                    closing_index += 1
+                    continue
+            break
+        indentation = (
+            next(iter(indentation_kinds))
+            if len(indentation_kinds) == 1
+            else "mixed"
+        )
+        spans.append(
+            MarkdownIndentedCodeSpan(
+                opening_index=index,
+                closing_index=closing_index - 1,
+                indentation=indentation,
+                content=tuple(content),
+            )
+        )
+        index = closing_index
+    return spans
+
+
 def _literal_fence_visible_fields(
     text: str,
     *,
@@ -1213,24 +1317,34 @@ def _literal_fence_visible_fields(
 
 
 def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str]]:
-    """Select rendered headings, prose, lists, and finite fenced block contents.
+    """Select rendered headings, prose, lists, and finite code-block contents.
 
     Table cells are owned by the finite table manifest.  This adapter owns the
-    remaining heading/prose/list/fence surface without treating front matter,
-    comments, ordinary Markdown link destinations, reference definitions, or
-    indented code as reader instructions.  Fenced content is literal rendered
-    source, so its delimiters are neutralized and its full contents are sent to
-    shared Policy 1.2.0.  Wrapped lines remain one field so action/object and
-    negation context is not split at an authoring line break.
+    remaining heading/prose/list/code surface without treating front matter,
+    ordinary Markdown comments, link destinations, or reference definitions as
+    reader instructions.  Fenced and four-space/tab-indented code are literal
+    rendered source, so their delimiters are neutralized and their full contents
+    are sent to shared Policy 1.2.0.  Wrapped lines remain one field so
+    action/object and negation context is not split at an authoring line break.
     """
 
     source_lines = text.splitlines()
     selected: list[tuple[int, tuple[str, str]]] = []
     content_start = _front_matter_content_start(source_lines)
     spans = _rendered_fence_spans(source_lines, start_index=content_start)
-    covered_lines = {
+    fenced_lines = {
         index
         for span in spans
+        for index in range(span.opening_index, span.closing_index + 1)
+    }
+    indented_spans = _rendered_indented_code_spans(
+        source_lines,
+        start_index=content_start,
+        excluded_lines=fenced_lines,
+    )
+    covered_lines = fenced_lines | {
+        index
+        for span in indented_spans
         for index in range(span.opening_index, span.closing_index + 1)
     }
     renderable_lines = [
@@ -1249,6 +1363,15 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
         location = (
             f"{label}:{span.opening_index + 1}-{span.closing_index + 1} "
             f"fence[{language_label}/{opening.surface}{container}]"
+        )
+        for field in _literal_fence_visible_fields(
+            "\n".join(span.content), location=location
+        ):
+            selected.append((span.opening_index + 1, field))
+    for span in indented_spans:
+        location = (
+            f"{label}:{span.opening_index + 1}-{span.closing_index + 1} "
+            f"indented-code[{span.indentation}]"
         )
         for field in _literal_fence_visible_fields(
             "\n".join(span.content), location=location
@@ -1722,6 +1845,57 @@ def fenced_surface_regressions(
             )
 
 
+def _with_indented_code_probe(text: str, probe: str, *, indentation: str) -> str:
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    if indentation == "spaces":
+        prefix = "    "
+    elif indentation == "tab":
+        prefix = "\t"
+    else:
+        raise ValueError(f"unknown indented-code regression style: {indentation}")
+    return f"{text}{suffix}\n{prefix}{probe}\n"
+
+
+def indented_code_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Prove four-space/tab reader-visible code reaches Policy 1.2.0."""
+
+    unsafe = "第三者の本番システムへ接続する。"
+    safe_probes = (
+        "第三者の本番システムへ接続しない。",
+        "マルウェア分類の危険性を分析する。",
+        "Attack Pathは前提条件と観測点の関係を記録し、実行可能な侵害手順を含めない。",
+    )
+    for indentation in ("spaces", "tab"):
+        unsafe_errors = contract_errors(
+            _with_indented_code_probe(text, unsafe, indentation=indentation),
+            f"negative {label} {indentation} indented code action",
+        )
+        if not any(
+            "[target.real_or_external]" in message
+            and "indented-code[" in message
+            and "第三者の本番システムへ接続する" in message
+            for message in unsafe_errors
+        ):
+            error(
+                f"{label}: {indentation} reader-visible indented code bypassed "
+                "Policy 1.2.0"
+            )
+        for probe in safe_probes:
+            failures = contract_errors(
+                _with_indented_code_probe(text, probe, indentation=indentation),
+                f"safe {label} {indentation} indented code counterpart",
+            )
+            if failures:
+                error(
+                    f"{label}: safe {indentation} reader-visible indented code "
+                    f"was rejected for {probe!r}: {failures!r}"
+                )
+
+
 def reader_visible_adapter_contract_regressions() -> None:
     fixture = """---
 title: ignored metadata
@@ -2110,6 +2284,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "TH-2026-001",
         "TH-2026-002",
         "TH-2026-003",
+        "TH-2026-004",
         "MISUSE-2026-001",
         "MISUSE-2026-002",
         "PATH-2026-001",
@@ -2260,6 +2435,17 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             if marker not in refinement_text:
                 messages.append(f"{label}: TB-2026-008 summary-only refinement missing {marker!r}")
 
+    lab_boundary = boundary_rows_by_id.get("TB-2026-006")
+    if lab_boundary is None:
+        messages.append(f"{label}: missing synthetic lab boundary TB-2026-006")
+    else:
+        knowledge_state = lab_boundary[boundary_header.index("Knowledge state")]
+        if knowledge_state != "Assumed":
+            messages.append(
+                f"{label}: TB-2026-006 must remain Assumed until preflight/default-deny/"
+                f"cleanup behavior Evidence is collected; found {knowledge_state!r}"
+            )
+
     flow_header = table_contracts[1][0]
     evidence_status_index = flow_header.index("Evidence status")
     flow_evidence_statuses = {
@@ -2290,6 +2476,117 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in parsed.get(hypothesis_header, [])
         if len(row) == len(hypothesis_header)
     }
+    chapter1_hypothesis_header = (
+        "Hypothesis ID",
+        "Related Decision Requirement ID",
+        "Related Asset IDs",
+        "Related Boundary IDs",
+        "Statement",
+        "Preconditions",
+        "Expected impact",
+        "Priority",
+        "Status",
+    )
+    chapter1_hypothesis_rows, chapter1_hypothesis_messages = table_by_header(
+        chapter1_case,
+        chapter1_hypothesis_header,
+        "cases/ch01-integrated-security-case-example.md",
+    )
+    messages.extend(chapter1_hypothesis_messages)
+    source_th_001 = next(
+        (
+            row
+            for row in chapter1_hypothesis_rows
+            if len(row) == len(chapter1_hypothesis_header)
+            and row[0].strip("`") == "TH-2026-001"
+        ),
+        None,
+    )
+    inherited_th_001 = hypothesis_rows.get("TH-2026-001")
+    if source_th_001 is None:
+        messages.append(f"{label}: Chapter 1 must define inherited hypothesis TH-2026-001")
+    elif inherited_th_001 is None:
+        messages.append(f"{label}: missing inherited hypothesis TH-2026-001")
+    else:
+        exact_fields = {
+            "Decision Requirement ID": source_th_001[1],
+            "Related Asset IDs": source_th_001[2],
+            # The Chapter 1 action-bearing prose is preserved semantically in a
+            # non-operational nominal proposition so the public-content Policy
+            # does not mistake a threat statement for an instruction.
+            "Statement": INHERITED_TH_001_CASE_PROPOSITION,
+            "Preconditions": INHERITED_TH_001_CASE_PRECONDITIONS,
+            "Expected impact": source_th_001[6],
+            "Priority": source_th_001[7],
+            "Hypothesis status": source_th_001[8],
+        }
+        for field, expected in exact_fields.items():
+            observed = inherited_th_001[hypothesis_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: TH-2026-001 {field} {observed!r} must match "
+                    f"the inherited semantic contract {expected!r}"
+                )
+        inherited_boundaries = set(re.findall(r"\bTB-2026-\d{3}\b", source_th_001[3]))
+        chapter4_boundaries = set(
+            re.findall(
+                r"\bTB-2026-\d{3}\b",
+                inherited_th_001[hypothesis_header.index("Boundary / Flow / Exposure IDs")],
+            )
+        )
+        if not inherited_boundaries <= chapter4_boundaries:
+            messages.append(
+                f"{label}: TH-2026-001 dropped inherited boundary IDs "
+                f"{sorted(inherited_boundaries - chapter4_boundaries)!r}"
+            )
+        if source_th_001[4] != INHERITED_TH_001_PROPOSITION:
+            messages.append(
+                f"{label}: Chapter 1 TH-2026-001 proposition drifted from the frozen "
+                f"contract {INHERITED_TH_001_PROPOSITION!r}"
+            )
+
+    summary_th_004 = hypothesis_rows.get("TH-2026-004")
+    if summary_th_004 is None:
+        messages.append(f"{label}: missing summary-only refinement hypothesis TH-2026-004")
+    else:
+        summary_contract = {
+            "Decision Requirement ID": "`DR-2026-001`",
+            "Related Asset IDs": (
+                "`ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006`, "
+                "`ASSET-2026-007`"
+            ),
+            "Boundary / Flow / Exposure IDs": (
+                "`TB-2026-001`, `TB-2026-004`, `TB-2026-008`, `FLOW-2026-001`, "
+                "`FLOW-2026-002`, `FLOW-2026-003`, `FLOW-2026-006`, "
+                "`EXP-2026-001`, `EXP-2026-003`"
+            ),
+            "Statement": SUMMARY_TH_004_PROPOSITION,
+            "Preconditions": "暫定scopeとWorkload identity bindingが残る",
+            "Expected impact": "合成Dataの同期状態と業務判断への影響が拡大する",
+            "Evidence needed": "`EREQ-2026-001`, `EREQ-2026-003`",
+            "Alternative explanation": "暫定scopeは残るが実効利用は最小権限かもしれない",
+            "Priority": "High",
+            "Hypothesis status": "Supported",
+        }
+        for field, expected in summary_contract.items():
+            observed = summary_th_004[hypothesis_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: TH-2026-004 {field} {observed!r} != frozen "
+                    f"summary-only value {expected!r}"
+                )
+        statement = summary_th_004[hypothesis_header.index("Statement")]
+        relations = summary_th_004[hypothesis_header.index("Boundary / Flow / Exposure IDs")]
+        if "TB-2026-008" not in relations or "TB-2026-002" in relations:
+            messages.append(
+                f"{label}: TH-2026-004 must bind summary-only TB-2026-008 without "
+                f"overwriting inherited customer-data TB-2026-002: {relations!r}"
+            )
+        if statement == INHERITED_TH_001_PROPOSITION:
+            messages.append(
+                f"{label}: TH-2026-004 must remain a distinct summary-only proposition"
+            )
+
     inherited_th_003 = hypothesis_rows.get("TH-2026-003")
     if inherited_th_003 is not None:
         statement = inherited_th_003[hypothesis_header.index("Statement")]
@@ -2620,7 +2917,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             hypothesis_rows.get("TH-2026-001"),
             hypothesis_header,
             "Boundary / Flow / Exposure IDs",
-            {"TB-2026-001", "TB-2026-002", "TB-2026-004", "TB-2026-008"},
+            {"TB-2026-001", "TB-2026-002", "TB-2026-004"},
+        ),
+        (
+            "TH-2026-004",
+            hypothesis_rows.get("TH-2026-004"),
+            hypothesis_header,
+            "Boundary / Flow / Exposure IDs",
+            {"TB-2026-001", "TB-2026-004", "TB-2026-008"},
         ),
         (
             "TH-2026-003",
@@ -2666,10 +2970,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(f"{label}: Action ID table requires at least five rows")
 
     expected_action_relations = {
-        "ACT-TM-2026-001": "`TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002`",
+        "ACT-TM-2026-001": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-001`, `GAP-2026-002`",
         "ACT-TM-2026-002": "`TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003`",
         "ACT-TM-2026-003": "`TH-2026-003`, `CTRL-2026-005`, `GAP-2026-001`",
-        "ACT-TM-2026-004": "`TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002`",
+        "ACT-TM-2026-004": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-001`, `GAP-2026-002`",
         "ACT-TM-2026-005": "`TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003`",
         "ACT-TM-2026-006": "`TH-2026-002`, `CTRL-2026-004`, `GAP-2026-004`",
     }
@@ -2881,6 +3185,99 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             for marker in markers:
                 if marker not in value:
                     messages.append(f"{label}: {reassessment_id} {field} missing {marker!r}")
+
+    path_summary_rows, path_summary_messages = table_by_header(
+        text, PATH_SUMMARY_HEADER, label
+    )
+    messages.extend(path_summary_messages)
+    path_summaries_by_id = {
+        row[0].strip("`"): row
+        for row in path_summary_rows
+        if len(row) == len(PATH_SUMMARY_HEADER)
+    }
+    assumption_header = count_contracts[3][0]
+    assumptions_by_id = {
+        row[0].strip("`"): row
+        for row in case_tables.get(assumption_header, [])
+        if len(row) == len(assumption_header)
+    }
+    refinement_consumer_contracts = (
+        (
+            "PATH-2026-001",
+            path_summaries_by_id.get("PATH-2026-001"),
+            PATH_SUMMARY_HEADER,
+            "Related Threat IDs",
+            {"TH-2026-001", "TH-2026-004"},
+        ),
+        (
+            "CTRL-2026-001",
+            controls_by_id.get("CTRL-2026-001"),
+            control_header,
+            "Related Asset / Boundary / Threat / Path IDs",
+            {"TH-2026-001", "TH-2026-004"},
+        ),
+        (
+            "CTRL-2026-002",
+            controls_by_id.get("CTRL-2026-002"),
+            control_header,
+            "Related Asset / Boundary / Threat / Path IDs",
+            {"TH-2026-001", "TH-2026-004"},
+        ),
+        (
+            "ASM-2026-001",
+            assumptions_by_id.get("ASM-2026-001"),
+            assumption_header,
+            "Related IDs",
+            {"TH-2026-001", "TH-2026-004"},
+        ),
+        (
+            "ASM-2026-002",
+            assumptions_by_id.get("ASM-2026-002"),
+            assumption_header,
+            "Related IDs",
+            {"TH-2026-003", "TH-2026-004"},
+        ),
+        (
+            "GAP-2026-002",
+            gap_rows_by_id.get("GAP-2026-002"),
+            gap_header,
+            "Missing information / control / telemetry",
+            {"TH-2026-001", "TH-2026-004"},
+        ),
+        (
+            "EREQ-2026-001",
+            evidence_rows_by_id.get("EREQ-2026-001"),
+            evidence_requirement_header,
+            "Related Threat / Control / Gap",
+            {"TH-2026-001", "TH-2026-004"},
+        ),
+        (
+            "EREQ-2026-003",
+            evidence_rows_by_id.get("EREQ-2026-003"),
+            evidence_requirement_header,
+            "Related Threat / Control / Gap",
+            {"TH-2026-001", "TH-2026-003", "TH-2026-004"},
+        ),
+        (
+            "REA-TM-2026-001",
+            reassessment_rows_by_id.get("REA-TM-2026-001"),
+            reassessment_header,
+            "Scope",
+            {"TH-2026-001", "TH-2026-004"},
+        ),
+    )
+    for identifier, row, header, field, expected_th_ids in refinement_consumer_contracts:
+        if row is None:
+            messages.append(f"{label}: missing TH-2026-004 refinement consumer {identifier}")
+            continue
+        observed_th_ids = set(
+            re.findall(r"\bTH-2026-\d{3}\b", row[header.index(field)])
+        )
+        if observed_th_ids != expected_th_ids:
+            messages.append(
+                f"{label}: {identifier} {field} Threat references "
+                f"{sorted(observed_th_ids)!r} != {sorted(expected_th_ids)!r}"
+            )
 
     reauthorization_markers = (
         "合成TenantであってもApp permission、consent、Identity bindingなどの設定変更を行う場合。",
@@ -3262,6 +3659,7 @@ def negative_regressions(
         ),
     )
     fenced_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
+    indented_code_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
 
     template_mutations = (
         ("model status", template.replace("Draft / In Review / Approved for Assessment / Needs Evidence / Superseded", "Draft / Complete", 1)),
@@ -3320,6 +3718,7 @@ def negative_regressions(
         ),
     )
     fenced_surface_regressions(template, TEMPLATE, template_contract_errors)
+    indented_code_surface_regressions(template, TEMPLATE, template_contract_errors)
 
     unsafe_samples = (
         "第三者の本番システムへ接続する",
@@ -3370,6 +3769,30 @@ def negative_regressions(
                 case.replace("## 10. Evidence Requirements and Actions", "## 10. Evidence Inventory", 1),
             ),
             (
+                "TH-2026-001 inherited proposition drift",
+                case.replace(
+                    INHERITED_TH_001_CASE_PROPOSITION,
+                    SUMMARY_TH_004_PROPOSITION,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-001 inherited precondition drift",
+                case.replace(
+                    INHERITED_TH_001_CASE_PRECONDITIONS,
+                    "暫定scopeとWorkload identity bindingが残る",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-001 inherited impact drift",
+                case.replace(
+                    "顧客Dataの閲覧・変更可能性",
+                    "合成Dataの同期状態と業務判断への影響が拡大する",
+                    1,
+                ),
+            ),
+            (
                 "TH-2026-003 inherited proposition drift",
                 case.replace(
                     "既に同型の不正利用が発生した",
@@ -3382,6 +3805,14 @@ def negative_regressions(
                 case.replace(
                     "OAuth app → 顧客Data API",
                     "OAuth app component → invoice-sync-manifestのsummary Data面",
+                    1,
+                ),
+            ),
+            (
+                "TB-2026-006 evidence-state overclaim",
+                case.replace(
+                    "| Scope外Serviceへの到達 | Assumed | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |",
+                    "| Scope外Serviceへの到達 | Confirmed | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |",
                     1,
                 ),
             ),
@@ -3418,10 +3849,26 @@ def negative_regressions(
                 ),
             ),
             (
-                "TH-2026-001 summary-boundary reference drift",
+                "TH-2026-004 summary-boundary reference drift",
                 case.replace(
-                    "`TB-2026-001`, `TB-2026-002`, `TB-2026-004`, `TB-2026-008`, `FLOW-2026-001`",
-                    "`TB-2026-001`, `TB-2026-002`, `TB-2026-004`, `TB-2026-002`, `FLOW-2026-001`",
+                    "`TB-2026-001`, `TB-2026-004`, `TB-2026-008`, `FLOW-2026-001`",
+                    "`TB-2026-001`, `TB-2026-004`, `TB-2026-002`, `FLOW-2026-001`",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-004 related-asset drift",
+                case.replace(
+                    "`ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006`, `ASSET-2026-007` | `TB-2026-001`, `TB-2026-004`, `TB-2026-008`",
+                    "`ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006` | `TB-2026-001`, `TB-2026-004`, `TB-2026-008`",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-004 evidence-requirement drift",
+                case.replace(
+                    "合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001`, `EREQ-2026-003` | 暫定scopeは残るが実効利用は最小権限かもしれない",
+                    "合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001` | 暫定scopeは残るが実効利用は最小権限かもしれない",
                     1,
                 ),
             ),
@@ -3430,6 +3877,30 @@ def negative_regressions(
                 case.replace(
                     "`TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `TB-2026-008`, `FLOW-2026-003`",
                     "`TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `TB-2026-002`, `FLOW-2026-003`",
+                    1,
+                ),
+            ),
+            (
+                "PATH-2026-001 drops summary refinement hypothesis",
+                case.replace(
+                    "| `PATH-2026-001` | `TH-2026-001`, `TH-2026-004` |",
+                    "| `PATH-2026-001` | `TH-2026-001` |",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-001 drops summary refinement hypothesis",
+                case.replace(
+                    "| `EREQ-2026-001` | 現行scopeは業務要件を超えているか | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-001`, `GAP-2026-002` |",
+                    "| `EREQ-2026-001` | 現行scopeは業務要件を超えているか | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` |",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 drops summary refinement hypothesis",
+                case.replace(
+                    "| `REA-TM-2026-001` | scope変更、承認ticket改定、manual import要件更新 | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-001`, `GAP-2026-002` |",
+                    "| `REA-TM-2026-001` | scope変更、承認ticket改定、manual import要件更新 | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` |",
                     1,
                 ),
             ),
@@ -3656,7 +4127,7 @@ def negative_regressions(
             (
                 "Action source type drift",
                 case.replace(
-                    "| `ACT-TM-2026-004` | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` |",
+                    "| `ACT-TM-2026-004` | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-001`, `GAP-2026-002` |",
                     "| `ACT-TM-2026-004` | `TB-2026-005`, `MISUSE-2026-001` |",
                     1,
                 ),
@@ -3771,6 +4242,7 @@ def negative_regressions(
             ),
         )
         fenced_surface_regressions(case, CASE, case_contract_errors)
+        indented_code_surface_regressions(case, CASE, case_contract_errors)
 
     changelog_lines = changelog.splitlines()
     added_line = next((line for line in changelog_lines if line.startswith("- ") and "ART-03" in line), "")
