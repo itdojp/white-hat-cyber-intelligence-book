@@ -120,7 +120,7 @@ Threat Modelは、図を描く作業ではなく、判断要求をレビュー�
 7. Threat Hypothesis / Misuse Case
    例: 未承認権限追加、他Tenant Data参照、監査欠落、第三者管理面経由の誤設定
 8. Attack Path
-   例: 権限拡大 → Token利用範囲拡大 → Data API到達 → 監査欠落で検知遅延
+   例: 権限拡大の仮説 → Token scope過大の状態 → Data APIへの到達可能性 → 監査欠落による検知遅延
 9. Existing Control / Assumption / Gap
    例: 変更承認Policyはあるが、実装状態と観測状態が未確認
 10. Evidence Requirement / Action / Reassessment

@@ -3,11 +3,13 @@
 
 from __future__ import annotations
 
+import html
 import json
 import re
 import subprocess
 import sys
 from collections import Counter
+from collections.abc import Callable
 from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
@@ -856,7 +858,37 @@ def policy_errors(fields: list[tuple[str, str]]) -> list[str]:
 
 _MARKDOWN_LIST_ITEM = re.compile(r"^\s*(?:[-+*]|\d+[.)])\s+(?P<body>.*)$")
 _MARKDOWN_HEADING = re.compile(r"^\s{0,3}#{1,6}(?:[ \t]+|$)(?P<body>.*)$")
-_MARKDOWN_FENCE = re.compile(r"^\s*(?P<marker>`{3,}|~{3,})")
+_MARKDOWN_FENCE = re.compile(
+    r"^(?P<indent> {0,3})(?P<marker>`{3,}|~{3,})(?P<info>[^\r\n]*)$"
+)
+_FENCED_HTML_COMMENT = re.compile(r"<!--(?P<body>.*?)-->", re.DOTALL)
+_FENCED_INLINE_LINK = re.compile(
+    r"!?\[(?P<label>[^\]\n]*)\]\((?P<destination>[^)\n]+)\)"
+)
+_FENCED_REFERENCE_LINK = re.compile(
+    r"!?\[(?P<label>[^\]\n]*)\]\[(?P<reference>[^\]\n]*)\]"
+)
+_FENCED_SHORTCUT_LINK = re.compile(r"!?\[(?P<label>[^\]\n]*)\]")
+_SAME_LINE_LIST_FENCE = re.compile(
+    r"^ {0,3}(?:[-+*]|\d+[.)])[ \t]+(?:`{3,}|~{3,})"
+)
+_MAX_FENCE_QUOTE_DEPTH = 3
+_MAX_FENCE_CONTAINER_INDENT = 12
+# Chapter 4 publishes only non-executable textual, structured-data, and diagram
+# fences.  Every listed surface is reader-visible and is scanned.  A new or
+# executable language fails closed until this finite adapter contract is
+# reviewed; unknown languages never become an implicit safety bypass.
+_READER_VISIBLE_FENCE_LANGUAGES = {
+    "": "plain-text",
+    "text": "plain-text",
+    "plaintext": "plain-text",
+    "md": "markup-source",
+    "markdown": "markup-source",
+    "json": "structured-data",
+    "yaml": "structured-data",
+    "yml": "structured-data",
+    "mermaid": "diagram-source",
+}
 _MARKDOWN_REFERENCE_DEFINITION = re.compile(r"^\s*\[[^]]+\]:\s*")
 _MARKDOWN_AUTOLINK_URL = re.compile(
     r"<(?P<url>(?:(?:https?):)?//[^<>\s]+)>",
@@ -889,6 +921,23 @@ _VISIBLE_DOTTED_VERSION = re.compile(
     r"v?\d+\.\d+\.\d+(?:-[0-9A-Za-z]+(?:\.[0-9A-Za-z-]+)*)?",
     re.IGNORECASE,
 )
+
+
+@dataclass(frozen=True)
+class MarkdownFenceOpening:
+    marker: str
+    language: str
+    surface: str
+    quote_depth: int
+    container_indent: int
+
+
+@dataclass(frozen=True)
+class MarkdownFenceSpan:
+    opening_index: int
+    closing_index: int
+    opening: MarkdownFenceOpening
+    content: tuple[str, ...]
 
 
 def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
@@ -932,52 +981,279 @@ def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
     return visible_lines
 
 
-def reader_visible_prose_fields(text: str, label: str) -> list[tuple[str, str]]:
-    """Select rendered headings, paragraphs, and list items outside tables/code.
+def _fence_language(info: str, *, marker: str, line_number: int) -> tuple[str, str]:
+    """Classify one top-level rendered fence from the finite Chapter 4 set."""
+
+    normalized = info.strip().casefold()
+    if marker.startswith("`") and "`" in normalized:
+        raise ValueError(f"line {line_number}: backtick fence info contains a backtick")
+    if normalized and not re.fullmatch(r"[a-z0-9_-]+", normalized):
+        raise ValueError(f"line {line_number}: unsupported Markdown fence info {info.strip()!r}")
+    surface = _READER_VISIBLE_FENCE_LANGUAGES.get(normalized)
+    if surface is None:
+        raise ValueError(
+            f"line {line_number}: unclassified reader-visible Markdown fence language "
+            f"{normalized!r}"
+        )
+    return normalized, surface
+
+
+def _front_matter_content_start(lines: list[str]) -> int:
+    """Return the first content-line index, rejecting unclosed YAML metadata."""
+
+    if not lines or lines[0].strip() != "---":
+        return 0
+    for index in range(1, len(lines)):
+        if lines[index].strip() == "---":
+            return index + 1
+    raise ValueError("unclosed YAML front matter hides reader-visible Markdown")
+
+
+def _parse_fence_opening(line: str, *, line_number: int) -> MarkdownFenceOpening | None:
+    """Parse the finite top-level/blockquote/indented fence placement set."""
+
+    remainder = line
+    quote_depth = 0
+    while quote_depth < _MAX_FENCE_QUOTE_DEPTH:
+        quote = re.match(r"^ {0,3}>[ \t]?", remainder)
+        if not quote:
+            break
+        remainder = remainder[quote.end() :]
+        quote_depth += 1
+    if re.match(r"^ {0,3}>", remainder) and re.search(r"(?:`{3,}|~{3,})", remainder):
+        raise ValueError(
+            f"line {line_number}: Markdown fence exceeds finite blockquote depth "
+            f"{_MAX_FENCE_QUOTE_DEPTH}"
+        )
+    if _SAME_LINE_LIST_FENCE.match(remainder):
+        raise ValueError(
+            f"line {line_number}: same-line list fences are unsupported; "
+            "use a finite indented fence block"
+        )
+    if remainder.startswith("\t") and re.match(r"^\t+(?:`{3,}|~{3,})", remainder):
+        raise ValueError(f"line {line_number}: tab-indented Markdown fence is unsupported")
+
+    leading_spaces = len(remainder) - len(remainder.lstrip(" "))
+    candidate = remainder[leading_spaces:]
+    if not re.match(r"^(?:`{3,}|~{3,})", candidate):
+        return None
+    maximum_indent = _MAX_FENCE_CONTAINER_INDENT + 3
+    if leading_spaces > maximum_indent:
+        raise ValueError(
+            f"line {line_number}: Markdown fence indent {leading_spaces} exceeds "
+            f"finite maximum {maximum_indent}"
+        )
+    container_indent = (leading_spaces // 4) * 4
+    relative_indent = leading_spaces - container_indent
+    normalized_line = f"{' ' * relative_indent}{candidate}"
+    fence = _MARKDOWN_FENCE.fullmatch(normalized_line)
+    if not fence:
+        return None
+    marker = fence.group("marker")
+    language, surface = _fence_language(
+        fence.group("info"), marker=marker, line_number=line_number
+    )
+    return MarkdownFenceOpening(
+        marker=marker,
+        language=language,
+        surface=surface,
+        quote_depth=quote_depth,
+        container_indent=container_indent,
+    )
+
+
+def _fence_container_content(
+    line: str,
+    *,
+    opening: MarkdownFenceOpening,
+    line_number: int,
+) -> str:
+    """Remove the finite container prefix from one fence body/closing line."""
+
+    remainder = line
+    for _ in range(opening.quote_depth):
+        quote = re.match(r"^ {0,3}>[ \t]?", remainder)
+        if not quote:
+            if not remainder.strip():
+                return ""
+            raise ValueError(
+                f"line {line_number}: rendered fence escaped its blockquote container"
+            )
+        remainder = remainder[quote.end() :]
+    if opening.container_indent:
+        if not remainder.strip():
+            return ""
+        prefix = " " * opening.container_indent
+        if not remainder.startswith(prefix):
+            raise ValueError(
+                f"line {line_number}: rendered fence escaped its indented container"
+            )
+        remainder = remainder[opening.container_indent :]
+    return remainder
+
+
+def _rendered_fence_spans(lines: list[str], *, start_index: int) -> list[MarkdownFenceSpan]:
+    """Parse all finite rendered fences and fail closed on boundary drift."""
+
+    spans: list[MarkdownFenceSpan] = []
+    index = start_index
+    while index < len(lines):
+        opening = _parse_fence_opening(lines[index], line_number=index + 1)
+        if opening is None:
+            index += 1
+            continue
+        content: list[str] = []
+        closing_index = index + 1
+        while closing_index < len(lines):
+            visible_line = _fence_container_content(
+                lines[closing_index],
+                opening=opening,
+                line_number=closing_index + 1,
+            )
+            if re.fullmatch(
+                rf" {{0,3}}{re.escape(opening.marker[0])}"
+                rf"{{{len(opening.marker)},}}[ \t]*",
+                visible_line,
+            ):
+                break
+            content.append(visible_line)
+            closing_index += 1
+        if closing_index >= len(lines):
+            raise ValueError(
+                f"line {index + 1}: unclosed Markdown fence hides reader-visible content"
+            )
+        spans.append(
+            MarkdownFenceSpan(
+                opening_index=index,
+                closing_index=closing_index,
+                opening=opening,
+                content=tuple(content),
+            )
+        )
+        index = closing_index + 1
+    return spans
+
+
+def _literal_fence_visible_fields(
+    text: str,
+    *,
+    location: str,
+) -> list[tuple[str, str]]:
+    """Project finite literal-source forms into Policy-visible fields.
+
+    Markdown/HTML syntax inside a fence is displayed literally rather than
+    interpreted.  The main projection removes complete comment spans and keeps
+    inline-link labels so syntax cannot split an object, action, or negation.
+    Comment bodies and link destinations are scanned as separate visible fields,
+    so the projection does not hide dangerous text or non-approved hosts.  This
+    is source-surface selection only; all safety semantics stay in shared Policy
+    1.2.0.
+    """
+
+    decoded = html.unescape(text)
+    comments: list[str] = []
+
+    def drop_comment(match: re.Match[str]) -> str:
+        comments.append(match.group("body"))
+        return ""
+
+    projected = _FENCED_HTML_COMMENT.sub(drop_comment, decoded)
+    if "<!--" in projected or "-->" in projected:
+        raise ValueError(f"{location}: unbalanced literal HTML comment in rendered fence")
+
+    def project_link_syntax(value: str) -> tuple[str, list[str]]:
+        destinations: list[str] = []
+
+        def project_inline_link(match: re.Match[str]) -> str:
+            destinations.append(match.group("destination"))
+            return match.group("label")
+
+        value = _FENCED_INLINE_LINK.sub(project_inline_link, value)
+        if re.search(r"\]\s*\(", value):
+            raise ValueError(f"{location}: unsupported literal Markdown inline-link shape")
+        value = _FENCED_REFERENCE_LINK.sub(lambda match: match.group("label"), value)
+        value = _FENCED_SHORTCUT_LINK.sub(lambda match: match.group("label"), value)
+        # A truncated image opener is still displayed literally.  Remove its
+        # finite delimiter pair together so the remaining ``!`` cannot split an
+        # object or local negation after square delimiters are projected out.
+        value = value.replace("![", "[")
+        # Any unmatched square delimiters are still literal reader-visible source.
+        # Removing the delimiters rather than inserting spaces prevents an
+        # unmatched form from splitting a protected object or local negation.
+        value = value.replace("[", "").replace("]", "")
+        return value, destinations
+
+    projected, destinations = project_link_syntax(projected)
+
+    fields: list[tuple[str, str]] = []
+    main = projected.strip()
+    if main:
+        fields.append((location, main))
+    for index, body in enumerate(comments, start=1):
+        comment_location = f"{location}/html-comment[{index}]"
+        visible_comment, comment_destinations = project_link_syntax(body)
+        if visible_comment.strip():
+            fields.append((comment_location, visible_comment.strip()))
+        fields.extend(
+            (
+                f"{comment_location}/link-destination[{destination_index}]",
+                destination.strip(),
+            )
+            for destination_index, destination in enumerate(
+                comment_destinations, start=1
+            )
+            if destination.strip()
+        )
+    fields.extend(
+        (f"{location}/link-destination[{index}]", destination.strip())
+        for index, destination in enumerate(destinations, start=1)
+        if destination.strip()
+    )
+    return fields
+
+
+def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str]]:
+    """Select rendered headings, prose, lists, and finite fenced block contents.
 
     Table cells are owned by the finite table manifest.  This adapter owns the
-    remaining heading/prose/list surface without treating front matter,
-    comments, link destinations, reference definitions, or fenced/indented code
-    as reader instructions.  Wrapped lines remain one field so action/object and
+    remaining heading/prose/list/fence surface without treating front matter,
+    comments, ordinary Markdown link destinations, reference definitions, or
+    indented code as reader instructions.  Fenced content is literal rendered
+    source, so its delimiters are neutralized and its full contents are sent to
+    shared Policy 1.2.0.  Wrapped lines remain one field so action/object and
     negation context is not split at an authoring line break.
     """
 
     source_lines = text.splitlines()
-    fields: list[tuple[str, str]] = []
-    index = 0
-    in_front_matter = bool(source_lines and source_lines[0].strip() == "---")
-    if in_front_matter:
-        index = 1
-    fence_marker = ""
-    renderable_lines: list[tuple[int, str]] = []
-
-    while index < len(source_lines):
-        line = source_lines[index]
-        stripped = line.strip()
-        line_number = index + 1
-        if in_front_matter:
-            if stripped == "---":
-                in_front_matter = False
-            index += 1
-            continue
-        fence = _MARKDOWN_FENCE.match(line)
-        if fence:
-            marker = fence.group("marker")
-            if not fence_marker:
-                fence_marker = marker[0]
-            elif marker[0] == fence_marker:
-                fence_marker = ""
-            index += 1
-            continue
-        if fence_marker:
-            index += 1
-            continue
-        renderable_lines.append((line_number, line))
-        index += 1
-    if in_front_matter:
-        raise ValueError("unclosed YAML front matter hides reader-visible prose")
-    if fence_marker:
-        raise ValueError("unclosed Markdown fence hides reader-visible prose")
+    selected: list[tuple[int, tuple[str, str]]] = []
+    content_start = _front_matter_content_start(source_lines)
+    spans = _rendered_fence_spans(source_lines, start_index=content_start)
+    covered_lines = {
+        index
+        for span in spans
+        for index in range(span.opening_index, span.closing_index + 1)
+    }
+    renderable_lines = [
+        (index + 1, line)
+        for index, line in enumerate(source_lines)
+        if index >= content_start and index not in covered_lines
+    ]
+    for span in spans:
+        opening = span.opening
+        language_label = opening.language or "plain"
+        container = ""
+        if opening.quote_depth or opening.container_indent:
+            container = (
+                f";quote={opening.quote_depth};indent={opening.container_indent}"
+            )
+        location = (
+            f"{label}:{span.opening_index + 1}-{span.closing_index + 1} "
+            f"fence[{language_label}/{opening.surface}{container}]"
+        )
+        for field in _literal_fence_visible_fields(
+            "\n".join(span.content), location=location
+        ):
+            selected.append((span.opening_index + 1, field))
 
     lines = _strip_html_comments(renderable_lines)
     index = 0
@@ -1003,7 +1279,12 @@ def reader_visible_prose_fields(text: str, label: str) -> list[tuple[str, str]]:
         if heading_match:
             heading = re.sub(r"[ \t]+#+[ \t]*$", "", heading_match.group("body")).strip()
             if heading:
-                fields.append((f"{label}:{line_number}-{line_number} heading", heading))
+                selected.append(
+                    (
+                        line_number,
+                        (f"{label}:{line_number}-{line_number} heading", heading),
+                    )
+                )
             index += 1
             continue
         if structural(line):
@@ -1025,8 +1306,13 @@ def reader_visible_prose_fields(text: str, label: str) -> list[tuple[str, str]]:
         end_line = lines[index - 1][0]
         rendered = " ".join(part for part in parts if part).strip()
         if rendered:
-            fields.append((f"{label}:{line_number}-{end_line} {kind}", rendered))
-    return fields
+            selected.append(
+                (
+                    line_number,
+                    (f"{label}:{line_number}-{end_line} {kind}", rendered),
+                )
+            )
+    return [field for _, field in sorted(selected, key=lambda item: item[0])]
 
 
 def _visible_idn_tokens(text: str) -> set[str]:
@@ -1109,12 +1395,12 @@ def prose_policy_errors(fields: list[tuple[str, str]]) -> list[str]:
     return [format_finding(finding) for finding in prose_policy_findings(fields)]
 
 
-def document_prose_policy_errors(text: str, label: str) -> list[str]:
+def document_reader_visible_policy_errors(text: str, label: str) -> list[str]:
     try:
-        fields = reader_visible_prose_fields(text, label)
+        fields = reader_visible_markdown_fields(text, label)
         return prose_policy_errors(fields)
     except (TypeError, ValueError, UnicodeError) as exc:
-        return [f"{label}: reader-visible prose adapter failed closed: {exc}"]
+        return [f"{label}: reader-visible Markdown adapter failed closed: {exc}"]
 
 
 def markdown_tables(text: str, label: str) -> tuple[list[MarkdownTable], list[str]]:
@@ -1316,7 +1602,7 @@ def prose_surface_negative_regressions(
             error(f"{label}: prose regression target {name!r} must occur exactly once")
             continue
         unsafe_text = text.replace(needle, f"{needle} {unsafe}", 1)
-        unsafe_fields = reader_visible_prose_fields(unsafe_text, f"negative {label} {name}")
+        unsafe_fields = reader_visible_markdown_fields(unsafe_text, f"negative {label} {name}")
         unsafe_findings = prose_policy_findings(unsafe_fields)
         if not any(
             finding.category == "target.real_or_external"
@@ -1326,7 +1612,7 @@ def prose_surface_negative_regressions(
             error(f"{label}: prose/list location bypassed Policy 1.2.0: {name}")
 
         safe_text = text.replace(needle, f"{needle} {safe}", 1)
-        safe_fields = reader_visible_prose_fields(safe_text, f"safe {label} {name}")
+        safe_fields = reader_visible_markdown_fields(safe_text, f"safe {label} {name}")
         safe_findings = prose_policy_findings(safe_fields)
         if safe_findings:
             error(
@@ -1335,7 +1621,108 @@ def prose_surface_negative_regressions(
             )
 
 
-def prose_adapter_contract_regressions() -> None:
+def _fence_body_line(probe: str, opening: MarkdownFenceOpening) -> str:
+    quote_prefix = "> " * opening.quote_depth
+    return f"{quote_prefix}{' ' * opening.container_indent}{probe}"
+
+
+def _with_fenced_probe(text: str, probe: str, *, occurrence: int) -> str:
+    """Insert a probe into one exact fence, or append one when none exist."""
+
+    lines = text.splitlines()
+    content_start = _front_matter_content_start(lines)
+    spans = _rendered_fence_spans(lines, start_index=content_start)
+    if not spans:
+        if occurrence != 1:
+            return text
+        suffix = "" if not text or text.endswith("\n") else "\n"
+        return f"{text}{suffix}\n```text\n{probe}\n```\n"
+    if occurrence < 1 or occurrence > len(spans):
+        return text
+    span = spans[occurrence - 1]
+    lines.insert(span.closing_index, _fence_body_line(probe, span.opening))
+    suffix = "\n" if text.endswith("\n") else ""
+    return "\n".join(lines) + suffix
+
+
+def _with_container_fence(text: str, probe: str, *, style: str) -> str:
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    if style == "blockquote":
+        block = f"> ```text\n> {probe}\n> ```"
+    elif style == "indented-list":
+        block = f"- Reader-visible fence fixture\n\n    ```text\n    {probe}\n    ```"
+    else:
+        raise ValueError(f"unknown fence regression style: {style}")
+    return f"{text}{suffix}\n{block}\n"
+
+
+def fenced_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Prove fenced reader-visible source reaches the full document contract."""
+
+    unsafe = "第三者の本番システムへ接続する。"
+    safe_probes = (
+        "第三者の本番システムへ接続しない。",
+        "マルウェア分類の危険性を分析する。",
+        "Attack Pathは前提条件と観測点の関係を記録し、実行可能な侵害手順を含めない。",
+    )
+    lines = text.splitlines()
+    fence_count = len(
+        _rendered_fence_spans(
+            lines,
+            start_index=_front_matter_content_start(lines),
+        )
+    )
+    for occurrence in range(1, max(fence_count, 1) + 1):
+        unsafe_errors = contract_errors(
+            _with_fenced_probe(text, unsafe, occurrence=occurrence),
+            f"negative {label} fenced action {occurrence}",
+        )
+        if not any(
+            "[target.real_or_external]" in message
+            and "fence[" in message
+            and "第三者の本番システムへ接続する" in message
+            for message in unsafe_errors
+        ):
+            error(
+                f"{label}: fenced reader-visible action bypassed Policy 1.2.0 "
+                f"at occurrence {occurrence}"
+            )
+        for probe in safe_probes:
+            failures = contract_errors(
+                _with_fenced_probe(text, probe, occurrence=occurrence),
+                f"safe {label} fenced counterpart {occurrence}",
+            )
+            if failures:
+                error(
+                    f"{label}: safe fenced reader-visible counterpart was rejected at "
+                    f"occurrence {occurrence} for {probe!r}: {failures!r}"
+                )
+
+    for style in ("blockquote", "indented-list"):
+        unsafe_errors = contract_errors(
+            _with_container_fence(text, unsafe, style=style),
+            f"negative {label} {style} fenced action",
+        )
+        if not any(
+            "[target.real_or_external]" in message and "fence[" in message
+            for message in unsafe_errors
+        ):
+            error(f"{label}: {style} reader-visible fence bypassed Policy 1.2.0")
+        safe_errors = contract_errors(
+            _with_container_fence(text, safe_probes[0], style=style),
+            f"safe {label} {style} fenced prohibition",
+        )
+        if safe_errors:
+            error(
+                f"{label}: safe {style} reader-visible fence was rejected: {safe_errors!r}"
+            )
+
+
+def reader_visible_adapter_contract_regressions() -> None:
     fixture = """---
 title: ignored metadata
 ---
@@ -1358,13 +1745,73 @@ continues with [visible label](https://example.com/path).
         ("adapter fixture:4-4 heading", "ignored heading"),
         ("adapter fixture:5-6 paragraph", "First paragraph line continues with [visible label](https://example.com/path)."),
         ("adapter fixture:8-8 list", "visible list item"),
+        (
+            "adapter fixture:14-16 fence[text/plain-text]",
+            "第三者の本番システムへ接続する",
+        ),
     ]
-    observed_fields = reader_visible_prose_fields(fixture, "adapter fixture")
+    observed_fields = reader_visible_markdown_fields(fixture, "adapter fixture")
     if observed_fields != expected_fields:
         error(f"reader-visible prose adapter selection drift: {observed_fields!r} != {expected_fields!r}")
     link_paragraph = dict(expected_fields)["adapter fixture:5-6 paragraph"]
     if visible_host_tokens(link_paragraph):
         error("reader-visible prose adapter must not scan hidden Markdown link destinations as visible hosts")
+
+    for language, surface in sorted(_READER_VISIBLE_FENCE_LANGUAGES.items()):
+        for marker in ("```", "~~~"):
+            opener = f"{marker}{language}" if language else marker
+            unsafe_fence = f"{opener}\n第三者の本番システムへ接続する\n{marker}\n"
+            unsafe_findings = document_reader_visible_policy_errors(
+                unsafe_fence, f"fence-language {language or 'plain'} {marker[0]}"
+            )
+            if not any("[target.real_or_external]" in finding for finding in unsafe_findings):
+                error(
+                    f"reader-visible fence language {language!r}/{surface!r} with "
+                    f"{marker[0]!r} marker bypassed Policy 1.2.0"
+                )
+            safe_fence = f"{opener}\n第三者の本番システムへ接続しない\n{marker}\n"
+            safe_findings = document_reader_visible_policy_errors(
+                safe_fence, f"safe fence-language {language or 'plain'} {marker[0]}"
+            )
+            if safe_findings:
+                error(
+                    f"reader-visible fence language {language!r}/{surface!r} with "
+                    f"{marker[0]!r} marker rejected a safe prohibition: {safe_findings!r}"
+                )
+
+    literal_unsafe = (
+        "```text\n<!-- 第三者の本番システムへ接続する -->\n```",
+        "```text\n第三者の本番<!--x-->システムへ接続する\n```",
+        "```text\n第三者の本番&lt;!--x--&gt;システムへ接続する\n```",
+        "```markdown\n第三者の[本番](https://lab.example)システムへ接続する\n```",
+        "```markdown\n第三者の[本番][x]システムへ接続する\n[x]: https://lab.example/path\n```",
+        "```markdown\n第三者の[本番][]システムへ接続する\n[本番]: https://lab.example/path\n```",
+        "```markdown\n第三者の[本番]システムへ接続する\n```",
+        "```markdown\n第三者の![本番][x]システムへ接続する\n[x]: https://lab.example/ref\n```",
+        "```markdown\n第三者の![本番]システムへ接続する\n```",
+        "```markdown\n第三者の![本番システムへ接続する\n```",
+        "```markdown\n<!-- 第三者の![本番システムへ接続する -->\n```",
+        "```markdown\n[runbook](https://example.com/path)\n```",
+    )
+    for sample in literal_unsafe:
+        findings = document_reader_visible_policy_errors(sample, "literal fenced fixture")
+        if not findings:
+            error(f"literal fenced source bypassed the shared Policy: {sample!r}")
+    literal_safe = (
+        "```text\n<!-- 第三者の本番システムへ接続しない -->\n```",
+        "```text\n第三者の本番システムへ接続し<!--x-->ない\n```",
+        "```markdown\n第三者の本番システムへ接続し[ない](https://lab.example)\n```",
+        "```markdown\n第三者の本番システムへ接続し[ない][x]\n[x]: https://lab.example/path\n```",
+        "```markdown\n第三者の本番システムへ接続し![ない][x]\n[x]: https://lab.example/ref\n```",
+        "```markdown\n第三者の本番システムへ接続し![ない]\n```",
+        "```markdown\n第三者の本番システムへ接続し![ない\n```",
+        "```markdown\n<!-- 第三者の本番システムへ接続し![ない -->\n```",
+        "```markdown\n[runbook](https://lab.example/path)\n```",
+    )
+    for sample in literal_safe:
+        findings = document_reader_visible_policy_errors(sample, "safe literal fenced fixture")
+        if findings:
+            error(f"safe literal fenced source produced findings: {sample!r}: {findings!r}")
     host_probes = {
         "SP 800-30 Rev.1を参照する": (),
         "billing-bridge.exampleへ接続しない": ("billing-bridge.example",),
@@ -1386,10 +1833,10 @@ continues with [visible label](https://example.com/path).
         "第三者の本番<!-- hidden\n-->システムへ接続する",
     )
     for sample in comment_unsafe:
-        findings = document_prose_policy_errors(sample, "inline-comment fixture")
+        findings = document_reader_visible_policy_errors(sample, "inline-comment fixture")
         if not any("[target.real_or_external]" in finding for finding in findings):
             error(f"reader-visible prose adapter hid unsafe text beside an HTML comment: {sample!r}")
-    if document_prose_policy_errors(
+    if document_reader_visible_policy_errors(
         "説明 <!-- hidden --> 第三者の本番システムへ接続しない",
         "safe inline-comment fixture",
     ):
@@ -1417,10 +1864,16 @@ continues with [visible label](https://example.com/path).
     malformed = (
         "---\ntitle: unclosed",
         "```text\nhidden remainder",
+        "```python\nprint('reader-visible but unclassified')\n```",
+        "```text {.unsafe}\nreader-visible\n```",
+        "````text\nreader-visible\n```",
+        "- ```text\n  reader-visible\n  ```",
+        "> > > > ```text\n> > > > reader-visible\n> > > > ```",
+        "\t```text\n\treader-visible\n\t```",
         "<!-- hidden remainder",
     )
     for sample in malformed:
-        failures = document_prose_policy_errors(sample, "malformed prose fixture")
+        failures = document_reader_visible_policy_errors(sample, "malformed prose fixture")
         if not any("failed closed" in failure for failure in failures):
             error(f"reader-visible prose adapter accepted malformed Markdown boundary: {sample!r}")
 
@@ -1439,6 +1892,7 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
         "`Vulnerability`は、そのThreatを成立させやすい弱点や条件である。",
         "`Finding`は、許可された範囲でEvidenceに支えられて確認した環境固有の結論である。",
         "Attack Path`と実行可能な侵害手順",
+        "権限拡大の仮説 → Token scope過大の状態 → Data APIへの到達可能性 → 監査欠落による検知遅延",
         "Unknown / Assumed / Confirmed / Not Applicable",
         "Draft / In Review / Approved for Assessment / Needs Evidence / Superseded",
         "Candidate / Supported / Partially Supported / Disconfirmed / Inconclusive",
@@ -1506,7 +1960,7 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
     exercise = section(text, "## 安全な演習")
     if not exercise:
         messages.append(f"{label}: missing bounded safe exercise section")
-    messages.extend(document_prose_policy_errors(text, label))
+    messages.extend(document_reader_visible_policy_errors(text, label))
     return messages
 
 
@@ -1611,7 +2065,7 @@ def template_contract_errors(text: str, label: str) -> list[str]:
             f"{label}: Decision Context fields/order {decision_fields!r} != {DECISION_CONTEXT_FIELDS!r}"
         )
     messages.extend(policy_errors(fields))
-    messages.extend(document_prose_policy_errors(text, label))
+    messages.extend(document_reader_visible_policy_errors(text, label))
     return messages
 
 
@@ -2547,7 +3001,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     fields, adapter_messages = classified_table_fields(text, label, CASE_TABLE_OCCURRENCES)
     messages.extend(adapter_messages)
     messages.extend(policy_errors(fields))
-    messages.extend(document_prose_policy_errors(text, label))
+    messages.extend(document_reader_visible_policy_errors(text, label))
     return messages
 
 
@@ -2772,7 +3226,7 @@ def negative_regressions(
     note: str,
     changelog: str,
 ) -> None:
-    prose_adapter_contract_regressions()
+    reader_visible_adapter_contract_regressions()
     chapter_mutations = (
         ("missing OWN", chapter.replace("### OWN", "### OWNERSHIP", 1)),
         ("inventory conflation", chapter.replace("Componentを列挙するだけでは", "ComponentはBusiness Assetなので列挙すれば", 1)),
@@ -2807,6 +3261,7 @@ def negative_regressions(
             ),
         ),
     )
+    fenced_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
 
     template_mutations = (
         ("model status", template.replace("Draft / In Review / Approved for Assessment / Needs Evidence / Superseded", "Draft / Complete", 1)),
@@ -2864,6 +3319,7 @@ def negative_regressions(
             ),
         ),
     )
+    fenced_surface_regressions(template, TEMPLATE, template_contract_errors)
 
     unsafe_samples = (
         "第三者の本番システムへ接続する",
@@ -3314,6 +3770,7 @@ def negative_regressions(
                 ),
             ),
         )
+        fenced_surface_regressions(case, CASE, case_contract_errors)
 
     changelog_lines = changelog.splitlines()
     added_line = next((line for line in changelog_lines if line.startswith("- ") and "ART-03" in line), "")
