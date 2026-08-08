@@ -106,6 +106,7 @@ EXPECTED_INHERITED_EVIDENCE_IDS = {
     "EVD-AUTH-2026-001",
     "NEG-2026-001",
 }
+INHERITED_TH_003_PROPOSITION = "既に同型の不正利用が発生した"
 EXPECTED_HANDOFF_ROWS = {
     "HO-TM-2026-005": ("第5章 ATT&CK", "Behavior記述"),
     "HO-TM-2026-006": ("第6章 観測可能性", "Telemetry / logging設計"),
@@ -591,7 +592,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "COND-AUTH-2026-001",
         "COND-AUTH-2026-002",
         "COND-AUTH-2026-003",
-        "Telemetry absence is not absence compromise",
+        "Telemetry absence is not absence of compromise",
         "Business Assetは8番目のTypeではなく",
         "Evidence Requirement status",
         "Collected Evidence status",
@@ -726,6 +727,27 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             messages.append(
                 f"{label}: Confirmed Asset requires an Evidence ID rather than {evidence_ids!r}: {row[0]!r}"
             )
+
+    hypothesis_header = table_contracts[3][0]
+    hypothesis_rows = {
+        row[hypothesis_header.index("Hypothesis ID")].strip("`"): row
+        for row in parsed.get(hypothesis_header, [])
+        if len(row) == len(hypothesis_header)
+    }
+    inherited_th_003 = hypothesis_rows.get("TH-2026-003")
+    if inherited_th_003 is not None:
+        statement = inherited_th_003[hypothesis_header.index("Statement")]
+        if statement != INHERITED_TH_003_PROPOSITION:
+            messages.append(
+                f"{label}: TH-2026-003 Statement {statement!r} must preserve the inherited proposition "
+                f"{INHERITED_TH_003_PROPOSITION!r}"
+            )
+    chapter1_case = read_text("cases/ch01-integrated-security-case-example.md")
+    if INHERITED_TH_003_PROPOSITION not in chapter1_case:
+        messages.append(
+            f"{label}: Chapter 1 no longer contains the inherited TH-2026-003 proposition "
+            f"{INHERITED_TH_003_PROPOSITION!r}"
+        )
 
     count_contracts = (
         (("Exposure ID", "Related Asset / Boundary / Flow IDs", "Entry Point ID", "Reachability class", "External dependency", "Required authority", "Verification status", "Evidence ID", "Gap ID"), 3),
@@ -974,9 +996,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         (boundary_header, ("Trust / authority change", "Crossing condition", "Control", "Failure consequence")),
         (count_contracts[0][0], ("Reachability class", "External dependency", "Required authority", "Verification status")),
         (entry_point_header, ("Interface class", "Description", "Required authority", "Observation point")),
-        (table_contracts[3][0], ("Statement", "Preconditions", "Expected impact", "Alternative explanation")),
+        (table_contracts[3][0], ("Statement", "Preconditions", "Expected impact", "Evidence needed", "Alternative explanation")),
         (count_contracts[1][0], ("Goal", "Actor capability class", "Preconditions", "Expected outcome", "Observation points", "Excluded operational detail")),
-        (count_contracts[2][0], ("Condition", "Expected impact", "Observation point")),
+        (count_contracts[2][0], ("From Asset / State", "Condition", "To Asset / State", "Expected impact", "Observation point")),
         (table_contracts[4][0], ("Control statement", "Limitation", "Reassessment trigger")),
         (count_contracts[3][0], ("Statement", "Validation method")),
         (count_contracts[4][0], ("Missing information / control / telemetry", "Decision affected")),
@@ -1112,7 +1134,14 @@ def publication_contract_errors() -> list[str]:
     messages: list[str] = []
     index_contracts = {
         "artifact-index.md": ("ART-03", "cases/ch04-threat-model-example.md"),
-        "figure-index.md": ("F-04-01", "F-04-02", "T-04-01", "T-04-02", "T-04-03", "T-04-04"),
+        "figure-index.md": (
+            "F-04-01 | Decision RequirementからReassessmentまでのTrace",
+            "F-04-02 | 境界、Flow、攻撃面の読み分け",
+            "T-04-01 | 資産の型と最小記録項目",
+            "T-04-02 | 似て見える用語の違い",
+            "T-04-03 | Control assurance states",
+            "T-04-04 | Knowledge stateとHypothesis statusの分離",
+        ),
         "glossary.md": ("Business Asset", "Data Asset", "Identity", "Control Plane", "Trust Boundary", "Attack Surface", "Exposure", "Entry Point", "Threat Hypothesis", "Misuse Case", "Attack Path", "Evidence Requirement", "Assurance State", "Knowledge State"),
         "cases/index.md": ("ch04-threat-model-example.md", "Threat Model"),
         "index.md": (CHAPTER, TEMPLATE, CASE),
@@ -1225,6 +1254,14 @@ def negative_regressions(chapter: str, template: str, case: str, raw_registry: d
                 case.replace("## 10. Evidence Requirements and Actions", "## 10. Evidence Inventory", 1),
             ),
             (
+                "TH-2026-003 inherited proposition drift",
+                case.replace(
+                    "既に同型の不正利用が発生した",
+                    "TelemetryとRetentionの制約により過去の影響範囲を十分に限定できない",
+                    1,
+                ),
+            ),
+            (
                 "Confirmed without Evidence",
                 case.replace(
                     "| `ASSET-2026-006` | Data | `invoice-sync-manifest` | 実請求書本文を含まない合成の同期要約、状態、再送管理Data | Finance Data Owner | High | Confidential | Assumed | `EVD-2026-002` |",
@@ -1265,6 +1302,14 @@ def negative_regressions(chapter: str, template: str, case: str, raw_registry: d
                 ),
             ),
             (
+                "Threat Hypothesis Evidence needed unsafe external action",
+                case.replace(
+                    "| `EREQ-2026-003` | TelemetryとRetentionの制約により、未観測を未発生と判断できない | High | Inconclusive |",
+                    "| `EREQ-2026-003`。第三者の本番システムへ接続する | TelemetryとRetentionの制約により、未観測を未発生と判断できない | High | Inconclusive |",
+                    1,
+                ),
+            ),
+            (
                 "Control unsafe credential handling",
                 case.replace(
                     "業務要件とscopeの対応表をReviewする",
@@ -1281,6 +1326,22 @@ def negative_regressions(chapter: str, template: str, case: str, raw_registry: d
                 case.replace(
                     "合成App registrationとconsent objectのread-only Review接点",
                     "第三者の本番システムへ接続する",
+                    1,
+                ),
+            ),
+            (
+                "Attack Path From Asset State unsafe external action",
+                case.replace(
+                    "| `ASSET-2026-004` / scope-review pending | 業務要件変更が承認ticketへ十分反映されない |",
+                    "| `ASSET-2026-004` / 第三者の本番システムへ接続する | 業務要件変更が承認ticketへ十分反映されない |",
+                    1,
+                ),
+            ),
+            (
+                "Attack Path To Asset State unsafe external action",
+                case.replace(
+                    "| `TB-2026-001` | `ASSET-2026-005` / scope matrix未更新 |",
+                    "| `TB-2026-001` | `ASSET-2026-005` / 第三者の本番システムへ接続する |",
                     1,
                 ),
             ),

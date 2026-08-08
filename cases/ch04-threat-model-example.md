@@ -68,7 +68,7 @@
 
 - やること: Asset、Flow、Boundary、Exposure、Entry Point、Threat Hypothesis、Misuse Case、Control assurance、Evidence Requirement、Gap、Action、Reassessmentの接続。
 - やらないこと: 実証コード、侵害再現、外部接続、主体帰属、Production操作の許可判断。
-- 重要原則: `Telemetry absence is not absence compromise`。Telemetryの不在は侵害不存在を意味しない。
+- 重要原則: `Telemetry absence is not absence of compromise`。Telemetryの不在は侵害不存在を意味しない。
 
 ### State separation
 
@@ -165,7 +165,7 @@ Entry PointはExposureの参照列だけで済ませず、Owner、Boundary、Aut
 |---|---|---|---|---|---|---|---|---|---|---|
 | `TH-2026-001` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006`, `ASSET-2026-007` | `TB-2026-001`, `TB-2026-002`, `TB-2026-004`, `FLOW-2026-001`, `FLOW-2026-002`, `FLOW-2026-003`, `FLOW-2026-006`, `EXP-2026-001`, `EXP-2026-003` | 業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある | 暫定scopeとWorkload identity bindingが残る | 合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001`, `EREQ-2026-003` | 暫定scopeは残るが実効利用は最小権限かもしれない | High | Supported |
 | `TH-2026-002` | `DR-2026-001` | `ASSET-2026-002`, `ASSET-2026-003`, `ASSET-2026-005` | `TB-2026-001`, `TB-2026-003`, `TB-2026-007`, `FLOW-2026-004`, `FLOW-2026-005`, `EXP-2026-002` | 管理者同意またはApp identity lifecycle Eventの観測不足により未承認権限追加の検知が遅れる可能性がある | Audit exportまたはsummary Fieldが不足する | Attack Surface拡大の見逃しとDecision遅延 | `EREQ-2026-002` | Eventは存在するがsummary Field不足で見えないだけかもしれない | High | Partially Supported |
-| `TH-2026-003` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-003`, `ASSET-2026-006` | `TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `FLOW-2026-003`, `FLOW-2026-004`, `FLOW-2026-005`, `EXP-2026-002`, `EXP-2026-003` | TelemetryとRetentionの制約により過去の影響範囲を十分に限定できない可能性がある | Historical coverageにGapが残る | 既往影響の過小評価と停止判断の遅れ | `EREQ-2026-003` | 保持範囲内の未観測は長期保持不足だけかもしれない | High | Inconclusive |
+| `TH-2026-003` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-003`, `ASSET-2026-006` | `TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `FLOW-2026-003`, `FLOW-2026-004`, `FLOW-2026-005`, `EXP-2026-002`, `EXP-2026-003` | 既に同型の不正利用が発生した | 過大scope、Credential metadata、API到達条件が同時に存在していた | 過去侵害と顧客Dataへの影響 | `EREQ-2026-003` | TelemetryとRetentionの制約により、未観測を未発生と判断できない | High | Inconclusive |
 
 ### Misuse Case Register
 
@@ -367,7 +367,7 @@ Collected Evidence statusは `Planned / Collected / Rejected / Inconclusive` の
 ### Limitations
 
 - 本文は合成Caseであり、Vendor固有仕様や実Tenantの例外実装を代表しない。
-- `TH-2026-003`はTelemetryとRetentionの制約により`Inconclusive`であり、既往影響の不存在証明には使えない。
+- `TH-2026-003`は第1章の「既に同型の不正利用が発生した」という命題を維持する。TelemetryとRetentionの制約により`Inconclusive`であり、既往影響の不存在証明には使えない。
 - `CTRL-2026-005`は`Unknown`であり、Controlの不存在を意味しない。AUTH条件とno outboundの範囲では直接確認しないだけである。
 - `ASSET-2026-006`と`FLOW-2026-003`の一部はsummary-onlyの構造前提に基づく`Assumed`であり、実Data取得を伴わずに扱う。
 - Attack Pathは関係と観測点の説明であり、侵害手順、Tool選定、実行手順、再現レシピではない。
