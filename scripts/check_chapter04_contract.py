@@ -132,7 +132,7 @@ EXPECTED_CASE_IDS: dict[str, set[str]] = {
     "TB": {f"TB-2026-{number:03d}" for number in range(1, 9)},
     "EXP": {f"EXP-2026-{number:03d}" for number in range(1, 4)},
     "EP": {f"EP-2026-{number:03d}" for number in range(1, 4)},
-    "TH": {f"TH-2026-{number:03d}" for number in range(1, 5)},
+    "TH": {f"TH-2026-{number:03d}" for number in range(1, 6)},
     "MISUSE": {f"MISUSE-2026-{number:03d}" for number in range(1, 3)},
     "PATH": {f"PATH-2026-{number:03d}" for number in range(1, 3)},
     "EDGE": {f"EDGE-2026-{number:03d}" for number in range(1, 8)},
@@ -179,15 +179,39 @@ INHERITED_TH_001_CASE_PROPOSITION = (
 INHERITED_TH_001_CASE_PRECONDITIONS = (
     "過大scope、Credentialの有効性、API到達性を成立条件として評価する"
 )
+INHERITED_TH_002_PROPOSITION = (
+    "管理者同意の変更を監視できず、未承認のscope追加を早期検知できない"
+)
+INHERITED_TH_002_PRECONDITIONS = "同意Eventの未収集またはRule欠落"
+INHERITED_TH_002_IMPACT = "攻撃面拡大の見逃し"
+INHERITED_TH_002_CASE_RELATIONS = (
+    "`TB-2026-001`, `TB-2026-003`, `FLOW-2026-004`, `EXP-2026-002`"
+)
+INHERITED_TH_002_ALTERNATIVE = (
+    "同意Eventは収集済みでもRule欠落により早期検知できない可能性がある"
+)
 INHERITED_TH_003_PROPOSITION = "既に同型の不正利用が発生した"
 SUMMARY_TH_004_PROPOSITION = (
     "業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある"
 )
+LIFECYCLE_TH_005_PROPOSITION = (
+    "App identity lifecycle Eventまたはdecision summary Fieldの観測不足により、"
+    "lifecycle変更と月末判断の対応付けが遅れる可能性がある"
+)
+LIFECYCLE_TH_005_PRECONDITIONS = (
+    "lifecycle Audit exportまたはdecision summary Fieldが不足する"
+)
+LIFECYCLE_TH_005_IMPACT = "Decision遅延とControl assuranceの誤判定"
+LIFECYCLE_TH_005_RELATIONS = (
+    "`TB-2026-003`, `TB-2026-007`, `FLOW-2026-004`, `FLOW-2026-005`, "
+    "`EXP-2026-002`"
+)
+FRESH_CHAPTER4_HYPOTHESIS_IDS = {"TH-2026-004", "TH-2026-005"}
 EXPECTED_HANDOFF_ROWS = {
     "HO-TM-2026-005": (
         "第5章 ATT&CK",
         "Behavior記述",
-        "`TH-2026-001`〜`004`の成立条件、Flow、Boundary、Exposure、観測点",
+        "`TH-2026-001`〜`005`の成立条件、Flow、Boundary、Exposure、観測点",
     ),
     "HO-TM-2026-006": (
         "第6章 観測可能性",
@@ -247,8 +271,13 @@ HANDOFF_INTERPRETATION_BOUNDARY = (
 )
 
 EXPECTED_HANDOFF_INTERPRETATION_LINES = (
+    "- 第5章では、継承命題`TH-2026-001`〜`003`、summary-only refinement "
+    "`TH-2026-004`、lifecycle / summary Field refinement `TH-2026-005`を"
+    "区別してATT&CKの行動言語へ変換する。",
     "- 第6章では、`CTRL-2026-007` / `CTRL-2026-009`、`EREQ-2026-003` / "
-    "`EREQ-2026-004`、`GAP-2026-001`〜`004`を観測設計へ渡す。",
+    "`EREQ-2026-004`を主要な観測入力とする。上表の正本どおり"
+    "`EREQ-2026-001`〜`004`と`GAP-2026-001`〜`004`を併記して渡すのは、"
+    "観測点をDecision、scope、Identity contextから切り離さないためである。",
     "- 第9章では、Lab safetyの`CTRL-2026-008`、`AUTH-CASE-2026-001`継承条件と"
     "`ACT-TM-2026-001` / `ACT-TM-2026-002` / `ACT-TM-2026-003` / "
     "`ACT-TM-2026-006`の再Authorization依存をRoEへ具体化する。",
@@ -434,6 +463,25 @@ PATH_SUMMARY_HEADER = (
     "Intermediate condition",
     "Undesired end state",
     "Safety note",
+)
+TH_002_005_ALLOCATION_HEADER = ("Allocation", "Consumer IDs", "Meaning")
+EXPECTED_TH_002_005_ALLOCATION_ROWS = (
+    (
+        "Inherited only",
+        "`ACT-TM-2026-002`",
+        "Admin consent Event / Rule命題だけを扱う",
+    ),
+    (
+        "Refinement only",
+        "`ACT-TM-2026-005`",
+        "App identity lifecycle Event / decision summary Field命題だけを扱う",
+    ),
+    (
+        "Both",
+        "`PATH-2026-002`, `CTRL-2026-007`, `CTRL-2026-008`, `GAP-2026-003`, "
+        "`EREQ-2026-002`, `EREQ-2026-004`, `ACT-TM-2026-006`, `REA-TM-2026-002`",
+        "共通のAudit surface、Safety gateまたは再評価単位で両命題を明示的に扱う",
+    ),
 )
 ATTACK_PATH_HEADER = (
     "Attack Path ID",
@@ -678,6 +726,12 @@ TABLE_SAFETY_POLICIES = {
             reader_visible=("Entry condition", "Intermediate condition", "Undesired end state", "Safety note"),
         ),
         table_safety_policy(
+            TH_002_005_ALLOCATION_HEADER,
+            structural=("Allocation", "Consumer IDs"),
+            finite=(),
+            reader_visible=("Meaning",),
+        ),
+        table_safety_policy(
             ATTACK_PATH_HEADER,
             structural=("Attack Path ID", "Edge ID", "Boundary ID", "Affected Asset IDs", "Required Evidence ID"),
             finite=("Knowledge state",),
@@ -796,6 +850,7 @@ CASE_TABLE_OCCURRENCES = {
         EXPOSURE_HEADER,
         ENTRY_POINT_HEADER,
         HYPOTHESIS_HEADER,
+        TH_002_005_ALLOCATION_HEADER,
         MISUSE_HEADER,
         PATH_SUMMARY_HEADER,
         ATTACK_PATH_HEADER,
@@ -2381,6 +2436,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "TH-2026-002",
         "TH-2026-003",
         "TH-2026-004",
+        "TH-2026-005",
         "MISUSE-2026-001",
         "MISUSE-2026-002",
         "PATH-2026-001",
@@ -2641,6 +2697,81 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 f"contract {INHERITED_TH_001_PROPOSITION!r}"
             )
 
+    source_th_002 = next(
+        (
+            row
+            for row in chapter1_hypothesis_rows
+            if len(row) == len(chapter1_hypothesis_header)
+            and row[0].strip("`") == "TH-2026-002"
+        ),
+        None,
+    )
+    inherited_th_002 = hypothesis_rows.get("TH-2026-002")
+    if source_th_002 is None:
+        messages.append(f"{label}: Chapter 1 must define inherited hypothesis TH-2026-002")
+    elif inherited_th_002 is None:
+        messages.append(f"{label}: missing inherited hypothesis TH-2026-002")
+    else:
+        frozen_source_fields = {
+            "Decision Requirement ID": source_th_002[1],
+            "Related Asset IDs": source_th_002[2],
+            "Statement": source_th_002[4],
+            "Preconditions": source_th_002[5],
+            "Expected impact": source_th_002[6],
+            "Priority": source_th_002[7],
+        }
+        for field, expected in frozen_source_fields.items():
+            observed = inherited_th_002[hypothesis_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: TH-2026-002 {field} {observed!r} must preserve "
+                    f"the Chapter 1 source-derived value {expected!r}"
+                )
+        exact_chapter4_fields = {
+            "Boundary / Flow / Exposure IDs": INHERITED_TH_002_CASE_RELATIONS,
+            "Evidence needed": "`EREQ-2026-002`",
+            "Alternative explanation": INHERITED_TH_002_ALTERNATIVE,
+            # Chapter 1 uses ``Partially supported``. ART-03 normalizes only
+            # capitalization to its finite status vocabulary; the proposition
+            # and evaluation meaning remain unchanged.
+            "Hypothesis status": "Partially Supported",
+        }
+        for field, expected in exact_chapter4_fields.items():
+            observed = inherited_th_002[hypothesis_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: TH-2026-002 {field} {observed!r} != frozen "
+                    f"Chapter 4 inherited value {expected!r}"
+                )
+        source_contract = {
+            "Statement": INHERITED_TH_002_PROPOSITION,
+            "Preconditions": INHERITED_TH_002_PRECONDITIONS,
+            "Expected impact": INHERITED_TH_002_IMPACT,
+            "Priority": "High",
+            "Status": "Partially supported",
+        }
+        for field, expected in source_contract.items():
+            observed = source_th_002[chapter1_hypothesis_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: Chapter 1 TH-2026-002 {field} {observed!r} drifted "
+                    f"from frozen source value {expected!r}"
+                )
+        inherited_boundaries = set(re.findall(r"\bTB-2026-\d{3}\b", source_th_002[3]))
+        chapter4_boundaries = set(
+            re.findall(
+                r"\bTB-2026-\d{3}\b",
+                inherited_th_002[
+                    hypothesis_header.index("Boundary / Flow / Exposure IDs")
+                ],
+            )
+        )
+        if not inherited_boundaries <= chapter4_boundaries:
+            messages.append(
+                f"{label}: TH-2026-002 dropped inherited boundary IDs "
+                f"{sorted(inherited_boundaries - chapter4_boundaries)!r}"
+            )
+
     summary_th_004 = hypothesis_rows.get("TH-2026-004")
     if summary_th_004 is None:
         messages.append(f"{label}: missing summary-only refinement hypothesis TH-2026-004")
@@ -2682,6 +2813,50 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             messages.append(
                 f"{label}: TH-2026-004 must remain a distinct summary-only proposition"
             )
+
+    lifecycle_th_005 = hypothesis_rows.get("TH-2026-005")
+    if lifecycle_th_005 is None:
+        messages.append(
+            f"{label}: missing App lifecycle / decision-summary refinement TH-2026-005"
+        )
+    else:
+        lifecycle_contract = {
+            "Decision Requirement ID": "`DR-2026-001`",
+            "Related Asset IDs": (
+                "`ASSET-2026-002`, `ASSET-2026-003`, `ASSET-2026-004`"
+            ),
+            "Boundary / Flow / Exposure IDs": LIFECYCLE_TH_005_RELATIONS,
+            "Statement": LIFECYCLE_TH_005_PROPOSITION,
+            "Preconditions": LIFECYCLE_TH_005_PRECONDITIONS,
+            "Expected impact": LIFECYCLE_TH_005_IMPACT,
+            "Evidence needed": "`EREQ-2026-002`",
+            "Alternative explanation": (
+                "Eventは存在するがsummary Field不足で見えないだけかもしれない"
+            ),
+            "Priority": "High",
+            "Hypothesis status": "Partially Supported",
+        }
+        for field, expected in lifecycle_contract.items():
+            observed = lifecycle_th_005[hypothesis_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: TH-2026-005 {field} {observed!r} != frozen "
+                    f"lifecycle / decision-summary value {expected!r}"
+                )
+        if lifecycle_th_005[hypothesis_header.index("Statement")] == INHERITED_TH_002_PROPOSITION:
+            messages.append(
+                f"{label}: TH-2026-005 must remain distinct from inherited TH-2026-002"
+            )
+    decision_summary_definition = (
+        "ここでdecision summary Fieldとは、`FLOW-2026-005`でAudit Evidenceを"
+        "月末判断へ渡す無害化summaryのFieldであり、Admin consent EventやRule"
+        "そのものではない。"
+    )
+    if text.count(decision_summary_definition) != 1:
+        messages.append(
+            f"{label}: decision summary Field must have exactly one reader-visible "
+            f"FLOW-2026-005 definition distinct from TH-2026-002"
+        )
 
     inherited_th_003 = hypothesis_rows.get("TH-2026-003")
     if inherited_th_003 is not None:
@@ -3136,6 +3311,20 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             {"TB-2026-001", "TB-2026-004", "TB-2026-008"},
         ),
         (
+            "TH-2026-002",
+            hypothesis_rows.get("TH-2026-002"),
+            hypothesis_header,
+            "Boundary / Flow / Exposure IDs",
+            {"TB-2026-001", "TB-2026-003"},
+        ),
+        (
+            "TH-2026-005",
+            hypothesis_rows.get("TH-2026-005"),
+            hypothesis_header,
+            "Boundary / Flow / Exposure IDs",
+            {"TB-2026-003", "TB-2026-007"},
+        ),
+        (
             "TH-2026-003",
             hypothesis_rows.get("TH-2026-003"),
             hypothesis_header,
@@ -3183,8 +3372,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "ACT-TM-2026-002": "`TH-2026-002`, `CTRL-2026-007`, `GAP-2026-003`",
         "ACT-TM-2026-003": "`TH-2026-003`, `CTRL-2026-009`, `GAP-2026-001`",
         "ACT-TM-2026-004": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002`",
-        "ACT-TM-2026-005": "`TH-2026-002`, `CTRL-2026-007`, `GAP-2026-003`",
-        "ACT-TM-2026-006": "`TH-2026-002`, `CTRL-2026-008`, `GAP-2026-004`",
+        "ACT-TM-2026-005": "`TH-2026-005`, `CTRL-2026-007`, `GAP-2026-003`",
+        "ACT-TM-2026-006": (
+            "`TH-2026-002`, `TH-2026-005`, `CTRL-2026-008`, `GAP-2026-004`"
+        ),
     }
     action_relation_index = action_header.index("Related Gap / Control / Threat")
     observed_action_relations = {
@@ -3267,7 +3458,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             ),
         },
         "ACT-TM-2026-005": {
-            "action": ("query申請template", "90日Coverage", "retention証跡", "deny条件", "文書化"),
+            "action": (
+                "query申請template",
+                "App identity lifecycle Event",
+                "decision summary Field",
+                "90日retention証跡",
+                "deny条件",
+                "文書化",
+            ),
             "success": ("Coverage表", "retention record", "deny例"),
         },
         "ACT-TM-2026-006": {
@@ -3347,7 +3545,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(f"{label}: missing lab-safety Evidence Requirement EREQ-2026-004")
     else:
         relation = lab_requirement[evidence_requirement_header.index("Related Threat / Control / Gap")]
-        if relation != "`TH-2026-002`, `CTRL-2026-008`, `GAP-2026-004`":
+        if relation != (
+            "`TH-2026-002`, `TH-2026-005`, `CTRL-2026-008`, `GAP-2026-004`"
+        ):
             messages.append(f"{label}: EREQ-2026-004 source trace drift: {relation!r}")
         minimum = lab_requirement[evidence_requirement_header.index("Minimum sufficient evidence")]
         forbidden = lab_requirement[evidence_requirement_header.index("Forbidden / over-collection boundary")]
@@ -3509,6 +3709,149 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             messages.append(
                 f"{label}: {identifier} {field} Threat references "
                 f"{sorted(observed_th_ids)!r} != {sorted(expected_th_ids)!r}"
+            )
+
+    # Freeze every structured consumer of the inherited consent/Rule
+    # proposition (TH-2026-002) and the Chapter 4 lifecycle/summary-field
+    # refinement (TH-2026-005).  The finite map makes inherited-only,
+    # refinement-only, both, and neither explicit; a consumer cannot silently
+    # fall back to the inherited ID after the two propositions are separated.
+    th_002_005 = {"TH-2026-002", "TH-2026-005"}
+    th_002_005_consumer_maps = (
+        (
+            "Path summary",
+            path_summaries_by_id,
+            PATH_SUMMARY_HEADER,
+            "Related Threat IDs",
+            {
+                "PATH-2026-001": set(),
+                "PATH-2026-002": {"TH-2026-002", "TH-2026-005"},
+            },
+        ),
+        (
+            "Control",
+            controls_by_id,
+            control_header,
+            "Related Asset / Boundary / Threat / Path IDs",
+            {
+                "CTRL-2026-005": set(),
+                "CTRL-2026-006": set(),
+                "CTRL-2026-007": {"TH-2026-002", "TH-2026-005"},
+                "CTRL-2026-008": {"TH-2026-002", "TH-2026-005"},
+                "CTRL-2026-009": set(),
+            },
+        ),
+        (
+            "Assumption",
+            assumptions_by_id,
+            assumption_header,
+            "Related IDs",
+            {
+                "ASM-2026-001": set(),
+                "ASM-2026-002": set(),
+                "ASM-2026-003": set(),
+            },
+        ),
+        (
+            "Gap",
+            gap_rows_by_id,
+            gap_header,
+            "Missing information / control / telemetry",
+            {
+                "GAP-2026-001": set(),
+                "GAP-2026-002": set(),
+                "GAP-2026-003": {"TH-2026-002", "TH-2026-005"},
+                "GAP-2026-004": set(),
+            },
+        ),
+        (
+            "Evidence Requirement",
+            evidence_rows_by_id,
+            evidence_requirement_header,
+            "Related Threat / Control / Gap",
+            {
+                "EREQ-2026-001": set(),
+                "EREQ-2026-002": {"TH-2026-002", "TH-2026-005"},
+                "EREQ-2026-003": set(),
+                "EREQ-2026-004": {"TH-2026-002", "TH-2026-005"},
+            },
+        ),
+        (
+            "Action",
+            action_rows_by_id,
+            action_header,
+            "Related Gap / Control / Threat",
+            {
+                "ACT-TM-2026-001": set(),
+                "ACT-TM-2026-002": {"TH-2026-002"},
+                "ACT-TM-2026-003": set(),
+                "ACT-TM-2026-004": set(),
+                "ACT-TM-2026-005": {"TH-2026-005"},
+                "ACT-TM-2026-006": {"TH-2026-002", "TH-2026-005"},
+            },
+        ),
+        (
+            "Reassessment",
+            reassessment_rows_by_id,
+            reassessment_header,
+            "Scope",
+            {
+                "REA-TM-2026-001": set(),
+                "REA-TM-2026-002": {"TH-2026-002", "TH-2026-005"},
+                "REA-TM-2026-003": set(),
+                "REA-TM-2026-004": set(),
+            },
+        ),
+    )
+    for map_name, rows_by_id, header, field, expected_map in th_002_005_consumer_maps:
+        if set(rows_by_id) != set(expected_map):
+            messages.append(
+                f"{label}: {map_name} TH-2026-002/005 consumer-map row coverage "
+                f"{sorted(rows_by_id)!r} != {sorted(expected_map)!r}"
+            )
+        for identifier, expected_th_ids in expected_map.items():
+            row = rows_by_id.get(identifier)
+            if row is None:
+                continue
+            observed_th_ids = set(
+                re.findall(r"\bTH-2026-\d{3}\b", row[header.index(field)])
+            ) & th_002_005
+            if observed_th_ids != expected_th_ids:
+                messages.append(
+                    f"{label}: {identifier} {field} inherited/refinement Threat map "
+                    f"{sorted(observed_th_ids)!r} != {sorted(expected_th_ids)!r}"
+                )
+
+    allocation_rows, allocation_messages = table_by_header(
+        text, TH_002_005_ALLOCATION_HEADER, label
+    )
+    messages.extend(allocation_messages)
+    observed_allocation_rows = tuple(
+        tuple(row)
+        for row in allocation_rows
+        if len(row) == len(TH_002_005_ALLOCATION_HEADER)
+    )
+    if observed_allocation_rows != EXPECTED_TH_002_005_ALLOCATION_ROWS:
+        messages.append(
+            f"{label}: TH-2026-002/005 reader-visible consumer allocation "
+            f"{observed_allocation_rows!r} != {EXPECTED_TH_002_005_ALLOCATION_ROWS!r}"
+        )
+    allocation_boundary = (
+        "表外のstructured consumerがいずれかのIDへ暗黙にfallbackすることを認めない"
+    )
+    if text.count(allocation_boundary) != 1:
+        messages.append(
+            f"{label}: TH-2026-002/005 allocation boundary must occur exactly once"
+        )
+
+    decision_summary = section(text, "### Decision handoff summary for `DR-2026-001`")
+    for marker in (
+        "継承命題`TH-2026-002`",
+        "lifecycle / summary Field refinementの`TH-2026-005`",
+    ):
+        if marker not in decision_summary:
+            messages.append(
+                f"{label}: Decision handoff summary does not distinguish {marker!r}"
             )
 
     control_consumer_contracts = (
@@ -4030,6 +4373,51 @@ def fresh_control_definition_errors() -> list[str]:
     return control_definition_collision_errors(tuple(documents))
 
 
+def hypothesis_definition_collision_errors(
+    documents: tuple[tuple[str, str], ...],
+) -> list[str]:
+    """Reject fresh Chapter 4 Hypothesis IDs defined by another document."""
+
+    messages: list[str] = []
+    for relative, text in documents:
+        if relative == CASE:
+            continue
+        definitions = set(
+            re.findall(
+                r"^\|\s*`(TH-2026-\d{3})`\s*\|",
+                text,
+                re.MULTILINE,
+            )
+        )
+        collisions = sorted(definitions & FRESH_CHAPTER4_HYPOTHESIS_IDS)
+        if collisions:
+            messages.append(
+                f"{relative}: fresh Chapter 4 Hypothesis IDs already defined outside "
+                f"{CASE}: {collisions!r}"
+            )
+    return messages
+
+
+def fresh_hypothesis_definition_errors() -> list[str]:
+    """Check every tracked Markdown definition against fresh Chapter 4 IDs."""
+
+    result = subprocess.run(
+        ["git", "ls-files", "-z", "--", "*.md"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    )
+    documents: list[tuple[str, str]] = []
+    for raw_relative in result.stdout.decode("utf-8").split("\0"):
+        if not raw_relative:
+            continue
+        path = ROOT / raw_relative
+        if not path.is_file():
+            continue
+        documents.append((raw_relative, path.read_text(encoding="utf-8")))
+    return hypothesis_definition_collision_errors(tuple(documents))
+
+
 def page_contract_errors(registry: dict, label: str) -> list[str]:
     pages = registry.get("pages", [])
     tuples = Counter((item.get("source"), item.get("destination"), item.get("section"), item.get("order")) for item in pages if isinstance(item, dict))
@@ -4418,6 +4806,97 @@ def negative_regressions(
                 case.replace(
                     "顧客Dataの閲覧・変更可能性",
                     "合成Dataの同期状態と業務判断への影響が拡大する",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-002 inherited proposition overwritten by refinement",
+                case.replace(
+                    INHERITED_TH_002_PROPOSITION,
+                    LIFECYCLE_TH_005_PROPOSITION,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-002 inherited precondition drift",
+                case.replace(
+                    INHERITED_TH_002_PRECONDITIONS,
+                    LIFECYCLE_TH_005_PRECONDITIONS,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-002 inherited impact drift",
+                case.replace(
+                    INHERITED_TH_002_IMPACT,
+                    LIFECYCLE_TH_005_IMPACT,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-002 inherited status drift",
+                case.replace(
+                    f"{INHERITED_TH_002_ALTERNATIVE} | High | Partially Supported |",
+                    f"{INHERITED_TH_002_ALTERNATIVE} | High | Supported |",
+                    1,
+                ),
+            ),
+            (
+                "fresh TH-2026-005 definition duplicated",
+                case.replace(
+                    "| `TH-2026-005` | `DR-2026-001` |",
+                    "| `TH-2026-004` | `DR-2026-001` |",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-005 lifecycle proposition drift",
+                case.replace(
+                    LIFECYCLE_TH_005_PROPOSITION,
+                    INHERITED_TH_002_PROPOSITION,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-005 relation drift",
+                case.replace(
+                    LIFECYCLE_TH_005_RELATIONS,
+                    "`TB-2026-001`, `TB-2026-003`, `FLOW-2026-004`, "
+                    "`FLOW-2026-005`, `EXP-2026-002`",
+                    1,
+                ),
+            ),
+            (
+                "PATH-2026-002 falls back from refinement to inherited ID",
+                case.replace(
+                    "| `PATH-2026-002` | `TH-2026-002`, `TH-2026-003`, `TH-2026-005` |",
+                    "| `PATH-2026-002` | `TH-2026-002`, `TH-2026-003` |",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-002 omits lifecycle refinement consumer",
+                case.replace(
+                    "| `EREQ-2026-002` | 同意EventとApp identity lifecycle Eventの監査Coverageは十分か | "
+                    "`TH-2026-002`, `TH-2026-005`, `CTRL-2026-007`, `GAP-2026-003` |",
+                    "| `EREQ-2026-002` | 同意EventとApp identity lifecycle Eventの監査Coverageは十分か | "
+                    "`TH-2026-002`, `CTRL-2026-007`, `GAP-2026-003` |",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 falls back to inherited consent hypothesis",
+                case.replace(
+                    "| `ACT-TM-2026-005` | `TH-2026-005`, `CTRL-2026-007`, `GAP-2026-003` |",
+                    "| `ACT-TM-2026-005` | `TH-2026-002`, `CTRL-2026-007`, `GAP-2026-003` |",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-002/005 reader allocation drift",
+                case.replace(
+                    "| Refinement only | `ACT-TM-2026-005` |",
+                    "| Refinement only | `ACT-TM-2026-002` |",
                     1,
                 ),
             ),
@@ -4881,6 +5360,22 @@ def negative_regressions(
                 error(
                     f"negative external-artifact Control collision was accepted: {control_id}"
                 )
+        for hypothesis_id in sorted(FRESH_CHAPTER4_HYPOTHESIS_IDS):
+            collision = hypothesis_definition_collision_errors(
+                (
+                    (
+                        "cases/foreign-hypothesis-definition.md",
+                        "| Hypothesis ID | Statement |\n"
+                        "|---|---|\n"
+                        f"| `{hypothesis_id}` | unrelated definition |\n",
+                    ),
+                )
+            )
+            if not collision:
+                error(
+                    "negative external-artifact Hypothesis collision was accepted: "
+                    f"{hypothesis_id}"
+                )
         safety_matrix_negative_regressions(case, CASE, CASE_TABLE_OCCURRENCES)
         prose_surface_negative_regressions(
             case,
@@ -5075,6 +5570,7 @@ def main() -> int:
     ERRORS.extend(template_contract_errors(template, TEMPLATE))
     ERRORS.extend(case_contract_errors(case, CASE))
     ERRORS.extend(fresh_control_definition_errors())
+    ERRORS.extend(fresh_hypothesis_definition_errors())
     ERRORS.extend(source_contract_errors(chapter, sources, note))
     ERRORS.extend(publication_contract_errors())
     ERRORS.extend(changelog_contract_errors(changelog, CHANGELOG))
