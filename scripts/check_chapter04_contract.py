@@ -1305,6 +1305,12 @@ _MARKDOWN_REFERENCE_DEFINITION = re.compile(
     r"(?P<destination><[^>\r\n]+>|[^\s\r\n]+)"
     rf"(?:[ \t]+{_MARKDOWN_LINK_TITLE})?[ \t]*$"
 )
+_MARKDOWN_FOOTNOTE_DEFINITION_PREFIX = re.compile(
+    r"^\s{0,3}\[\^(?!\^)[^]\r\n]+\]:"
+)
+_MARKDOWN_FOOTNOTE_DEFINITION = re.compile(
+    r"^\s{0,3}\[\^(?!\^)(?P<reference>[^]\r\n]+)\]:[ \t]*(?P<body>.*)$"
+)
 _MARKDOWN_CONTINUED_LINK_TITLE = re.compile(
     r"^[ \t]+(?:\"[^\"\r\n]*\"|'[^'\r\n]*'|\([^()\r\n]*\))[ \t]*$"
 )
@@ -1377,6 +1383,14 @@ class MarkdownIndentedCodeSpan:
     opening_index: int
     closing_index: int
     indentation: str
+    content: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class MarkdownFootnoteSpan:
+    opening_index: int
+    closing_index: int
+    reference: str
     content: tuple[str, ...]
 
 
@@ -1653,6 +1667,85 @@ def _rendered_indented_code_spans(
             )
         )
         index = closing_index
+    return spans
+
+
+def _rendered_footnote_spans(
+    lines: list[str],
+    *,
+    start_index: int,
+    excluded_lines: set[int],
+) -> list[MarkdownFootnoteSpan]:
+    """Select finite Kramdown/GFM footnote definitions as visible prose.
+
+    A footnote definition is not link metadata: its body is rendered in the
+    document footnote list.  This bounded parser owns a same-line body plus
+    four-space/tab continuations, including blank lines only when another
+    indented continuation follows.  Fenced blocks are excluded by the caller;
+    unsupported block shapes remain visible to the ordinary fail-closed
+    adapters instead of being silently discarded.
+    """
+
+    spans: list[MarkdownFootnoteSpan] = []
+    index = start_index
+    while index < len(lines):
+        if index in excluded_lines:
+            index += 1
+            continue
+        line = lines[index]
+        prefix = _MARKDOWN_FOOTNOTE_DEFINITION_PREFIX.match(line)
+        if prefix is None:
+            index += 1
+            continue
+        definition = _MARKDOWN_FOOTNOTE_DEFINITION.fullmatch(line)
+        if definition is None:
+            raise ValueError(f"line {index + 1}: malformed Markdown footnote definition")
+
+        content = [definition.group("body")]
+        closing_index = index
+        cursor = index + 1
+        while cursor < len(lines) and cursor not in excluded_lines:
+            candidate = lines[cursor]
+            if candidate.startswith("    "):
+                content.append(candidate[4:])
+                closing_index = cursor
+                cursor += 1
+                continue
+            if candidate.startswith("\t"):
+                content.append(candidate[1:])
+                closing_index = cursor
+                cursor += 1
+                continue
+            if not candidate.strip():
+                lookahead = cursor + 1
+                while (
+                    lookahead < len(lines)
+                    and lookahead not in excluded_lines
+                    and not lines[lookahead].strip()
+                ):
+                    lookahead += 1
+                if (
+                    lookahead < len(lines)
+                    and lookahead not in excluded_lines
+                    and (
+                        lines[lookahead].startswith("    ")
+                        or lines[lookahead].startswith("\t")
+                    )
+                ):
+                    content.append("")
+                    closing_index = cursor
+                    cursor += 1
+                    continue
+            break
+        spans.append(
+            MarkdownFootnoteSpan(
+                opening_index=index,
+                closing_index=closing_index,
+                reference=definition.group("reference"),
+                content=tuple(content),
+            )
+        )
+        index = cursor
     return spans
 
 
@@ -1938,11 +2031,13 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
     that calls this adapter must therefore also call ``classified_table_fields``
     with its complete table manifest.  This adapter owns the remaining
     heading/prose/list/code surface without treating front matter, ordinary
-    Markdown comments, link destinations, or reference definitions as reader
-    instructions.  Fenced and four-space/tab-indented code are literal rendered
-    source, so their delimiters are neutralized and their full contents are sent
-    to shared Policy 1.2.0.  Wrapped lines remain one field so action/object and
-    negation context is not split at an authoring line break.
+    Markdown comments, link destinations, or ordinary link-reference definitions
+    as reader instructions.  Footnote-definition bodies are selected because
+    Kramdown/GFM renders them as reader-visible prose.  Fenced and
+    four-space/tab-indented code are literal rendered source, so their delimiters
+    are neutralized and their full contents are sent to shared Policy 1.2.0.
+    Wrapped lines remain one field so action/object and negation context is not
+    split at an authoring line break.
     """
 
     source_lines = text.splitlines()
@@ -1954,12 +2049,22 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
         for span in spans
         for index in range(span.opening_index, span.closing_index + 1)
     }
-    indented_spans = _rendered_indented_code_spans(
+    footnote_spans = _rendered_footnote_spans(
         source_lines,
         start_index=content_start,
         excluded_lines=fenced_lines,
     )
-    covered_lines = fenced_lines | {
+    footnote_lines = {
+        index
+        for span in footnote_spans
+        for index in range(span.opening_index, span.closing_index + 1)
+    }
+    indented_spans = _rendered_indented_code_spans(
+        source_lines,
+        start_index=content_start,
+        excluded_lines=fenced_lines | footnote_lines,
+    )
+    covered_lines = fenced_lines | footnote_lines | {
         index
         for span in indented_spans
         for index in range(span.opening_index, span.closing_index + 1)
@@ -2003,6 +2108,75 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
             "\n".join(span.content), location=location
         ):
             selected.append((span.opening_index + 1, field))
+    for span in footnote_spans:
+        location = (
+            f"{label}:{span.opening_index + 1}-{span.closing_index + 1} "
+            f"footnote[{span.reference}]"
+        )
+        nested_code_spans = _rendered_indented_code_spans(
+            list(span.content),
+            start_index=0,
+            excluded_lines=set(),
+        )
+        nested_code_lines = {
+            index
+            for code_span in nested_code_spans
+            for index in range(code_span.opening_index, code_span.closing_index + 1)
+        }
+        footnote_table_source = "\n".join(
+            "" if index in nested_code_lines else content_line
+            for index, content_line in enumerate(span.content)
+        )
+        footnote_tables, footnote_table_messages = markdown_tables(
+            footnote_table_source, location
+        )
+        if footnote_table_messages or footnote_tables:
+            detail = (
+                "; ".join(footnote_table_messages)
+                if footnote_table_messages
+                else "Markdown tables inside footnotes are outside the finite adapter contract"
+            )
+            raise ValueError(f"{location}: {detail}")
+
+        for code_span in nested_code_spans:
+            code_location = (
+                f"{location}/indented-code[{code_span.indentation}]"
+            )
+            for field in _literal_fence_visible_fields(
+                "\n".join(code_span.content), location=code_location
+            ):
+                selected.append(
+                    (span.opening_index + code_span.opening_index + 1, field)
+                )
+
+        rendered_parts: list[str] = []
+        visible_content_lines = _strip_html_comments(
+            [
+                (
+                    span.opening_index + offset + 1,
+                    "" if offset in nested_code_lines else content_line,
+                )
+                for offset, content_line in enumerate(span.content)
+            ]
+        )
+        for physical_line, content_line in visible_content_lines:
+            content_location = f"{location}/line[{physical_line}]"
+            _reject_interpreted_raw_html(content_line, location=content_location)
+            for field in _inline_link_title_fields(
+                content_line, location=content_location
+            ):
+                selected.append((physical_line, field))
+            projected = _project_literal_inline_code(content_line).strip()
+            if projected:
+                rendered_parts.append(projected)
+        rendered = " ".join(rendered_parts).strip()
+        if rendered:
+            selected.append(
+                (
+                    span.opening_index + 1,
+                    (location, rendered),
+                )
+            )
 
     lines = _strip_html_comments(renderable_lines)
     policy_lines: list[tuple[int, str]] = []
@@ -2746,6 +2920,73 @@ def indented_code_surface_regressions(
                 )
 
 
+def _with_footnote_probe(text: str, body: str, *, reference: str) -> str:
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    return (
+        f"{text}{suffix}\nReader-visible footnote[^{reference}].\n\n"
+        f"[^{reference}]: {body}\n"
+    )
+
+
+def footnote_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Prove rendered footnote bodies reach the full document contract."""
+
+    unsafe = "第三者の本番システムへ接続する。"
+    unsafe_multiline = "Reader-visible note.\n    第三者の本番システムへ接続する。"
+    safe = "第三者の本番システムへ接続することを禁止する。"
+    for name, body in (
+        ("same-line", unsafe),
+        ("multiline", unsafe_multiline),
+    ):
+        failures = contract_errors(
+            _with_footnote_probe(
+                text,
+                body,
+                reference=f"chapter04-policy-{name}",
+            ),
+            f"negative {label} {name} footnote action",
+        )
+        if not any(
+            "[target.real_or_external]" in failure and "footnote[" in failure
+            for failure in failures
+        ):
+            error(
+                f"{label}: {name} reader-visible footnote bypassed Policy 1.2.0"
+            )
+
+    safe_failures = contract_errors(
+        _with_footnote_probe(
+            text,
+            safe,
+            reference="chapter04-policy-safe",
+        ),
+        f"safe {label} footnote prohibition",
+    )
+    if safe_failures:
+        error(
+            f"{label}: safe reader-visible footnote was rejected: {safe_failures!r}"
+        )
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    ordinary_reference = (
+        f"{text}{suffix}\n[chapter04-link-metadata]: "
+        "https://lab.example/runbook\n"
+    )
+    reference_failures = contract_errors(
+        ordinary_reference,
+        f"safe {label} ordinary reference metadata",
+    )
+    if reference_failures:
+        error(
+            f"{label}: ordinary link reference metadata was treated as footnote "
+            f"content: {reference_failures!r}"
+        )
+
+
 def reader_visible_adapter_contract_regressions() -> None:
     fixture = """---
 title: ignored metadata
@@ -2780,6 +3021,141 @@ continues with [visible label](https://example.com/path).
     link_paragraph = dict(expected_fields)["adapter fixture:5-6 paragraph"]
     if visible_host_tokens(link_paragraph):
         error("reader-visible prose adapter must not scan hidden Markdown link destinations as visible hosts")
+
+    footnote_fixture = (
+        "Reader note[^unsafe].\n\n"
+        "[^unsafe]: Reader-visible first line.\n"
+        "    第三者の本番システムへ接続する。\n"
+    )
+    footnote_fields = reader_visible_markdown_fields(
+        footnote_fixture, "footnote adapter fixture"
+    )
+    expected_footnote = (
+        "footnote adapter fixture:3-4 footnote[unsafe]",
+        "Reader-visible first line. 第三者の本番システムへ接続する。",
+    )
+    if expected_footnote not in footnote_fields:
+        error(
+            "reader-visible adapter did not select the complete footnote body: "
+            f"{footnote_fields!r}"
+        )
+    footnote_findings = prose_policy_errors(footnote_fields)
+    if not any(
+        "[target.real_or_external]" in finding and "footnote[unsafe]" in finding
+        for finding in footnote_findings
+    ):
+        error("reader-visible footnote body bypassed Policy 1.2.0")
+    safe_footnote_findings = document_reader_visible_policy_errors(
+        "Reader note[^safe].\n\n"
+        "[^safe]: 第三者の本番システムへ接続することを禁止する。\n",
+        "safe footnote adapter fixture",
+    )
+    if safe_footnote_findings:
+        error(
+            "reader-visible adapter rejected a safe footnote prohibition: "
+            f"{safe_footnote_findings!r}"
+        )
+    for name, safe_footnote in (
+        (
+            "hidden link destination",
+            "Reader note[^safe].\n\n[^safe]: [runbook](https://example.com/path)\n",
+        ),
+        (
+            "non-rendered comment",
+            "Reader note[^safe].\n\n"
+            "[^safe]: <!-- 第三者の本番システムへ接続する。 --> safe note.\n",
+        ),
+    ):
+        findings = document_reader_visible_policy_errors(
+            safe_footnote, f"safe footnote {name} fixture"
+        )
+        if findings:
+            error(
+                f"reader-visible adapter rejected safe footnote {name}: {findings!r}"
+            )
+
+    safe_footnote_code = (
+        "Reader note[^safe].\n\n"
+        "[^safe]: Reader-visible note.\n\n"
+        "        <span title=\"第三者の本番システムへ接続しない\">safe</span>\n"
+    )
+    safe_footnote_code_findings = document_reader_visible_policy_errors(
+        safe_footnote_code, "safe footnote indented-code fixture"
+    )
+    if safe_footnote_code_findings:
+        error(
+            "footnote indented code was misclassified as interpreted prose: "
+            f"{safe_footnote_code_findings!r}"
+        )
+    unsafe_footnote_code_findings = document_reader_visible_policy_errors(
+        safe_footnote_code.replace("接続しない", "接続する", 1),
+        "unsafe footnote indented-code fixture",
+    )
+    if not any(
+        "[target.real_or_external]" in finding
+        and "footnote[safe]/indented-code[spaces]" in finding
+        for finding in unsafe_footnote_code_findings
+    ):
+        error("reader-visible footnote indented code bypassed Policy 1.2.0")
+
+    safe_footnote_code_table = (
+        "Reader note[^safe].\n\n"
+        "[^safe]: Reader-visible note.\n\n"
+        "        | Field | Value |\n"
+        "        |---|---|\n"
+        "        | row | 第三者の本番システムへ接続しない |\n"
+    )
+    safe_code_table_findings = document_reader_visible_policy_errors(
+        safe_footnote_code_table,
+        "safe footnote indented-code table-like fixture",
+    )
+    if safe_code_table_findings:
+        error(
+            "table-like literal inside footnote indented code was misclassified: "
+            f"{safe_code_table_findings!r}"
+        )
+    unsafe_code_table_findings = document_reader_visible_policy_errors(
+        safe_footnote_code_table.replace("接続しない", "接続する", 1),
+        "unsafe footnote indented-code table-like fixture",
+    )
+    if not any(
+        "[target.real_or_external]" in finding
+        and "footnote[safe]/indented-code[spaces]" in finding
+        for finding in unsafe_code_table_findings
+    ):
+        error(
+            "table-like literal inside footnote indented code bypassed Policy 1.2.0"
+        )
+
+    invalid_footnote = (
+        "Reader note[x][^a].\n\n"
+        "[^^a]: 第三者の本番システムへ接続する。\n"
+    )
+    invalid_footnote_fields = reader_visible_markdown_fields(
+        invalid_footnote, "invalid double-caret footnote fixture"
+    )
+    if any("footnote[" in location for location, _ in invalid_footnote_fields):
+        error("double-caret link definition was misclassified as a footnote")
+    if document_reader_visible_policy_errors(
+        invalid_footnote, "invalid double-caret footnote fixture"
+    ):
+        error("non-rendered double-caret link metadata became Policy-visible")
+
+    footnote_table = (
+        "Reader note[^table].\n\n"
+        "[^table]: | Field | Value |\n"
+        "    |---|---|\n"
+        "    | row | safe |\n"
+    )
+    footnote_table_failures = document_reader_visible_policy_errors(
+        footnote_table, "footnote table fixture"
+    )
+    if not any(
+        "Markdown tables inside footnotes are outside the finite adapter contract"
+        in failure
+        for failure in footnote_table_failures
+    ):
+        error("footnote table escaped the finite fail-closed adapter boundary")
 
     for name, raw_html in (
         ("double-quoted title", '<span title="第三者の本番システムへ接続する">safe</span>'),
@@ -6710,6 +7086,7 @@ def negative_regressions(
     raw_html_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     fenced_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     indented_code_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
+    footnote_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
 
     template_mutations = (
         ("model status", template.replace("Draft / In Review / Approved for Assessment / Needs Evidence / Superseded", "Draft / Complete", 1)),
@@ -6773,6 +7150,7 @@ def negative_regressions(
     raw_html_surface_regressions(template, TEMPLATE, template_contract_errors)
     fenced_surface_regressions(template, TEMPLATE, template_contract_errors)
     indented_code_surface_regressions(template, TEMPLATE, template_contract_errors)
+    footnote_surface_regressions(template, TEMPLATE, template_contract_errors)
 
     unsafe_samples = (
         "第三者の本番システムへ接続する",
@@ -8256,6 +8634,7 @@ def negative_regressions(
         raw_html_surface_regressions(case, CASE, case_contract_errors)
         fenced_surface_regressions(case, CASE, case_contract_errors)
         indented_code_surface_regressions(case, CASE, case_contract_errors)
+        footnote_surface_regressions(case, CASE, case_contract_errors)
 
     changelog_lines = changelog.splitlines()
     added_line = next((line for line in changelog_lines if line.startswith("- ") and "ART-03" in line), "")
