@@ -16,7 +16,10 @@ import unicodedata
 from urllib.parse import parse_qsl, urlparse
 
 
-POLICY_VERSION = "1.0.0"
+# 1.2.0 adds three frozen finite grammar classes: Japanese destructive particle
+# frames, non-qualifiable credential/session operations, and bounded English PII
+# meta-analysis.  The public API and the existing finding categories are unchanged.
+POLICY_VERSION = "1.2.0"
 
 
 @dataclass(frozen=True)
@@ -46,6 +49,38 @@ class ProtectedObjectRule:
     expression: Pattern[str]
     action_kinds: frozenset[str]
     synthetic_qualifiable: bool = False
+
+
+@dataclass(frozen=True)
+class JapaneseParticleFrame:
+    """A finite Japanese protected-object + ``を`` + action frame."""
+
+    category: str
+    protected_object: Pattern[str]
+    action: Pattern[str]
+    action_kind: str
+
+
+@dataclass(frozen=True)
+class OperationRule:
+    """A specific operation whose qualifier policy overrides its object rule."""
+
+    kind: str
+    expression: Pattern[str]
+    category: str
+    synthetic_qualifiable: bool
+    precedence: int
+
+
+@dataclass(frozen=True)
+class MetaAnalysisFrame:
+    """Frozen vocabulary for one bounded reader-visible analysis frame."""
+
+    meta_verbs: tuple[str, ...]
+    meta_heads: tuple[str, ...]
+    relations: tuple[str, ...]
+    embedded_operations: tuple[str, ...]
+    protected_objects: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -89,11 +124,12 @@ _CONFUSABLE_FOLD = str.maketrans(
 _CLAUSE_SPLIT = re.compile(r"([,;、。；!?！？\n]+|[.:：](?=\s|$))")
 _CONTRAST_PREFIX = re.compile(
     r"^\s*(?:(?:but|however|yet|nevertheless|still|then|and)\b|"
-    r"しかし|ただし|だが|一方で|それでも|その後|そして)[,:、\s]*",
+    r"しかし|ただし|だが|一方で|それでも|その後|そして|なお)[,:、\s]*",
     re.IGNORECASE,
 )
 _PRONOUN_REFERENCE = re.compile(
-    r"\b(?:it|its|them|they|the[ ]same(?:[ ](?:object|item|target|data|material))?)\b|"
+    r"\b(?:it|its|them|they)\b|"
+    r"\bthe[ ]same(?:[ ](?:object|item|target|data|material))?\b(?![ ][a-z0-9])|"
     r"(?:これ|それ|その(?:使用|利用|配備|導入|実行|作成|構築)|"
     r"当該(?:対象|情報|値|もの)|同じ(?:対象|もの|情報))(?=[をはもへにがの\s])",
     re.IGNORECASE,
@@ -142,7 +178,9 @@ ACTION_RULES = (
             _mixed_script_action(
                 r"write|code|create|creates|created|creating|creation|"
                 r"build|builds|built|building|develop|develops|developed|developing|"
-                r"implement|implements|implemented|implementing"
+                r"implement|implements|implemented|implementing|"
+                r"establish|establishes|established|establishing|automate|automates|"
+                r"automated|automating"
             )
             + r"|"
             r"(?:作(?:る|った|って(?:ください)?|ります|らない)|作成|構築|開発|実装)(?:する|した|します|しない|せず)?"
@@ -154,7 +192,8 @@ ACTION_RULES = (
             _mixed_script_action(
                 r"deploy|deploys|deployed|deploying|deployment|install|installs|"
                 r"installed|installing|run|runs|ran|running|execute|executes|executed|"
-                r"executing|use|uses|used|using|operate|operates|operated|operating"
+                r"executing|use|uses|used|using|operate|operates|operated|operating|"
+                r"log[ -]?in|sign[ -]?in|authenticate|authenticates|authenticated|authenticating"
             )
             + r"|"
             r"(?:配備|導入|実行|使用|利用|運用)(?:する|した|します|しない|せず)?"
@@ -169,13 +208,26 @@ ACTION_RULES = (
                 r"attack|attacks|attacked|attacking|attempt|attempts|attempted|attempting|"
                 r"retrieve|retrieves|retrieved|retrieving|collect|collects|collected|"
                 r"collecting|store|stores|stored|storing|share|shares|shared|sharing|"
+                r"process|processes|processed|processing|expose|exposes|exposed|exposing|"
+                r"retain|retains|retained|retaining|"
                 r"record|records|recorded|recording|view|views|viewed|viewing|"
+                r"send|sends|sent|sending|replace|replaces|replaced|replacing|"
                 r"modify|modifies|modified|modifying|encrypt|encrypts|encrypted|encrypting|"
                 r"delete|deletes|deleted|deleting|steal|steals|stole|stolen|stealing"
             )
             + r"|"
             r"(?:接続|アクセス|走査|スキャン|攻撃|試行|取得|収集|保存|共有|記録|"
-            r"閲覧|観測|参照|変更|改変|暗号化|削除|窃取)(?:する|した|します|しない|せず|行う|実施する)?"
+            r"閲覧|観測|参照|変更|改変|暗号化|削除|消去|改ざん|窃取|送信|置換)(?:する|した|します|しない|せず|行う|実施する)?|"
+            r"破壊(?:する|した|します|しない|せず)?"
+        ),
+    ),
+    ActionRule(
+        "analyze",
+        _rx(
+            _mixed_script_action(
+                r"analy[sz]e|analy[sz]es|analy[sz]ed|analy[sz]ing|analysis"
+            )
+            + r"|(?:分析|解析)(?:する|した|します|しない|せず|行う|実施する)?"
         ),
     ),
     ActionRule(
@@ -183,10 +235,15 @@ ACTION_RULES = (
         _rx(
             _mixed_script_action(
                 r"perform|performs|performed|performing|conduct|conducts|conducted|"
-                r"conducting|launch|launches|launched|launching|cause|causes|caused|causing"
+                r"conducting|launch|launches|launched|launching|cause|causes|caused|causing|"
+                r"publish|publishes|published|publishing|announce|announces|announced|announcing"
             )
             + r"|"
-            r"(?:行う|行わない|実施する|実施しない|仕掛ける|起こす)"
+            r"(?:行う|行わない|実施する|実施しない|仕掛ける|起こす|確立する|自動化する|"
+            r"公開(?:する|した|します|しない|せず)|発生させる|公表する|試す|"
+            r"ログインする|サインインする|認証する|"
+            r"操作(?:する|した|します|しない|せず)|操作(?=なし))"
+            r"(?:する|した|します|しない|せず)?"
         ),
     ),
     ActionRule(
@@ -204,73 +261,208 @@ ACTION_RULES = (
 )
 
 
+OPERATION_RULES = (
+    OperationRule(
+        kind="theft-reuse",
+        expression=_rx(
+            _mixed_script_action(
+                r"steal|steals|stole|stolen|stealing|"
+                r"exfiltrate|exfiltrates|exfiltrated|exfiltrating|exfiltration|"
+                r"reuse|reuses|reused|reusing|replay|replays|replayed|replaying|"
+                r"hijack|hijacks|hijacked|hijacking|takeover|takeovers|"
+                r"take[ ]over|takes[ ]over|took[ ]over|taken[ ]over|taking[ ]over"
+            )
+            + r"|"
+            r"(?:窃取|再利用|リプレイ)(?:する|した|します|しない|せず|される|された|されない|されず)?|"
+            r"(?:持ち出(?:す|した|さない|される|された|されない|されず)|"
+            r"流出させ(?:る|た|ます|ない|ず))|"
+            r"(?:乗っ取る|乗っ取った|乗っ取らない|乗っ取り|乗っ取られる|乗っ取られない)"
+        ),
+        category="operation.authentication_or_session",
+        synthetic_qualifiable=False,
+        precedence=100,
+    ),
+)
+
+
+_JA_LEXICAL_LEFT = r"(?<![ぁ-んァ-ヶ一-龯a-z0-9])"
+_JA_BOUNDED_NOUN_MODIFIER = r"(?:システム|対象|本番|顧客|無許可)"
+_JA_OPTIONAL_NOUN_MODIFIER = (
+    rf"(?:(?:{_JA_BOUNDED_NOUN_MODIFIER})\s*(?:の\s*)?)?"
+)
+JAPANESE_PARTICLE_FRAMES = (
+    JapaneseParticleFrame(
+        category="operation.privilege_or_evasion",
+        protected_object=_rx(
+            _JA_LEXICAL_LEFT
+            + rf"{_JA_OPTIONAL_NOUN_MODIFIER}(?:監査ログ|監査証跡|ログ)"
+        ),
+        action=_rx(r"(?:削除|消去|改ざん)"),
+        action_kind="access-collect",
+    ),
+    JapaneseParticleFrame(
+        category="operation.disruption_or_destruction",
+        protected_object=_rx(
+            _JA_LEXICAL_LEFT
+            + rf"{_JA_OPTIONAL_NOUN_MODIFIER}データ"
+        ),
+        action=_rx(r"(?:破壊|変更|改変|暗号化|無許可変更)"),
+        action_kind="access-collect",
+    ),
+)
+
+
+META_ANALYSIS_FRAMES = (
+    MetaAnalysisFrame(
+        meta_verbs=(
+            "analyze",
+            "assess",
+            "evaluate",
+            "review",
+            "examine",
+            "model",
+            "discuss",
+            "document",
+        ),
+        meta_heads=(
+            "risk",
+            "risks",
+            "impact",
+            "impacts",
+            "implications",
+            "policy",
+            "policies",
+            "control",
+            "controls",
+            "safeguard",
+            "safeguards",
+            "necessity",
+            "consequences",
+        ),
+        relations=("of", "associated with", "related to", "against", "whether"),
+        embedded_operations=(
+            "collecting",
+            "storing",
+            "sharing",
+            "using",
+            "processing",
+            "exposing",
+            "retaining",
+        ),
+        protected_objects=(
+            "pii",
+            "personal information",
+            "personal data",
+            "employee information",
+            "employee data",
+            "customer information",
+            "customer data",
+        ),
+    ),
+)
+
+
+def _finite_alternation(values: tuple[str, ...]) -> str:
+    return "|".join(re.escape(value).replace(r"\ ", r"\s+") for value in values)
+
+
+_ENGLISH_PII_META_ANALYSIS_PATTERNS = tuple(
+    _rx(
+        rf"\b(?P<meta>{_finite_alternation(frame.meta_verbs)})\b\s+"
+        rf"(?:the\s+)?(?:"
+        rf"(?:privacy\s+)?(?P<head>{_finite_alternation(frame.meta_heads)})\s+"
+        rf"(?P<relation>{_finite_alternation(tuple(value for value in frame.relations if value != 'whether'))})\s+"
+        rf"(?P<operation>{_finite_alternation(frame.embedded_operations)})\s+"
+        rf"(?P<object>{_finite_alternation(frame.protected_objects)})\b|"
+        rf"(?P<whether>whether)\s+"
+        rf"(?P<whether_operation>{_finite_alternation(frame.embedded_operations)})\s+"
+        rf"(?P<whether_object>{_finite_alternation(frame.protected_objects)})\s+"
+        rf"is\s+(?P<whether_head>necessary)\b)"
+    )
+    for frame in META_ANALYSIS_FRAMES
+)
+
+
+_LATIN_LEFT = r"(?<![a-z0-9])"
+_LATIN_RIGHT = r"(?![a-z0-9])"
+
+
 _TARGET = _rx(
     r"(?:real|actual)[ -]?(?:target|system|environment|service|site|tenant|api(?:[ -]endpoint)?)s?|"
     r"(?:third[ -]party|external)[ -]+(?:(?:production|prod|live)[ -]+)?"
     r"(?:targets?|systems?|environments?|data|apis?|api[ -]endpoints?|services?|saas|sites?|tenants?)|"
-    r"実(?:在|際)?(?:の)?(?:target|標的|ターゲット|system|システム|環境|tenant|テナント|service|サービス|api)|"
-    r"第三者(?:の)?(?:(?:本番|実運用)[ -]*)?(?:target|標的|system|システム|環境|data|データ|api|service|サービス|saas|site|サイト|tenant|テナント)|"
-    r"外部(?:の)?(?:(?:本番|実運用)[ -]*)?(?:target|標的|system|システム|環境|data|データ|api|service|サービス|saas|site|サイト|tenant|テナント)"
+    r"実(?:在|際)?\s*(?:の\s*)?(?:target|標的|ターゲット|system|システム|環境|tenant|テナント|service|サービス|api)|"
+    r"(?:第三者|外部|他社)\s*(?:の\s*)?(?:(?:本番|実運用)\s*[ -]*)?(?:target|標的|system|システム|環境|data|データ|api(?:\s*エンドポイント)?|service|サービス|saas|site|サイト|tenant|テナント)"
 )
 _SECRET = _rx(
-    r"\b(?:credentials?|passwords?|passphrases?|tokens?|cookies?|sessions?|secrets?|"
-    r"api[ -]?keys?|private[ -]?keys?|access[ -]?keys?|ssh[ -]?keys?)\b|"
+    _LATIN_LEFT + r"(?:credentials?|passwords?|passphrases?|tokens?|cookies?|sessions?|secrets?|"
+    r"api[ -]?keys?|private[ -]?keys?|access[ -]?keys?|ssh[ -]?keys?|"
+    r"bearer[ -]?(?:tokens?|jwt)|jwts?|session[ -]?ids?)" + _LATIN_RIGHT + r"|"
     r"(?:実)?(?:credential|クレデンシャル|認証情報|資格情報|token|トークン|cookie|クッキー|"
     r"session|セッション|secret|シークレット|password|パスワード|passphrase|パスフレーズ|"
     r"api[ -]?(?:key|キー)|private[ -]?(?:key|キー|鍵)|アクセス[ -]?(?:キー|鍵))"
 )
 _PII = _rx(
-    r"\b(?:pii|personally[ -]identifiable[ -]information|personal[ -](?:data|information)|"
-    r"employee[ -](?:data|information)|customer[ -](?:data|information)|"
+    _LATIN_LEFT + r"(?:pii|personally[ -]identifiable[ -]information|personal[ -](?:data|information|info)|"
+    r"employee[ -](?:data|information|info)|customer[ -](?:data|information|info)|"
     r"e[ -]?mail[ -]address|phone[ -]number|date[ -]of[ -]birth|passport[ -]number|"
     r"national[ -]id|social[ -]security[ -]number|payment[ -]card[ -]number|"
-    r"bank[ -]account[ -]number)\b|"
-    r"(?:個人(?:情報|データ)|従業員(?:情報|データ)|顧客(?:情報|データ)|メールアドレス|"
-    r"電話番号|生年月日|マイナンバー|個人番号|パスポート番号|カード番号|口座番号)"
+    r"bank[ -]account[ -]number|full[ -]name|home[ -]address|credit[ -]card[ -]number)" + _LATIN_RIGHT + r"|"
+    r"(?:個人(?:情報|データ)|(?:従業員|顧客)\s*(?:の\s*)?(?:情報|データ)|メールアドレス|"
+    r"電話番号|氏名|住所|生年月日|マイナンバー|個人番号|パスポート番号|(?:クレジット\s*)?カード番号|口座番号)"
 )
 _AUTH_SESSION = _rx(
-    r"\b(?:authentication[ -]attempts?|login[ -]attempts?|brute[ -]force|"
+    _LATIN_LEFT + r"(?:authentication[ -]attempts?|auth[ -]attempts?|login[ -]attempts?|"
+    r"(?:login|authentication)[ -]brute[ -]force|brute[ -]force[ -](?:login|authentication)|"
+    r"mfa[ -]fatigue|(?:login|sign[ -]in)(?=(?:する|を(?:試す|行う|実施する)))|"
     r"session[ -](?:theft|stealing|hijack(?:ing)?|fixation|replay|reuse|takeover)|"
-    r"credential[ -](?:theft|stealing|reuse))\b|"
-    r"(?:認証試行|ログイン試行|総当たり|ブルート[ -]フォース|"
+    r"credential[ -](?:theft|stealing|reuse))" + _LATIN_RIGHT + r"|"
+    r"(?:mfa\s*疲労(?:攻撃)?|認証試行|ログイン試行|(?:認証|ログイン|サインイン)(?=(?:を)?(?:試す|行う|実施する|する))|総当たり|ブルート[ -]?フォース(?:ログイン|認証)?|"
     r"セッション(?:窃取|乗っ取り|固定|リプレイ|再利用)|認証情報(?:窃取|再利用))"
 )
 _MALWARE = _rx(
-    r"(?<![a-z0-9])(?:deployable[ -]malware|malware|ransomware|wiper|keyloggers?|rootkits?|spyware|"
-    r"info[ -]?stealers?|credential[ -]stealers?|backdoors?|trojans?)(?![a-z0-9])|"
+    _LATIN_LEFT + r"(?:deployable[ -]malware|malware|ransomware|wiper|keyloggers?|rootkits?|spyware|"
+    r"info[ -]?stealers?|credential[ -]stealers?|backdoors?|trojans?|stealth[ -]tooling)" + _LATIN_RIGHT + r"|"
     r"(?:マルウェア|ランサムウェア|ワイパー|キーロガー|ルートキット|スパイウェア|"
-    r"インフォ[ -]スティーラー|認証情報窃取(?:型)?マルウェア|バックドア|トロイの木馬)"
+    r"インフォ[ -]?スティーラー|認証情報窃取(?:型)?マルウェア|バックドア|トロイの木馬|ステルスツール)"
 )
 _C2_PHISHING = _rx(
-    r"\b(?:c2|c[ ]*&[ ]*c|command[ -](?:and|&)[ -]control|phishing)"
-    r"(?:[ -](?:infrastructure|server|site|page|channel|operation|campaign))?\b|"
-    r"(?:c2|c[ ]*&[ ]*c|コマンド[ -]アンド[ -]コントロール|フィッシング)"
+    _LATIN_LEFT + r"(?:c2|c[ ]*&[ ]*c|command[ -](?:and|&)[ -]control|phishing)"
+    r"(?:[ -](?:infrastructure|server|site|page|channel|operation|campaign))?" + _LATIN_RIGHT + r"|"
+    r"(?:c2|c\s*&\s*c|コマンド\s*[ -]?\s*アンド\s*[ -]?\s*コントロール|フィッシング)"
     r"(?:基盤|インフラ|サーバー|サイト|ページ|通信|接続|運用|攻撃)?"
 )
 _PRIVILEGE_EVASION = _rx(
-    r"\b(?:privilege[ -]escalation|lateral[ -]movement|persistence|persistent[ -]access|"
+    _LATIN_LEFT + r"(?:privilege[ -]escalation|lateral[ -]movement|persistence|persistent[ -]access|"
     r"defen[cs]e[ -]evasion|log[ -](?:deletion|erasure|tampering)|"
-    r"audit[ -]trail[ -](?:deletion|erasure|tampering))\b|"
+    r"audit[ -]trail[ -](?:deletion|erasure|tampering))" + _LATIN_RIGHT + r"|"
     r"(?:権限昇格|横展開|ラテラルムーブメント|永続化|永続的アクセス|防御回避|検知回避|"
-    r"ログ(?:削除|消去|改ざん)|監査証跡(?:削除|消去|改ざん))"
+    r"(?:監査ログ|(?<![ぁ-んァ-ヶ一-龯a-z0-9])ログ)(?:削除|消去|改ざん)|"
+    r"監査証跡(?:削除|消去|改ざん))"
 )
 _DISRUPTION = _rx(
-    r"\b(?:(?:distributed[ -])?denial[ -]of[ -]service|ddos|dos|resource[ -]exhaustion|"
-    r"data[ -](?:destruction|modification|encryption)|destructive[ -](?:action|operation))\b|"
+    _LATIN_LEFT + r"(?:(?:distributed[ -])?denial[ -]of[ -]service|ddos|dos|resource[ -]exhaustion|"
+    r"(?:unauthorized[ -])?data[ -](?:destruction|modification|encryption)|destructive[ -](?:action|operation)|encryption|"
+    r"encrypt(?:s|ing)?(?:[ ]+the)?[ ]+data|encrypted[ ]+the[ ]+data)" + _LATIN_RIGHT + r"|"
     r"(?:ddos|dos)(?=[をへにでのはがも、。；;,.!?！？\s]|$)|"
-    r"(?:サービス拒否|資源枯渇|データ(?:破壊|変更|改変|暗号化)|破壊的(?:操作|行為))"
+    r"(?:サービス拒否|資源枯渇|"
+    r"(?:本番データ|顧客データ|無許可データ|(?<![ぁ-んァ-ヶ一-龯a-z0-9])データ)"
+    r"(?:破壊|変更|改変|暗号化)|破壊的(?:操作|行為))"
 )
 _SOCIAL = _rx(
-    r"\b(?:social[ -]engineering|doxx(?:ing)?|tracking[ -](?:a[ -])?real[ -]person|"
-    r"real[ -]person[ -]tracking)\b|"
-    r"(?:ソーシャルエンジニアリング|ドキシング|晒し|実在人物(?:の)?(?:追跡|位置推定))"
+    _LATIN_LEFT + r"(?:social[ -]engineering|doxx(?:ing)?|tracking[ -](?:a[ -])?real[ -]person|"
+    r"real[ -]person[ -]tracking|impersonation|anonymi[sz]ation[ -]infrastructure|dark[ -]web[ -]infiltration)" + _LATIN_RIGHT + r"|"
+    r"(?:ソーシャルエンジニアリング|ドキシング|晒し|なりすまし|匿名化基盤|ダークウェブ(?:への)?直接潜入|実在人物(?:の)?(?:追跡|位置推定))"
 )
 _WEAK_ATTRIBUTION = _rx(
-    r"\b(?:confident(?:ly)?[ -](?:attribute|attribution)|definitive[ -]attribution)"
-    r"(?:[ -](?:from|using))?[ -]weak[ -]evidence\b|"
-    r"\battribute\b.{0,80}\bconfidently\b.{0,80}\bweak[ -]evidence\b|"
-    r"(?:弱い|不十分な)(?:evidence|証拠|根拠)(?:だけ)?(?:から|で)"
-    r"(?:断定的に)?(?:帰属|主体|組織|国家)(?:を)?(?:断定|特定|同定)"
+    _LATIN_LEFT + r"(?:confident(?:ly)?[ -](?:attribute|attribution)|definitive[ -]attribution)"
+    r"(?:[ -](?:from|using))?[ -]weak[ -]evidence" + _LATIN_RIGHT + r"|" +
+    _LATIN_LEFT + r"attribute" + _LATIN_RIGHT + r".{0,80}" + _LATIN_LEFT + r"confidently" + _LATIN_RIGHT + r".{0,80}" + _LATIN_LEFT + r"weak[ -]evidence" + _LATIN_RIGHT + r"|"
+    + _LATIN_LEFT + r"weak[ -]evidence" + _LATIN_RIGHT
+    + r"(?:から(?:の)?|で)(?:断定的(?:に)?(?:帰属|主体|組織|国家)|"
+    + r"(?:断定的(?:に)?)?(?:帰属|主体|組織|国家)(?:を)?(?:断定|特定|同定))|"
+    r"(?:弱い|不十分な)(?:evidence|証拠|根拠)(?:だけ)?(?:から(?:の)?|で)"
+    r"(?:断定的(?:に)?(?:帰属|主体|組織|国家)|(?:断定的(?:に)?)?(?:帰属|主体|組織|国家)(?:を)?(?:断定|特定|同定))"
 )
 
 
@@ -278,23 +470,25 @@ PROTECTED_OBJECT_RULES = (
     ProtectedObjectRule(
         "target.real_or_external",
         _TARGET,
-        frozenset({"create", "deploy-use", "access-collect", "perform"}),
+        frozenset({"create", "deploy-use", "access-collect", "perform", "analyze"}),
     ),
     ProtectedObjectRule(
         "secret.credential",
         _SECRET,
-        frozenset({"create", "deploy-use", "access-collect", "perform"}),
+        frozenset(
+            {"create", "deploy-use", "access-collect", "analyze", "perform", "theft-reuse"}
+        ),
         synthetic_qualifiable=True,
     ),
     ProtectedObjectRule(
         "data.pii",
         _PII,
-        frozenset({"create", "deploy-use", "access-collect", "perform"}),
+        frozenset({"create", "deploy-use", "access-collect", "perform", "analyze"}),
     ),
     ProtectedObjectRule(
         "operation.authentication_or_session",
         _AUTH_SESSION,
-        frozenset({"create", "deploy-use", "access-collect", "perform"}),
+        frozenset({"create", "deploy-use", "access-collect", "perform", "theft-reuse"}),
     ),
     ProtectedObjectRule(
         "operation.malware",
@@ -411,17 +605,90 @@ def _object_matches(clause: str) -> list[_Match]:
                     synthetic_qualifiable=rule.synthetic_qualifiable,
                 )
             )
-    return sorted(matches, key=lambda item: (item.start, item.end, item.category))
+    for frame in JAPANESE_PARTICLE_FRAMES:
+        for protected in frame.protected_object.finditer(clause):
+            particle = re.match(r"\s*を\s*", clause[protected.end() :])
+            if particle is None:
+                continue
+            action_start = protected.end() + particle.end()
+            if frame.action.match(clause, action_start) is None:
+                continue
+            matches.append(
+                _Match(
+                    start=protected.start(),
+                    end=protected.end(),
+                    text=protected.group(0),
+                    category=frame.category,
+                    action_kinds=frozenset({frame.action_kind}),
+                    synthetic_qualifiable=False,
+                )
+            )
+    return sorted(
+        set(matches),
+        key=lambda item: (item.start, item.end, item.category, item.text),
+    )
 
 
 def _action_matches(clause: str, allowed: frozenset[str]) -> list[tuple[int, int, str, str]]:
-    matches: list[tuple[int, int, str, str]] = []
+    specific: list[tuple[int, int, str, str, int]] = []
+    for rule in OPERATION_RULES:
+        if rule.kind not in allowed:
+            continue
+        for match in rule.expression.finditer(clause):
+            specific.append(
+                (match.start(), match.end(), rule.kind, match.group(0), rule.precedence)
+            )
+
+    matches: list[tuple[int, int, str, str]] = [
+        (start, end, kind, text)
+        for start, end, kind, text, _ in specific
+    ]
     for rule in ACTION_RULES:
         if rule.kind not in allowed:
             continue
         for match in rule.expression.finditer(clause):
+            if any(
+                match.start() < specific_end and specific_start < match.end()
+                for specific_start, specific_end, _, _, _ in specific
+            ):
+                continue
             matches.append((match.start(), match.end(), rule.kind, match.group(0)))
-    return sorted(matches)
+    return sorted(set(matches))
+
+
+def _operation_rule_for_action(
+    action: tuple[int, int, str, str],
+) -> OperationRule | None:
+    candidates = [rule for rule in OPERATION_RULES if rule.kind == action[2]]
+    return max(candidates, key=lambda rule: rule.precedence, default=None)
+
+
+def _preferred_finding_category(
+    actions: Iterable[tuple[int, int, str, str]],
+    fallback: str,
+) -> str:
+    candidates = [
+        rule
+        for action in actions
+        if (rule := _operation_rule_for_action(action)) is not None
+    ]
+    if not candidates:
+        return fallback
+    return max(candidates, key=lambda rule: rule.precedence).category
+
+
+def _synthetic_qualifier_permitted(
+    clause: str,
+    protected: _Match,
+    actions: Iterable[tuple[int, int, str, str]],
+) -> bool:
+    if not _direct_synthetic(clause, protected):
+        return False
+    for action in actions:
+        operation = _operation_rule_for_action(action)
+        if operation is not None and not operation.synthetic_qualifiable:
+            return False
+    return True
 
 
 def _action_has_direct_reference(
@@ -476,17 +743,31 @@ def _action_is_prohibited(
     if re.search(r"(?:do not|don't|never|must not|shall not|should not)\s*$", before):
         return True
     if re.search(
-        r"(?:is|are|was|were|must|should|shall|may)\s+not(?:\s+be)?\s*$",
+        r"(?:is|are|was|were|must|should|shall|may|can|could|will|would)"
+        r"\s+not(?:\s+be)?\s*$",
         action_before,
     ):
         return True
-    if re.search(r"(?:is|are|was|were)\s+forbidden\s+to\s*$", action_before):
+    if re.search(
+        r"(?:(?:is|are|was|were)\s+)?forbidden\s+to\s*$",
+        action_before,
+    ):
         return True
     if _coordinated_pre_action_prohibition_controls_action(clause, action):
         return True
     if _pre_action_prohibition_controls_action(clause, action):
         return True
-    if re.search(r"(?:しない|せず|行わない|使わない|作らない)$", action_text):
+    if re.search(
+        r"(?:しない|せず|行わない|使わない|作らない|されない|されず|"
+        r"持ち出さない|流出させない|乗っ取らない|乗っ取られない)$",
+        action_text,
+    ):
+        return True
+    # Japanese negative predicates can follow a bare action stem (for example,
+    # ``作るべきではない`` and ``実Target操作なし``).  Keep this local: a later
+    # action or a clause boundary still ends the negative scope.
+    direct_tail = clause[action_end : action_end + 24]
+    if re.match(r"\s*(?:べきではない|べからず|なし)(?=$|[、。；;,.!?！？\s])", direct_tail):
         return True
     if _trailing_prohibition_controls_action(clause, action, _TRAILING_EN_PROHIBITION):
         return True
@@ -496,7 +777,7 @@ def _action_is_prohibited(
 
 
 _PRE_ACTION_PROHIBITION_MARKER = re.compile(
-    r"(?:is|are|was|were)\s+"
+    r"(?:(?:is|are|was|were)\s+)?"
     r"(?:forbidden\s+to|(?:forbidden|prohibited)\s+from)\b",
     re.IGNORECASE,
 )
@@ -504,12 +785,137 @@ _PROHIBITION_SCOPE_BREAK = re.compile(
     r"[,.;:!?、。；：！？]|\b(?:but|however|yet|nevertheless|still|then)\b",
     re.IGNORECASE,
 )
-_PROHIBITION_COORDINATOR = re.compile(r"\b(?:and|or|nor)\b", re.IGNORECASE)
-_NEGATION_COORDINATOR = re.compile(r"\b(?:or|nor)\b", re.IGNORECASE)
+_DIRECT_ACTION_MODIFIERS = (
+    "to",
+    "also",
+    "directly",
+    "explicitly",
+    "only",
+    "ever",
+    "immediately",
+)
+_DIRECT_COORDINATORS = ("and", "or", "but")
+_PROHIBITION_COORDINATORS = frozenset(("and", "or", "nor"))
+_NEGATION_COORDINATORS = frozenset(("or", "nor"))
+_DIRECT_LOCAL_NEGATIONS = ("do not", "never", "must not")
+_PUBLICATION_COORDINATION_ACTION_KINDS = frozenset(
+    ("create", "deploy-use", "access-collect", "perform")
+)
+
+
+def _finite_phrase_pattern(values: tuple[str, ...]) -> str:
+    """Build one regex branch from a frozen finite phrase inventory."""
+
+    return "|".join(
+        re.escape(value).replace(r"\ ", r"\s+")
+        for value in values
+    )
+
+
 _DIRECT_ACTION_PREFIX = re.compile(
-    r"\s*(?:(?:to|also|directly|explicitly|only|ever|immediately)\s+)*",
+    rf"\s*(?:(?:{_finite_phrase_pattern(_DIRECT_ACTION_MODIFIERS)})\s+)*",
     re.IGNORECASE,
 )
+
+
+@dataclass(frozen=True)
+class _DirectActionLead:
+    """Finite modifiers and optional local negation before one Action."""
+
+    local_negation: str | None
+    modifiers: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class _DirectCoordinationGap:
+    """A whole, punctuation-free gap between two directly coordinated Actions."""
+
+    coordinator: str
+    local_negation: str | None
+    modifiers: tuple[str, ...]
+
+
+def _parse_direct_action_lead(
+    text: str,
+    *,
+    allow_local_negation: bool,
+) -> _DirectActionLead | None:
+    """Parse every token before an Action from the frozen finite vocabulary.
+
+    Modifiers may occur before or after the one local negation.  Any punctuation,
+    subject, object, or unknown token makes the whole lead invalid.
+    """
+
+    if not isinstance(text, str) or re.search(r"[,.;:!?、。；：！？\n]", text):
+        return None
+    tokens = text.casefold().split()
+    modifiers: list[str] = []
+    local_negation: str | None = None
+    index = 0
+    negation_tokens = tuple(
+        (negation, tuple(negation.split()))
+        for negation in _DIRECT_LOCAL_NEGATIONS
+    )
+    while index < len(tokens):
+        matched_negation: str | None = None
+        matched_width = 0
+        for negation, phrase_tokens in negation_tokens:
+            width = len(phrase_tokens)
+            if tuple(tokens[index : index + width]) == phrase_tokens:
+                matched_negation = negation
+                matched_width = width
+                break
+        if matched_negation is not None:
+            if not allow_local_negation or local_negation is not None:
+                return None
+            local_negation = matched_negation
+            index += matched_width
+            continue
+        token = tokens[index]
+        if token not in _DIRECT_ACTION_MODIFIERS:
+            return None
+        modifiers.append(token)
+        index += 1
+    return _DirectActionLead(local_negation, tuple(modifiers))
+
+
+def _parse_direct_coordination_gap(
+    text: str,
+    *,
+    allow_local_negation: bool,
+    coordinators: frozenset[str] | None = None,
+) -> _DirectCoordinationGap | None:
+    """Parse one complete finite direct-Action coordination gap.
+
+    The first token must be an allowed coordinator and every remaining token must
+    be an existing direct modifier or one bounded local negation.  Whole-gap
+    parsing rejects punctuation, scope breaks, explicit subjects, and distinct
+    objects without attempting unrestricted natural-language interpretation.
+    """
+
+    if not isinstance(text, str) or re.search(r"[,.;:!?、。；：！？\n]", text):
+        return None
+    tokens = text.casefold().split()
+    if not tokens:
+        return None
+    allowed = frozenset(_DIRECT_COORDINATORS) if coordinators is None else coordinators
+    coordinator = tokens[0]
+    if coordinator not in allowed:
+        return None
+    coordinator_end = re.match(r"\s*\S+", text)
+    if coordinator_end is None:
+        return None
+    lead = _parse_direct_action_lead(
+        text[coordinator_end.end() :],
+        allow_local_negation=allow_local_negation,
+    )
+    if lead is None:
+        return None
+    return _DirectCoordinationGap(
+        coordinator=coordinator,
+        local_negation=lead.local_negation,
+        modifiers=lead.modifiers,
+    )
 _TRAILING_EN_PROHIBITION = re.compile(
     r"\b(?:is|are|was|were|should be|must be)\s+"
     r"(?:a\s+)?(?:prohibited|forbidden|not allowed|outside)\b",
@@ -519,7 +925,7 @@ _TRAILING_JA_PROHIBITION = re.compile(
     r"(?:禁止(?:する|される|している)|対象外(?!ではない)|許可しない|要求しない)|"
     r"(?:しない|せず|行わない|使わない|用いない|含めない|記載しない|"
     r"接続しない|実施しない|作らない|作ることを禁止する|"
-    r"はいけない|はならない)"
+    r"はいけない|はならない|(?:処理|操作|機能|方法|手順)(?:は|を)?扱わない)"
 )
 
 
@@ -547,23 +953,42 @@ def _direct_trailing_prohibition_end(
 
 
 def _all_action_matches(clause: str) -> list[tuple[int, int, str, str]]:
-    return _action_matches(clause, frozenset(rule.kind for rule in ACTION_RULES))
+    return _action_matches(
+        clause,
+        frozenset(
+            [rule.kind for rule in ACTION_RULES]
+            + [rule.kind for rule in OPERATION_RULES]
+        ),
+    )
 
 
 def _is_direct_action_coordination(
     text: str,
     *,
-    coordinator: Pattern[str] = _PROHIBITION_COORDINATOR,
+    coordinators: frozenset[str] = _PROHIBITION_COORDINATORS,
 ) -> bool:
-    """Recognize a bounded coordinator that leads directly to another action."""
+    """Recognize a bounded final coordinator that leads to another Action.
+
+    Ordinary same-object binding may include the already-bound protected Object
+    before the final coordinator (``build a keylogger and use it``).  The wrapper
+    therefore locates that final finite coordinator, while the shared parser
+    remains the only grammar for the coordinator-to-Action gap itself.
+    """
 
     if _PROHIBITION_SCOPE_BREAK.search(text):
         return False
-    coordinators = list(coordinator.finditer(text))
-    if not coordinators:
+    coordinator_pattern = re.compile(
+        rf"\b(?:{_finite_phrase_pattern(tuple(sorted(coordinators)))})\b",
+        re.IGNORECASE,
+    )
+    matches = list(coordinator_pattern.finditer(text))
+    if not matches:
         return False
-    tail = text[coordinators[-1].end() :]
-    return bool(_DIRECT_ACTION_PREFIX.fullmatch(tail))
+    return _parse_direct_coordination_gap(
+        text[matches[-1].start() :],
+        allow_local_negation=False,
+        coordinators=coordinators,
+    ) is not None
 
 
 def _trailing_prohibition_controls_action(
@@ -634,7 +1059,8 @@ def _coordinated_pre_action_prohibition_controls_action(
         if re.search(r"(?:do not|don't|never|must not|shall not|should not)\s*$", before):
             return True
         if re.search(
-            r"(?:is|are|was|were|must|should|shall|may)\s+not(?:\s+be)?\s*$",
+            r"(?:is|are|was|were|must|should|shall|may|can|could|will|would)"
+            r"\s+not(?:\s+be)?\s*$",
             before,
         ):
             return True
@@ -643,7 +1069,7 @@ def _coordinated_pre_action_prohibition_controls_action(
     for previous in reversed(preceding_actions):
         if not _is_direct_action_coordination(
             clause[previous[1] : current[0]],
-            coordinator=_NEGATION_COORDINATOR,
+            coordinators=_NEGATION_COORDINATORS,
         ):
             return False
         current = previous
@@ -689,10 +1115,13 @@ def _pre_action_prohibition_controls_action(
 
 
 def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, str, str]) -> bool:
-    return _action_is_prohibited(
-        clause,
-        action,
-        scope_start=min(protected.start, action[0]),
+    return (
+        _is_bounded_defensive_document_prohibition(clause, protected, action)
+        or _action_is_prohibited(
+            clause,
+            action,
+            scope_start=min(protected.start, action[0]),
+        )
     )
 
 
@@ -723,6 +1152,44 @@ def _mask_bounded_modifier_contrasts(text: str) -> str:
         for protected in _object_matches(segment):
             if protected.start <= local_marker_end:
                 continue
+            publication_frames = _defensive_document_publication_spans(
+                segment,
+                protected,
+            )
+            if publication_frames:
+                publication_actions = [frame[0] for frame in publication_frames]
+                preceding_publication_actions = (
+                    _actions_preceding_defensive_document_publication(
+                        segment,
+                        protected,
+                        _action_matches(
+                            segment,
+                            protected.action_kinds
+                            | _PUBLICATION_COORDINATION_ACTION_KINDS,
+                        ),
+                    )
+                )
+                earliest_publication_action = (
+                    min(action[0] for action in preceding_publication_actions)
+                    if preceding_publication_actions
+                    else None
+                )
+                if (
+                    earliest_publication_action is not None
+                    and _parse_direct_action_lead(
+                        segment[:earliest_publication_action],
+                        allow_local_negation=True,
+                    )
+                    is not None
+                    and any(
+                        earliest_publication_action
+                        < local_marker_start
+                        < publication[0]
+                        for publication in publication_actions
+                    )
+                ):
+                    protect = True
+                    break
             actions = _action_matches(segment, protected.action_kinds)
             if any(
                 local_marker_end <= action[0] < protected.start
@@ -794,7 +1261,18 @@ def _continuation_actions(
     pronoun_bound = _action_has_direct_reference(remainder, actions[0])
     new_objects = _object_matches(remainder)
     trailing = remainder[actions[-1][1] :].strip()
-    ellipsis_bound = explicit_contrast and not new_objects and not trailing
+    # A punctuation-separated Japanese action stem can omit the already-negated
+    # object only when the continuation is itself just that action.  This rejects
+    # ``Tokenは使用しない、取得する`` without rebinding benign prose such as
+    # ``結果だけを記録する`` to Token.
+    bare_ellipsis = (
+        not explicit_contrast
+        and not new_objects
+        and len(actions) == 1
+        and not remainder[: actions[0][0]].strip()
+        and not trailing
+    )
+    ellipsis_bound = (explicit_contrast and not new_objects and not trailing) or bare_ellipsis
     if not (pronoun_bound or ellipsis_bound):
         return None
     return remainder, actions
@@ -834,6 +1312,26 @@ _EN_OBJECT_TO_ACTION_GAP = re.compile(
 _EN_RELATIVE_PREDICATE_GAP = re.compile(
     r"\s*(?:(?:is|are|was|were|be|been|being|must|should|shall|may|can|could|"
     r"will|would|not|never|also|directly|explicitly|only|ever|immediately|then)\s+)*",
+    re.IGNORECASE,
+)
+_EN_NEW_SUBJECT_OR_MODAL_CONTINUATION = re.compile(
+    r"\s*(?:and|or|nor)\s+"
+    r"(?:(?:you|we|they|he|she|it)\s+"
+    r"(?:(?:is|are|was|were)\s+|"
+    r"(?:must|should|shall|may|can|could|will|would)\s+"
+    r"(?:not\s+)?(?:be\s+)?)?|"
+    r"(?:must|should|shall|may|can|could|will|would)\s+"
+    r"(?:not\s+)?(?:be\s+)?)",
+    re.IGNORECASE,
+)
+_EN_BARE_MODAL_PASSIVE_CONTINUATION = re.compile(
+    r"\s*(?:and|or|nor)\s+"
+    r"(?:must|should|shall|may|can|could|will|would)\s+"
+    r"(?:not\s+)?be\s+",
+    re.IGNORECASE,
+)
+_EN_BARE_COPULA_PASSIVE_CONTINUATION = re.compile(
+    r"\s*(?:and|or|nor)\s+(?:is|are|was|were)\s+",
     re.IGNORECASE,
 )
 _EN_DIRECT_OBJECT_PREFIX = re.compile(
@@ -884,7 +1382,7 @@ _EN_TEMPORAL_QUALIFIERS = frozenset(
     }
 )
 _JA_DIRECT_ACTION_CONTINUATION = re.compile(
-    r"^(?:で|て|し|して|つつ|が|けれど|けれども|ものの)\s*$"
+    r"^(?:で|て|し|して|せず|つつ|が|けれど|けれども|ものの)\s*$"
 )
 
 
@@ -1012,6 +1510,38 @@ def _actions_bound_to_object(
         if _action_directly_precedes_object(clause, action, protected)
         or _action_directly_follows_object(clause, protected, action)
     ]
+    if protected.category == "data.pii":
+        # A direct action coordinated immediately before a frozen meta-analysis
+        # frame still governs the protected PII object.  Only the embedded
+        # operation inside the frame may be suppressed later.
+        for expression in _ENGLISH_PII_META_ANALYSIS_PATTERNS:
+            for meta_match in expression.finditer(clause):
+                object_group = (
+                    "object"
+                    if meta_match.group("object") is not None
+                    else "whether_object"
+                )
+                object_start, object_end = meta_match.span(object_group)
+                if not (
+                    protected.start < object_end and object_start < protected.end
+                ):
+                    continue
+                for action in actions:
+                    if action[1] > meta_match.start("meta"):
+                        continue
+                    if re.fullmatch(
+                        r"\s*(?:and|or|but)\s*",
+                        clause[action[1] : meta_match.start("meta")],
+                        re.IGNORECASE,
+                    ):
+                        bound.append(action)
+    bound.extend(
+        _actions_preceding_defensive_document_publication(
+            clause,
+            protected,
+            actions,
+        )
+    )
     if not bound:
         # Preserve the previous fail-closed behavior for an unusual bounded field
         # that contains an object and action but no recognized direct gap.
@@ -1045,16 +1575,443 @@ def _actions_bound_to_object(
                 # protected object without direct coordination.
                 pronoun_bound = _action_has_direct_reference(clause, candidate)
                 direct_english = _is_direct_action_coordination(between) and pronoun_bound
-                direct_japanese = bool(_JA_DIRECT_ACTION_CONTINUATION.fullmatch(between))
+                scope_break_gap = clause[
+                    (
+                        protected.end
+                        if anchor[1] <= protected.start
+                        else anchor[1]
+                    ) : candidate[0]
+                ]
+                bare_passive_continuation = (
+                    not _action_introduces_distinct_english_object(
+                        clause, candidate
+                    )
+                    and bool(
+                        _EN_BARE_MODAL_PASSIVE_CONTINUATION.fullmatch(
+                            scope_break_gap
+                        )
+                        or _EN_BARE_COPULA_PASSIVE_CONTINUATION.fullmatch(
+                            scope_break_gap
+                        )
+                    )
+                )
+                scope_break_english = (
+                    (
+                        pronoun_bound
+                        or bare_passive_continuation
+                    )
+                    and (
+                        bool(
+                            _EN_NEW_SUBJECT_OR_MODAL_CONTINUATION.fullmatch(
+                                scope_break_gap
+                            )
+                        )
+                        or bool(
+                            _EN_BARE_COPULA_PASSIVE_CONTINUATION.fullmatch(
+                                scope_break_gap
+                            )
+                        )
+                    )
+                )
+                direct_japanese = bool(_JA_DIRECT_ACTION_CONTINUATION.fullmatch(between)) or (
+                    not between and anchor[3].endswith("せず")
+                )
                 relative_predicate = (
                     relative_after_object
                     and anchor[0] >= protected.end
                     and bool(_EN_RELATIVE_PREDICATE_GAP.fullmatch(between))
                 )
-                if direct_english or direct_japanese or relative_predicate:
+                if (
+                    direct_english
+                    or scope_break_english
+                    or direct_japanese
+                    or relative_predicate
+                ):
                     bound.append(candidate)
                     changed = True
     return sorted(set(bound))
+
+
+_JA_PII_COLLECTION_ANALYSIS_TAIL = re.compile(
+    r"\s*(?:リスク)?を"
+    r"(?:分析|解析)(?:する|した|します|しない|せず)?\s*$",
+    re.IGNORECASE,
+)
+
+
+def _is_bounded_pii_collection_analysis(
+    clause: str,
+    protected: _Match,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Do not treat a nominal collection practice as collected PII.
+
+    This is a finite Japanese exception, not a general semantic parser.  It
+    applies only when the protected PII is followed by the bare nominal action
+    ``収集`` and the remainder of the bounded clause analyzes that collection
+    or its explicitly named risk/property.  Direct PII analysis, an inflected
+    collection action, or a later operational action remains unsafe.
+    """
+
+    if protected.category != "data.pii" or action[2] != "access-collect":
+        return False
+    if action[3] != "収集":
+        return False
+    if not re.fullmatch(r"\s*の?\s*", clause[protected.end : action[0]]):
+        return False
+    return bool(_JA_PII_COLLECTION_ANALYSIS_TAIL.fullmatch(clause[action[1] :]))
+
+
+def _is_bounded_english_pii_meta_analysis(
+    clause: str,
+    protected: _Match,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Suppress only the embedded operation in the frozen English PII frame."""
+
+    if protected.category != "data.pii":
+        return False
+    for expression in _ENGLISH_PII_META_ANALYSIS_PATTERNS:
+        for match in expression.finditer(clause):
+            operation_group = (
+                "operation" if match.group("operation") is not None else "whether_operation"
+            )
+            object_group = "object" if match.group("object") is not None else "whether_object"
+            operation_span = match.span(operation_group)
+            object_span = match.span(object_group)
+            if (
+                action[0] == operation_span[0]
+                and action[1] == operation_span[1]
+                and protected.start < object_span[1]
+                and object_span[0] < protected.end
+            ):
+                return True
+    return False
+
+
+_JA_DANGEROUS_OPERATION_ANALYSIS_TAIL = re.compile(
+    r"\s*の\s*(?:危険性|リスク)\s*を\s*"
+    r"(?:分析|解析)(?:する|した|します|しない|せず)?\s*$",
+    re.IGNORECASE,
+)
+
+
+def _is_bounded_destructive_operation_analysis(
+    clause: str,
+    protected: _Match,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Allow a finite nominal risk analysis, not the destructive operation."""
+
+    if protected.category not in {
+        "operation.privilege_or_evasion",
+        "operation.disruption_or_destruction",
+    }:
+        return False
+    if not (protected.start <= action[0] and action[1] <= protected.end):
+        return False
+    return bool(
+        _JA_DANGEROUS_OPERATION_ANALYSIS_TAIL.fullmatch(clause[protected.end :])
+    )
+
+
+_JA_OPERATION_REVIEW_TAIL = re.compile(
+    r"\s*を\s*(?:検知|検出|分析|分類|記録)(?:する|した|します|しない|せず)?\s*$",
+    re.IGNORECASE,
+)
+
+
+def _is_bounded_operation_review(
+    clause: str,
+    protected: _Match,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Allow a finite review of a named theft/reuse operation."""
+
+    if action[2] != "theft-reuse":
+        return False
+    if action[3] not in {"窃取", "再利用", "リプレイ", "乗っ取り"}:
+        return False
+    if not re.fullmatch(r"\s*の\s*", clause[protected.end : action[0]]):
+        return False
+    return bool(_JA_OPERATION_REVIEW_TAIL.fullmatch(clause[action[1] :]))
+
+
+_PUBLICATION_ACTION = re.compile(
+    r"(?:publish|publishes|published|publishing|announce|announces|announced|announcing)|"
+    r"(?:公開(?:する|した|します|しない|せず)|公表する)",
+    re.IGNORECASE,
+)
+_EN_DEFENSIVE_DOCUMENT_TAIL = re.compile(
+    r"\s+(?P<head>reports?|analysis|analyses|guidance)\s*$",
+    re.IGNORECASE,
+)
+_EN_DEFENSIVE_DOCUMENT_BEFORE_OBJECT = re.compile(
+    r"\s+(?:(?:a|an|the)\s+)?"
+    r"(?P<head>reports?|analysis|analyses|guidance)\s+"
+    r"(?P<relation>about|that\s+prohibits)\s*$",
+    re.IGNORECASE,
+)
+_EN_DEFENSIVE_PROHIBITED_OPERATION_TAIL = re.compile(
+    r"\s+(?P<operation>deployment)\s*$",
+    re.IGNORECASE,
+)
+_JA_DEFENSIVE_DOCUMENT_GAP = re.compile(
+    r"\s*(?P<head>報告(?:書)?|分析|ガイダンス|指針)\s*を\s*",
+    re.IGNORECASE,
+)
+_OPERATIONAL_PUBLICATION_OBJECT = re.compile(
+    r"\b(?:infrastructure|server|site|page|channel|operation|campaign)\b|"
+    r"(?:基盤|インフラ|サーバー|サイト|ページ|通信|接続|運用|攻撃)",
+    re.IGNORECASE,
+)
+
+
+def _publication_has_explicit_subject_prefix(
+    clause: str,
+    publication: tuple[int, int, str, str],
+) -> bool:
+    """Distinguish a finite Action lead from a new publication subject."""
+
+    return _parse_direct_action_lead(
+        clause[: publication[0]],
+        allow_local_negation=True,
+    ) is None
+
+
+def _defensive_document_publication_spans(
+    clause: str,
+    protected: _Match,
+) -> list[tuple[tuple[int, int, str, str], tuple[int, int]]]:
+    """Return complete finite defensive-document publication frames."""
+
+    frames: list[tuple[tuple[int, int, str, str], tuple[int, int]]] = []
+    if protected.category not in {
+        "operation.malware",
+        "operation.c2_or_phishing",
+    }:
+        return frames
+    if (
+        protected.category == "operation.c2_or_phishing"
+        and _OPERATIONAL_PUBLICATION_OBJECT.search(protected.text)
+    ) or (
+        protected.category == "operation.malware"
+        and re.search(r"\bdeployable\b", protected.text, re.IGNORECASE)
+    ):
+        return frames
+    publication_actions = [
+        candidate
+        for candidate in _all_action_matches(clause)
+        if _PUBLICATION_ACTION.fullmatch(candidate[3])
+    ]
+    for publication in publication_actions:
+        if publication[1] <= protected.start:
+            direct_object = re.fullmatch(
+                r"\s+(?:(?:a|an|the)\s+)?",
+                clause[publication[1] : protected.start],
+                re.IGNORECASE,
+            )
+            if direct_object is not None:
+                document = _EN_DEFENSIVE_DOCUMENT_TAIL.fullmatch(
+                    clause[protected.end :]
+                )
+                if document is None:
+                    continue
+                document_span = (
+                    protected.end + document.start("head"),
+                    protected.end + document.end("head"),
+                )
+            else:
+                document = _EN_DEFENSIVE_DOCUMENT_BEFORE_OBJECT.fullmatch(
+                    clause[publication[1] : protected.start]
+                )
+                if document is None:
+                    continue
+                relation = " ".join(document.group("relation").casefold().split())
+                trailing = clause[protected.end :]
+                if relation == "about":
+                    if trailing.strip():
+                        continue
+                elif (
+                    relation != "that prohibits"
+                    or _EN_DEFENSIVE_PROHIBITED_OPERATION_TAIL.fullmatch(trailing)
+                    is None
+                ):
+                    continue
+                document_span = (
+                    publication[1] + document.start("head"),
+                    publication[1] + document.end("head"),
+                )
+        elif protected.end <= publication[0]:
+            if clause[: protected.start].strip() or clause[publication[1] :].strip():
+                continue
+            document = _JA_DEFENSIVE_DOCUMENT_GAP.fullmatch(
+                clause[protected.end : publication[0]]
+            )
+            if document is None:
+                continue
+            document_span = (
+                protected.end + document.start("head"),
+                protected.end + document.end("head"),
+            )
+        else:
+            continue
+        frames.append((publication, document_span))
+    return frames
+
+
+def _actions_preceding_defensive_document_publication(
+    clause: str,
+    protected: _Match,
+    actions: list[tuple[int, int, str, str]],
+) -> list[tuple[int, int, str, str]]:
+    """Keep a finite coordinated Action chain before a safe publication frame."""
+
+    bound: list[tuple[int, int, str, str]] = []
+    for publication, _ in _defensive_document_publication_spans(clause, protected):
+        cursor = publication[0]
+        for candidate in sorted(
+            actions,
+            key=lambda item: (item[1], item[0], item[2], item[3]),
+            reverse=True,
+        ):
+            if candidate[1] > cursor or candidate == publication:
+                continue
+            gap = _parse_direct_coordination_gap(
+                clause[candidate[1] : cursor],
+                allow_local_negation=True,
+                coordinators=frozenset(_DIRECT_COORDINATORS),
+            )
+            if gap is None:
+                # The nearest preceding Action establishes the finite boundary.
+                # Do not skip across its explicit object, subject, or scope break
+                # in search of an older Action that happens to fit.
+                break
+            bound.append(candidate)
+            cursor = candidate[0]
+    return bound
+
+
+def _is_bounded_defensive_document_prohibition(
+    clause: str,
+    protected: _Match,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Recognize the one frozen ``guidance that prohibits ...`` operation."""
+
+    if action[3].casefold() != "deployment":
+        return False
+    if action[0] < protected.end:
+        return False
+    operation_tail = _EN_DEFENSIVE_PROHIBITED_OPERATION_TAIL.fullmatch(
+        clause[protected.end :]
+    )
+    if operation_tail is None:
+        return False
+    expected_span = (
+        protected.end + operation_tail.start("operation"),
+        protected.end + operation_tail.end("operation"),
+    )
+    if (action[0], action[1]) != expected_span:
+        return False
+    for publication, document_span in _defensive_document_publication_spans(
+        clause,
+        protected,
+    ):
+        relation = clause[document_span[1] : protected.start]
+        if re.fullmatch(r"\s+that\s+prohibits\s+", relation, re.IGNORECASE):
+            return True
+    return False
+
+
+def _is_bounded_defensive_document_publication(
+    clause: str,
+    protected: _Match,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Suppress only the publication and defensive-document head Actions."""
+
+    for publication, document_span in _defensive_document_publication_spans(
+        clause,
+        protected,
+    ):
+        if action == publication or (
+            action[0] < document_span[1] and document_span[0] < action[1]
+        ):
+            return True
+    return False
+
+
+def _defensive_publication_continuation_object(protected: _Match) -> _Match:
+    """Retain every finite Action kind after a safe Publication frame.
+
+    A defensive document may name ``malware`` without making a later ``access
+    it`` safe.  The wider finite inventory applies only to an adjacent
+    continuation after the Publication frame; it does not change the category's
+    general Action vocabulary.
+    """
+
+    return _Match(
+        start=protected.start,
+        end=protected.end,
+        text=protected.text,
+        category=protected.category,
+        action_kinds=(
+            protected.action_kinds | _PUBLICATION_COORDINATION_ACTION_KINDS
+        ),
+        synthetic_qualifiable=protected.synthetic_qualifiable,
+    )
+
+
+def _bare_direct_action_chain(
+    clause: str,
+    *,
+    action_kinds: frozenset[str],
+) -> list[tuple[int, int, str, str]]:
+    """Bind a finite chain made only of Actions and direct coordination gaps."""
+
+    actions = _action_matches(clause, action_kinds)
+    if not actions:
+        return []
+    latest = actions[-1]
+    if clause[latest[1] :].strip():
+        return []
+    bound = [latest]
+    cursor = latest
+    for candidate in reversed(actions[:-1]):
+        if candidate[1] > cursor[0]:
+            continue
+        if _parse_direct_coordination_gap(
+            clause[candidate[1] : cursor[0]],
+            allow_local_negation=True,
+            coordinators=frozenset(_DIRECT_COORDINATORS),
+        ) is None:
+            return []
+        bound.append(candidate)
+        cursor = candidate
+    if _parse_direct_action_lead(
+        clause[: cursor[0]],
+        allow_local_negation=True,
+    ) is None:
+        return []
+    return sorted(set(bound))
+
+
+def _is_bounded_meta_analysis_action(
+    clause: str,
+    protected: _Match,
+    action: tuple[int, int, str, str],
+) -> bool:
+    return any(
+        predicate(clause, protected, action)
+        for predicate in (
+            _is_bounded_pii_collection_analysis,
+            _is_bounded_english_pii_meta_analysis,
+            _is_bounded_destructive_operation_analysis,
+            _is_bounded_operation_review,
+            _is_bounded_defensive_document_publication,
+        )
+    )
 
 
 def _shared_trailing_object_findings(
@@ -1097,10 +2054,27 @@ def _shared_trailing_object_findings(
             # The ordinary clause scan reports an affirmative current action.
             continue
 
+        publication_frames = _defensive_document_publication_spans(
+            remainder,
+            protected,
+        )
+        publication_ellipsis = bool(publication_frames)
+        if publication_ellipsis and any(
+            _publication_has_explicit_subject_prefix(remainder, publication)
+            for publication, _ in publication_frames
+        ):
+            # A defensive-document publication clause with an explicit subject
+            # does not inherit an object from the preceding predicate.
+            continue
+
         previous_actions = [
             action
             for action in _action_matches(previous_clause, protected.action_kinds)
             if not previous_clause[action[1] :].strip()
+            and (
+                not publication_ellipsis
+                or not previous_clause[: action[0]].strip()
+            )
             and not _action_introduces_distinct_english_object(previous_clause, action)
         ]
         if not previous_actions or all(
@@ -1118,6 +2092,127 @@ def _shared_trailing_object_findings(
                 location,
                 f"{previous_clause} {clause}",
                 "an affirmative action shares a trailing protected object with a contrasting locally prohibited action",
+            )
+        )
+    return _ordered_unique(findings)
+
+
+def _shared_defensive_publication_object_findings(
+    previous_clause: str,
+    clause: str,
+    *,
+    location: str,
+) -> list[SafetyFinding]:
+    """Bind a pre-contrast Action to a trailing safe publication frame."""
+
+    remainder = _CONTRAST_PREFIX.sub("", clause, count=1)
+    if remainder == clause or _object_matches(previous_clause):
+        return []
+
+    findings: list[SafetyFinding] = []
+    for protected in _object_matches(remainder):
+        publication_frames = _defensive_document_publication_spans(
+            remainder,
+            protected,
+        )
+        if not publication_frames:
+            continue
+        publication_chain_actions = (
+            _actions_preceding_defensive_document_publication(
+                remainder,
+                protected,
+                _action_matches(
+                    remainder,
+                    protected.action_kinds
+                    | _PUBLICATION_COORDINATION_ACTION_KINDS,
+                ),
+            )
+        )
+        # This bridge is intentionally limited to an ellipsed object shared by
+        # two bare coordinated predicates.  An explicit subject before the
+        # publication predicate starts a new subject/object frame.
+        if any(
+            _publication_has_explicit_subject_prefix(remainder, publication)
+            for publication, _ in publication_frames
+        ):
+            if not publication_chain_actions:
+                continue
+            earliest_chain_action = min(
+                action[0] for action in publication_chain_actions
+            )
+            if _parse_direct_action_lead(
+                remainder[:earliest_chain_action],
+                allow_local_negation=True,
+            ) is None:
+                continue
+        current_actions = _action_matches(remainder, protected.action_kinds)
+        current_bound = _actions_bound_to_object(
+            remainder,
+            protected,
+            current_actions,
+        )
+        if not current_bound:
+            continue
+        current_operational_actions = [
+            action
+            for action in current_bound
+            if not _is_bounded_defensive_document_publication(
+                remainder,
+                protected,
+                action,
+            )
+        ]
+        if any(
+            not _locally_prohibited(remainder, protected, action)
+            for action in current_operational_actions
+        ):
+            # The ordinary current-clause scan reports this Action.
+            continue
+        current_is_locally_prohibited = all(
+            _action_is_prohibited(
+                remainder,
+                action,
+                scope_start=action[0],
+            )
+            for action in current_bound
+        )
+        previous_actions = _bare_direct_action_chain(
+            previous_clause,
+            action_kinds=(
+                protected.action_kinds | _PUBLICATION_COORDINATION_ACTION_KINDS
+            ),
+        )
+        previous_category_actions = _action_matches(
+            previous_clause,
+            protected.action_kinds,
+        )
+        # The generic contrast-continuation rule already owns this case when the
+        # previous Action belongs to the category's ordinary inventory.  Keep
+        # the Publication bridge active for a finite Action such as ``access``
+        # before a Malware document, because Publication suppression must not
+        # hide that prior Action merely because the generic category omits it.
+        if (
+            current_is_locally_prohibited
+            and not current_operational_actions
+            and len(previous_actions) == 1
+            and previous_actions[0] in previous_category_actions
+        ):
+            continue
+        if not previous_actions or all(
+            _action_is_prohibited(
+                previous_clause,
+                action,
+                scope_start=action[0],
+            )
+            for action in previous_actions
+        ):
+            continue
+        findings.append(
+            _finding(
+                protected.category,
+                location,
+                f"{previous_clause} {clause}",
+                "an affirmative pre-contrast action shares the protected object in a bounded defensive-document publication frame",
             )
         )
     return _ordered_unique(findings)
@@ -1149,6 +2244,13 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                     location=location,
                 )
             )
+            findings.extend(
+                _shared_defensive_publication_object_findings(
+                    clauses[clause_index - 1],
+                    clause,
+                    location=location,
+                )
+            )
         retained_continuations: list[_Match] = []
         for remembered_object in remembered:
             continuation = _continuation_actions(clause, remembered_object)
@@ -1165,10 +2267,21 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                 if has_unprohibited_action:
                     findings.append(
                         _finding(
-                            remembered_object.category,
+                            _preferred_finding_category(
+                                (
+                                    action
+                                    for action in continuation_matches
+                                    if not _action_is_prohibited(
+                                        continuation_text,
+                                        action,
+                                        scope_start=action[0],
+                                    )
+                                ),
+                                remembered_object.category,
+                            ),
                             location,
                             clause,
-                            "a contradictory continuation reuses the protected object after a locally negated or prohibitive clause",
+                            "a contradictory continuation reuses the protected object after an earlier bounded safe, locally negated, or prohibitive clause",
                         )
                     )
                 else:
@@ -1177,24 +2290,94 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                     # explicit objects in this clause before carrying it forward.
                     retained_continuations.append(remembered_object)
 
-        clause_objects = _object_matches(clause)
+        semantic_clause = _CONTRAST_PREFIX.sub("", clause, count=1)
+        clause_objects = _object_matches(semantic_clause)
         next_remembered: list[_Match] = []
         for protected in clause_objects:
-            actions = _action_matches(clause, protected.action_kinds)
+            actions = _action_matches(semantic_clause, protected.action_kinds)
+            publication_frames = _defensive_document_publication_spans(
+                semantic_clause,
+                protected,
+            )
+            if publication_frames:
+                # The Publication exception freezes only its own Action and
+                # document head.  Evaluate every finite prior Action that the
+                # shared direct-coordination grammar binds to this Object, even
+                # when that Action is not part of the category's ordinary
+                # action-kind inventory.
+                actions = sorted(
+                    set(
+                        actions
+                        + _actions_preceding_defensive_document_publication(
+                            semantic_clause,
+                            protected,
+                            _action_matches(
+                                semantic_clause,
+                                protected.action_kinds
+                                | _PUBLICATION_COORDINATION_ACTION_KINDS,
+                            ),
+                        )
+                    )
+                )
             if not actions:
                 continue
-            bound_actions = _actions_bound_to_object(clause, protected, actions)
-            if all(
-                _locally_prohibited(clause, protected, action)
-                for action in bound_actions
-            ):
-                next_remembered.append(protected)
+            candidate_actions = _actions_bound_to_object(
+                semantic_clause,
+                protected,
+                actions,
+            )
+            bound_actions = [
+                action
+                for action in candidate_actions
+                if not _is_bounded_meta_analysis_action(
+                    semantic_clause,
+                    protected,
+                    action,
+                )
+            ]
+            if not bound_actions:
+                if candidate_actions and all(
+                    _is_bounded_meta_analysis_action(
+                        semantic_clause,
+                        protected,
+                        action,
+                    )
+                    for action in candidate_actions
+                ):
+                    # The bounded analysis statement is safe by itself, but the
+                    # protected object must remain available to the adjacent
+                    # continuation contract (for example, a later bare
+                    # ``収集する`` action).
+                    next_remembered.append(
+                        _defensive_publication_continuation_object(protected)
+                        if publication_frames
+                        else protected
+                    )
                 continue
-            if _direct_synthetic(clause, protected):
+            unprohibited_actions = [
+                action
+                for action in bound_actions
+                if not _locally_prohibited(semantic_clause, protected, action)
+            ]
+            if not unprohibited_actions:
+                next_remembered.append(
+                    _defensive_publication_continuation_object(protected)
+                    if publication_frames
+                    else protected
+                )
+                continue
+            if _synthetic_qualifier_permitted(
+                semantic_clause,
+                protected,
+                unprohibited_actions,
+            ):
                 continue
             findings.append(
                 _finding(
-                    protected.category,
+                    _preferred_finding_category(
+                        unprohibited_actions,
+                        protected.category,
+                    ),
                     location,
                     clause,
                     "protected object is paired with an action without a local prohibition or permitted direct synthetic qualifier",
@@ -1243,6 +2426,10 @@ _DOMAIN_PATTERN = re.compile(
 )
 _IDN_DOMAIN_PATTERN = re.compile(
     r"(?<![\w-])(?:[\w-]+\.)+[\w-]+(?![\w-])",
+    re.IGNORECASE,
+)
+_DOTTED_VERSION_TAIL = re.compile(
+    r"(?<![a-z0-9.-])v?\d+\.\d+\.\d+(?:-[0-9a-z]+(?:\.[0-9a-z-]+)*)?$",
     re.IGNORECASE,
 )
 
@@ -1388,6 +2575,12 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
     for match in _IDN_DOMAIN_PATTERN.finditer(normalized):
         domain = match.group(0).casefold()
         if domain in url_hosts or _DOMAIN_PATTERN.fullmatch(domain):
+            continue
+        # Unicode prose can be consumed with a dotted version/identifier (for
+        # example, ``Identifier...v2.2.0`` or ``Identifier...v2.2.0-rc1``).
+        # Exclude only an exact three-component version tail; unrelated
+        # digit-led or letter-bearing IDN labels remain fail closed.
+        if _DOTTED_VERSION_TAIL.search(domain):
             continue
         if domain.endswith(_ALLOWED_HOST_SUFFIXES):
             continue

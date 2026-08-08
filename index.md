@@ -10,6 +10,7 @@
 
 - Integrated Security Case Map
 - Authorization ChecklistとRules of Engagement
+- Capability Evidence Matrix
 - Threat ModelとAttack Path
 - Finding ReportとRetest Record
 - Telemetry Coverage MapとDetection Validation Record
@@ -34,12 +35,13 @@
 1. [第0章 本書の読み方](manuscript/00-reading-guide.md)
 2. [第1章 攻撃・防御・インテリジェンスを一つの業務として捉える](manuscript/01-integrated-discipline.md)
 3. [第2章 法、倫理、許可、責任ある開示](manuscript/02-law-ethics-authorization.md)
-4. [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
-5. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
-6. [第25章 構造化分析、不確実性、アトリビューション](manuscript/25-structured-analysis-attribution.md)
-7. [Quick Start](quickstart.md)
-8. [Concept Map](concept-map.md)
-9. [詳細目次](TOC.md)
+4. [第3章 能力を分解し、証拠で学習する](manuscript/03-capability-evidence.md)
+5. [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
+6. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
+7. [第25章 構造化分析、不確実性、アトリビューション](manuscript/25-structured-analysis-attribution.md)
+8. [Quick Start](quickstart.md)
+9. [Concept Map](concept-map.md)
+10. [詳細目次](TOC.md)
 
 ## 公開中の成果物
 
@@ -47,6 +49,8 @@
 - [第1章 合成記入例：請求書連携OAuthアプリの権限見直し](cases/ch01-integrated-security-case-example.md)
 - [Authorization Checklistテンプレート](templates/authorization-checklist.md)
 - [第2章 合成記入例：OAuth連携評価前のAuthorization判断](cases/ch02-authorization-decision-example.md)
+- [Capability Evidence Matrixテンプレート](templates/capability-evidence-matrix.md)
+- [第3章 合成記入例：Capability Evidence Matrix](cases/ch03-capability-evidence-example.md)
 - [Web/API Assessment Hypothesis Packテンプレート](templates/web-api-assessment-hypothesis-pack.md)
 - [第11章 合成記入例：マルチテナント受注Export APIとWebhook登録の評価](cases/ch11-web-api-assessment-example.md)
 - [第11章 読み取り専用の合成Request / Response Dataset](cases/fixtures/ch11-web-api-assessment-dataset.json)
@@ -58,7 +62,7 @@
 - [合成Case索引](cases/index.md)
 - [Fixture catalog](cases/fixtures/index.md)
 
-これらの成果物は、Authorization、Assessment、Detection、Hunting、IR / DFIR、CTI、構造化分析、経営判断、再評価を、共通Case IDとEvidence IDで接続します。第2章では、Tool実行前にAuthority、Scope、Safety、Disclosureを評価し、条件付き許可・停止・EscalationをRules of Engagementへ引き渡します。
+これらの成果物は、Authorization、Capability Evidence、Assessment、Detection、Hunting、IR / DFIR、CTI、構造化分析、経営判断、再評価を、共通Case IDとEvidence IDで接続します。第2章では、Tool実行前にAuthority、Scope、Safety、Disclosureを評価し、条件付き許可・停止・EscalationをRules of Engagementへ引き渡します。第3章では、学習GoalをTask、Knowledge / Skill、許可されたPractice、Artifact Evidence、Review、Gap、Reassessmentへ分解し、限定されたCapability Judgmentを作ります。
 
 ## 実務参照
 

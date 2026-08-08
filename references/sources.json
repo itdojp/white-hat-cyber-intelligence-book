@@ -94,17 +94,37 @@
       "version": "SP 800-181 Rev.1",
       "url": "https://csrc.nist.gov/pubs/sp/800/181/r1/final",
       "publishedAt": "2020-11-16",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2027-07-25",
+      "checkedAt": "2026-08-05",
+      "nextReviewAt": "2026-11-05",
       "reviewTriggers": [
-        "NIST revision or errata"
+        "NIST SP 800-181 revision or errata"
       ],
       "chapters": [
         0,
         1,
         3
       ],
-      "notes": ""
+      "notes": "Structural publication: NIST SP 800-181 Rev.1 (final, published 2020-11-16), rechecked on 2026-08-05. Separately maintained current components are tracked as SRC-NICE-COMP-001. NICE is used as a common vocabulary and decomposition aid, not as standalone proof of individual competence. Recheck the structural publication and errata before publication."
+    },
+    {
+      "id": "SRC-NICE-COMP-001",
+      "publisher": "NIST",
+      "title": "NICE Framework Components v2.2.0",
+      "kind": "standard",
+      "status": "current",
+      "version": "2.2.0",
+      "url": "https://www.nist.gov/news-events/news/2026/04/nice-releases-nice-framework-components-v220",
+      "publishedAt": "2026-04-28",
+      "checkedAt": "2026-08-05",
+      "nextReviewAt": "2026-11-05",
+      "reviewTriggers": [
+        "NICE Framework Components major or minor release",
+        "Changes to Work Role, Competency Area, or TKS identifiers used by Chapter 3"
+      ],
+      "chapters": [
+        3
+      ],
+      "notes": "Separately maintained NICE Framework Components release v2.2.0, released 2026-04-28. The Current Versions page displayed April 28, 2025 when rechecked on 2026-08-05; the official release announcement and change log identify 2026-04-28, so 2025 is treated as an apparent page typo and is not copied as the release date. The official v2.2.0 JSON includes OG-WRL-017 and updated NF-COM-006 / NF-COM-008 identifiers. The Components are used as a common vocabulary and decomposition aid, not as standalone proof of individual competence. Recheck the current version, identifiers, and date discrepancy before publication."
     },
     {
       "id": "SRC-CSF-001",

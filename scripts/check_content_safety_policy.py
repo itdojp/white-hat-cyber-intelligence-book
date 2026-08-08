@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
+import argparse
 from dataclasses import fields, is_dataclass
+from itertools import product
 import json
 from pathlib import Path
 import sys
@@ -15,7 +17,17 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.content_safety_policy import (  # noqa: E402
+    _DIRECT_ACTION_MODIFIERS,
+    _DIRECT_COORDINATORS,
+    _DIRECT_LOCAL_NEGATIONS,
+    _parse_direct_coordination_gap,
     ACTION_RULES,
+    JAPANESE_PARTICLE_FRAMES,
+    JapaneseParticleFrame,
+    META_ANALYSIS_FRAMES,
+    MetaAnalysisFrame,
+    OPERATION_RULES,
+    OperationRule,
     POLICY_VERSION,
     PROTECTED_OBJECT_RULES,
     SafetyFinding,
@@ -26,7 +38,22 @@ from scripts.content_safety_policy import (  # noqa: E402
 )
 
 
-EXPECTED_POLICY_VERSION = "1.0.0"
+EXPECTED_POLICY_VERSION = "1.2.0"
+FIXTURE_SCHEMA_VERSION = "1.0.0"
+EXPECTED_LEGACY_UNSAFE_COUNT = 249
+EXPECTED_LEGACY_SAFE_COUNT = 49
+EXPECTED_DIRECT_ACTION_MODIFIERS = (
+    "to",
+    "also",
+    "directly",
+    "explicitly",
+    "only",
+    "ever",
+    "immediately",
+)
+EXPECTED_DIRECT_COORDINATORS = ("and", "or", "but")
+EXPECTED_DIRECT_LOCAL_NEGATIONS = ("do not", "never", "must not")
+EXPECTED_PUBLICATION_CROSS_PRODUCT_CASES = 30_244
 EXPECTED_ACTION_CATEGORIES = {
     "target.real_or_external",
     "secret.credential",
@@ -40,6 +67,29 @@ EXPECTED_ACTION_CATEGORIES = {
     "analysis.weak_evidence_attribution",
 }
 EXPECTED_ALL_CATEGORIES = EXPECTED_ACTION_CATEGORIES | {"network.host_or_address"}
+EXPECTED_REPRESENTATIVE_IDS = {
+    "CH02-MANUSCRIPT-EXTERNAL-API",
+    "CH02-TEMPLATE-TARGET",
+    "CH02-TEMPLATE-SECRET",
+    "CH02-CASE-SAFETY",
+    "CH02-CASE-HOST-TEST",
+    "CH02-CASE-HOST-EXAMPLE",
+    "CH11-MANUSCRIPT-TARGET",
+    "CH11-MANUSCRIPT-SECRET",
+    "CH11-MANUSCRIPT-THIRD-PARTY",
+    "CH11-CASE-SAFETY",
+    "CH11-TEMPLATE-SAFETY",
+    "CH17-MANUSCRIPT-SCOPE",
+    "CH17-MANUSCRIPT-CONNECTION",
+    "CH17-CASE-SAFETY",
+    "CH17-TEMPLATE-SAFETY",
+    "CH25-MANUSCRIPT-SAFETY",
+    "CH25-TEMPLATE-TARGET",
+    "CH25-TEMPLATE-SECRET",
+    "CH25-CASE-SAFETY",
+    "CH25-CASE-HOST-SIGNIN",
+    "CH25-CASE-HOST-PORTAL",
+}
 BLOCKER_TEXTS = {
     "do not build a keylogger, but deploy it",
     "never build a keylogger; however, use it",
@@ -55,6 +105,83 @@ SAFE_BLOCKER_COUNTERPARTS = {
     "この教材ではkeyloggerを作らない。",
     "keyloggerを作ることを禁止する。",
     "この語はMalware分類の説明としてのみ記録する。",
+}
+REQUIRED_PUBLICATION_COORDINATION_UNSAFE = {
+    "PUBLICATION-GAP-UNSAFE-001": (
+        "deploy and immediately publish a phishing report",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-002": (
+        "build and directly publish a malware report",
+        ("operation.malware",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-003": (
+        "use and explicitly announce a phishing analysis",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-004": (
+        "deploy or immediately publish a phishing report",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-005": (
+        "deploy but immediately publish a phishing report",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-006": (
+        "deploy and immediately do not publish a phishing report",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-007": (
+        "publish a phishing report and then deploy it",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-008": (
+        "immediately publish a phishing report, then deploy it",
+        ("operation.c2_or_phishing",),
+    ),
+}
+REQUIRED_PUBLICATION_COORDINATION_SAFE = {
+    "PUBLICATION-GAP-SAFE-001": "immediately publish a phishing report",
+    "PUBLICATION-GAP-SAFE-002": "directly announce a malware analysis",
+    "PUBLICATION-GAP-SAFE-003": (
+        "do not deploy or immediately publish a phishing report"
+    ),
+    "PUBLICATION-GAP-SAFE-004": (
+        "deploy telemetry and immediately publish a phishing report"
+    ),
+    "PUBLICATION-GAP-SAFE-005": (
+        "a sandbox is deployed, and we immediately publish a phishing report"
+    ),
+    "PUBLICATION-GAP-SAFE-006": (
+        "do not deploy; immediately publish a phishing report"
+    ),
+    "PUBLICATION-GAP-SAFE-007": "publish a report about phishing",
+    "PUBLICATION-GAP-SAFE-008": (
+        "publish guidance that prohibits phishing deployment"
+    ),
+    # Issue #62 explicitly freezes the pre-existing ambiguous ``do not A and B``
+    # behavior; this task does not introduce a broader negation policy.
+    "PUBLICATION-GAP-SAFE-009": (
+        "do not deploy and immediately publish a phishing report"
+    ),
+}
+REQUIRED_UNSAFE_PARTICLE_DESTRUCTIVE_ACTIONS = {
+    "PARTICLE-LOG-DELETION-JA": "ログを削除する。",
+    "PARTICLE-AUDIT-TRAIL-DELETION-JA": "監査証跡を削除する。",
+    "PARTICLE-DATA-DESTRUCTION-JA": "データを破壊する。",
+    "PARTICLE-DATA-BARE-DESTRUCTION-JA": "本番データを破壊",
+}
+REQUIRED_SAFE_PARTICLE_DESTRUCTIVE_ACTIONS = {
+    "SAFE-076": "ログを削除しない。",
+    "SAFE-077": "監査証跡を削除しない。",
+    "SAFE-078": "データを破壊しない。",
+    "SAFE-079": "ログを削除することを禁止する。",
+    "SAFE-080": "データを破壊することを禁止する。",
+    "SAFE-081": "ブログを削除する。",
+    "SAFE-082": "カタログを削除する。",
+    "SAFE-083": "メタデータを変更する。",
+    "SAFE-084": "メタデータを暗号化する。",
+    "SAFE-096": "本番データを破壊しない",
 }
 REQUIRED_UNSAFE_BIDIRECTIONAL_ACTIONS = {
     "ACTION-BOTH-SIDES-JA-USE-PRE": "使用しないマルウェアを構築する",
@@ -184,6 +311,30 @@ REQUIRED_UNSAFE_PROHIBITION_SCOPE = {
     "PRE-ACTION-PROHIBITION-CONTRADICTION": (
         "You are prohibited from building a keylogger, but deploy it."
     ),
+    "PRE-ACTION-BARE-PROHIBITION-CONTRADICTION": (
+        "Forbidden to replay the synthetic session, but reuse it."
+    ),
+    "PRE-ACTION-BARE-PROHIBITION-NEW-SUBJECT": (
+        "Prohibited from replaying the synthetic session and you should reuse it."
+    ),
+    "PRE-ACTION-BARE-PROHIBITION-NEW-MODAL": (
+        "Forbidden from replaying the synthetic session and should reuse it."
+    ),
+    "PRE-ACTION-BARE-PROHIBITION-PASSIVE-MODAL": (
+        "Prohibited from replaying the synthetic session and it should be reused."
+    ),
+    "OBJECT-FIRST-PROHIBITION-NEW-SUBJECT": (
+        "The synthetic session is prohibited from replaying and you should reuse it."
+    ),
+    "OBJECT-FIRST-NEGATION-NEW-SUBJECT": (
+        "Synthetic credentials must not be stolen and you should reuse them."
+    ),
+    "ACTION-FIRST-BARE-MODAL-PASSIVE": (
+        "Forbidden from replaying the synthetic session and should be reused."
+    ),
+    "OBJECT-FIRST-BARE-MODAL-PASSIVE": (
+        "The synthetic session is prohibited from replaying and should be reused."
+    ),
     "INLINE-HTML-SPLIT-MALWARE": "<span>key</span><span>logger</span>を作る",
     "CONTINUATION-MULTI-OBJECT-TARGET": (
         "Do not access a third-party production API and do not build a keylogger. "
@@ -235,6 +386,33 @@ REQUIRED_SAFE_PROHIBITION_SCOPE = {
     "SAFE-066": "You are prohibited from building a keylogger.",
     "SAFE-067": "You are forbidden from building a keylogger.",
     "SAFE-068": "You are prohibited from building or deploying a keylogger.",
+    "SAFE-085": "Forbidden to replay the synthetic session or reuse it.",
+    "SAFE-086": "Prohibited from replaying the synthetic session or reusing it.",
+    "SAFE-087": "Forbidden from replaying the synthetic session or reusing it.",
+    "SAFE-088": (
+        "Prohibited from replaying the synthetic session and you should not reuse it."
+    ),
+    "SAFE-089": (
+        "Forbidden from replaying the synthetic session and should not reuse it."
+    ),
+    "SAFE-090": (
+        "Prohibited from replaying the synthetic session and it should not be reused."
+    ),
+    "SAFE-091": (
+        "Prohibited from replaying the synthetic session and it could not be reused."
+    ),
+    "SAFE-092": (
+        "The synthetic session is prohibited from replaying and you should not reuse it."
+    ),
+    "SAFE-093": (
+        "Synthetic credentials must not be stolen and you should not reuse them."
+    ),
+    "SAFE-094": (
+        "Forbidden from replaying the synthetic session and should not be reused."
+    ),
+    "SAFE-095": (
+        "The synthetic session is prohibited from replaying and should not be reused."
+    ),
 }
 REQUIRED_NORMALIZATION_CASES = {
     "INLINE-HTML-ADJACENT": (
@@ -368,6 +546,189 @@ REQUIRED_UNSAFE_HOST_EXCERPTS = {
     "MARKDOWN-AUTOLINK-MAILTO-DISALLOWED": "mailto:user@example.com",
 }
 
+REQUIRED_STRUCTURAL_GAP_UNSAFE = {
+    "TARGET-JA-WHITESPACE-ANALYSIS": "第三者 の APIを分析する",
+    "TARGET-OTHER-ORGANIZATION": "他社サービスへ接続する",
+    "PII-LATIN-JAPANESE-BOUNDARY": "PIIを収集する",
+    "PII-GENERIC-FIELD-SHAPE": "credit card number collected",
+    "PII-CUSTOMER-INFO-MIXED-SCRIPT": "customer infoを分析する",
+    "PII-EMPLOYEE-INFO-MIXED-SCRIPT": "employee infoを収集する",
+    "SECRET-ANALYSIS": "Tokenを分析する",
+    "NEGATED-FIRST-ACTION-JA-CHAIN": "Tokenを取得せず保存する",
+    "NEGATED-OBJECT-BARE-ELLIPSIS": "Tokenは使用しない、取得する",
+    "PRIVILEGE-MIXED-SCRIPT": "lateral movementを実施する",
+    "AUTH-LOGIN-MIXED-SCRIPT": "sign-inする",
+    "WEAK-EVIDENCE-PUBLICATION": "弱いEvidenceからの断定的帰属を公表する",
+    "WEAK-EVIDENCE-EN-JA-PUBLICATION": "weak evidenceからの断定的帰属を公表する",
+    "WEAK-EVIDENCE-EN-JA-IDENTIFICATION": "weak evidenceから断定的に国家を特定する",
+    "DISRUPTION-ENCRYPT-DATA-EN": "encrypt data",
+    "DISRUPTION-ENCRYPT-DATA-JA": "データを暗号化する",
+}
+REQUIRED_STRUCTURAL_GAP_SAFE = {
+    "TARGET-NO-OPERATION-STATEMENT": "合成Scenario。外部接続と実Target操作なし",
+    "JAPANESE-NORMATIVE-NEGATION-CREATE": "keyloggerを作るべきではない",
+    "JAPANESE-NORMATIVE-NEGATION-IMPLEMENT": "rootkitを実装するべきではない",
+    "RESULT-RECORD-NOT-SECRET-ELLIPSIS": "Tokenを使用しない、結果だけを記録する",
+    "SECRET-NEGATED-ANALYSIS": "Tokenを分析しない",
+    "SECRET-SYNTHETIC-ANALYSIS": "合成Tokenを分析する",
+    "AUTH-EXPLANATORY-OUT-OF-SCOPE": "サインインする処理は扱わない",
+}
+
+REQUIRED_FINITE_GRAMMAR_1_2 = {
+    "A": {
+        "unsafe": {
+            "A-UNSAFE-001": ("システムのログを削除する", ("operation.privilege_or_evasion",)),
+            "A-UNSAFE-002": ("対象の監査証跡を消去する", ("operation.privilege_or_evasion",)),
+            "A-UNSAFE-003": ("本番データを破壊する", ("operation.disruption_or_destruction",)),
+            "A-UNSAFE-004": (
+                "顧客のデータを暗号化する",
+                ("data.pii", "operation.disruption_or_destruction"),
+            ),
+            "A-UNSAFE-005": ("監査ログを改ざんする", ("operation.privilege_or_evasion",)),
+            "A-UNSAFE-006": ("本番データを破壊", ("operation.disruption_or_destruction",)),
+            "A-UNSAFE-007": ("対象ログを削除する", ("operation.privilege_or_evasion",)),
+            "A-UNSAFE-008": ("本番ログを削除する", ("operation.privilege_or_evasion",)),
+        },
+        "safe": {
+            "A-SAFE-001": "システムのログを削除しない",
+            "A-SAFE-002": "本番データを破壊することを禁止する",
+            "A-SAFE-003": "監査ログを改ざんしない",
+            "A-SAFE-004": "システムのログを削除しない。しかし監査ログを改ざんしない",
+            "A-SAFE-005": "システムのログを削除しない。しかし監査証跡を消去しない",
+            "A-SAFE-006": "本番データを破壊しない",
+            "A-SAFE-007": "対象ログを削除しない",
+            "A-SAFE-008": "本番ログを削除しない",
+        },
+        "nearMiss": {
+            "A-NEAR-001": "ログ削除の危険性を分析する",
+            "A-NEAR-002": "カタログを削除する",
+            "A-NEAR-003": "ブログを削除する",
+            "A-NEAR-004": "メタデータの取扱いを説明する",
+            "A-NEAR-005": "対象カタログを削除する",
+            "A-NEAR-006": "本番ブログを削除する",
+        },
+        "continuation": {
+            "A-CONT-001": (
+                "システムのログを削除して監査証跡を消去する",
+                ("operation.privilege_or_evasion",),
+            ),
+            "A-CONT-002": (
+                "システムのログを削除しない。しかし監査ログを改ざんする",
+                ("operation.privilege_or_evasion",),
+            ),
+            "A-CONT-003": (
+                "システムのログを削除しない。しかし監査証跡を消去する",
+                ("operation.privilege_or_evasion",),
+            ),
+        },
+    },
+    "B": {
+        "unsafe": {
+            "B-UNSAFE-001": ("合成認証情報を窃取する", ("operation.authentication_or_session",)),
+            "B-UNSAFE-002": ("合成セッションを再利用する", ("operation.authentication_or_session",)),
+            "B-UNSAFE-003": ("synthetic sessionを再利用する", ("operation.authentication_or_session",)),
+            "B-UNSAFE-004": ("mock tokenをリプレイする", ("operation.authentication_or_session",)),
+            "B-UNSAFE-005": ("test cookieを乗っ取る", ("operation.authentication_or_session",)),
+            "B-UNSAFE-006": ("synthetic credentials are stolen", ("operation.authentication_or_session",)),
+            "B-UNSAFE-007": ("synthetic JWT is replayed", ("operation.authentication_or_session",)),
+            "B-UNSAFE-008": ("合成認証情報を持ち出す", ("operation.authentication_or_session",)),
+            "B-UNSAFE-009": ("合成認証情報を流出させる", ("operation.authentication_or_session",)),
+            "B-UNSAFE-010": (
+                "synthetic credentialsをexfiltrateする",
+                ("operation.authentication_or_session",),
+            ),
+            "B-UNSAFE-011": (
+                "synthetic sessionをreplayする",
+                ("operation.authentication_or_session",),
+            ),
+        },
+        "safe": {
+            "B-SAFE-001": "合成認証情報を窃取しない",
+            "B-SAFE-002": "Session reuseは禁止される",
+            "B-SAFE-003": "synthetic session replay is prohibited",
+            "B-SAFE-004": "合成認証情報は窃取されない",
+            "B-SAFE-005": "合成セッションは再利用されない",
+            "B-SAFE-006": "合成認証情報を持ち出さない",
+            "B-SAFE-007": "合成認証情報を流出させない",
+            "B-SAFE-008": "synthetic credentialsをexfiltrateしない",
+            "B-SAFE-009": "synthetic sessionをreplayしない",
+            "B-SAFE-010": (
+                "Synthetic credentials must not be stolen and are not reused"
+            ),
+        },
+        "nearMiss": {
+            "B-NEAR-001": "合成Tokenをoffline fixtureで使用する",
+            "B-NEAR-002": "mock Cookieの分類結果を記録する",
+            "B-NEAR-003": "認証情報の窃取を検知する",
+            "B-NEAR-004": "The fixture records a synthetic JWT literal.",
+        },
+        "continuation": {
+            "B-CONT-001": (
+                "Do not replay the synthetic session, but reuse it.",
+                ("operation.authentication_or_session",),
+            ),
+            "B-CONT-002": (
+                "合成認証情報を窃取しない。しかし再利用する",
+                ("operation.authentication_or_session",),
+            ),
+            "B-CONT-003": (
+                "合成認証情報を持ち出さない。しかし再利用する",
+                ("operation.authentication_or_session",),
+            ),
+            "B-CONT-004": (
+                "Synthetic credentials must not be stolen and are reused",
+                ("operation.authentication_or_session",),
+            ),
+        },
+    },
+    "C": {
+        "safe": {
+            "C-SAFE-001": "analyze the risk of collecting PII",
+            "C-SAFE-002": "assess the privacy impact of storing personal information",
+            "C-SAFE-003": "evaluate safeguards against sharing customer information",
+            "C-SAFE-004": "review whether collecting PII is necessary",
+            "C-SAFE-005": "document the consequences of exposing employee information",
+            "C-SAFE-006": "discuss controls related to processing personal data",
+            "C-SAFE-007": "do not collect and analyze the risk of storing PII",
+        },
+        "unsafe": {
+            "C-UNSAFE-001": ("analyze PII", ("data.pii",)),
+            "C-UNSAFE-002": ("collect PII for analysis", ("data.pii",)),
+            "C-UNSAFE-003": ("analyze and collect PII", ("data.pii",)),
+            "C-UNSAFE-004": ("analyze the risk, then collect PII", ("data.pii",)),
+            "C-UNSAFE-005": ("review PII and share it", ("data.pii",)),
+            "C-UNSAFE-006": (
+                "assess the impact and retain customer information",
+                ("data.pii",),
+            ),
+            "C-UNSAFE-007": (
+                "collect and analyze the risk of storing PII",
+                ("data.pii",),
+            ),
+        },
+        "nearMiss": {
+            "C-NEAR-001": "analyze the risk of collecting telemetry",
+            "C-NEAR-002": "review whether storing fixture output is necessary",
+            "C-NEAR-003": (
+                "analyze the risk of collecting PII and store the same report"
+            ),
+            "C-NEAR-004": (
+                "collect telemetry and analyze the risk of storing PII"
+            ),
+        },
+        "continuation": {
+            "C-CONT-001": (
+                "analyze the risk of collecting PII, then store it",
+                ("data.pii",),
+            ),
+            "C-CONT-002": (
+                "analyze the risk of collecting PII and use it",
+                ("data.pii",),
+            ),
+        },
+    },
+}
+
 
 errors: list[str] = []
 
@@ -454,17 +815,71 @@ def check_public_api() -> None:
             f"protected object categories {sorted(model_categories)!r} do not match "
             f"{sorted(EXPECTED_ACTION_CATEGORIES)!r}"
         )
-    required_action_kinds = {"create", "deploy-use", "access-collect", "perform", "attribute"}
+    required_action_kinds = {
+        "create", "deploy-use", "access-collect", "analyze", "perform", "attribute"
+    }
     action_kinds = {rule.kind for rule in ACTION_RULES}
     if action_kinds != required_action_kinds:
         error(f"action kinds {sorted(action_kinds)!r} do not match {sorted(required_action_kinds)!r}")
+
+    for model in (JapaneseParticleFrame, OperationRule, MetaAnalysisFrame):
+        if not is_dataclass(model) or not model.__dataclass_params__.frozen:
+            error(f"{model.__name__} must remain a frozen dataclass")
+    if {frame.category for frame in JAPANESE_PARTICLE_FRAMES} != {
+        "operation.privilege_or_evasion",
+        "operation.disruption_or_destruction",
+    }:
+        error("Japanese particle frame categories drifted")
+    if {frame.action_kind for frame in JAPANESE_PARTICLE_FRAMES} != {"access-collect"}:
+        error("Japanese particle frame action kinds drifted")
+    if len(OPERATION_RULES) != 1:
+        error("finite non-qualifiable operation inventory drifted")
+    else:
+        operation = OPERATION_RULES[0]
+        if (
+            operation.kind != "theft-reuse"
+            or operation.category != "operation.authentication_or_session"
+            or operation.synthetic_qualifiable
+            or operation.precedence <= 0
+        ):
+            error("theft/reuse operation precedence contract drifted")
+    if len(META_ANALYSIS_FRAMES) != 1:
+        error("finite PII meta-analysis frame inventory drifted")
+    else:
+        frame = META_ANALYSIS_FRAMES[0]
+        expected_frame = (
+            (
+                "analyze", "assess", "evaluate", "review", "examine", "model",
+                "discuss", "document",
+            ),
+            (
+                "risk", "risks", "impact", "impacts", "implications", "policy",
+                "policies", "control", "controls", "safeguard", "safeguards",
+                "necessity", "consequences",
+            ),
+            ("of", "associated with", "related to", "against", "whether"),
+            ("collecting", "storing", "sharing", "using", "processing", "exposing", "retaining"),
+            (
+                "pii", "personal information", "personal data", "employee information",
+                "employee data", "customer information", "customer data",
+            ),
+        )
+        actual_frame = (
+            frame.meta_verbs,
+            frame.meta_heads,
+            frame.relations,
+            frame.embedded_operations,
+            frame.protected_objects,
+        )
+        if actual_frame != expected_frame:
+            error("finite PII meta-analysis vocabulary drifted")
 
 
 def check_action_corpus() -> list[tuple[str, str]]:
     relative = "tests/fixtures/content-safety/action-corpus.json"
     corpus = load_json(relative)
     exact_keys(corpus, {"schemaVersion", "policyVersion", "unsafe", "safe"}, relative)
-    if corpus.get("schemaVersion") != "1.0.0" or corpus.get("policyVersion") != POLICY_VERSION:
+    if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
         error(f"{relative}: schemaVersion/policyVersion mismatch")
 
     unsafe = checked_entries(
@@ -535,12 +950,18 @@ def check_action_corpus() -> list[tuple[str, str]]:
     for identifier, expected_text in REQUIRED_UNSAFE_BIDIRECTIONAL_ACTIONS.items():
         if unsafe_by_id.get(identifier) != expected_text:
             error(f"{relative}: bidirectional unsafe regression {identifier!r} drifted")
+    for identifier, expected_text in REQUIRED_UNSAFE_PARTICLE_DESTRUCTIVE_ACTIONS.items():
+        if unsafe_by_id.get(identifier) != expected_text:
+            error(f"{relative}: particle destructive unsafe regression {identifier!r} drifted")
     for identifier, expected_text in REQUIRED_SAFE_PROHIBITION_SCOPE.items():
         if safe_by_id.get(identifier) != expected_text:
             error(f"{relative}: safe prohibition-scope regression {identifier!r} drifted")
     for identifier, expected_text in REQUIRED_SAFE_BIDIRECTIONAL_ACTIONS.items():
         if safe_by_id.get(identifier) != expected_text:
             error(f"{relative}: bidirectional safe regression {identifier!r} drifted")
+    for identifier, expected_text in REQUIRED_SAFE_PARTICLE_DESTRUCTIVE_ACTIONS.items():
+        if safe_by_id.get(identifier) != expected_text:
+            error(f"{relative}: particle destructive safe regression {identifier!r} drifted")
 
     for item in safe:
         identifier = item.get("id")
@@ -575,11 +996,512 @@ def check_action_corpus() -> list[tuple[str, str]]:
     return deterministic_fields
 
 
+def check_publication_coordination_corpus() -> list[tuple[str, str]]:
+    """Freeze Issue #62's exact Publication coordination examples."""
+
+    relative = (
+        "tests/fixtures/content-safety/"
+        "publication-coordination-1.2-corpus.json"
+    )
+    corpus = load_json(relative)
+    exact_keys(corpus, {"schemaVersion", "policyVersion", "unsafe", "safe"}, relative)
+    if (
+        corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION
+        or corpus.get("policyVersion") != POLICY_VERSION
+    ):
+        error(f"{relative}: schemaVersion/policyVersion mismatch")
+    unsafe = checked_entries(
+        corpus.get("unsafe"),
+        expected_keys={"id", "text", "expectedCategories"},
+        context=f"{relative}.unsafe",
+    )
+    safe = checked_entries(
+        corpus.get("safe"),
+        expected_keys={"id", "text"},
+        context=f"{relative}.safe",
+    )
+    actual_unsafe = {
+        item.get("id"): (
+            item.get("text"),
+            tuple(item.get("expectedCategories", [])),
+        )
+        for item in unsafe
+    }
+    actual_safe = {item.get("id"): item.get("text") for item in safe}
+    if actual_unsafe != REQUIRED_PUBLICATION_COORDINATION_UNSAFE:
+        error(f"{relative}: unsafe Issue #62 inventory drifted")
+    if actual_safe != REQUIRED_PUBLICATION_COORDINATION_SAFE:
+        error(f"{relative}: safe Issue #62 inventory drifted")
+
+    deterministic_fields: list[tuple[str, str]] = []
+    for item in unsafe:
+        identifier = item.get("id")
+        text = item.get("text")
+        expected = item.get("expectedCategories")
+        if not (
+            isinstance(identifier, str)
+            and isinstance(text, str)
+            and isinstance(expected, list)
+            and all(isinstance(category, str) for category in expected)
+        ):
+            continue
+        actual = sorted(
+            {finding.category for finding in scan_action_text(text, location=identifier)}
+        )
+        if actual != sorted(expected):
+            error(
+                f"{relative}.{identifier}: expected exactly {sorted(expected)!r}, "
+                f"got {actual!r}"
+            )
+        deterministic_fields.append((identifier, text))
+    for item in safe:
+        identifier = item.get("id")
+        text = item.get("text")
+        if not isinstance(identifier, str) or not isinstance(text, str):
+            continue
+        findings = scan_action_text(text, location=identifier)
+        if findings:
+            error(f"{relative}.{identifier}: safe text produced {findings!r}")
+        deterministic_fields.append((identifier, text))
+    return deterministic_fields
+
+
+def _publication_document(protected: str, head: str) -> str:
+    article = "a " if head != "guidance" else ""
+    return f"{article}{protected} {head}"
+
+
+def _publication_lead(
+    modifier: str | None,
+    local_negation: str | None,
+    publication: str,
+) -> str:
+    return " ".join(
+        value
+        for value in (modifier, local_negation, publication)
+        if value is not None
+    )
+
+
+def check_publication_coordination_cross_product() -> int:
+    """Generate Issue #62's finite matrix from the Policy source constants."""
+
+    if _DIRECT_ACTION_MODIFIERS != EXPECTED_DIRECT_ACTION_MODIFIERS:
+        error("direct Action modifier source-of-truth drifted without fixture audit")
+    if _DIRECT_COORDINATORS != EXPECTED_DIRECT_COORDINATORS:
+        error("direct coordinator source-of-truth drifted without fixture audit")
+    if _DIRECT_LOCAL_NEGATIONS != EXPECTED_DIRECT_LOCAL_NEGATIONS:
+        error("direct local-negation source-of-truth drifted without fixture audit")
+
+    modifiers: tuple[str | None, ...] = (None, *_DIRECT_ACTION_MODIFIERS)
+    local_negations: tuple[str | None, ...] = (None, *_DIRECT_LOCAL_NEGATIONS)
+    prior_actions = ("build", "deploy", "install", "run", "use", "operate", "access")
+    publications = ("publish", "announce")
+    protected_objects = (
+        ("phishing", "operation.c2_or_phishing"),
+        ("malware", "operation.malware"),
+    )
+    document_heads = ("report", "analysis", "guidance")
+    relations = ("shared", "distinct-object", "new-subject")
+    mismatches: list[str] = []
+    case_count = 0
+
+    def categories(text: str) -> set[str]:
+        return {
+            finding.category
+            for finding in scan_action_text(text, location="PUBLICATION-CROSS-PRODUCT")
+        }
+
+    def require(text: str, category: str, expected: bool) -> None:
+        nonlocal case_count
+        case_count += 1
+        actual = category in categories(text)
+        if actual != expected and len(mismatches) < 12:
+            mismatches.append(
+                f"expected finding={expected}, actual categories={sorted(categories(text))!r}: "
+                f"{text!r}"
+            )
+
+    # Main relation matrix.  Publication-local negation never suppresses an
+    # affirmative prior Action.  A distinct Object or explicit subject prevents
+    # rebinding across the coordinator.
+    for (
+        prior,
+        coordinator,
+        modifier,
+        publication,
+        (protected, category),
+        head,
+        local_negation,
+        relation,
+    ) in product(
+        prior_actions,
+        _DIRECT_COORDINATORS,
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+        local_negations,
+        relations,
+    ):
+        publication_phrase = _publication_lead(
+            modifier,
+            local_negation,
+            publication,
+        )
+        document = _publication_document(protected, head)
+        if relation == "shared":
+            text = f"{prior} {coordinator} {publication_phrase} {document}"
+            expected = True
+        elif relation == "distinct-object":
+            text = (
+                f"{prior} telemetry {coordinator} {publication_phrase} {document}"
+            )
+            expected = False
+        else:
+            text = (
+                f"{prior} telemetry, {coordinator} we {publication_phrase} {document}"
+            )
+            expected = False
+        require(text, category, expected)
+
+    # Existing local-negation semantics for a prior Action remain unchanged.
+    for (
+        prior,
+        coordinator,
+        modifier,
+        publication,
+        (protected, category),
+        head,
+    ) in product(
+        prior_actions,
+        _DIRECT_COORDINATORS,
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+    ):
+        text = (
+            f"do not {prior} {coordinator} "
+            f"{_publication_lead(modifier, None, publication)} "
+            f"{_publication_document(protected, head)}"
+        )
+        require(text, category, False)
+
+    # Publication-only frames remain defensive prose for every frozen modifier
+    # and supported local-negation form.
+    for (
+        modifier,
+        publication,
+        (protected, category),
+        head,
+        local_negation,
+    ) in product(
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+        local_negations,
+    ):
+        text = (
+            f"{_publication_lead(modifier, local_negation, publication)} "
+            f"{_publication_document(protected, head)}"
+        )
+        require(text, category, False)
+
+    # A later affirmative continuation must not inherit Publication suppression.
+    for (
+        modifier,
+        publication,
+        (protected, category),
+        head,
+        prior,
+    ) in product(
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+        prior_actions,
+    ):
+        text = (
+            f"{_publication_lead(modifier, None, publication)} "
+            f"{_publication_document(protected, head)}, then {prior} it"
+        )
+        require(text, category, True)
+
+    # Prove backward traversal across a two-Action finite chain.  The nearest
+    # Action is locally prohibited so the finding must come from the older
+    # affirmative Action; the companion matrix prohibits both Actions.
+    for (
+        first_coordinator,
+        second_coordinator,
+        modifier,
+        publication,
+        (protected, category),
+        head,
+    ) in product(
+        _DIRECT_COORDINATORS,
+        _DIRECT_COORDINATORS,
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+    ):
+        publication_phrase = _publication_lead(modifier, None, publication)
+        document = _publication_document(protected, head)
+        require(
+            f"build {first_coordinator} do not deploy {second_coordinator} "
+            f"{publication_phrase} {document}",
+            category,
+            True,
+        )
+        require(
+            f"do not build {first_coordinator} do not deploy "
+            f"{second_coordinator} {publication_phrase} {document}",
+            category,
+            False,
+        )
+
+    # A new explicit subject before the current-clause chain severs the previous
+    # bare Action, including when Publication itself has a finite local negation.
+    for (
+        second_coordinator,
+        modifier,
+        publication,
+        (protected, category),
+        head,
+        publication_local_negation,
+    ) in product(
+        _DIRECT_COORDINATORS,
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+        local_negations,
+    ):
+        publication_phrase = _publication_lead(
+            modifier,
+            publication_local_negation,
+            publication,
+        )
+        require(
+            f"build but we do not deploy {second_coordinator} "
+            f"{publication_phrase} {_publication_document(protected, head)}",
+            category,
+            False,
+        )
+
+    # Directly exercise the structured whole-gap parser.  Coverage is generated
+    # from the same constants, so adding one modifier without updating the
+    # frozen expected tuple cannot silently skip the new grammar branch.
+    covered_modifiers: set[str] = set()
+    for coordinator, modifier, local_negation in product(
+        _DIRECT_COORDINATORS,
+        modifiers,
+        local_negations,
+    ):
+        gap = " ".join(
+            value
+            for value in (coordinator, modifier, local_negation)
+            if value is not None
+        )
+        parsed = _parse_direct_coordination_gap(
+            gap,
+            allow_local_negation=True,
+            coordinators=frozenset(_DIRECT_COORDINATORS),
+        )
+        case_count += 1
+        if parsed is None:
+            if len(mismatches) < 12:
+                mismatches.append(f"direct coordination gap did not parse: {gap!r}")
+            continue
+        if (
+            parsed.coordinator != coordinator
+            or parsed.local_negation != local_negation
+            or parsed.modifiers != (() if modifier is None else (modifier,))
+        ):
+            if len(mismatches) < 12:
+                mismatches.append(f"direct coordination gap parsed incorrectly: {gap!r}")
+        if modifier is not None:
+            covered_modifiers.add(modifier)
+    if covered_modifiers != set(_DIRECT_ACTION_MODIFIERS):
+        error("generated Publication matrix does not cover every direct modifier")
+
+    invalid_gaps = (
+        "and, immediately",
+        "and we immediately",
+        "and telemetry immediately",
+        "and immediately;",
+    )
+    for gap in invalid_gaps:
+        case_count += 1
+        if _parse_direct_coordination_gap(
+            gap,
+            allow_local_negation=True,
+            coordinators=frozenset(_DIRECT_COORDINATORS),
+        ) is not None:
+            if len(mismatches) < 12:
+                mismatches.append(f"invalid direct coordination gap parsed: {gap!r}")
+
+    if mismatches:
+        error(
+            "Publication coordination cross-product failed; examples: "
+            + " | ".join(mismatches)
+        )
+    if case_count != EXPECTED_PUBLICATION_CROSS_PRODUCT_CASES:
+        error(
+            "Publication coordination cross-product count drifted: "
+            f"expected {EXPECTED_PUBLICATION_CROSS_PRODUCT_CASES}, got {case_count}"
+        )
+    return case_count
+
+
+def check_structural_gap_corpus() -> list[tuple[str, str]]:
+    """Exercise finite grammar shapes added by the 1.1 minor re-audit.
+
+    These are category- and language-structure regressions, not chapter fields or
+    a per-chapter exception list.  The external legacy parity corpus is accepted
+    only by the explicit probe below.
+    """
+
+    relative = "tests/fixtures/content-safety/structural-gap-corpus.json"
+    corpus = load_json(relative)
+    exact_keys(corpus, {"schemaVersion", "policyVersion", "unsafe", "safe"}, relative)
+    if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
+        error(f"{relative}: schemaVersion/policyVersion mismatch")
+    unsafe = checked_entries(
+        corpus.get("unsafe"),
+        expected_keys={"id", "text", "expectedCategories"},
+        context=f"{relative}.unsafe",
+    )
+    safe = checked_entries(
+        corpus.get("safe"),
+        expected_keys={"id", "text"},
+        context=f"{relative}.safe",
+    )
+    unsafe_by_id = {item.get("id"): item.get("text") for item in unsafe}
+    safe_by_id = {item.get("id"): item.get("text") for item in safe}
+    if unsafe_by_id != REQUIRED_STRUCTURAL_GAP_UNSAFE:
+        error(f"{relative}: unsafe structural regression inventory drifted")
+    if safe_by_id != REQUIRED_STRUCTURAL_GAP_SAFE:
+        error(f"{relative}: safe structural regression inventory drifted")
+
+    deterministic_fields: list[tuple[str, str]] = []
+    for item in unsafe:
+        identifier, text, expected = item.get("id"), item.get("text"), item.get("expectedCategories")
+        if not isinstance(identifier, str) or not isinstance(text, str) or not isinstance(expected, list):
+            continue
+        findings = scan_action_text(text, location=identifier)
+        actual = {finding.category for finding in findings}
+        if not set(expected) <= actual:
+            error(f"{relative}.{identifier}: expected {expected!r}, got {sorted(actual)!r}")
+        deterministic_fields.append((identifier, text))
+    for item in safe:
+        identifier, text = item.get("id"), item.get("text")
+        if not isinstance(identifier, str) or not isinstance(text, str):
+            continue
+        findings = scan_action_text(text, location=identifier)
+        if findings:
+            error(f"{relative}.{identifier}: safe text produced findings {findings!r}")
+        deterministic_fields.append((identifier, text))
+    return deterministic_fields
+
+
+def check_finite_grammar_1_2_corpus() -> list[tuple[str, str]]:
+    """Freeze Issue #61's three semantic classes as exact table inventories."""
+
+    relative = "tests/fixtures/content-safety/finite-grammar-1.2-corpus.json"
+    corpus = load_json(relative)
+    exact_keys(corpus, {"schemaVersion", "policyVersion", "clusters"}, relative)
+    if (
+        corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION
+        or corpus.get("policyVersion") != POLICY_VERSION
+    ):
+        error(f"{relative}: schemaVersion/policyVersion mismatch")
+    clusters = corpus.get("clusters")
+    if not isinstance(clusters, dict):
+        error(f"{relative}.clusters: must be an object")
+        return []
+    exact_keys(clusters, set(REQUIRED_FINITE_GRAMMAR_1_2), f"{relative}.clusters")
+
+    deterministic_fields: list[tuple[str, str]] = []
+    seen_ids: set[str] = set()
+    for cluster_name, required_groups in REQUIRED_FINITE_GRAMMAR_1_2.items():
+        cluster = clusters.get(cluster_name)
+        if not isinstance(cluster, dict):
+            error(f"{relative}.clusters.{cluster_name}: must be an object")
+            continue
+        exact_keys(
+            cluster,
+            set(required_groups),
+            f"{relative}.clusters.{cluster_name}",
+        )
+        for group_name, required_inventory in required_groups.items():
+            unsafe_group = group_name in {"unsafe", "continuation"}
+            entries = checked_entries(
+                cluster.get(group_name),
+                expected_keys=(
+                    {"id", "text", "expectedCategories"}
+                    if unsafe_group
+                    else {"id", "text"}
+                ),
+                context=f"{relative}.clusters.{cluster_name}.{group_name}",
+            )
+            duplicates = seen_ids & {str(item.get("id")) for item in entries}
+            if duplicates:
+                error(f"{relative}: duplicate IDs across clusters {sorted(duplicates)!r}")
+            seen_ids.update(str(item.get("id")) for item in entries)
+
+            if unsafe_group:
+                actual_inventory = {
+                    item.get("id"): (
+                        item.get("text"),
+                        tuple(item.get("expectedCategories", [])),
+                    )
+                    for item in entries
+                }
+            else:
+                actual_inventory = {
+                    item.get("id"): item.get("text")
+                    for item in entries
+                }
+            if actual_inventory != required_inventory:
+                error(
+                    f"{relative}.{cluster_name}.{group_name}: finite inventory drifted"
+                )
+
+            for item in entries:
+                identifier, text = item.get("id"), item.get("text")
+                if not isinstance(identifier, str) or not isinstance(text, str):
+                    continue
+                findings = scan_action_text(text, location=identifier)
+                if unsafe_group:
+                    expected = item.get("expectedCategories")
+                    if not isinstance(expected, list) or not all(
+                        isinstance(category, str) for category in expected
+                    ):
+                        error(f"{relative}.{identifier}: invalid expectedCategories")
+                    else:
+                        actual = sorted({finding.category for finding in findings})
+                        if actual != sorted(expected):
+                            error(
+                                f"{relative}.{identifier}: expected exactly "
+                                f"{sorted(expected)!r}, got {actual!r}"
+                            )
+                elif findings:
+                    error(
+                        f"{relative}.{identifier}: safe/near-miss text produced "
+                        f"findings {findings!r}"
+                    )
+                deterministic_fields.append((identifier, text))
+    return deterministic_fields
+
+
 def check_normalization_corpus() -> None:
     relative = "tests/fixtures/content-safety/normalization-corpus.json"
     corpus = load_json(relative)
     exact_keys(corpus, {"schemaVersion", "policyVersion", "cases"}, relative)
-    if corpus.get("schemaVersion") != "1.0.0" or corpus.get("policyVersion") != POLICY_VERSION:
+    if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
         error(f"{relative}: schemaVersion/policyVersion mismatch")
     cases = corpus.get("cases")
     if not isinstance(cases, list):
@@ -613,7 +1535,7 @@ def check_host_corpus() -> list[tuple[str, str]]:
     relative = "tests/fixtures/content-safety/host-corpus.json"
     corpus = load_json(relative)
     exact_keys(corpus, {"schemaVersion", "policyVersion", "safe", "unsafe"}, relative)
-    if corpus.get("schemaVersion") != "1.0.0" or corpus.get("policyVersion") != POLICY_VERSION:
+    if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
         error(f"{relative}: schemaVersion/policyVersion mismatch")
     safe = checked_entries(
         corpus.get("safe"),
@@ -671,6 +1593,43 @@ def check_host_corpus() -> list[tuple[str, str]]:
     return deterministic_fields
 
 
+def check_legacy_parity_corpus(path: Path) -> tuple[int, int]:
+    """Probe an explicitly supplied historical corpus without making it Policy data."""
+
+    try:
+        corpus = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        error(f"{path}: cannot load legacy parity corpus: {exc}")
+        return (0, 0)
+    if not isinstance(corpus, dict) or set(corpus) != {"unsafe_field", "explicitly_negated_field"}:
+        error(f"{path}: legacy parity corpus must contain unsafe_field and explicitly_negated_field")
+        return (0, 0)
+    unsafe = corpus["unsafe_field"]
+    safe = corpus["explicitly_negated_field"]
+    if not isinstance(unsafe, list) or not isinstance(safe, list) or not all(
+        isinstance(text, str) and text for text in unsafe + safe
+    ):
+        error(f"{path}: legacy parity entries must be non-empty strings")
+        return (0, 0)
+    if len(unsafe) != EXPECTED_LEGACY_UNSAFE_COUNT:
+        error(
+            f"{path}: legacy unsafe count {len(unsafe)} does not match "
+            f"{EXPECTED_LEGACY_UNSAFE_COUNT}"
+        )
+    if len(safe) != EXPECTED_LEGACY_SAFE_COUNT:
+        error(
+            f"{path}: legacy safe count {len(safe)} does not match "
+            f"{EXPECTED_LEGACY_SAFE_COUNT}"
+        )
+    misses = [text for text in unsafe if not scan_action_text(text, location="legacy-unsafe")]
+    false_positives = [text for text in safe if scan_action_text(text, location="legacy-safe")]
+    if misses:
+        error(f"{path}: legacy unsafe misses={len(misses)} examples={misses[:3]!r}")
+    if false_positives:
+        error(f"{path}: legacy safe false_positives={len(false_positives)} examples={false_positives[:3]!r}")
+    return (len(unsafe), len(safe))
+
+
 def check_representative_main_fields() -> list[tuple[str, str]]:
     relative = "tests/fixtures/content-safety/representative-main-fields.json"
     corpus = load_json(relative)
@@ -679,9 +1638,9 @@ def check_representative_main_fields() -> list[tuple[str, str]]:
         {"schemaVersion", "policyVersion", "baselineMain", "scope", "fields"},
         relative,
     )
-    if corpus.get("schemaVersion") != "1.0.0" or corpus.get("policyVersion") != POLICY_VERSION:
+    if corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION or corpus.get("policyVersion") != POLICY_VERSION:
         error(f"{relative}: schemaVersion/policyVersion mismatch")
-    if corpus.get("baselineMain") != "2c40869febd75b9e13fec544aec9bf90552e1556":
+    if corpus.get("baselineMain") != "a1dfadae153bfe36b88f72e503f5a5be9c64bddf":
         error(f"{relative}: reference baseline main changed without explicit audit")
     if "not whole-book natural-language coverage" not in str(corpus.get("scope", "")):
         error(f"{relative}: bounded-scope disclaimer is missing")
@@ -690,6 +1649,12 @@ def check_representative_main_fields() -> list[tuple[str, str]]:
         expected_keys={"id", "source", "text"},
         context=f"{relative}.fields",
     )
+    actual_ids = {item.get("id") for item in entries}
+    if actual_ids != EXPECTED_REPRESENTATIVE_IDS:
+        error(
+            f"{relative}: representative field inventory drifted: "
+            f"expected {len(EXPECTED_REPRESENTATIVE_IDS)}, got {len(actual_ids)}"
+        )
     expected_chapters = {"CH02", "CH11", "CH17", "CH25"}
     seen_chapters: set[str] = set()
     seen_source_kinds: dict[str, set[str]] = {chapter: set() for chapter in expected_chapters}
@@ -760,7 +1725,7 @@ def check_determinism_and_malformed(fields_to_scan: list[tuple[str, str]]) -> No
 def check_documentation() -> None:
     required_files = {
         "CONTENT_SAFETY_POLICY.md": (
-            "Policy version: `1.0.0`",
+            "Policy version: `1.2.0`",
             "## Stable API",
             "## Structured policy model",
             "## Normalization contract",
@@ -770,6 +1735,11 @@ def check_documentation() -> None:
             "## Versioning and re-audit",
             "patch:",
             "minor:",
+            "1.2.0 finite grammar",
+            "Issue #62 Publication coordination correction",
+            "## Finite review acceptance contract",
+            "Blocking",
+            "Non-blocking backlog",
             "major:",
             "## Non-goals",
             "自然言語安全性の完全な判定",
@@ -782,6 +1752,8 @@ def check_documentation() -> None:
             "六つのblocker phrase",
             "`.localhost`",
             "unresolved thread 0",
+            "1.2.0 finite grammar re-audit",
+            "Issue #62 Publication coordination correction",
         ),
     }
     for relative, markers in required_files.items():
@@ -795,25 +1767,51 @@ def check_documentation() -> None:
                 error(f"{relative}: missing required marker {marker!r}")
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--legacy-parity-corpus",
+        type=Path,
+        help="read-only historical unsafe/safe corpus to probe; not Policy input",
+    )
+    args = parser.parse_args(argv)
     check_public_api()
     deterministic_fields = check_action_corpus()
+    publication_coordination_fields = check_publication_coordination_corpus()
+    deterministic_fields.extend(publication_coordination_fields)
+    publication_cross_product_cases = check_publication_coordination_cross_product()
+    deterministic_fields.extend(check_structural_gap_corpus())
+    finite_grammar_fields = check_finite_grammar_1_2_corpus()
+    deterministic_fields.extend(finite_grammar_fields)
     check_normalization_corpus()
     deterministic_fields.extend(check_host_corpus())
     representative_fields = check_representative_main_fields()
     deterministic_fields.extend(representative_fields)
     check_determinism_and_malformed(deterministic_fields)
     check_documentation()
+    parity_counts: tuple[int, int] | None = None
+    if args.legacy_parity_corpus is not None:
+        parity_counts = check_legacy_parity_corpus(args.legacy_parity_corpus)
     if errors:
         for message in errors:
             print(f"ERROR: {message}", file=sys.stderr)
         print(f"content safety policy contract failed with {len(errors)} error(s)", file=sys.stderr)
         return 1
-    print(
+    summary = (
         "content safety policy contract passed: "
         f"version={POLICY_VERSION}, categories={len(EXPECTED_ALL_CATEGORIES)}, "
-        f"blockers={len(BLOCKER_TEXTS)}, representative_fields={len(representative_fields)}"
+        f"blockers={len(BLOCKER_TEXTS)}, finite_grammar_cases={len(finite_grammar_fields)}, "
+        f"publication_fixtures={len(publication_coordination_fields)}, "
+        f"publication_cross_product_cases={publication_cross_product_cases}, "
+        f"representative_fields={len(representative_fields)}"
     )
+    if parity_counts is not None:
+        summary += (
+            "; legacy parity passed: "
+            f"unsafe={parity_counts[0]}, explicitly_negated={parity_counts[1]}, "
+            "misses=0, false_positives=0"
+        )
+    print(summary)
     return 0
 
 

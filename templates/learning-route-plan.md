@@ -1,5 +1,8 @@
 # Learning Route Plan
 
+- Artifact ID: `ART-01`
+- Plan ID: `LRP-YYYY-NNN`
+- Learner Profile ID: `SYNTH-LEARNER-NNN`
 - 現在の役割:
 - 目標とする役割:
 - 判断・業務上の目的:
