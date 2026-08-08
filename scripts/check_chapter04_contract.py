@@ -27,7 +27,11 @@ from scripts.content_safety_policy import (  # noqa: E402
     scan_host_policy,
 )
 from scripts.render_reference_baseline import render as render_reference_baseline  # noqa: E402
-from scripts.sync_book_site import SitePageRegistryError, parse_registry_data  # noqa: E402
+from scripts.sync_book_site import (  # noqa: E402
+    SitePageRegistryError,
+    parse_registry_data,
+    published_page_title_findings,
+)
 
 ERRORS: list[str] = []
 EXPECTED_POLICY_VERSION = "1.2.0"
@@ -50,6 +54,34 @@ EXPECTED_PAGES = {
     (CASE, "cases/chapter-04-threat-model/index.md", "additional", 241),
     (SOURCE_NOTE, "references/chapter-04-source-review/index.md", "additional", 242),
 }
+
+EXPECTED_PAGE_TITLES = {
+    CHAPTER: "第4章 資産、信頼境界、攻撃面、脅威モデル",
+    TEMPLATE: "Threat Model",
+    CASE: "第4章 合成記入例：資産・信頼境界・脅威モデル",
+    SOURCE_NOTE: "第4章 Source Review Note：Threat Model",
+}
+
+UNSAFE_PAGE_TITLES = (
+    "第三者の本番システムへ接続する",
+    "実Tokenを取得してEvidenceにする",
+    "個人情報を収集する",
+    "マルウェアを実行する",
+    "https://example.comへ接続する",
+    "第三者の本番システムへ\n接続する",
+    "実Tokenを\r取得してEvidenceにする",
+    "個人情報を\u2028収集する",
+    "マルウェアを\u2029実行する",
+)
+
+SAFE_PAGE_TITLES = (
+    "第4章 資産、信頼境界、攻撃面、脅威モデル",
+    "ART-03 Threat Model",
+    "第4章 合成記入例：請求書連携OAuthアプリのAsset / Boundary / Threat Model",
+    "第4章 Source Review",
+    "第三者の本番システムへ接続しない",
+    "マルウェア分類の危険性を分析する",
+)
 
 MODEL_STATUSES = {
     "Draft",
@@ -4011,12 +4043,34 @@ def page_contract_errors(registry: dict, label: str) -> list[str]:
     return messages
 
 
+def page_title_contract_errors(registry: dict, label: str) -> list[str]:
+    """Bind Chapter 4 titles without conflating them with route identity."""
+
+    pages = registry.get("pages", [])
+    messages: list[str] = []
+    for source, expected_title in sorted(EXPECTED_PAGE_TITLES.items()):
+        actual_titles = [
+            item.get("title")
+            for item in pages
+            if isinstance(item, dict) and item.get("source") == source
+        ]
+        if actual_titles != [expected_title]:
+            messages.append(
+                f"{label}: expected Chapter 4 title for {source!r} exactly once as "
+                f"{expected_title!r}; found {actual_titles!r}"
+            )
+    return messages
+
+
 def registry_rejected(registry: dict, label: str) -> bool:
     try:
         parsed = parse_registry_data(registry, label)
     except SitePageRegistryError:
         return True
-    return bool(page_contract_errors(parsed, label))
+    return bool(
+        page_contract_errors(parsed, label)
+        or page_title_contract_errors(parsed, label)
+    )
 
 
 def publication_contract_errors() -> list[str]:
@@ -4937,9 +4991,72 @@ def negative_regressions(
         mutation = deepcopy(raw_registry)
         next(item for item in mutation["pages"] if item.get("source") == CHAPTER)["destination"] = "assets/index.md"
         mutations.append(("reserved path", mutation))
+        mutation = deepcopy(raw_registry)
+        next(item for item in mutation["pages"] if item.get("source") == CHAPTER)["title"] = "第4章 Threat Model 改訂"
+        mutations.append(("canonical title drift", mutation))
+        mutation = deepcopy(raw_registry)
+        del next(
+            item for item in mutation["pages"] if item.get("source") == CHAPTER
+        )["title"]
+        mutations.append(("missing canonical title", mutation))
         for name, mutation in mutations:
             if not registry_rejected(mutation, f"negative site registry {name}"):
                 error(f"site-pages negative mutation was accepted: {name}")
+
+        # The generic registry parser owns title safety. Exercise every current
+        # registry page dynamically so a future page cannot bypass that owner.
+        for page_index, page in enumerate(pages):
+            mutation = deepcopy(raw_registry)
+            mutation["pages"][page_index]["title"] = UNSAFE_PAGE_TITLES[
+                page_index % len(UNSAFE_PAGE_TITLES)
+            ]
+            if not registry_rejected(
+                mutation,
+                f"negative site registry published title coverage {page_index}",
+            ):
+                error(
+                    "site-pages published title escaped shared Policy scan: "
+                    f"pages[{page_index}] {page.get('source')!r}"
+                )
+
+        # Bind every required unsafe class to every Chapter 4 publication route.
+        for source in sorted(EXPECTED_PAGE_TITLES):
+            for unsafe_index, unsafe_title in enumerate(UNSAFE_PAGE_TITLES, start=1):
+                mutation = deepcopy(raw_registry)
+                page = next(
+                    item for item in mutation["pages"] if item.get("source") == source
+                )
+                page["title"] = unsafe_title
+                if not registry_rejected(
+                    mutation,
+                    f"negative Chapter 4 title {source} class {unsafe_index}",
+                ):
+                    error(
+                        "Chapter 4 published title mutation escaped shared Policy: "
+                        f"{source!r} / {unsafe_title!r}"
+                    )
+
+        safe_registry = {
+            "pages": [
+                {
+                    "source": f"cases/safe-title-{index}.md",
+                    "destination": f"cases/safe-title-{index}/index.md",
+                    "title": safe_title,
+                }
+                for index, safe_title in enumerate(SAFE_PAGE_TITLES, start=1)
+            ]
+        }
+        safe_findings = published_page_title_findings(
+            safe_registry,
+            "Chapter 4 safe published title fixtures",
+        )
+        if safe_findings:
+            error(
+                "shared Policy rejected safe published title fixtures: "
+                f"{[format_finding(finding) for finding in safe_findings]!r}"
+            )
+    else:
+        error("negative site registry mutation cannot find Chapter 4 page")
 
 
 def main() -> int:
@@ -4968,6 +5085,7 @@ def main() -> int:
         error(f"site-pages.json: invalid registry: {exc}")
         registry = {}
     ERRORS.extend(page_contract_errors(registry, "site-pages.json"))
+    ERRORS.extend(page_title_contract_errors(registry, "site-pages.json"))
 
     baseline = read_text("references/reference-baseline.md")
     if baseline and sources and baseline != render_reference_baseline():

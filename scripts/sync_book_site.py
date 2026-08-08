@@ -16,6 +16,11 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import sync_site_source as base  # noqa: E402
+from scripts.content_safety_policy import (  # noqa: E402
+    POLICY_VERSION as CONTENT_SAFETY_POLICY_VERSION,
+    SafetyFinding,
+    scan_fields,
+)
 
 REGISTRY_PATH = ROOT / "site-pages.json"
 SCHEMA_VERSION = "1.1.0"
@@ -207,6 +212,29 @@ def validate_static_json(data: bytes, label: str) -> None:
         )
 
 
+def published_page_title_findings(
+    registry: dict,
+    label: str = "site-pages.json",
+) -> list[SafetyFinding]:
+    """Scan every explicit reader-visible registry title through the shared Policy."""
+
+    fields: list[tuple[str, str]] = []
+    for index, item in enumerate(registry.get("pages", [])):
+        if not isinstance(item, dict):
+            continue
+        title = item.get("title")
+        if not isinstance(title, str):
+            continue
+        source = item.get("source", "<invalid-source>")
+        destination = item.get("destination", "<invalid-destination>")
+        location = (
+            f"{label}: pages[{index}].title "
+            f"({source} -> {destination})"
+        )
+        fields.append((location, title))
+    return scan_fields(fields)
+
+
 def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
     """Enforce every constraint declared by schemas/site-pages.schema.json."""
     if not isinstance(value, dict):
@@ -265,7 +293,7 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
     if not isinstance(pages, list):
         raise SitePageRegistryError("pages must be an array")
     allowed_page_keys = {"source", "destination", "section", "order", "title"}
-    required_page_keys = {"source", "destination", "section", "order"}
+    required_page_keys = {"source", "destination", "section", "order", "title"}
     for index, item in enumerate(pages):
         if not isinstance(item, dict):
             raise SitePageRegistryError(f"pages[{index}] must be an object")
@@ -296,11 +324,27 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
                 f"pages[{index}].order must be a non-negative integer"
             )
         item["order"] = int(order)
-        title = item.get("title")
-        if title is not None and (not isinstance(title, str) or not title):
+        title = item["title"]
+        if not isinstance(title, str) or not title:
             raise SitePageRegistryError(
-                f"pages[{index}].title must be a non-empty string when present"
+                f"pages[{index}].title must be a non-empty string"
             )
+        if LINE_TERMINATOR_RE.search(title):
+            raise SitePageRegistryError(
+                f"pages[{index}].title must not contain CR, LF, U+2028, or U+2029"
+            )
+
+    title_findings = published_page_title_findings(registry, label)
+    if title_findings:
+        details = "; ".join(
+            f"{finding.location}: [{finding.category}] {finding.reason}: "
+            f"{finding.normalized_excerpt!r}"
+            for finding in title_findings
+        )
+        raise SitePageRegistryError(
+            f"page title violates Content Safety Policy "
+            f"{CONTENT_SAFETY_POLICY_VERSION}: {details}"
+        )
 
     directory_routes = registry["directoryRoutes"]
     if not isinstance(directory_routes, dict):
@@ -984,6 +1028,100 @@ def run_registry_security_regressions() -> list[str]:
     except SitePageRegistryError as exc:
         failures.append(f"registry parser rejected valid object: {exc}")
 
+    def page_title_fixture(title: str) -> dict:
+        return {
+            "schemaVersion": SCHEMA_VERSION,
+            "canonicalDirectories": ["cases"],
+            "pages": [
+                {
+                    "source": "cases/example.md",
+                    "destination": "cases/example/index.md",
+                    "section": "additional",
+                    "order": 1,
+                    "title": title,
+                }
+            ],
+            "directoryRoutes": {"cases": "cases/example/index.md"},
+        }
+
+    missing_title_fixture = page_title_fixture("Temporary title")
+    del missing_title_fixture["pages"][0]["title"]
+    expect_invalid_registry(
+        failures,
+        "published page without an explicit title",
+        missing_title_fixture,
+    )
+
+    unsafe_titles = (
+        "第三者の本番システムへ接続する",
+        "実Tokenを取得してEvidenceにする",
+        "個人情報を収集する",
+        "マルウェアを実行する",
+        "https://example.comへ接続する",
+        "第三者の本番システムへ\n接続する",
+        "実Tokenを\r取得してEvidenceにする",
+        "個人情報を\u2028収集する",
+        "マルウェアを\u2029実行する",
+    )
+    for index, title in enumerate(unsafe_titles, start=1):
+        expect_invalid_registry(
+            failures,
+            f"unsafe published page title {index}",
+            page_title_fixture(title),
+        )
+
+    safe_titles = (
+        "第4章 資産、信頼境界、攻撃面、脅威モデル",
+        "ART-03 Threat Model",
+        "第4章 合成記入例：請求書連携OAuthアプリのAsset / Boundary / Threat Model",
+        "第4章 Source Review",
+        "第三者の本番システムへ接続しない",
+        "マルウェア分類の危険性を分析する",
+    )
+    for index, title in enumerate(safe_titles, start=1):
+        try:
+            parse_registry_data(
+                page_title_fixture(title),
+                f"safe published page title {index}",
+            )
+        except SitePageRegistryError as exc:
+            failures.append(
+                f"registry parser rejected safe published page title {index}: {exc}"
+            )
+
+    location_fixture = page_title_fixture(unsafe_titles[0])
+    location_findings = published_page_title_findings(
+        location_fixture,
+        "stable title location fixture",
+    )
+    expected_location = (
+        "stable title location fixture: pages[0].title "
+        "(cases/example.md -> cases/example/index.md)"
+    )
+    if not location_findings:
+        failures.append("unsafe page title did not produce a Policy finding")
+    elif {finding.location for finding in location_findings} != {expected_location}:
+        failures.append(
+            "page title finding location is not stably bound to "
+            "index/source/destination"
+        )
+
+    try:
+        current_registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+        parsed_current_registry = parse_registry_data(
+            current_registry,
+            "site-pages.json canonical title fixture",
+        )
+        current_titles = [
+            item for item in parsed_current_registry["pages"] if "title" in item
+        ]
+        if len(current_titles) != len(parsed_current_registry["pages"]):
+            failures.append(
+                "site-pages.json has a published page without an explicit title"
+            )
+    except (OSError, json.JSONDecodeError, SitePageRegistryError) as exc:
+        failures.append(f"canonical published page title scan failed: {exc}")
+
     integral_order_registry = {
         "schemaVersion": SCHEMA_VERSION,
         "canonicalDirectories": [],
@@ -993,6 +1131,7 @@ def run_registry_security_regressions() -> list[str]:
                 "destination": "cases/example/index.md",
                 "section": "additional",
                 "order": 220.0,
+                "title": "Integral order fixture",
             }
         ],
         "directoryRoutes": {},
