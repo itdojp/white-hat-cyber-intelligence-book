@@ -8,6 +8,7 @@ import posixpath
 import re
 import sys
 import tempfile
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -23,10 +24,15 @@ from scripts.content_safety_policy import (  # noqa: E402
 )
 
 REGISTRY_PATH = ROOT / "site-pages.json"
+SCHEMA_PATH = ROOT / "schemas/site-pages.schema.json"
 SCHEMA_VERSION = "1.1.0"
 DIRECTORY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 STATIC_PATH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]*\.json$")
 LINE_TERMINATOR_RE = re.compile(r"[\r\n\u2028\u2029]")
+PAGE_TITLE_SCHEMA_PATTERN = (
+    r"^(?=.*[^\s\u200B\u2060\uFEFF])[^<>\r\n\u2028\u2029]+$"
+)
+PAGE_TITLE_HTML_DELIMITER_RE = re.compile(r"[<>]")
 ALLOWED_SECTIONS = set(base.SECTION_ORDER)
 ALLOWED_CANONICAL_DIRECTORIES = {"cases", "schemas"}
 RESERVED_DESTINATION_ROOTS = {
@@ -325,9 +331,20 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
             )
         item["order"] = int(order)
         title = item["title"]
-        if not isinstance(title, str) or not title:
+        if not isinstance(title, str) or not title.strip():
             raise SitePageRegistryError(
-                f"pages[{index}].title must be a non-empty string"
+                f"pages[{index}].title must contain a non-whitespace character"
+            )
+        if not any(
+            not character.isspace() and unicodedata.category(character) != "Cf"
+            for character in title
+        ):
+            raise SitePageRegistryError(
+                f"pages[{index}].title must contain a reader-visible character"
+            )
+        if PAGE_TITLE_HTML_DELIMITER_RE.search(title):
+            raise SitePageRegistryError(
+                f"pages[{index}].title must not contain raw HTML delimiters"
             )
         if LINE_TERMINATOR_RE.search(title):
             raise SitePageRegistryError(
@@ -1051,6 +1068,48 @@ def run_registry_security_regressions() -> list[str]:
         "published page without an explicit title",
         missing_title_fixture,
     )
+
+    for name, title in (
+        ("empty published page title", ""),
+        ("space-only published page title", "   "),
+        ("tab-only published page title", "\t\t"),
+        ("Unicode-space-only published page title", "\u3000\u00a0"),
+        ("zero-width-only published page title", "\u200b"),
+        ("word-joiner-only published page title", "\u2060"),
+        ("BOM-only published page title", "\ufeff"),
+        ("format-control-only published page title", "\u200e\u202e"),
+        ("raw HTML published page title", "<span>Visible title</span>"),
+        (
+            "raw script-element published page title",
+            "</span><script>test</script><span>",
+        ),
+    ):
+        expect_invalid_registry(failures, name, page_title_fixture(title))
+
+    try:
+        raw_schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+        title_schema = raw_schema["properties"]["pages"]["items"]["properties"]["title"]
+        if title_schema.get("pattern") != PAGE_TITLE_SCHEMA_PATTERN:
+            failures.append(
+                "site-pages schema title pattern is not synchronized with the "
+                "non-whitespace parser contract"
+            )
+        title_pattern = re.compile(PAGE_TITLE_SCHEMA_PATTERN)
+        for name, title in (
+            ("spaces", "   "),
+            ("tabs", "\t\t"),
+            ("Unicode spaces", "\u3000\u00a0"),
+            ("zero width", "\u200b"),
+            ("word joiner", "\u2060"),
+            ("BOM", "\ufeff"),
+            ("raw HTML", "<span>Visible title</span>"),
+        ):
+            if title_pattern.fullmatch(title):
+                failures.append(
+                    f"site-pages schema title pattern accepted {name}-only/unsafe title"
+                )
+    except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
+        failures.append(f"site-pages schema title contract cannot be read: {exc}")
 
     unsafe_titles = (
         "第三者の本番システムへ接続する",

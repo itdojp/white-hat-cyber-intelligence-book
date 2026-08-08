@@ -105,7 +105,7 @@
           "title": {
             "type": "string",
             "minLength": 1,
-            "pattern": "^[^\\r\\n\\u2028\\u2029]+$"
+            "pattern": "^(?=.*[^\\s\\u200B\\u2060\\uFEFF])[^<>\\r\\n\\u2028\\u2029]+$"
           }
         }
       }

@@ -241,6 +241,11 @@ TB_004_CURRENT_BINDING_BOUNDARY = (
     "このbindingを確認するEvidenceではない。current bindingの確認は"
     "`FLOW-2026-006`の`Planned`、`GAP-2026-002`、`EREQ-2026-001`へ渡す。"
 )
+RULE_TEST_AUTHORIZATION_PROVENANCE_BOUNDARY = (
+    "`EVD-AUTH-2026-001`はread-only configuration reviewのAuthorization provenanceであり、"
+    "Rule testを承認しない。`EREQ-2026-002`のResulting Evidenceではなく、新しいRule testには"
+    "別の新Authorization Record / RoE承認が必要である。"
+)
 LIFECYCLE_TH_005_PROPOSITION = (
     "App identity lifecycle Eventまたはdecision summary Fieldの観測不足により、"
     "lifecycle変更と月末判断の対応付けが遅れる可能性がある"
@@ -3204,7 +3209,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         identifier = row[0].strip("`")
         expected_relation = ", ".join(
             f"`{requirement_id}`" for requirement_id in requirement_bindings.get(identifier, [])
-        )
+        ) or "-"
         if row[1] != expected_relation:
             messages.append(
                 f"{label}: {identifier} Related Evidence Requirement IDs {row[1]!r} "
@@ -4101,8 +4106,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             evidence_requirement_header.index("Resulting Evidence IDs")
         ]
         for marker in (
+            "Coverage result",
             "EVD-2026-003",
-            "EVD-AUTH-2026-001",
             "Admin consent Eventのみ",
             "App identity lifecycle EventのCoverage",
             "両Event classのRule test結果は未収集",
@@ -4110,6 +4115,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         ):
             if marker not in rule_test_resulting:
                 messages.append(f"{label}: EREQ-2026-002 Resulting Evidence IDs missing {marker!r}")
+        if "EVD-AUTH-2026-001" in rule_test_resulting:
+            messages.append(
+                f"{label}: EREQ-2026-002 must not count Authorization provenance as Resulting Evidence"
+            )
+        if text.count(RULE_TEST_AUTHORIZATION_PROVENANCE_BOUNDARY) != 1:
+            messages.append(
+                f"{label}: Rule-test Authorization provenance boundary must occur exactly once"
+            )
         rule_test_minimum = rule_test_requirement[
             evidence_requirement_header.index("Minimum sufficient evidence")
         ]
@@ -6277,10 +6290,40 @@ def negative_regressions(
             (
                 "EREQ-2026-002 omits uncollected Rule-test result handoff",
                 case.replace(
-                    "`EVD-2026-003`（Admin consent Eventのみ）, `EVD-AUTH-2026-001`; App identity lifecycle EventのCoverageと両Event classのRule test結果は未収集（承認後に新Evidence IDを割り当てる）",
+                    "Coverage result: `EVD-2026-003`（Admin consent Eventのみ）; App identity lifecycle EventのCoverageと両Event classのRule test結果は未収集（承認後に新Evidence IDを割り当てる）",
                     "`EVD-2026-003`, `EVD-AUTH-2026-001`",
                     1,
                 ),
+            ),
+            (
+                "EREQ-2026-002 counts Authorization provenance as coverage result",
+                case.replace(
+                    "Coverage result: `EVD-2026-003`（Admin consent Eventのみ）;",
+                    "Coverage result: `EVD-2026-003`（Admin consent Eventのみ）, "
+                    "`EVD-AUTH-2026-001`;",
+                    1,
+                ),
+            ),
+            (
+                "Authorization provenance is rebound to EREQ-2026-002",
+                case.replace(
+                    "| `EVD-AUTH-2026-001` | - | 合成Tenantを対象とした設定Review承認 |",
+                    "| `EVD-AUTH-2026-001` | `EREQ-2026-002` | 合成Tenantを対象とした設定Review承認 |",
+                    1,
+                ),
+            ),
+            (
+                "Rule-test Authorization provenance overclaims authorization",
+                case.replace(
+                    RULE_TEST_AUTHORIZATION_PROVENANCE_BOUNDARY,
+                    "`EVD-AUTH-2026-001`はRule testを承認し、`EREQ-2026-002`の"
+                    "Resulting EvidenceとしてCoverageを証明する。",
+                    1,
+                ),
+            ),
+            (
+                "Rule-test Authorization provenance boundary omitted",
+                case.replace(f"{RULE_TEST_AUTHORIZATION_PROVENANCE_BOUNDARY}\n\n", "", 1),
             ),
             (
                 "REA-TM-2026-002 omits Action result inputs",
@@ -6705,6 +6748,42 @@ def negative_regressions(
         for name, mutation in mutations:
             if not registry_rejected(mutation, f"negative site registry {name}"):
                 error(f"site-pages negative mutation was accepted: {name}")
+
+        # Exercise the generic parser directly.  The Chapter 4 exact-title
+        # comparator would also reject these values and could otherwise mask
+        # a parser/schema regression.
+        for whitespace_name, whitespace_title in (
+            ("spaces", "   "),
+            ("tabs", "\t\t"),
+            ("Unicode spaces", "\u3000\u00a0"),
+            ("zero-width format controls", "\u200b\u2060"),
+            ("raw HTML", "<span>Visible title</span>"),
+        ):
+            whitespace_registry = {
+                "schemaVersion": "1.1.0",
+                "canonicalDirectories": [],
+                "pages": [
+                    {
+                        "source": "cases/whitespace-title.md",
+                        "destination": "cases/whitespace-title/index.md",
+                        "section": "additional",
+                        "order": 1,
+                        "title": whitespace_title,
+                    }
+                ],
+                "directoryRoutes": {},
+            }
+            try:
+                parse_registry_data(
+                    whitespace_registry,
+                    f"negative Chapter 4 {whitespace_name}-only page title",
+                )
+            except SitePageRegistryError:
+                pass
+            else:
+                error(
+                    f"generic registry parser accepted {whitespace_name}-only page title"
+                )
 
         # The generic registry parser owns title safety. Exercise every current
         # registry page dynamically so a future page cannot bypass that owner.
