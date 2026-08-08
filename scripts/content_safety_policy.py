@@ -785,12 +785,137 @@ _PROHIBITION_SCOPE_BREAK = re.compile(
     r"[,.;:!?、。；：！？]|\b(?:but|however|yet|nevertheless|still|then)\b",
     re.IGNORECASE,
 )
-_PROHIBITION_COORDINATOR = re.compile(r"\b(?:and|or|nor)\b", re.IGNORECASE)
-_NEGATION_COORDINATOR = re.compile(r"\b(?:or|nor)\b", re.IGNORECASE)
+_DIRECT_ACTION_MODIFIERS = (
+    "to",
+    "also",
+    "directly",
+    "explicitly",
+    "only",
+    "ever",
+    "immediately",
+)
+_DIRECT_COORDINATORS = ("and", "or", "but")
+_PROHIBITION_COORDINATORS = frozenset(("and", "or", "nor"))
+_NEGATION_COORDINATORS = frozenset(("or", "nor"))
+_DIRECT_LOCAL_NEGATIONS = ("do not", "never", "must not")
+_PUBLICATION_COORDINATION_ACTION_KINDS = frozenset(
+    ("create", "deploy-use", "access-collect", "perform")
+)
+
+
+def _finite_phrase_pattern(values: tuple[str, ...]) -> str:
+    """Build one regex branch from a frozen finite phrase inventory."""
+
+    return "|".join(
+        re.escape(value).replace(r"\ ", r"\s+")
+        for value in values
+    )
+
+
 _DIRECT_ACTION_PREFIX = re.compile(
-    r"\s*(?:(?:to|also|directly|explicitly|only|ever|immediately)\s+)*",
+    rf"\s*(?:(?:{_finite_phrase_pattern(_DIRECT_ACTION_MODIFIERS)})\s+)*",
     re.IGNORECASE,
 )
+
+
+@dataclass(frozen=True)
+class _DirectActionLead:
+    """Finite modifiers and optional local negation before one Action."""
+
+    local_negation: str | None
+    modifiers: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class _DirectCoordinationGap:
+    """A whole, punctuation-free gap between two directly coordinated Actions."""
+
+    coordinator: str
+    local_negation: str | None
+    modifiers: tuple[str, ...]
+
+
+def _parse_direct_action_lead(
+    text: str,
+    *,
+    allow_local_negation: bool,
+) -> _DirectActionLead | None:
+    """Parse every token before an Action from the frozen finite vocabulary.
+
+    Modifiers may occur before or after the one local negation.  Any punctuation,
+    subject, object, or unknown token makes the whole lead invalid.
+    """
+
+    if not isinstance(text, str) or re.search(r"[,.;:!?、。；：！？\n]", text):
+        return None
+    tokens = text.casefold().split()
+    modifiers: list[str] = []
+    local_negation: str | None = None
+    index = 0
+    negation_tokens = tuple(
+        (negation, tuple(negation.split()))
+        for negation in _DIRECT_LOCAL_NEGATIONS
+    )
+    while index < len(tokens):
+        matched_negation: str | None = None
+        matched_width = 0
+        for negation, phrase_tokens in negation_tokens:
+            width = len(phrase_tokens)
+            if tuple(tokens[index : index + width]) == phrase_tokens:
+                matched_negation = negation
+                matched_width = width
+                break
+        if matched_negation is not None:
+            if not allow_local_negation or local_negation is not None:
+                return None
+            local_negation = matched_negation
+            index += matched_width
+            continue
+        token = tokens[index]
+        if token not in _DIRECT_ACTION_MODIFIERS:
+            return None
+        modifiers.append(token)
+        index += 1
+    return _DirectActionLead(local_negation, tuple(modifiers))
+
+
+def _parse_direct_coordination_gap(
+    text: str,
+    *,
+    allow_local_negation: bool,
+    coordinators: frozenset[str] | None = None,
+) -> _DirectCoordinationGap | None:
+    """Parse one complete finite direct-Action coordination gap.
+
+    The first token must be an allowed coordinator and every remaining token must
+    be an existing direct modifier or one bounded local negation.  Whole-gap
+    parsing rejects punctuation, scope breaks, explicit subjects, and distinct
+    objects without attempting unrestricted natural-language interpretation.
+    """
+
+    if not isinstance(text, str) or re.search(r"[,.;:!?、。；：！？\n]", text):
+        return None
+    tokens = text.casefold().split()
+    if not tokens:
+        return None
+    allowed = frozenset(_DIRECT_COORDINATORS) if coordinators is None else coordinators
+    coordinator = tokens[0]
+    if coordinator not in allowed:
+        return None
+    coordinator_end = re.match(r"\s*\S+", text)
+    if coordinator_end is None:
+        return None
+    lead = _parse_direct_action_lead(
+        text[coordinator_end.end() :],
+        allow_local_negation=allow_local_negation,
+    )
+    if lead is None:
+        return None
+    return _DirectCoordinationGap(
+        coordinator=coordinator,
+        local_negation=lead.local_negation,
+        modifiers=lead.modifiers,
+    )
 _TRAILING_EN_PROHIBITION = re.compile(
     r"\b(?:is|are|was|were|should be|must be)\s+"
     r"(?:a\s+)?(?:prohibited|forbidden|not allowed|outside)\b",
@@ -840,17 +965,30 @@ def _all_action_matches(clause: str) -> list[tuple[int, int, str, str]]:
 def _is_direct_action_coordination(
     text: str,
     *,
-    coordinator: Pattern[str] = _PROHIBITION_COORDINATOR,
+    coordinators: frozenset[str] = _PROHIBITION_COORDINATORS,
 ) -> bool:
-    """Recognize a bounded coordinator that leads directly to another action."""
+    """Recognize a bounded final coordinator that leads to another Action.
+
+    Ordinary same-object binding may include the already-bound protected Object
+    before the final coordinator (``build a keylogger and use it``).  The wrapper
+    therefore locates that final finite coordinator, while the shared parser
+    remains the only grammar for the coordinator-to-Action gap itself.
+    """
 
     if _PROHIBITION_SCOPE_BREAK.search(text):
         return False
-    coordinators = list(coordinator.finditer(text))
-    if not coordinators:
+    coordinator_pattern = re.compile(
+        rf"\b(?:{_finite_phrase_pattern(tuple(sorted(coordinators)))})\b",
+        re.IGNORECASE,
+    )
+    matches = list(coordinator_pattern.finditer(text))
+    if not matches:
         return False
-    tail = text[coordinators[-1].end() :]
-    return bool(_DIRECT_ACTION_PREFIX.fullmatch(tail))
+    return _parse_direct_coordination_gap(
+        text[matches[-1].start() :],
+        allow_local_negation=False,
+        coordinators=coordinators,
+    ) is not None
 
 
 def _trailing_prohibition_controls_action(
@@ -931,7 +1069,7 @@ def _coordinated_pre_action_prohibition_controls_action(
     for previous in reversed(preceding_actions):
         if not _is_direct_action_coordination(
             clause[previous[1] : current[0]],
-            coordinator=_NEGATION_COORDINATOR,
+            coordinators=_NEGATION_COORDINATORS,
         ):
             return False
         current = previous
@@ -977,10 +1115,13 @@ def _pre_action_prohibition_controls_action(
 
 
 def _locally_prohibited(clause: str, protected: _Match, action: tuple[int, int, str, str]) -> bool:
-    return _action_is_prohibited(
-        clause,
-        action,
-        scope_start=min(protected.start, action[0]),
+    return (
+        _is_bounded_defensive_document_prohibition(clause, protected, action)
+        or _action_is_prohibited(
+            clause,
+            action,
+            scope_start=min(protected.start, action[0]),
+        )
     )
 
 
@@ -1011,6 +1152,44 @@ def _mask_bounded_modifier_contrasts(text: str) -> str:
         for protected in _object_matches(segment):
             if protected.start <= local_marker_end:
                 continue
+            publication_frames = _defensive_document_publication_spans(
+                segment,
+                protected,
+            )
+            if publication_frames:
+                publication_actions = [frame[0] for frame in publication_frames]
+                preceding_publication_actions = (
+                    _actions_preceding_defensive_document_publication(
+                        segment,
+                        protected,
+                        _action_matches(
+                            segment,
+                            protected.action_kinds
+                            | _PUBLICATION_COORDINATION_ACTION_KINDS,
+                        ),
+                    )
+                )
+                earliest_publication_action = (
+                    min(action[0] for action in preceding_publication_actions)
+                    if preceding_publication_actions
+                    else None
+                )
+                if (
+                    earliest_publication_action is not None
+                    and _parse_direct_action_lead(
+                        segment[:earliest_publication_action],
+                        allow_local_negation=True,
+                    )
+                    is not None
+                    and any(
+                        earliest_publication_action
+                        < local_marker_start
+                        < publication[0]
+                        for publication in publication_actions
+                    )
+                ):
+                    protect = True
+                    break
             actions = _action_matches(segment, protected.action_kinds)
             if any(
                 local_marker_end <= action[0] < protected.start
@@ -1567,6 +1746,16 @@ _EN_DEFENSIVE_DOCUMENT_TAIL = re.compile(
     r"\s+(?P<head>reports?|analysis|analyses|guidance)\s*$",
     re.IGNORECASE,
 )
+_EN_DEFENSIVE_DOCUMENT_BEFORE_OBJECT = re.compile(
+    r"\s+(?:(?:a|an|the)\s+)?"
+    r"(?P<head>reports?|analysis|analyses|guidance)\s+"
+    r"(?P<relation>about|that\s+prohibits)\s*$",
+    re.IGNORECASE,
+)
+_EN_DEFENSIVE_PROHIBITED_OPERATION_TAIL = re.compile(
+    r"\s+(?P<operation>deployment)\s*$",
+    re.IGNORECASE,
+)
 _JA_DEFENSIVE_DOCUMENT_GAP = re.compile(
     r"\s*(?P<head>報告(?:書)?|分析|ガイダンス|指針)\s*を\s*",
     re.IGNORECASE,
@@ -1576,21 +1765,18 @@ _OPERATIONAL_PUBLICATION_OBJECT = re.compile(
     r"(?:基盤|インフラ|サーバー|サイト|ページ|通信|接続|運用|攻撃)",
     re.IGNORECASE,
 )
-_PUBLICATION_LOCAL_NEGATION_PREFIX = re.compile(
-    r"\s*(?:(?:do\s+not|never|must\s+not)\s+)?",
-    re.IGNORECASE,
-)
 
 
 def _publication_has_explicit_subject_prefix(
     clause: str,
     publication: tuple[int, int, str, str],
 ) -> bool:
-    """Distinguish local negation from a new explicit publication subject."""
+    """Distinguish a finite Action lead from a new publication subject."""
 
-    return not bool(
-        _PUBLICATION_LOCAL_NEGATION_PREFIX.fullmatch(clause[: publication[0]])
-    )
+    return _parse_direct_action_lead(
+        clause[: publication[0]],
+        allow_local_negation=True,
+    ) is None
 
 
 def _defensive_document_publication_spans(
@@ -1620,21 +1806,42 @@ def _defensive_document_publication_spans(
     ]
     for publication in publication_actions:
         if publication[1] <= protected.start:
-            if not re.fullmatch(
+            direct_object = re.fullmatch(
                 r"\s+(?:(?:a|an|the)\s+)?",
                 clause[publication[1] : protected.start],
                 re.IGNORECASE,
-            ):
-                continue
-            document = _EN_DEFENSIVE_DOCUMENT_TAIL.fullmatch(
-                clause[protected.end :]
             )
-            if document is None:
-                continue
-            document_span = (
-                protected.end + document.start("head"),
-                protected.end + document.end("head"),
-            )
+            if direct_object is not None:
+                document = _EN_DEFENSIVE_DOCUMENT_TAIL.fullmatch(
+                    clause[protected.end :]
+                )
+                if document is None:
+                    continue
+                document_span = (
+                    protected.end + document.start("head"),
+                    protected.end + document.end("head"),
+                )
+            else:
+                document = _EN_DEFENSIVE_DOCUMENT_BEFORE_OBJECT.fullmatch(
+                    clause[publication[1] : protected.start]
+                )
+                if document is None:
+                    continue
+                relation = " ".join(document.group("relation").casefold().split())
+                trailing = clause[protected.end :]
+                if relation == "about":
+                    if trailing.strip():
+                        continue
+                elif (
+                    relation != "that prohibits"
+                    or _EN_DEFENSIVE_PROHIBITED_OPERATION_TAIL.fullmatch(trailing)
+                    is None
+                ):
+                    continue
+                document_span = (
+                    publication[1] + document.start("head"),
+                    publication[1] + document.end("head"),
+                )
         elif protected.end <= publication[0]:
             if clause[: protected.start].strip() or clause[publication[1] :].strip():
                 continue
@@ -1663,19 +1870,58 @@ def _actions_preceding_defensive_document_publication(
     bound: list[tuple[int, int, str, str]] = []
     for publication, _ in _defensive_document_publication_spans(clause, protected):
         cursor = publication[0]
-        for candidate in sorted(actions, reverse=True):
+        for candidate in sorted(
+            actions,
+            key=lambda item: (item[1], item[0], item[2], item[3]),
+            reverse=True,
+        ):
             if candidate[1] > cursor or candidate == publication:
                 continue
-            if not re.fullmatch(
-                r"\s*(?:and|or|but)\s+"
-                r"(?:(?:do\s+not|never|must\s+not)\s+)?",
+            gap = _parse_direct_coordination_gap(
                 clause[candidate[1] : cursor],
-                re.IGNORECASE,
-            ):
-                continue
+                allow_local_negation=True,
+                coordinators=frozenset(_DIRECT_COORDINATORS),
+            )
+            if gap is None:
+                # The nearest preceding Action establishes the finite boundary.
+                # Do not skip across its explicit object, subject, or scope break
+                # in search of an older Action that happens to fit.
+                break
             bound.append(candidate)
             cursor = candidate[0]
     return bound
+
+
+def _is_bounded_defensive_document_prohibition(
+    clause: str,
+    protected: _Match,
+    action: tuple[int, int, str, str],
+) -> bool:
+    """Recognize the one frozen ``guidance that prohibits ...`` operation."""
+
+    if action[3].casefold() != "deployment":
+        return False
+    if action[0] < protected.end:
+        return False
+    operation_tail = _EN_DEFENSIVE_PROHIBITED_OPERATION_TAIL.fullmatch(
+        clause[protected.end :]
+    )
+    if operation_tail is None:
+        return False
+    expected_span = (
+        protected.end + operation_tail.start("operation"),
+        protected.end + operation_tail.end("operation"),
+    )
+    if (action[0], action[1]) != expected_span:
+        return False
+    for publication, document_span in _defensive_document_publication_spans(
+        clause,
+        protected,
+    ):
+        relation = clause[document_span[1] : protected.start]
+        if re.fullmatch(r"\s+that\s+prohibits\s+", relation, re.IGNORECASE):
+            return True
+    return False
 
 
 def _is_bounded_defensive_document_publication(
@@ -1694,6 +1940,61 @@ def _is_bounded_defensive_document_publication(
         ):
             return True
     return False
+
+
+def _defensive_publication_continuation_object(protected: _Match) -> _Match:
+    """Retain every finite Action kind after a safe Publication frame.
+
+    A defensive document may name ``malware`` without making a later ``access
+    it`` safe.  The wider finite inventory applies only to an adjacent
+    continuation after the Publication frame; it does not change the category's
+    general Action vocabulary.
+    """
+
+    return _Match(
+        start=protected.start,
+        end=protected.end,
+        text=protected.text,
+        category=protected.category,
+        action_kinds=(
+            protected.action_kinds | _PUBLICATION_COORDINATION_ACTION_KINDS
+        ),
+        synthetic_qualifiable=protected.synthetic_qualifiable,
+    )
+
+
+def _bare_direct_action_chain(
+    clause: str,
+    *,
+    action_kinds: frozenset[str],
+) -> list[tuple[int, int, str, str]]:
+    """Bind a finite chain made only of Actions and direct coordination gaps."""
+
+    actions = _action_matches(clause, action_kinds)
+    if not actions:
+        return []
+    latest = actions[-1]
+    if clause[latest[1] :].strip():
+        return []
+    bound = [latest]
+    cursor = latest
+    for candidate in reversed(actions[:-1]):
+        if candidate[1] > cursor[0]:
+            continue
+        if _parse_direct_coordination_gap(
+            clause[candidate[1] : cursor[0]],
+            allow_local_negation=True,
+            coordinators=frozenset(_DIRECT_COORDINATORS),
+        ) is None:
+            return []
+        bound.append(candidate)
+        cursor = candidate
+    if _parse_direct_action_lead(
+        clause[: cursor[0]],
+        allow_local_negation=True,
+    ) is None:
+        return []
+    return sorted(set(bound))
 
 
 def _is_bounded_meta_analysis_action(
@@ -1816,6 +2117,17 @@ def _shared_defensive_publication_object_findings(
         )
         if not publication_frames:
             continue
+        publication_chain_actions = (
+            _actions_preceding_defensive_document_publication(
+                remainder,
+                protected,
+                _action_matches(
+                    remainder,
+                    protected.action_kinds
+                    | _PUBLICATION_COORDINATION_ACTION_KINDS,
+                ),
+            )
+        )
         # This bridge is intentionally limited to an ellipsed object shared by
         # two bare coordinated predicates.  An explicit subject before the
         # publication predicate starts a new subject/object frame.
@@ -1823,45 +2135,69 @@ def _shared_defensive_publication_object_findings(
             _publication_has_explicit_subject_prefix(remainder, publication)
             for publication, _ in publication_frames
         ):
-            continue
+            if not publication_chain_actions:
+                continue
+            earliest_chain_action = min(
+                action[0] for action in publication_chain_actions
+            )
+            if _parse_direct_action_lead(
+                remainder[:earliest_chain_action],
+                allow_local_negation=True,
+            ) is None:
+                continue
         current_actions = _action_matches(remainder, protected.action_kinds)
         current_bound = _actions_bound_to_object(
             remainder,
             protected,
             current_actions,
         )
-        if not current_bound or not all(
-            _is_bounded_defensive_document_publication(
+        if not current_bound:
+            continue
+        current_operational_actions = [
+            action
+            for action in current_bound
+            if not _is_bounded_defensive_document_publication(
                 remainder,
                 protected,
                 action,
             )
-            for action in current_bound
+        ]
+        if any(
+            not _locally_prohibited(remainder, protected, action)
+            for action in current_operational_actions
         ):
+            # The ordinary current-clause scan reports this Action.
             continue
-        # The generic contrast-continuation rule already owns a locally
-        # prohibited publication action (for example, ``deploy but do not
-        # publish a phishing report``).  Avoid emitting a second finding for
-        # the same category and excerpt from this publication-specific bridge.
-        if all(
+        current_is_locally_prohibited = all(
             _action_is_prohibited(
                 remainder,
                 action,
                 scope_start=action[0],
             )
             for action in current_bound
+        )
+        previous_actions = _bare_direct_action_chain(
+            previous_clause,
+            action_kinds=(
+                protected.action_kinds | _PUBLICATION_COORDINATION_ACTION_KINDS
+            ),
+        )
+        previous_category_actions = _action_matches(
+            previous_clause,
+            protected.action_kinds,
+        )
+        # The generic contrast-continuation rule already owns this case when the
+        # previous Action belongs to the category's ordinary inventory.  Keep
+        # the Publication bridge active for a finite Action such as ``access``
+        # before a Malware document, because Publication suppression must not
+        # hide that prior Action merely because the generic category omits it.
+        if (
+            current_is_locally_prohibited
+            and not current_operational_actions
+            and len(previous_actions) == 1
+            and previous_actions[0] in previous_category_actions
         ):
             continue
-        previous_actions = [
-            action
-            for action in _action_matches(previous_clause, protected.action_kinds)
-            if not previous_clause[action[1] :].strip()
-            and not previous_clause[: action[0]].strip()
-            and not _action_introduces_distinct_english_object(
-                previous_clause,
-                action,
-            )
-        ]
         if not previous_actions or all(
             _action_is_prohibited(
                 previous_clause,
@@ -1959,6 +2295,30 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
         next_remembered: list[_Match] = []
         for protected in clause_objects:
             actions = _action_matches(semantic_clause, protected.action_kinds)
+            publication_frames = _defensive_document_publication_spans(
+                semantic_clause,
+                protected,
+            )
+            if publication_frames:
+                # The Publication exception freezes only its own Action and
+                # document head.  Evaluate every finite prior Action that the
+                # shared direct-coordination grammar binds to this Object, even
+                # when that Action is not part of the category's ordinary
+                # action-kind inventory.
+                actions = sorted(
+                    set(
+                        actions
+                        + _actions_preceding_defensive_document_publication(
+                            semantic_clause,
+                            protected,
+                            _action_matches(
+                                semantic_clause,
+                                protected.action_kinds
+                                | _PUBLICATION_COORDINATION_ACTION_KINDS,
+                            ),
+                        )
+                    )
+                )
             if not actions:
                 continue
             candidate_actions = _actions_bound_to_object(
@@ -1988,7 +2348,11 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                     # protected object must remain available to the adjacent
                     # continuation contract (for example, a later bare
                     # ``収集する`` action).
-                    next_remembered.append(protected)
+                    next_remembered.append(
+                        _defensive_publication_continuation_object(protected)
+                        if publication_frames
+                        else protected
+                    )
                 continue
             unprohibited_actions = [
                 action
@@ -1996,7 +2360,11 @@ def scan_action_text(text: str, *, location: str) -> list[SafetyFinding]:
                 if not _locally_prohibited(semantic_clause, protected, action)
             ]
             if not unprohibited_actions:
-                next_remembered.append(protected)
+                next_remembered.append(
+                    _defensive_publication_continuation_object(protected)
+                    if publication_frames
+                    else protected
+                )
                 continue
             if _synthetic_qualifier_permitted(
                 semantic_clause,

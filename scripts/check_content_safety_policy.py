@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import fields, is_dataclass
+from itertools import product
 import json
 from pathlib import Path
 import sys
@@ -16,6 +17,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.content_safety_policy import (  # noqa: E402
+    _DIRECT_ACTION_MODIFIERS,
+    _DIRECT_COORDINATORS,
+    _DIRECT_LOCAL_NEGATIONS,
+    _parse_direct_coordination_gap,
     ACTION_RULES,
     JAPANESE_PARTICLE_FRAMES,
     JapaneseParticleFrame,
@@ -37,6 +42,18 @@ EXPECTED_POLICY_VERSION = "1.2.0"
 FIXTURE_SCHEMA_VERSION = "1.0.0"
 EXPECTED_LEGACY_UNSAFE_COUNT = 249
 EXPECTED_LEGACY_SAFE_COUNT = 49
+EXPECTED_DIRECT_ACTION_MODIFIERS = (
+    "to",
+    "also",
+    "directly",
+    "explicitly",
+    "only",
+    "ever",
+    "immediately",
+)
+EXPECTED_DIRECT_COORDINATORS = ("and", "or", "but")
+EXPECTED_DIRECT_LOCAL_NEGATIONS = ("do not", "never", "must not")
+EXPECTED_PUBLICATION_CROSS_PRODUCT_CASES = 30_244
 EXPECTED_ACTION_CATEGORIES = {
     "target.real_or_external",
     "secret.credential",
@@ -88,6 +105,65 @@ SAFE_BLOCKER_COUNTERPARTS = {
     "この教材ではkeyloggerを作らない。",
     "keyloggerを作ることを禁止する。",
     "この語はMalware分類の説明としてのみ記録する。",
+}
+REQUIRED_PUBLICATION_COORDINATION_UNSAFE = {
+    "PUBLICATION-GAP-UNSAFE-001": (
+        "deploy and immediately publish a phishing report",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-002": (
+        "build and directly publish a malware report",
+        ("operation.malware",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-003": (
+        "use and explicitly announce a phishing analysis",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-004": (
+        "deploy or immediately publish a phishing report",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-005": (
+        "deploy but immediately publish a phishing report",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-006": (
+        "deploy and immediately do not publish a phishing report",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-007": (
+        "publish a phishing report and then deploy it",
+        ("operation.c2_or_phishing",),
+    ),
+    "PUBLICATION-GAP-UNSAFE-008": (
+        "immediately publish a phishing report, then deploy it",
+        ("operation.c2_or_phishing",),
+    ),
+}
+REQUIRED_PUBLICATION_COORDINATION_SAFE = {
+    "PUBLICATION-GAP-SAFE-001": "immediately publish a phishing report",
+    "PUBLICATION-GAP-SAFE-002": "directly announce a malware analysis",
+    "PUBLICATION-GAP-SAFE-003": (
+        "do not deploy or immediately publish a phishing report"
+    ),
+    "PUBLICATION-GAP-SAFE-004": (
+        "deploy telemetry and immediately publish a phishing report"
+    ),
+    "PUBLICATION-GAP-SAFE-005": (
+        "a sandbox is deployed, and we immediately publish a phishing report"
+    ),
+    "PUBLICATION-GAP-SAFE-006": (
+        "do not deploy; immediately publish a phishing report"
+    ),
+    "PUBLICATION-GAP-SAFE-007": "publish a report about phishing",
+    "PUBLICATION-GAP-SAFE-008": (
+        "publish guidance that prohibits phishing deployment"
+    ),
+    # Issue #62 explicitly freezes the pre-existing ambiguous ``do not A and B``
+    # behavior; this task does not introduce a broader negation policy.
+    "PUBLICATION-GAP-SAFE-009": (
+        "do not deploy and immediately publish a phishing report"
+    ),
 }
 REQUIRED_UNSAFE_PARTICLE_DESTRUCTIVE_ACTIONS = {
     "PARTICLE-LOG-DELETION-JA": "ログを削除する。",
@@ -920,6 +996,366 @@ def check_action_corpus() -> list[tuple[str, str]]:
     return deterministic_fields
 
 
+def check_publication_coordination_corpus() -> list[tuple[str, str]]:
+    """Freeze Issue #62's exact Publication coordination examples."""
+
+    relative = (
+        "tests/fixtures/content-safety/"
+        "publication-coordination-1.2-corpus.json"
+    )
+    corpus = load_json(relative)
+    exact_keys(corpus, {"schemaVersion", "policyVersion", "unsafe", "safe"}, relative)
+    if (
+        corpus.get("schemaVersion") != FIXTURE_SCHEMA_VERSION
+        or corpus.get("policyVersion") != POLICY_VERSION
+    ):
+        error(f"{relative}: schemaVersion/policyVersion mismatch")
+    unsafe = checked_entries(
+        corpus.get("unsafe"),
+        expected_keys={"id", "text", "expectedCategories"},
+        context=f"{relative}.unsafe",
+    )
+    safe = checked_entries(
+        corpus.get("safe"),
+        expected_keys={"id", "text"},
+        context=f"{relative}.safe",
+    )
+    actual_unsafe = {
+        item.get("id"): (
+            item.get("text"),
+            tuple(item.get("expectedCategories", [])),
+        )
+        for item in unsafe
+    }
+    actual_safe = {item.get("id"): item.get("text") for item in safe}
+    if actual_unsafe != REQUIRED_PUBLICATION_COORDINATION_UNSAFE:
+        error(f"{relative}: unsafe Issue #62 inventory drifted")
+    if actual_safe != REQUIRED_PUBLICATION_COORDINATION_SAFE:
+        error(f"{relative}: safe Issue #62 inventory drifted")
+
+    deterministic_fields: list[tuple[str, str]] = []
+    for item in unsafe:
+        identifier = item.get("id")
+        text = item.get("text")
+        expected = item.get("expectedCategories")
+        if not (
+            isinstance(identifier, str)
+            and isinstance(text, str)
+            and isinstance(expected, list)
+            and all(isinstance(category, str) for category in expected)
+        ):
+            continue
+        actual = sorted(
+            {finding.category for finding in scan_action_text(text, location=identifier)}
+        )
+        if actual != sorted(expected):
+            error(
+                f"{relative}.{identifier}: expected exactly {sorted(expected)!r}, "
+                f"got {actual!r}"
+            )
+        deterministic_fields.append((identifier, text))
+    for item in safe:
+        identifier = item.get("id")
+        text = item.get("text")
+        if not isinstance(identifier, str) or not isinstance(text, str):
+            continue
+        findings = scan_action_text(text, location=identifier)
+        if findings:
+            error(f"{relative}.{identifier}: safe text produced {findings!r}")
+        deterministic_fields.append((identifier, text))
+    return deterministic_fields
+
+
+def _publication_document(protected: str, head: str) -> str:
+    article = "a " if head != "guidance" else ""
+    return f"{article}{protected} {head}"
+
+
+def _publication_lead(
+    modifier: str | None,
+    local_negation: str | None,
+    publication: str,
+) -> str:
+    return " ".join(
+        value
+        for value in (modifier, local_negation, publication)
+        if value is not None
+    )
+
+
+def check_publication_coordination_cross_product() -> int:
+    """Generate Issue #62's finite matrix from the Policy source constants."""
+
+    if _DIRECT_ACTION_MODIFIERS != EXPECTED_DIRECT_ACTION_MODIFIERS:
+        error("direct Action modifier source-of-truth drifted without fixture audit")
+    if _DIRECT_COORDINATORS != EXPECTED_DIRECT_COORDINATORS:
+        error("direct coordinator source-of-truth drifted without fixture audit")
+    if _DIRECT_LOCAL_NEGATIONS != EXPECTED_DIRECT_LOCAL_NEGATIONS:
+        error("direct local-negation source-of-truth drifted without fixture audit")
+
+    modifiers: tuple[str | None, ...] = (None, *_DIRECT_ACTION_MODIFIERS)
+    local_negations: tuple[str | None, ...] = (None, *_DIRECT_LOCAL_NEGATIONS)
+    prior_actions = ("build", "deploy", "install", "run", "use", "operate", "access")
+    publications = ("publish", "announce")
+    protected_objects = (
+        ("phishing", "operation.c2_or_phishing"),
+        ("malware", "operation.malware"),
+    )
+    document_heads = ("report", "analysis", "guidance")
+    relations = ("shared", "distinct-object", "new-subject")
+    mismatches: list[str] = []
+    case_count = 0
+
+    def categories(text: str) -> set[str]:
+        return {
+            finding.category
+            for finding in scan_action_text(text, location="PUBLICATION-CROSS-PRODUCT")
+        }
+
+    def require(text: str, category: str, expected: bool) -> None:
+        nonlocal case_count
+        case_count += 1
+        actual = category in categories(text)
+        if actual != expected and len(mismatches) < 12:
+            mismatches.append(
+                f"expected finding={expected}, actual categories={sorted(categories(text))!r}: "
+                f"{text!r}"
+            )
+
+    # Main relation matrix.  Publication-local negation never suppresses an
+    # affirmative prior Action.  A distinct Object or explicit subject prevents
+    # rebinding across the coordinator.
+    for (
+        prior,
+        coordinator,
+        modifier,
+        publication,
+        (protected, category),
+        head,
+        local_negation,
+        relation,
+    ) in product(
+        prior_actions,
+        _DIRECT_COORDINATORS,
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+        local_negations,
+        relations,
+    ):
+        publication_phrase = _publication_lead(
+            modifier,
+            local_negation,
+            publication,
+        )
+        document = _publication_document(protected, head)
+        if relation == "shared":
+            text = f"{prior} {coordinator} {publication_phrase} {document}"
+            expected = True
+        elif relation == "distinct-object":
+            text = (
+                f"{prior} telemetry {coordinator} {publication_phrase} {document}"
+            )
+            expected = False
+        else:
+            text = (
+                f"{prior} telemetry, {coordinator} we {publication_phrase} {document}"
+            )
+            expected = False
+        require(text, category, expected)
+
+    # Existing local-negation semantics for a prior Action remain unchanged.
+    for (
+        prior,
+        coordinator,
+        modifier,
+        publication,
+        (protected, category),
+        head,
+    ) in product(
+        prior_actions,
+        _DIRECT_COORDINATORS,
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+    ):
+        text = (
+            f"do not {prior} {coordinator} "
+            f"{_publication_lead(modifier, None, publication)} "
+            f"{_publication_document(protected, head)}"
+        )
+        require(text, category, False)
+
+    # Publication-only frames remain defensive prose for every frozen modifier
+    # and supported local-negation form.
+    for (
+        modifier,
+        publication,
+        (protected, category),
+        head,
+        local_negation,
+    ) in product(
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+        local_negations,
+    ):
+        text = (
+            f"{_publication_lead(modifier, local_negation, publication)} "
+            f"{_publication_document(protected, head)}"
+        )
+        require(text, category, False)
+
+    # A later affirmative continuation must not inherit Publication suppression.
+    for (
+        modifier,
+        publication,
+        (protected, category),
+        head,
+        prior,
+    ) in product(
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+        prior_actions,
+    ):
+        text = (
+            f"{_publication_lead(modifier, None, publication)} "
+            f"{_publication_document(protected, head)}, then {prior} it"
+        )
+        require(text, category, True)
+
+    # Prove backward traversal across a two-Action finite chain.  The nearest
+    # Action is locally prohibited so the finding must come from the older
+    # affirmative Action; the companion matrix prohibits both Actions.
+    for (
+        first_coordinator,
+        second_coordinator,
+        modifier,
+        publication,
+        (protected, category),
+        head,
+    ) in product(
+        _DIRECT_COORDINATORS,
+        _DIRECT_COORDINATORS,
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+    ):
+        publication_phrase = _publication_lead(modifier, None, publication)
+        document = _publication_document(protected, head)
+        require(
+            f"build {first_coordinator} do not deploy {second_coordinator} "
+            f"{publication_phrase} {document}",
+            category,
+            True,
+        )
+        require(
+            f"do not build {first_coordinator} do not deploy "
+            f"{second_coordinator} {publication_phrase} {document}",
+            category,
+            False,
+        )
+
+    # A new explicit subject before the current-clause chain severs the previous
+    # bare Action, including when Publication itself has a finite local negation.
+    for (
+        second_coordinator,
+        modifier,
+        publication,
+        (protected, category),
+        head,
+        publication_local_negation,
+    ) in product(
+        _DIRECT_COORDINATORS,
+        modifiers,
+        publications,
+        protected_objects,
+        document_heads,
+        local_negations,
+    ):
+        publication_phrase = _publication_lead(
+            modifier,
+            publication_local_negation,
+            publication,
+        )
+        require(
+            f"build but we do not deploy {second_coordinator} "
+            f"{publication_phrase} {_publication_document(protected, head)}",
+            category,
+            False,
+        )
+
+    # Directly exercise the structured whole-gap parser.  Coverage is generated
+    # from the same constants, so adding one modifier without updating the
+    # frozen expected tuple cannot silently skip the new grammar branch.
+    covered_modifiers: set[str] = set()
+    for coordinator, modifier, local_negation in product(
+        _DIRECT_COORDINATORS,
+        modifiers,
+        local_negations,
+    ):
+        gap = " ".join(
+            value
+            for value in (coordinator, modifier, local_negation)
+            if value is not None
+        )
+        parsed = _parse_direct_coordination_gap(
+            gap,
+            allow_local_negation=True,
+            coordinators=frozenset(_DIRECT_COORDINATORS),
+        )
+        case_count += 1
+        if parsed is None:
+            if len(mismatches) < 12:
+                mismatches.append(f"direct coordination gap did not parse: {gap!r}")
+            continue
+        if (
+            parsed.coordinator != coordinator
+            or parsed.local_negation != local_negation
+            or parsed.modifiers != (() if modifier is None else (modifier,))
+        ):
+            if len(mismatches) < 12:
+                mismatches.append(f"direct coordination gap parsed incorrectly: {gap!r}")
+        if modifier is not None:
+            covered_modifiers.add(modifier)
+    if covered_modifiers != set(_DIRECT_ACTION_MODIFIERS):
+        error("generated Publication matrix does not cover every direct modifier")
+
+    invalid_gaps = (
+        "and, immediately",
+        "and we immediately",
+        "and telemetry immediately",
+        "and immediately;",
+    )
+    for gap in invalid_gaps:
+        case_count += 1
+        if _parse_direct_coordination_gap(
+            gap,
+            allow_local_negation=True,
+            coordinators=frozenset(_DIRECT_COORDINATORS),
+        ) is not None:
+            if len(mismatches) < 12:
+                mismatches.append(f"invalid direct coordination gap parsed: {gap!r}")
+
+    if mismatches:
+        error(
+            "Publication coordination cross-product failed; examples: "
+            + " | ".join(mismatches)
+        )
+    if case_count != EXPECTED_PUBLICATION_CROSS_PRODUCT_CASES:
+        error(
+            "Publication coordination cross-product count drifted: "
+            f"expected {EXPECTED_PUBLICATION_CROSS_PRODUCT_CASES}, got {case_count}"
+        )
+    return case_count
+
+
 def check_structural_gap_corpus() -> list[tuple[str, str]]:
     """Exercise finite grammar shapes added by the 1.1 minor re-audit.
 
@@ -1300,6 +1736,7 @@ def check_documentation() -> None:
             "patch:",
             "minor:",
             "1.2.0 finite grammar",
+            "Issue #62 Publication coordination correction",
             "## Finite review acceptance contract",
             "Blocking",
             "Non-blocking backlog",
@@ -1316,6 +1753,7 @@ def check_documentation() -> None:
             "`.localhost`",
             "unresolved thread 0",
             "1.2.0 finite grammar re-audit",
+            "Issue #62 Publication coordination correction",
         ),
     }
     for relative, markers in required_files.items():
@@ -1339,6 +1777,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     check_public_api()
     deterministic_fields = check_action_corpus()
+    publication_coordination_fields = check_publication_coordination_corpus()
+    deterministic_fields.extend(publication_coordination_fields)
+    publication_cross_product_cases = check_publication_coordination_cross_product()
     deterministic_fields.extend(check_structural_gap_corpus())
     finite_grammar_fields = check_finite_grammar_1_2_corpus()
     deterministic_fields.extend(finite_grammar_fields)
@@ -1360,6 +1801,8 @@ def main(argv: list[str] | None = None) -> int:
         "content safety policy contract passed: "
         f"version={POLICY_VERSION}, categories={len(EXPECTED_ALL_CATEGORIES)}, "
         f"blockers={len(BLOCKER_TEXTS)}, finite_grammar_cases={len(finite_grammar_fields)}, "
+        f"publication_fixtures={len(publication_coordination_fields)}, "
+        f"publication_cross_product_cases={publication_cross_product_cases}, "
         f"representative_fields={len(representative_fields)}"
     )
     if parity_counts is not None:

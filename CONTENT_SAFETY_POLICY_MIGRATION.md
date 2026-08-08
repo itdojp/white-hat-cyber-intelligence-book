@@ -45,3 +45,7 @@ Policy `1.2.0`はstable APIと11 categoryを維持したminor updateである。
 Chapter 3 adapterはPolicy `1.2.0`へ厳密pinする。旧Chapter 3のread-only safety corpusをPolicy inputやChapter固有denylistにはせず、249 unsafe / 49 explicitly negated fieldとoriginal blocker 6 / safe counterpart 6をChapter contractで照合する。`finite-grammar-1.2-corpus.json`はA/B/Cごとにunsafe、safe、near-miss、continuationのexact inventoryを持つ。代表Chapter 2 / 11 / 17 / 25はmain `a1dfadae153bfe36b88f72e503f5a5be9c64bddf`をbaselineとして再監査する。Chapter名、`ART-14`、固有行番号、無制限の同義語をshared ruleへ持ち込まない。
 
 新adapterはbounded Chapter 3 fieldに対して、`合成Scenario。外部接続と実Target操作なし`、`keyloggerを作るべきではない`、`rootkitを実装するべきではない`をPolicy由来で0 findingとする。Case全体をhost scanする場合も、`確認済みIdentifierの記入形式例はv2.2.0`をhost/IDNと誤認しない。ambiguous labelled IPv6とbare `artifact.json`は既存のfail-closed contractどおり許容へ緩和しない。
+
+## Issue #62 Publication coordination correction
+
+Issue #62はPolicy versionを`1.2.0`のまま維持し、防御文書Publication exceptionに既存のdirect modifierを挟むと先行Actionを見落とす実装欠陥を修正する。Coordinator、modifier、local negationは一つの有限source-of-truthから生成し、Chapter 3 adapterに独自gap grammarを追加しない。Publication Actionとdocument headだけを抑制し、同じProtected Objectへ束縛された先行Actionおよび後続continuationは共通Policyで独立評価する。別Object、新subject、句読点を越えた再束縛は行わず、`do not deploy and immediately publish a phishing report`の既存結果は変更しない。

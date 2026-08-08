@@ -55,6 +55,12 @@ ObjectがActionより前でも後でも検査する。同じbounded clauseでは
 
 Object classification、Operation classification、qualifier precedence、meta-analysis suppressionは独立した型とfixtureで検証する。English meta-analysis後の`it / the same`は単独または有限Protected Object headのときだけ継続参照とし、`the same report`のように別の明示Objectが続く場合はPIIへ再束縛しない。章名、Artifact ID、固有行番号、無制限の同義語はruleへ持ち込まない。
 
+### Issue #62 Publication coordination correction
+
+Policy versionは`1.2.0`を維持する。この変更は、新categoryやVocabularyを追加するminor updateではなく、既に宣言した防御文書Publication invariantのreview-time実装修正である。`and / or / but`、有限direct modifier、局所否定を一つのsource-of-truthとwhole-gap parserから導出し、通常のdirect Action coordinationと防御文書Publication bindingで同じgap grammarを利用する。
+
+防御文書Publication frameが抑制できるのはPublication Actionと凍結したdocument headだけである。同じProtected Objectへ直接協調された先行Action、Publication後のaffirmative continuation、またはfinite modifierの背後にあるActionは独立して評価する。先行Actionのcross-productは`build / deploy / install / run / use / operate / access`へ凍結する。先行ActionからPublicationまでのgap全体が有限grammarに一致するときだけ後方へchainをたどり、句読点、明示subject、別の明示Object、または未知tokenで停止する。`report about phishing`と`guidance that prohibits phishing deployment`は凍結したnear-miss frameであり、後者の`deployment`は抑制せず、局所的なprohibitionとして評価する。これは一般的な英文解析や自然言語理解を意味しない。
+
 ## Normalization contract
 
 `normalize_visible_text`は次の順で決定的に処理する。
@@ -114,7 +120,7 @@ Chapter 2の既存chapter-specific checkerには`.localhost`を許容する旧su
 ### Blocking
 
 - P0またはP1
-- `1.2.0`で宣言したJapanese particle frame、non-qualifiable theft/reuse Operation、English PII meta-analysis frameのinvariantを破る最小反例
+- `1.2.0`で宣言したJapanese particle frame、non-qualifiable theft/reuse Operation、English PII meta-analysis frame、または防御文書Publication coordination gapのinvariantを破る最小反例
 - 既存Policy category、Host、negation、continuation、deterministic ordering/deduplication、canonical/generated/build契約のregression
 
 ### Non-blocking backlog
