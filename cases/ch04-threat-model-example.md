@@ -116,7 +116,7 @@ Flow typeは`Data / Identity / Control`の有限集合だけを使用する。Ev
 |---|---|---|---|---|---|---|---|---|---|---|
 | `FLOW-2026-001` | Control | `ASSET-2026-004` | `ASSET-2026-002` | 業務要件に基づくscope承認・変更判断 | 承認ticket、scope matrix、change workflow | Business approverとPlatform adminの二者Review | `TB-2026-001` | Internal | Collected | 承認ticket、scope差分、例外理由 |
 | `FLOW-2026-002` | Identity | `ASSET-2026-002` | `ASSET-2026-005` | OAuth app componentへ許可済み権限を適用する | OAuth 2.0 app identity、consent binding | Admin consent、Conditional Access相当の制約、AUTH条件維持 | `TB-2026-001`, `TB-2026-004` | Restricted | Collected | App registration export、consent audit |
-| `FLOW-2026-003` | Data | `ASSET-2026-005` | `ASSET-2026-006` | summary-onlyの請求書同期を実行する | API request / response、summary manifest read/write | `svc-billing-bridge-sync`の最小権限 | `TB-2026-002`, `TB-2026-006` | Confidential | Inconclusive | App permission export、manifest field inventory |
+| `FLOW-2026-003` | Data | `ASSET-2026-005` | `ASSET-2026-006` | summary-onlyの請求書同期を実行する | API request / response、summary manifest read/write | `svc-billing-bridge-sync`の最小権限 | `TB-2026-008`, `TB-2026-006` | Confidential | Inconclusive | App permission export、manifest field inventory |
 | `FLOW-2026-004` | Control | `ASSET-2026-002` | `ASSET-2026-003` | 同意Event・App identity lifecycle Eventの監査Coverage | Audit export、retention policy | Control plane変更の監査出力 | `TB-2026-003`, `TB-2026-007` | Internal | Collected | Audit export、retention設定、query version |
 | `FLOW-2026-005` | Data | `ASSET-2026-003` | `ASSET-2026-004` | 月末判断に必要な観測結果を経営判断へ渡す | 無害化summary、evidence handoff | SOC reviewer roleによるread-only参照 | `TB-2026-007` | Internal | Inconclusive | hunt summary、negative finding、coverage note |
 | `FLOW-2026-006` | Identity | `ASSET-2026-007` | `ASSET-2026-001` | Workload identityをruntime sessionへ結び付ける | Token issuance metadata、session binding | Workload-only、human admin禁止、Production credential禁止 | `TB-2026-004`, `TB-2026-006` | Restricted | Collected | identity inventory、rotation record、audit summary |
@@ -128,12 +128,13 @@ Flow typeは`Data / Identity / Control`の有限集合だけを使用する。Ev
 | Boundary ID | Boundary type | From / To | Owner(s) | Trust / authority change | Crossing condition | Control | Failure consequence | Knowledge state | Evidence IDs |
 |---|---|---|---|---|---|---|---|---|---|
 | `TB-2026-001` | Administrative Control | 業務要件とscope承認 → Identity control planeのApp設定 | Finance Operations、Platform | 業務上の要件判断が管理者同意へ変換される | scope追加または例外承認が必要 | Admin consent、scope review、二者Review | 過大権限または未承認同意 | Confirmed | `EVD-2026-001`, `EVD-2026-002` |
-| `TB-2026-002` | Data Ownership | OAuth app component → invoice-sync-manifestのsummary Data面 | Finance Data Owner、Platform | App権限がData ownerの許容範囲へ変換される | summary-only endpointに対するread/writeが必要 | App permission、Conditional Access相当の制約、summary-only boundary | 顧客Dataや状態変更への広範なAccess | Assumed | `EVD-2026-001`, `EVD-2026-002` |
+| `TB-2026-002` | Data Ownership | OAuth app → 顧客Data API | Finance Data Owner、Platform | App権限がData ownerの許容範囲へ変換される | Workload credential | App permission、Conditional Access相当の制約 | 顧客Dataへの広範なAccess | Confirmed | `EVD-2026-001`, `EVD-2026-002` |
 | `TB-2026-003` | Control Plane | Identity control plane → Audit log store | Platform、SOC | Control plane変更が観測可能な証跡へ変換される | consent Event、App identity lifecycle Event、retention policy updateの発生時 | Export設定、保持Policy、query approval | 調査に必要なEventの欠落 | Confirmed | `EVD-2026-003`, `EVD-2026-004` |
 | `TB-2026-004` | Identity Authority | Workload identity → OAuth app runtime session | Platform | Service identityの権限主体とruntime execution contextの責任主体を区別する | App componentがidentity bindingを要求 | workload binding、credential inventory、rotation plan | HumanとWorkloadの責任境界が曖昧化 | Confirmed | `EVD-2026-001`, `EVD-2026-003` |
 | `TB-2026-005` | Tenant | `billing-bridge.example` の合成Tenant A → 合成Tenant B | Platform、Finance Data Owner | Tenant AのIdentity / Data authorityがTenant Bへ移らないことを要求する | App bindingまたはsummary Dataが別Tenantへ関連付く条件 | Tenant ID binding、scope matrix、fail-closed停止 | Tenant間分離の不確実性と判断遅延 | Assumed | `EVD-2026-001`, `EVD-2026-002` |
 | `TB-2026-006` | Network | Synthetic lab runtime → no-outbound boundary | Platform、Lab Operator | local-only評価が外部到達不能という保証へ変換される | runtime sessionやqueryが発生 | default deny、preflight check、cleanup verification | Scope外Serviceへの到達 | Confirmed | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |
 | `TB-2026-007` | Third-party Responsibility | Vendor-managed audit behavior → SOC review and decision use | Platform、SOC、Vendor Management | Vendor管理の内部実装に対する説明責任が内部判断に持ち込まれる | query fieldやnormalization結果へ依存する | 無害化export、role separation、契約前提の確認 | Field欠落や責任境界不明で誤判定 | Unknown | `EVD-2026-003`, `NEG-2026-001` |
+| `TB-2026-008` | Data Ownership | OAuth app component → invoice-sync-manifestのsummary Data面 | Finance Data Owner、Platform | App権限がsummary-only Data ownerの許容範囲へ変換される | summary-only endpointに対するread/writeが必要 | App permission、Conditional Access相当の制約、summary-only boundary | 顧客Dataや状態変更への広範なAccess | Assumed | `EVD-2026-001`, `EVD-2026-002` |
 
 ## 5. Exposure and Entry Point Register
 
@@ -143,7 +144,7 @@ Exposureは成立条件、Entry Pointは観測対象の接点を示す。ここ�
 |---|---|---|---|---|---|---|---|---|
 | `EXP-2026-001` | `ASSET-2026-002`, `ASSET-2026-005`, `TB-2026-001`, `TB-2026-004`, `FLOW-2026-001`, `FLOW-2026-002` | `EP-2026-001` | Isolated configuration surface | 合成App registrationとconsent object | `AUTH-CASE-2026-001`のread-only設定Review | Confirmed | `EVD-2026-001`, `EVD-2026-002` | `GAP-2026-002` |
 | `EXP-2026-002` | `ASSET-2026-002`, `ASSET-2026-003`, `TB-2026-003`, `TB-2026-007`, `FLOW-2026-004`, `FLOW-2026-005` | `EP-2026-002` | Isolated evidence surface | Vendor-managed audit normalizationの説明責任 | `AUTH-CASE-2026-001`のSOC reviewer read-only access | Confirmed | `EVD-2026-003` | `GAP-2026-003` |
-| `EXP-2026-003` | `ASSET-2026-005`, `ASSET-2026-006`, `ASSET-2026-007`, `TB-2026-002`, `TB-2026-005`, `TB-2026-006`, `FLOW-2026-003`, `FLOW-2026-006` | `EP-2026-003` | Synthetic offline interface | summary-only manifest fixture | `AUTH-CASE-2026-001`、no outbound、Production credential禁止 | Assumed | `EVD-2026-001`, `EVD-2026-002` | `GAP-2026-001` |
+| `EXP-2026-003` | `ASSET-2026-005`, `ASSET-2026-006`, `ASSET-2026-007`, `TB-2026-008`, `TB-2026-005`, `TB-2026-006`, `FLOW-2026-003`, `FLOW-2026-006` | `EP-2026-003` | Synthetic offline interface | summary-only manifest fixture | `AUTH-CASE-2026-001`、no outbound、Production credential禁止 | Assumed | `EVD-2026-001`, `EVD-2026-002` | `GAP-2026-001` |
 
 ### Entry Point Detail Register
 
@@ -153,7 +154,7 @@ Entry PointはExposureの参照列だけで済ませず、Owner、Boundary、Aut
 |---|---|---|---|---|---|---|---|---|---|
 | `EP-2026-001` | `EXP-2026-001` | Isolated configuration surface | 合成App registrationとconsent objectのread-only Review接点 | Platform | `TB-2026-001`, `TB-2026-004` | `AUTH-CASE-2026-001`のread-only設定Review | App registration export、consent audit | Confirmed | `EVD-2026-001`, `EVD-2026-002` |
 | `EP-2026-002` | `EXP-2026-002` | Isolated evidence surface | 無害化したAudit exportとCoverage summaryのReview接点 | SOC | `TB-2026-003`, `TB-2026-007` | `AUTH-CASE-2026-001`のSOC reviewer read-only access | Audit export、retention設定、coverage note | Confirmed | `EVD-2026-003`, `EVD-2026-004` |
-| `EP-2026-003` | `EXP-2026-003` | Synthetic offline interface | summary-only manifest fixtureとTenant binding metadataの確認接点 | Platform | `TB-2026-002`, `TB-2026-005`, `TB-2026-006` | `AUTH-CASE-2026-001`、no outbound、Production credential禁止 | manifest field inventory、Tenant binding差分 | Assumed | `EVD-2026-001`, `EVD-2026-002` |
+| `EP-2026-003` | `EXP-2026-003` | Synthetic offline interface | summary-only manifest fixtureとTenant binding metadataの確認接点 | Platform | `TB-2026-008`, `TB-2026-005`, `TB-2026-006` | `AUTH-CASE-2026-001`、no outbound、Production credential禁止 | manifest field inventory、Tenant binding差分 | Assumed | `EVD-2026-001`, `EVD-2026-002` |
 
 ## 6. Threat Hypothesis and Misuse Case
 
@@ -163,9 +164,9 @@ Entry PointはExposureの参照列だけで済ませず、Owner、Boundary、Aut
 
 | Hypothesis ID | Decision Requirement ID | Related Asset IDs | Boundary / Flow / Exposure IDs | Statement | Preconditions | Expected impact | Evidence needed | Alternative explanation | Priority | Hypothesis status |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `TH-2026-001` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006`, `ASSET-2026-007` | `TB-2026-001`, `TB-2026-002`, `TB-2026-004`, `FLOW-2026-001`, `FLOW-2026-002`, `FLOW-2026-003`, `FLOW-2026-006`, `EXP-2026-001`, `EXP-2026-003` | 業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある | 暫定scopeとWorkload identity bindingが残る | 合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001`, `EREQ-2026-003` | 暫定scopeは残るが実効利用は最小権限かもしれない | High | Supported |
+| `TH-2026-001` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006`, `ASSET-2026-007` | `TB-2026-001`, `TB-2026-002`, `TB-2026-004`, `TB-2026-008`, `FLOW-2026-001`, `FLOW-2026-002`, `FLOW-2026-003`, `FLOW-2026-006`, `EXP-2026-001`, `EXP-2026-003` | 業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある | 暫定scopeとWorkload identity bindingが残る | 合成Dataの同期状態と業務判断への影響が拡大する | `EREQ-2026-001`, `EREQ-2026-003` | 暫定scopeは残るが実効利用は最小権限かもしれない | High | Supported |
 | `TH-2026-002` | `DR-2026-001` | `ASSET-2026-002`, `ASSET-2026-003`, `ASSET-2026-005` | `TB-2026-001`, `TB-2026-003`, `TB-2026-007`, `FLOW-2026-004`, `FLOW-2026-005`, `EXP-2026-002` | 管理者同意またはApp identity lifecycle Eventの観測不足により未承認権限追加の検知が遅れる可能性がある | Audit exportまたはsummary Fieldが不足する | Attack Surface拡大の見逃しとDecision遅延 | `EREQ-2026-002` | Eventは存在するがsummary Field不足で見えないだけかもしれない | High | Partially Supported |
-| `TH-2026-003` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-003`, `ASSET-2026-006` | `TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `FLOW-2026-003`, `FLOW-2026-004`, `FLOW-2026-005`, `EXP-2026-002`, `EXP-2026-003` | 既に同型の不正利用が発生した | 過大scope、Credential metadata、API到達条件が同時に存在していた | 過去侵害と顧客Dataへの影響 | `EREQ-2026-003` | TelemetryとRetentionの制約により、未観測を未発生と判断できない | High | Inconclusive |
+| `TH-2026-003` | `DR-2026-001` | `ASSET-2026-001`, `ASSET-2026-003`, `ASSET-2026-006` | `TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `TB-2026-008`, `FLOW-2026-003`, `FLOW-2026-004`, `FLOW-2026-005`, `EXP-2026-002`, `EXP-2026-003` | 既に同型の不正利用が発生した | 過大scope、Credential metadata、API到達条件が同時に存在していた | 過去侵害と顧客Dataへの影響 | `EREQ-2026-003` | TelemetryとRetentionの制約により、未観測を未発生と判断できない | High | Inconclusive |
 
 ### Misuse Case Register
 
@@ -193,7 +194,7 @@ Attack Pathは成立しうる関係と観測点を整理する表であり、実
 |---|---|---|---|---|---|---|---|---|---|---|
 | `PATH-2026-001` | `EDGE-2026-001` | `ASSET-2026-004` / scope-review pending | 業務要件変更が承認ticketへ十分反映されない | `TB-2026-001` | `ASSET-2026-005` / scope matrix未更新 | `ASSET-2026-004`, `ASSET-2026-005` | 不要scopeが残る | 承認ticket、scope差分 | `EREQ-2026-001` | Confirmed |
 | `PATH-2026-001` | `EDGE-2026-002` | `ASSET-2026-005` / broad-scope configured | App componentが広い権限を保持したままbindingされる | `TB-2026-004` | `ASSET-2026-007` / binding active | `ASSET-2026-005`, `ASSET-2026-007` | Identity misuse時の影響範囲が広がる | App registration export、identity inventory | `EREQ-2026-001` | Confirmed |
-| `PATH-2026-001` | `EDGE-2026-003` | `ASSET-2026-007` / binding active | runtime sessionがsummary-only制約と一致しない | `TB-2026-002` | `ASSET-2026-006` / summary boundary uncertain | `ASSET-2026-001`, `ASSET-2026-006`, `ASSET-2026-007` | Data accessまたは状態変更の評価が不十分になる | manifest field inventory、permission diff | `EREQ-2026-003` | Assumed |
+| `PATH-2026-001` | `EDGE-2026-003` | `ASSET-2026-007` / binding active | runtime sessionがsummary-only制約と一致しない | `TB-2026-008` | `ASSET-2026-006` / summary boundary uncertain | `ASSET-2026-001`, `ASSET-2026-006`, `ASSET-2026-007` | Data accessまたは状態変更の評価が不十分になる | manifest field inventory、permission diff | `EREQ-2026-003` | Assumed |
 | `PATH-2026-001` | `EDGE-2026-004` | `ASSET-2026-006` / Tenant binding assumed | Tenant bindingのEvidenceが不足する | `TB-2026-005` | `ASSET-2026-006` / Tenant isolation inconclusive | `ASSET-2026-001`, `ASSET-2026-006` | 影響範囲をTenant単位で限定できず判断が遅れる | Tenant binding差分、scope matrix | `EREQ-2026-001` | Assumed |
 | `PATH-2026-002` | `EDGE-2026-005` | `ASSET-2026-002` / consent change issued | control plane変更が監査exportへ完全に反映されない | `TB-2026-003` | `ASSET-2026-003` / audit coverage partial | `ASSET-2026-002`, `ASSET-2026-003` | 未承認変更の早期検知が遅れる | Audit export、retention設定 | `EREQ-2026-002` | Confirmed |
 | `PATH-2026-002` | `EDGE-2026-006` | `ASSET-2026-003` / audit coverage partial | summary exportのFieldがSOC判断に不足する | `TB-2026-007` | `ASSET-2026-004` / decision context incomplete | `ASSET-2026-003`, `ASSET-2026-004` | Coverage誤解によりDecision qualityが低下する | query result、coverage note | `EREQ-2026-002`, `EREQ-2026-003` | Unknown |
@@ -319,7 +320,7 @@ Collected Evidence statusは `Planned / Collected / Rejected / Inconclusive` の
 | `HO-TM-2026-005` | 第5章 ATT&CK | Behavior記述 | `TH-2026-001`〜`003`の成立条件、Flow、Boundary、Exposure、観測点 | Technique名ではなく行動条件へ落とせる | Campaign名や主体帰属だけで具体性がない |
 | `HO-TM-2026-006` | 第6章 観測可能性 | Telemetry / logging設計 | `EREQ-2026-001`〜`004`、`GAP-2026-001`〜`004`、Negative finding原則 | Field、retention、coverage、Lab safety Evidence、Gap ownerがある | 「ログを増やす」だけでField contractがない |
 | `HO-TM-2026-009` | 第9章 RoE | Rules of Engagement | `AUTH-CASE-2026-001`継承条件、`ACT-TM-2026-001` / `ACT-TM-2026-002` / `ACT-TM-2026-003` / `ACT-TM-2026-006`の再Authorization依存、停止条件、no outbound、対象外一覧 | Allowed / prohibited / stop / cleanupと設定変更・Rule test・Telemetry変更・Lab実行の再Authorization gateが明示される | Production操作、外部通信、期限外Rule testまたは未承認の設定変更が紛れ込む |
-| `HO-TM-2026-011` | 第11章 Web/API評価 | Web/API Assessment Hypothesis Pack | `TB-2026-002`、`FLOW-2026-003`、`PATH-2026-001` | Entry point、state、property境界へ変換できる | endpointやstateが曖昧 |
+| `HO-TM-2026-011` | 第11章 Web/API評価 | Web/API Assessment Hypothesis Pack | `TB-2026-002` / `TB-2026-008`、`FLOW-2026-003`、`PATH-2026-001` | Entry point、state、property境界へ変換できる | endpointやstateが曖昧 |
 | `HO-TM-2026-012` | 第12章 Identity評価 | Identity Attack Path Review | `ASSET-2026-007`、`TB-2026-004`、`FLOW-2026-002`、`FLOW-2026-006` | 人・サービス・workloadの委任関係が追跡できる | 人とworkload identityが混在したまま |
 | `HO-TM-2026-013` | 第13章 Platform / Supply Chain | Platform and Supply Chain Assessment | `ASSET-2026-002`、`ASSET-2026-005`、Credential lifecycle、control plane依存 | Control planeとruntimeの境界が整理される | SaaS連携の境界が説明不能 |
 | `HO-TM-2026-014` | 第14章 最小影響Validation | Minimal-Impact Validation Record | `EREQ-2026-001`〜`004`、特に`EREQ-2026-004`のpreflight / default-deny / Cleanup証拠、禁止操作、stop条件、fallback | 最小証拠、再Authorization、停止、Cleanupが一致する | 証拠のためにData取得または未承認実行を要求する |
@@ -331,7 +332,7 @@ Collected Evidence statusは `Planned / Collected / Rejected / Inconclusive` の
 - 第5章では、`TH-2026-001`〜`003`をATT&CKの行動言語へ変換する。
 - 第6章では、`EREQ-2026-003` / `EREQ-2026-004`と`GAP-2026-001`〜`004`を観測設計へ渡す。
 - 第9章では、`AUTH-CASE-2026-001`継承条件と`ACT-TM-2026-001` / `ACT-TM-2026-002` / `ACT-TM-2026-003` / `ACT-TM-2026-006`の再Authorization依存をRoEへ具体化する。
-- 第11章では、`TB-2026-002`と`PATH-2026-001`をWeb/APIの仮説パックへ分解する。
+- 第11章では、継承した`TB-2026-002`とsummary-only refinementの`TB-2026-008`、`PATH-2026-001`をWeb/APIの仮説パックへ分解する。
 - 第12章では、`ASSET-2026-007`と`TB-2026-004`をIdentity attack pathとして再評価する。
 - 第13章では、`ASSET-2026-002`と`ASSET-2026-005`のcontrol plane依存をPlatform評価へ渡す。
 - 第14章では、`EREQ-2026-004`を含む最小影響で必要Evidenceだけを集めるValidation設計へ接続する。

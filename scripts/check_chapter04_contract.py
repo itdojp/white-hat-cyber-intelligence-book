@@ -34,6 +34,13 @@ CHAPTER = "manuscript/04-assets-boundaries-threat-model.md"
 TEMPLATE = "templates/threat-model.md"
 CASE = "cases/ch04-threat-model-example.md"
 SOURCE_NOTE = "references/ch04-source-review-2026-08-08.md"
+CHANGELOG = "CHANGELOG.md"
+
+CHANGELOG_CH04_SOURCE_NAMES = (
+    "NIST CSF 2.0",
+    "NIST SP 800-30 Rev.1",
+    "OWASP Threat Modeling Project",
+)
 
 EXPECTED_PAGES = {
     (CHAPTER, "chapters/chapter-04/index.md", "chapters", 47),
@@ -85,7 +92,7 @@ EXPECTED_SOURCE_IDS = {"SRC-CSF-001", "SRC-NIST-RISK-001", "SRC-OWASP-TM-001"}
 EXPECTED_CASE_IDS: dict[str, set[str]] = {
     "ASSET": {f"ASSET-2026-{number:03d}" for number in range(1, 8)},
     "FLOW": {f"FLOW-2026-{number:03d}" for number in range(1, 7)},
-    "TB": {f"TB-2026-{number:03d}" for number in range(1, 8)},
+    "TB": {f"TB-2026-{number:03d}" for number in range(1, 9)},
     "EXP": {f"EXP-2026-{number:03d}" for number in range(1, 4)},
     "EP": {f"EP-2026-{number:03d}" for number in range(1, 4)},
     "TH": {f"TH-2026-{number:03d}" for number in range(1, 4)},
@@ -132,7 +139,7 @@ EXPECTED_HANDOFF_ROWS = {
     "HO-TM-2026-011": (
         "第11章 Web/API評価",
         "Web/API Assessment Hypothesis Pack",
-        "`TB-2026-002`、`FLOW-2026-003`、`PATH-2026-001`",
+        "`TB-2026-002` / `TB-2026-008`、`FLOW-2026-003`、`PATH-2026-001`",
     ),
     "HO-TM-2026-012": (
         "第12章 Identity評価",
@@ -848,7 +855,7 @@ def policy_errors(fields: list[tuple[str, str]]) -> list[str]:
 
 
 _MARKDOWN_LIST_ITEM = re.compile(r"^\s*(?:[-+*]|\d+[.)])\s+(?P<body>.*)$")
-_MARKDOWN_HEADING = re.compile(r"^#{1,6}\s+")
+_MARKDOWN_HEADING = re.compile(r"^\s{0,3}#{1,6}(?:[ \t]+|$)(?P<body>.*)$")
 _MARKDOWN_FENCE = re.compile(r"^\s*(?P<marker>`{3,}|~{3,})")
 _MARKDOWN_REFERENCE_DEFINITION = re.compile(r"^\s*\[[^]]+\]:\s*")
 _MARKDOWN_AUTOLINK_URL = re.compile(
@@ -926,10 +933,10 @@ def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
 
 
 def reader_visible_prose_fields(text: str, label: str) -> list[tuple[str, str]]:
-    """Select ordinary rendered paragraphs and list items outside tables/code.
+    """Select rendered headings, paragraphs, and list items outside tables/code.
 
     Table cells are owned by the finite table manifest.  This adapter owns the
-    remaining ordinary prose/list surface without treating front matter,
+    remaining heading/prose/list surface without treating front matter,
     comments, link destinations, reference definitions, or fenced/indented code
     as reader instructions.  Wrapped lines remain one field so action/object and
     negation context is not split at an authoring line break.
@@ -990,6 +997,13 @@ def reader_visible_prose_fields(text: str, label: str) -> list[tuple[str, str]]:
         line_number, line = lines[index]
         stripped = line.strip()
         if line.startswith("    ") or line.startswith("\t"):
+            index += 1
+            continue
+        heading_match = _MARKDOWN_HEADING.match(line)
+        if heading_match:
+            heading = re.sub(r"[ \t]+#+[ \t]*$", "", heading_match.group("body")).strip()
+            if heading:
+                fields.append((f"{label}:{line_number}-{line_number} heading", heading))
             index += 1
             continue
         if structural(line):
@@ -1341,13 +1355,15 @@ continues with [visible label](https://example.com/path).
 <!-- 第三者の本番システムへ接続する -->
 """
     expected_fields = [
+        ("adapter fixture:4-4 heading", "ignored heading"),
         ("adapter fixture:5-6 paragraph", "First paragraph line continues with [visible label](https://example.com/path)."),
         ("adapter fixture:8-8 list", "visible list item"),
     ]
     observed_fields = reader_visible_prose_fields(fixture, "adapter fixture")
     if observed_fields != expected_fields:
         error(f"reader-visible prose adapter selection drift: {observed_fields!r} != {expected_fields!r}")
-    if visible_host_tokens(expected_fields[0][1]):
+    link_paragraph = dict(expected_fields)["adapter fixture:5-6 paragraph"]
+    if visible_host_tokens(link_paragraph):
         error("reader-visible prose adapter must not scan hidden Markdown link destinations as visible hosts")
     host_probes = {
         "SP 800-30 Rev.1を参照する": (),
@@ -1734,6 +1750,62 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     if len(boundary_values) < 5:
         messages.append(f"{label}: requires at least five distinct boundary types")
 
+    chapter1_boundary_header = (
+        "Boundary ID",
+        "From",
+        "To",
+        "Identity / protocol",
+        "Control",
+        "Failure consequence",
+    )
+    chapter1_case = read_text("cases/ch01-integrated-security-case-example.md")
+    chapter1_boundary_rows, chapter1_boundary_messages = table_by_header(
+        chapter1_case,
+        chapter1_boundary_header,
+        "cases/ch01-integrated-security-case-example.md",
+    )
+    messages.extend(chapter1_boundary_messages)
+    inherited_boundary = next(
+        (
+            row
+            for row in chapter1_boundary_rows
+            if len(row) == len(chapter1_boundary_header) and row[0].strip("`") == "TB-2026-002"
+        ),
+        None,
+    )
+    boundary_rows_by_id = {
+        row[0].strip("`"): row
+        for row in parsed.get(boundary_header, [])
+        if len(row) == len(boundary_header)
+    }
+    chapter4_inherited_boundary = boundary_rows_by_id.get("TB-2026-002")
+    if inherited_boundary is None:
+        messages.append(f"{label}: Chapter 1 must define inherited boundary TB-2026-002")
+    elif chapter4_inherited_boundary is None:
+        messages.append(f"{label}: missing inherited boundary TB-2026-002")
+    else:
+        inherited_contract = {
+            "From / To": f"{inherited_boundary[1]} → {inherited_boundary[2]}",
+            "Crossing condition": inherited_boundary[3],
+            "Control": inherited_boundary[4],
+            "Failure consequence": inherited_boundary[5],
+        }
+        for field, expected in inherited_contract.items():
+            observed = chapter4_inherited_boundary[boundary_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: TB-2026-002 {field} {observed!r} must preserve Chapter 1 value {expected!r}"
+                )
+
+    refinement_boundary = boundary_rows_by_id.get("TB-2026-008")
+    if refinement_boundary is None:
+        messages.append(f"{label}: missing summary-only refinement boundary TB-2026-008")
+    else:
+        refinement_text = " ".join(refinement_boundary)
+        for marker in ("invoice-sync-manifest", "summary-only"):
+            if marker not in refinement_text:
+                messages.append(f"{label}: TB-2026-008 summary-only refinement missing {marker!r}")
+
     flow_header = table_contracts[1][0]
     evidence_status_index = flow_header.index("Evidence status")
     flow_evidence_statuses = {
@@ -1772,7 +1844,6 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 f"{label}: TH-2026-003 Statement {statement!r} must preserve the inherited proposition "
                 f"{INHERITED_TH_003_PROPOSITION!r}"
             )
-    chapter1_case = read_text("cases/ch01-integrated-security-case-example.md")
     if INHERITED_TH_003_PROPOSITION not in chapter1_case:
         messages.append(
             f"{label}: Chapter 1 no longer contains the inherited TH-2026-003 proposition "
@@ -2044,6 +2115,77 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(f"{label}: EDGE-2026-004 must use the Tenant boundary TB-2026-005")
     if edge007 is None or edge007[path_header.index("Boundary ID")] != "`TB-2026-007`":
         messages.append(f"{label}: EDGE-2026-007 must use the third-party responsibility boundary TB-2026-007")
+
+    flow_rows_by_id = {
+        row[0].strip("`"): row
+        for row in parsed.get(flow_header, [])
+        if len(row) == len(flow_header)
+    }
+    exposure_header = count_contracts[0][0]
+    exposure_rows_by_id = {
+        row[0].strip("`"): row
+        for row in case_tables.get(exposure_header, [])
+        if len(row) == len(exposure_header)
+    }
+    entry_point_rows_by_id = {
+        row[0].strip("`"): row
+        for row in entry_point_rows
+        if len(row) == len(entry_point_header)
+    }
+    summary_boundary_bindings = (
+        (
+            "FLOW-2026-003",
+            flow_rows_by_id.get("FLOW-2026-003"),
+            flow_header,
+            "Boundary IDs crossed",
+            {"TB-2026-006", "TB-2026-008"},
+        ),
+        (
+            "EXP-2026-003",
+            exposure_rows_by_id.get("EXP-2026-003"),
+            exposure_header,
+            "Related Asset / Boundary / Flow IDs",
+            {"TB-2026-005", "TB-2026-006", "TB-2026-008"},
+        ),
+        (
+            "EP-2026-003",
+            entry_point_rows_by_id.get("EP-2026-003"),
+            entry_point_header,
+            "Boundary IDs",
+            {"TB-2026-005", "TB-2026-006", "TB-2026-008"},
+        ),
+        (
+            "EDGE-2026-003",
+            path_rows_by_edge.get("EDGE-2026-003"),
+            path_header,
+            "Boundary ID",
+            {"TB-2026-008"},
+        ),
+        (
+            "TH-2026-001",
+            hypothesis_rows.get("TH-2026-001"),
+            hypothesis_header,
+            "Boundary / Flow / Exposure IDs",
+            {"TB-2026-001", "TB-2026-002", "TB-2026-004", "TB-2026-008"},
+        ),
+        (
+            "TH-2026-003",
+            hypothesis_rows.get("TH-2026-003"),
+            hypothesis_header,
+            "Boundary / Flow / Exposure IDs",
+            {"TB-2026-002", "TB-2026-003", "TB-2026-007", "TB-2026-008"},
+        ),
+    )
+    for identifier, row, header, field, expected_tb_ids in summary_boundary_bindings:
+        if row is None:
+            messages.append(f"{label}: missing summary-boundary consumer {identifier}")
+            continue
+        observed_tb_ids = set(re.findall(r"\bTB-2026-\d{3}\b", row[header.index(field)]))
+        if observed_tb_ids != expected_tb_ids:
+            messages.append(
+                f"{label}: {identifier} {field} TB references {sorted(observed_tb_ids)!r} "
+                f"!= {sorted(expected_tb_ids)!r}"
+            )
 
     misuse_header = count_contracts[1][0]
     misuse_rows_by_id = {
@@ -2556,6 +2698,71 @@ def publication_contract_errors() -> list[str]:
     return messages
 
 
+def changelog_contract_errors(text: str, label: str) -> list[str]:
+    """Require Chapter 4 reader impact in the current Unreleased section."""
+
+    unreleased_match = re.search(
+        r"^## Unreleased\s*$\n(?P<body>.*?)(?=^## (?!Unreleased\s*$)|\Z)",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    if not unreleased_match:
+        return [f"{label}: missing Unreleased section"]
+    unreleased = unreleased_match.group("body")
+    added_match = re.search(
+        r"^### Added\s*$\n(?P<body>.*?)(?=^### |\Z)",
+        unreleased,
+        re.MULTILINE | re.DOTALL,
+    )
+    changed_match = re.search(
+        r"^### Changed\s*$\n(?P<body>.*?)(?=^### |\Z)",
+        unreleased,
+        re.MULTILINE | re.DOTALL,
+    )
+    messages: list[str] = []
+    if not added_match:
+        messages.append(f"{label}: Unreleased missing Added subsection")
+    else:
+        added_lines = [line for line in added_match.group("body").splitlines() if line.startswith("- ")]
+        chapter4_added = next((line for line in added_lines if "ART-03" in line), "")
+        if not chapter4_added:
+            messages.append(f"{label}: Unreleased Added missing Chapter 4 / ART-03 reader impact")
+        else:
+            messages.extend(
+                require_tokens(
+                    f"{label}: Chapter 4 Added entry",
+                    chapter4_added,
+                    ("第4章", "ART-03", "合成Case", "contract"),
+                )
+            )
+    if not changed_match:
+        messages.append(f"{label}: Unreleased missing Changed subsection")
+        return messages
+
+    changed_lines = [line for line in changed_match.group("body").splitlines() if line.startswith("- ")]
+    source_change = next((line for line in changed_lines if "NIST CSF 2.0" in line), "")
+    if not source_change:
+        messages.append(f"{label}: Unreleased Changed missing Chapter 4 Source reader impact")
+        return messages
+    messages.extend(
+        require_tokens(
+            f"{label}: Chapter 4 Source impact",
+            source_change,
+            CHANGELOG_CH04_SOURCE_NAMES
+            + ("Source Registry", "章対応", "確認日", "次回確認", "Framework mapping"),
+        )
+    )
+    if not re.search(
+        r"Framework mapping.*実装.*検証.*完全性.*(?:証明ではない|証明しない|保証しない)",
+        source_change,
+    ):
+        messages.append(
+            f"{label}: Chapter 4 Source impact must state that Framework mapping does not "
+            "prove or guarantee implementation, validation, or completeness"
+        )
+    return messages
+
+
 def negative_regressions(
     chapter: str,
     template: str,
@@ -2563,6 +2770,7 @@ def negative_regressions(
     raw_registry: dict,
     sources: dict,
     note: str,
+    changelog: str,
 ) -> None:
     prose_adapter_contract_regressions()
     chapter_mutations = (
@@ -2589,6 +2797,10 @@ def negative_regressions(
         chapter,
         CHAPTER,
         (
+            (
+                "chapter ATX heading",
+                "# 第4章 資産、信頼境界、攻撃面、脅威モデル",
+            ),
             (
                 "ordinary chapter prose",
                 "Threat Modelは、図を描く作業ではなく、判断要求をレビュー可能な記録へ変換する作業である。",
@@ -2642,6 +2854,10 @@ def negative_regressions(
         template,
         TEMPLATE,
         (
+            (
+                "ART-03 ATX heading",
+                "# Threat Model",
+            ),
             (
                 "usage-condition list item",
                 "合成Case、自己所有環境、または明示的に許可された隔離環境だけを前提とする。",
@@ -2702,6 +2918,62 @@ def negative_regressions(
                 case.replace(
                     "既に同型の不正利用が発生した",
                     "TelemetryとRetentionの制約により過去の影響範囲を十分に限定できない",
+                    1,
+                ),
+            ),
+            (
+                "TB-2026-002 inherited endpoint drift",
+                case.replace(
+                    "OAuth app → 顧客Data API",
+                    "OAuth app component → invoice-sync-manifestのsummary Data面",
+                    1,
+                ),
+            ),
+            (
+                "FLOW-2026-003 summary-boundary reference drift",
+                case.replace(
+                    "`TB-2026-008`, `TB-2026-006`",
+                    "`TB-2026-002`, `TB-2026-006`",
+                    1,
+                ),
+            ),
+            (
+                "EXP-2026-003 summary-boundary reference drift",
+                case.replace(
+                    "`TB-2026-008`, `TB-2026-005`, `TB-2026-006`, `FLOW-2026-003`",
+                    "`TB-2026-002`, `TB-2026-005`, `TB-2026-006`, `FLOW-2026-003`",
+                    1,
+                ),
+            ),
+            (
+                "EP-2026-003 summary-boundary reference drift",
+                case.replace(
+                    "`TB-2026-008`, `TB-2026-005`, `TB-2026-006` | `AUTH-CASE-2026-001`",
+                    "`TB-2026-002`, `TB-2026-005`, `TB-2026-006` | `AUTH-CASE-2026-001`",
+                    1,
+                ),
+            ),
+            (
+                "EDGE-2026-003 summary-boundary reference drift",
+                case.replace(
+                    "runtime sessionがsummary-only制約と一致しない | `TB-2026-008` |",
+                    "runtime sessionがsummary-only制約と一致しない | `TB-2026-002` |",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-001 summary-boundary reference drift",
+                case.replace(
+                    "`TB-2026-001`, `TB-2026-002`, `TB-2026-004`, `TB-2026-008`, `FLOW-2026-001`",
+                    "`TB-2026-001`, `TB-2026-002`, `TB-2026-004`, `TB-2026-002`, `FLOW-2026-001`",
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-003 summary-boundary reference drift",
+                case.replace(
+                    "`TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `TB-2026-008`, `FLOW-2026-003`",
+                    "`TB-2026-002`, `TB-2026-003`, `TB-2026-007`, `TB-2026-002`, `FLOW-2026-003`",
                     1,
                 ),
             ),
@@ -3033,11 +3305,66 @@ def negative_regressions(
             CASE,
             (
                 (
+                    "Case ATX heading",
+                    "# 第4章 合成記入例：請求書連携OAuthアプリのAsset / Boundary / Threat Model",
+                ),
+                (
                     "Decision-note list item",
                     "OWN boundary: Asset、Flow、Boundary、Threat Hypothesis、非OperationalなAttack Path、Evidence Requirement、Action、Reassessmentを`DR-2026-001`へ接続する。",
                 ),
             ),
         )
+
+    changelog_lines = changelog.splitlines()
+    added_line = next((line for line in changelog_lines if line.startswith("- ") and "ART-03" in line), "")
+    source_line = next(
+        (line for line in changelog_lines if line.startswith("- ") and "NIST CSF 2.0" in line),
+        "",
+    )
+    changelog_mutations: list[tuple[str, str]] = []
+    if added_line:
+        changelog_mutations.append(
+            ("missing Added reader impact", changelog.replace(added_line, "- 第4章を更新", 1))
+        )
+    else:
+        error("negative CHANGELOG mutation cannot find Chapter 4 Added entry")
+    if source_line:
+        for marker in CHANGELOG_CH04_SOURCE_NAMES + (
+            "Source Registry",
+            "章対応",
+            "確認日",
+            "次回確認",
+        ):
+            changelog_mutations.append(
+                (
+                    f"missing Source impact {marker}",
+                    changelog.replace(source_line, source_line.replace(marker, "omitted", 1), 1),
+                )
+            )
+        no_limitation = re.sub(r"Framework mapping.*$", "Framework mappingを利用", source_line)
+        changelog_mutations.append(
+            ("missing Framework mapping limitation", changelog.replace(source_line, no_limitation, 1))
+        )
+    else:
+        error("negative CHANGELOG mutation cannot find Chapter 4 Source impact entry")
+    for name, mutation in changelog_mutations:
+        if mutation == changelog:
+            error(f"negative CHANGELOG mutation fixture did not change text: {name}")
+        elif not changelog_contract_errors(mutation, f"negative {CHANGELOG} {name}"):
+            error(f"negative regression accepted Chapter 4 CHANGELOG mutation: {name}")
+    if source_line:
+        equivalent_source = re.sub(
+            r"Framework mapping.*$",
+            "Framework mappingは実装、検証、完全性を保証しないことを記録",
+            source_line,
+        )
+        equivalent_changelog = changelog.replace(source_line, equivalent_source, 1)
+        equivalent_errors = changelog_contract_errors(equivalent_changelog, f"equivalent {CHANGELOG}")
+        if equivalent_errors:
+            error(
+                "Chapter 4 CHANGELOG contract rejected a semantically equivalent limitation: "
+                f"{equivalent_errors!r}"
+            )
 
     source_mutation = deepcopy(sources)
     source_entry = next(
@@ -3090,6 +3417,7 @@ def main() -> int:
     template = read_text(TEMPLATE)
     case = read_text(CASE)
     note = read_text(SOURCE_NOTE)
+    changelog = read_text(CHANGELOG)
     raw_registry = load_json("site-pages.json")
     sources = load_json("references/sources.json")
 
@@ -3101,6 +3429,7 @@ def main() -> int:
     ERRORS.extend(case_contract_errors(case, CASE))
     ERRORS.extend(source_contract_errors(chapter, sources, note))
     ERRORS.extend(publication_contract_errors())
+    ERRORS.extend(changelog_contract_errors(changelog, CHANGELOG))
 
     try:
         registry = parse_registry_data(raw_registry)
@@ -3113,7 +3442,7 @@ def main() -> int:
     if baseline and sources and baseline != render_reference_baseline():
         error("references/reference-baseline.md: out of sync with references/sources.json")
 
-    negative_regressions(chapter, template, case, raw_registry, sources, note)
+    negative_regressions(chapter, template, case, raw_registry, sources, note, changelog)
 
     if ERRORS:
         for message in ERRORS:
