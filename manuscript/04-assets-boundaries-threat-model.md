@@ -131,7 +131,7 @@ Threat Modelは、図を描く作業ではなく、判断要求をレビュー�
 
 #### 一つの仮説を最後まで通す記入例
 
-完成例を読む前に、一つの仮説だけをTemplateへ通す。`DR-2026-001`の継続判断に対し、Business Asset「請求連携能力」を担う`ASSET-2026-001`とOAuth component `ASSET-2026-005`を置く。承認からApp設定へ進むControl Flowを`FLOW-2026-001`、Administrative Controlの変化を`TB-2026-001`、read-only Review接点を`EXP-2026-001` / `EP-2026-001`とする。そこから「業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある」を`TH-2026-004`として記録し、2026-07-20のhistorical broad scopeを`EDGE-2026-001`、2026-07-25 remediation後のcurrent scope / binding未確認を`EDGE-2026-002`、summary-only境界への影響条件と観測点を`EDGE-2026-003`、Tenant binding Evidence不足を`EDGE-2026-004`へ分けて`PATH-2026-001`として書く。`CTRL-2026-005`と`CTRL-2026-006`がDocumentedに留まるなら`GAP-2026-002`を開き、`EREQ-2026-001`、`ACT-TM-2026-001` / `ACT-TM-2026-004`、`REA-TM-2026-001`へつなぐ。
+完成例を読む前に、一つの仮説だけをTemplateへ通す。`DR-2026-001`の継続判断に対し、Business Asset「請求連携能力」を担う`ASSET-2026-001`とOAuth component `ASSET-2026-005`を置く。承認からApp設定へ進むControl Flowを`FLOW-2026-001`、Administrative Controlの変化を第4章固有の`TB-2026-009`、read-only Review接点を`EXP-2026-001` / `EP-2026-001`とする。第1章から継承する`TB-2026-001`は業務SaaSからIdentity control planeへOAuth app identityが入る境界のまま変更しない。そこから「業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある」を`TH-2026-004`として記録し、2026-07-20のhistorical broad scopeを`EDGE-2026-001`、2026-07-25 remediation後のcurrent scope / binding未確認を`EDGE-2026-002`、summary-only境界への影響条件と観測点を`EDGE-2026-003`、Tenant binding Evidence不足を`EDGE-2026-004`へ分けて`PATH-2026-001`として書く。`CTRL-2026-005`と`CTRL-2026-006`がDocumentedに留まるなら`GAP-2026-002`を開き、`EREQ-2026-001`、`ACT-TM-2026-001` / `ACT-TM-2026-004`、`REA-TM-2026-001`へつなぐ。
 
 この一連の記入では、侵害を再現していない。仮説、Controlの状態、必要Evidence、Owner、期限をDecisionへつないだだけである。各IDの全行は合成記入例で確認できる。
 

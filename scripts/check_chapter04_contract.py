@@ -141,7 +141,7 @@ EXPECTED_INHERITED_CONTROL_IDS = {
 EXPECTED_CASE_IDS: dict[str, set[str]] = {
     "ASSET": {f"ASSET-2026-{number:03d}" for number in range(1, 8)},
     "FLOW": {f"FLOW-2026-{number:03d}" for number in range(1, 7)},
-    "TB": {f"TB-2026-{number:03d}" for number in range(1, 9)},
+    "TB": {f"TB-2026-{number:03d}" for number in range(1, 10)},
     "EXP": {f"EXP-2026-{number:03d}" for number in range(1, 4)},
     "EP": {f"EP-2026-{number:03d}" for number in range(1, 4)},
     "TH": {f"TH-2026-{number:03d}" for number in range(1, 6)},
@@ -210,8 +210,10 @@ CHAPTER_WALKTHROUGH_TRACE = (
     "完成例を読む前に、一つの仮説だけをTemplateへ通す。`DR-2026-001`の継続判断に対し、"
     "Business Asset「請求連携能力」を担う`ASSET-2026-001`とOAuth component "
     "`ASSET-2026-005`を置く。承認からApp設定へ進むControl Flowを`FLOW-2026-001`、"
-    "Administrative Controlの変化を`TB-2026-001`、read-only Review接点を"
-    "`EXP-2026-001` / `EP-2026-001`とする。そこから「"
+    "Administrative Controlの変化を第4章固有の`TB-2026-009`、read-only Review接点を"
+    "`EXP-2026-001` / `EP-2026-001`とする。第1章から継承する`TB-2026-001`は"
+    "業務SaaSからIdentity control planeへOAuth app identityが入る境界のまま変更しない。"
+    "そこから「"
     f"{SUMMARY_TH_004_PROPOSITION}」を`TH-2026-004`として記録し、"
     "2026-07-20のhistorical broad scopeを`EDGE-2026-001`、2026-07-25 remediation後の"
     "current scope / binding未確認を`EDGE-2026-002`、summary-only境界への影響条件と"
@@ -3591,36 +3593,73 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "cases/ch01-integrated-security-case-example.md",
     )
     messages.extend(chapter1_boundary_messages)
-    inherited_boundary = next(
-        (
-            row
-            for row in chapter1_boundary_rows
-            if len(row) == len(chapter1_boundary_header) and row[0].strip("`") == "TB-2026-002"
-        ),
-        None,
-    )
     boundary_rows_by_id = {
         row[0].strip("`"): row
         for row in parsed.get(boundary_header, [])
         if len(row) == len(boundary_header)
     }
-    chapter4_inherited_boundary = boundary_rows_by_id.get("TB-2026-002")
-    if inherited_boundary is None:
-        messages.append(f"{label}: Chapter 1 must define inherited boundary TB-2026-002")
-    elif chapter4_inherited_boundary is None:
-        messages.append(f"{label}: missing inherited boundary TB-2026-002")
-    else:
+    expected_inherited_boundary_ids = {
+        "TB-2026-001",
+        "TB-2026-002",
+        "TB-2026-003",
+    }
+    chapter1_boundary_ids = [
+        row[0].strip("`")
+        for row in chapter1_boundary_rows
+        if len(row) == len(chapter1_boundary_header)
+    ]
+    for inherited_id in sorted(expected_inherited_boundary_ids):
+        source_matches = [
+            row
+            for row in chapter1_boundary_rows
+            if len(row) == len(chapter1_boundary_header)
+            and row[0].strip("`") == inherited_id
+        ]
+        if len(source_matches) != 1:
+            messages.append(
+                f"{label}: Chapter 1 must define inherited boundary {inherited_id} "
+                f"exactly once; found {chapter1_boundary_ids.count(inherited_id)}"
+            )
+            continue
+        chapter4_inherited_boundary = boundary_rows_by_id.get(inherited_id)
+        if chapter4_inherited_boundary is None:
+            messages.append(f"{label}: missing inherited boundary {inherited_id}")
+            continue
+        source_boundary = source_matches[0]
         inherited_contract = {
-            "From / To": f"{inherited_boundary[1]} → {inherited_boundary[2]}",
-            "Crossing condition": inherited_boundary[3],
-            "Control": inherited_boundary[4],
-            "Failure consequence": inherited_boundary[5],
+            "From / To": f"{source_boundary[1]} → {source_boundary[2]}",
+            "Crossing condition": source_boundary[3],
+            "Control": source_boundary[4],
+            "Failure consequence": source_boundary[5],
         }
         for field, expected in inherited_contract.items():
             observed = chapter4_inherited_boundary[boundary_header.index(field)]
             if observed != expected:
                 messages.append(
-                    f"{label}: TB-2026-002 {field} {observed!r} must preserve Chapter 1 value {expected!r}"
+                    f"{label}: {inherited_id} {field} {observed!r} must preserve "
+                    f"Chapter 1 value {expected!r}"
+                )
+
+    requirement_configuration_boundary = boundary_rows_by_id.get("TB-2026-009")
+    if requirement_configuration_boundary is None:
+        messages.append(
+            f"{label}: missing Chapter 4 requirement-to-configuration boundary TB-2026-009"
+        )
+    else:
+        expected_requirement_configuration_fields = {
+            "Boundary type": "Administrative Control",
+            "From / To": "業務要件とscope承認 → Identity control planeのApp設定",
+            "Trust / authority change": "業務上の要件判断が管理者同意へ変換される",
+            "Crossing condition": "scope追加または例外承認が必要",
+            "Control": "Admin consent、scope review、二者Review",
+            "Failure consequence": "過大権限または未承認同意",
+        }
+        for field, expected in expected_requirement_configuration_fields.items():
+            observed = requirement_configuration_boundary[boundary_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: TB-2026-009 {field} {observed!r} != "
+                    f"requirement-to-configuration contract {expected!r}"
                 )
 
     refinement_boundary = boundary_rows_by_id.get("TB-2026-008")
@@ -3850,7 +3889,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "`ASSET-2026-007`"
             ),
             "Boundary / Flow / Exposure IDs": (
-                "`TB-2026-001`, `TB-2026-004`, `TB-2026-008`, `FLOW-2026-001`, "
+                "`TB-2026-004`, `TB-2026-008`, `TB-2026-009`, `FLOW-2026-001`, "
                 "`FLOW-2026-002`, `FLOW-2026-003`, `FLOW-2026-006`, "
                 "`EXP-2026-001`, `EXP-2026-003`"
             ),
@@ -4205,6 +4244,23 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{label}: Chapter 4 Control definitions {sorted(controls_by_id)!r} != "
             f"fresh Control relation IDs {sorted(CHAPTER4_CONTROL_RELATIONS)!r}"
         )
+    requirement_configuration_control = controls_by_id.get("CTRL-2026-005")
+    if requirement_configuration_control is None:
+        messages.append(f"{label}: missing requirement-to-configuration Control CTRL-2026-005")
+    else:
+        control_boundary_ids = set(
+            re.findall(
+                r"\bTB-2026-\d{3}\b",
+                requirement_configuration_control[
+                    control_header.index("Related Asset / Boundary / Threat / Path IDs")
+                ],
+            )
+        )
+        if control_boundary_ids != {"TB-2026-009"}:
+            messages.append(
+                f"{label}: CTRL-2026-005 boundary references "
+                f"{sorted(control_boundary_ids)!r} != ['TB-2026-009']"
+            )
 
     if text.count("### Control IDの継承境界") != 1:
         messages.append(f"{label}: requires exactly one Control ID inheritance boundary heading")
@@ -4403,6 +4459,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             messages.append(
                 f"{label}: EDGE-2026-001 historical snapshot must remain Confirmed"
             )
+        if edge001[path_header.index("Boundary ID")] != "`TB-2026-009`":
+            messages.append(
+                f"{label}: EDGE-2026-001 must use fresh requirement-to-configuration "
+                "boundary TB-2026-009"
+            )
     if edge002 is None:
         messages.append(f"{label}: missing current-scope edge EDGE-2026-002")
     else:
@@ -4435,6 +4496,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in parsed.get(flow_header, [])
         if len(row) == len(flow_header)
     }
+    requirement_configuration_flow = flow_rows_by_id.get("FLOW-2026-001")
+    if requirement_configuration_flow is None:
+        messages.append(f"{label}: missing requirement-to-configuration flow FLOW-2026-001")
+    elif requirement_configuration_flow[flow_header.index("Boundary IDs crossed")] != "`TB-2026-009`":
+        messages.append(
+            f"{label}: FLOW-2026-001 must use fresh requirement-to-configuration "
+            "boundary TB-2026-009 without redefining inherited TB-2026-001"
+        )
     identity_flow = flow_rows_by_id.get("FLOW-2026-006")
     if identity_flow is None:
         messages.append(f"{label}: missing current workload-identity flow FLOW-2026-006")
@@ -4507,6 +4576,20 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         )
     summary_boundary_bindings = (
         (
+            "EXP-2026-001",
+            exposure_rows_by_id.get("EXP-2026-001"),
+            exposure_header,
+            "Related Asset / Boundary / Flow IDs",
+            {"TB-2026-001", "TB-2026-004", "TB-2026-009"},
+        ),
+        (
+            "EP-2026-001",
+            entry_point_rows_by_id.get("EP-2026-001"),
+            entry_point_header,
+            "Boundary IDs",
+            {"TB-2026-001", "TB-2026-004", "TB-2026-009"},
+        ),
+        (
             "FLOW-2026-003",
             flow_rows_by_id.get("FLOW-2026-003"),
             flow_header,
@@ -4546,7 +4629,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             hypothesis_rows.get("TH-2026-004"),
             hypothesis_header,
             "Boundary / Flow / Exposure IDs",
-            {"TB-2026-001", "TB-2026-004", "TB-2026-008"},
+            {"TB-2026-004", "TB-2026-008", "TB-2026-009"},
         ),
         (
             "TH-2026-002",
@@ -4588,8 +4671,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if len(row) == len(misuse_header)
     }
     misuse001 = misuse_rows_by_id.get("MISUSE-2026-001")
-    if misuse001 is None or misuse001[misuse_header.index("Boundary crossed")] != "`TB-2026-001`":
-        messages.append(f"{label}: MISUSE-2026-001 must remain scoped to administrative boundary TB-2026-001")
+    if misuse001 is None or misuse001[misuse_header.index("Boundary crossed")] != "`TB-2026-009`":
+        messages.append(
+            f"{label}: MISUSE-2026-001 must use fresh administrative boundary "
+            "TB-2026-009 without redefining inherited TB-2026-001"
+        )
 
     action_header = (
         "Action ID",
@@ -6870,6 +6956,70 @@ def negative_regressions(
                 ),
             ),
             (
+                "TB-2026-001 inherited endpoint drift",
+                case.replace(
+                    "業務SaaS → Identity control plane",
+                    "業務要件とscope承認 → Identity control planeのApp設定",
+                    1,
+                ),
+            ),
+            (
+                "TB-2026-001 inherited crossing context drift",
+                case.replace(
+                    "| OAuth 2.0 app identity | Admin consent、scope review | 過大権限または不正な同意 |",
+                    "| scope追加または例外承認が必要 | Admin consent、scope review | 過大権限または不正な同意 |",
+                    1,
+                ),
+            ),
+            (
+                "fresh TB-2026-009 collapsed into inherited TB-2026-001",
+                case.replace(
+                    "| `TB-2026-009` | Administrative Control |",
+                    "| `TB-2026-001` | Administrative Control |",
+                    1,
+                ),
+            ),
+            (
+                "TB-2026-009 trust-authority meaning drift",
+                case.replace(
+                    "業務上の要件判断が管理者同意へ変換される",
+                    "OAuth app identityが同意へ入る",
+                    1,
+                ),
+            ),
+            (
+                "FLOW-2026-001 reuses inherited boundary",
+                case.replace(
+                    "Business approverとPlatform adminの二者Review | `TB-2026-009` | Internal |",
+                    "Business approverとPlatform adminの二者Review | `TB-2026-001` | Internal |",
+                    1,
+                ),
+            ),
+            (
+                "MISUSE-2026-001 reuses inherited boundary",
+                case.replace(
+                    "`ASSET-2026-004`, `ASSET-2026-005` | `TB-2026-009` | 要件表と実設定の差分が残る",
+                    "`ASSET-2026-004`, `ASSET-2026-005` | `TB-2026-001` | 要件表と実設定の差分が残る",
+                    1,
+                ),
+            ),
+            (
+                "EDGE-2026-001 reuses inherited boundary",
+                case.replace(
+                    "historical Snapshotで確認された | `TB-2026-009` | `ASSET-2026-005` / historical broad-scope snapshot",
+                    "historical Snapshotで確認された | `TB-2026-001` | `ASSET-2026-005` / historical broad-scope snapshot",
+                    1,
+                ),
+            ),
+            (
+                "CTRL-2026-005 reuses inherited boundary",
+                case.replace(
+                    "`ASSET-2026-004`, `ASSET-2026-005`, `TB-2026-009`, `TH-2026-001`",
+                    "`ASSET-2026-004`, `ASSET-2026-005`, `TB-2026-001`, `TH-2026-001`",
+                    1,
+                ),
+            ),
+            (
                 "TB-2026-006 evidence-state overclaim",
                 case.replace(
                     "| Scope外Serviceへの到達 | Assumed | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |",
@@ -6912,16 +7062,16 @@ def negative_regressions(
             (
                 "TH-2026-004 summary-boundary reference drift",
                 case.replace(
-                    "`TB-2026-001`, `TB-2026-004`, `TB-2026-008`, `FLOW-2026-001`",
-                    "`TB-2026-001`, `TB-2026-004`, `TB-2026-002`, `FLOW-2026-001`",
+                    "`TB-2026-004`, `TB-2026-008`, `TB-2026-009`, `FLOW-2026-001`",
+                    "`TB-2026-004`, `TB-2026-002`, `TB-2026-009`, `FLOW-2026-001`",
                     1,
                 ),
             ),
             (
                 "TH-2026-004 related-asset drift",
                 case.replace(
-                    "`ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006`, `ASSET-2026-007` | `TB-2026-001`, `TB-2026-004`, `TB-2026-008`",
-                    "`ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006` | `TB-2026-001`, `TB-2026-004`, `TB-2026-008`",
+                    "`ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006`, `ASSET-2026-007` | `TB-2026-004`, `TB-2026-008`, `TB-2026-009`",
+                    "`ASSET-2026-001`, `ASSET-2026-005`, `ASSET-2026-006` | `TB-2026-004`, `TB-2026-008`, `TB-2026-009`",
                     1,
                 ),
             ),
@@ -7056,8 +7206,8 @@ def negative_regressions(
             (
                 "Attack Path To Asset State unsafe external action",
                 case.replace(
-                    "| `TB-2026-001` | `ASSET-2026-005` / historical broad-scope snapshot |",
-                    "| `TB-2026-001` | `ASSET-2026-005` / 第三者の本番システムへ接続する |",
+                    "| `TB-2026-009` | `ASSET-2026-005` / historical broad-scope snapshot |",
+                    "| `TB-2026-009` | `ASSET-2026-005` / 第三者の本番システムへ接続する |",
                     1,
                 ),
             ),
