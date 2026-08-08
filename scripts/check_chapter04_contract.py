@@ -596,6 +596,44 @@ ACTION_HEADER = (
     "Success evidence",
     "Status",
 )
+LAB_SEQUENCE_HEADER = (
+    "Sequence",
+    "Owner Action",
+    "Entry gate",
+    "Operation / scope",
+    "Exit evidence / consumer",
+)
+EXPECTED_LAB_SEQUENCE_ROWS = (
+    (
+        "1. Safety entry",
+        "`ACT-TM-2026-006` Phase B-entry",
+        "対象・method・time windowを承認した新Authorization Record / RoE",
+        "Rule test前にno-outbound合成Labのpreflightとdefault-denyを検証する。失敗時は開始しない",
+        "新Evidence ID付き署名済みpreflight report / default-deny結果を"
+        "`ACT-TM-2026-002` / `005`へ供給",
+    ),
+    (
+        "2. Event-class tests",
+        "`ACT-TM-2026-002` / `ACT-TM-2026-005` Phase B",
+        "Sequence 1の両Evidenceが成功しentry-gate sign-offがある",
+        "Admin consentとApp identity lifecycleを別の合成Rule testとして実行する",
+        "各Detection test結果へ新Evidence IDを割り当て`REA-TM-2026-002`へ供給",
+    ),
+    (
+        "3. Cleanup",
+        "`ACT-TM-2026-006` Phase C",
+        "Sequence 2が終了または停止した",
+        "直後にCleanup verificationを実行する。失敗時は完了扱いにせずEscalateする",
+        "新Evidence ID付きCleanup verificationを`REA-TM-2026-004`へ供給",
+    ),
+    (
+        "4. Separate closure",
+        "`REA-TM-2026-002` / `REA-TM-2026-004`",
+        "Sequence 1〜3の対応Evidenceがある",
+        "Detection assuranceとLab-safety assuranceを別々に評価する",
+        "`CTRL-2026-007`と`CTRL-2026-008`をEvidence範囲内で別々に更新する",
+    ),
+)
 REASSESSMENT_HEADER = (
     "Reassessment ID",
     "Trigger",
@@ -830,6 +868,12 @@ TABLE_SAFETY_POLICIES = {
             reader_visible=("Action", "Owner", "Success evidence"),
         ),
         table_safety_policy(
+            LAB_SEQUENCE_HEADER,
+            structural=("Sequence", "Owner Action"),
+            finite=(),
+            reader_visible=("Entry gate", "Operation / scope", "Exit evidence / consumer"),
+        ),
+        table_safety_policy(
             REASSESSMENT_HEADER,
             structural=("Reassessment ID",),
             finite=("Scheduled date",),
@@ -911,6 +955,7 @@ CASE_TABLE_OCCURRENCES = {
         COLLECTED_EVIDENCE_HEADER,
         NEGATIVE_FINDING_HEADER,
         ACTION_HEADER,
+        LAB_SEQUENCE_HEADER,
         REASSESSMENT_HEADER,
         HANDOFF_HEADER,
         RUBRIC_HEADER,
@@ -3719,16 +3764,76 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             ),
         },
         "ACT-TM-2026-002": {
-            "action": ("合成Rule test計画", "新Authorization Record / RoE承認後にのみ行う"),
-            "success": ("Rule test計画", "新Authorization Record", "RoE", "Detection test結果"),
+            "action": (
+                "Phase A",
+                "Admin consent change Event",
+                "合成Rule test計画",
+                "新Authorization Record / RoE申請",
+                "Phase B",
+                "`ACT-TM-2026-006` Phase B-entry",
+                "新Evidence ID付き署名済みpreflight report / default-deny結果の成功を開始条件",
+                "no-outboundの合成Lab",
+                "新Evidence IDを割り当て",
+                "`REA-TM-2026-002`へ供給",
+                "Phase CのCleanup verificationを完了するまで本Actionを完了扱いにしない",
+                "entry gate失敗",
+                "開始しない",
+            ),
+            "success": (
+                "Phase A",
+                "consent Rule test計画",
+                "新Authorization Record / RoE申請ticket",
+                "Phase B",
+                "approval ticket",
+                "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果",
+                "新Evidence ID付きAdmin consent Detection test結果",
+                "query version",
+                "Coverage",
+                "Phase Cの新Evidence ID付きCleanup verification",
+                "`REA-TM-2026-002`への供給",
+                "Phase B / C未実施の間は結果未収集",
+            ),
         },
         "ACT-TM-2026-003": {
             "action": (
+                "Phase A",
+                "resource / operation Field contract",
+                "合成sample summary",
+                "change proposal",
+                "新Authorization Record / change approval申請",
+                "Phase B",
+                "対象・method・time window・実施Owner",
+                "新Authorization Record / change approvalで承認した後に限り",
+                "承認済み運用工程へhandoff",
+                "第4章内ではProduction Pipelineを変更せず実Dataを収集しない",
+                "post-change telemetry result",
+                "新Evidence IDを割り当て",
+                "query / version",
+                "Coverage",
+                "retention",
+                "review sign-off",
+                "`REA-TM-2026-002`へ供給",
+                "未承認、過剰収集、scope外変更が必要な場合は停止する",
+            ),
+            "success": (
+                "Phase A",
                 "Field contract",
                 "合成sample summary",
-                "新Authorization Record / change approval後の別工程",
+                "change proposal",
+                "新Authorization Record / change approval申請ticket",
+                "Production変更なし",
+                "Phase B",
+                "approval ticket",
+                "承認済みの新Authorization Record / change approval",
+                "実装記録",
+                "新Evidence ID付きpost-change API telemetry result",
+                "query / version",
+                "resource / operation Coverage",
+                "retention note",
+                "review sign-off",
+                "`REA-TM-2026-002`への供給",
+                "Phase B未実施の間はpost-change result未収集",
             ),
-            "success": ("Field contract", "合成sample summary", "change proposal", "Production変更なし"),
         },
         "ACT-TM-2026-004": {
             "action": (
@@ -3785,7 +3890,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "新Authorization Record / RoE申請",
                 "Phase B",
                 "対象・method・time window",
-                "新Authorization Record / RoEで承認した後に限り",
+                "`ACT-TM-2026-006` Phase B-entry",
+                "新Evidence ID付き署名済みpreflight report / default-deny結果の成功を開始条件",
                 "no-outboundの合成Lab",
                 "no-outboundの合成LabでApp identity lifecycle Eventの合成Rule testを実行",
                 "合成Rule testを実行",
@@ -3798,13 +3904,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "`REA-TM-2026-002`へ供給",
                 "Admin consent change Event側は`ACT-TM-2026-002`が扱い",
                 "App identity lifecycle Event側だけを扱う",
-                "承認前",
+                "Phase CのCleanup verificationを完了するまで本Actionを完了扱いにしない",
+                "entry gate失敗",
                 "外向き通信",
                 "実Target",
                 "実Credential",
                 "実Data",
                 "Production変更",
-                "停止する",
+                "開始または継続しない",
             ),
             "success": (
                 "Phase A",
@@ -3816,18 +3923,51 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "Phase B",
                 "approval ticket",
                 "承認済みの新Authorization Record / RoE",
+                "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果",
                 "新Evidence ID付きApp identity lifecycle Event Detection test結果",
                 "query version",
                 "review sign-off",
+                "Phase Cの新Evidence ID付きCleanup verification",
                 "新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、"
-                "Coverage表、retention record、review sign-off、`REA-TM-2026-002`への供給",
+                "Coverage表、retention record、review sign-off、Phase Cの新Evidence ID付き"
+                "Cleanup verification、`REA-TM-2026-002`への供給",
                 "`REA-TM-2026-002`への供給",
-                "Phase B未実施の間はApp identity lifecycle EventのDetection test結果は未収集",
+                "Phase B / C未実施の間はApp identity lifecycle EventのDetection test結果とCleanup結果は未収集",
             ),
         },
         "ACT-TM-2026-006": {
-            "action": ("preflight", "default-deny", "Cleanup", "新Authorization Record / RoE承認後にのみ実行"),
-            "success": ("新Authorization Record", "RoE", "preflight report", "default-deny結果", "Cleanup verification"),
+            "action": (
+                "Phase A",
+                "preflight",
+                "default-deny",
+                "Cleanup実施計画",
+                "新Authorization Record / RoE申請",
+                "Phase B-entry",
+                "対象・method・time windowを承認した後",
+                "Rule test開始前",
+                "新Evidence ID",
+                "entry Evidence",
+                "失敗時はRule testを開始しない",
+                "Phase C",
+                "Rule test終了または停止直後",
+                "Cleanup verification",
+                "`REA-TM-2026-004`へ供給",
+                "開始または継続しない",
+            ),
+            "success": (
+                "Phase A",
+                "Lab実施計画",
+                "新Authorization Record / RoE申請ticket",
+                "Phase B-entry",
+                "approval ticket",
+                "承認済みの新Authorization Record / RoE",
+                "新Evidence ID付き署名済みpreflight report / default-deny結果",
+                "entry-gate sign-off",
+                "Phase C",
+                "新Evidence ID付きCleanup verification",
+                "`REA-TM-2026-004`への供給",
+                "各Phase未実施の間はpreflight / default-deny / Cleanup結果未収集",
+            ),
         },
     }
     for action_id, requirements in expected_action_semantics.items():
@@ -3841,6 +3981,16 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for marker in requirements["success"]:
             if marker not in row[success_evidence_index]:
                 messages.append(f"{label}: {action_id} Success evidence missing marker {marker!r}")
+
+    lab_sequence_rows, lab_sequence_messages = table_by_header(
+        text, LAB_SEQUENCE_HEADER, label
+    )
+    messages.extend(lab_sequence_messages)
+    if tuple(tuple(row) for row in lab_sequence_rows) != EXPECTED_LAB_SEQUENCE_ROWS:
+        messages.append(
+            f"{label}: Lab Rule-test execution order {tuple(tuple(row) for row in lab_sequence_rows)!r} "
+            f"!= {EXPECTED_LAB_SEQUENCE_ROWS!r}"
+        )
 
     gap_rows_by_id = {
         row[0].strip("`"): row
@@ -3971,6 +4121,44 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             if marker not in rule_test_minimum:
                 messages.append(f"{label}: EREQ-2026-002 minimum evidence missing {marker!r}")
 
+    telemetry_requirement = evidence_rows_by_id.get("EREQ-2026-003")
+    if telemetry_requirement is None:
+        messages.append(f"{label}: missing API telemetry Evidence Requirement EREQ-2026-003")
+    else:
+        telemetry_minimum = telemetry_requirement[
+            evidence_requirement_header.index("Minimum sufficient evidence")
+        ]
+        telemetry_forbidden = telemetry_requirement[
+            evidence_requirement_header.index("Forbidden / over-collection boundary")
+        ]
+        telemetry_resulting = telemetry_requirement[
+            evidence_requirement_header.index("Resulting Evidence IDs")
+        ]
+        for marker in (
+            "resource / operation Field contract",
+            "承認後のpost-change telemetry result",
+        ):
+            if marker not in telemetry_minimum:
+                messages.append(f"{label}: EREQ-2026-003 minimum evidence missing {marker!r}")
+        for marker in (
+            "Production変更や実Dataが必要な工程を第4章内で実行しない",
+            "PIIを収集しない",
+            "実Tenantへ接続しない",
+        ):
+            if marker not in telemetry_forbidden:
+                messages.append(f"{label}: EREQ-2026-003 safety boundary missing {marker!r}")
+        for marker in (
+            "Historical inputs only",
+            "EVD-2026-004",
+            "NEG-2026-001",
+            "resource / operation Fieldの実装記録とpost-change telemetry resultは未収集",
+            "承認済み運用工程後に新Evidence IDを割り当てる",
+        ):
+            if marker not in telemetry_resulting:
+                messages.append(
+                    f"{label}: EREQ-2026-003 Resulting Evidence IDs missing {marker!r}"
+                )
+
     lab_requirement = evidence_rows_by_id.get("EREQ-2026-004")
     if lab_requirement is None:
         messages.append(f"{label}: missing lab-safety Evidence Requirement EREQ-2026-004")
@@ -4028,21 +4216,46 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "合成sample summary",
                 "change proposal",
                 "Telemetry Field change approval",
+                "Field実装記録",
+                "新Evidence ID付きpost-change API telemetry result",
+                "resource / operation Coverage",
+                "review sign-off",
             ),
             "Closure criteria": (
-                "新Authorization Record / RoE承認後にのみ合成Rule testを再実施",
-                "Admin consent EventとApp identity lifecycle Event",
-                "両Event classのDetection test結果に新Evidence IDを割り当てる",
+                "新Authorization Record / RoE承認後にのみ両Event classの合成Rule testを再実施",
+                "Detection test結果に新Evidence IDを割り当てる",
                 "両Event classのEvidence",
-                "収集設定変更はchange approval後",
                 "CTRL-2026-007",
                 "Validated",
+                "新Authorization Record / change approval後の承認済み運用工程",
+                "post-change Evidence",
+                "required API Eventのresource / operation Field",
+                "Coverage",
+                "retention",
+                "過剰収集なし",
+                "CTRL-2026-009",
+                "GAP-2026-001",
+                "CTRL-2026-007`のEvidenceを`CTRL-2026-009`へ流用しない",
             ),
         },
         "REA-TM-2026-004": {
             "Scope": ("CTRL-2026-008", "GAP-2026-004", "EREQ-2026-004"),
-            "Inputs required": ("新Authorization Record", "RoE", "preflight report", "default-deny結果", "Cleanup verification"),
-            "Closure criteria": ("CTRL-2026-008", "Observed", "失敗時は検証を停止"),
+            "Inputs required": (
+                "新Authorization Record",
+                "RoE",
+                "Rule test開始前",
+                "新Evidence ID付き署名済みpreflight report / default-deny結果",
+                "Rule test終了または停止後",
+                "新Evidence ID付きCleanup verification",
+            ),
+            "Closure criteria": (
+                "preflight / default-denyがRule test開始前に成功",
+                "終了または停止直後のCleanup verification",
+                "CTRL-2026-008",
+                "Observed",
+                "開始または継続せず",
+                "完了扱いにしない",
+            ),
         },
     }
     for reassessment_id, fields in expected_reassessment_markers.items():
@@ -4441,7 +4654,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             reassessment_rows_by_id.get("REA-TM-2026-002"),
             reassessment_header,
             "Closure criteria",
-            {"CTRL-2026-007"},
+            {"CTRL-2026-007", "CTRL-2026-009"},
         ),
         (
             "REA-TM-2026-003 Scope",
@@ -5503,8 +5716,10 @@ def negative_regressions(
             (
                 "REA-TM-2026-002 closes on consent-only evidence",
                 case.replace(
-                    "対象をAdmin consent EventとApp identity lifecycle Eventの両Event classにする。両Event classのDetection test結果に新Evidence IDを割り当てる。",
-                    "対象をAdmin consent Eventだけにする。Detection test結果に新Evidence IDを割り当てる。",
+                    "新Authorization Record / RoE承認後にのみ両Event classの合成Rule testを再実施し、"
+                    "Detection test結果に新Evidence IDを割り当てる。両Event classのEvidence",
+                    "Admin consent Eventだけの合成Rule testを再実施し、Detection test結果に"
+                    "新Evidence IDを割り当てる。Admin consent EventのEvidence",
                     1,
                 ),
             ),
@@ -5906,16 +6121,47 @@ def negative_regressions(
             (
                 "ACT-TM-2026-002 bypasses renewed Authorization and RoE",
                 case.replace(
-                    "Admin consent change Eventの合成Rule test計画を第17章の形式で更新する。Rule testの再実施は新Authorization Record / RoE承認後にのみ行う",
-                    "Admin consent change Eventの合成Rule testを第17章の形式で再実施する",
+                    "Phase Bでは対象・method・time windowの承認と`ACT-TM-2026-006` "
+                    "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果の"
+                    "成功を開始条件とし、no-outboundの合成LabでAdmin consent change Eventの"
+                    "合成Rule testを実行",
+                    "Phase Bでは直ちにno-outboundの合成LabでAdmin consent change Eventの"
+                    "合成Rule testを実行",
                     1,
                 ),
             ),
             (
                 "ACT-TM-2026-005 bypasses renewed Authorization and RoE",
                 case.replace(
-                    "Phase Bでは対象・method・time windowを新Authorization Record / RoEで承認した後に限り",
-                    "Phase Bでは直ちに",
+                    "Phase Bでは対象・method・time windowの承認と`ACT-TM-2026-006` "
+                    "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果の"
+                    "成功を開始条件とし、no-outboundの合成LabでApp identity lifecycle Eventの"
+                    "合成Rule testを実行",
+                    "Phase Bでは直ちにno-outboundの合成LabでApp identity lifecycle Eventの"
+                    "合成Rule testを実行",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 omits default-deny Phase B entry evidence",
+                case.replace(
+                    "Phase Bでは対象・method・time windowの承認と`ACT-TM-2026-006` "
+                    "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果の"
+                    "成功を開始条件とし、no-outboundの合成LabでApp identity lifecycle Event",
+                    "Phase Bでは対象・method・time windowの承認と`ACT-TM-2026-006` "
+                    "Phase B-entryの新Evidence ID付き署名済みpreflight reportの成功を開始条件とし、"
+                    "no-outboundの合成LabでApp identity lifecycle Event",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 omits signed preflight success evidence",
+                case.replace(
+                    "承認済みの新Authorization Record / RoE、`ACT-TM-2026-006` Phase B-entryの"
+                    "新Evidence ID付き署名済みpreflight report / default-deny結果、新Evidence ID付き"
+                    "App identity lifecycle Event Detection test結果",
+                    "承認済みの新Authorization Record / RoE、新Evidence ID付きApp identity "
+                    "lifecycle Event Detection test結果",
                     1,
                 ),
             ),
@@ -5930,8 +6176,18 @@ def negative_regressions(
             (
                 "ACT-TM-2026-005 lifecycle result overclaims collection before execution",
                 case.replace(
-                    "Phase B未実施の間はApp identity lifecycle EventのDetection test結果は未収集",
-                    "Phase B実施前からApp identity lifecycle EventのDetection test結果は収集済み",
+                    "Phase B / C未実施の間はApp identity lifecycle EventのDetection test結果とCleanup結果は未収集",
+                    "Phase B / C実施前からApp identity lifecycle EventのDetection test結果とCleanup結果は収集済み",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-005 omits post-test Cleanup completion gate",
+                case.replace(
+                    "本ActionはApp identity lifecycle Event側だけを扱う。両Event classのRule test"
+                    "終了または停止後は`ACT-TM-2026-006` Phase CのCleanup verificationを完了するまで"
+                    "本Actionを完了扱いにしない。",
+                    "本ActionはApp identity lifecycle Event側だけを扱う。",
                     1,
                 ),
             ),
@@ -5964,9 +6220,11 @@ def negative_regressions(
                 "ACT-TM-2026-005 Phase B success omits coverage and retention evidence",
                 case.replace(
                     "新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、"
-                    "Coverage表、retention record、review sign-off、`REA-TM-2026-002`への供給",
+                    "Coverage表、retention record、review sign-off、Phase Cの新Evidence ID付き"
+                    "Cleanup verification、`REA-TM-2026-002`への供給",
                     "新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、"
-                    "review sign-off、`REA-TM-2026-002`への供給",
+                    "review sign-off、Phase Cの新Evidence ID付きCleanup verification、"
+                    "`REA-TM-2026-002`への供給",
                     1,
                 ),
             ),
@@ -5981,8 +6239,38 @@ def negative_regressions(
             (
                 "ACT-TM-2026-003 bypasses change authorization",
                 case.replace(
-                    "API利用Telemetryのresource / operation Field contractと合成sample summaryを作成する。収集設定またはProduction Pipelineの変更は新Authorization Record / change approval後の別工程とする",
-                    "API利用Telemetryにresource / operation粒度を追加する",
+                    "Phase AではAPI利用Telemetryのresource / operation Field contract、合成sample summary、"
+                    "change proposal、新Authorization Record / change approval申請を作成する。Phase Bでは"
+                    "対象・method・time window・実施Ownerを新Authorization Record / change approvalで"
+                    "承認した後に限り、Field実装とpost-change collectionを承認済み運用工程へhandoffする",
+                    "API利用Telemetryにresource / operation粒度を直ちに追加する",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-003 post-change result omits new Evidence ID",
+                case.replace(
+                    "post-change telemetry resultを収集して新Evidence IDを割り当て",
+                    "post-change telemetry resultを収集して",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-003 success omits post-change telemetry result",
+                case.replace(
+                    "実装記録、新Evidence ID付きpost-change API telemetry result、query / version、"
+                    "resource / operation Coverage、retention note、review sign-off",
+                    "実装記録、query / version、resource / operation Coverage、retention note、review sign-off",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-003 invents collected post-change Evidence",
+                case.replace(
+                    "resource / operation Fieldの実装記録とpost-change telemetry resultは未収集"
+                    "（承認済み運用工程後に新Evidence IDを割り当てる）",
+                    "resource / operation Fieldの実装記録とpost-change telemetry resultは"
+                    "EVD-2026-005として収集済み",
                     1,
                 ),
             ),
@@ -5997,7 +6285,11 @@ def negative_regressions(
             (
                 "REA-TM-2026-002 omits Action result inputs",
                 case.replace(
-                    "Admin consent EventとApp identity lifecycle EventのAudit export、Rule test計画、新Authorization Record / RoE、両Event classのDetection test結果、query version、coverage表、retention note、Field contract、合成sample summary、change proposal、Telemetry Field change approval",
+                    "Admin consent EventとApp identity lifecycle EventのAudit export、Rule test計画、"
+                    "新Authorization Record / RoE、両Event classのDetection test結果、query version、"
+                    "coverage表、retention note、Field contract、合成sample summary、change proposal、"
+                    "Telemetry Field change approval、Field実装記録、新Evidence ID付きpost-change "
+                    "API telemetry result、resource / operation Coverage、review sign-off",
                     "Audit export、Rule test計画、新Authorization Record / RoE、coverage表、retention note、Telemetry Field change approval",
                     1,
                 ),
@@ -6005,8 +6297,29 @@ def negative_regressions(
             (
                 "REA-TM-2026-002 omits renewed authorization gate",
                 case.replace(
-                    "新Authorization Record / RoE承認後にのみ合成Rule testを再実施し、対象をAdmin consent EventとApp identity lifecycle Eventの両Event classにする。両Event classのDetection test結果に新Evidence IDを割り当てる。収集設定変更はchange approval後に行う。両Event classのEvidenceで`CTRL-2026-007`がValidated、Gap ownerと期限が更新済み",
-                    "`CTRL-2026-007`がValidated、Gap ownerと期限が更新済み",
+                    "新Authorization Record / RoE承認後にのみ両Event classの合成Rule testを再実施し、"
+                    "Detection test結果に新Evidence IDを割り当てる。両Event classのEvidenceで"
+                    "`CTRL-2026-007`をValidatedとする。API telemetryは新Authorization Record / "
+                    "change approval後の承認済み運用工程でのみ変更・収集し",
+                    "両Event classのEvidenceで`CTRL-2026-007`をValidatedとする。API telemetryを変更・収集し",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 omits CTRL-2026-009 post-change closure threshold",
+                case.replace(
+                    "post-change Evidenceがrequired API Eventのresource / operation Field、Coverage、"
+                    "retention、過剰収集なしを示す場合に限り`CTRL-2026-009`を承認scope内でValidatedとし"
+                    "`GAP-2026-001`を閉じる",
+                    "`CTRL-2026-009`をValidatedとし`GAP-2026-001`を閉じる",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 reuses Detection evidence for API telemetry closure",
+                case.replace(
+                    "`CTRL-2026-007`のEvidenceを`CTRL-2026-009`へ流用しない",
+                    "`CTRL-2026-007`のEvidenceを`CTRL-2026-009`へ流用する",
                     1,
                 ),
             ),
@@ -6021,8 +6334,37 @@ def negative_regressions(
             (
                 "ACT-TM-2026-006 executes before authorization",
                 case.replace(
-                    "合成Labのpreflight、default-deny、Cleanup実施計画を作成し、新Authorization Record / RoE承認後にのみ実行して結果を収集する",
-                    "合成Labのpreflight、default-deny、Cleanupを実行して結果を収集する",
+                    "Phase B-entryでは対象・method・time windowを承認した後、"
+                    "`ACT-TM-2026-002` / `ACT-TM-2026-005`のRule test開始前に署名済みpreflightと"
+                    "default-deny検証を実行し",
+                    "Phase B-entryでは直ちにRule test前のpreflightとdefault-deny検証を実行し",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-006 omits post-test Cleanup handoff",
+                case.replace(
+                    "Phase Cでは両Event classのRule test終了または停止直後にCleanup verificationを実行し、"
+                    "新Evidence IDを割り当てて`REA-TM-2026-004`へ供給する。",
+                    "Phase CではRule test終了後に記録を確認する。",
+                    1,
+                ),
+            ),
+            (
+                "Lab sequence starts Event-class tests before Safety entry",
+                case.replace(
+                    "| 2. Event-class tests | `ACT-TM-2026-002` / `ACT-TM-2026-005` Phase B | "
+                    "Sequence 1の両Evidenceが成功しentry-gate sign-offがある |",
+                    "| 1. Event-class tests | `ACT-TM-2026-002` / `ACT-TM-2026-005` Phase B | "
+                    "任意の開始判断 |",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-004 omits post-stop Cleanup closure",
+                case.replace(
+                    "終了または停止直後のCleanup verificationを含む全結果が収集された場合に限り",
+                    "preflight結果が収集された場合に限り",
                     1,
                 ),
             ),
@@ -6125,7 +6467,14 @@ def negative_regressions(
             (
                 "ACT-TM-2026-005 success evidence does not close its Gap",
                 case.replace(
-                    "Phase A: query approval template、lifecycle Rule test計画、新Authorization Record / RoE申請ticket、Coverage表、retention record、deny例。Phase B: approval ticket、承認済みの新Authorization Record / RoE、新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、Coverage表、retention record、review sign-off、`REA-TM-2026-002`への供給。Phase B未実施の間はApp identity lifecycle EventのDetection test結果は未収集",
+                    "Phase A: query approval template、lifecycle Rule test計画、新Authorization Record / "
+                    "RoE申請ticket、Coverage表、retention record、deny例。Phase B: approval ticket、"
+                    "承認済みの新Authorization Record / RoE、`ACT-TM-2026-006` Phase B-entryの"
+                    "新Evidence ID付き署名済みpreflight report / default-deny結果、新Evidence ID付き"
+                    "App identity lifecycle Event Detection test結果、query version、Coverage表、"
+                    "retention record、review sign-off、Phase Cの新Evidence ID付きCleanup verification、"
+                    "`REA-TM-2026-002`への供給。Phase B / C未実施の間はApp identity lifecycle Eventの"
+                    "Detection test結果とCleanup結果は未収集",
                     "query approval template、deny例、review sign-off",
                     1,
                 ),
