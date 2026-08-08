@@ -131,7 +131,7 @@ Threat Modelは、図を描く作業ではなく、判断要求をレビュー�
 
 #### 一つの仮説を最後まで通す記入例
 
-完成例を読む前に、一つの仮説だけをTemplateへ通す。`DR-2026-001`の継続判断に対し、Business Asset「請求連携能力」を担う`ASSET-2026-001`とOAuth component `ASSET-2026-005`を置く。承認からApp設定へ進むControl Flowを`FLOW-2026-001`、Administrative Controlの変化を`TB-2026-001`、read-only Review接点を`EXP-2026-001` / `EP-2026-001`とする。そこから「業務要件を超えるscopeが残る可能性」を`TH-2026-001`として記録し、成立条件と観測点だけを`EDGE-2026-001`へ書く。`CTRL-2026-005`がDocumentedに留まるなら`GAP-2026-002`を開き、`EREQ-2026-001`、`ACT-TM-2026-001`、`REA-TM-2026-001`へつなぐ。
+完成例を読む前に、一つの仮説だけをTemplateへ通す。`DR-2026-001`の継続判断に対し、Business Asset「請求連携能力」を担う`ASSET-2026-001`とOAuth component `ASSET-2026-005`を置く。承認からApp設定へ進むControl Flowを`FLOW-2026-001`、Administrative Controlの変化を`TB-2026-001`、read-only Review接点を`EXP-2026-001` / `EP-2026-001`とする。そこから「業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある」を`TH-2026-004`として記録し、2026-07-20のhistorical broad scopeを`EDGE-2026-001`、2026-07-25 remediation後のcurrent scope / binding未確認を`EDGE-2026-002`、summary-only境界への影響条件と観測点を`EDGE-2026-003`、Tenant binding Evidence不足を`EDGE-2026-004`へ分けて`PATH-2026-001`として書く。`CTRL-2026-005`と`CTRL-2026-006`がDocumentedに留まるなら`GAP-2026-002`を開き、`EREQ-2026-001`、`ACT-TM-2026-001` / `ACT-TM-2026-004`、`REA-TM-2026-001`へつなぐ。
 
 この一連の記入では、侵害を再現していない。仮説、Controlの状態、必要Evidence、Owner、期限をDecisionへつないだだけである。各IDの全行は合成記入例で確認できる。
 
@@ -142,6 +142,7 @@ Threat Modelで最初に崩れやすいのは、「Asset」という語を一つ
 
 Asset inventoryは、存在する項目の一覧である。 Asset modelは、何が、誰にとって、どの結果のために、どの境界で、どの状態で重要かを記述したものである。 InventoryだけではThreat Modelにならない。
 ### T-04-01 資産の型と最小記録項目
+
 | 型 | 何を表すか | 典型例 | 最低限の記録項目 | 混同しやすい対象 | 誤りの例 |
 |---|---|---|---|---|---|
 | `Business Outcome` | 守りたい業務結果 | 月末請求を期限どおり完了する | 判断要求、期限、失敗時影響 | Service availability | 「サーバが動いている」をOutcomeと書く |
@@ -152,6 +153,7 @@ Asset inventoryは、存在する項目の一覧である。 Asset modelは、�
 | `Identity` | 人、Service、Workload、Role、Tokenなどの主体 | Service principal、admin role、reviewer account | 発行元、権限、ライフサイクルOwner | User table | Identityと利用者アカウントを同一視する |
 | `Control Plane` | 他のAssetの設定や権限を変更できる管理面 | IAM、同意管理、CI設定面 | 管理権限、監査可否、変更経路 | Data Plane | 管理APIを通常APIと同じ境界で扱う |
 | `Evidence Asset`（ART-03 Typeは`Evidence`） | 判断と再評価に必要な証跡 | 監査Log、設定Snapshot、承認Ticket、図面 | 完全性、保持期間、Access制御 | 監視用Data source | 「本番サービスではないので重要ではない」と軽視する |
+
 `Business Outcome`は、組織が期限内に守りたい結果である。 本章のCaseでは、「月末請求を止めない」がこれにあたる。 これはシステム名ではない。
 
 `Business Asset`は、その結果を支える能力である。 本章のCaseでは、「請求連携能力」や「請求Export承認能力」が該当する。 これはサーバ名やAPI名より一段上の概念である。
@@ -269,6 +271,7 @@ Exposure:
 
 この図で重要なのは、Network pathだけではBoundaryが説明できないことである。 たとえば、admin consent UIとexport APIが同じDomain配下でも、前者は`Control-plane boundary`、後者は主に`Data Flow`のEntry Pointである。
 ### T-04-02 似て見える用語の違い
+
 | 用語対 | 前者 | 後者 | 実務上の違い | 典型的な誤り |
 |---|---|---|---|---|
 | `Trust Boundary` / `Network Segment` | 信頼前提が切り替わる場所 | 通信経路の分割単位 | Boundaryは権限、Ownership、統制主体の切替を表せる | VLANが違うからBoundary、同じVPCだからBoundaryなしと決める |
@@ -278,6 +281,7 @@ Exposure:
 | `Vulnerability` / `Finding` | 一般的または環境依存の弱点 | その環境で確認した記録 | FindingはEvidenceに支えられる | Scanner結果をそのままFinding確定とみなす |
 | `Threat Hypothesis` / `Misuse Case` | 検証可能な仮説文 | 利用機能の悪用シナリオ記述 | 前者は状態管理、後者は説明補助 | 物語だけ書いて反証条件を持たない |
 | `Attack Path` / 実行可能な侵害手順 | 境界越えの抽象経路 | コマンド、Payload、操作列 | 公開教材では前者まで | Pathを再現手順へ展開してしまう |
+
 Boundaryを定義するときの注意点は三つある。
 
 第一に、Network segmentはBoundary候補に過ぎない。 同じSegmentでも、別Tenant、別権限、別OwnerならBoundaryがある。
@@ -352,6 +356,7 @@ Threat countを増やしても、良いModelにはならない。 OWASP Threat M
 ## 7. 状態を混ぜない
 Threat Modelでは、ひとつの`Status`欄へ何でも入れた瞬間に運用が崩れる。 Model全体の状態、各項目の確からしさ、仮説の進捗、Controlの成熟度、Evidenceの収集状態は別物である。
 ### T-04-03 Control assurance states
+
 | Assurance state | 本章での意味 | 次へ進むためのEvidence | 誤った読み方 |
 |---|---|---|---|
 | Unknown | Controlの存在または状態を確認できていない | Owner、設計、設定、観測点の確認 | 未確認なのでControlが存在しない |
@@ -361,6 +366,7 @@ Threat Modelでは、ひとつの`Status`欄へ何でも入れた瞬間に運用
 | Validated | 本Caseの限定条件で防止または検知への寄与を確認した | Reassessment triggerと有効期限の管理 | 組織全体の普遍的成熟度である |
 
 ### T-04-04 Knowledge stateとHypothesis statusの分離
+
 | 対象 | 何の状態か | 有限集合 | 使い方 | してはいけないこと |
 |---|---|---|---|---|
 | Model全体 | 文書としての準備状態 | Draft / In Review / Approved for Assessment / Needs Evidence / Superseded | Threat Model全体のReviewと見直し管理 | 個別仮説の成立可否をここへ混ぜる |

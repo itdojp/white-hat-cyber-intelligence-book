@@ -62,6 +62,13 @@ EXPECTED_PAGE_TITLES = {
     SOURCE_NOTE: "第4章 Source Review Note：Threat Model",
 }
 
+EXPECTED_CHAPTER_MARKDOWN_TABLE_HEADINGS = (
+    "T-04-01 資産の型と最小記録項目",
+    "T-04-02 似て見える用語の違い",
+    "T-04-03 Control assurance states",
+    "T-04-04 Knowledge stateとHypothesis statusの分離",
+)
+
 UNSAFE_PAGE_TITLES = (
     "第三者の本番システムへ接続する",
     "実Tokenを取得してEvidenceにする",
@@ -193,6 +200,41 @@ INHERITED_TH_002_ALTERNATIVE = (
 INHERITED_TH_003_PROPOSITION = "既に同型の不正利用が発生した"
 SUMMARY_TH_004_PROPOSITION = (
     "業務要件を超えるscopeがsummary境界を越える影響へつながる可能性がある"
+)
+CHAPTER_WALKTHROUGH_TRACE = (
+    "完成例を読む前に、一つの仮説だけをTemplateへ通す。`DR-2026-001`の継続判断に対し、"
+    "Business Asset「請求連携能力」を担う`ASSET-2026-001`とOAuth component "
+    "`ASSET-2026-005`を置く。承認からApp設定へ進むControl Flowを`FLOW-2026-001`、"
+    "Administrative Controlの変化を`TB-2026-001`、read-only Review接点を"
+    "`EXP-2026-001` / `EP-2026-001`とする。そこから「"
+    f"{SUMMARY_TH_004_PROPOSITION}」を`TH-2026-004`として記録し、"
+    "2026-07-20のhistorical broad scopeを`EDGE-2026-001`、2026-07-25 remediation後の"
+    "current scope / binding未確認を`EDGE-2026-002`、summary-only境界への影響条件と"
+    "観測点を`EDGE-2026-003`、Tenant binding Evidence不足を`EDGE-2026-004`へ分けて"
+    "`PATH-2026-001`として書く。`CTRL-2026-005`と"
+    "`CTRL-2026-006`がDocumentedに留まるなら`GAP-2026-002`を開き、"
+    "`EREQ-2026-001`、`ACT-TM-2026-001` / `ACT-TM-2026-004`、"
+    "`REA-TM-2026-001`へつなぐ。"
+)
+FLOW_006_EVIDENCE_STATUS = "Planned"
+FLOW_006_OBSERVATION_POINT = (
+    "収集予定: post-remediation Workload identity binding snapshot、"
+    "rotation手順Review記録、offline機械的突合結果"
+)
+EP_003_CURRENT_EVIDENCE_BOUNDARY = (
+    "`EXP-2026-003` / `EP-2026-003`の`EVD-2026-001`と`EVD-2026-002`は"
+    "2026-07-20のhistorical scope / requirement inputだけであり、current Tenant binding"
+    "またはWorkload identity bindingのEvidenceではない。current Tenant binding差分、"
+    "Workload identity binding snapshot、rotation手順Review記録、"
+    "offline機械的突合結果は未収集であり、"
+    "`FLOW-2026-006`の`Planned`、`GAP-2026-002`、"
+    "`EREQ-2026-001`へ渡す。"
+)
+TB_004_CURRENT_BINDING_BOUNDARY = (
+    "`TB-2026-004`のcurrent Workload identity bindingは`Unknown`であり、"
+    "`EVD-2026-001`（historical scope）と`EVD-2026-003`（Admin consent Event）は"
+    "このbindingを確認するEvidenceではない。current bindingの確認は"
+    "`FLOW-2026-006`の`Planned`、`GAP-2026-002`、`EREQ-2026-001`へ渡す。"
 )
 LIFECYCLE_TH_005_PROPOSITION = (
     "App identity lifecycle Eventまたはdecision summary Fieldの観測不足により、"
@@ -2262,11 +2304,42 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
     )
     messages.extend(require_tokens(label, text, required))
 
+    if text.count(CHAPTER_WALKTHROUGH_TRACE) != 1:
+        messages.append(
+            f"{label}: Chapter 4 walkthrough must contain exactly one frozen "
+            "TH-2026-004 / PATH-2026-001 historical-current-summary trace"
+        )
+    walkthrough_match = re.search(
+        r"^#### 一つの仮説を最後まで通す記入例\s*$\n"
+        r"(?P<body>.*?)(?=^#{1,4} |\Z)",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    if walkthrough_match is None:
+        messages.append(f"{label}: missing bounded Chapter 4 walkthrough section")
+    else:
+        walkthrough = walkthrough_match.group("body")
+        if "`TH-2026-001`" in walkthrough:
+            messages.append(
+                f"{label}: walkthrough must not assign the summary-only refinement "
+                "to inherited composite TH-2026-001"
+            )
+
     if text.count("F-04-01") < 2 or text.count("F-04-02") < 2:
         messages.append(f"{label}: both figure IDs must be defined and referenced")
     for table_id in ("T-04-01", "T-04-02", "T-04-03", "T-04-04"):
         if text.count(table_id) != 1:
             messages.append(f"{label}: {table_id} must occur exactly once")
+    for heading in EXPECTED_CHAPTER_MARKDOWN_TABLE_HEADINGS:
+        rendered_table_pattern = re.compile(
+            rf"^### {re.escape(heading)}\n\n(?:\|[^\n]*\|\n)+\n(?=\S)",
+            re.MULTILINE,
+        )
+        if len(rendered_table_pattern.findall(text)) != 1:
+            messages.append(
+                f"{label}: {heading} must have blank lines before and after its "
+                "Markdown table so the published page renders one semantic table"
+            )
 
     body, marker, references = text.partition("## 参考資料")
     if not marker:
@@ -2280,10 +2353,11 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
     if not exercise:
         messages.append(f"{label}: missing bounded safe exercise section")
     chapter_control_ids = set(re.findall(r"\bCTRL-2026-\d{3}\b", text))
-    if chapter_control_ids != {"CTRL-2026-005"}:
+    if chapter_control_ids != {"CTRL-2026-005", "CTRL-2026-006"}:
         messages.append(
-            f"{label}: introductory Control trace must use only fresh Chapter 4 "
-            f"CTRL-2026-005; found {sorted(chapter_control_ids)!r}"
+            f"{label}: introductory Control trace must use the paired fresh Chapter 4 "
+            f"scope/identity Controls CTRL-2026-005 and CTRL-2026-006; "
+            f"found {sorted(chapter_control_ids)!r}"
         )
     messages.extend(document_reader_visible_policy_errors(text, label))
     return messages
@@ -2597,6 +2671,28 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 f"{label}: TB-2026-006 must remain Assumed until preflight/default-deny/"
                 f"cleanup behavior Evidence is collected; found {knowledge_state!r}"
             )
+
+    identity_boundary = boundary_rows_by_id.get("TB-2026-004")
+    if identity_boundary is None:
+        messages.append(f"{label}: missing current identity boundary TB-2026-004")
+    else:
+        expected_identity_boundary_fields = {
+            "Boundary type": "Identity Authority",
+            "From / To": "Workload identity → OAuth app runtime session",
+            "Knowledge state": "Unknown",
+            "Evidence IDs": "-",
+        }
+        for field, expected in expected_identity_boundary_fields.items():
+            observed = identity_boundary[boundary_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: TB-2026-004 {field} {observed!r} != current-binding "
+                    f"contract {expected!r}"
+                )
+    if text.count(TB_004_CURRENT_BINDING_BOUNDARY) != 1:
+        messages.append(
+            f"{label}: requires one exact TB-2026-004 historical/current Evidence boundary"
+        )
 
     flow_header = table_contracts[1][0]
     evidence_status_index = flow_header.index("Evidence status")
@@ -3260,10 +3356,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         identity_limitation = identity_control[control_header.index("Limitation")]
         for marker in (
             "App registration scope Snapshotに限られ",
-            "Identity binding",
-            "利用観測",
-            "rotation手順Review",
-            "実施結果は未収集",
+            "Workload identity binding snapshot",
+            "rotation手順Review記録",
+            "offline機械的突合結果",
+            "未収集",
         ):
             if marker not in identity_limitation:
                 messages.append(
@@ -3344,7 +3440,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "Condition": ("2026-07-25", "Passed", "current App registration exportが未収集"),
             "To Asset / State": ("current binding scope unknown",),
             "Expected impact": ("current影響範囲を確定できない",),
-            "Observation point": ("post-remediation App registration export",),
+            "Observation point": (
+                "post-remediation App registration export",
+                "Workload identity binding snapshot",
+            ),
         }
         for field, markers in expected_current_edge_markers.items():
             value = edge002[path_header.index(field)]
@@ -3365,6 +3464,24 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in parsed.get(flow_header, [])
         if len(row) == len(flow_header)
     }
+    identity_flow = flow_rows_by_id.get("FLOW-2026-006")
+    if identity_flow is None:
+        messages.append(f"{label}: missing current workload-identity flow FLOW-2026-006")
+    else:
+        expected_identity_flow_fields = {
+            "Flow type": "Identity",
+            "Source Asset ID": "`ASSET-2026-007`",
+            "Destination Asset ID": "`ASSET-2026-001`",
+            "Evidence status": FLOW_006_EVIDENCE_STATUS,
+            "Observation point": FLOW_006_OBSERVATION_POINT,
+        }
+        for field, expected in expected_identity_flow_fields.items():
+            observed = identity_flow[flow_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: FLOW-2026-006 {field} {observed!r} != "
+                    f"uncollected current-binding contract {expected!r}"
+                )
     exposure_header = count_contracts[0][0]
     exposure_rows_by_id = {
         row[0].strip("`"): row
@@ -3376,6 +3493,31 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in entry_point_rows
         if len(row) == len(entry_point_header)
     }
+    offline_entry_point = entry_point_rows_by_id.get("EP-2026-003")
+    if offline_entry_point is None:
+        messages.append(f"{label}: missing current-binding review entry point EP-2026-003")
+    else:
+        expected_offline_entry_fields = {
+            "Description": (
+                "summary-only manifest fixtureとTenant binding metadataを確認予定の接点"
+            ),
+            "Observation point": (
+                "収集予定: manifest field inventory、Tenant binding差分（current結果は未収集）"
+            ),
+            "Knowledge state": "Assumed",
+            "Evidence IDs": "`EVD-2026-001`, `EVD-2026-002`",
+        }
+        for field, expected in expected_offline_entry_fields.items():
+            observed = offline_entry_point[entry_point_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: EP-2026-003 {field} {observed!r} != "
+                    f"bounded uncollected-entry contract {expected!r}"
+                )
+    if text.count(EP_003_CURRENT_EVIDENCE_BOUNDARY) != 1:
+        messages.append(
+            f"{label}: requires one exact historical/current EP-2026-003 Evidence boundary"
+        )
     summary_boundary_bindings = (
         (
             "FLOW-2026-003",
@@ -3575,7 +3717,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             ),
             "success": (
                 "scope matrix",
-                "Identity binding snapshot",
+                "Tenant binding差分",
+                "Workload identity binding snapshot",
                 "rotation手順Review記録",
                 "offline機械的突合結果",
                 "承認runbook",
@@ -3633,6 +3776,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "2026-07-25",
                 "Passed",
                 "current App registration export",
+                "Workload identity binding snapshot",
+                "Tenant binding差分",
+                "rotation手順Review記録",
+                "offline機械的突合結果",
                 "未収集",
             ),
             "Decision affected": ("current scope", "Confirmed", "人手依存"),
@@ -3672,11 +3819,19 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(f"{label}: missing post-remediation scope requirement EREQ-2026-001")
     else:
         expected_scope_requirement_markers = {
-            "Question": ("2026-07-25 remediation後", "current scope"),
+            "Question": (
+                "2026-07-25 remediation後",
+                "current scope",
+                "Workload identity binding",
+                "Tenant binding",
+                "rotation手順",
+            ),
             "Minimum sufficient evidence": (
                 "post-remediation App registration export",
                 "scope差分表",
                 "Workload identity binding snapshot",
+                "Tenant binding差分",
+                "rotation手順Review記録",
             ),
             "Resulting Evidence IDs": (
                 "EVD-2026-001",
@@ -3686,6 +3841,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "いずれも2026-07-20",
                 "New post-remediation result",
                 "current-scope snapshot",
+                "Workload identity binding snapshot",
+                "Tenant binding差分",
+                "rotation手順Review記録",
+                "offline機械的突合結果",
                 "未収集",
                 "承認後に新Evidence IDを割り当てる",
             ),
@@ -3763,7 +3922,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "REA-TM-2026-001": {
             "Inputs required": (
                 "2026-07-25 remediation後のApp registration export",
-                "Identity binding snapshot",
+                "Tenant binding差分",
+                "Workload identity binding snapshot",
                 "rotation手順Review記録",
                 "新Authorization Record / RoE",
             ),
@@ -4809,6 +4969,66 @@ def negative_regressions(
             "rubric mapping drift",
             chapter.replace("`RUBRIC-TM-YYYY-003` Threat usefulness and evidence sufficiency", "`RUBRIC-TM-YYYY-999` Threat count", 1),
         ),
+        (
+            "walkthrough falls back to inherited TH-2026-001",
+            chapter.replace(
+                f"「{SUMMARY_TH_004_PROPOSITION}」を`TH-2026-004`として記録し",
+                f"「{SUMMARY_TH_004_PROPOSITION}」を`TH-2026-001`として記録し",
+                1,
+            ),
+        ),
+        (
+            "walkthrough omits current EDGE-2026-002",
+            chapter.replace(
+                "2026-07-25 remediation後のcurrent scope / binding未確認を`EDGE-2026-002`、",
+                "2026-07-25 remediation後のcurrent scope / binding未確認を記録せず、",
+                1,
+            ),
+        ),
+        (
+            "walkthrough omits Tenant EDGE-2026-004",
+            chapter.replace(
+                "、Tenant binding Evidence不足を`EDGE-2026-004`へ分けて",
+                "へ分けて",
+                1,
+            ),
+        ),
+        (
+            "walkthrough omits identity Control",
+            chapter.replace(
+                "`CTRL-2026-005`と`CTRL-2026-006`がDocumentedに留まるなら",
+                "`CTRL-2026-005`がDocumentedに留まるなら",
+                1,
+            ),
+        ),
+        (
+            "walkthrough omits identity Action",
+            chapter.replace(
+                "`ACT-TM-2026-001` / `ACT-TM-2026-004`",
+                "`ACT-TM-2026-001`",
+                1,
+            ),
+        ),
+        *(
+            (
+                f"{heading.split()[0]} rendered-table opening boundary",
+                chapter.replace(f"### {heading}\n\n|", f"### {heading}\n|", 1),
+            )
+            for heading in EXPECTED_CHAPTER_MARKDOWN_TABLE_HEADINGS
+        ),
+        *(
+            (
+                f"{heading.split()[0]} rendered-table closing boundary",
+                re.sub(
+                    rf"(^### {re.escape(heading)}\n\n(?:\|[^\n]*\|\n)+)\n(?=\S)",
+                    r"\1",
+                    chapter,
+                    count=1,
+                    flags=re.MULTILINE,
+                ),
+            )
+            for heading in EXPECTED_CHAPTER_MARKDOWN_TABLE_HEADINGS
+        ),
     )
     for name, mutation in chapter_mutations:
         if not chapter_contract_errors(mutation, f"negative chapter {name}"):
@@ -4982,6 +5202,90 @@ def negative_regressions(
                 ),
             ),
             (
+                "FLOW-2026-006 current identity Evidence overclaimed",
+                case.replace(
+                    f"| Restricted | {FLOW_006_EVIDENCE_STATUS} | "
+                    f"{FLOW_006_OBSERVATION_POINT} |",
+                    f"| Restricted | Collected | {FLOW_006_OBSERVATION_POINT} |",
+                    1,
+                ),
+            ),
+            (
+                "FLOW-2026-006 current identity Evidence fabricated",
+                case.replace(
+                    FLOW_006_OBSERVATION_POINT,
+                    "identity binding、usage observation、rotation結果を収集済み",
+                    1,
+                ),
+            ),
+            (
+                "FLOW-2026-006 planned artifact terminology drift",
+                case.replace(
+                    "post-remediation Workload identity binding snapshot",
+                    "identity inventory",
+                    1,
+                ),
+            ),
+            (
+                "TB-2026-004 current binding assurance overclaimed",
+                case.replace(
+                    "| HumanとWorkloadの責任境界が曖昧化 | Unknown | - |",
+                    "| HumanとWorkloadの責任境界が曖昧化 | Confirmed | - |",
+                    1,
+                ),
+            ),
+            (
+                "TB-2026-004 historical Evidence reused for current binding",
+                case.replace(
+                    "| HumanとWorkloadの責任境界が曖昧化 | Unknown | - |",
+                    "| HumanとWorkloadの責任境界が曖昧化 | Unknown | "
+                    "`EVD-2026-001`, `EVD-2026-003` |",
+                    1,
+                ),
+            ),
+            (
+                "TB-2026-004 historical/current Evidence boundary omitted",
+                case.replace(
+                    TB_004_CURRENT_BINDING_BOUNDARY,
+                    "`EVD-2026-001`と`EVD-2026-003`でcurrent bindingを確認済みである。",
+                    1,
+                ),
+            ),
+            (
+                "EP-2026-003 current Evidence overclaim",
+                case.replace(
+                    "Tenant binding metadataを確認予定の接点",
+                    "Tenant binding metadataを確認済みの接点",
+                    1,
+                ),
+            ),
+            (
+                "CTRL-2026-006 unstructured Evidence scope drift",
+                case.replace(
+                    "Workload identity binding snapshot、rotation手順Review記録、"
+                    "offline機械的突合結果は未収集である | `GAP-2026-002`",
+                    "Workload identity binding snapshot、利用観測、rotation実施結果は"
+                    "未収集である | `GAP-2026-002`",
+                    1,
+                ),
+            ),
+            (
+                "EP-2026-003 historical/current Evidence boundary omitted",
+                case.replace(
+                    EP_003_CURRENT_EVIDENCE_BOUNDARY,
+                    "`EVD-2026-001`と`EVD-2026-002`でcurrent bindingを確認済みである。",
+                    1,
+                ),
+            ),
+            (
+                "EDGE-2026-002 binding observation falls back to inventory",
+                case.replace(
+                    "post-remediation App registration export、Workload identity binding snapshot",
+                    "post-remediation App registration export、identity inventory",
+                    1,
+                ),
+            ),
+            (
                 "CTRL-2026-006 reverse Gap reference omitted",
                 case.replace(
                     "`TH-2026-001` / `TH-2026-004` / `CTRL-2026-005` / `CTRL-2026-006`: "
@@ -5020,7 +5324,9 @@ def negative_regressions(
             (
                 "GAP-2026-002 omits post-remediation snapshot",
                 case.replace(
-                    "2026-07-25 scope縮小`Passed`後のcurrent App registration export、Identity binding、rotation手順とscope matrixの機械的突合が未収集である",
+                    "2026-07-25 scope縮小`Passed`後のcurrent App registration export、"
+                    "Workload identity binding snapshot、Tenant binding差分、"
+                    "rotation手順Review記録、scope matrixのoffline機械的突合結果が未収集である",
                     "scope matrix、Identity binding、rotation手順を確認する",
                     1,
                 ),
@@ -5028,8 +5334,38 @@ def negative_regressions(
             (
                 "EREQ-2026-001 invents post-remediation evidence",
                 case.replace(
-                    "New post-remediation result: current-scope snapshot、identity binding、rotationの観測結果は未収集（承認後に新Evidence IDを割り当てる）",
+                    "New post-remediation result: current-scope snapshot、"
+                    "Workload identity binding snapshot、Tenant binding差分、"
+                    "rotation手順Review記録、offline機械的突合結果は未収集"
+                    "（承認後に新Evidence IDを割り当てる）",
                     "New post-remediation result: current-scope snapshotは収集済み",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-001 omits Tenant binding evidence",
+                case.replace(
+                    "Workload identity binding snapshot、Tenant binding差分、"
+                    "rotation手順Review記録 | 実Tokenを取得しない。",
+                    "Workload identity binding snapshot、rotation手順Review記録 | "
+                    "実Tokenを取得しない。",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-004 omits Tenant binding evidence",
+                case.replace(
+                    "更新scope matrix、Tenant binding差分、Workload identity binding snapshot",
+                    "更新scope matrix、Workload identity binding snapshot",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 omits Tenant binding evidence",
+                case.replace(
+                    "App registration export、scope matrix、Tenant binding差分、"
+                    "Workload identity binding snapshot",
+                    "App registration export、scope matrix、Workload identity binding snapshot",
                     1,
                 ),
             ),
@@ -5311,9 +5647,9 @@ def negative_regressions(
             (
                 "EREQ-2026-001 drops summary refinement hypothesis",
                 case.replace(
-                    "| `EREQ-2026-001` | 2026-07-25 remediation後のcurrent scope、Identity binding、rotation手順は業務要件と一致するか | "
+                    "| `EREQ-2026-001` | 2026-07-25 remediation後のcurrent scope、Workload identity binding、Tenant binding、rotation手順は業務要件と一致するか | "
                     "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` |",
-                    "| `EREQ-2026-001` | 2026-07-25 remediation後のcurrent scope、Identity binding、rotation手順は業務要件と一致するか | "
+                    "| `EREQ-2026-001` | 2026-07-25 remediation後のcurrent scope、Workload identity binding、Tenant binding、rotation手順は業務要件と一致するか | "
                     "`TH-2026-001`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` |",
                     1,
                 ),
