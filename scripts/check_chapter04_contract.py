@@ -90,6 +90,9 @@ HYPOTHESIS_STATUSES = {
 ASSURANCE_STATES = {"Unknown", "Documented", "Implemented", "Observed", "Validated"}
 EVIDENCE_REQUIREMENT_STATUSES = {"Required", "Deferred", "Replaced", "Not Applicable"}
 EXPECTED_SOURCE_IDS = {"SRC-CSF-001", "SRC-NIST-RISK-001", "SRC-OWASP-TM-001"}
+EXPECTED_INHERITED_CONTROL_IDS = {
+    f"CTRL-2026-{number:03d}" for number in range(1, 5)
+}
 
 EXPECTED_CASE_IDS: dict[str, set[str]] = {
     "ASSET": {f"ASSET-2026-{number:03d}" for number in range(1, 8)},
@@ -101,12 +104,24 @@ EXPECTED_CASE_IDS: dict[str, set[str]] = {
     "MISUSE": {f"MISUSE-2026-{number:03d}" for number in range(1, 3)},
     "PATH": {f"PATH-2026-{number:03d}" for number in range(1, 3)},
     "EDGE": {f"EDGE-2026-{number:03d}" for number in range(1, 8)},
-    "CTRL": {f"CTRL-2026-{number:03d}" for number in range(1, 6)},
+    "CTRL": {f"CTRL-2026-{number:03d}" for number in range(5, 10)},
     "ASM": {f"ASM-2026-{number:03d}" for number in range(1, 4)},
     "GAP": {f"GAP-2026-{number:03d}" for number in range(1, 5)},
     "EREQ": {f"EREQ-2026-{number:03d}" for number in range(1, 5)},
     "ACT-TM": {f"ACT-TM-2026-{number:03d}" for number in range(1, 7)},
     "REA-TM": {f"REA-TM-2026-{number:03d}" for number in range(1, 5)},
+}
+EXPECTED_CASE_REFERENCE_IDS = {
+    family: set(identifiers) for family, identifiers in EXPECTED_CASE_IDS.items()
+}
+EXPECTED_CASE_REFERENCE_IDS["CTRL"] |= EXPECTED_INHERITED_CONTROL_IDS
+
+CHAPTER4_CONTROL_RELATIONS: dict[str, tuple[str, str | None]] = {
+    "CTRL-2026-005": ("supports", "CTRL-2026-001"),
+    "CTRL-2026-006": ("supports", "CTRL-2026-002"),
+    "CTRL-2026-007": ("supports", "CTRL-2026-003"),
+    "CTRL-2026-008": ("independent", None),
+    "CTRL-2026-009": ("supports", "CTRL-2026-004"),
 }
 
 EXPECTED_DEPENDENCY_IDS = {f"DEP-2026-{number:03d}" for number in range(1, 6)}
@@ -145,37 +160,46 @@ EXPECTED_HANDOFF_ROWS = {
     "HO-TM-2026-006": (
         "第6章 観測可能性",
         "Telemetry / logging設計",
-        "`EREQ-2026-001`〜`004`、`GAP-2026-001`〜`004`、Negative finding原則",
+        "`CTRL-2026-007` / `CTRL-2026-009`、`EREQ-2026-001`〜`004`、"
+        "`GAP-2026-001`〜`004`、Negative finding原則",
     ),
     "HO-TM-2026-009": (
         "第9章 RoE",
         "Rules of Engagement",
-        "`AUTH-CASE-2026-001`継承条件、`ACT-TM-2026-001` / `ACT-TM-2026-002` / `ACT-TM-2026-003` / `ACT-TM-2026-006`の再Authorization依存、停止条件、no outbound、対象外一覧",
+        "`CTRL-2026-008`、`AUTH-CASE-2026-001`継承条件、`ACT-TM-2026-001` / "
+        "`ACT-TM-2026-002` / `ACT-TM-2026-003` / `ACT-TM-2026-006`の"
+        "再Authorization依存、停止条件、no outbound、対象外一覧",
     ),
     "HO-TM-2026-011": (
         "第11章 Web/API評価",
         "Web/API Assessment Hypothesis Pack",
-        "`TH-2026-001` / `TH-2026-004`、`TB-2026-002` / `TB-2026-008`、`FLOW-2026-003`、`PATH-2026-001`",
+        "`CTRL-2026-005`、`TH-2026-001` / `TH-2026-004`、`TB-2026-002` / "
+        "`TB-2026-008`、`FLOW-2026-003`、`PATH-2026-001`",
     ),
     "HO-TM-2026-012": (
         "第12章 Identity評価",
         "Identity Attack Path Review",
-        "`ASSET-2026-007`、`TB-2026-004`、`FLOW-2026-002`、`FLOW-2026-006`",
+        "`CTRL-2026-006`、`ASSET-2026-007`、`TB-2026-004`、"
+        "`FLOW-2026-002`、`FLOW-2026-006`",
     ),
     "HO-TM-2026-013": (
         "第13章 Platform / Supply Chain",
         "Platform and Supply Chain Assessment",
-        "`ASSET-2026-002`、`ASSET-2026-005`、Credential lifecycle、control plane依存",
+        "`CTRL-2026-006`、`ASSET-2026-002`、`ASSET-2026-005`、"
+        "Credential lifecycle、control plane依存",
     ),
     "HO-TM-2026-014": (
         "第14章 最小影響Validation",
         "Minimal-Impact Validation Record",
-        "`EREQ-2026-001`〜`004`、特に`EREQ-2026-004`のpreflight / default-deny / Cleanup証拠、禁止操作、stop条件、fallback",
+        "`CTRL-2026-008`、`EREQ-2026-001`〜`004`、特に`EREQ-2026-004`の"
+        "preflight / default-deny / Cleanup証拠、禁止操作、stop条件、fallback",
     ),
     "HO-TM-2026-015": (
         "第15章 Finding / Retest",
         "Finding Report、Retest Record",
-        "`GAP-2026-001`〜`004`、`ACT-TM-2026-001`〜`006`、`REA-TM-2026-001`〜`004`",
+        "`CTRL-2026-005` / `CTRL-2026-006` / `CTRL-2026-007` / "
+        "`CTRL-2026-008` / `CTRL-2026-009`、`GAP-2026-001`〜`004`、"
+        "`ACT-TM-2026-001`〜`006`、`REA-TM-2026-001`〜`004`",
     ),
     "HO-TM-2026-027": (
         "第27章 AI / Agent固有Threat Model",
@@ -184,6 +208,30 @@ EXPECTED_HANDOFF_ROWS = {
     ),
 }
 EXPECTED_HANDOFF_IDS = set(EXPECTED_HANDOFF_ROWS)
+
+HANDOFF_INTERPRETATION_BOUNDARY = (
+    "以下は上表のHandoffを読解するための焦点であり、入力の完全列挙ではない。"
+    "各後続章へ渡す正確な全入力は、上表の`What this artifact provides`を正本とする。"
+)
+
+EXPECTED_HANDOFF_INTERPRETATION_LINES = (
+    "- 第6章では、`CTRL-2026-007` / `CTRL-2026-009`、`EREQ-2026-003` / "
+    "`EREQ-2026-004`、`GAP-2026-001`〜`004`を観測設計へ渡す。",
+    "- 第9章では、Lab safetyの`CTRL-2026-008`、`AUTH-CASE-2026-001`継承条件と"
+    "`ACT-TM-2026-001` / `ACT-TM-2026-002` / `ACT-TM-2026-003` / "
+    "`ACT-TM-2026-006`の再Authorization依存をRoEへ具体化する。",
+    "- 第11章では、scope assuranceの`CTRL-2026-005`、継承命題`TH-2026-001`と"
+    "summary-only refinement `TH-2026-004`、継承した`TB-2026-002`とsummary-only "
+    "refinementの`TB-2026-008`、`PATH-2026-001`をWeb/APIの仮説パックへ分解する。",
+    "- 第12章では、Identity assuranceの`CTRL-2026-006`、`ASSET-2026-007`と"
+    "`TB-2026-004`をIdentity attack pathとして再評価する。",
+    "- 第13章では、`CTRL-2026-006`、`ASSET-2026-002`と`ASSET-2026-005`の"
+    "control plane依存をPlatform評価へ渡す。",
+    "- 第14章では、Lab safetyの`CTRL-2026-008`と`EREQ-2026-004`を含む"
+    "最小影響で必要Evidenceだけを集めるValidation設計へ接続する。",
+    "- 第15章では、`CTRL-2026-005`〜`009`と`GAP-2026-004`を含むGapを"
+    "Finding、Action、Retest、Residual riskへ変換する。",
+)
 
 DOCUMENT_CONTROL_FIELDS = (
     "Artifact ID",
@@ -378,6 +426,16 @@ CONTROL_HEADER = (
     "Limitation",
     "Gap ID",
     "Reassessment trigger",
+)
+CHAPTER1_CONTROL_HEADER = (
+    "Control ID",
+    "Related Decision ID",
+    "Related Finding IDs",
+    "Improvement",
+    "Owner",
+    "Due date",
+    "Verification method",
+    "Result",
 )
 ASSUMPTION_HEADER = (
     "Assumption ID",
@@ -2134,6 +2192,12 @@ def chapter_contract_errors(text: str, label: str) -> list[str]:
     exercise = section(text, "## 安全な演習")
     if not exercise:
         messages.append(f"{label}: missing bounded safe exercise section")
+    chapter_control_ids = set(re.findall(r"\bCTRL-2026-\d{3}\b", text))
+    if chapter_control_ids != {"CTRL-2026-005"}:
+        messages.append(
+            f"{label}: introductory Control trace must use only fresh Chapter 4 "
+            f"CTRL-2026-005; found {sorted(chapter_control_ids)!r}"
+        )
     messages.extend(document_reader_visible_policy_errors(text, label))
     return messages
 
@@ -2289,11 +2353,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "MISUSE-2026-002",
         "PATH-2026-001",
         "PATH-2026-002",
-        "CTRL-2026-001",
-        "CTRL-2026-002",
-        "CTRL-2026-003",
-        "CTRL-2026-004",
         "CTRL-2026-005",
+        "CTRL-2026-006",
+        "CTRL-2026-007",
+        "CTRL-2026-008",
+        "CTRL-2026-009",
         "ASM-2026-001",
         "ASM-2026-002",
         "ASM-2026-003",
@@ -2815,9 +2879,94 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in parsed.get(control_header, [])
         if len(row) == len(control_header)
     }
-    lab_control = controls_by_id.get("CTRL-2026-004")
+    chapter1_control_rows, source_control_messages = table_by_header(
+        chapter1_case,
+        CHAPTER1_CONTROL_HEADER,
+        "cases/ch01-integrated-security-case-example.md",
+    )
+    messages.extend(source_control_messages)
+    source_control_ids = [
+        row[0].strip("`")
+        for row in chapter1_control_rows
+        if len(row) == len(CHAPTER1_CONTROL_HEADER)
+    ]
+    if set(source_control_ids) != EXPECTED_INHERITED_CONTROL_IDS:
+        messages.append(
+            f"{label}: Chapter 1 inherited Control IDs {sorted(set(source_control_ids))!r} "
+            f"!= {sorted(EXPECTED_INHERITED_CONTROL_IDS)!r}"
+        )
+    duplicate_source_controls = sorted(
+        identifier for identifier, count in Counter(source_control_ids).items() if count != 1
+    )
+    if duplicate_source_controls:
+        messages.append(
+            f"{label}: Chapter 1 inherited Control IDs must be defined exactly once: "
+            f"{duplicate_source_controls!r}"
+        )
+    source_controls_by_id = {
+        row[0].strip("`"): row
+        for row in chapter1_control_rows
+        if len(row) == len(CHAPTER1_CONTROL_HEADER)
+    }
+    for identifier, row in source_controls_by_id.items():
+        if any(not cell for cell in row):
+            messages.append(
+                f"{label}: Chapter 1 inherited Control {identifier} has an empty "
+                f"meaning/Evidence/Result field: {row!r}"
+            )
+
+    reused_inherited_ids = sorted(set(controls_by_id) & EXPECTED_INHERITED_CONTROL_IDS)
+    if reused_inherited_ids:
+        messages.append(
+            f"{label}: Chapter 4 must not redefine inherited Chapter 1 Control IDs: "
+            f"{reused_inherited_ids!r}"
+        )
+    if set(controls_by_id) != set(CHAPTER4_CONTROL_RELATIONS):
+        messages.append(
+            f"{label}: Chapter 4 Control definitions {sorted(controls_by_id)!r} != "
+            f"fresh Control relation IDs {sorted(CHAPTER4_CONTROL_RELATIONS)!r}"
+        )
+
+    if text.count("### Control IDの継承境界") != 1:
+        messages.append(f"{label}: requires exactly one Control ID inheritance boundary heading")
+    for chapter4_id, (relation, inherited_id) in CHAPTER4_CONTROL_RELATIONS.items():
+        if relation == "independent":
+            expected_line = (
+                f"- `{chapter4_id}`は第4章固有のLab safety Controlであり、"
+                "第1章Controlからindependentである。"
+            )
+        else:
+            source_row = source_controls_by_id.get(inherited_id or "")
+            if source_row is None:
+                messages.append(
+                    f"{label}: {chapter4_id} cannot derive {relation} relation from "
+                    f"missing Chapter 1 Control {inherited_id!r}"
+                )
+                continue
+            improvement = source_row[CHAPTER1_CONTROL_HEADER.index("Improvement")]
+            result = source_row[CHAPTER1_CONTROL_HEADER.index("Result")]
+            expected_line = (
+                f"- `{chapter4_id}`は第1章`{inherited_id}`「{improvement}」"
+                f"（Result: {result}）をsupportsする別Controlであり、正本Controlを置換しない。"
+            )
+        if text.count(expected_line) != 1:
+            messages.append(
+                f"{label}: {chapter4_id} must record exactly one source-derived "
+                f"Control identity relation: {expected_line!r}"
+            )
+    inheritance_boundary = (
+        "`supports`は同一Controlを意味しない。第1章のControl proposition、Verification、"
+        "Resultは第1章Caseを正本とし、第4章のassurance stateやEvidenceへ上書きしない。"
+    )
+    if text.count(inheritance_boundary) != 1:
+        messages.append(
+            f"{label}: missing exact Control identity non-replacement boundary "
+            f"{inheritance_boundary!r}"
+        )
+
+    lab_control = controls_by_id.get("CTRL-2026-008")
     if lab_control is None:
-        messages.append(f"{label}: missing CTRL-2026-004 assurance contract")
+        messages.append(f"{label}: missing CTRL-2026-008 assurance contract")
     else:
         assurance = lab_control[control_header.index("Assurance state")]
         evidence_ids = lab_control[control_header.index("Evidence IDs")]
@@ -2825,14 +2974,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         gap_id = lab_control[control_header.index("Gap ID")]
         if assurance != "Documented":
             messages.append(
-                f"{label}: CTRL-2026-004 must remain Documented until explicit synthetic "
+                f"{label}: CTRL-2026-008 must remain Documented until explicit synthetic "
                 f"preflight/default-deny/cleanup behavior Evidence exists; found {assurance!r}"
             )
         if evidence_ids != "`EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001`":
-            messages.append(f"{label}: CTRL-2026-004 review Evidence binding drift: {evidence_ids!r}")
+            messages.append(f"{label}: CTRL-2026-008 review Evidence binding drift: {evidence_ids!r}")
         if gap_id != "`GAP-2026-004`":
             messages.append(
-                f"{label}: CTRL-2026-004 must link to its dedicated lab-safety Gap "
+                f"{label}: CTRL-2026-008 must link to its dedicated lab-safety Gap "
                 f"GAP-2026-004; found {gap_id!r}"
             )
         for marker in (
@@ -2843,7 +2992,35 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "Controlの挙動は未観測",
         ):
             if marker not in limitation:
-                messages.append(f"{label}: CTRL-2026-004 limitation missing {marker!r}")
+                messages.append(f"{label}: CTRL-2026-008 limitation missing {marker!r}")
+
+    identity_control = controls_by_id.get("CTRL-2026-006")
+    if identity_control is None:
+        messages.append(f"{label}: missing CTRL-2026-006 identity-assurance contract")
+    else:
+        expected_identity_fields = {
+            "Assurance state": "Documented",
+            "Evidence IDs": "`EVD-2026-001`",
+            "Gap ID": "`GAP-2026-002`",
+        }
+        for field, expected in expected_identity_fields.items():
+            observed = identity_control[control_header.index(field)]
+            if observed != expected:
+                messages.append(
+                    f"{label}: CTRL-2026-006 {field} {observed!r} != {expected!r}"
+                )
+        identity_limitation = identity_control[control_header.index("Limitation")]
+        for marker in (
+            "App registration scope Snapshotに限られ",
+            "Identity binding",
+            "利用観測",
+            "rotation手順Review",
+            "実施結果は未収集",
+        ):
+            if marker not in identity_limitation:
+                messages.append(
+                    f"{label}: CTRL-2026-006 limitation missing {marker!r}"
+                )
 
     assumption_header = count_contracts[3][0]
     for row in case_tables.get(assumption_header, []):
@@ -2970,12 +3147,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(f"{label}: Action ID table requires at least five rows")
 
     expected_action_relations = {
-        "ACT-TM-2026-001": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-001`, `GAP-2026-002`",
-        "ACT-TM-2026-002": "`TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003`",
-        "ACT-TM-2026-003": "`TH-2026-003`, `CTRL-2026-005`, `GAP-2026-001`",
-        "ACT-TM-2026-004": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-001`, `GAP-2026-002`",
-        "ACT-TM-2026-005": "`TH-2026-002`, `CTRL-2026-003`, `GAP-2026-003`",
-        "ACT-TM-2026-006": "`TH-2026-002`, `CTRL-2026-004`, `GAP-2026-004`",
+        "ACT-TM-2026-001": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `GAP-2026-002`",
+        "ACT-TM-2026-002": "`TH-2026-002`, `CTRL-2026-007`, `GAP-2026-003`",
+        "ACT-TM-2026-003": "`TH-2026-003`, `CTRL-2026-009`, `GAP-2026-001`",
+        "ACT-TM-2026-004": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002`",
+        "ACT-TM-2026-005": "`TH-2026-002`, `CTRL-2026-007`, `GAP-2026-003`",
+        "ACT-TM-2026-006": "`TH-2026-002`, `CTRL-2026-008`, `GAP-2026-004`",
     }
     action_relation_index = action_header.index("Related Gap / Control / Threat")
     observed_action_relations = {
@@ -3041,8 +3218,21 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "success": ("Field contract", "合成sample summary", "change proposal", "Production変更なし"),
         },
         "ACT-TM-2026-004": {
-            "action": ("Boundary owner", "scope matrix", "既存Snapshot", "offline機械的突合", "live Tenantへ接続しない"),
-            "success": ("scope matrix", "offline機械的突合結果", "承認runbook"),
+            "action": (
+                "Boundary owner",
+                "rotation手順Review field",
+                "scope matrix",
+                "既存Snapshot",
+                "offline機械的突合",
+                "live Tenantへ接続しない",
+            ),
+            "success": (
+                "scope matrix",
+                "Identity binding snapshot",
+                "rotation手順Review記録",
+                "offline機械的突合結果",
+                "承認runbook",
+            ),
         },
         "ACT-TM-2026-005": {
             "action": ("query申請template", "90日Coverage", "retention証跡", "deny条件", "文書化"),
@@ -3086,7 +3276,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             if actual != expected:
                 messages.append(f"{label}: GAP-2026-004 {field} {actual!r} != {expected!r}")
         missing_information = lab_gap[gap_header.index("Missing information / control / telemetry")]
-        for marker in ("CTRL-2026-004", "preflight", "default-deny", "Cleanup", "未収集"):
+        for marker in ("CTRL-2026-008", "preflight", "default-deny", "Cleanup", "未収集"):
             if marker not in missing_information:
                 messages.append(f"{label}: GAP-2026-004 missing lab-safety marker {marker!r}")
 
@@ -3125,7 +3315,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(f"{label}: missing lab-safety Evidence Requirement EREQ-2026-004")
     else:
         relation = lab_requirement[evidence_requirement_header.index("Related Threat / Control / Gap")]
-        if relation != "`TH-2026-002`, `CTRL-2026-004`, `GAP-2026-004`":
+        if relation != "`TH-2026-002`, `CTRL-2026-008`, `GAP-2026-004`":
             messages.append(f"{label}: EREQ-2026-004 source trace drift: {relation!r}")
         minimum = lab_requirement[evidence_requirement_header.index("Minimum sufficient evidence")]
         forbidden = lab_requirement[evidence_requirement_header.index("Forbidden / over-collection boundary")]
@@ -3147,8 +3337,18 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     }
     expected_reassessment_markers = {
         "REA-TM-2026-001": {
-            "Inputs required": ("新Authorization Record / RoE",),
-            "Closure criteria": ("新Authorization Record / RoE承認後にのみ変更",),
+            "Inputs required": (
+                "Identity binding snapshot",
+                "rotation手順Review記録",
+                "新Authorization Record / RoE",
+            ),
+            "Closure criteria": (
+                "新Authorization Record / RoE承認後にのみ変更",
+                "CTRL-2026-005",
+                "Implemented",
+                "CTRL-2026-006",
+                "Observed",
+            ),
         },
         "REA-TM-2026-002": {
             "Inputs required": (
@@ -3165,14 +3365,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "新Authorization Record / RoE承認後にのみ合成Rule testを再実施",
                 "Detection test結果に新Evidence IDを割り当てる",
                 "収集設定変更はchange approval後",
-                "CTRL-2026-003",
+                "CTRL-2026-007",
                 "Validated",
             ),
         },
         "REA-TM-2026-004": {
-            "Scope": ("CTRL-2026-004", "GAP-2026-004", "EREQ-2026-004"),
+            "Scope": ("CTRL-2026-008", "GAP-2026-004", "EREQ-2026-004"),
             "Inputs required": ("新Authorization Record", "RoE", "preflight report", "default-deny結果", "Cleanup verification"),
-            "Closure criteria": ("CTRL-2026-004", "Observed", "失敗時は検証を停止"),
+            "Closure criteria": ("CTRL-2026-008", "Observed", "失敗時は検証を停止"),
         },
     }
     for reassessment_id, fields in expected_reassessment_markers.items():
@@ -3210,15 +3410,15 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             {"TH-2026-001", "TH-2026-004"},
         ),
         (
-            "CTRL-2026-001",
-            controls_by_id.get("CTRL-2026-001"),
+            "CTRL-2026-005",
+            controls_by_id.get("CTRL-2026-005"),
             control_header,
             "Related Asset / Boundary / Threat / Path IDs",
             {"TH-2026-001", "TH-2026-004"},
         ),
         (
-            "CTRL-2026-002",
-            controls_by_id.get("CTRL-2026-002"),
+            "CTRL-2026-006",
+            controls_by_id.get("CTRL-2026-006"),
             control_header,
             "Related Asset / Boundary / Threat / Path IDs",
             {"TH-2026-001", "TH-2026-004"},
@@ -3279,6 +3479,175 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 f"{sorted(observed_th_ids)!r} != {sorted(expected_th_ids)!r}"
             )
 
+    control_consumer_contracts = (
+        (
+            "GAP-2026-001",
+            gap_rows_by_id.get("GAP-2026-001"),
+            gap_header,
+            "Missing information / control / telemetry",
+            {"CTRL-2026-009"},
+        ),
+        (
+            "GAP-2026-002",
+            gap_rows_by_id.get("GAP-2026-002"),
+            gap_header,
+            "Missing information / control / telemetry",
+            {"CTRL-2026-005", "CTRL-2026-006"},
+        ),
+        (
+            "GAP-2026-003",
+            gap_rows_by_id.get("GAP-2026-003"),
+            gap_header,
+            "Missing information / control / telemetry",
+            {"CTRL-2026-007"},
+        ),
+        (
+            "GAP-2026-004",
+            gap_rows_by_id.get("GAP-2026-004"),
+            gap_header,
+            "Missing information / control / telemetry",
+            {"CTRL-2026-008"},
+        ),
+        (
+            "EREQ-2026-001",
+            evidence_rows_by_id.get("EREQ-2026-001"),
+            evidence_requirement_header,
+            "Related Threat / Control / Gap",
+            {"CTRL-2026-005", "CTRL-2026-006"},
+        ),
+        (
+            "EREQ-2026-002",
+            evidence_rows_by_id.get("EREQ-2026-002"),
+            evidence_requirement_header,
+            "Related Threat / Control / Gap",
+            {"CTRL-2026-007"},
+        ),
+        (
+            "EREQ-2026-003",
+            evidence_rows_by_id.get("EREQ-2026-003"),
+            evidence_requirement_header,
+            "Related Threat / Control / Gap",
+            {"CTRL-2026-009"},
+        ),
+        (
+            "EREQ-2026-004",
+            evidence_rows_by_id.get("EREQ-2026-004"),
+            evidence_requirement_header,
+            "Related Threat / Control / Gap",
+            {"CTRL-2026-008"},
+        ),
+        (
+            "ACT-TM-2026-001",
+            action_rows_by_id.get("ACT-TM-2026-001"),
+            action_header,
+            "Related Gap / Control / Threat",
+            {"CTRL-2026-005"},
+        ),
+        (
+            "ACT-TM-2026-002",
+            action_rows_by_id.get("ACT-TM-2026-002"),
+            action_header,
+            "Related Gap / Control / Threat",
+            {"CTRL-2026-007"},
+        ),
+        (
+            "ACT-TM-2026-003",
+            action_rows_by_id.get("ACT-TM-2026-003"),
+            action_header,
+            "Related Gap / Control / Threat",
+            {"CTRL-2026-009"},
+        ),
+        (
+            "ACT-TM-2026-004",
+            action_rows_by_id.get("ACT-TM-2026-004"),
+            action_header,
+            "Related Gap / Control / Threat",
+            {"CTRL-2026-005", "CTRL-2026-006"},
+        ),
+        (
+            "ACT-TM-2026-005",
+            action_rows_by_id.get("ACT-TM-2026-005"),
+            action_header,
+            "Related Gap / Control / Threat",
+            {"CTRL-2026-007"},
+        ),
+        (
+            "ACT-TM-2026-006",
+            action_rows_by_id.get("ACT-TM-2026-006"),
+            action_header,
+            "Related Gap / Control / Threat",
+            {"CTRL-2026-008"},
+        ),
+        (
+            "REA-TM-2026-001 Scope",
+            reassessment_rows_by_id.get("REA-TM-2026-001"),
+            reassessment_header,
+            "Scope",
+            {"CTRL-2026-005", "CTRL-2026-006"},
+        ),
+        (
+            "REA-TM-2026-001 Closure",
+            reassessment_rows_by_id.get("REA-TM-2026-001"),
+            reassessment_header,
+            "Closure criteria",
+            {"CTRL-2026-005", "CTRL-2026-006"},
+        ),
+        (
+            "REA-TM-2026-002 Scope",
+            reassessment_rows_by_id.get("REA-TM-2026-002"),
+            reassessment_header,
+            "Scope",
+            {"CTRL-2026-007", "CTRL-2026-009"},
+        ),
+        (
+            "REA-TM-2026-002 Closure",
+            reassessment_rows_by_id.get("REA-TM-2026-002"),
+            reassessment_header,
+            "Closure criteria",
+            {"CTRL-2026-007"},
+        ),
+        (
+            "REA-TM-2026-003 Scope",
+            reassessment_rows_by_id.get("REA-TM-2026-003"),
+            reassessment_header,
+            "Scope",
+            set(),
+        ),
+        (
+            "REA-TM-2026-003 Closure",
+            reassessment_rows_by_id.get("REA-TM-2026-003"),
+            reassessment_header,
+            "Closure criteria",
+            set(),
+        ),
+        (
+            "REA-TM-2026-004 Scope",
+            reassessment_rows_by_id.get("REA-TM-2026-004"),
+            reassessment_header,
+            "Scope",
+            {"CTRL-2026-008"},
+        ),
+        (
+            "REA-TM-2026-004 Closure",
+            reassessment_rows_by_id.get("REA-TM-2026-004"),
+            reassessment_header,
+            "Closure criteria",
+            {"CTRL-2026-008"},
+        ),
+    )
+    for identifier, row, header, field, expected_control_ids in control_consumer_contracts:
+        if row is None:
+            messages.append(f"{label}: missing Control consumer {identifier}")
+            continue
+        observed_control_ids = set(
+            re.findall(r"\bCTRL-2026-\d{3}\b", row[header.index(field)])
+        )
+        if observed_control_ids != expected_control_ids:
+            messages.append(
+                f"{label}: {identifier} {field} Control references "
+                f"{sorted(observed_control_ids)!r} != {sorted(expected_control_ids)!r}"
+            )
+
     reauthorization_markers = (
         "合成TenantであってもApp permission、consent、Identity bindingなどの設定変更を行う場合。",
         "RoEのmethod / time windowを越えて合成Rule testを再実施する場合。",
@@ -3337,8 +3706,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
 
     for family, expected in EXPECTED_CASE_IDS.items():
         observed = set(re.findall(rf"\b{family}-2026-\d{{3}}\b", text))
-        if observed != expected:
-            messages.append(f"{label}: {family} IDs {sorted(observed)!r} != {sorted(expected)!r}")
+        expected_references = EXPECTED_CASE_REFERENCE_IDS[family]
+        if observed != expected_references:
+            messages.append(
+                f"{label}: {family} reference IDs {sorted(observed)!r} != "
+                f"{sorted(expected_references)!r}"
+            )
 
     auxiliary_definition_contracts = (
         (
@@ -3378,6 +3751,93 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(
             f"{label}: Handoff semantic mapping {observed_handoffs!r} != {EXPECTED_HANDOFF_ROWS!r}"
         )
+    expected_handoff_controls = {
+        "HO-TM-2026-005": set(),
+        "HO-TM-2026-006": {"CTRL-2026-007", "CTRL-2026-009"},
+        "HO-TM-2026-009": {"CTRL-2026-008"},
+        "HO-TM-2026-011": {"CTRL-2026-005"},
+        "HO-TM-2026-012": {"CTRL-2026-006"},
+        "HO-TM-2026-013": {"CTRL-2026-006"},
+        "HO-TM-2026-014": {"CTRL-2026-008"},
+        "HO-TM-2026-015": set(CHAPTER4_CONTROL_RELATIONS),
+        "HO-TM-2026-027": set(),
+    }
+    handoff_rows_by_id = {
+        row[0].strip("`"): row
+        for row in handoff_rows
+        if len(row) == len(HANDOFF_HEADER)
+    }
+    for handoff_id, expected_control_ids in expected_handoff_controls.items():
+        row = handoff_rows_by_id.get(handoff_id)
+        if row is None:
+            messages.append(f"{label}: missing Control handoff consumer {handoff_id}")
+            continue
+        provided = row[HANDOFF_HEADER.index("What this artifact provides")]
+        observed_control_ids = set(re.findall(r"\bCTRL-2026-\d{3}\b", provided))
+        if observed_control_ids != expected_control_ids:
+            messages.append(
+                f"{label}: {handoff_id} Control references "
+                f"{sorted(observed_control_ids)!r} != {sorted(expected_control_ids)!r}"
+            )
+    for line in EXPECTED_HANDOFF_INTERPRETATION_LINES:
+        if text.count(line) != 1:
+            messages.append(
+                f"{label}: Handoff interpretation Control trace must occur exactly once: "
+                f"{line!r}"
+            )
+    if text.count(HANDOFF_INTERPRETATION_BOUNDARY) != 1:
+        messages.append(
+            f"{label}: Handoff interpretation must identify itself as a non-exhaustive "
+            f"reader aid and keep the table as canonical: {HANDOFF_INTERPRETATION_BOUNDARY!r}"
+        )
+
+    downstream_control_references = {
+        "Evidence Requirement": [
+            row[evidence_requirement_header.index("Related Threat / Control / Gap")]
+            for row in evidence_rows_by_id.values()
+        ],
+        "Action": [
+            row[action_header.index("Related Gap / Control / Threat")]
+            for row in action_rows_by_id.values()
+        ],
+        "Reassessment": [
+            " ".join(
+                (
+                    row[reassessment_header.index("Scope")],
+                    row[reassessment_header.index("Closure criteria")],
+                )
+            )
+            for row in reassessment_rows_by_id.values()
+        ],
+        "Handoff": [
+            row[HANDOFF_HEADER.index("What this artifact provides")]
+            for row in handoff_rows_by_id.values()
+        ],
+    }
+    for control_id, control_row in controls_by_id.items():
+        gap_ids = set(
+            re.findall(
+                r"\bGAP-2026-\d{3}\b",
+                control_row[control_header.index("Gap ID")],
+            )
+        )
+        if len(gap_ids) != 1:
+            messages.append(
+                f"{label}: {control_id} must identify exactly one reverse-trace Gap; "
+                f"found {sorted(gap_ids)!r}"
+            )
+        else:
+            gap_id = next(iter(gap_ids))
+            gap_row = gap_rows_by_id.get(gap_id)
+            if gap_row is None or control_id not in gap_row[gap_header.index("Missing information / control / telemetry")]:
+                messages.append(
+                    f"{label}: {control_id} -> {gap_id} is not reversed by the Gap row"
+                )
+        for consumer_kind, values in downstream_control_references.items():
+            if not any(control_id in value for value in values):
+                messages.append(
+                    f"{label}: {control_id} has no finite {consumer_kind} consumer"
+                )
 
     inherited_evidence = set(re.findall(r"\b(?:EVD-2026-\d{3}|EVD-AUTH-2026-\d{3}|NEG-2026-\d{3})\b", text))
     if inherited_evidence != EXPECTED_INHERITED_EVIDENCE_IDS:
@@ -3491,6 +3951,51 @@ def source_contract_errors(chapter: str, registry: dict, note: str) -> list[str]
         "Registry rootの`checkedAt`",
     )))
     return messages
+
+
+def control_definition_collision_errors(
+    documents: tuple[tuple[str, str], ...],
+) -> list[str]:
+    """Reject Chapter 4 Control IDs defined by a different canonical document."""
+
+    messages: list[str] = []
+    for relative, text in documents:
+        if relative == CASE:
+            continue
+        definitions = set(
+            re.findall(
+                r"^\|\s*`(CTRL-2026-\d{3})`\s*\|",
+                text,
+                re.MULTILINE,
+            )
+        )
+        collisions = sorted(definitions & set(CHAPTER4_CONTROL_RELATIONS))
+        if collisions:
+            messages.append(
+                f"{relative}: fresh Chapter 4 Control IDs already defined outside "
+                f"{CASE}: {collisions!r}"
+            )
+    return messages
+
+
+def fresh_control_definition_errors() -> list[str]:
+    """Check every tracked Markdown definition against the fresh Chapter 4 IDs."""
+
+    result = subprocess.run(
+        ["git", "ls-files", "-z", "--", "*.md"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    )
+    documents: list[tuple[str, str]] = []
+    for raw_relative in result.stdout.decode("utf-8").split("\0"):
+        if not raw_relative:
+            continue
+        path = ROOT / raw_relative
+        if not path.is_file():
+            continue
+        documents.append((raw_relative, path.read_text(encoding="utf-8")))
+    return control_definition_collision_errors(tuple(documents))
 
 
 def page_contract_errors(registry: dict, label: str) -> list[str]:
@@ -3769,6 +4274,76 @@ def negative_regressions(
                 case.replace("## 10. Evidence Requirements and Actions", "## 10. Evidence Inventory", 1),
             ),
             (
+                "inherited Chapter 1 Control ID redefined",
+                case.replace(
+                    "| `CTRL-2026-005` | `ASSET-2026-004`, `ASSET-2026-005`",
+                    "| `CTRL-2026-001` | `ASSET-2026-004`, `ASSET-2026-005`",
+                    1,
+                ),
+            ),
+            (
+                "fresh Chapter 4 Control ID duplicated",
+                case.replace(
+                    "| `CTRL-2026-006` | `ASSET-2026-005`, `ASSET-2026-007`",
+                    "| `CTRL-2026-005` | `ASSET-2026-005`, `ASSET-2026-007`",
+                    1,
+                ),
+            ),
+            (
+                "Control inheritance relation drift",
+                case.replace(
+                    "- `CTRL-2026-005`は第1章`CTRL-2026-001`「必要scopeだけへ縮小」",
+                    "- `CTRL-2026-005`は第1章`CTRL-2026-002`「必要scopeだけへ縮小」",
+                    1,
+                ),
+            ),
+            (
+                "Control consumer falls back to inherited ID",
+                case.replace(
+                    "`TH-2026-001` / `TH-2026-004` / `CTRL-2026-005` / `CTRL-2026-006`: "
+                    "scope matrix、Identity binding、rotation手順と実設定",
+                    "`TH-2026-001` / `TH-2026-004` / `CTRL-2026-001` / `CTRL-2026-006`: "
+                    "scope matrix、Identity binding、rotation手順と実設定",
+                    1,
+                ),
+            ),
+            (
+                "CTRL-2026-006 identity assurance overclaimed",
+                case.replace(
+                    "| Platform | Documented | `EVD-2026-001` | "
+                    "`EVD-2026-001`はApp registration scope Snapshotに限られ",
+                    "| Platform | Implemented | `EVD-2026-001` | "
+                    "`EVD-2026-001`はApp registration scope Snapshotに限られ",
+                    1,
+                ),
+            ),
+            (
+                "CTRL-2026-006 reverse Gap reference omitted",
+                case.replace(
+                    "`TH-2026-001` / `TH-2026-004` / `CTRL-2026-005` / `CTRL-2026-006`: "
+                    "scope matrix、Identity binding、rotation手順と実設定",
+                    "`TH-2026-001` / `TH-2026-004` / `CTRL-2026-005`: "
+                    "scope matrix、Identity binding、rotation手順と実設定",
+                    1,
+                ),
+            ),
+            (
+                "lab safety Control reuses inherited API Telemetry ID",
+                case.replace(
+                    "| `CTRL-2026-008` | `ASSET-2026-003`, `TB-2026-006`",
+                    "| `CTRL-2026-004` | `ASSET-2026-003`, `TB-2026-006`",
+                    1,
+                ),
+            ),
+            (
+                "Control Handoff consumer omitted",
+                case.replace(
+                    "`CTRL-2026-005` / `CTRL-2026-006` / `CTRL-2026-007` / `CTRL-2026-008` / `CTRL-2026-009`、`GAP-2026-001`〜`004`",
+                    "`GAP-2026-001`〜`004`",
+                    1,
+                ),
+            ),
+            (
                 "TH-2026-001 inherited proposition drift",
                 case.replace(
                     INHERITED_TH_001_CASE_PROPOSITION,
@@ -3891,16 +4466,20 @@ def negative_regressions(
             (
                 "EREQ-2026-001 drops summary refinement hypothesis",
                 case.replace(
-                    "| `EREQ-2026-001` | 現行scopeは業務要件を超えているか | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-001`, `GAP-2026-002` |",
-                    "| `EREQ-2026-001` | 現行scopeは業務要件を超えているか | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` |",
+                    "| `EREQ-2026-001` | 現行scope、Identity binding、rotation手順は業務要件と一致するか | "
+                    "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` |",
+                    "| `EREQ-2026-001` | 現行scope、Identity binding、rotation手順は業務要件と一致するか | "
+                    "`TH-2026-001`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` |",
                     1,
                 ),
             ),
             (
                 "REA-TM-2026-001 drops summary refinement hypothesis",
                 case.replace(
-                    "| `REA-TM-2026-001` | scope変更、承認ticket改定、manual import要件更新 | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-001`, `GAP-2026-002` |",
-                    "| `REA-TM-2026-001` | scope変更、承認ticket改定、manual import要件更新 | `TH-2026-001`, `CTRL-2026-001`, `GAP-2026-002` |",
+                    "| `REA-TM-2026-001` | scope、Identity binding、rotationまたは承認ticket変更 | "
+                    "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` |",
+                    "| `REA-TM-2026-001` | scope、Identity binding、rotationまたは承認ticket変更 | "
+                    "`TH-2026-001`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` |",
                     1,
                 ),
             ),
@@ -4021,7 +4600,7 @@ def negative_regressions(
                 ),
             ),
             (
-                "CTRL-2026-004 assurance overclaim",
+                "CTRL-2026-008 assurance overclaim",
                 case.replace(
                     "| Lab Operator | Documented | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |",
                     "| Lab Operator | Observed | `EVD-AUTH-2026-001`, `SYNTH-REV-TM-SAFE-001` |",
@@ -4079,13 +4658,13 @@ def negative_regressions(
             (
                 "REA-TM-2026-002 omits renewed authorization gate",
                 case.replace(
-                    "新Authorization Record / RoE承認後にのみ合成Rule testを再実施し、Detection test結果に新Evidence IDを割り当てる。収集設定変更はchange approval後に行う。`CTRL-2026-003`がValidated、Gap ownerと期限が更新済み",
-                    "`CTRL-2026-003`がValidated、Gap ownerと期限が更新済み",
+                    "新Authorization Record / RoE承認後にのみ合成Rule testを再実施し、Detection test結果に新Evidence IDを割り当てる。収集設定変更はchange approval後に行う。`CTRL-2026-007`がValidated、Gap ownerと期限が更新済み",
+                    "`CTRL-2026-007`がValidated、Gap ownerと期限が更新済み",
                     1,
                 ),
             ),
             (
-                "CTRL-2026-004 orphaned from lab-safety Gap",
+                "CTRL-2026-008 orphaned from lab-safety Gap",
                 case.replace(
                     "| `GAP-2026-004` | AUTH条件、Lab boundaryまたは実施Evidence変更 |",
                     "| `GAP-2026-003` | AUTH条件、Lab boundaryまたは実施Evidence変更 |",
@@ -4127,7 +4706,8 @@ def negative_regressions(
             (
                 "Action source type drift",
                 case.replace(
-                    "| `ACT-TM-2026-004` | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-001`, `GAP-2026-002` |",
+                    "| `ACT-TM-2026-004` | `TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, "
+                    "`CTRL-2026-006`, `GAP-2026-002` |",
                     "| `ACT-TM-2026-004` | `TB-2026-005`, `MISUSE-2026-001` |",
                     1,
                 ),
@@ -4143,7 +4723,9 @@ def negative_regressions(
             (
                 "ACT-TM-2026-004 does not remediate its Gap",
                 case.replace(
-                    "合成Tenant bindingのBoundary owner、停止条件、fallback判断をscope matrixへ構造化し、承認済みの既存Snapshotとのoffline機械的突合対象に追加する。live Tenantへ接続しない",
+                    "合成Tenant bindingのBoundary owner、停止条件、fallback判断、rotation手順Review fieldを"
+                    "scope matrixへ構造化し、承認済みの既存Snapshotとのoffline機械的突合対象に追加する。"
+                    "live Tenantへ接続しない",
                     "合成Tenant bindingのBoundary owner、停止条件、fallback判断をscope matrixへ構造化し、live Tenantへ接続して機械的突合する",
                     1,
                 ),
@@ -4167,8 +4749,8 @@ def negative_regressions(
             (
                 "Gap missing owner and due date",
                 case.replace(
-                    "| `GAP-2026-001` | `TH-2026-003` / `CTRL-2026-005`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない | Platform | 2026-08-18 |",
-                    "| `GAP-2026-001` | `TH-2026-003` / `CTRL-2026-005`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない |  |  |",
+                    "| `GAP-2026-001` | `TH-2026-003` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない | Platform | 2026-08-18 |",
+                    "| `GAP-2026-001` | `TH-2026-003` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない |  |  |",
                     1,
                 ),
             ),
@@ -4187,6 +4769,10 @@ def negative_regressions(
             (
                 "Handoff semantic target drift",
                 case.replace("| `HO-TM-2026-012` | 第12章 Identity評価 |", "| `HO-TM-2026-012` | 第27章 AI評価 |", 1),
+            ),
+            (
+                "Handoff interpretation canonical-table boundary omitted",
+                case.replace(f"{HANDOFF_INTERPRETATION_BOUNDARY}\n\n", "", 1),
             ),
             (
                 "Chapter 14 lab-safety Evidence handoff drift",
@@ -4226,6 +4812,21 @@ def negative_regressions(
                 error(f"negative Case mutation fixture did not match canonical text: {name}")
             elif not case_contract_errors(mutation, f"negative Case {name}"):
                 error(f"negative regression accepted Chapter 4 Case mutation: {name}")
+        for control_id in sorted(CHAPTER4_CONTROL_RELATIONS):
+            collision = control_definition_collision_errors(
+                (
+                    (
+                        "cases/foreign-control-definition.md",
+                        "| Control ID | Statement |\n"
+                        "|---|---|\n"
+                        f"| `{control_id}` | unrelated definition |\n",
+                    ),
+                )
+            )
+            if not collision:
+                error(
+                    f"negative external-artifact Control collision was accepted: {control_id}"
+                )
         safety_matrix_negative_regressions(case, CASE, CASE_TABLE_OCCURRENCES)
         prose_surface_negative_regressions(
             case,
@@ -4356,6 +4957,7 @@ def main() -> int:
     ERRORS.extend(chapter_contract_errors(chapter, CHAPTER))
     ERRORS.extend(template_contract_errors(template, TEMPLATE))
     ERRORS.extend(case_contract_errors(case, CASE))
+    ERRORS.extend(fresh_control_definition_errors())
     ERRORS.extend(source_contract_errors(chapter, sources, note))
     ERRORS.extend(publication_contract_errors())
     ERRORS.extend(changelog_contract_errors(changelog, CHANGELOG))

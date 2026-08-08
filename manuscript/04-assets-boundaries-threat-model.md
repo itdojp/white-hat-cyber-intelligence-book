@@ -131,7 +131,7 @@ Threat Modelは、図を描く作業ではなく、判断要求をレビュー�
 
 #### 一つの仮説を最後まで通す記入例
 
-完成例を読む前に、一つの仮説だけをTemplateへ通す。`DR-2026-001`の継続判断に対し、Business Asset「請求連携能力」を担う`ASSET-2026-001`とOAuth component `ASSET-2026-005`を置く。承認からApp設定へ進むControl Flowを`FLOW-2026-001`、Administrative Controlの変化を`TB-2026-001`、read-only Review接点を`EXP-2026-001` / `EP-2026-001`とする。そこから「業務要件を超えるscopeが残る可能性」を`TH-2026-001`として記録し、成立条件と観測点だけを`EDGE-2026-001`へ書く。`CTRL-2026-001`がDocumentedに留まるなら`GAP-2026-002`を開き、`EREQ-2026-001`、`ACT-TM-2026-001`、`REA-TM-2026-001`へつなぐ。
+完成例を読む前に、一つの仮説だけをTemplateへ通す。`DR-2026-001`の継続判断に対し、Business Asset「請求連携能力」を担う`ASSET-2026-001`とOAuth component `ASSET-2026-005`を置く。承認からApp設定へ進むControl Flowを`FLOW-2026-001`、Administrative Controlの変化を`TB-2026-001`、read-only Review接点を`EXP-2026-001` / `EP-2026-001`とする。そこから「業務要件を超えるscopeが残る可能性」を`TH-2026-001`として記録し、成立条件と観測点だけを`EDGE-2026-001`へ書く。`CTRL-2026-005`がDocumentedに留まるなら`GAP-2026-002`を開き、`EREQ-2026-001`、`ACT-TM-2026-001`、`REA-TM-2026-001`へつなぐ。
 
 この一連の記入では、侵害を再現していない。仮説、Controlの状態、必要Evidence、Owner、期限をDecisionへつないだだけである。各IDの全行は合成記入例で確認できる。
 
