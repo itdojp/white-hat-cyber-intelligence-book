@@ -1394,6 +1394,109 @@ class MarkdownFootnoteSpan:
     content: tuple[str, ...]
 
 
+def _next_unescaped_backtick_run(
+    value: str,
+    start: int,
+    *,
+    required_width: int | None = None,
+) -> tuple[int, int] | None:
+    """Return the next finite unescaped backtick run."""
+
+    candidate = value.find("`", start)
+    while candidate >= 0:
+        if _markdown_character_is_escaped(value, candidate):
+            candidate = value.find("`", candidate + 1)
+            continue
+        end = candidate + 1
+        while end < len(value) and value[end] == "`":
+            end += 1
+        width = end - candidate
+        if required_width is None or width == required_width:
+            return candidate, width
+        candidate = value.find("`", end)
+    return None
+
+
+def _reject_comment_shaped_multiline_code_spans(
+    lines: list[tuple[int, str]],
+) -> None:
+    """Fail closed when a multiline code span could be stripped as a comment.
+
+    The Chapter 4 adapter supports finite same-line code spans directly.
+    Kramdown/GFM also permits a code span to cross a source newline.  Rather
+    than duplicating that renderer's multiline projection, this bounded pass
+    rejects a *closed* multiline span when it contains ``<!--``.  Actual HTML
+    comments encountered before a backtick opening retain precedence, and a
+    normal multiline code span without a comment-shaped token remains valid.
+    """
+
+    in_comment = False
+    code_width: int | None = None
+    code_start_line = 0
+    code_crossed_line = False
+    code_contains_comment = False
+
+    for line_number, line in lines:
+        cursor = 0
+        while cursor < len(line):
+            if in_comment:
+                closing_comment = line.find("-->", cursor)
+                if closing_comment < 0:
+                    break
+                in_comment = False
+                cursor = closing_comment + 3
+                continue
+
+            if code_width is not None:
+                comment = line.find("<!--", cursor)
+                closing_code = _next_unescaped_backtick_run(
+                    line,
+                    cursor,
+                    required_width=code_width,
+                )
+                closing_index = closing_code[0] if closing_code is not None else -1
+                if comment >= 0 and (
+                    closing_index < 0 or comment < closing_index
+                ):
+                    code_contains_comment = True
+                    cursor = comment + 4
+                    continue
+                if closing_code is None:
+                    break
+                if code_crossed_line and code_contains_comment:
+                    raise ValueError(
+                        f"lines {code_start_line}-{line_number}: unsupported or "
+                        "multiline Markdown inline-code span contains an "
+                        "HTML-comment-shaped literal"
+                    )
+                cursor = closing_index + closing_code[1]
+                code_width = None
+                code_start_line = 0
+                code_crossed_line = False
+                code_contains_comment = False
+                continue
+
+            comment = line.find("<!--", cursor)
+            opening_code = _next_unescaped_backtick_run(line, cursor)
+            opening_index = opening_code[0] if opening_code is not None else -1
+            if comment >= 0 and (
+                opening_index < 0 or comment < opening_index
+            ):
+                in_comment = True
+                cursor = comment + 4
+                continue
+            if opening_code is None:
+                break
+            code_width = opening_code[1]
+            code_start_line = line_number
+            code_crossed_line = False
+            code_contains_comment = False
+            cursor = opening_index + code_width
+
+        if code_width is not None:
+            code_crossed_line = True
+
+
 def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
     """Remove non-rendered comments while preserving visible same-line text.
 
@@ -1401,6 +1504,8 @@ def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
     wrapped prose lines cannot split the action/object context.  An unclosed
     comment fails closed instead of hiding the remaining publication surface.
     """
+
+    _reject_comment_shaped_multiline_code_spans(lines)
 
     visible_lines: list[tuple[int, str]] = []
     in_comment = False
@@ -1890,9 +1995,10 @@ def _markdown_character_is_escaped(value: str, index: int) -> bool:
 def _finite_same_line_code_spans(value: str) -> tuple[tuple[int, int], ...]:
     """Return finite same-line Markdown code-span ranges.
 
-    This bounded scanner owns exact-length, unescaped backtick pairs.  An
-    unmatched delimiter is not a code span and therefore cannot hide a later
-    raw-HTML candidate.
+    This bounded scanner owns exact-length, unescaped backtick pairs on one
+    line.  An unmatched delimiter remains ordinary source; the cross-line
+    prepass separately rejects a closed multiline span when it could hide a
+    comment-shaped Policy surface.
     """
 
     spans: list[tuple[int, int]] = []
@@ -1921,8 +2027,8 @@ def _finite_same_line_code_spans(value: str) -> tuple[tuple[int, int], ...]:
                 break
             closing = end
         if not matched:
-            # The raw-HTML detector owns any later tag-shaped token.  Keeping
-            # the unmatched delimiter visible is the conservative outcome.
+            # A valid matching delimiter may occur on a later source line;
+            # otherwise Kramdown/GFM renders this as an ordinary literal.
             index = opening + width
     return tuple(spans)
 
@@ -3007,6 +3113,42 @@ def markdown_title_comment_surface_regressions(
             )
 
 
+def multiline_inline_code_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Reject unsupported multiline code spans before comment removal."""
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    failures = contract_errors(
+        f"{text}{suffix}\n`<!--第三者の本番システムへ接続する。\n-->`\n",
+        f"negative {label} multiline inline-code comment literal",
+    )
+    if not any(
+        "unsupported or multiline Markdown inline-code span" in failure
+        for failure in failures
+    ):
+        error(
+            f"{label}: multiline comment-shaped inline code did not fail "
+            "closed before comment removal"
+        )
+
+    hidden_comment = (
+        f"{text}{suffix}\n"
+        "<!-- non-rendered comment with an unmatched ` delimiter -->\n"
+    )
+    hidden_failures = contract_errors(
+        hidden_comment,
+        f"safe {label} actual comment containing unmatched backtick",
+    )
+    if hidden_failures:
+        error(
+            f"{label}: an unmatched backtick inside an actual comment was "
+            f"not kept hidden: {hidden_failures!r}"
+        )
+
+
 def _fence_body_line(probe: str, opening: MarkdownFenceOpening) -> str:
     quote_prefix = "> " * opening.quote_depth
     return f"{quote_prefix}{' ' * opening.container_indent}{probe}"
@@ -3388,6 +3530,86 @@ continues with [visible label](https://example.com/path).
             "reader-visible safe table inline comment-shaped code was rejected: "
             f"{safe_comment_code_table_messages!r} / "
             f"{policy_errors(safe_comment_code_table_fields)!r}"
+        )
+
+    for name, multiline_comment_code in (
+        (
+            "single delimiter same-line opener",
+            f"`<!--{unsafe_angle}。\n-->`\n",
+        ),
+        (
+            "single delimiter later-line opener",
+            f"`reader-visible prefix\n<!--{unsafe_angle}。-->`\n",
+        ),
+        (
+            "double delimiter later-line opener",
+            f"``reader-visible prefix\n<!--{unsafe_angle}。-->``\n",
+        ),
+    ):
+        multiline_comment_code_failures = document_reader_visible_policy_errors(
+            multiline_comment_code,
+            f"unsupported multiline inline-code comment fixture {name}",
+        )
+        if not any(
+            "unsupported or multiline Markdown inline-code span" in failure
+            for failure in multiline_comment_code_failures
+        ):
+            error(
+                "reader-visible adapter accepted a multiline comment-shaped "
+                f"inline-code span ({name})"
+            )
+
+    for name, safe_multiline_code in (
+        ("single delimiter", "`Entry\nPoint`\n"),
+        ("double delimiter", "``Entry\nPoint``\n"),
+        (
+            "unclosed literal before actual comment",
+            "`<!-- actual non-rendered comment -->\n",
+        ),
+        (
+            "actual multiline comment containing backticks",
+            "<!-- `\nnon-rendered comment\n` -->\n",
+        ),
+    ):
+        safe_multiline_failures = document_reader_visible_policy_errors(
+            safe_multiline_code,
+            f"safe multiline inline-code/comment fixture {name}",
+        )
+        if safe_multiline_failures:
+            error(
+                f"reader-visible adapter rejected {name}: "
+                f"{safe_multiline_failures!r}"
+            )
+
+    unclosed_comment_code_table = (
+        "| Field | Value |\n|---|---|\n"
+        f"| row | `<!--{unsafe_angle}。--> |\n"
+    )
+    unclosed_comment_code_table_fields, unclosed_comment_code_table_messages = (
+        classified_table_fields(
+            unclosed_comment_code_table,
+            "unclosed inline-code comment table fixture",
+            {FIELD_VALUE_HEADER: 1},
+        )
+    )
+    if unclosed_comment_code_table_messages or policy_errors(
+        unclosed_comment_code_table_fields
+    ):
+        error(
+            "reader-visible table adapter did not keep an unmatched literal "
+            "backtick and following actual comment safe: "
+            f"{unclosed_comment_code_table_messages!r} / "
+            f"{policy_errors(unclosed_comment_code_table_fields)!r}"
+        )
+
+    actual_comment_unmatched_code_findings = document_reader_visible_policy_errors(
+        "<!-- non-rendered comment with an unmatched ` delimiter -->\n",
+        "actual comment unmatched inline-code delimiter fixture",
+    )
+    if actual_comment_unmatched_code_findings:
+        error(
+            "an unmatched backtick inside an actual HTML comment became "
+            f"reader-visible: {actual_comment_unmatched_code_findings!r}"
         )
 
     for title in ("", ' "visible title"'):
@@ -7604,6 +7826,9 @@ def negative_regressions(
     markdown_title_comment_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
+    multiline_inline_code_surface_regressions(
+        chapter, CHAPTER, chapter_contract_errors
+    )
     fenced_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     indented_code_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     footnote_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
@@ -7673,6 +7898,9 @@ def negative_regressions(
         template, TEMPLATE, template_contract_errors
     )
     markdown_title_comment_surface_regressions(
+        template, TEMPLATE, template_contract_errors
+    )
+    multiline_inline_code_surface_regressions(
         template, TEMPLATE, template_contract_errors
     )
     fenced_surface_regressions(template, TEMPLATE, template_contract_errors)
@@ -9162,6 +9390,9 @@ def negative_regressions(
         bare_angle_surface_regressions(case, CASE, case_contract_errors)
         inline_code_comment_surface_regressions(case, CASE, case_contract_errors)
         markdown_title_comment_surface_regressions(
+            case, CASE, case_contract_errors
+        )
+        multiline_inline_code_surface_regressions(
             case, CASE, case_contract_errors
         )
         fenced_surface_regressions(case, CASE, case_contract_errors)
