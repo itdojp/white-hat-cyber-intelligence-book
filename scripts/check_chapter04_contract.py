@@ -1337,6 +1337,24 @@ _MARKDOWN_NESTED_INLINE_IMAGE_SHORTCUT = re.compile(
 _MARKDOWN_SHORTCUT_REFERENCE_LINK = re.compile(
     r"!?\[(?P<label>[^\]\r\n]+)\]"
 )
+_KRAMDOWN_IAL_START = re.compile(r"\{:")
+_KRAMDOWN_IAL_CLASS = r"\.[^\s.#]+"
+_KRAMDOWN_IAL_ID = r"#[A-Za-z][A-Za-z0-9_:-]*"
+_KRAMDOWN_SAFE_CLASS_ID_IAL_BODY = re.compile(
+    rf"[ \t]*(?:{_KRAMDOWN_IAL_ID}|{_KRAMDOWN_IAL_CLASS})+"
+    rf"(?:[ \t]+(?:{_KRAMDOWN_IAL_ID}|{_KRAMDOWN_IAL_CLASS})+)*[ \t]*"
+)
+_KRAMDOWN_BLOCK_IAL_PREFIX = re.compile(
+    r"^[ \t]*(?:(?:>[ \t]*){0,3})"
+    r"(?:(?:[-+*]|\d+[.)])[ \t]+)?$"
+)
+_KRAMDOWN_FOOTNOTE_MARKER_TAIL = re.compile(r"\[\^[^\]\r\n]+\]$")
+_KRAMDOWN_ENTITY_TAIL = re.compile(
+    r"&(?:#[0-9]+|#[xX][0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9]+);$"
+)
+_KRAMDOWN_DOUBLE_ENCODED_ENTITY_LITERAL_TAIL = re.compile(
+    r"&amp;(?:#[0-9]+|#[xX][0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9]+);$"
+)
 _MARKDOWN_FOOTNOTE_DEFINITION_PREFIX = re.compile(
     r"^\s{0,3}\[\^(?!\^)[^]\r\n]+\]:"
 )
@@ -2328,10 +2346,187 @@ def _project_markdown_reference_link_labels(
     return projected
 
 
+def _kramdown_ial_attachment_kind(
+    value: str,
+    *,
+    start: int,
+    end: int,
+    reference_labels: frozenset[str],
+) -> str | None:
+    """Return the finite rendered element that owns an adjacent IAL."""
+
+    prefix = value[:start]
+    suffix = value[end + 1 :]
+    if _KRAMDOWN_BLOCK_IAL_PREFIX.fullmatch(prefix) and not suffix.strip():
+        return "block"
+
+    for code_start, code_end in _finite_same_line_code_spans(value):
+        if code_end == start:
+            return "code-span"
+
+    for opening in _MARKDOWN_INLINE_LINK_OPENING.finditer(value):
+        if not _finite_inline_label_before_tail(value, opening.start()):
+            continue
+        link = _MARKDOWN_INLINE_LINK.match(value, opening.start())
+        if link is not None and link.end() == start:
+            return "inline-link-or-image"
+
+    for pattern in (
+        _MARKDOWN_NESTED_INLINE_IMAGE_REFERENCE_LINK,
+        _MARKDOWN_NESTED_IMAGE_REFERENCE_LINK,
+        _MARKDOWN_REFERENCE_LINK,
+    ):
+        for match in pattern.finditer(value):
+            if match.end() != start:
+                continue
+            references: list[str] = []
+            for group_name in (
+                "reference",
+                "image_reference",
+                "outer_reference",
+            ):
+                if group_name in match.re.groupindex:
+                    references.append(match.group(group_name) or match.group("label"))
+            if all(
+                _normalized_markdown_reference_label(reference)
+                in reference_labels
+                for reference in references
+            ):
+                return "reference-link-or-image"
+
+    for match in _MARKDOWN_SHORTCUT_REFERENCE_LINK.finditer(value):
+        if match.end() == start and (
+            _normalized_markdown_reference_label(match.group("label"))
+            in reference_labels
+        ):
+            return "shortcut-reference-link-or-image"
+
+    if _KRAMDOWN_FOOTNOTE_MARKER_TAIL.search(prefix):
+        return "footnote-marker"
+    if any(match.end() == start for match in _MARKDOWN_AUTOLINK_URL.finditer(value)):
+        return "autolink"
+    if _KRAMDOWN_ENTITY_TAIL.search(prefix):
+        return "entity"
+
+    if start:
+        delimiter = value[start - 1]
+        if delimiter in "*_" and not _markdown_character_is_escaped(value, start - 1):
+            run_start = start - 1
+            while run_start > 0 and value[run_start - 1] == delimiter:
+                run_start -= 1
+            width = start - run_start
+            opening = delimiter * width
+            candidate = value[:run_start]
+            opening_index = candidate.rfind(opening)
+            if (
+                opening_index >= 0
+                and not _markdown_character_is_escaped(candidate, opening_index)
+                and candidate[opening_index + width :].strip()
+            ):
+                return "emphasis"
+    return None
+
+
+def _project_kramdown_attribute_lists(
+    value: str,
+    *,
+    location: str,
+    reference_labels: frozenset[str],
+) -> str:
+    """Project a finite, inert Kramdown IAL to its rendered text boundary.
+
+    Pinned Kramdown 2.5.2 / GFM 1.1.0 removes a same-line ``{:...}``
+    attribute list after a rendered span, and removes a block IAL line.  Such
+    metadata must not split the text sent to Policy 1.2.0.  Chapter 4 permits
+    only class/id shorthand aligned with the pinned parser; named attributes,
+    ALD references, and generic extensions fail closed when they are attached
+    to a rendered element or occupy a block IAL line.
+
+    Inline code and Markdown destination/title spans are literal or separately
+    owned metadata, so IAL-looking source inside them is not interpreted here.
+    Text-adjacent and malformed shapes that pinned Kramdown leaves literal stay
+    reader-visible.  Unknown attachment punctuation fails closed instead of
+    being silently projected.  This is a finite renderer adapter, not a claim
+    to implement the complete Kramdown parser.
+    """
+
+    protected = tuple(
+        sorted(
+            set(_finite_same_line_code_spans(value))
+            | set(_finite_markdown_link_noncontent_spans(value))
+        )
+    )
+
+    def protected_at(position: int) -> bool:
+        return any(start <= position < end for start, end in protected)
+
+    projected = list(value)
+    cursor = 0
+    while True:
+        match = _KRAMDOWN_IAL_START.search(value, cursor)
+        if match is None:
+            break
+        start = match.start()
+        cursor = start + 2
+        if protected_at(start) or _markdown_character_is_escaped(value, start):
+            continue
+
+        end = cursor
+        while end < len(value) and value[end] not in "\r\n":
+            if value[end] == "\\" and end + 1 < len(value) and value[end + 1] == "}":
+                end += 2
+                continue
+            if value[end] == "}":
+                break
+            end += 1
+        if end >= len(value) or value[end] != "}":
+            # An unclosed shape is rendered literally and therefore is not
+            # hidden metadata.  Leave it visible for the ordinary Policy path.
+            continue
+
+        body = value[start + 2 : end]
+        attachment = _kramdown_ial_attachment_kind(
+            value,
+            start=start,
+            end=end,
+            reference_labels=reference_labels,
+        )
+        if attachment is None:
+            # Kramdown warns and renders a span IAL literally when its previous
+            # child is ordinary text.  A double-encoded entity is an entity
+            # token followed by literal entity-name text, so its trailing
+            # semicolon belongs to the same ordinary-text boundary.  Preserve
+            # those exact reader-visible forms instead of treating the IAL as
+            # hidden metadata.
+            if start and (
+                value[start - 1].isalnum()
+                or ord(value[start - 1]) > 127
+                or _KRAMDOWN_DOUBLE_ENCODED_ENTITY_LITERAL_TAIL.search(
+                    value[:start]
+                )
+            ):
+                cursor = end + 1
+                continue
+            raise ValueError(
+                f"{location}: Kramdown attribute-list attachment is outside "
+                "the finite Chapter 4 renderer contract"
+            )
+        if not _KRAMDOWN_SAFE_CLASS_ID_IAL_BODY.fullmatch(body):
+            raise ValueError(
+                f"{location}: Kramdown attribute lists are limited to finite "
+                "class/id shorthand; named attributes, references, and "
+                "extensions are disallowed"
+            )
+        projected[start : end + 1] = [""] * (end + 1 - start)
+        cursor = end + 1
+    return "".join(projected)
+
+
 def _project_literal_inline_code(
     value: str,
     *,
     reference_labels: frozenset[str] = frozenset(),
+    location: str = "reader-visible Markdown",
 ) -> str:
     """Keep reader-visible literal angle content Policy-visible.
 
@@ -2344,8 +2539,13 @@ def _project_literal_inline_code(
     owns visible autolinks after masking finite Markdown link metadata.
     """
 
-    reference_projected = _project_markdown_reference_link_labels(
+    ial_projected = _project_kramdown_attribute_lists(
         value,
+        location=location,
+        reference_labels=reference_labels,
+    )
+    reference_projected = _project_markdown_reference_link_labels(
+        ial_projected,
         reference_labels=reference_labels,
     )
     projected = list(reference_projected)
@@ -2593,6 +2793,7 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
             projected = _project_literal_inline_code(
                 content_line,
                 reference_labels=reference_labels,
+                location=content_location,
             ).strip()
             if projected:
                 rendered_parts.append(projected)
@@ -2652,6 +2853,7 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
                 _project_literal_inline_code(
                     line,
                     reference_labels=reference_labels,
+                    location=f"{label}:{line_number}-{line_number}",
                 ),
             )
         )
@@ -2962,6 +3164,14 @@ def classified_table_fields(
                         _reject_interpreted_raw_html(
                             visible_value, location=location
                         )
+                        projected_value = _project_literal_inline_code(
+                            visible_value,
+                            reference_labels=reference_labels,
+                            location=location,
+                        )
+                        title_fields = _inline_link_title_fields(
+                            visible_value, location=location
+                        )
                     except (TypeError, ValueError, UnicodeError) as exc:
                         messages.append(
                             f"{location}: reader-visible Markdown table-cell "
@@ -2973,23 +3183,10 @@ def classified_table_fields(
                     fields.append(
                         (
                             location,
-                            _project_literal_inline_code(
-                                visible_value,
-                                reference_labels=reference_labels,
-                            ),
+                            projected_value,
                         )
                     )
-                    try:
-                        fields.extend(
-                            _inline_link_title_fields(
-                                visible_value, location=location
-                            )
-                        )
-                    except (TypeError, ValueError, UnicodeError) as exc:
-                        messages.append(
-                            f"{location}: reader-visible Markdown table-cell "
-                            f"adapter failed closed: {exc}"
-                        )
+                    fields.extend(title_fields)
     return fields, messages
 
 
@@ -3444,6 +3641,101 @@ def reference_link_label_surface_regressions(
             f"{label}: hidden reference identifier became Policy-visible: "
             f"{hidden_failures!r}"
         )
+
+
+def kramdown_ial_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Keep inert Kramdown class/id metadata from splitting rendered prose."""
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    unsafe = "第三者の本番システムへ接続する"
+    for name, unsafe_source, safe_source, tail in (
+        (
+            "emphasis",
+            "第三者の*本番*{:.ch04-probe}システムへ接続する",
+            "第三者の*本番*{:.ch04-probe}システムへ接続しない",
+            "",
+        ),
+        (
+            "strong",
+            "第三者の**本番**{:#foo:bar}システムへ接続する",
+            "第三者の**本番**{:#foo:bar}システムへ接続しない",
+            "",
+        ),
+        (
+            "code",
+            "第三者の`本番`{:.1probe}システムへ接続する",
+            "第三者の`本番`{:.1probe}システムへ接続しない",
+            "",
+        ),
+        (
+            "inline link",
+            "第三者の[本番](/local){:.ch04-probe}システムへ接続する",
+            "第三者の[本番](/local){:.ch04-probe}システムへ接続しない",
+            "",
+        ),
+        (
+            "reference link",
+            "第三者の[本番][ch04-ial-ref]{:.ch04-probe}システムへ接続する",
+            "第三者の[本番][ch04-ial-ref]{:.ch04-probe}システムへ接続しない",
+            "\n[ch04-ial-ref]: /local",
+        ),
+        (
+            "image alt",
+            "第三者の![本番](/asset){:.ch04-probe}システムへ接続する",
+            "第三者の![本番](/asset){:.ch04-probe}システムへ接続しない",
+            "",
+        ),
+        (
+            "footnote",
+            "Reader note[^ial].\n\n[^ial]: 第三者の*本番*{:.ch04-probe}システムへ接続する",
+            "Reader note[^ial].\n\n[^ial]: 第三者の*本番*{:.ch04-probe}システムへ接続しない",
+            "",
+        ),
+        (
+            "block IAL",
+            "第三者の本番システムへ接続する\n{: .ch04-probe}",
+            "第三者の本番システムへ接続しない\n{: .ch04-probe}",
+            "",
+        ),
+        (
+            "blockquote block IAL",
+            "> 第三者の本番システムへ接続する\n> {: .ch04-probe}",
+            "> 第三者の本番システムへ接続しない\n> {: .ch04-probe}",
+            "",
+        ),
+        (
+            "list-item block IAL",
+            "- 第三者の本番システムへ接続する\n  {: .ch04-probe}",
+            "- 第三者の本番システムへ接続しない\n  {: .ch04-probe}",
+            "",
+        ),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{unsafe_source}{tail}\n",
+            f"negative {label} Kramdown IAL {name}",
+        )
+        if not any(
+            "[target.real_or_external]" in failure and unsafe in failure
+            for failure in failures
+        ):
+            error(
+                f"{label}: unsafe rendered Kramdown IAL {name} bypassed "
+                "Policy 1.2.0"
+            )
+
+        safe_failures = contract_errors(
+            f"{text}{suffix}\n{safe_source}{tail}\n",
+            f"safe {label} Kramdown IAL {name}",
+        )
+        if safe_failures:
+            error(
+                f"{label}: safe rendered Kramdown IAL {name} was rejected: "
+                f"{safe_failures!r}"
+            )
 
 
 def inline_code_comment_surface_regressions(
@@ -4440,6 +4732,230 @@ continues with [visible label](https://example.com/path).
     ):
         if "hidden-ref" in _markdown_reference_definition_labels(hidden_definition):
             error(f"{name} created a non-rendered Markdown reference definition")
+
+    # Ready-transition review 4890449002 freezes Kramdown IAL ownership.
+    # Safe class/id shorthand is hidden metadata and must be removed before
+    # Policy scanning; named attributes/references/extensions fail closed.
+    ial_surface_cases = (
+        (
+            "prose emphasis",
+            "第三者の*本番*{:.ial-probe}システムへ接続する\n",
+            "第三者の*本番*{:.ial-probe}システムへ接続しない\n",
+        ),
+        (
+            "heading strong",
+            "# 第三者の**本番**{:#ial-probe}システムへ接続する\n",
+            "# 第三者の**本番**{:#ial-probe}システムへ接続しない\n",
+        ),
+        (
+            "footnote link",
+            "Note[^ial].\n\n[^ial]: 第三者の[本番](/local){:.ial-probe}システムへ接続する\n",
+            "Note[^ial].\n\n[^ial]: 第三者の[本番](/local){:.ial-probe}システムへ接続しない\n",
+        ),
+        (
+            "block IAL",
+            "第三者の本番システムへ接続する\n{: .ial-probe}\n",
+            "第三者の本番システムへ接続しない\n{: .ial-probe}\n",
+        ),
+    )
+    for name, unsafe_source, safe_source in ial_surface_cases:
+        unsafe_findings = document_reader_visible_policy_errors(
+            unsafe_source, f"unsafe Kramdown IAL {name} fixture"
+        )
+        target_findings = [
+            finding
+            for finding in unsafe_findings
+            if "[target.real_or_external]" in finding and unsafe_angle in finding
+        ]
+        if len(target_findings) != 1:
+            error(
+                f"rendered Kramdown IAL {name} was not scanned exactly once: "
+                f"{unsafe_findings!r}"
+            )
+        safe_findings = document_reader_visible_policy_errors(
+            safe_source, f"safe Kramdown IAL {name} fixture"
+        )
+        if safe_findings:
+            error(
+                f"safe rendered Kramdown IAL {name} was rejected: "
+                f"{safe_findings!r}"
+            )
+
+    ial_table = (
+        "| Field | Value |\n|---|---|\n"
+        "| row | 第三者の*本番*{:.ial-probe}システムへ接続する |\n"
+    )
+    ial_table_fields, ial_table_messages = classified_table_fields(
+        ial_table,
+        "unsafe Kramdown IAL table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    ial_table_findings = policy_errors(ial_table_fields)
+    if ial_table_messages or len(
+        [
+            finding
+            for finding in ial_table_findings
+            if "[target.real_or_external]" in finding and unsafe_angle in finding
+        ]
+    ) != 1:
+        error(
+            "rendered Kramdown IAL table label was not scanned exactly once: "
+            f"{ial_table_messages!r} / {ial_table_findings!r}"
+        )
+    safe_ial_table_fields, safe_ial_table_messages = classified_table_fields(
+        ial_table.replace("接続する", "接続しない", 1),
+        "safe Kramdown IAL table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    if safe_ial_table_messages or policy_errors(safe_ial_table_fields):
+        error(
+            "safe rendered Kramdown IAL table label was rejected: "
+            f"{safe_ial_table_messages!r} / "
+            f"{policy_errors(safe_ial_table_fields)!r}"
+        )
+
+    projected_ial = _project_literal_inline_code(
+        "第三者の*本番*{:.ial-probe #ial-id}システムへ接続する",
+        location="direct Kramdown IAL projection fixture",
+    )
+    if projected_ial != "第三者の*本番*システムへ接続する":
+        error(f"Kramdown class/id IAL was not projected: {projected_ial!r}")
+    if _project_literal_inline_code(
+        r"安全な*表示*\{:.ial-probe\}",
+        location="escaped Kramdown IAL near-miss fixture",
+    ) != r"安全な*表示*\{:.ial-probe\}":
+        error("escaped Kramdown IAL-like source was interpreted as metadata")
+    if _project_literal_inline_code(
+        "安全な`*表示*{:.ial-probe}`",
+        location="inline-code Kramdown IAL near-miss fixture",
+    ) != "安全な`*表示*{:.ial-probe}`":
+        error("inline-code Kramdown IAL-like source was interpreted as metadata")
+    if _project_literal_inline_code(
+        "安全な*表示*{:.unclosed",
+        location="unclosed Kramdown IAL near-miss fixture",
+    ) != "安全な*表示*{:.unclosed":
+        error("unclosed Kramdown IAL-like source was interpreted as metadata")
+    for name, source, expected in (
+        (
+            "autolink attachment",
+            "<https://lab.example/runbook>{:.ial-probe}",
+            "<https://lab.example/runbook>",
+        ),
+        ("entity attachment", "&gt;{:.ial-probe}", "&gt;"),
+    ):
+        projected = _project_kramdown_attribute_lists(
+            source,
+            location=f"Kramdown IAL {name} fixture",
+            reference_labels=frozenset(),
+        )
+        if projected != expected:
+            error(
+                f"Kramdown IAL {name} was not projected at its rendered "
+                f"attachment boundary: {projected!r}"
+            )
+    for name, source in (
+        (
+            "double-encoded named entity",
+            "安全な&amp;lt;code&amp;gt;{:.ial-probe}です",
+        ),
+        (
+            "double-encoded decimal entity",
+            "安全な&amp;#60;code&amp;#62;{:.ial-probe}です",
+        ),
+        (
+            "double-encoded hexadecimal entity",
+            "安全な&amp;#x3c;code&amp;#x3e;{:.ial-probe}です",
+        ),
+    ):
+        projected = _project_literal_inline_code(
+            source, location=f"literal Kramdown IAL {name} fixture"
+        )
+        if projected != source:
+            error(
+                f"reader-visible {name} was interpreted as an IAL attachment: "
+                f"{projected!r}"
+            )
+
+    literal_ial_near_misses = (
+        (
+            "plain prose",
+            "第三者の本番{:.ial-probe}システムへ接続する\n",
+        ),
+        (
+            "heading",
+            "# 第三者の本番{:.ial-probe}システムへ接続する\n",
+        ),
+        (
+            "inline-link label",
+            "[第三者の本番{:.ial-probe}システムへ接続する](/local)\n",
+        ),
+        (
+            "reference-link label",
+            "[第三者の本番{:.ial-probe}システムへ接続する][ial-literal]\n\n"
+            "[ial-literal]: /local\n",
+        ),
+    )
+    for name, literal_source in literal_ial_near_misses:
+        failures = document_reader_visible_policy_errors(
+            literal_source, f"literal text-adjacent Kramdown IAL {name} fixture"
+        )
+        if failures:
+            error(
+                f"text-adjacent literal Kramdown IAL {name} was interpreted "
+                f"as metadata: {failures!r}"
+            )
+
+    literal_ial_table = (
+        "| Field | Value |\n|---|---|\n"
+        "| row | 第三者の本番{:.ial-probe}システムへ接続する |\n"
+    )
+    literal_ial_table_fields, literal_ial_table_messages = classified_table_fields(
+        literal_ial_table,
+        "literal text-adjacent Kramdown IAL table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    if literal_ial_table_messages or policy_errors(literal_ial_table_fields):
+        error(
+            "text-adjacent literal Kramdown IAL table was interpreted as "
+            f"metadata: {literal_ial_table_messages!r} / "
+            f"{policy_errors(literal_ial_table_fields)!r}"
+        )
+
+    for name, source in (
+        (
+            "named attribute",
+            '*安全な表示*{: title="第三者の本番システムへ接続する"}',
+        ),
+        ("attribute-list reference", "*安全な表示*{:unsafe-attributes}"),
+        ("generic extension", "*安全な表示*{::comment}"),
+        ("closing extension", "*安全な表示*{:/comment}"),
+    ):
+        failures = document_reader_visible_policy_errors(
+            source, f"unsupported Kramdown IAL {name} fixture"
+        )
+        if not any(
+            "reader-visible Markdown adapter failed closed" in failure
+            and "class/id shorthand" in failure
+            for failure in failures
+        ):
+            error(
+                f"unsupported Kramdown IAL {name} did not fail closed: "
+                f"{failures!r}"
+            )
+
+    for name, literal_source in (
+        ("fenced code", "```text\n*表示*{:.ial-probe}\n```\n"),
+        ("indented code", "    *表示*{:.ial-probe}\n"),
+        ("actual comment", "<!-- *表示*{:.ial-probe} -->\n"),
+    ):
+        failures = document_reader_visible_policy_errors(
+            literal_source, f"literal Kramdown IAL {name} fixture"
+        )
+        if failures:
+            error(
+                f"literal/non-rendered Kramdown IAL {name} was rejected: "
+                f"{failures!r}"
+            )
 
     comment_code_table = (
         "| Field | Value |\n|---|---|\n"
@@ -8768,6 +9284,9 @@ def negative_regressions(
     reference_link_label_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
+    kramdown_ial_surface_regressions(
+        chapter, CHAPTER, chapter_contract_errors
+    )
     inline_code_comment_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
@@ -8844,6 +9363,9 @@ def negative_regressions(
     bare_angle_surface_regressions(template, TEMPLATE, template_contract_errors)
     angle_entity_surface_regressions(template, TEMPLATE, template_contract_errors)
     reference_link_label_surface_regressions(
+        template, TEMPLATE, template_contract_errors
+    )
+    kramdown_ial_surface_regressions(
         template, TEMPLATE, template_contract_errors
     )
     inline_code_comment_surface_regressions(
@@ -10342,6 +10864,9 @@ def negative_regressions(
         bare_angle_surface_regressions(case, CASE, case_contract_errors)
         angle_entity_surface_regressions(case, CASE, case_contract_errors)
         reference_link_label_surface_regressions(
+            case, CASE, case_contract_errors
+        )
+        kramdown_ial_surface_regressions(
             case, CASE, case_contract_errors
         )
         inline_code_comment_surface_regressions(case, CASE, case_contract_errors)
