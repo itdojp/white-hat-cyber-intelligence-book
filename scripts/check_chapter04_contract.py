@@ -1932,9 +1932,21 @@ def _finite_markdown_link_noncontent_spans(value: str) -> tuple[tuple[int, int],
 
 
 def _project_literal_inline_code(value: str) -> str:
-    """Keep literal tag-shaped source Policy-visible without interpreting it."""
+    """Keep reader-visible literal angle content Policy-visible.
+
+    Actual raw HTML is rejected before this projection.  Finite Markdown link
+    destinations and titles are blanked from the main field because they are
+    metadata: destinations stay hidden and titles are selected separately.
+    Every other literal angle delimiter is neutralized so the shared
+    normalizer cannot discard the reader-visible content between it, including
+    balanced and unbalanced bare prose and autolinks.  Host extraction still
+    owns visible autolinks after masking finite Markdown link metadata.
+    """
 
     projected = list(value)
+    for start, end in _finite_markdown_link_noncontent_spans(value):
+        projected[start:end] = " " * (end - start)
+
     for start, end in _finite_same_line_code_spans(value):
         for position in range(start, end):
             if projected[position] in "<>":
@@ -1950,6 +1962,9 @@ def _project_literal_inline_code(value: str) -> str:
             index += 2
             continue
         index += 1
+    for position, character in enumerate(projected):
+        if character in "<>":
+            projected[position] = " "
     return _HTML_ANGLE_ENTITY.sub(" ", "".join(projected))
 
 
@@ -2321,12 +2336,20 @@ def visible_host_tokens(text: str) -> tuple[str, ...]:
     """Return bounded visible URL/domain/IP tokens for the shared host Policy.
 
     ``normalize_visible_text`` removes Markdown link destinations before this
-    extraction.  Scanning explicit tokens avoids treating dotted prose such as
-    ``SP 800-30 Rev.1`` as a hostname while preserving visible bare hosts,
-    URLs, and documentation/non-documentation address literals.
+    extraction.  The separate autolink pass masks the same finite destination
+    and title spans so an angle-bracket destination cannot masquerade as a
+    visible autolink.  Scanning explicit tokens avoids treating dotted prose
+    such as ``SP 800-30 Rev.1`` as a hostname while preserving visible bare
+    hosts, URLs, and documentation/non-documentation address literals.
     """
 
-    autolinks = {match.group("url") for match in _MARKDOWN_AUTOLINK_URL.finditer(text)}
+    autolink_source = list(text)
+    for start, end in _finite_markdown_link_noncontent_spans(text):
+        autolink_source[start:end] = " " * (end - start)
+    autolinks = {
+        match.group("url")
+        for match in _MARKDOWN_AUTOLINK_URL.finditer("".join(autolink_source))
+    }
     visible = normalize_visible_text(text)
     tokens = {
         match.group(0).rstrip(".,;、。")
@@ -2768,6 +2791,85 @@ def raw_html_surface_regressions(
             error(f"{label}: raw HTML near-miss {name} was rejected: {failures!r}")
 
 
+def bare_angle_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Fix the finite reader-visible bare-angle projection contract.
+
+    Kramdown/GFM preserves non-tag, non-autolink angle-bracket source for the
+    reader.  Balanced and malformed literal delimiters must therefore not let
+    the shared HTML-aware normalizer discard the enclosed instruction.  Link
+    destinations remain metadata, while autolink hosts retain their dedicated
+    host-policy handling.
+    """
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    for name, probe in (
+        ("balanced literal", "<第三者の本番システムへ接続する>"),
+        ("unclosed opening literal", "<第三者の本番システムへ接続する"),
+        ("unmatched closing literal", "第三者の本番システムへ接続する>"),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"negative {label} bare angle {name}",
+        )
+        if not any(
+            "[target.real_or_external]" in failure
+            and "第三者の本番システムへ接続する" in failure
+            for failure in failures
+        ):
+            error(f"{label}: unsafe bare angle {name} bypassed Policy 1.2.0")
+
+    for name, probe in (
+        (
+            "explicit prohibition",
+            "<第三者の本番システムへ接続することを禁止する>",
+        ),
+        ("explicit negative", "<第三者の本番システムへ接続しない>"),
+        (
+            "literal explanation",
+            "この記号列 <表示用literal> は表示形式の説明である。",
+        ),
+        ("ordinary comparison", "値 < threshold > lower boundを比較する。"),
+        ("approved autolink", "<https://lab.example/runbook>"),
+        (
+            "hidden angle destination",
+            "[runbook](<第三者の本番システムへ接続する>)",
+        ),
+        (
+            "hidden angle URL destination",
+            "[runbook](<https://example.com/runbook>)",
+        ),
+        (
+            "unclosed safe literal",
+            "<第三者の本番システムへ接続しない",
+        ),
+        (
+            "unmatched safe closing literal",
+            "第三者の本番システムへ接続しない>",
+        ),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"safe {label} bare angle {name}",
+        )
+        if failures:
+            error(f"{label}: safe bare angle {name} was rejected: {failures!r}")
+
+    disallowed_autolink = contract_errors(
+        f"{text}{suffix}\n<https://example.com/runbook>\n",
+        f"negative {label} disallowed autolink host",
+    )
+    if not any(
+        "[network.host_or_address]" in failure
+        and "non-approved host suffix" in failure
+        for failure in disallowed_autolink
+    ):
+        error(f"{label}: non-approved autolink host bypassed Policy 1.2.0")
+
+
 def _fence_body_line(probe: str, opening: MarkdownFenceOpening) -> str:
     quote_prefix = "> " * opening.quote_depth
     return f"{quote_prefix}{' ' * opening.container_indent}{probe}"
@@ -3008,7 +3110,12 @@ continues with [visible label](https://example.com/path).
 """
     expected_fields = [
         ("adapter fixture:4-4 heading", "ignored heading"),
-        ("adapter fixture:5-6 paragraph", "First paragraph line continues with [visible label](https://example.com/path)."),
+        (
+            "adapter fixture:5-6 paragraph",
+            "First paragraph line continues with [visible label]("
+            + " " * len("https://example.com/path")
+            + ").",
+        ),
         ("adapter fixture:8-8 list", "visible list item"),
         (
             "adapter fixture:14-16 fence[text/plain-text]",
@@ -3021,6 +3128,126 @@ continues with [visible label](https://example.com/path).
     link_paragraph = dict(expected_fields)["adapter fixture:5-6 paragraph"]
     if visible_host_tokens(link_paragraph):
         error("reader-visible prose adapter must not scan hidden Markdown link destinations as visible hosts")
+
+    # Issue #81 freezes the finite precedence between bare literal delimiters
+    # and every reader-visible Markdown surface owned by this adapter.  These
+    # are adapter-level probes in addition to the Chapter/ART-03/Case mutation
+    # checks below.
+    unsafe_angle = "第三者の本番システムへ接続する"
+    safe_angle = "第三者の本番システムへ接続しない"
+    for name, unsafe_source, safe_source in (
+        ("balanced prose", f"<{unsafe_angle}>\n", f"<{safe_angle}>\n"),
+        ("escaped prose", f"\\<{unsafe_angle}\\>\n", f"\\<{safe_angle}\\>\n"),
+        (
+            "entity prose",
+            f"&lt;{unsafe_angle}&gt;\n",
+            f"&lt;{safe_angle}&gt;\n",
+        ),
+        ("inline code", f"`<{unsafe_angle}>`\n", f"`<{safe_angle}>`\n"),
+        (
+            "fenced code",
+            f"```text\n<{unsafe_angle}>\n```\n",
+            f"```text\n<{safe_angle}>\n```\n",
+        ),
+        (
+            "indented code",
+            f"Reader-visible literal:\n\n    <{unsafe_angle}>\n",
+            f"Reader-visible literal:\n\n    <{safe_angle}>\n",
+        ),
+        (
+            "footnote",
+            f"Reader note[^angle].\n\n[^angle]: <{unsafe_angle}>\n",
+            f"Reader note[^angle].\n\n[^angle]: <{safe_angle}>\n",
+        ),
+    ):
+        unsafe_findings = document_reader_visible_policy_errors(
+            unsafe_source, f"unsafe bare-angle {name} fixture"
+        )
+        if not any(
+            "[target.real_or_external]" in finding
+            and unsafe_angle in finding
+            for finding in unsafe_findings
+        ):
+            error(f"reader-visible {name} bare angle bypassed Policy 1.2.0")
+        safe_findings = document_reader_visible_policy_errors(
+            safe_source, f"safe bare-angle {name} fixture"
+        )
+        if safe_findings:
+            error(
+                f"reader-visible safe {name} bare angle was rejected: "
+                f"{safe_findings!r}"
+            )
+
+    angle_table = (
+        "| Field | Value |\n|---|---|\n"
+        f"| row | <{unsafe_angle}> |\n"
+    )
+    angle_table_fields, angle_table_messages = classified_table_fields(
+        angle_table,
+        "unsafe bare-angle table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    angle_table_findings = policy_errors(angle_table_fields)
+    if angle_table_messages or not any(
+        "[target.real_or_external]" in finding and unsafe_angle in finding
+        for finding in angle_table_findings
+    ):
+        error(
+            "reader-visible table bare angle bypassed Policy 1.2.0: "
+            f"{angle_table_messages!r} / {angle_table_findings!r}"
+        )
+    safe_angle_table_fields, safe_angle_table_messages = classified_table_fields(
+        angle_table.replace(unsafe_angle, safe_angle, 1),
+        "safe bare-angle table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    if safe_angle_table_messages or policy_errors(safe_angle_table_fields):
+        error(
+            "reader-visible safe table bare angle was rejected: "
+            f"{safe_angle_table_messages!r} / "
+            f"{policy_errors(safe_angle_table_fields)!r}"
+        )
+
+    for title in ("", ' "visible title"'):
+        hidden_url_table = (
+            "| Field | Value |\n|---|---|\n"
+            f"| row | [runbook](<https://example.com/runbook>{title}) |\n"
+        )
+        hidden_url_table_fields, hidden_url_table_messages = classified_table_fields(
+            hidden_url_table,
+            "hidden angle URL table destination fixture",
+            {FIELD_VALUE_HEADER: 1},
+        )
+        hidden_url_table_findings = policy_errors(hidden_url_table_fields)
+        if hidden_url_table_messages or hidden_url_table_findings:
+            error(
+                "hidden angle-bracket table destination became a visible field: "
+                f"{hidden_url_table_messages!r} / {hidden_url_table_findings!r}"
+            )
+
+    for hidden_destination in (
+        "[runbook](<https://example.com/runbook>)",
+        '[runbook](<https://example.com/runbook> "visible title")',
+    ):
+        findings = document_reader_visible_policy_errors(
+            hidden_destination,
+            "hidden angle URL destination fixture",
+        )
+        if findings:
+            error(
+                "hidden angle-bracket Markdown destination became a visible "
+                f"host: {findings!r}"
+            )
+    visible_autolink_findings = document_reader_visible_policy_errors(
+        "<https://example.com/runbook>",
+        "visible disallowed autolink fixture",
+    )
+    if not any(
+        "[network.host_or_address]" in finding
+        and "non-approved host suffix" in finding
+        for finding in visible_autolink_findings
+    ):
+        error("visible non-approved autolink bypassed the host Policy")
 
     footnote_fixture = (
         "Reader note[^unsafe].\n\n"
@@ -7084,6 +7311,7 @@ def negative_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
     raw_html_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
+    bare_angle_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     fenced_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     indented_code_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     footnote_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
@@ -7148,6 +7376,7 @@ def negative_regressions(
         template, TEMPLATE, template_contract_errors
     )
     raw_html_surface_regressions(template, TEMPLATE, template_contract_errors)
+    bare_angle_surface_regressions(template, TEMPLATE, template_contract_errors)
     fenced_surface_regressions(template, TEMPLATE, template_contract_errors)
     indented_code_surface_regressions(template, TEMPLATE, template_contract_errors)
     footnote_surface_regressions(template, TEMPLATE, template_contract_errors)
@@ -8632,6 +8861,7 @@ def negative_regressions(
             case, CASE, case_contract_errors
         )
         raw_html_surface_regressions(case, CASE, case_contract_errors)
+        bare_angle_surface_regressions(case, CASE, case_contract_errors)
         fenced_surface_regressions(case, CASE, case_contract_errors)
         indented_code_surface_regressions(case, CASE, case_contract_errors)
         footnote_surface_regressions(case, CASE, case_contract_errors)
