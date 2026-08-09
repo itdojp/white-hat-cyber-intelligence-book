@@ -1405,28 +1405,45 @@ def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
     visible_lines: list[tuple[int, str]] = []
     in_comment = False
     for line_number, line in lines:
-        remainder = line
+        code_spans = _finite_same_line_code_spans(line)
+
+        def opening_outside_code(start: int) -> int:
+            candidate = line.find("<!--", start)
+            while candidate >= 0:
+                if not any(
+                    span_start <= candidate
+                    and candidate + len("<!--") <= span_end
+                    for span_start, span_end in code_spans
+                ):
+                    return candidate
+                candidate = line.find("<!--", candidate + 1)
+            return -1
+
+        cursor = 0
         visible_parts: list[str] = []
         had_comment = in_comment
-        while remainder:
+        while cursor < len(line):
             if in_comment:
-                close = remainder.find("-->")
+                # Once an actual comment starts, Markdown code-span syntax is
+                # not interpreted inside it; the first raw close delimiter
+                # therefore ends the non-rendered comment.
+                close = line.find("-->", cursor)
                 if close < 0:
-                    remainder = ""
+                    cursor = len(line)
                     break
                 in_comment = False
                 had_comment = True
-                remainder = remainder[close + 3 :]
+                cursor = close + 3
                 continue
-            opening = remainder.find("<!--")
+            opening = opening_outside_code(cursor)
             if opening < 0:
-                visible_parts.append(remainder)
-                remainder = ""
+                visible_parts.append(line[cursor:])
+                cursor = len(line)
                 break
-            visible_parts.append(remainder[:opening])
+            visible_parts.append(line[cursor:opening])
             in_comment = True
             had_comment = True
-            remainder = remainder[opening + 4 :]
+            cursor = opening + 4
         visible = "".join(visible_parts)
         if visible or not had_comment:
             visible_lines.append((line_number, visible))
@@ -2870,6 +2887,58 @@ def bare_angle_surface_regressions(
         error(f"{label}: non-approved autolink host bypassed Policy 1.2.0")
 
 
+def inline_code_comment_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Keep HTML-comment-shaped source inside inline code reader-visible."""
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    for name, probe in (
+        (
+            "balanced comment literal",
+            "`<!--第三者の本番システムへ接続する。-->`",
+        ),
+        (
+            "unclosed comment literal",
+            "`<!--第三者の本番システムへ接続する。`",
+        ),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"negative {label} inline-code {name}",
+        )
+        if not any(
+            "[target.real_or_external]" in failure
+            and "第三者の本番システムへ接続する" in failure
+            for failure in failures
+        ):
+            error(
+                f"{label}: HTML-comment-shaped {name} bypassed Policy 1.2.0"
+            )
+
+    for name, probe in (
+        (
+            "safe comment literal",
+            "`<!--第三者の本番システムへ接続しない。-->`",
+        ),
+        (
+            "actual non-rendered comment",
+            "<!-- `第三者の本番システムへ接続する。` -->",
+        ),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"safe {label} inline-code {name}",
+        )
+        if failures:
+            error(
+                f"{label}: inline-code/comment precedence rejected {name}: "
+                f"{failures!r}"
+            )
+
+
 def _fence_body_line(probe: str, opening: MarkdownFenceOpening) -> str:
     quote_prefix = "> " * opening.quote_depth
     return f"{quote_prefix}{' ' * opening.container_indent}{probe}"
@@ -3145,6 +3214,11 @@ continues with [visible label](https://example.com/path).
         ),
         ("inline code", f"`<{unsafe_angle}>`\n", f"`<{safe_angle}>`\n"),
         (
+            "inline comment-shaped code",
+            f"`<!--{unsafe_angle}。-->`\n",
+            f"`<!--{safe_angle}。-->`\n",
+        ),
+        (
             "fenced code",
             f"```text\n<{unsafe_angle}>\n```\n",
             f"```text\n<{safe_angle}>\n```\n",
@@ -3158,6 +3232,11 @@ continues with [visible label](https://example.com/path).
             "footnote",
             f"Reader note[^angle].\n\n[^angle]: <{unsafe_angle}>\n",
             f"Reader note[^angle].\n\n[^angle]: <{safe_angle}>\n",
+        ),
+        (
+            "footnote inline comment-shaped code",
+            f"Reader note[^comment].\n\n[^comment]: `<!--{unsafe_angle}。-->`\n",
+            f"Reader note[^comment].\n\n[^comment]: `<!--{safe_angle}。-->`\n",
         ),
     ):
         unsafe_findings = document_reader_visible_policy_errors(
@@ -3206,6 +3285,41 @@ continues with [visible label](https://example.com/path).
             "reader-visible safe table bare angle was rejected: "
             f"{safe_angle_table_messages!r} / "
             f"{policy_errors(safe_angle_table_fields)!r}"
+        )
+
+    comment_code_table = (
+        "| Field | Value |\n|---|---|\n"
+        f"| row | `<!--{unsafe_angle}。-->` |\n"
+    )
+    comment_code_table_fields, comment_code_table_messages = classified_table_fields(
+        comment_code_table,
+        "unsafe inline comment-shaped code table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    comment_code_table_findings = policy_errors(comment_code_table_fields)
+    if comment_code_table_messages or not any(
+        "[target.real_or_external]" in finding and unsafe_angle in finding
+        for finding in comment_code_table_findings
+    ):
+        error(
+            "reader-visible table inline comment-shaped code bypassed Policy "
+            f"1.2.0: {comment_code_table_messages!r} / "
+            f"{comment_code_table_findings!r}"
+        )
+    safe_comment_code_table_fields, safe_comment_code_table_messages = (
+        classified_table_fields(
+            comment_code_table.replace(unsafe_angle, safe_angle, 1),
+            "safe inline comment-shaped code table fixture",
+            {FIELD_VALUE_HEADER: 1},
+        )
+    )
+    if safe_comment_code_table_messages or policy_errors(
+        safe_comment_code_table_fields
+    ):
+        error(
+            "reader-visible safe table inline comment-shaped code was rejected: "
+            f"{safe_comment_code_table_messages!r} / "
+            f"{policy_errors(safe_comment_code_table_fields)!r}"
         )
 
     for title in ("", ' "visible title"'):
@@ -7312,6 +7426,9 @@ def negative_regressions(
     )
     raw_html_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     bare_angle_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
+    inline_code_comment_surface_regressions(
+        chapter, CHAPTER, chapter_contract_errors
+    )
     fenced_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     indented_code_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     footnote_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
@@ -7377,6 +7494,9 @@ def negative_regressions(
     )
     raw_html_surface_regressions(template, TEMPLATE, template_contract_errors)
     bare_angle_surface_regressions(template, TEMPLATE, template_contract_errors)
+    inline_code_comment_surface_regressions(
+        template, TEMPLATE, template_contract_errors
+    )
     fenced_surface_regressions(template, TEMPLATE, template_contract_errors)
     indented_code_surface_regressions(template, TEMPLATE, template_contract_errors)
     footnote_surface_regressions(template, TEMPLATE, template_contract_errors)
@@ -8862,6 +8982,7 @@ def negative_regressions(
         )
         raw_html_surface_regressions(case, CASE, case_contract_errors)
         bare_angle_surface_regressions(case, CASE, case_contract_errors)
+        inline_code_comment_surface_regressions(case, CASE, case_contract_errors)
         fenced_surface_regressions(case, CASE, case_contract_errors)
         indented_code_surface_regressions(case, CASE, case_contract_errors)
         footnote_surface_regressions(case, CASE, case_contract_errors)
