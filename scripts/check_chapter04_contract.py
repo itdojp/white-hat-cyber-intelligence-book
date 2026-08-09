@@ -2894,6 +2894,33 @@ def _inline_link_title_fields(value: str, *, location: str) -> list[tuple[str, s
     return fields
 
 
+_INTERPRETED_LIQUID_OPENING = re.compile(r"\{\{|\{%")
+
+
+def _reject_interpreted_liquid(value: str, *, location: str) -> None:
+    """Reject Liquid before any Markdown projection or masking.
+
+    Jekyll evaluates Liquid before Kramdown renders Markdown.  A Liquid tag can
+    therefore remove source text and join two otherwise separated fragments,
+    including inside a fence, Markdown table, or HTML comment.  Chapter 4 does
+    not need executable Liquid, so the finite publication contract rejects both
+    output and tag openers instead of attempting to emulate the Liquid runtime.
+    Entity-encoded braces remain ordinary reader-visible text because Jekyll
+    does not interpret them as Liquid delimiters.
+    """
+
+    match = _INTERPRETED_LIQUID_OPENING.search(value)
+    if match is None:
+        return
+    line = value.count("\n", 0, match.start()) + 1
+    line_start = value.rfind("\n", 0, match.start()) + 1
+    column = match.start() - line_start + 1
+    raise ValueError(
+        f"{location}:{line}:{column}: interpreted Liquid syntax "
+        f"{match.group(0)!r} is disallowed before Markdown publication"
+    )
+
+
 def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str]]:
     """Select rendered headings, prose, lists, and finite code-block contents.
 
@@ -2910,6 +2937,7 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
     split at an authoring line break.
     """
 
+    _reject_interpreted_liquid(text, location=label)
     source_lines = text.splitlines()
     selected: list[tuple[int, tuple[str, str]]] = []
     content_start = _front_matter_content_start(source_lines)
@@ -3582,6 +3610,69 @@ def pipe_prefixed_prose_surface_regressions(
     if safe_errors:
         error(
             f"{label}: safe pipe-prefixed reader prose was rejected: {safe_errors!r}"
+        )
+
+
+def liquid_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Prove Liquid cannot alter a Chapter 4 publication before Policy scan."""
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    probes = (
+        (
+            "comment splice in prose",
+            "第三者の{% comment %}hidden{% endcomment %}本番システムへ接続する。",
+            "{%",
+        ),
+        (
+            "whitespace-control tag in a table cell",
+            "| Probe | 第三者の{%- comment -%}hidden{%- endcomment -%}本番システムへ接続する。 |",
+            "{%",
+        ),
+        (
+            "output splice in prose",
+            '第三者の{{ "本番" }}システムへ接続する。',
+            "{{",
+        ),
+        (
+            "whitespace-control output in fenced source",
+            '```text\n第三者の{{- "本番" -}}システムへ接続する。\n```',
+            "{{",
+        ),
+        (
+            "output inside an HTML comment",
+            '<!-- 第三者の{{ "本番" }}システムへ接続する。 -->',
+            "{{",
+        ),
+    )
+    for name, probe, opener in probes:
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"negative {label} Liquid {name}",
+        )
+        if not any(
+            "interpreted Liquid syntax" in failure
+            and repr(opener) in failure
+            for failure in failures
+        ):
+            error(f"{label}: interpreted Liquid {name} did not fail closed")
+
+    # Entity-encoded braces are emitted as ordinary reader-visible text and do
+    # not form a Liquid delimiter during Jekyll's pre-Markdown Liquid pass.
+    encoded_literal = (
+        "Liquid delimiter example: &#123;&#123; value &#125;&#125; and "
+        "&#123;% comment %&#125;."
+    )
+    failures = contract_errors(
+        f"{text}{suffix}\n{encoded_literal}\n",
+        f"safe {label} entity-encoded Liquid delimiter",
+    )
+    if failures:
+        error(
+            f"{label}: entity-encoded Liquid near-miss was rejected: {failures!r}"
         )
 
 
@@ -10147,6 +10238,7 @@ def negative_regressions(
     pipe_prefixed_prose_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
+    liquid_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     raw_html_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     bare_angle_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     angle_entity_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
@@ -10231,6 +10323,7 @@ def negative_regressions(
     pipe_prefixed_prose_surface_regressions(
         template, TEMPLATE, template_contract_errors
     )
+    liquid_surface_regressions(template, TEMPLATE, template_contract_errors)
     raw_html_surface_regressions(template, TEMPLATE, template_contract_errors)
     bare_angle_surface_regressions(template, TEMPLATE, template_contract_errors)
     angle_entity_surface_regressions(template, TEMPLATE, template_contract_errors)
@@ -12054,6 +12147,7 @@ def negative_regressions(
         pipe_prefixed_prose_surface_regressions(
             case, CASE, case_contract_errors
         )
+        liquid_surface_regressions(case, CASE, case_contract_errors)
         raw_html_surface_regressions(case, CASE, case_contract_errors)
         bare_angle_surface_regressions(case, CASE, case_contract_errors)
         angle_entity_surface_regressions(case, CASE, case_contract_errors)
