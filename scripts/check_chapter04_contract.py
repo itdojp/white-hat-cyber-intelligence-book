@@ -13,6 +13,7 @@ from collections import Counter
 from collections.abc import Callable
 from copy import deepcopy
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -737,6 +738,8 @@ EXPECTED_LAB_SEQUENCE_ROWS = (
         "`CTRL-2026-007`と`CTRL-2026-008`をEvidence範囲内で別々に更新する",
     ),
 )
+LAB_SEQUENCE_COMPLETION_DATE = "2026-08-18"
+LAB_SEQUENCE_REASSESSMENT_DATE = "2026-08-19"
 REASSESSMENT_HEADER = (
     "Reassessment ID",
     "Trigger",
@@ -8124,6 +8127,25 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             if marker not in row[success_evidence_index]:
                 messages.append(f"{label}: {action_id} Success evidence missing marker {marker!r}")
 
+    lab_sequence_action_ids = (
+        "ACT-TM-2026-002",
+        "ACT-TM-2026-005",
+        "ACT-TM-2026-006",
+    )
+    lab_sequence_action_due_dates: dict[str, str] = {}
+    action_due_date_index = action_header.index("Due date")
+    for action_id in lab_sequence_action_ids:
+        row = action_rows_by_id.get(action_id)
+        if row is None:
+            continue
+        due_date = row[action_due_date_index]
+        lab_sequence_action_due_dates[action_id] = due_date
+        if due_date != LAB_SEQUENCE_COMPLETION_DATE:
+            messages.append(
+                f"{label}: {action_id} Due date {due_date!r} != "
+                f"coordinated completion {LAB_SEQUENCE_COMPLETION_DATE!r}"
+            )
+
     lab_sequence_rows, lab_sequence_messages = table_by_header(
         text, LAB_SEQUENCE_HEADER, label
     )
@@ -8167,7 +8189,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     else:
         expected_lab_gap_fields = {
             "Owner": "Lab Operator",
-            "Due date": "2026-08-13",
+            "Due date": LAB_SEQUENCE_COMPLETION_DATE,
             "Evidence Requirement ID": "`EREQ-2026-004`",
             "Action ID": "`ACT-TM-2026-006`",
             "Reassessment ID": "`REA-TM-2026-004`",
@@ -8329,6 +8351,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         minimum = lab_requirement[evidence_requirement_header.index("Minimum sufficient evidence")]
         forbidden = lab_requirement[evidence_requirement_header.index("Forbidden / over-collection boundary")]
         resulting = lab_requirement[evidence_requirement_header.index("Resulting Evidence IDs")]
+        due_date = lab_requirement[evidence_requirement_header.index("Due date")]
+        if due_date != LAB_SEQUENCE_COMPLETION_DATE:
+            messages.append(
+                f"{label}: EREQ-2026-004 Due date {due_date!r} != "
+                f"coordinated completion {LAB_SEQUENCE_COMPLETION_DATE!r}"
+            )
         for marker in ("preflight report", "default-deny", "Cleanup verification"):
             if marker not in minimum:
                 messages.append(f"{label}: EREQ-2026-004 minimum evidence missing {marker!r}")
@@ -8459,6 +8487,48 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             for marker in markers:
                 if marker not in value:
                     messages.append(f"{label}: {reassessment_id} {field} missing {marker!r}")
+
+    lab_reassessment = reassessment_rows_by_id.get("REA-TM-2026-004")
+    if lab_reassessment is not None:
+        scheduled_date = lab_reassessment[
+            reassessment_header.index("Scheduled date")
+        ]
+        if scheduled_date != LAB_SEQUENCE_REASSESSMENT_DATE:
+            messages.append(
+                f"{label}: REA-TM-2026-004 Scheduled date "
+                f"{scheduled_date!r} != post-cleanup reassessment "
+                f"{LAB_SEQUENCE_REASSESSMENT_DATE!r}"
+            )
+
+        prerequisite_due_dates = dict(lab_sequence_action_due_dates)
+        if lab_gap is not None:
+            prerequisite_due_dates["GAP-2026-004"] = lab_gap[
+                gap_header.index("Due date")
+            ]
+        if lab_requirement is not None:
+            prerequisite_due_dates["EREQ-2026-004"] = lab_requirement[
+                evidence_requirement_header.index("Due date")
+            ]
+        try:
+            reassessment_day = date.fromisoformat(scheduled_date)
+            completion_days = {
+                identifier: date.fromisoformat(due_date)
+                for identifier, due_date in prerequisite_due_dates.items()
+            }
+        except ValueError as exc:
+            messages.append(f"{label}: Lab sequence date is not ISO-8601: {exc}")
+        else:
+            late_or_equal = {
+                identifier: due_day.isoformat()
+                for identifier, due_day in completion_days.items()
+                if due_day >= reassessment_day
+            }
+            if late_or_equal:
+                messages.append(
+                    f"{label}: Lab prerequisites must complete before "
+                    f"REA-TM-2026-004: {late_or_equal!r} >= "
+                    f"{scheduled_date!r}"
+                )
 
     path_summary_rows, path_summary_messages = table_by_header(
         text, PATH_SUMMARY_HEADER, label
@@ -11249,6 +11319,39 @@ def negative_regressions(
                     "| 1. Event-class tests | `ACT-TM-2026-002` / `ACT-TM-2026-005` Phase B | "
                     "任意の開始判断 |",
                     1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-006 cleanup completion is scheduled before the coordinated sequence",
+                mutate_table_cell(
+                    case,
+                    ACTION_HEADER,
+                    1,
+                    6,
+                    "Due date",
+                    "2026-08-17",
+                ),
+            ),
+            (
+                "EREQ-2026-004 remains due on the reassessment date",
+                mutate_table_cell(
+                    case,
+                    EVIDENCE_REQUIREMENT_HEADER,
+                    1,
+                    4,
+                    "Due date",
+                    LAB_SEQUENCE_REASSESSMENT_DATE,
+                ),
+            ),
+            (
+                "REA-TM-2026-004 runs before cleanup completion evidence can close",
+                mutate_table_cell(
+                    case,
+                    REASSESSMENT_HEADER,
+                    1,
+                    4,
+                    "Scheduled date",
+                    LAB_SEQUENCE_COMPLETION_DATE,
                 ),
             ),
             (
