@@ -1408,11 +1408,16 @@ _MARKDOWN_INLINE_LINK = re.compile(
     rf"[ \t]*(?P<destination>{_MARKDOWN_LINK_DESTINATION})"
     rf"(?:[ \t]+{_MARKDOWN_LINK_TITLE})?[ \t]*\)"
 )
-_MARKDOWN_DIRECT_LABEL_BEFORE_TAIL = re.compile(r"!?\[[^\]\r\n]*\]$")
+_MARKDOWN_DIRECT_LABEL_BEFORE_TAIL = re.compile(
+    r"(?P<image>!)?\[(?P<label>[^\]\r\n]*)\]$"
+)
 _MARKDOWN_NESTED_IMAGE_LABEL_BEFORE_TAIL = re.compile(
-    r"\[!\[[^\]\r\n]*\]\("
+    r"\[!\[(?P<label>[^\]\r\n]*)\]\("
     rf"[ \t]*{_MARKDOWN_LINK_DESTINATION}"
     rf"(?:[ \t]+{_MARKDOWN_LINK_TITLE_TOKEN})?[ \t]*\)\]$"
+)
+_MARKDOWN_ESCAPED_NESTED_IMAGE_LINK = re.compile(
+    r"(?<!\\)\[\\!\[[^\]\r\n]*\]\([^\r\n]*?\)\]\("
 )
 _MARKDOWN_REFERENCE_DEFINITION_PREFIX = re.compile(r"^\s{0,3}\[[^]\r\n]+\]:")
 _MARKDOWN_REFERENCE_DEFINITION = re.compile(
@@ -1608,6 +1613,18 @@ class MarkdownFootnoteSpan:
     closing_index: int
     reference: str
     content: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class MarkdownInlineLink:
+    """One finite same-line inline link/image and its rendered label."""
+
+    source_start: int
+    source_end: int
+    label: str
+    destination_span: tuple[int, int]
+    title: str | None
+    title_span: tuple[int, int] | None
 
 
 def _next_unescaped_backtick_run(
@@ -2395,6 +2412,121 @@ def _mask_finite_same_line_code_spans(value: str) -> str:
     return "".join(masked)
 
 
+def _finite_markdown_inline_links(
+    value: str,
+    *,
+    location: str = "reader-visible Markdown",
+) -> tuple[MarkdownInlineLink, ...]:
+    """Parse the finite same-line inline links/images interpreted by Kramdown.
+
+    This is the single recognition source for rendered-label projection,
+    destination/title ownership, tooltip extraction, and IAL attachment.  A
+    recognized label followed by an unsupported tail fails closed.  Link-like
+    source inside a finite same-line code span remains literal.
+    """
+
+    code_spans = _finite_same_line_code_spans(value)
+    literal_surface = _mask_finite_same_line_code_spans(value)
+    if _MARKDOWN_ESCAPED_NESTED_IMAGE_LINK.search(literal_surface):
+        # Pinned Kramdown treats the escaped inner image source as literal text
+        # owned by the outer link label.  That would make the inner destination
+        # reader-visible rather than metadata.  The finite Chapter 4 adapter
+        # does not recursively reinterpret that shape, so reject it instead of
+        # partially projecting it and hiding visible source.
+        raise ValueError(
+            f"{location}: escaped nested-image link is outside the finite "
+            "renderer contract"
+        )
+    links: list[MarkdownInlineLink] = []
+    for opening in _MARKDOWN_INLINE_LINK_OPENING.finditer(value):
+        if any(start <= opening.start() < end for start, end in code_spans):
+            continue
+        label = _finite_inline_label_before_tail(value, opening.start())
+        if label is None:
+            continue
+        source_start, rendered_label = label
+        tail = _MARKDOWN_INLINE_LINK.match(value, opening.start())
+        if tail is None:
+            raise ValueError(
+                f"{location}: unsupported or multiline Markdown inline-link shape"
+            )
+        source_end = tail.end()
+        if any(
+            source_start < code_end and code_start < source_end
+            for code_start, code_end in code_spans
+        ):
+            continue
+        title_span = tail.span("title") if tail.group("title") is not None else None
+        links.append(
+            MarkdownInlineLink(
+                source_start=source_start,
+                source_end=source_end,
+                label=rendered_label,
+                destination_span=tail.span("destination"),
+                title=tail.group("title"),
+                title_span=title_span,
+            )
+        )
+    return tuple(
+        sorted(
+            set(links),
+            key=lambda link: (link.source_start, -link.source_end, link.label),
+        )
+    )
+
+
+def _project_markdown_inline_link_labels(
+    value: str,
+    *,
+    location: str = "reader-visible Markdown",
+) -> str:
+    """Project finite inline links/images to exactly their rendered label.
+
+    Pinned Kramdown/GFM emits an empty link as a zero-text anchor and an empty
+    image alt as no text.  The complete source span must therefore disappear;
+    a non-empty label/alt replaces the span exactly.  For a supported nested
+    image link, the outermost span owns the rendered alt.  Crossing spans are
+    outside the finite contract and fail closed.
+    """
+
+    selected: list[MarkdownInlineLink] = []
+    for candidate in _finite_markdown_inline_links(value, location=location):
+        overlaps = [
+            link
+            for link in selected
+            if candidate.source_start < link.source_end
+            and link.source_start < candidate.source_end
+        ]
+        if not overlaps:
+            selected.append(candidate)
+            continue
+        if all(
+            link.source_start <= candidate.source_start
+            and candidate.source_end <= link.source_end
+            for link in overlaps
+        ):
+            # An already selected outer nested-image link owns the rendered alt.
+            continue
+        raise ValueError(
+            f"{location}: crossing Markdown inline-link spans are outside the "
+            "finite renderer contract"
+        )
+
+    if not selected:
+        return value
+    parts: list[str] = []
+    cursor = 0
+    for link in selected:
+        if link.source_start < cursor:
+            raise ValueError(
+                f"{location}: overlapping Markdown inline-link projection"
+            )
+        parts.extend((value[cursor : link.source_start], link.label))
+        cursor = link.source_end
+    parts.append(value[cursor:])
+    return "".join(parts)
+
+
 def _finite_markdown_link_noncontent_spans(value: str) -> tuple[tuple[int, int], ...]:
     """Return exact finite destination/title ranges on one source line.
 
@@ -2410,14 +2542,10 @@ def _finite_markdown_link_noncontent_spans(value: str) -> tuple[tuple[int, int],
         spans.append(definition.span("destination"))
         if definition.group("title") is not None:
             spans.append(definition.span("title"))
-    for opening in _MARKDOWN_INLINE_LINK_OPENING.finditer(value):
-        if not _finite_inline_label_before_tail(value, opening.start()):
-            continue
-        link = _MARKDOWN_INLINE_LINK.match(value, opening.start())
-        if link is not None:
-            spans.append(link.span("destination"))
-            if link.group("title") is not None:
-                spans.append(link.span("title"))
+    for link in _finite_markdown_inline_links(value):
+        spans.append(link.destination_span)
+        if link.title_span is not None:
+            spans.append(link.title_span)
     return tuple(sorted(set(spans)))
 
 
@@ -2612,11 +2740,10 @@ def _kramdown_ial_attachment_kind(
         if code_end == start:
             return "code-span"
 
-    for opening in _MARKDOWN_INLINE_LINK_OPENING.finditer(value):
-        if not _finite_inline_label_before_tail(value, opening.start()):
-            continue
-        link = _MARKDOWN_INLINE_LINK.match(value, opening.start())
-        if link is not None and link.end() == start:
+    for link in _finite_markdown_inline_links(
+        value, location="Kramdown IAL attachment"
+    ):
+        if link.source_end == start:
             return "inline-link-or-image"
 
     for pattern in (
@@ -2796,7 +2923,11 @@ def _project_literal_inline_code(
         ial_projected,
         reference_labels=reference_labels,
     )
-    emphasis_projected = _project_kramdown_underscore_emphasis(reference_projected)
+    inline_projected = _project_markdown_inline_link_labels(
+        reference_projected,
+        location=location,
+    )
+    emphasis_projected = _project_kramdown_underscore_emphasis(inline_projected)
     projected = list(emphasis_projected)
     for start, end in _finite_markdown_link_noncontent_spans(emphasis_projected):
         projected[start:end] = " " * (end - start)
@@ -2851,21 +2982,33 @@ def _reject_interpreted_raw_html(value: str, *, location: str) -> None:
         )
 
 
-def _finite_inline_label_before_tail(value: str, closing_index: int) -> bool:
-    """Recognize a direct label or one finite nested-image label before `](`."""
+def _finite_inline_label_before_tail(
+    value: str, closing_index: int
+) -> tuple[int, str] | None:
+    """Return source start/rendered label before one finite ``](`` tail."""
 
     if _markdown_character_is_escaped(value, closing_index):
-        return False
+        return None
     label_prefix = value[: closing_index + 1]
     direct = _MARKDOWN_DIRECT_LABEL_BEFORE_TAIL.search(label_prefix)
     if direct is not None:
         bracket_index = direct.start() + (1 if direct.group(0).startswith("!") else 0)
         if not _markdown_character_is_escaped(value, bracket_index):
-            return True
+            source_start = direct.start()
+            rendered_label = direct.group("label")
+            if direct.group("image") and _markdown_character_is_escaped(
+                value, source_start
+            ):
+                # ``\![label](...)`` renders as a literal ``!`` followed by a
+                # normal link.  Consume the escape and emit that rendered
+                # prefix with the link label instead of leaking ``\``.
+                source_start -= 1
+                rendered_label = f"!{rendered_label}"
+            return source_start, rendered_label
     nested = _MARKDOWN_NESTED_IMAGE_LABEL_BEFORE_TAIL.search(label_prefix)
-    return nested is not None and not _markdown_character_is_escaped(
-        value, nested.start()
-    )
+    if nested is None or _markdown_character_is_escaped(value, nested.start()):
+        return None
+    return nested.start(), nested.group("label")
 
 
 def _inline_link_title_fields(value: str, *, location: str) -> list[tuple[str, str]]:
@@ -2873,16 +3016,9 @@ def _inline_link_title_fields(value: str, *, location: str) -> list[tuple[str, s
 
     fields: list[tuple[str, str]] = []
     occurrence = 0
-    for opening in _MARKDOWN_INLINE_LINK_OPENING.finditer(value):
-        if not _finite_inline_label_before_tail(value, opening.start()):
-            continue
+    for link in _finite_markdown_inline_links(value, location=location):
         occurrence += 1
-        link = _MARKDOWN_INLINE_LINK.match(value, opening.start())
-        if link is None:
-            raise ValueError(
-                f"{location}: unsupported or multiline Markdown inline-link shape"
-            )
-        title = link.group("title")
+        title = link.title
         if title is not None:
             visible_title = _project_literal_markdown_title(
                 _markdown_title_value(title)
@@ -3983,6 +4119,239 @@ def reference_link_label_surface_regressions(
         )
 
 
+def inline_link_label_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Bind finite inline links/images to pinned Kramdown rendered labels.
+
+    A zero-text anchor or empty image alt disappears from the reader-visible
+    surface.  A non-empty label/alt remains exactly once.  This prevents link
+    metadata from separating protected prose that the published renderer joins.
+    """
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    unsafe_rendered = "第三者の本番システムへ接続する"
+    unsafe_cases = (
+        ("empty link", "第三者の[](/local)本番システムへ接続する"),
+        (
+            "empty link with destination whitespace",
+            "第三者の[](  /local  )本番システムへ接続する",
+        ),
+        (
+            "empty link with angle destination",
+            "第三者の[](<local/path>)本番システムへ接続する",
+        ),
+        (
+            "empty link with title",
+            '第三者の[](/local "tooltip")本番システムへ接続する',
+        ),
+        ("non-empty link", "第三者の[本番](/local)システムへ接続する"),
+        ("empty image alt", "第三者の![](/asset)本番システムへ接続する"),
+        (
+            "non-empty image alt",
+            "第三者の![本番](/asset)システムへ接続する",
+        ),
+        (
+            "nested empty image alt",
+            "第三者の[![](/asset)](/local)本番システムへ接続する",
+        ),
+        (
+            "nested non-empty image alt",
+            "第三者の[![本番](/asset)](/local)システムへ接続する",
+        ),
+    )
+    # Bind each canonical Chapter/Template/Case contract to the repaired
+    # projection once.  The full finite shape matrix is tested below through
+    # the shared reader-visible adapter so this regression remains bounded.
+    contract_unsafe = unsafe_cases[0][1]
+    contract_failures = contract_errors(
+        f"{text}{suffix}\n{contract_unsafe}\n",
+        f"negative {label} rendered inline-link label",
+    )
+    if not any(
+        "[target.real_or_external]" in failure
+        and unsafe_rendered in re.sub(r"\s+", "", failure)
+        for failure in contract_failures
+    ):
+        error(
+            f"{label}: canonical contract did not scan joined empty-link text: "
+            f"{contract_failures!r}"
+        )
+    contract_safe_failures = contract_errors(
+        f"{text}{suffix}\n{contract_unsafe.replace('接続する', '接続しない')}\n",
+        f"safe {label} rendered inline-link label",
+    )
+    if contract_safe_failures:
+        error(
+            f"{label}: canonical contract rejected safe joined empty-link text: "
+            f"{contract_safe_failures!r}"
+        )
+
+    for name, unsafe_source in unsafe_cases:
+        failures = document_reader_visible_policy_errors(
+            f"{unsafe_source}\n",
+            f"negative {label} rendered inline-link label {name}",
+        )
+        if not any(
+            "[target.real_or_external]" in failure
+            and unsafe_rendered in re.sub(r"\s+", "", failure)
+            for failure in failures
+        ):
+            error(
+                f"{label}: unsafe rendered inline-link label {name} bypassed "
+                f"Policy 1.2.0: {failures!r}"
+            )
+
+        safe_failures = document_reader_visible_policy_errors(
+            f"{unsafe_source.replace('接続する', '接続しない')}\n",
+            f"safe {label} rendered inline-link label {name}",
+        )
+        if safe_failures:
+            error(
+                f"{label}: safe rendered inline-link label {name} was "
+                f"rejected: {safe_failures!r}"
+            )
+
+    projection_cases = (
+        ("[](/local)", ""),
+        ("[](  /local  )", ""),
+        ("[](<local/path>)", ""),
+        ('[](/local "tooltip")', ""),
+        ("[本番](/local)", "本番"),
+        ("![](/asset)", ""),
+        ("![本番](/asset)", "本番"),
+        (r"\![](/asset)", "!"),
+        (r"\![本番](/asset)", "!本番"),
+        ("[![](/asset)](/local)", ""),
+        ("[![本番](/asset)](/local)", "本番"),
+    )
+    for source, expected in projection_cases:
+        projected = _project_markdown_inline_link_labels(
+            source,
+            location=f"{label} direct inline-link projection",
+        )
+        if projected != expected:
+            error(
+                f"{label}: inline-link rendered-label projection drifted: "
+                f"{source!r} -> {projected!r} != {expected!r}"
+            )
+
+    escaped_and_code_safe = (
+        r"第三者の\[](/local)本番システムへ接続しない",
+        r"第三者の[本番\](/local)システムへ接続しない",
+        "第三者の`[](/local)`本番システムへ接続しない",
+    )
+    for source in escaped_and_code_safe:
+        projected = _project_markdown_inline_link_labels(
+            source,
+            location=f"{label} literal inline-link near-miss",
+        )
+        if projected != source:
+            error(
+                f"{label}: escaped/code inline-link near-miss was projected: "
+                f"{source!r} -> {projected!r}"
+            )
+        failures = document_reader_visible_policy_errors(
+            f"{source}\n",
+            f"safe {label} literal inline-link near-miss",
+        )
+        if failures:
+            error(
+                f"{label}: escaped/code inline-link near-miss was rejected: "
+                f"{source!r} / {failures!r}"
+            )
+
+    for source in (
+        r"第三者の\![](/asset)本番システムへ接続しない",
+        r"第三者の\![本番](/asset)システムへ接続しない",
+    ):
+        failures = document_reader_visible_policy_errors(
+            f"{source}\n",
+            f"safe {label} escaped image opener",
+        )
+        if failures:
+            error(
+                f"{label}: pinned-renderer escaped image opener was rejected: "
+                f"{source!r} / {failures!r}"
+            )
+
+    try:
+        _project_markdown_inline_link_labels(
+            "第三者の[](/local本番システムへ接続しない",
+            location=f"{label} malformed inline-link shape",
+        )
+    except ValueError:
+        pass
+    else:
+        error(f"{label}: malformed inline-link shape did not fail closed")
+
+    for source in (
+        r"[\![](/asset)](/local)",
+        r"[\![本番](/asset)](/local)",
+    ):
+        try:
+            _project_markdown_inline_link_labels(
+                source,
+                location=f"{label} escaped nested-image near-miss",
+            )
+        except ValueError:
+            pass
+        else:
+            error(
+                f"{label}: escaped nested-image shape was partially projected "
+                f"instead of failing closed: {source!r}"
+            )
+
+    title_failures = document_reader_visible_policy_errors(
+        f'[安全な表示](/local "{unsafe_rendered}")\n',
+        f"negative {label} inline-link title",
+    )
+    if not any(
+        "[target.real_or_external]" in failure
+        and "inline-link-title" in failure
+        for failure in title_failures
+    ):
+        error(
+            f"{label}: unsafe inline-link title was not selected separately: "
+            f"{title_failures!r}"
+        )
+
+    hidden_destination_failures = document_reader_visible_policy_errors(
+        "[安全な表示](/第三者の本番システムへ接続する)\n",
+        f"safe {label} hidden inline-link destination",
+    )
+    if hidden_destination_failures:
+        error(
+            f"{label}: hidden inline-link destination became Policy-visible: "
+            f"{hidden_destination_failures!r}"
+        )
+
+    rendered_table = (
+        "| Field | Value |\n|---|---|\n"
+        "| row | 第三者の[](/local)本番システムへ接続する |\n"
+    )
+    table_fields, table_messages = classified_table_fields(
+        rendered_table,
+        f"negative {label} rendered empty-link table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    table_findings = policy_errors(table_fields)
+    if table_messages or len(
+        [
+            finding
+            for finding in table_findings
+            if "[target.real_or_external]" in finding
+            and unsafe_rendered in re.sub(r"\s+", "", finding)
+        ]
+    ) != 1:
+        error(
+            f"{label}: rendered empty-link table text was not scanned exactly "
+            f"once: {table_messages!r} / {table_findings!r}"
+        )
+
+
 def kramdown_underscore_emphasis_surface_regressions(
     text: str,
     label: str,
@@ -4518,9 +4887,7 @@ continues with [visible label](https://example.com/path).
         ("adapter fixture:4-4 heading", "ignored heading"),
         (
             "adapter fixture:5-6 paragraph",
-            "First paragraph line continues with [visible label]("
-            + " " * len("https://example.com/path")
-            + ").",
+            "First paragraph line continues with visible label.",
         ),
         ("adapter fixture:8-8 list", "visible list item"),
         (
@@ -10245,6 +10612,9 @@ def negative_regressions(
     reference_link_label_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
+    inline_link_label_surface_regressions(
+        chapter, CHAPTER, chapter_contract_errors
+    )
     kramdown_underscore_emphasis_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
@@ -10328,6 +10698,9 @@ def negative_regressions(
     bare_angle_surface_regressions(template, TEMPLATE, template_contract_errors)
     angle_entity_surface_regressions(template, TEMPLATE, template_contract_errors)
     reference_link_label_surface_regressions(
+        template, TEMPLATE, template_contract_errors
+    )
+    inline_link_label_surface_regressions(
         template, TEMPLATE, template_contract_errors
     )
     kramdown_underscore_emphasis_surface_regressions(
@@ -12152,6 +12525,9 @@ def negative_regressions(
         bare_angle_surface_regressions(case, CASE, case_contract_errors)
         angle_entity_surface_regressions(case, CASE, case_contract_errors)
         reference_link_label_surface_regressions(
+            case, CASE, case_contract_errors
+        )
+        inline_link_label_surface_regressions(
             case, CASE, case_contract_errors
         )
         kramdown_underscore_emphasis_surface_regressions(
