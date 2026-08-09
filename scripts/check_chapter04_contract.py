@@ -1305,6 +1305,38 @@ _MARKDOWN_REFERENCE_DEFINITION = re.compile(
     r"(?P<destination><[^>\r\n]+>|[^\s\r\n]+)"
     rf"(?:[ \t]+{_MARKDOWN_LINK_TITLE})?[ \t]*$"
 )
+_MARKDOWN_REFERENCE_LINK = re.compile(
+    r"!?\[(?P<label>[^\]\r\n]+)\]\[(?P<reference>[^\]\r\n]*)\]"
+)
+_MARKDOWN_NESTED_IMAGE_REFERENCE_LINK = re.compile(
+    r"\[!\[(?P<label>[^\]\r\n]+)\]"
+    r"\[(?P<image_reference>[^\]\r\n]*)\]\]"
+    r"\[(?P<outer_reference>[^\]\r\n]*)\]"
+)
+_MARKDOWN_NESTED_INLINE_IMAGE_BASE = (
+    r"\[!\[(?P<label>[^\]\r\n]+)\]\("
+    rf"[ \t]*{_MARKDOWN_LINK_DESTINATION}"
+    rf"(?:[ \t]+{_MARKDOWN_LINK_TITLE_TOKEN})?[ \t]*\)\]"
+)
+_MARKDOWN_NESTED_INLINE_IMAGE_INLINE_LINK = re.compile(
+    _MARKDOWN_NESTED_INLINE_IMAGE_BASE
+    + r"\("
+    + rf"[ \t]*{_MARKDOWN_LINK_DESTINATION}"
+    + rf"(?:[ \t]+{_MARKDOWN_LINK_TITLE_TOKEN})?[ \t]*\)"
+)
+_MARKDOWN_NESTED_INLINE_IMAGE_REFERENCE_LINK = re.compile(
+    _MARKDOWN_NESTED_INLINE_IMAGE_BASE
+    + r"\[(?P<outer_reference>[^\]\r\n]+)\]"
+)
+_MARKDOWN_NESTED_INLINE_IMAGE_COLLAPSED = re.compile(
+    _MARKDOWN_NESTED_INLINE_IMAGE_BASE + r"\[\]"
+)
+_MARKDOWN_NESTED_INLINE_IMAGE_SHORTCUT = re.compile(
+    _MARKDOWN_NESTED_INLINE_IMAGE_BASE + r"(?![\[(])"
+)
+_MARKDOWN_SHORTCUT_REFERENCE_LINK = re.compile(
+    r"!?\[(?P<label>[^\]\r\n]+)\]"
+)
 _MARKDOWN_FOOTNOTE_DEFINITION_PREFIX = re.compile(
     r"^\s{0,3}\[\^(?!\^)[^]\r\n]+\]:"
 )
@@ -2123,7 +2155,184 @@ def _finite_markdown_link_noncontent_spans(value: str) -> tuple[tuple[int, int],
     return tuple(sorted(set(spans)))
 
 
-def _project_literal_inline_code(value: str) -> str:
+def _normalized_markdown_reference_label(value: str) -> str:
+    """Return the bounded case/whitespace key used by local link references."""
+
+    return " ".join(value.split()).casefold()
+
+
+def _markdown_reference_definition_labels(text: str) -> frozenset[str]:
+    """Return valid non-footnote local reference labels in one document."""
+
+    source_lines = text.splitlines()
+    content_start = _front_matter_content_start(source_lines)
+    fenced_spans = _rendered_fence_spans(source_lines, start_index=content_start)
+    excluded_lines = {
+        index
+        for span in fenced_spans
+        for index in range(span.opening_index, span.closing_index + 1)
+    }
+    footnote_spans = _rendered_footnote_spans(
+        source_lines,
+        start_index=content_start,
+        excluded_lines=excluded_lines,
+    )
+    excluded_lines |= {
+        index
+        for span in footnote_spans
+        for index in range(span.opening_index, span.closing_index + 1)
+    }
+    indented_spans = _rendered_indented_code_spans(
+        source_lines,
+        start_index=content_start,
+        excluded_lines=excluded_lines,
+    )
+    excluded_lines |= {
+        index
+        for span in indented_spans
+        for index in range(span.opening_index, span.closing_index + 1)
+    }
+    visible_lines = _strip_html_comments(
+        [
+            (index + 1, "" if index in excluded_lines else line)
+            for index, line in enumerate(source_lines)
+            if index >= content_start
+        ]
+    )
+    labels: set[str] = set()
+    for _, line in visible_lines:
+        definition = _MARKDOWN_REFERENCE_DEFINITION.fullmatch(line)
+        if definition is None or definition.group("reference").startswith("^"):
+            continue
+        labels.add(_normalized_markdown_reference_label(definition.group("reference")))
+    return frozenset(labels)
+
+
+def _project_markdown_reference_link_labels(
+    value: str,
+    *,
+    reference_labels: frozenset[str],
+) -> str:
+    """Project defined reference links to rendered labels, not hidden IDs.
+
+    Full, collapsed, shortcut, and finite nested-image forms are reduced only
+    when a valid local definition exists.  Undefined forms remain literal
+    source.  Inline-code spans are reader-visible literal Markdown and are not
+    interpreted as links.
+    """
+
+    def project_once(current: str) -> str:
+        protected = _finite_same_line_code_spans(current)
+        occupied: list[tuple[int, int]] = []
+        replacements: list[tuple[int, int, str]] = []
+
+        def overlaps(
+            spans: list[tuple[int, int]] | tuple[tuple[int, int], ...],
+            start: int,
+            end: int,
+        ) -> bool:
+            return any(start < span_end and span_start < end for span_start, span_end in spans)
+
+        for match in _MARKDOWN_NESTED_INLINE_IMAGE_INLINE_LINK.finditer(current):
+            start, end = match.span()
+            occupied.append((start, end))
+            if not overlaps(protected, start, end):
+                # Both image and outer destinations are hidden metadata.  Only
+                # the rendered image alt participates in Policy scanning.
+                replacements.append((start, end, match.group("label")))
+
+        for match in _MARKDOWN_NESTED_INLINE_IMAGE_REFERENCE_LINK.finditer(current):
+            start, end = match.span()
+            occupied.append((start, end))
+            if overlaps(protected, start, end):
+                continue
+            if (
+                _normalized_markdown_reference_label(match.group("outer_reference"))
+                in reference_labels
+            ):
+                replacements.append((start, end, match.group("label")))
+
+        # Pinned Kramdown renders these two near-misses as an inline image with
+        # literal outer brackets rather than as a reference link.  The image
+        # alt remains reader-visible; reduce only the finite wrappers so they
+        # cannot split a protected phrase.
+        for pattern in (
+            _MARKDOWN_NESTED_INLINE_IMAGE_COLLAPSED,
+            _MARKDOWN_NESTED_INLINE_IMAGE_SHORTCUT,
+        ):
+            for match in pattern.finditer(current):
+                start, end = match.span()
+                if overlaps(occupied, start, end):
+                    continue
+                occupied.append((start, end))
+                if not overlaps(protected, start, end):
+                    replacements.append((start, end, match.group("label")))
+
+        for match in _MARKDOWN_NESTED_IMAGE_REFERENCE_LINK.finditer(current):
+            start, end = match.span()
+            occupied.append((start, end))
+            if overlaps(protected, start, end):
+                continue
+            image_reference = match.group("image_reference") or match.group("label")
+            outer_reference = match.group("outer_reference") or match.group("label")
+            if all(
+                _normalized_markdown_reference_label(reference) in reference_labels
+                for reference in (image_reference, outer_reference)
+            ):
+                replacements.append((start, end, match.group("label")))
+
+        for match in _MARKDOWN_REFERENCE_LINK.finditer(current):
+            start, end = match.span()
+            if overlaps(occupied, start, end):
+                continue
+            occupied.append((start, end))
+            if overlaps(protected, start, end):
+                continue
+            reference = match.group("reference") or match.group("label")
+            if _normalized_markdown_reference_label(reference) in reference_labels:
+                replacements.append((start, end, match.group("label")))
+
+        for match in _MARKDOWN_SHORTCUT_REFERENCE_LINK.finditer(current):
+            start, end = match.span()
+            if overlaps(protected, start, end) or overlaps(occupied, start, end):
+                continue
+            if (
+                _normalized_markdown_reference_label(match.group("label"))
+                in reference_labels
+            ):
+                replacements.append((start, end, match.group("label")))
+
+        if not replacements:
+            return current
+        parts: list[str] = []
+        cursor = 0
+        for start, end, label in sorted(replacements):
+            if start < cursor:
+                continue
+            parts.extend((current[cursor:start], label))
+            cursor = end
+        parts.append(current[cursor:])
+        return "".join(parts)
+
+    projected = value
+    # Two levels cover a finite nested-image label followed by its outer
+    # reference link.  A third pass must be stable; otherwise fail closed.
+    for _ in range(2):
+        updated = project_once(projected)
+        if updated == projected:
+            return projected
+        projected = updated
+    final = project_once(projected)
+    if final != projected:
+        raise ValueError("reference-link nesting exceeds the finite projection contract")
+    return projected
+
+
+def _project_literal_inline_code(
+    value: str,
+    *,
+    reference_labels: frozenset[str] = frozenset(),
+) -> str:
     """Keep reader-visible literal angle content Policy-visible.
 
     Actual raw HTML is rejected before this projection.  Finite Markdown link
@@ -2135,11 +2344,15 @@ def _project_literal_inline_code(value: str) -> str:
     owns visible autolinks after masking finite Markdown link metadata.
     """
 
-    projected = list(value)
-    for start, end in _finite_markdown_link_noncontent_spans(value):
+    reference_projected = _project_markdown_reference_link_labels(
+        value,
+        reference_labels=reference_labels,
+    )
+    projected = list(reference_projected)
+    for start, end in _finite_markdown_link_noncontent_spans(reference_projected):
         projected[start:end] = " " * (end - start)
 
-    for start, end in _finite_same_line_code_spans(value):
+    for start, end in _finite_same_line_code_spans(reference_projected):
         for position in range(start, end):
             if projected[position] in "<>":
                 projected[position] = " "
@@ -2251,6 +2464,9 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
     source_lines = text.splitlines()
     selected: list[tuple[int, tuple[str, str]]] = []
     content_start = _front_matter_content_start(source_lines)
+    reference_labels = _markdown_reference_definition_labels(
+        "\n".join(source_lines[content_start:])
+    )
     spans = _rendered_fence_spans(source_lines, start_index=content_start)
     fenced_lines = {
         index
@@ -2374,7 +2590,10 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
                 content_line, location=content_location
             ):
                 selected.append((physical_line, field))
-            projected = _project_literal_inline_code(content_line).strip()
+            projected = _project_literal_inline_code(
+                content_line,
+                reference_labels=reference_labels,
+            ).strip()
             if projected:
                 rendered_parts.append(projected)
         rendered = " ".join(rendered_parts).strip()
@@ -2427,7 +2646,15 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
             line, location=f"{label}:{line_number}-{line_number}"
         ):
             selected.append((line_number, field))
-        policy_lines.append((line_number, _project_literal_inline_code(line)))
+        policy_lines.append(
+            (
+                line_number,
+                _project_literal_inline_code(
+                    line,
+                    reference_labels=reference_labels,
+                ),
+            )
+        )
     lines = policy_lines
     index = 0
 
@@ -2682,6 +2909,13 @@ def classified_table_fields(
     """
 
     tables, messages = markdown_tables(text, label)
+    try:
+        reference_labels = _markdown_reference_definition_labels(text)
+    except (TypeError, ValueError, UnicodeError) as exc:
+        messages.append(
+            f"{label}: reference-definition adapter failed closed: {exc}"
+        )
+        reference_labels = frozenset()
     counts = Counter(table.header for table in tables)
     observed_headers = set(counts)
     expected_headers = set(expected_occurrences)
@@ -2737,7 +2971,13 @@ def classified_table_fields(
                     if not visible_value:
                         continue
                     fields.append(
-                        (location, _project_literal_inline_code(visible_value))
+                        (
+                            location,
+                            _project_literal_inline_code(
+                                visible_value,
+                                reference_labels=reference_labels,
+                            ),
+                        )
                     )
                     try:
                         fields.extend(
@@ -3108,6 +3348,102 @@ def angle_entity_surface_regressions(
                 f"{label}: safe semicolonless angle entity {name} was rejected: "
                 f"{safe_failures!r}"
             )
+
+
+def reference_link_label_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Bind rendered reference links to labels, not hidden identifiers."""
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    unsafe = "第三者の本番システムへ接続する"
+    safe = "第三者の本番システムへ接続しない"
+    for name, unsafe_link, safe_link, definition in (
+        (
+            "full",
+            "第三者の[本番][ch04-full-ref]システムへ接続する",
+            "第三者の[本番][ch04-full-ref]システムへ接続しない",
+            "[ch04-full-ref]: /local",
+        ),
+        (
+            "collapsed",
+            "第三者の[本番][]システムへ接続する",
+            "第三者の[本番][]システムへ接続しない",
+            "[本番]: /local",
+        ),
+        (
+            "shortcut",
+            "第三者の[本番]システムへ接続する",
+            "第三者の[本番]システムへ接続しない",
+            "[本番]: /local",
+        ),
+        (
+            "image alt",
+            "第三者の![本番][ch04-image-ref]システムへ接続する",
+            "第三者の![本番][ch04-image-ref]システムへ接続しない",
+            "[ch04-image-ref]: /local",
+        ),
+        (
+            "mixed inline-image outer reference",
+            "第三者の[![本番](/asset)][ch04-outer-ref]システムへ接続する",
+            "第三者の[![本番](/asset)][ch04-outer-ref]システムへ接続しない",
+            "[ch04-outer-ref]: /local",
+        ),
+        (
+            "mixed inline-image outer inline link",
+            "第三者の[![本番](/asset)](/local)システムへ接続する",
+            "第三者の[![本番](/asset)](/local)システムへ接続しない",
+            "[unrelated-inline-ref]: /elsewhere",
+        ),
+        (
+            "mixed inline-image collapsed near-miss",
+            "第三者の[![本番](/asset)][]システムへ接続する",
+            "第三者の[![本番](/asset)][]システムへ接続しない",
+            "[unrelated-collapsed-ref]: /local",
+        ),
+        (
+            "mixed inline-image shortcut near-miss",
+            "第三者の[![本番](/asset)]システムへ接続する",
+            "第三者の[![本番](/asset)]システムへ接続しない",
+            "[unrelated-shortcut-ref]: /local",
+        ),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{unsafe_link}\n\n{definition}\n",
+            f"negative {label} rendered reference-link label {name}",
+        )
+        if not any(
+            "[target.real_or_external]" in failure and unsafe in failure
+            for failure in failures
+        ):
+            error(
+                f"{label}: unsafe rendered reference-link label {name} "
+                "bypassed Policy 1.2.0"
+            )
+
+        safe_failures = contract_errors(
+            f"{text}{suffix}\n{safe_link}\n\n{definition}\n",
+            f"safe {label} rendered reference-link label {name}",
+        )
+        if safe_failures:
+            error(
+                f"{label}: safe rendered reference-link label {name} was "
+                f"rejected: {safe_failures!r}"
+            )
+
+    hidden_identifier = "第三者の本番システムへ接続する"
+    hidden_failures = contract_errors(
+        f"{text}{suffix}\n[安全な表示][{hidden_identifier}]\n\n"
+        f"[{hidden_identifier}]: /local\n",
+        f"safe {label} hidden reference identifier",
+    )
+    if hidden_failures:
+        error(
+            f"{label}: hidden reference identifier became Policy-visible: "
+            f"{hidden_failures!r}"
+        )
 
 
 def inline_code_comment_surface_regressions(
@@ -3880,6 +4216,230 @@ continues with [visible label](https://example.com/path).
         "actual comment angle-entity fixture",
     ):
         error("actual non-rendered comment angle entity became Policy-visible")
+
+    # Ready-transition review 4890385210 freezes valid local reference-link
+    # ownership: the rendered label/alt is visible; the reference identifier
+    # and destination are metadata.  Full, collapsed, shortcut, and a finite
+    # nested-image form must rejoin a protected phrase before Policy scanning.
+    reference_link_cases = (
+        (
+            "full",
+            "第三者の[本番][full-ref]システムへ接続する\n\n[full-ref]: /local\n",
+            "第三者の[本番][full-ref]システムへ接続しない\n\n[full-ref]: /local\n",
+        ),
+        (
+            "collapsed",
+            "第三者の[本番][]システムへ接続する\n\n[本番]: /local\n",
+            "第三者の[本番][]システムへ接続しない\n\n[本番]: /local\n",
+        ),
+        (
+            "shortcut",
+            "第三者の[本番]システムへ接続する\n\n[本番]: /local\n",
+            "第三者の[本番]システムへ接続しない\n\n[本番]: /local\n",
+        ),
+        (
+            "image alt",
+            "第三者の![本番][image-ref]システムへ接続する\n\n[image-ref]: /local\n",
+            "第三者の![本番][image-ref]システムへ接続しない\n\n[image-ref]: /local\n",
+        ),
+        (
+            "nested image",
+            "第三者の[![本番][image-ref]][outer-ref]システムへ接続する\n\n"
+            "[image-ref]: /local/image\n[outer-ref]: /local/page\n",
+            "第三者の[![本番][image-ref]][outer-ref]システムへ接続しない\n\n"
+            "[image-ref]: /local/image\n[outer-ref]: /local/page\n",
+        ),
+        (
+            "mixed inline-image outer reference",
+            "第三者の[![本番](/asset)][outer-ref]システムへ接続する\n\n"
+            "[outer-ref]: /local/page\n",
+            "第三者の[![本番](/asset)][outer-ref]システムへ接続しない\n\n"
+            "[outer-ref]: /local/page\n",
+        ),
+        (
+            "mixed inline-image outer inline link",
+            "第三者の[![本番](/asset)](/local/page)システムへ接続する\n",
+            "第三者の[![本番](/asset)](/local/page)システムへ接続しない\n",
+        ),
+        (
+            "mixed inline-image collapsed near-miss",
+            "第三者の[![本番](/asset)][]システムへ接続する\n",
+            "第三者の[![本番](/asset)][]システムへ接続しない\n",
+        ),
+        (
+            "mixed inline-image shortcut near-miss",
+            "第三者の[![本番](/asset)]システムへ接続する\n",
+            "第三者の[![本番](/asset)]システムへ接続しない\n",
+        ),
+        (
+            "case and whitespace normalized",
+            "第三者の[本番][ ReF   Id ]システムへ接続する\n\n[ref id]: /local\n",
+            "第三者の[本番][ ReF   Id ]システムへ接続しない\n\n[ref id]: /local\n",
+        ),
+        (
+            "footnote mixed inline-image outer reference",
+            "Note[^ref].\n\n[^ref]: 第三者の[![本番](/asset)][foot-ref]システムへ接続する\n\n"
+            "[foot-ref]: /local\n",
+            "Note[^ref].\n\n[^ref]: 第三者の[![本番](/asset)][foot-ref]システムへ接続しない\n\n"
+            "[foot-ref]: /local\n",
+        ),
+        (
+            "footnote mixed inline-image outer inline link",
+            "Note[^ref].\n\n[^ref]: 第三者の[![本番](/asset)](/local/page)システムへ接続する\n",
+            "Note[^ref].\n\n[^ref]: 第三者の[![本番](/asset)](/local/page)システムへ接続しない\n",
+        ),
+    )
+    for name, unsafe_source, safe_source in reference_link_cases:
+        unsafe_findings = document_reader_visible_policy_errors(
+            unsafe_source, f"unsafe rendered reference-link {name} fixture"
+        )
+        target_findings = [
+            finding
+            for finding in unsafe_findings
+            if "[target.real_or_external]" in finding and unsafe_angle in finding
+        ]
+        if len(target_findings) != 1:
+            error(
+                f"rendered reference-link {name} label was not scanned exactly "
+                f"once: {unsafe_findings!r}"
+            )
+        safe_findings = document_reader_visible_policy_errors(
+            safe_source, f"safe rendered reference-link {name} fixture"
+        )
+        if safe_findings:
+            error(
+                f"safe rendered reference-link {name} was rejected: "
+                f"{safe_findings!r}"
+            )
+
+    reference_table = (
+        "| Field | Value |\n|---|---|\n"
+        "| row | 第三者の[![本番](/asset)][table-ref]システムへ接続する |\n\n"
+        "[table-ref]: /local\n"
+    )
+    reference_table_fields, reference_table_messages = classified_table_fields(
+        reference_table,
+        "unsafe rendered reference-link table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    reference_table_findings = policy_errors(reference_table_fields)
+    if reference_table_messages or len(
+        [
+            finding
+            for finding in reference_table_findings
+            if "[target.real_or_external]" in finding and unsafe_angle in finding
+        ]
+    ) != 1:
+        error(
+            "rendered table reference-link label was not scanned exactly once: "
+            f"{reference_table_messages!r} / {reference_table_findings!r}"
+        )
+    safe_reference_table_fields, safe_reference_table_messages = (
+        classified_table_fields(
+            reference_table.replace("接続する", "接続しない", 1),
+            "safe rendered reference-link table fixture",
+            {FIELD_VALUE_HEADER: 1},
+        )
+    )
+    if safe_reference_table_messages or policy_errors(safe_reference_table_fields):
+        error(
+            "safe rendered table reference-link label was rejected: "
+            f"{safe_reference_table_messages!r} / "
+            f"{policy_errors(safe_reference_table_fields)!r}"
+        )
+
+    inline_reference_table = (
+        "| Field | Value |\n|---|---|\n"
+        "| row | 第三者の[![本番](/asset)](/local/page)システムへ接続する |\n"
+    )
+    inline_reference_table_fields, inline_reference_table_messages = (
+        classified_table_fields(
+            inline_reference_table,
+            "unsafe rendered inline-outer nested-image table fixture",
+            {FIELD_VALUE_HEADER: 1},
+        )
+    )
+    inline_reference_table_findings = policy_errors(inline_reference_table_fields)
+    if inline_reference_table_messages or len(
+        [
+            finding
+            for finding in inline_reference_table_findings
+            if "[target.real_or_external]" in finding and unsafe_angle in finding
+        ]
+    ) != 1:
+        error(
+            "rendered inline-outer nested-image table label was not scanned "
+            "exactly once: "
+            f"{inline_reference_table_messages!r} / "
+            f"{inline_reference_table_findings!r}"
+        )
+    safe_inline_reference_table_fields, safe_inline_reference_table_messages = (
+        classified_table_fields(
+            inline_reference_table.replace("接続する", "接続しない", 1),
+            "safe rendered inline-outer nested-image table fixture",
+            {FIELD_VALUE_HEADER: 1},
+        )
+    )
+    if safe_inline_reference_table_messages or policy_errors(
+        safe_inline_reference_table_fields
+    ):
+        error(
+            "safe rendered inline-outer nested-image table label was rejected: "
+            f"{safe_inline_reference_table_messages!r} / "
+            f"{policy_errors(safe_inline_reference_table_fields)!r}"
+        )
+
+    projected_inline_outer = _project_literal_inline_code(
+        "第三者の[![本番](/asset)](/local)システムへ接続する"
+    )
+    if projected_inline_outer != unsafe_angle:
+        error(
+            "inline-outer nested-image destination was not hidden while its "
+            f"alt remained visible: {projected_inline_outer!r}"
+        )
+
+    hidden_reference_id = unsafe_angle
+    hidden_reference_findings = document_reader_visible_policy_errors(
+        f"[安全な表示][{hidden_reference_id}]\n\n[{hidden_reference_id}]: /local\n",
+        "hidden reference identifier fixture",
+    )
+    if hidden_reference_findings:
+        error(
+            "hidden reference identifier became reader-visible: "
+            f"{hidden_reference_findings!r}"
+        )
+
+    mixed_hidden_reference_findings = document_reader_visible_policy_errors(
+        f"[![安全な表示](/asset)][{hidden_reference_id}]\n\n"
+        f"[{hidden_reference_id}]: /local\n",
+        "mixed inline-image hidden outer reference identifier fixture",
+    )
+    if mixed_hidden_reference_findings:
+        error(
+            "mixed inline-image hidden outer reference identifier became "
+            f"reader-visible: {mixed_hidden_reference_findings!r}"
+        )
+
+    undefined_reference = "第三者の[本番][undefined-ref]システムへ接続する"
+    if _project_markdown_reference_link_labels(
+        undefined_reference,
+        reference_labels=frozenset({"another-ref"}),
+    ) != undefined_reference:
+        error("undefined reference-link source was projected as a rendered link")
+    literal_code_reference = "`第三者の[本番][code-ref]システムへ接続する`"
+    if _project_markdown_reference_link_labels(
+        literal_code_reference,
+        reference_labels=frozenset({"code-ref"}),
+    ) != literal_code_reference:
+        error("literal inline-code reference syntax was projected as a link")
+    for name, hidden_definition in (
+        ("front matter", "---\nref: '[hidden-ref]: /local'\n---\n"),
+        ("fenced code", "```text\n[hidden-ref]: /local\n```\n"),
+        ("indented code", "Literal:\n\n    [hidden-ref]: /local\n"),
+        ("actual comment", "<!--\n[hidden-ref]: /local\n-->\n"),
+    ):
+        if "hidden-ref" in _markdown_reference_definition_labels(hidden_definition):
+            error(f"{name} created a non-rendered Markdown reference definition")
 
     comment_code_table = (
         "| Field | Value |\n|---|---|\n"
@@ -8205,6 +8765,9 @@ def negative_regressions(
     raw_html_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     bare_angle_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     angle_entity_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
+    reference_link_label_surface_regressions(
+        chapter, CHAPTER, chapter_contract_errors
+    )
     inline_code_comment_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
@@ -8280,6 +8843,9 @@ def negative_regressions(
     raw_html_surface_regressions(template, TEMPLATE, template_contract_errors)
     bare_angle_surface_regressions(template, TEMPLATE, template_contract_errors)
     angle_entity_surface_regressions(template, TEMPLATE, template_contract_errors)
+    reference_link_label_surface_regressions(
+        template, TEMPLATE, template_contract_errors
+    )
     inline_code_comment_surface_regressions(
         template, TEMPLATE, template_contract_errors
     )
@@ -9775,6 +10341,9 @@ def negative_regressions(
         raw_html_surface_regressions(case, CASE, case_contract_errors)
         bare_angle_surface_regressions(case, CASE, case_contract_errors)
         angle_entity_surface_regressions(case, CASE, case_contract_errors)
+        reference_link_label_surface_regressions(
+            case, CASE, case_contract_errors
+        )
         inline_code_comment_surface_regressions(case, CASE, case_contract_errors)
         markdown_title_comment_surface_regressions(
             case, CASE, case_contract_errors
