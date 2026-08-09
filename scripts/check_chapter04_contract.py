@@ -740,6 +740,73 @@ EXPECTED_LAB_SEQUENCE_ROWS = (
 )
 LAB_SEQUENCE_COMPLETION_DATE = "2026-08-18"
 LAB_SEQUENCE_REASSESSMENT_DATE = "2026-08-19"
+EVIDENCE_SUPPLIER_SCHEDULE_HEADER = (
+    "Evidence Requirement ID",
+    "Supplier Action IDs",
+    "Latest supplier completion",
+    "Requirement due",
+    "Gap IDs",
+    "Consuming Reassessment ID",
+)
+EXPECTED_EVIDENCE_SUPPLIER_SCHEDULE_ROWS = (
+    (
+        "`EREQ-2026-001`",
+        "`ACT-TM-2026-001`, `ACT-TM-2026-004`",
+        "2026-08-15",
+        "2026-08-15",
+        "`GAP-2026-002`",
+        "`REA-TM-2026-001`",
+    ),
+    (
+        "`EREQ-2026-002`",
+        "`ACT-TM-2026-002`, `ACT-TM-2026-005`",
+        "2026-08-18",
+        "2026-08-18",
+        "`GAP-2026-003`",
+        "`REA-TM-2026-002`",
+    ),
+    (
+        "`EREQ-2026-003`",
+        "`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`",
+        "2026-08-18",
+        "2026-08-18",
+        "`GAP-2026-001`, `GAP-2026-003`",
+        "`REA-TM-2026-002`",
+    ),
+    (
+        "`EREQ-2026-004`",
+        "`ACT-TM-2026-006`",
+        "2026-08-18",
+        "2026-08-18",
+        "`GAP-2026-004`",
+        "`REA-TM-2026-004`",
+    ),
+)
+EXPECTED_ACTION_DUE_DATES = {
+    "ACT-TM-2026-001": "2026-08-12",
+    "ACT-TM-2026-002": "2026-08-18",
+    "ACT-TM-2026-003": "2026-08-18",
+    "ACT-TM-2026-004": "2026-08-15",
+    "ACT-TM-2026-005": "2026-08-18",
+    "ACT-TM-2026-006": "2026-08-18",
+}
+EXPECTED_EVIDENCE_REQUIREMENT_DUE_DATES = {
+    "EREQ-2026-001": "2026-08-15",
+    "EREQ-2026-002": "2026-08-18",
+    "EREQ-2026-003": "2026-08-18",
+    "EREQ-2026-004": "2026-08-18",
+}
+EXPECTED_GAP_DUE_DATES = {
+    "GAP-2026-001": "2026-08-18",
+    "GAP-2026-002": "2026-08-21",
+    "GAP-2026-003": "2026-08-20",
+    "GAP-2026-004": "2026-08-18",
+}
+EXPECTED_POST_COLLECTION_REASSESSMENT_DATES = {
+    "REA-TM-2026-001": "2026-08-19",
+    "REA-TM-2026-002": "2026-08-20",
+    "REA-TM-2026-004": "2026-08-19",
+}
 REASSESSMENT_HEADER = (
     "Reassessment ID",
     "Trigger",
@@ -1000,6 +1067,17 @@ TABLE_SAFETY_POLICIES = {
             reader_visible=("Question", "Minimum sufficient evidence", "Forbidden / over-collection boundary", "Owner"),
         ),
         table_safety_policy(
+            EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
+            structural=(
+                "Evidence Requirement ID",
+                "Supplier Action IDs",
+                "Gap IDs",
+                "Consuming Reassessment ID",
+            ),
+            finite=("Latest supplier completion", "Requirement due"),
+            reader_visible=(),
+        ),
+        table_safety_policy(
             COLLECTED_EVIDENCE_HEADER,
             structural=("Evidence ID", "Related Evidence Requirement IDs"),
             finite=("Status", "Collected at"),
@@ -1129,6 +1207,7 @@ CASE_TABLE_OCCURRENCES = {
         ASSUMPTION_HEADER,
         GAP_HEADER,
         EVIDENCE_REQUIREMENT_HEADER,
+        EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
         COLLECTED_EVIDENCE_HEADER,
         NEGATIVE_FINDING_HEADER,
         ACTION_HEADER,
@@ -8379,6 +8458,282 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in case_tables.get(reassessment_header, [])
         if len(row) == len(reassessment_header)
     }
+
+    supplier_schedule_rows, supplier_schedule_messages = table_by_header(
+        text, EVIDENCE_SUPPLIER_SCHEDULE_HEADER, label
+    )
+    messages.extend(supplier_schedule_messages)
+    observed_supplier_schedule_rows = tuple(
+        tuple(row) for row in supplier_schedule_rows
+    )
+    if observed_supplier_schedule_rows != EXPECTED_EVIDENCE_SUPPLIER_SCHEDULE_ROWS:
+        messages.append(
+            f"{label}: Evidence Requirement supplier schedule "
+            f"{observed_supplier_schedule_rows!r} != "
+            f"{EXPECTED_EVIDENCE_SUPPLIER_SCHEDULE_ROWS!r}"
+        )
+
+    action_due_date_index = action_header.index("Due date")
+    evidence_due_date_index = evidence_requirement_header.index("Due date")
+    gap_due_date_index = gap_header.index("Due date")
+    reassessment_date_index = reassessment_header.index("Scheduled date")
+    observed_action_due_dates = {
+        action_id: row[action_due_date_index]
+        for action_id, row in action_rows_by_id.items()
+    }
+    observed_evidence_due_dates = {
+        requirement_id: row[evidence_due_date_index]
+        for requirement_id, row in evidence_rows_by_id.items()
+    }
+    observed_gap_due_dates = {
+        gap_id: row[gap_due_date_index] for gap_id, row in gap_rows_by_id.items()
+    }
+    observed_reassessment_dates = {
+        reassessment_id: reassessment_rows_by_id[reassessment_id][
+            reassessment_date_index
+        ]
+        for reassessment_id in EXPECTED_POST_COLLECTION_REASSESSMENT_DATES
+        if reassessment_id in reassessment_rows_by_id
+    }
+    for family, observed, expected in (
+        ("Action", observed_action_due_dates, EXPECTED_ACTION_DUE_DATES),
+        (
+            "Evidence Requirement",
+            observed_evidence_due_dates,
+            EXPECTED_EVIDENCE_REQUIREMENT_DUE_DATES,
+        ),
+        ("Gap", observed_gap_due_dates, EXPECTED_GAP_DUE_DATES),
+        (
+            "post-collection Reassessment",
+            observed_reassessment_dates,
+            EXPECTED_POST_COLLECTION_REASSESSMENT_DATES,
+        ),
+    ):
+        if observed != expected:
+            messages.append(
+                f"{label}: exact {family} schedule {observed!r} != {expected!r}"
+            )
+
+    parsed_schedule_dates: dict[tuple[str, str], date] = {}
+    for family, schedule in (
+        ("Action", observed_action_due_dates),
+        ("Evidence Requirement", observed_evidence_due_dates),
+        ("Gap", observed_gap_due_dates),
+        ("Reassessment", observed_reassessment_dates),
+    ):
+        for identifier, raw_date in schedule.items():
+            try:
+                parsed_date = date.fromisoformat(raw_date)
+            except ValueError as exc:
+                messages.append(
+                    f"{label}: {family} {identifier} date {raw_date!r} "
+                    f"is not ISO-8601: {exc}"
+                )
+                continue
+            if parsed_date.isoformat() != raw_date:
+                messages.append(
+                    f"{label}: {family} {identifier} date {raw_date!r} is not "
+                    "canonical YYYY-MM-DD"
+                )
+                continue
+            parsed_schedule_dates[(family, identifier)] = parsed_date
+
+    supplier_schedule_by_id = {
+        row[0].strip("`"): row
+        for row in supplier_schedule_rows
+        if len(row) == len(EVIDENCE_SUPPLIER_SCHEDULE_HEADER)
+    }
+    supplier_union: set[str] = set()
+    for requirement_id in EXPECTED_EVIDENCE_REQUIREMENT_DUE_DATES:
+        row = supplier_schedule_by_id.get(requirement_id)
+        if row is None:
+            messages.append(
+                f"{label}: supplier schedule missing {requirement_id}"
+            )
+            continue
+        supplier_ids = set(
+            re.findall(
+                r"\bACT-TM-2026-\d{3}\b",
+                row[EVIDENCE_SUPPLIER_SCHEDULE_HEADER.index("Supplier Action IDs")],
+            )
+        )
+        gap_ids = set(
+            re.findall(
+                r"\bGAP-2026-\d{3}\b",
+                row[EVIDENCE_SUPPLIER_SCHEDULE_HEADER.index("Gap IDs")],
+            )
+        )
+        reassessment_ids = set(
+            re.findall(
+                r"\bREA-TM-2026-\d{3}\b",
+                row[
+                    EVIDENCE_SUPPLIER_SCHEDULE_HEADER.index(
+                        "Consuming Reassessment ID"
+                    )
+                ],
+            )
+        )
+        supplier_union.update(supplier_ids)
+        unknown_suppliers = supplier_ids - set(observed_action_due_dates)
+        if unknown_suppliers:
+            messages.append(
+                f"{label}: {requirement_id} has unknown supplier Actions "
+                f"{sorted(unknown_suppliers)!r}"
+            )
+        unknown_gaps = gap_ids - set(observed_gap_due_dates)
+        if unknown_gaps:
+            messages.append(
+                f"{label}: {requirement_id} has unknown Gaps "
+                f"{sorted(unknown_gaps)!r}"
+            )
+        if len(reassessment_ids) != 1:
+            messages.append(
+                f"{label}: {requirement_id} must have exactly one consuming "
+                f"Reassessment, found {sorted(reassessment_ids)!r}"
+            )
+
+        supplier_days = {
+            supplier_id: parsed_schedule_dates.get(("Action", supplier_id))
+            for supplier_id in supplier_ids
+        }
+        supplier_days = {
+            supplier_id: supplier_day
+            for supplier_id, supplier_day in supplier_days.items()
+            if supplier_day is not None
+        }
+        if supplier_ids and len(supplier_days) == len(supplier_ids):
+            latest_supplier_day = max(supplier_days.values())
+            recorded_latest = row[
+                EVIDENCE_SUPPLIER_SCHEDULE_HEADER.index(
+                    "Latest supplier completion"
+                )
+            ]
+            try:
+                recorded_latest_day = date.fromisoformat(recorded_latest)
+            except ValueError as exc:
+                messages.append(
+                    f"{label}: {requirement_id} latest supplier completion "
+                    f"{recorded_latest!r} is not ISO-8601: {exc}"
+                )
+            else:
+                if recorded_latest_day != latest_supplier_day:
+                    messages.append(
+                        f"{label}: {requirement_id} latest supplier completion "
+                        f"{recorded_latest!r} != computed "
+                        f"{latest_supplier_day.isoformat()!r}"
+                    )
+
+            requirement_day = parsed_schedule_dates.get(
+                ("Evidence Requirement", requirement_id)
+            )
+            recorded_requirement_due = row[
+                EVIDENCE_SUPPLIER_SCHEDULE_HEADER.index("Requirement due")
+            ]
+            if (
+                requirement_day is not None
+                and recorded_requirement_due != requirement_day.isoformat()
+            ):
+                messages.append(
+                    f"{label}: {requirement_id} supplier schedule due "
+                    f"{recorded_requirement_due!r} != register due "
+                    f"{requirement_day.isoformat()!r}"
+                )
+            if requirement_day is not None and requirement_day < latest_supplier_day:
+                messages.append(
+                    f"{label}: {requirement_id} due "
+                    f"{requirement_day.isoformat()!r} precedes suppliers "
+                    f"{ {key: supplier_days[key].isoformat() for key in sorted(supplier_days)}!r}"
+                )
+
+            for gap_id in sorted(gap_ids):
+                gap_day = parsed_schedule_dates.get(("Gap", gap_id))
+                if gap_day is not None and gap_day < latest_supplier_day:
+                    messages.append(
+                        f"{label}: {gap_id} due {gap_day.isoformat()!r} precedes "
+                        f"{requirement_id} supplier completion "
+                        f"{latest_supplier_day.isoformat()!r}"
+                    )
+
+            for reassessment_id in sorted(reassessment_ids):
+                reassessment_day = parsed_schedule_dates.get(
+                    ("Reassessment", reassessment_id)
+                )
+                if reassessment_day is None or requirement_day is None:
+                    continue
+                prerequisite_day = max(requirement_day, latest_supplier_day)
+                if reassessment_day <= prerequisite_day:
+                    messages.append(
+                        f"{label}: {reassessment_id} must run after "
+                        f"{requirement_id} and all supplier Actions: "
+                        f"{reassessment_day.isoformat()!r} <= "
+                        f"{prerequisite_day.isoformat()!r}"
+                    )
+
+        reverse_gap_ids = {
+            gap_id
+            for gap_id, gap_row in gap_rows_by_id.items()
+            if requirement_id
+            in set(
+                re.findall(
+                    r"\bEREQ-2026-\d{3}\b",
+                    gap_row[gap_header.index("Evidence Requirement ID")],
+                )
+            )
+        }
+        if reverse_gap_ids != gap_ids:
+            messages.append(
+                f"{label}: {requirement_id} Gap set {sorted(gap_ids)!r} != "
+                f"reverse trace {sorted(reverse_gap_ids)!r}"
+            )
+
+        gap_action_union: set[str] = set()
+        gap_reassessment_union: set[str] = set()
+        for gap_id in sorted(gap_ids):
+            gap_row = gap_rows_by_id.get(gap_id)
+            if gap_row is None:
+                continue
+            gap_requirement_ids = set(
+                re.findall(
+                    r"\bEREQ-2026-\d{3}\b",
+                    gap_row[gap_header.index("Evidence Requirement ID")],
+                )
+            )
+            if requirement_id not in gap_requirement_ids:
+                messages.append(
+                    f"{label}: {gap_id} does not reference {requirement_id}"
+                )
+            gap_action_union.update(
+                re.findall(
+                    r"\bACT-TM-2026-\d{3}\b",
+                    gap_row[gap_header.index("Action ID")],
+                )
+            )
+            gap_reassessment_union.update(
+                re.findall(
+                    r"\bREA-TM-2026-\d{3}\b",
+                    gap_row[gap_header.index("Reassessment ID")],
+                )
+            )
+        if gap_action_union != supplier_ids:
+            messages.append(
+                f"{label}: {requirement_id} supplier Actions "
+                f"{sorted(supplier_ids)!r} != Action union from Gaps "
+                f"{sorted(gap_action_union)!r}"
+            )
+        if gap_reassessment_union != reassessment_ids:
+            messages.append(
+                f"{label}: {requirement_id} consuming Reassessments "
+                f"{sorted(reassessment_ids)!r} != Gap reverse trace "
+                f"{sorted(gap_reassessment_union)!r}"
+            )
+
+    if supplier_union != set(EXPECTED_ACTION_DUE_DATES):
+        messages.append(
+            f"{label}: supplier schedule Action coverage "
+            f"{sorted(supplier_union)!r} != "
+            f"{sorted(EXPECTED_ACTION_DUE_DATES)!r}"
+        )
+
     identity_reassessment = reassessment_rows_by_id.get("REA-TM-2026-001")
     if identity_reassessment is None:
         messages.append(f"{label}: missing REA-TM-2026-001 exact identity contract")
@@ -11319,6 +11674,105 @@ def negative_regressions(
                     "| 1. Event-class tests | `ACT-TM-2026-002` / `ACT-TM-2026-005` Phase B | "
                     "任意の開始判断 |",
                     1,
+                ),
+            ),
+            (
+                "EREQ-2026-001 is due before ACT-TM-2026-004 can supply current evidence",
+                mutate_table_cell(
+                    case,
+                    EVIDENCE_REQUIREMENT_HEADER,
+                    1,
+                    1,
+                    "Due date",
+                    "2026-08-12",
+                ),
+            ),
+            (
+                "EREQ-2026-002 is due before both Rule-test suppliers complete",
+                mutate_table_cell(
+                    case,
+                    EVIDENCE_REQUIREMENT_HEADER,
+                    1,
+                    2,
+                    "Due date",
+                    "2026-08-14",
+                ),
+            ),
+            (
+                "supplier schedule drops ACT-TM-2026-004 from EREQ-2026-001",
+                mutate_table_cell(
+                    case,
+                    EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
+                    1,
+                    1,
+                    "Supplier Action IDs",
+                    "`ACT-TM-2026-001`",
+                ),
+            ),
+            (
+                "supplier schedule drops ACT-TM-2026-003 from EREQ-2026-003",
+                mutate_table_cell(
+                    case,
+                    EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
+                    1,
+                    3,
+                    "Supplier Action IDs",
+                    "`ACT-TM-2026-002`, `ACT-TM-2026-005`",
+                ),
+            ),
+            (
+                "supplier schedule omits EREQ-2026-004",
+                mutate_table_cell(
+                    case,
+                    EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
+                    1,
+                    4,
+                    "Evidence Requirement ID",
+                    "`EREQ-2026-003`",
+                ),
+            ),
+            (
+                "supplier schedule records a stale latest completion",
+                mutate_table_cell(
+                    case,
+                    EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
+                    1,
+                    1,
+                    "Latest supplier completion",
+                    "2026-08-14",
+                ),
+            ),
+            (
+                "supplier Action due date is not ISO-8601",
+                mutate_table_cell(
+                    case,
+                    ACTION_HEADER,
+                    1,
+                    4,
+                    "Due date",
+                    "2026-08-XX",
+                ),
+            ),
+            (
+                "GAP-2026-001 is due before its complete supplier set",
+                mutate_table_cell(
+                    case,
+                    GAP_HEADER,
+                    1,
+                    1,
+                    "Due date",
+                    "2026-08-17",
+                ),
+            ),
+            (
+                "REA-TM-2026-001 is not strictly after evidence collection",
+                mutate_table_cell(
+                    case,
+                    REASSESSMENT_HEADER,
+                    1,
+                    1,
+                    "Scheduled date",
+                    "2026-08-15",
                 ),
             ),
             (
