@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import os
 import posixpath
@@ -711,7 +712,19 @@ def published_page_title_findings(
             f"{label}: pages[{index}].title "
             f"({source} -> {destination})"
         )
-        fields.append((location, title))
+        # Model the browser-visible value before the shared Markdown/HTML
+        # normalizer sees it.  Without this projection, an encoded title such
+        # as ``&lt;unsafe reader action&gt;`` is decoded to ``<...>`` by the
+        # shared normalizer and then discarded as if it were an HTML tag.  One
+        # entity-decoding pass matches HTML rendering; neutralizing angle
+        # delimiters preserves their inner reader-visible text for the Policy
+        # scan.  Neutralize any remaining ampersand as well so a double-encoded
+        # entity is not decoded a second time by the shared normalizer when a
+        # browser would display that entity text literally.
+        policy_title = html.unescape(title).translate(
+            str.maketrans({"<": " ", ">": " ", "&": " "})
+        )
+        fields.append((location, policy_title))
     return scan_fields(fields)
 
 
@@ -1926,6 +1939,16 @@ def run_registry_security_regressions() -> list[str]:
         "実Tokenを\r取得してEvidenceにする",
         "個人情報を\u2028収集する",
         "マルウェアを\u2029実行する",
+        "&lt;第三者の本番システムへ接続する&gt;",
+        "&#60;第三者の本番システムへ接続する&#62;",
+        "&#x3c;第三者の本番システムへ接続する&#x3e;",
+        "&lt第三者の本番システムへ接続する&gt",
+        "&#60第三者の本番システムへ接続する&#62",
+        "&#x3c第三者の本番システムへ接続する&#x3e",
+        "&#X3C第三者の本番システムへ接続する&#X3E",
+        "&LT第三者の本番システムへ接続する&GT",
+        "&amp;lt;第三者の本番システムへ接続する&amp;gt;",
+        "&amp;#60;第三者の本番システムへ接続する&amp;#62;",
     )
     for index, title in enumerate(unsafe_titles, start=1):
         expect_invalid_registry(
@@ -1941,6 +1964,9 @@ def run_registry_security_regressions() -> list[str]:
         "第4章 Source Review",
         "第三者の本番システムへ接続しない",
         "マルウェア分類の危険性を分析する",
+        "&lt;第三者の本番システムへ接続しない&gt;",
+        "A &lt; B",
+        "A &amp;lt; B",
     ) + schema_safe_titles
     for index, title in enumerate(safe_titles, start=1):
         try:

@@ -195,12 +195,10 @@ INHERITED_TH_001_PROPOSITION = (
     "請求書連携アプリの権限が業務要件を超えており、Credentialが不正利用された場合に"
     "顧客Dataへ広範にAccessできる"
 )
-INHERITED_TH_001_CASE_PROPOSITION = (
+INHERITED_TH_001_PRECONDITIONS = "過大scope、利用可能なCredential、API到達性"
+INHERITED_TH_001_CONJUNCTION_DRIFT = (
     "請求書連携アプリの業務要件超過権限、Credential misuse、顧客Dataへの"
     "広範Access可能性が同時に成立するという第1章の命題"
-)
-INHERITED_TH_001_CASE_PRECONDITIONS = (
-    "過大scope、Credentialの有効性、API到達性を成立条件として評価する"
 )
 INHERITED_TH_002_PROPOSITION = (
     "管理者同意の変更を監視できず、未承認のscope追加を早期検知できない"
@@ -4344,27 +4342,29 @@ def adapter_field_location(
     return f"{label}:{table.line} {table.header[0]}[{occurrence}] {column} row {row}"
 
 
-def is_frozen_inherited_nominal_descriptor(
+def is_frozen_inherited_noninstructional_descriptor(
     header: tuple[str, ...], row: tuple[str, ...], column: str, value: str
 ) -> bool:
-    """Identify a source-exact, non-instructional inherited descriptor.
+    """Identify source-exact, non-instructional inherited descriptors.
 
-    Chapter 1 freezes TH-2026-003 Preconditions as the nominal historical
-    phrase ``過去の不正Credential利用``.  The shared Policy correctly treats
-    an unbounded ``Credential利用`` action as unsafe, but this exact table cell
-    is source provenance rather than a reader action.  Keep the exception in
-    this thin Chapter 4 adapter: any changed/appended value remains selected
-    for Policy 1.2.0, and the source-derived structural contract independently
-    requires the exact phrase.
+    Chapter 1 freezes TH-2026-001's conditional proposition and Preconditions,
+    and TH-2026-003's nominal historical Preconditions.  The shared Policy
+    correctly treats unbounded Credential actions as unsafe, but these exact
+    cells are inherited threat-description provenance rather than reader
+    actions.  Keep the finite exceptions in this thin Chapter 4 adapter: any
+    changed or appended value remains selected for Policy 1.2.0, while the
+    source-derived structural contract independently requires each exact value.
     """
 
-    return (
-        header == HYPOTHESIS_HEADER
-        and column == "Preconditions"
-        and len(row) == len(header)
-        and row[header.index("Hypothesis ID")].strip("`") == "TH-2026-003"
-        and value == INHERITED_TH_003_PRECONDITIONS
-    )
+    if header != HYPOTHESIS_HEADER or len(row) != len(header):
+        return False
+    hypothesis_id = row[header.index("Hypothesis ID")].strip("`")
+    frozen_values = {
+        ("TH-2026-001", "Statement"): INHERITED_TH_001_PROPOSITION,
+        ("TH-2026-001", "Preconditions"): INHERITED_TH_001_PRECONDITIONS,
+        ("TH-2026-003", "Preconditions"): INHERITED_TH_003_PRECONDITIONS,
+    }
+    return value == frozen_values.get((hypothesis_id, column))
 
 
 def classified_table_fields(
@@ -4416,7 +4416,7 @@ def classified_table_fields(
                 column_index = table.header.index(column)
                 value = row[column_index]
                 if value:
-                    if is_frozen_inherited_nominal_descriptor(
+                    if is_frozen_inherited_noninstructional_descriptor(
                         table.header, row, column, value
                     ):
                         continue
@@ -4549,6 +4549,68 @@ def safety_matrix_negative_regressions(
     missing = sorted(target_locations - finding_locations)
     if missing:
         error(f"{label}: public fields bypassed Policy 1.2.0: {missing!r}")
+
+
+def inherited_descriptor_exception_scope_regressions(case: str) -> None:
+    """Prove source-exact inherited exceptions cannot move or absorb prose.
+
+    The finite adapter exception is keyed by Hypothesis ID, column, and exact
+    value.  Freeze those three dimensions directly so future refactors cannot
+    turn a source-provenance exception into a value-only Policy bypass.
+    """
+
+    tick = "`"
+    changed_id = case.replace(
+        f"{tick}TH-2026-001{tick} | {tick}DR-2026-001{tick}",
+        f"{tick}TH-2026-099{tick} | {tick}DR-2026-001{tick}",
+        1,
+    )
+    relocated_value = mutate_table_cell(
+        case,
+        HYPOTHESIS_HEADER,
+        1,
+        1,
+        "Alternative explanation",
+        INHERITED_TH_001_PRECONDITIONS,
+    )
+    appended_instruction = mutate_table_cell(
+        case,
+        HYPOTHESIS_HEADER,
+        1,
+        1,
+        "Statement",
+        f"{INHERITED_TH_001_PROPOSITION} 第三者の本番システムへ接続する",
+    )
+    for name, mutation, expected_column, expected_category in (
+        ("Hypothesis ID substitution", changed_id, "Statement", "secret.credential"),
+        ("column substitution", relocated_value, "Alternative explanation", "secret.credential"),
+        ("unsafe suffix", appended_instruction, "Statement", "target.real_or_external"),
+    ):
+        if mutation == case:
+            error(f"Chapter 4 inherited-descriptor regression did not mutate {name}")
+            continue
+        fields, messages = classified_table_fields(
+            mutation,
+            f"negative inherited descriptor {name}",
+            CASE_TABLE_OCCURRENCES,
+        )
+        if messages:
+            error(
+                f"Chapter 4 inherited-descriptor regression invalidated the table "
+                f"adapter for {name}: {messages!r}"
+            )
+            continue
+        findings = scan_fields(fields)
+        if not any(
+            finding.category == expected_category
+            and expected_column in finding.location
+            for finding in findings
+        ):
+            error(
+                f"Chapter 4 inherited-descriptor exception escaped its finite "
+                f"ID/column/exact-value scope for {name}: "
+                f"{[format_finding(finding) for finding in findings]!r}"
+            )
 
 
 def prose_surface_negative_regressions(
@@ -9043,11 +9105,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         exact_fields = {
             "Decision Requirement ID": source_th_001[1],
             "Related Asset IDs": source_th_001[2],
-            # The Chapter 1 action-bearing prose is preserved semantically in a
-            # non-operational nominal proposition so the public-content Policy
-            # does not mistake a threat statement for an instruction.
-            "Statement": INHERITED_TH_001_CASE_PROPOSITION,
-            "Preconditions": INHERITED_TH_001_CASE_PRECONDITIONS,
+            "Statement": source_th_001[4],
+            "Preconditions": source_th_001[5],
             "Expected impact": source_th_001[6],
             "Priority": source_th_001[7],
             "Hypothesis status": source_th_001[8],
@@ -9075,6 +9134,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             messages.append(
                 f"{label}: Chapter 1 TH-2026-001 proposition drifted from the frozen "
                 f"contract {INHERITED_TH_001_PROPOSITION!r}"
+            )
+        if source_th_001[5] != INHERITED_TH_001_PRECONDITIONS:
+            messages.append(
+                f"{label}: Chapter 1 TH-2026-001 Preconditions drifted from the frozen "
+                f"contract {INHERITED_TH_001_PRECONDITIONS!r}"
             )
 
     source_th_002 = next(
@@ -12412,6 +12476,7 @@ def negative_regressions(
     changelog: str,
 ) -> None:
     reader_visible_adapter_contract_regressions()
+    inherited_descriptor_exception_scope_regressions(case)
     chapter_mutations = (
         ("missing OWN", chapter.replace("### OWN", "### OWNERSHIP", 1)),
         ("inventory conflation", chapter.replace("Componentを列挙するだけでは", "ComponentはBusiness Assetなので列挙すれば", 1)),
@@ -13027,15 +13092,23 @@ def negative_regressions(
             (
                 "TH-2026-001 inherited proposition drift",
                 case.replace(
-                    INHERITED_TH_001_CASE_PROPOSITION,
+                    INHERITED_TH_001_PROPOSITION,
                     SUMMARY_TH_004_PROPOSITION,
+                    1,
+                ),
+            ),
+            (
+                "TH-2026-001 conditional proposition collapsed to conjunction",
+                case.replace(
+                    INHERITED_TH_001_PROPOSITION,
+                    INHERITED_TH_001_CONJUNCTION_DRIFT,
                     1,
                 ),
             ),
             (
                 "TH-2026-001 inherited precondition drift",
                 case.replace(
-                    INHERITED_TH_001_CASE_PRECONDITIONS,
+                    INHERITED_TH_001_PRECONDITIONS,
                     "2026-07-25 remediation後のcurrent scopeとWorkload identity bindingが未確認である",
                     1,
                 ),
