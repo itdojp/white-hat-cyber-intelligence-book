@@ -3296,10 +3296,9 @@ class _InterpretedKramdownExtension:
     closer: str
 
 
-_KRAMDOWN_COMMENT_EXTENSION = _InterpretedKramdownExtension(
-    name="comment",
-    opener="{::comment}",
-    closer="{:/comment}",
+_KRAMDOWN_COMMENT_SOURCE_DELIMITERS = (
+    "{::comment}",
+    "{:/comment}",
 )
 _KRAMDOWN_NOMARKDOWN_EXTENSION = _InterpretedKramdownExtension(
     name="nomarkdown",
@@ -3307,7 +3306,6 @@ _KRAMDOWN_NOMARKDOWN_EXTENSION = _InterpretedKramdownExtension(
     closer="{:/nomarkdown}",
 )
 _KRAMDOWN_INTERPRETED_EXTENSIONS = (
-    _KRAMDOWN_COMMENT_EXTENSION,
     _KRAMDOWN_NOMARKDOWN_EXTENSION,
 )
 _KRAMDOWN_INTERPRETED_EXTENSION_BY_NAME = {
@@ -3704,10 +3702,8 @@ def _finite_multiline_inline_code_spans(
 def _reject_interpreted_kramdown_extension(
     value: str, *, location: str
 ) -> None:
-    """Reject finite paired extensions on reader-visible Markdown.
+    """Reject finite paired nomarkdown extensions on reader-visible Markdown.
 
-    Kramdown turns ``{::comment}...{:/comment}`` into an HTML comment before
-    publication, which can join protected prose around the removed body.
     ``{::nomarkdown}...{:/nomarkdown}`` keeps its body but removes the paired
     delimiters, which can likewise join protected prose that the source scan
     saw as separated.  Whitespace/attribute start tags (including a source-line
@@ -3721,8 +3717,8 @@ def _reject_interpreted_kramdown_extension(
     block is literal.  After an eligible opener starts, however, the pinned
     renderer recognizes the raw exact close even inside such syntax.  Unmatched
     and escaped openers remain reader-visible literal source.  This finite
-    tuple is the single source of truth; it is not a broad ``{::...}`` token
-    ban or a complete Kramdown parser.
+    tuple is the single source of truth for the existing nomarkdown contract;
+    it is not a broad ``{::...}`` token ban or a complete Kramdown parser.
     """
 
     lines = value.splitlines(keepends=True)
@@ -3847,6 +3843,37 @@ def _reject_interpreted_kramdown_extension(
     )
 
 
+def _reject_kramdown_comment_source_delimiters(
+    value: str, *, location: str
+) -> None:
+    """Ban exact Kramdown comment delimiters in Chapter 4 source.
+
+    The canonical source contract intentionally does not reproduce Kramdown's
+    list, indentation, tab, nested-container, or continuation semantics.
+    Exact comment delimiters are rejected before any Markdown projection,
+    including in code, tables, comments, and link metadata.  Authors who need
+    to describe the syntax must entity-encode the opening brace.
+    """
+
+    matches = tuple(
+        (value.find(delimiter), delimiter)
+        for delimiter in _KRAMDOWN_COMMENT_SOURCE_DELIMITERS
+        if delimiter in value
+    )
+    if not matches:
+        return
+    match_start, delimiter = min(matches)
+    line_number = value.count("\n", 0, match_start) + 1
+    line_start = value.rfind("\n", 0, match_start) + 1
+    column = match_start - line_start + 1
+    encoded = delimiter.replace("{", "&#123;", 1)
+    raise ValueError(
+        f"{location}:{line_number}:{column}: exact Kramdown comment delimiter "
+        f"{delimiter!r} is prohibited in Chapter 4 canonical source; use "
+        f"{encoded!r} when documenting the syntax"
+    )
+
+
 def _reject_interpreted_liquid(value: str, *, location: str) -> None:
     """Reject Liquid before any Markdown projection or masking.
 
@@ -3887,6 +3914,7 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
     split at an authoring line break.
     """
 
+    _reject_kramdown_comment_source_delimiters(text, location=label)
     _reject_interpreted_liquid(text, location=label)
     source_lines = text.splitlines()
     selected: list[tuple[int, tuple[str, str]]] = []
@@ -4381,6 +4409,10 @@ def classified_table_fields(
 
     tables, messages = markdown_tables(text, label)
     try:
+        _reject_kramdown_comment_source_delimiters(text, location=label)
+    except (TypeError, ValueError, UnicodeError) as exc:
+        messages.append(str(exc))
+    try:
         reference_labels = _markdown_reference_definition_labels(text)
     except (TypeError, ValueError, UnicodeError) as exc:
         messages.append(
@@ -4734,21 +4766,78 @@ def liquid_surface_regressions(
         )
 
 
+def kramdown_comment_source_ban_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Freeze the exact source-level Kramdown comment delimiter ban."""
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    prohibited_probes = (
+        ("unmatched opener", "Kramdown marker: {::comment}"),
+        ("unmatched closer", "Kramdown marker: {:/comment}"),
+        ("inline code", "`{::comment}`"),
+        ("fenced code", "```text\n{::comment}\n```"),
+        ("indented code", "    {:/comment}"),
+        (
+            "table cell",
+            "| Field | Value |\n|---|---|\n| probe | {::comment} |",
+        ),
+        ("inline-link destination", "[probe](/local/{::comment})"),
+        ("inline-link title", '[probe](/local "{:/comment}")'),
+        (
+            "reference-link destination",
+            "[probe][comment-ban]\n\n[comment-ban]: /local/{::comment}",
+        ),
+        ("raw HTML comment", "<!-- {:/comment} -->"),
+        ("Markdown-escaped opener", r"\{::comment}"),
+    )
+    for name, probe in prohibited_probes:
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"negative {label} Kramdown comment source ban {name}",
+        )
+        if not any(
+            "exact Kramdown comment delimiter" in failure
+            and "canonical source" in failure
+            for failure in failures
+        ):
+            error(
+                f"{label}: source-level Kramdown comment delimiter in {name} "
+                "did not fail closed"
+            )
+
+    encoded_literal = (
+        "Kramdown comment syntax: &#123;::comment} hidden "
+        "&#123;:/comment}."
+    )
+    failures = contract_errors(
+        f"{text}{suffix}\n{encoded_literal}\n",
+        f"safe {label} entity-encoded Kramdown comment syntax",
+    )
+    if failures:
+        error(
+            f"{label}: entity-encoded Kramdown comment syntax was rejected: "
+            f"{failures!r}"
+        )
+
+
 def kramdown_extension_surface_regressions(
     text: str,
     label: str,
     contract_errors: Callable[[str, str], list[str]],
 ) -> None:
-    """Reject finite interpreted pairs while preserving literal source."""
+    """Retain the existing finite nomarkdown-extension contract."""
 
     def for_extension(
         value: str, extension: _InterpretedKramdownExtension
     ) -> str:
         return value.replace(
-            _KRAMDOWN_COMMENT_EXTENSION.opener,
+            _KRAMDOWN_COMMENT_SOURCE_DELIMITERS[0],
             extension.opener,
         ).replace(
-            _KRAMDOWN_COMMENT_EXTENSION.closer,
+            _KRAMDOWN_COMMENT_SOURCE_DELIMITERS[1],
             extension.closer,
         )
 
@@ -5367,70 +5456,6 @@ def kramdown_extension_surface_regressions(
             '第三者の{::nomarkdown type="html"/}'
             "本番システムへ接続する。",
             "nomarkdown extension self-closing token",
-        ),
-        (
-            "comment trailing-space opener",
-            "第三者の{::comment }hidden{:/comment}"
-            "本番システムへ接続する。",
-            "comment extension pair",
-        ),
-        (
-            "comment LF attribute continuation",
-            '第三者の{::comment\ntype="html"}hidden{:/comment}'
-            "本番システムへ接続する。",
-            "comment extension pair",
-        ),
-        (
-            "comment blockquote lazy attribute continuation",
-            '> 第三者の{::comment\ntype="html"}'
-            "hidden{:/comment}本番システムへ接続する。",
-            "comment extension pair",
-        ),
-        (
-            "comment nested blockquote lazy attribute continuation",
-            '> > 第三者の{::comment\n> type="html"}'
-            "hidden{:/comment}本番システムへ接続する。",
-            "comment extension pair",
-        ),
-        (
-            "comment lazy opener returning to explicit blockquote",
-            '> intro\nlazy 第三者の{::comment\n> type="html"}'
-            "hidden{:/comment}本番システムへ接続する。",
-            "comment extension pair",
-        ),
-        (
-            "comment depth-two lazy opener returning to explicit quote",
-            '> > intro\n> lazy 第三者の{::comment\n'
-            '> > type="html"}hidden{:/comment}本番システムへ接続する。',
-            "comment extension pair",
-        ),
-        (
-            "comment blockquote heading then lazy attribute opener",
-            '> intro\n# heading\nlazy 第三者の{::comment\n'
-            '> type="html"}hidden{:/comment}本番システムへ接続する。',
-            "comment extension pair",
-        ),
-        (
-            "comment quoted EOB then lazy attribute opener",
-            '> intro\n> ^\nlazy 第三者の{::comment\n'
-            '> type="html"}hidden{:/comment}本番システムへ接続する。',
-            "comment extension pair",
-        ),
-        (
-            "comment quoted block IAL then lazy attribute opener",
-            '> intro\n> {:.probe}\nlazy 第三者の{::comment\n'
-            '> type="html"}hidden{:/comment}本番システムへ接続する。',
-            "comment extension pair",
-        ),
-        (
-            "comment anonymous close",
-            "第三者の{::comment}hidden{:/}本番システムへ接続する。",
-            "comment extension pair",
-        ),
-        (
-            "comment self-closing token",
-            "第三者の{::comment/}本番システムへ接続する。",
-            "comment extension self-closing token",
         ),
     )
     for name, probe, expected_message in interpreted_variant_probes:
@@ -12576,6 +12601,9 @@ def negative_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
     liquid_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
+    kramdown_comment_source_ban_regressions(
+        chapter, CHAPTER, chapter_contract_errors
+    )
     kramdown_extension_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
@@ -12667,6 +12695,9 @@ def negative_regressions(
         template, TEMPLATE, template_contract_errors
     )
     liquid_surface_regressions(template, TEMPLATE, template_contract_errors)
+    kramdown_comment_source_ban_regressions(
+        template, TEMPLATE, template_contract_errors
+    )
     kramdown_extension_surface_regressions(
         template, TEMPLATE, template_contract_errors
     )
@@ -14721,6 +14752,9 @@ def negative_regressions(
             case, CASE, case_contract_errors
         )
         liquid_surface_regressions(case, CASE, case_contract_errors)
+        kramdown_comment_source_ban_regressions(
+            case, CASE, case_contract_errors
+        )
         kramdown_extension_surface_regressions(
             case, CASE, case_contract_errors
         )
