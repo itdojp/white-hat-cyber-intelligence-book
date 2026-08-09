@@ -1405,15 +1405,29 @@ def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
     visible_lines: list[tuple[int, str]] = []
     in_comment = False
     for line_number, line in lines:
-        code_spans = _finite_same_line_code_spans(line)
+        # Kramdown/GFM renders Markdown titles as tooltip text even when the
+        # title literal is shaped like an HTML comment.  Protect the same
+        # finite destination/title ranges that the link adapter classifies as
+        # metadata, as well as literal inline-code spans, before deciding
+        # whether ``<!--`` starts an actual non-rendered HTML comment.  Titles
+        # are projected into their own Policy field later; destinations remain
+        # hidden from reader-action scanning.
+        protected_spans = tuple(
+            sorted(
+                set(
+                    _finite_same_line_code_spans(line)
+                    + _finite_markdown_link_noncontent_spans(line)
+                )
+            )
+        )
 
-        def opening_outside_code(start: int) -> int:
+        def opening_outside_protected_span(start: int) -> int:
             candidate = line.find("<!--", start)
             while candidate >= 0:
                 if not any(
                     span_start <= candidate
                     and candidate + len("<!--") <= span_end
-                    for span_start, span_end in code_spans
+                    for span_start, span_end in protected_spans
                 ):
                     return candidate
                 candidate = line.find("<!--", candidate + 1)
@@ -1435,7 +1449,7 @@ def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
                 had_comment = True
                 cursor = close + 3
                 continue
-            opening = opening_outside_code(cursor)
+            opening = opening_outside_protected_span(cursor)
             if opening < 0:
                 visible_parts.append(line[cursor:])
                 cursor = len(line)
@@ -2939,6 +2953,60 @@ def inline_code_comment_surface_regressions(
             )
 
 
+def markdown_title_comment_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Keep comment-shaped rendered Markdown titles Policy-visible.
+
+    Kramdown/GFM emits the finite title literal as escaped tooltip text.  The
+    document-level adapters must therefore reject an unsafe title while actual
+    comments and hidden destinations remain outside reader-action scanning.
+    """
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    unsafe = '[safe](/local "<!--第三者の本番システムへ接続する。-->")'
+    failures = contract_errors(
+        f"{text}{suffix}\n{unsafe}\n",
+        f"negative {label} comment-shaped Markdown title",
+    )
+    if not any(
+        "[target.real_or_external]" in failure
+        and "inline-link-title" in failure
+        and "第三者の本番システムへ接続する" in failure
+        for failure in failures
+    ):
+        error(
+            f"{label}: unsafe comment-shaped Markdown title bypassed "
+            "Policy 1.2.0"
+        )
+
+    for name, probe in (
+        (
+            "explicit prohibition title",
+            '[safe](/local "<!--第三者の本番システムへ接続することを禁止する。-->")',
+        ),
+        (
+            "actual non-rendered comment",
+            '<!-- [safe](/local "第三者の本番システムへ接続する。") -->',
+        ),
+        (
+            "hidden destination",
+            '[safe](https://example.com/runbook "<!--表示用tooltip。-->")',
+        ),
+    ):
+        safe_failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"safe {label} comment-shaped Markdown title {name}",
+        )
+        if safe_failures:
+            error(
+                f"{label}: Markdown title/comment precedence rejected "
+                f"{name}: {safe_failures!r}"
+            )
+
+
 def _fence_body_line(probe: str, opening: MarkdownFenceOpening) -> str:
     quote_prefix = "> " * opening.quote_depth
     return f"{quote_prefix}{' ' * opening.container_indent}{probe}"
@@ -3637,6 +3705,11 @@ continues with [visible label](https://example.com/path).
             '[safe]: /local "<span title=\'第三者の本番システムへ接続しない。\'>safe</span>"\n\n[safe]\n',
         ),
         (
+            "reference comment-shaped title",
+            '[safe]: /local "<!--第三者の本番システムへ接続する。-->"\n\n[safe]\n',
+            '[safe]: /local "<!--第三者の本番システムへ接続しない。-->"\n\n[safe]\n',
+        ),
+        (
             "reference single-quoted title",
             "[safe]: /local '第三者の本番システムへ接続する。'\n\n[safe]\n",
             "[safe]: /local '第三者の本番システムへ接続しない。'\n\n[safe]\n",
@@ -3657,6 +3730,11 @@ continues with [visible label](https://example.com/path).
             '[safe](/local "<span title=\'第三者の本番システムへ接続しない。\'>safe</span>")\n',
         ),
         (
+            "inline comment-shaped title",
+            '[safe](/local "<!--第三者の本番システムへ接続する。-->")\n',
+            '[safe](/local "<!--第三者の本番システムへ接続しない。-->")\n',
+        ),
+        (
             "inline single-quoted title",
             "[safe](/local '第三者の本番システムへ接続する。')\n",
             "[safe](/local '第三者の本番システムへ接続しない。')\n",
@@ -3672,9 +3750,19 @@ continues with [visible label](https://example.com/path).
             '![diagram](/local "第三者の本番システムへ接続しない。")\n',
         ),
         (
+            "inline image comment-shaped title",
+            '![diagram](/local "<!--第三者の本番システムへ接続する。-->")\n',
+            '![diagram](/local "<!--第三者の本番システムへ接続しない。-->")\n',
+        ),
+        (
             "nested-image outer-link title",
             '[![diagram](/assets/diagram.svg)](/local "第三者の本番システムへ接続する。")\n',
             '[![diagram](/assets/diagram.svg)](/local "第三者の本番システムへ接続しない。")\n',
+        ),
+        (
+            "nested-image outer-link comment-shaped title",
+            '[![diagram](/assets/diagram.svg)](/local "<!--第三者の本番システムへ接続する。-->")\n',
+            '[![diagram](/assets/diagram.svg)](/local "<!--第三者の本番システムへ接続しない。-->")\n',
         ),
     ):
         unsafe_findings = document_reader_visible_policy_errors(
@@ -3708,6 +3796,16 @@ continues with [visible label](https://example.com/path).
             "<span title='第三者の本番システムへ接続しない。'>safe</span>",
             False,
         ),
+        (
+            "unsafe comment-shaped",
+            "<!--第三者の本番システムへ接続する。-->",
+            True,
+        ),
+        (
+            "safe comment-shaped",
+            "<!--第三者の本番システムへ接続しない。-->",
+            False,
+        ),
     ):
         table_with_title = (
             "| Field | Value |\n|---|---|\n"
@@ -3734,6 +3832,72 @@ continues with [visible label](https://example.com/path).
                 f"{disposition} table link-title Policy result {observed} "
                 f"!= {expect_finding}: {table_findings!r}"
             )
+
+    for disposition, title, expect_finding in (
+        (
+            "unsafe",
+            "<!--第三者の本番システムへ接続する。-->",
+            True,
+        ),
+        (
+            "safe",
+            "<!--第三者の本番システムへ接続しない。-->",
+            False,
+        ),
+    ):
+        footnote_with_title = (
+            "Reader note.[^title]\n\n"
+            f'[^title]: [safe](/local "{title}")\n'
+        )
+        footnote_findings = document_reader_visible_policy_errors(
+            footnote_with_title,
+            f"{disposition} footnote comment-shaped link-title fixture",
+        )
+        observed = any(
+            "[target.real_or_external]" in finding
+            and "link-title" in finding
+            for finding in footnote_findings
+        )
+        if observed != expect_finding:
+            error(
+                f"{disposition} footnote comment-shaped link-title result "
+                f"{observed} != {expect_finding}: {footnote_findings!r}"
+            )
+
+    title_only_findings = document_reader_visible_policy_errors(
+        '[safe](https://example.com/runbook "<!--第三者の本番システムへ接続する。-->")\n',
+        "comment-shaped visible title with hidden destination fixture",
+    )
+    title_action_findings = [
+        finding
+        for finding in title_only_findings
+        if "[target.real_or_external]" in finding
+    ]
+    if len(title_action_findings) != 1 or not all(
+        "inline-link-title" in finding for finding in title_action_findings
+    ):
+        error(
+            "comment-shaped Markdown title was not scanned exactly once as "
+            f"title metadata: {title_only_findings!r}"
+        )
+    if any("[network.host_or_address]" in finding for finding in title_only_findings):
+        error(
+            "hidden Markdown destination leaked into host Policy scanning: "
+            f"{title_only_findings!r}"
+        )
+
+    actual_comment_with_link = (
+        '<!-- [safe](/local "第三者の本番システムへ接続する。") -->\n'
+    )
+    actual_comment_findings = document_reader_visible_policy_errors(
+        actual_comment_with_link,
+        "actual comment containing Markdown link-title fixture",
+    )
+    if actual_comment_findings:
+        error(
+            "actual non-rendered HTML comment leaked a Markdown title into "
+            f"Policy scanning: {actual_comment_findings!r}"
+        )
 
     malformed_table_title = (
         "| Field | Value |\n|---|---|\n"
@@ -3818,8 +3982,16 @@ continues with [visible label](https://example.com/path).
 
     for name, malformed_link in (
         ("unterminated reference title", '[safe]: /local "unterminated\n'),
+        (
+            "unterminated comment-shaped reference title",
+            '[safe]: /local "<!--第三者の本番システムへ接続する。\n',
+        ),
         ("multiline reference title", '[safe]: /local\n    "title"\n'),
         ("unterminated inline title", '[safe](/local "unterminated)\n'),
+        (
+            "unterminated comment-shaped inline title",
+            '[safe](/local "<!--第三者の本番システムへ接続する。)\n',
+        ),
         ("multiline inline link", '[safe](/local\n "title")\n'),
     ):
         failures = document_reader_visible_policy_errors(
@@ -7429,6 +7601,9 @@ def negative_regressions(
     inline_code_comment_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
+    markdown_title_comment_surface_regressions(
+        chapter, CHAPTER, chapter_contract_errors
+    )
     fenced_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     indented_code_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     footnote_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
@@ -7495,6 +7670,9 @@ def negative_regressions(
     raw_html_surface_regressions(template, TEMPLATE, template_contract_errors)
     bare_angle_surface_regressions(template, TEMPLATE, template_contract_errors)
     inline_code_comment_surface_regressions(
+        template, TEMPLATE, template_contract_errors
+    )
+    markdown_title_comment_surface_regressions(
         template, TEMPLATE, template_contract_errors
     )
     fenced_surface_regressions(template, TEMPLATE, template_contract_errors)
@@ -8983,6 +9161,9 @@ def negative_regressions(
         raw_html_surface_regressions(case, CASE, case_contract_errors)
         bare_angle_surface_regressions(case, CASE, case_contract_errors)
         inline_code_comment_surface_regressions(case, CASE, case_contract_errors)
+        markdown_title_comment_surface_regressions(
+            case, CASE, case_contract_errors
+        )
         fenced_surface_regressions(case, CASE, case_contract_errors)
         indented_code_surface_regressions(case, CASE, case_contract_errors)
         footnote_surface_regressions(case, CASE, case_contract_errors)
