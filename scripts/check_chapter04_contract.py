@@ -281,6 +281,81 @@ IDENTITY_ASSURANCE_THRESHOLD_SECTION = """### `REA-TM-2026-001`のIdentity assur
 - `Rotation-management check: Passed`は、rotation手順Review記録にOwner、review interval / trigger、last review result、next review date、exception / failure escalationがあり、未管理または期限超過のactive bindingが0件である場合だけ記録する。欠落、不合格または未収集は`Failed / Inconclusive / Not collected`とする。
 - `CTRL-2026-006`は両checkが`Passed`で、対応する新Evidence IDとReviewer sign-offがそろう場合だけ`Observed`へ進める。どちらか一方でも`Failed / Inconclusive / Not collected`なら`Documented`に維持し、`GAP-2026-002`を閉じない。`CTRL-2026-005`のscope判定はこのIdentity判定と分離する。
 """
+MANIFEST_COMPARISON_THRESHOLD_SECTION = """### `REA-TM-2026-002`のmanifest代表性比較判定閾値
+
+- `Manifest representativeness comparison: Passed`は、source fixture ID / version / hashが固定され、全必須manual import要件fieldのcoverageが100%で、未解決の例外、Unknown、不一致がすべて0件であり、Finance Data Owner sign-offがある場合だけ記録する。
+- 必須field欠落または未解決項目が1件以上なら`Failed`、入力・hash・sign-off不足で判定不能なら`Inconclusive`、未実施なら`Not collected`とする。
+- `Passed`と対応する新Evidence IDがそろう場合だけ`ASM-2026-002`をConfirmedとし、`CTRL-2026-009`のValidated判定と`GAP-2026-001`のclosureへ進める。それ以外はAssumed / openを維持する。
+"""
+MANIFEST_REQUIREMENT_MINIMUM_EVIDENCE = (
+    "90日窓のTelemetry summary、Coverage表、negative finding、retention note、"
+    "resource / operation Field contract、承認後のpost-change telemetry result、"
+    "source fixture ID / version / hash付きmanifest / manual import field coverage matrix、"
+    "全必須field coverage率、未解決の例外件数、Unknown件数、不一致件数、"
+    "有限result（Passed / Failed / Inconclusive / Not collected）、"
+    "Finance Data Owner sign-off"
+)
+MANIFEST_REQUIREMENT_RESULTING_EVIDENCE = (
+    "Historical inputs only: `EVD-2026-004`, `NEG-2026-001`; resource / operation "
+    "Fieldの実装記録とpost-change telemetry resultは未収集"
+    "（承認済み運用工程後に新Evidence IDを割り当てる）。manifest representativeness "
+    "comparison result（有限resultと各count）は未収集"
+    "（`ACT-TM-2026-007`完了後に新Evidence IDを割り当てる）"
+)
+MANIFEST_COMPARISON_ACTION = (
+    "source fixture ID / version / hashを固定した合成manifest field inventoryと"
+    "合成manual import requirement fixtureをofflineで比較し、必須fieldのcoverage、"
+    "未解決の例外件数、Unknown件数、不一致件数を記録する。"
+    "全必須manual import要件fieldのcoverageが100%で、未解決の例外、Unknown、不一致が"
+    "すべて0件の場合だけresultをPassedとする。必須field欠落または未解決項目がある場合は"
+    "Failed、入力・hash・sign-off不足で判定不能ならInconclusive、未実施ならNot collectedとする。"
+    "Finance Data Ownerはresultとlimitationをreviewしてsign-offし、manifest "
+    "representativeness comparison resultへ新Evidence IDを割り当てて"
+    "`REA-TM-2026-002`へ供給する。実Customer Data、live Tenant、外部Network、"
+    "Production変更が必要な場合は停止する"
+)
+MANIFEST_COMPARISON_SUCCESS_EVIDENCE = (
+    "source fixture ID / version / hash、必須field coverage率、未解決の例外件数、"
+    "Unknown件数、不一致件数、有限result（Passed / Failed / Inconclusive / Not collected）、"
+    "新Evidence ID付きmanifest representativeness comparison result、"
+    "Finance Data Owner sign-off、`REA-TM-2026-002`への供給。Passed以外または"
+    "未実施の場合は`ASM-2026-002`をAssumedに維持し、`CTRL-2026-009`をValidatedにせず"
+    "`GAP-2026-001`を閉じない"
+)
+MANIFEST_REASSESSMENT_SCOPE = (
+    "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `TH-2026-006`, "
+    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `EREQ-2026-003`, "
+    "`GAP-2026-001`"
+)
+MANIFEST_REASSESSMENT_INPUTS = (
+    "Admin consent EventとApp identity lifecycle EventのAudit export、Rule test計画、"
+    "新Authorization Record / RoE、両Event classのDetection test結果、query version、"
+    "coverage表、retention note、Field contract、合成sample summary、change proposal、"
+    "Telemetry Field change approval、Field実装記録、新Evidence ID付きpost-change "
+    "API telemetry result、resource / operation Coverage、review sign-off、"
+    "source fixture ID / version / hash付きmanifest / manual import field coverage matrix、"
+    "全必須field coverage、未解決の例外件数、Unknown件数、不一致件数、"
+    "有限result（Passed / Failed / Inconclusive / Not collected）、"
+    "新Evidence ID付きmanifest representativeness comparison result、"
+    "Finance Data Owner sign-off"
+)
+MANIFEST_REASSESSMENT_CLOSURE = (
+    "新Authorization Record / RoE承認後にのみ両Event classの合成Rule testを再実施し、"
+    "Detection test結果に新Evidence IDを割り当てる。両Event classのEvidenceで"
+    "`CTRL-2026-007`をValidatedとする。API telemetryは新Authorization Record / "
+    "change approval後の承認済み運用工程でのみ変更・収集する。post-change Evidenceが"
+    "required API Eventのresource / operation Field、Coverage、retention、過剰収集なしを示し、"
+    "かつmanifest representativeness comparison resultがPassedで、合成manifest field "
+    "inventoryによる全必須manual import要件fieldのcoverageが100%、未解決の例外0件、"
+    "Unknown 0件、不一致0件、source fixture ID / version / hash、Finance Data Owner "
+    "sign-offを示す場合に限り、`ASM-2026-002`をConfirmedとし、`CTRL-2026-009`を"
+    "承認scope内でValidatedとして`GAP-2026-001`を閉じる。comparison resultが"
+    "Not collected、FailedまたはInconclusiveなら`ASM-2026-002`をAssumedに維持し、"
+    "`CTRL-2026-009`をValidatedにせず`GAP-2026-001`を閉じない。"
+    "`CTRL-2026-007`のEvidenceを`CTRL-2026-009`へ流用しない。`TH-2026-003`の"
+    "発生有無と`TH-2026-006`の機会条件・影響範囲は同じEvidenceから別々に再評価する。"
+    "未達時は各Gap ownerと期限を更新する"
+)
 REA_TM_001_INPUTS_REQUIRED = (
     "2026-07-25 remediation後のApp registration export、scope matrix、"
     "Tenant binding差分、Workload identity binding snapshot、rotation手順Review記録、"
@@ -10276,7 +10351,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "合成manual import requirement fixture",
                 "offlineで比較",
                 "必須fieldのcoverage",
-                "例外 / Unknown / 不一致",
+                "未解決の例外件数",
+                "Unknown件数",
+                "不一致件数",
+                "全必須manual import要件fieldのcoverageが100%",
+                "すべて0件の場合だけresultをPassed",
+                "必須field欠落または未解決項目がある場合はFailed",
+                "入力・hash・sign-off不足で判定不能ならInconclusive",
+                "未実施ならNot collected",
                 "Finance Data Owner",
                 "resultとlimitation",
                 "sign-off",
@@ -10291,12 +10373,15 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             ),
             "success": (
                 "source fixture ID / version / hash",
-                "必須field coverage matrix",
-                "例外 / Unknown / 不一致",
+                "必須field coverage率",
+                "未解決の例外件数",
+                "Unknown件数",
+                "不一致件数",
+                "Passed / Failed / Inconclusive / Not collected",
                 "新Evidence ID付きmanifest representativeness comparison result",
                 "Finance Data Owner sign-off",
                 "`REA-TM-2026-002`への供給",
-                "未実施の場合はresult未収集",
+                "Passed以外または未実施の場合",
                 "`ASM-2026-002`をAssumedに維持",
                 "`CTRL-2026-009`をValidatedにせず",
                 "`GAP-2026-001`を閉じない",
@@ -10314,6 +10399,18 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for marker in requirements["success"]:
             if marker not in row[success_evidence_index]:
                 messages.append(f"{label}: {action_id} Success evidence missing marker {marker!r}")
+    manifest_action = action_rows_by_id.get("ACT-TM-2026-007")
+    if manifest_action is not None:
+        for field, expected in (
+            ("Action", MANIFEST_COMPARISON_ACTION),
+            ("Success evidence", MANIFEST_COMPARISON_SUCCESS_EVIDENCE),
+        ):
+            actual = manifest_action[action_header.index(field)]
+            if actual != expected:
+                messages.append(
+                    f"{label}: ACT-TM-2026-007 {field} {actual!r} != "
+                    f"finite manifest comparison contract {expected!r}"
+                )
 
     lab_sequence_action_ids = (
         "ACT-TM-2026-002",
@@ -10534,11 +10631,32 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 f"{label}: EREQ-2026-003 Owner {telemetry_owner!r} != "
                 "'SOC、Platform、Finance Data Owner'"
             )
+        for field, actual, expected in (
+            (
+                "Minimum sufficient evidence",
+                telemetry_minimum,
+                MANIFEST_REQUIREMENT_MINIMUM_EVIDENCE,
+            ),
+            (
+                "Resulting Evidence IDs",
+                telemetry_resulting,
+                MANIFEST_REQUIREMENT_RESULTING_EVIDENCE,
+            ),
+        ):
+            if actual != expected:
+                messages.append(
+                    f"{label}: EREQ-2026-003 {field} {actual!r} != "
+                    f"finite manifest Evidence contract {expected!r}"
+                )
         for marker in (
             "resource / operation Field contract",
             "承認後のpost-change telemetry result",
             "source fixture ID / version / hash付きmanifest / manual import field coverage matrix",
-            "例外 / Unknown / 不一致",
+            "全必須field coverage率",
+            "未解決の例外件数",
+            "Unknown件数",
+            "不一致件数",
+            "Passed / Failed / Inconclusive / Not collected",
             "Finance Data Owner sign-off",
         ):
             if marker not in telemetry_minimum:
@@ -10557,7 +10675,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "NEG-2026-001",
             "resource / operation Fieldの実装記録とpost-change telemetry resultは未収集",
             "承認済み運用工程後に新Evidence IDを割り当てる",
-            "manifest representativeness comparison resultは未収集",
+            "manifest representativeness comparison result（有限resultと各count）は未収集",
+            "有限resultと各count",
             "`ACT-TM-2026-007`完了後に新Evidence IDを割り当てる",
         ):
             if marker not in telemetry_resulting:
@@ -10597,6 +10716,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(
             f"{label}: REA-TM-2026-001 identity closure threshold section "
             f"count {threshold_occurrences} != 1"
+        )
+    manifest_threshold_occurrences = text.count(MANIFEST_COMPARISON_THRESHOLD_SECTION)
+    if manifest_threshold_occurrences != 1:
+        messages.append(
+            f"{label}: REA-TM-2026-002 manifest comparison threshold section "
+            f"count {manifest_threshold_occurrences} != 1"
         )
 
     reassessment_header = count_contracts[6][0]
@@ -10926,6 +11051,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             ),
         },
         "REA-TM-2026-002": {
+            "Scope": (
+                "ASM-2026-002",
+                "EREQ-2026-003",
+                "GAP-2026-001",
+            ),
             "Inputs required": (
                 "Admin consent Event",
                 "App identity lifecycle Event",
@@ -10942,7 +11072,11 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "resource / operation Coverage",
                 "review sign-off",
                 "source fixture ID / version / hash付きmanifest / manual import field coverage matrix",
-                "例外 / Unknown / 不一致",
+                "全必須field coverage",
+                "未解決の例外件数",
+                "Unknown件数",
+                "不一致件数",
+                "Passed / Failed / Inconclusive / Not collected",
                 "新Evidence ID付きmanifest representativeness comparison result",
                 "Finance Data Owner sign-off",
             ),
@@ -10961,11 +11095,16 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "CTRL-2026-009",
                 "GAP-2026-001",
                 "manifest representativeness comparison result",
+                "resultがPassed",
                 "全必須manual import要件fieldのcoverage",
+                "coverageが100%",
+                "未解決の例外0件",
+                "Unknown 0件",
+                "不一致0件",
                 "source fixture ID / version / hash",
                 "Finance Data Owner sign-off",
                 "`ASM-2026-002`をConfirmed",
-                "comparison resultが未収集、FailedまたはInconclusive",
+                "comparison resultがNot collected、FailedまたはInconclusive",
                 "`ASM-2026-002`をAssumedに維持",
                 "`CTRL-2026-009`をValidatedにせず",
                 "`GAP-2026-001`を閉じない",
@@ -11002,6 +11141,41 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             for marker in markers:
                 if marker not in value:
                     messages.append(f"{label}: {reassessment_id} {field} missing {marker!r}")
+
+    manifest_reassessment = reassessment_rows_by_id.get("REA-TM-2026-002")
+    if manifest_reassessment is not None:
+        for field, expected in (
+            ("Scope", MANIFEST_REASSESSMENT_SCOPE),
+            ("Inputs required", MANIFEST_REASSESSMENT_INPUTS),
+            ("Closure criteria", MANIFEST_REASSESSMENT_CLOSURE),
+        ):
+            actual = manifest_reassessment[reassessment_header.index(field)]
+            if actual != expected:
+                messages.append(
+                    f"{label}: REA-TM-2026-002 {field} {actual!r} != "
+                    f"finite manifest reassessment contract {expected!r}"
+                )
+        manifest_scope = manifest_reassessment[reassessment_header.index("Scope")]
+        observed_manifest_scope_ids = set(
+            re.findall(r"\b[A-Z][A-Z-]*-2026-\d{3}\b", manifest_scope)
+        )
+        expected_manifest_scope_ids = {
+            "TH-2026-002",
+            "TH-2026-003",
+            "TH-2026-005",
+            "TH-2026-006",
+            "CTRL-2026-007",
+            "CTRL-2026-009",
+            "ASM-2026-002",
+            "EREQ-2026-003",
+            "GAP-2026-001",
+        }
+        if observed_manifest_scope_ids != expected_manifest_scope_ids:
+            messages.append(
+                f"{label}: REA-TM-2026-002 Scope IDs "
+                f"{sorted(observed_manifest_scope_ids)!r} != finite consumer set "
+                f"{sorted(expected_manifest_scope_ids)!r}"
+            )
 
     lab_reassessment = reassessment_rows_by_id.get("REA-TM-2026-004")
     if lab_reassessment is not None:
@@ -13113,10 +13287,12 @@ def negative_regressions(
                 case.replace(
                     "| `REA-TM-2026-002` | Rule導入、Field追加、retention変更、manifest requirement変更 | "
                     "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `TH-2026-006`, "
-                    "`CTRL-2026-007`, `CTRL-2026-009` |",
+                    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `EREQ-2026-003`, "
+                    "`GAP-2026-001` |",
                     "| `REA-TM-2026-002` | Rule導入、Field追加、retention変更、manifest requirement変更 | "
                     "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, "
-                    "`CTRL-2026-007`, `CTRL-2026-009` |",
+                    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `EREQ-2026-003`, "
+                    "`GAP-2026-001` |",
                     1,
                 ),
             ),
@@ -13826,7 +14002,9 @@ def negative_regressions(
                 "EREQ-2026-003 omits manifest comparison minimum evidence",
                 case.replace(
                     "、source fixture ID / version / hash付きmanifest / manual import field coverage matrix、"
-                    "例外 / Unknown / 不一致、Finance Data Owner sign-off",
+                    "全必須field coverage率、未解決の例外件数、Unknown件数、不一致件数、"
+                    "有限result（Passed / Failed / Inconclusive / Not collected）、"
+                    "Finance Data Owner sign-off",
                     "",
                     1,
                 ),
@@ -13842,7 +14020,7 @@ def negative_regressions(
             (
                 "EREQ-2026-003 omits uncollected manifest comparison result",
                 case.replace(
-                    "。manifest representativeness comparison resultは未収集"
+                    "。manifest representativeness comparison result（有限resultと各count）は未収集"
                     "（`ACT-TM-2026-007`完了後に新Evidence IDを割り当てる）",
                     "",
                     1,
@@ -13853,6 +14031,16 @@ def negative_regressions(
                 case.replace(
                     "合成manual import requirement fixtureをofflineで比較し",
                     "合成manual import requirement fixtureを参照し",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-007 omits finite Passed threshold",
+                case.replace(
+                    "全必須manual import要件fieldのcoverageが100%で、未解決の例外、Unknown、不一致が"
+                    "すべて0件の場合だけresultをPassedとする。必須field欠落または未解決項目がある場合は"
+                    "Failed、入力・hash・sign-off不足で判定不能ならInconclusive、未実施ならNot collectedとする。",
+                    "coverage matrixを作成し、resultを記録する。",
                     1,
                 ),
             ),
@@ -13869,12 +14057,25 @@ def negative_regressions(
             (
                 "ACT-TM-2026-007 overclaims completed manifest comparison",
                 case.replace(
-                    "未実施の場合はresult未収集、`ASM-2026-002`をAssumedに維持し、"
+                    "Passed以外または未実施の場合は`ASM-2026-002`をAssumedに維持し、"
                     "`CTRL-2026-009`をValidatedにせず`GAP-2026-001`を閉じない",
                     "比較は完了済みで`ASM-2026-002`をConfirmedとし、"
                     "`CTRL-2026-009`をValidatedとして`GAP-2026-001`を閉じる",
                     1,
                 ),
+            ),
+            (
+                "ACT-TM-2026-007 appends a contradictory Passed exception",
+                case.replace(
+                    MANIFEST_COMPARISON_ACTION,
+                    MANIFEST_COMPARISON_ACTION
+                    + "。ただしUnknownが1件以上でも暫定Passedとしてよい。",
+                    1,
+                ),
+            ),
+            (
+                "manifest comparison threshold section omitted",
+                case.replace(f"{MANIFEST_COMPARISON_THRESHOLD_SECTION}\n", "", 1),
             ),
             (
                 "EREQ-2026-002 omits uncollected Rule-test result handoff",
@@ -13950,28 +14151,60 @@ def negative_regressions(
                 "REA-TM-2026-002 omits manifest comparison inputs",
                 case.replace(
                     "、source fixture ID / version / hash付きmanifest / manual import field coverage matrix、"
-                    "例外 / Unknown / 不一致、新Evidence ID付きmanifest representativeness comparison result、"
+                    "全必須field coverage、未解決の例外件数、Unknown件数、不一致件数、"
+                    "有限result（Passed / Failed / Inconclusive / Not collected）、"
+                    "新Evidence ID付きmanifest representativeness comparison result、"
                     "Finance Data Owner sign-off",
                     "",
                     1,
                 ),
             ),
             (
+                "REA-TM-2026-002 omits manifest assumption and gap from Scope",
+                case.replace(
+                    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `EREQ-2026-003`, "
+                    "`GAP-2026-001` | SOC、Platform、Vendor Management、Finance Data Owner |",
+                    "`CTRL-2026-007`, `CTRL-2026-009` | "
+                    "SOC、Platform、Vendor Management、Finance Data Owner |",
+                    1,
+                ),
+            ),
+            (
                 "REA-TM-2026-002 validates telemetry without manifest comparison",
                 case.replace(
-                    "かつmanifest representativeness comparison resultが合成manifest field inventoryによる"
-                    "全必須manual import要件fieldのcoverage、例外 / Unknown / 不一致、source fixture ID / "
-                    "version / hash、Finance Data Owner sign-offを示す場合に限り、`ASM-2026-002`をConfirmedとし、",
+                    "かつmanifest representativeness comparison resultがPassedで、合成manifest field inventoryによる"
+                    "全必須manual import要件fieldのcoverageが100%、未解決の例外0件、Unknown 0件、不一致0件、"
+                    "source fixture ID / version / hash、Finance Data Owner sign-offを示す場合に限り、"
                     "`ASM-2026-002`をConfirmedとし、",
+                    "`ASM-2026-002`をConfirmedとし、",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 accepts adverse manifest comparison entries",
+                case.replace(
+                    "manifest representativeness comparison resultがPassedで、合成manifest field inventoryによる"
+                    "全必須manual import要件fieldのcoverageが100%、未解決の例外0件、Unknown 0件、不一致0件",
+                    "manifest representativeness comparison resultがcoverageと例外 / Unknown / 不一致を示す",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 appends a contradictory closure exception",
+                case.replace(
+                    MANIFEST_REASSESSMENT_CLOSURE,
+                    MANIFEST_REASSESSMENT_CLOSURE
+                    + "。ただしFinance Data Ownerが口頭承認した場合は例外的に閉じてもよい。",
                     1,
                 ),
             ),
             (
                 "REA-TM-2026-002 closes manifest gap when comparison is absent",
                 case.replace(
-                    "comparison resultが未収集、FailedまたはInconclusiveなら`ASM-2026-002`をAssumedに維持し、"
+                    "comparison resultがNot collected、FailedまたはInconclusiveなら"
+                    "`ASM-2026-002`をAssumedに維持し、"
                     "`CTRL-2026-009`をValidatedにせず`GAP-2026-001`を閉じない。",
-                    "comparison resultが未収集でも`ASM-2026-002`をConfirmedとし、"
+                    "comparison resultがNot collectedでも`ASM-2026-002`をConfirmedとし、"
                     "`CTRL-2026-009`をValidatedとして`GAP-2026-001`を閉じる。",
                     1,
                 ),

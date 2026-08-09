@@ -18,9 +18,9 @@ def main() -> int:
     if failures:
         return 1
     print(
-        "site page security regressions passed: object root, published-title Policy "
-        "1.2.0, reserved destinations, canonical containment, safe static downloads, "
-        "and symlink rejection"
+        "site page security regressions passed: object root, published-title safety, "
+        "reserved destinations, canonical containment, safe static downloads, and "
+        "symlink rejection"
     )
     return 0
 
