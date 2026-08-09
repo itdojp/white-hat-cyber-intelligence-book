@@ -256,6 +256,30 @@ DECISION_CONFIDENCE_VALUE = (
     "`GAP-2026-001` / `GAP-2026-003`がOpen / Escalatedのため、再評価前の確信は限定される"
 )
 DECISION_CONFIDENCE_ROW = f"| Confidence | {DECISION_CONFIDENCE_VALUE} |"
+IDENTITY_ASSURANCE_THRESHOLD_SECTION = """### `REA-TM-2026-001`のIdentity assurance判定閾値
+
+- `Workload-only binding check: Passed`は、Workload identity binding snapshotとTenant binding差分に記録されたactive bindingのHuman identityが0件で、すべてが承認済みWorkload identity、Owner、Tenant、scope matrixへ一致する場合だけ記録する。不一致、分類不能または未収集は`Failed / Inconclusive / Not collected`とする。
+- `Rotation-management check: Passed`は、rotation手順Review記録にOwner、review interval / trigger、last review result、next review date、exception / failure escalationがあり、未管理または期限超過のactive bindingが0件である場合だけ記録する。欠落、不合格または未収集は`Failed / Inconclusive / Not collected`とする。
+- `CTRL-2026-006`は両checkが`Passed`で、対応する新Evidence IDとReviewer sign-offがそろう場合だけ`Observed`へ進める。どちらか一方でも`Failed / Inconclusive / Not collected`なら`Documented`に維持し、`GAP-2026-002`を閉じない。`CTRL-2026-005`のscope判定はこのIdentity判定と分離する。
+"""
+REA_TM_001_INPUTS_REQUIRED = (
+    "2026-07-25 remediation後のApp registration export、scope matrix、"
+    "Tenant binding差分、Workload identity binding snapshot、rotation手順Review記録、"
+    "新Evidence ID付き・source Evidence IDを記録したWorkload-only binding check結果、"
+    "新Evidence ID付き・source Evidence IDを記録したRotation-management check結果、"
+    "新Evidence ID付きReviewer sign-off、approval ticket、新Authorization Record / RoE"
+)
+REA_TM_001_CLOSURE_CRITERIA = (
+    "post-remediation current scopeがEvidenceで`Confirmed`となり、最小scope案と"
+    "要件の差分がゼロである。新Authorization Record / RoE承認後にのみ変更し、"
+    "scope条件が満たされた場合だけ`CTRL-2026-005`を少なくともImplementedとする。"
+    "`Workload-only binding check`と`Rotation-management check`の両方が"
+    "`Passed`で、新Evidence ID付き・source Evidence IDを記録した各check結果と"
+    "新Evidence ID付きReviewer sign-offがそろう場合だけ`CTRL-2026-006`を"
+    "少なくともObservedとする。どちらかが"
+    "`Failed / Inconclusive / Not collected`なら`CTRL-2026-006`を"
+    "`Documented`に維持し、`GAP-2026-002`を閉じない"
+)
 FLOW_006_EVIDENCE_STATUS = "Planned"
 FLOW_006_OBSERVATION_POINT = (
     "収集予定: post-remediation Workload identity binding snapshot、"
@@ -7590,8 +7614,18 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "Workload identity binding snapshot",
                 "Tenant binding snapshot",
                 "rotation手順Review記録",
+                "rotation手順Review記録を収集し、新Evidence IDを割り当てて"
+                "offline機械的突合",
                 "新Evidence ID",
                 "offline機械的突合",
+                "source Evidence ID",
+                "Workload-only binding check結果",
+                "Rotation-management check結果",
+                "Identity Assurance Reviewer",
+                "resultとlimitation",
+                "sign-off",
+                "別々の新Evidence ID",
+                "`REA-TM-2026-001`へ供給",
                 "承認前",
                 "live Tenant",
                 "実Credential",
@@ -7612,6 +7646,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "Tenant binding snapshot",
                 "rotation手順Review記録",
                 "offline機械的突合結果",
+                "新Evidence ID付き・source Evidence IDを記録した"
+                "Workload-only binding check結果",
+                "新Evidence ID付き・source Evidence IDを記録した"
+                "Rotation-management check結果",
+                "新Evidence ID付きIdentity Assurance Reviewer sign-off",
+                "`REA-TM-2026-001`への供給",
                 "承認runbook",
                 "Phase B未実施の間は未収集",
             ),
@@ -7801,6 +7841,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "Workload identity binding snapshot",
                 "Tenant binding差分",
                 "rotation手順Review記録",
+                "source Evidence IDを記録したWorkload-only binding check結果",
+                "source Evidence IDを記録したRotation-management check結果",
+                "Reviewer sign-off",
             ),
             "Resulting Evidence IDs": (
                 "EVD-2026-001",
@@ -7814,8 +7857,13 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "Tenant binding差分",
                 "rotation手順Review記録",
                 "offline機械的突合結果",
+                "新Evidence ID付き・source Evidence IDを記録した"
+                "Workload-only binding check結果",
+                "新Evidence ID付き・source Evidence IDを記録した"
+                "Rotation-management check結果",
+                "新Evidence ID付きReviewer sign-off",
                 "未収集",
-                "承認後に新Evidence IDを割り当てる",
+                "承認後にそれぞれ新Evidence IDを割り当てる",
             ),
         }
         for field, markers in expected_scope_requirement_markers.items():
@@ -7927,12 +7975,33 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         if resulting != "未収集（承認後に新Evidence IDを割り当てる）":
             messages.append(f"{label}: EREQ-2026-004 must not invent collected Evidence: {resulting!r}")
 
+    threshold_occurrences = text.count(IDENTITY_ASSURANCE_THRESHOLD_SECTION)
+    if threshold_occurrences != 1:
+        messages.append(
+            f"{label}: REA-TM-2026-001 identity closure threshold section "
+            f"count {threshold_occurrences} != 1"
+        )
+
     reassessment_header = count_contracts[6][0]
     reassessment_rows_by_id = {
         row[0].strip("`"): row
         for row in case_tables.get(reassessment_header, [])
         if len(row) == len(reassessment_header)
     }
+    identity_reassessment = reassessment_rows_by_id.get("REA-TM-2026-001")
+    if identity_reassessment is None:
+        messages.append(f"{label}: missing REA-TM-2026-001 exact identity contract")
+    else:
+        for field, expected in (
+            ("Inputs required", REA_TM_001_INPUTS_REQUIRED),
+            ("Closure criteria", REA_TM_001_CLOSURE_CRITERIA),
+        ):
+            actual = identity_reassessment[reassessment_header.index(field)]
+            if actual != expected:
+                messages.append(
+                    f"{label}: REA-TM-2026-001 {field} {actual!r} != "
+                    f"exact identity contract {expected!r}"
+                )
     expected_reassessment_markers = {
         "REA-TM-2026-001": {
             "Inputs required": (
@@ -7940,6 +8009,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "Tenant binding差分",
                 "Workload identity binding snapshot",
                 "rotation手順Review記録",
+                "Workload-only binding check結果",
+                "Rotation-management check結果",
+                "Reviewer sign-off",
                 "新Authorization Record / RoE",
             ),
             "Closure criteria": (
@@ -7947,8 +8019,17 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "新Authorization Record / RoE承認後にのみ変更",
                 "CTRL-2026-005",
                 "Implemented",
+                "Workload-only binding check",
+                "Rotation-management check",
+                "両方が`Passed`",
+                "新Evidence ID付き・source Evidence IDを記録した各check結果",
+                "新Evidence ID付きReviewer sign-off",
+                "そろう場合だけ",
                 "CTRL-2026-006",
                 "Observed",
+                "Failed / Inconclusive / Not collected",
+                "`Documented`に維持",
+                "`GAP-2026-002`を閉じない",
             ),
         },
         "REA-TM-2026-002": {
@@ -9638,8 +9719,13 @@ def negative_regressions(
                 case.replace(
                     "New post-remediation result: current-scope snapshot、"
                     "Workload identity binding snapshot、Tenant binding差分、"
-                    "rotation手順Review記録、offline機械的突合結果は未収集"
-                    "（承認後に新Evidence IDを割り当てる）",
+                    "rotation手順Review記録、offline機械的突合結果、"
+                    "新Evidence ID付き・source Evidence IDを記録した"
+                    "Workload-only binding check結果、"
+                    "新Evidence ID付き・source Evidence IDを記録した"
+                    "Rotation-management check結果、"
+                    "新Evidence ID付きReviewer sign-offは未収集"
+                    "（承認後にそれぞれ新Evidence IDを割り当てる）",
                     "New post-remediation result: current-scope snapshotは収集済み",
                     1,
                 ),
@@ -9648,8 +9734,14 @@ def negative_regressions(
                 "EREQ-2026-001 omits Tenant binding evidence",
                 case.replace(
                     "Workload identity binding snapshot、Tenant binding差分、"
-                    "rotation手順Review記録 | 実Tokenを取得しない。",
-                    "Workload identity binding snapshot、rotation手順Review記録 | "
+                    "rotation手順Review記録、source Evidence IDを記録した"
+                    "Workload-only binding check結果、source Evidence IDを記録した"
+                    "Rotation-management check結果、Reviewer sign-off | "
+                    "実Tokenを取得しない。",
+                    "Workload identity binding snapshot、rotation手順Review記録、"
+                    "source Evidence IDを記録したWorkload-only binding check結果、"
+                    "source Evidence IDを記録したRotation-management check結果、"
+                    "Reviewer sign-off | "
                     "実Tokenを取得しない。",
                     1,
                 ),
@@ -10207,6 +10299,178 @@ def negative_regressions(
                 ),
             ),
             (
+                "REA-TM-2026-001 workload-only pass threshold removed",
+                case.replace(
+                    "active bindingのHuman identityが0件で、すべてが承認済み"
+                    "Workload identity、Owner、Tenant、scope matrixへ一致",
+                    "binding snapshotが存在",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 workload failure misclassified as Passed",
+                case.replace(
+                    "不一致、分類不能または未収集は"
+                    "`Failed / Inconclusive / Not collected`とする",
+                    "不一致、分類不能または未収集も`Passed`とする",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 identity check results omitted from inputs",
+                case.replace(
+                    REA_TM_001_INPUTS_REQUIRED,
+                    REA_TM_001_INPUTS_REQUIRED.replace(
+                        "新Evidence ID付き・source Evidence IDを記録した"
+                        "Workload-only binding check結果、新Evidence ID付き・"
+                        "source Evidence IDを記録した"
+                        "Rotation-management check結果、新Evidence ID付き"
+                        "Reviewer sign-off、",
+                        "",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-001 identity check producer evidence omitted",
+                case.replace(
+                    "rotation手順Review記録、source Evidence IDを記録した"
+                    "Workload-only binding check結果、source Evidence IDを記録した"
+                    "Rotation-management check結果、Reviewer sign-off",
+                    "rotation手順Review記録",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 rotation-management pass threshold removed",
+                case.replace(
+                    "Owner、review interval / trigger、last review result、"
+                    "next review date、exception / failure escalationがあり、"
+                    "未管理または期限超過のactive bindingが0件",
+                    "rotation手順Review記録が存在",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 rotation failure misclassified as Passed",
+                case.replace(
+                    "欠落、不合格または未収集は"
+                    "`Failed / Inconclusive / Not collected`とする",
+                    "欠落、不合格または未収集も`Passed`とする",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 positive gate weakened to either-or",
+                case.replace(
+                    "両checkが`Passed`で、対応する新Evidence IDと"
+                    "Reviewer sign-offがそろう場合だけ",
+                    "どちらかのcheckが`Passed`で、対応する新Evidence ID"
+                    "またはReviewer sign-offがあれば",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 row accepts non-Passed identity checks",
+                case.replace(
+                    REA_TM_001_CLOSURE_CRITERIA,
+                    REA_TM_001_CLOSURE_CRITERIA.replace(
+                        "両方が`Passed`で",
+                        "両方が`Passed`でなくても",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 row weakens Evidence and sign-off to OR",
+                case.replace(
+                    REA_TM_001_CLOSURE_CRITERIA,
+                    REA_TM_001_CLOSURE_CRITERIA.replace(
+                        "新Evidence ID付き・source Evidence IDを記録した"
+                        "各check結果と新Evidence ID付きReviewer sign-offが"
+                        "そろう場合だけ",
+                        "新Evidence ID付き・source Evidence IDを記録した"
+                        "各check結果と新Evidence ID付きReviewer sign-offの"
+                        "どちらかがある場合",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 row drops only-if gate",
+                case.replace(
+                    REA_TM_001_CLOSURE_CRITERIA,
+                    REA_TM_001_CLOSURE_CRITERIA.replace(
+                        "そろう場合だけ",
+                        "そろわなくても",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 row drops non-Passed retention",
+                case.replace(
+                    REA_TM_001_CLOSURE_CRITERIA,
+                    REA_TM_001_CLOSURE_CRITERIA.replace(
+                        "どちらかが`Failed / Inconclusive / Not collected`なら"
+                        "`CTRL-2026-006`を`Documented`に維持し、"
+                        "`GAP-2026-002`を閉じない",
+                        "非Passed結果でも`CTRL-2026-006`を`Observed`とする",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 input drops new Evidence ID qualifier",
+                case.replace(
+                    REA_TM_001_INPUTS_REQUIRED,
+                    REA_TM_001_INPUTS_REQUIRED.replace(
+                        "新Evidence ID付き・source Evidence IDを記録した"
+                        "Workload-only binding check結果",
+                        "source Evidence IDを記録した"
+                        "Workload-only binding check結果",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-004 identity result handoff omitted",
+                case.replace(
+                    "Platformはsource Evidence IDをWorkload-only binding check結果と"
+                    "Rotation-management check結果へ記録し、Identity Assurance Reviewerは"
+                    "有限閾値に対するresultとlimitationをsign-offする。両check結果と"
+                    "Reviewer sign-offへ別々の新Evidence IDを割り当てて"
+                    "`REA-TM-2026-001`へ供給する。",
+                    "Platformはoffline機械的突合結果を保存する。",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-004 success drops check result new Evidence ID",
+                case.replace(
+                    "offline機械的突合結果、新Evidence ID付き・source Evidence IDを"
+                    "記録したWorkload-only binding check結果、"
+                    "新Evidence ID付き・source Evidence IDを記録した"
+                    "Rotation-management check結果、新Evidence ID付き"
+                    "Identity Assurance Reviewer sign-off、"
+                    "`REA-TM-2026-001`への供給",
+                    "offline機械的突合結果、source Evidence IDを記録した"
+                    "Workload-only binding check結果、新Evidence ID付き・"
+                    "source Evidence IDを記録したRotation-management check結果、"
+                    "新Evidence ID付きIdentity Assurance Reviewer sign-off、"
+                    "`REA-TM-2026-001`への供給",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 failed identity check overclaims Observed",
+                case.replace(
+                    "なら`CTRL-2026-006`を`Documented`に維持し、"
+                    "`GAP-2026-002`を閉じない",
+                    "でも`CTRL-2026-006`を`Observed`とする",
+                ),
+            ),
+            (
                 "Confirmed without Evidence",
                 case.replace(
                     "| `ASSET-2026-006` | Data | `invoice-sync-manifest` | 実請求書本文を含まない合成の同期要約、状態、再送管理Data | Finance Data Owner | High | Confidential | Assumed | `EVD-2026-002` |",
@@ -10688,7 +10952,11 @@ def negative_regressions(
             ),
             (
                 "ACT-TM-2026-004 collection phase omits new Evidence IDs",
-                case.replace("収集し、新Evidence IDを割り当てて", "収集して", 1),
+                case.replace(
+                    "rotation手順Review記録を収集し、新Evidence IDを割り当てて",
+                    "rotation手順Review記録を収集して",
+                    1,
+                ),
             ),
             (
                 "ACT-TM-2026-004 success overclaims unexecuted collection phase",
