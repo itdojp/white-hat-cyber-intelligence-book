@@ -9,6 +9,7 @@ import re
 import subprocess
 import sys
 import unicodedata
+from bisect import bisect_right
 from collections import Counter
 from collections.abc import Callable
 from copy import deepcopy
@@ -1371,6 +1372,7 @@ _FINITE_LIST_ITEM_PREFIX = re.compile(
     r"^(?P<indent>[ \t]*)(?P<marker>[-+*]|\d+[.)])(?P<gap>[ \t]+)"
 )
 _MARKDOWN_HEADING = re.compile(r"^\s{0,3}#{1,6}(?:[ \t]+|$)(?P<body>.*)$")
+_MARKDOWN_SETEXT_UNDERLINE = re.compile(r"^ {0,3}(?:=+|-+)[ \t]*$")
 _MARKDOWN_FENCE = re.compile(
     r"^(?P<indent> {0,3})(?P<marker>`{3,}|~{3,})(?P<info>[^\r\n]*)$"
 )
@@ -1653,6 +1655,44 @@ def _next_unescaped_backtick_run(
     return None
 
 
+_KRAMDOWN_ASCII_WHITESPACE = frozenset(" \t\n\v\f\r")
+
+
+def _kramdown_codespan_opening_is_eligible(
+    line: str, *, index: int, width: int
+) -> bool:
+    """Mirror pinned Kramdown's finite single-backtick opener exception.
+
+    Kramdown 2.5.2 leaves a one-backtick run literal when its left side is the
+    source start/whitespace and its right side is whitespace.  Wider runs are
+    always eligible.  A physical line boundary is whitespace for this test.
+    """
+
+    if width != 1:
+        return True
+    _, paragraph_source = _finite_blockquote_context(line)
+    removed_prefix = len(line) - len(paragraph_source)
+    paragraph_index = index - removed_prefix
+    if paragraph_index < 0:
+        # A backtick cannot be part of the finite blockquote prefix.  Retain a
+        # conservative raw-source fallback for malformed input.
+        paragraph_source = line
+        paragraph_index = index
+    before_is_whitespace = (
+        paragraph_index == 0
+        or (
+            paragraph_source[paragraph_index - 1]
+            in _KRAMDOWN_ASCII_WHITESPACE
+        )
+    )
+    after_index = paragraph_index + width
+    after_is_whitespace = (
+        after_index >= len(paragraph_source)
+        or paragraph_source[after_index] in _KRAMDOWN_ASCII_WHITESPACE
+    )
+    return not (before_is_whitespace and after_is_whitespace)
+
+
 def _reject_comment_shaped_multiline_code_spans(
     lines: list[tuple[int, str]],
 ) -> None:
@@ -1666,71 +1706,22 @@ def _reject_comment_shaped_multiline_code_spans(
     normal multiline code span without a comment-shaped token remains valid.
     """
 
-    in_comment = False
-    code_width: int | None = None
-    code_start_line = 0
-    code_crossed_line = False
-    code_contains_comment = False
-
-    for line_number, line in lines:
-        cursor = 0
-        while cursor < len(line):
-            if in_comment:
-                closing_comment = line.find("-->", cursor)
-                if closing_comment < 0:
-                    break
-                in_comment = False
-                cursor = closing_comment + 3
-                continue
-
-            if code_width is not None:
-                comment = line.find("<!--", cursor)
-                closing_code = _next_unescaped_backtick_run(
-                    line,
-                    cursor,
-                    required_width=code_width,
-                )
-                closing_index = closing_code[0] if closing_code is not None else -1
-                if comment >= 0 and (
-                    closing_index < 0 or comment < closing_index
-                ):
-                    code_contains_comment = True
-                    cursor = comment + 4
-                    continue
-                if closing_code is None:
-                    break
-                if code_crossed_line and code_contains_comment:
-                    raise ValueError(
-                        f"lines {code_start_line}-{line_number}: unsupported or "
-                        "multiline Markdown inline-code span contains an "
-                        "HTML-comment-shaped literal"
-                    )
-                cursor = closing_index + closing_code[1]
-                code_width = None
-                code_start_line = 0
-                code_crossed_line = False
-                code_contains_comment = False
-                continue
-
-            comment = line.find("<!--", cursor)
-            opening_code = _next_unescaped_backtick_run(line, cursor)
-            opening_index = opening_code[0] if opening_code is not None else -1
-            if comment >= 0 and (
-                opening_index < 0 or comment < opening_index
-            ):
-                in_comment = True
-                cursor = comment + 4
-                continue
-            if opening_code is None:
-                break
-            code_width = opening_code[1]
-            code_start_line = line_number
-            code_crossed_line = False
-            code_contains_comment = False
-            cursor = opening_index + code_width
-
-        if code_width is not None:
-            code_crossed_line = True
+    if not lines:
+        return
+    source = "\n".join(line for _, line in lines)
+    for start, end in _finite_multiline_inline_code_spans(source):
+        literal = source[start:end]
+        if _next_unescaped_html_comment_open(literal, 0) < 0:
+            continue
+        start_index = source.count("\n", 0, start)
+        end_index = source.count("\n", 0, end)
+        start_line = lines[min(start_index, len(lines) - 1)][0]
+        end_line = lines[min(end_index, len(lines) - 1)][0]
+        raise ValueError(
+            f"lines {start_line}-{end_line}: unsupported or multiline "
+            "Markdown inline-code span contains an HTML-comment-shaped "
+            "literal"
+        )
 
 
 def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
@@ -1756,14 +1747,14 @@ def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
         protected_spans = tuple(
             sorted(
                 set(
-                    _finite_same_line_code_spans(line)
+                    _finite_extension_same_line_code_spans(line)
                     + _finite_markdown_link_noncontent_spans(line)
                 )
             )
         )
 
         def opening_outside_protected_span(start: int) -> int:
-            candidate = line.find("<!--", start)
+            candidate = _next_unescaped_html_comment_open(line, start)
             while candidate >= 0:
                 if not any(
                     span_start <= candidate
@@ -1771,7 +1762,9 @@ def _strip_html_comments(lines: list[tuple[int, str]]) -> list[tuple[int, str]]:
                     for span_start, span_end in protected_spans
                 ):
                     return candidate
-                candidate = line.find("<!--", candidate + 1)
+                candidate = _next_unescaped_html_comment_open(
+                    line, candidate + 1
+                )
             return -1
 
         cursor = 0
@@ -2055,6 +2048,8 @@ def _finite_markdown_structural_boundary(line: str) -> bool:
     return bool(
         not stripped
         or _MARKDOWN_HEADING.match(remainder)
+        or _MARKDOWN_SETEXT_UNDERLINE.match(remainder)
+        or _MARKDOWN_FENCE.match(remainder)
         or stripped in {"---", "***", "___"}
         or _MARKDOWN_LIST_ITEM.match(remainder)
     )
@@ -3025,11 +3020,12 @@ def _project_kramdown_attribute_lists(
             continue
 
         exact_token = value[start : end + 1]
-        if exact_token in _KRAMDOWN_COMMENT_DELIMITERS:
+        if _finite_kramdown_extension_marker(exact_token):
             # The paired comment-extension contract is owned by the
-            # document/table pre-projection guard.  An unmatched delimiter is
-            # reader-visible literal source in pinned Kramdown and must not be
-            # misclassified as an unsupported attribute list.
+            # document/table pre-projection guard.  An unmatched finite
+            # extension delimiter is reader-visible literal source in pinned
+            # Kramdown and must not be misclassified as an unsupported
+            # attribute list.
             cursor = end + 1
             continue
 
@@ -3205,22 +3201,256 @@ def _inline_link_title_fields(value: str, *, location: str) -> list[tuple[str, s
 
 
 _INTERPRETED_LIQUID_OPENING = re.compile(r"\{\{|\{%")
-_KRAMDOWN_COMMENT_OPEN = "{::comment}"
-_KRAMDOWN_COMMENT_CLOSE = "{:/comment}"
-_KRAMDOWN_COMMENT_DELIMITERS = frozenset(
-    (_KRAMDOWN_COMMENT_OPEN, _KRAMDOWN_COMMENT_CLOSE)
+
+
+@dataclass(frozen=True)
+class _InterpretedKramdownExtension:
+    """One finite paired extension interpreted by the pinned renderer."""
+
+    name: str
+    opener: str
+    closer: str
+
+
+_KRAMDOWN_COMMENT_EXTENSION = _InterpretedKramdownExtension(
+    name="comment",
+    opener="{::comment}",
+    closer="{:/comment}",
 )
+_KRAMDOWN_NOMARKDOWN_EXTENSION = _InterpretedKramdownExtension(
+    name="nomarkdown",
+    opener="{::nomarkdown}",
+    closer="{:/nomarkdown}",
+)
+_KRAMDOWN_INTERPRETED_EXTENSIONS = (
+    _KRAMDOWN_COMMENT_EXTENSION,
+    _KRAMDOWN_NOMARKDOWN_EXTENSION,
+)
+_KRAMDOWN_INTERPRETED_EXTENSION_BY_NAME = {
+    extension.name: extension for extension in _KRAMDOWN_INTERPRETED_EXTENSIONS
+}
+_KRAMDOWN_INTERPRETED_EXTENSION_OPEN = re.compile(
+    r"\{::(?P<name>"
+    + "|".join(
+        re.escape(extension.name)
+        for extension in _KRAMDOWN_INTERPRETED_EXTENSIONS
+    )
+    + r")(?P<attributes>[\t\n\v\f\r ](?:\\\}|[^}])*?)?"
+    r"(?P<self_closing>/)?\}"
+)
+_KRAMDOWN_ANONYMOUS_EXTENSION_CLOSE = "{:/}"
+_KRAMDOWN_EXTENSION_DELIMITERS = frozenset(
+    delimiter
+    for extension in _KRAMDOWN_INTERPRETED_EXTENSIONS
+    for delimiter in (extension.opener, extension.closer)
+) | {_KRAMDOWN_ANONYMOUS_EXTENSION_CLOSE}
+
+
+def _finite_kramdown_extension_marker(value: str) -> bool:
+    """Return whether one same-line token belongs to the finite grammar."""
+
+    return bool(_KRAMDOWN_INTERPRETED_EXTENSION_OPEN.fullmatch(value)) or (
+        value in _KRAMDOWN_EXTENSION_DELIMITERS
+    )
+
+
+def _next_unescaped_html_comment_open(value: str, start: int) -> int:
+    """Return the next raw HTML-comment opener not escaped in Markdown."""
+
+    candidate = value.find("<!--", start)
+    while candidate >= 0 and _markdown_character_is_escaped(value, candidate):
+        candidate = value.find("<!--", candidate + 1)
+    return candidate
+
+
+def _finite_raw_inline_links_for_extension_precedence(
+    value: str,
+) -> tuple[MarkdownInlineLink, ...]:
+    """Return finite link metadata before applying code-span precedence.
+
+    A backtick in a valid destination/title is metadata when no earlier code
+    span already owns the link-shaped source.  The extension scanner uses the
+    returned source and metadata ranges while walking left to right; the main
+    Markdown adapter retains its stricter, code-aware link parser.
+    """
+
+    links: list[MarkdownInlineLink] = []
+    for opening in _MARKDOWN_INLINE_LINK_OPENING.finditer(value):
+        label = _finite_inline_label_before_tail(value, opening.start())
+        if label is None:
+            continue
+        source_start, rendered_label = label
+        tail = _MARKDOWN_INLINE_LINK.match(value, opening.start())
+        if tail is None:
+            continue
+        title_span = (
+            tail.span("title") if tail.group("title") is not None else None
+        )
+        links.append(
+            MarkdownInlineLink(
+                source_start=source_start,
+                source_end=tail.end(),
+                label=rendered_label,
+                destination_span=tail.span("destination"),
+                title=tail.group("title"),
+                title_span=title_span,
+            )
+        )
+    return tuple(sorted(links, key=lambda link: (link.source_start, link.source_end)))
+
+
+def _finite_extension_same_line_code_spans(
+    value: str,
+) -> tuple[tuple[int, int], ...]:
+    """Locate same-line code spans with finite link-metadata precedence.
+
+    At an idle position, a syntactically valid link destination/title owns its
+    backticks before they can become a code opener.  Once a code span starts,
+    link-looking source inside it has no precedence and an exact-width raw
+    backtick closes the span.  Raw HTML comments similarly own idle backticks.
+    This prevents a destination/comment delimiter from creating a fictional
+    code span that hides a later interpreted extension.
+    """
+
+    links = _finite_raw_inline_links_for_extension_precedence(value)
+    metadata_spans = tuple(
+        span
+        for link in links
+        for span in (
+            link.destination_span,
+            *((link.title_span,) if link.title_span is not None else ()),
+        )
+    )
+    comment_spans: list[tuple[int, int]] = []
+    comment_cursor = 0
+    while True:
+        opening_comment = _next_unescaped_html_comment_open(
+            value, comment_cursor
+        )
+        if opening_comment < 0:
+            break
+        closing_comment = value.find("-->", opening_comment + 4)
+        comment_end = (
+            len(value) if closing_comment < 0 else closing_comment + 3
+        )
+        comment_spans.append((opening_comment, comment_end))
+        comment_cursor = comment_end
+
+    def opening_is_metadata(position: int) -> bool:
+        return any(start <= position < end for start, end in metadata_spans)
+
+    def opening_is_comment(position: int) -> bool:
+        return any(start <= position < end for start, end in comment_spans)
+
+    spans: list[tuple[int, int]] = []
+    cursor = 0
+    while True:
+        opening = _next_unescaped_backtick_run(value, cursor)
+        while opening is not None and (
+            opening_is_metadata(opening[0])
+            or opening_is_comment(opening[0])
+            or not _kramdown_codespan_opening_is_eligible(
+                value,
+                index=opening[0],
+                width=opening[1],
+            )
+        ):
+            opening = _next_unescaped_backtick_run(
+                value, opening[0] + opening[1]
+            )
+        if opening is None:
+            break
+        opening_index, width = opening
+        closing = _next_unescaped_backtick_run(
+            value,
+            opening_index + width,
+            required_width=width,
+        )
+        if closing is None:
+            cursor = opening_index + width
+            continue
+        closing_index, closing_width = closing
+        spans.append((opening_index, closing_index + closing_width))
+        cursor = closing_index + closing_width
+    return tuple(spans)
+
+
+def _finite_extension_line_continues_quote(
+    line: str, *, opening_quote_depth: int
+) -> bool:
+    """Return whether one line remains in the finite extension paragraph.
+
+    Pinned Kramdown accepts an unmarked, non-structural physical line as a lazy
+    continuation of an open blockquote paragraph.  For nested quotes, any
+    finite reduction in explicit quote markers may lazily continue the inner
+    paragraph; the parser recursively strips the remaining outer markers.
+    Blank lines, headings, lists, thematic breaks, and deeper quotes remain
+    finite scope boundaries.
+    """
+
+    quote_depth, _ = _finite_blockquote_context(line)
+    if _finite_markdown_structural_boundary(line):
+        return False
+    return quote_depth == opening_quote_depth or (
+        opening_quote_depth > 0 and quote_depth < opening_quote_depth
+    )
+
+
+def _finite_blockquote_ownership_boundary(line: str) -> bool:
+    """Return whether pinned lazy blockquote ownership ends at one line."""
+
+    _, remainder = _finite_blockquote_context(line)
+    stripped = remainder.strip()
+    return bool(
+        not stripped
+        or re.fullmatch(r"\^[ \t]*", remainder)
+        or re.fullmatch(
+            r" {0,3}\{:(?!:|/)[^}\r\n]+\}[ \t]*", remainder
+        )
+        or _RAW_HTML_TAG_OPENING.match(remainder.lstrip())
+    )
+
+
+def _finite_effective_blockquote_depth(
+    lines: list[str], line_index: int
+) -> int:
+    """Return the owning finite quote depth for one paragraph line.
+
+    A marker-less or partially marked lazy line remains owned by the deepest
+    explicit blockquote in the same finite lazy container.  Kramdown's
+    blockquote prepass retains heading/list/fence-looking lines until a lazy
+    end, so quote ownership and inline paragraph boundaries are deliberately
+    separate.  This is enough to recognize marker removal and a later return
+    to explicit markers without trying to implement arbitrary Markdown block
+    parsing.
+    """
+
+    raw_depth, _ = _finite_blockquote_context(lines[line_index])
+    effective_depth = raw_depth
+    cursor = line_index - 1
+    while cursor >= 0:
+        previous = lines[cursor]
+        previous_depth, _ = _finite_blockquote_context(previous)
+        effective_depth = max(effective_depth, previous_depth)
+        if _finite_blockquote_ownership_boundary(previous):
+            break
+        cursor -= 1
+    return effective_depth
 
 
 def _finite_interpreted_html_comment_spans(
     value: str,
+    *,
+    protected_multiline_code_spans: tuple[tuple[int, int], ...] = (),
 ) -> tuple[tuple[int, int], ...]:
     """Locate actual raw HTML comments before Markdown extension precedence.
 
-    An HTML-comment opener inside finite same-line code or link metadata is
-    literal.  Once an eligible opener starts, its first raw close owns the
-    comment.  These spans exclude Kramdown comment openers from eligibility;
-    they never hide a raw Kramdown close after another eligible opener.
+    An HTML-comment opener inside finite same-line/multiline code or link
+    metadata is literal.  Once an eligible opener starts, its first raw close
+    owns the comment.  These spans exclude Kramdown comment openers from
+    eligibility; they never hide a raw Kramdown close after another eligible
+    opener.  Multiline code spans are supplied by the caller so the two finite
+    precedence scanners do not recursively call each other.
     """
 
     spans: list[tuple[int, int]] = []
@@ -3231,7 +3461,7 @@ def _finite_interpreted_html_comment_spans(
         content = line.rstrip("\r\n")
         protected = tuple(
             sorted(
-                set(_finite_same_line_code_spans(content))
+                set(_finite_extension_same_line_code_spans(content))
                 | set(_finite_markdown_link_noncontent_spans(content))
             )
         )
@@ -3245,11 +3475,17 @@ def _finite_interpreted_html_comment_spans(
                 in_comment = None
                 cursor = close + 3
                 continue
-            opening = content.find("<!--", cursor)
-            while opening >= 0 and any(
-                start <= opening < end for start, end in protected
+            opening = _next_unescaped_html_comment_open(content, cursor)
+            while opening >= 0 and (
+                any(start <= opening < end for start, end in protected)
+                or any(
+                    start <= offset + opening < end
+                    for start, end in protected_multiline_code_spans
+                )
             ):
-                opening = content.find("<!--", opening + 1)
+                opening = _next_unescaped_html_comment_open(
+                    content, opening + 1
+                )
             if opening < 0:
                 break
             in_comment = offset + opening
@@ -3260,110 +3496,270 @@ def _finite_interpreted_html_comment_spans(
     return tuple(spans)
 
 
+def _finite_multiline_inline_code_spans(
+    value: str,
+) -> tuple[tuple[int, int], ...]:
+    """Locate closed backtick spans that cross a physical source line.
+
+    Pinned Kramdown keeps extension-shaped source literal inside a closed code
+    span even when the span crosses a newline.  This helper mirrors the
+    repository's existing finite backtick/comment precedence and returns only
+    multiline spans; extension-specific same-line code remains owned by
+    ``_finite_extension_same_line_code_spans``.
+    """
+
+    spans: list[tuple[int, int]] = []
+    in_comment = False
+    code_width: int | None = None
+    code_start: int | None = None
+    code_quote_depth = 0
+    crossed_line = False
+    offset = 0
+    source_lines = [
+        line.rstrip("\r\n") for line in value.splitlines(keepends=True)
+    ]
+
+    for line_index, line in enumerate(value.splitlines(keepends=True)):
+        content = source_lines[line_index]
+        if code_width is not None and not _finite_extension_line_continues_quote(
+            content,
+            opening_quote_depth=code_quote_depth,
+        ):
+            # A code span cannot cross a paragraph/container boundary.  The
+            # unmatched opener remains literal and the new block is scanned
+            # independently for interpreted extensions.
+            code_width = None
+            code_start = None
+            code_quote_depth = 0
+            crossed_line = False
+
+        raw_links = _finite_raw_inline_links_for_extension_precedence(content)
+        metadata_spans = tuple(
+            span
+            for link in raw_links
+            for span in (
+                link.destination_span,
+                *((link.title_span,) if link.title_span is not None else ()),
+            )
+        )
+
+        def next_idle_code(start: int) -> tuple[int, int] | None:
+            candidate = _next_unescaped_backtick_run(content, start)
+            while candidate is not None and (
+                any(
+                    span_start <= candidate[0] < span_end
+                    for span_start, span_end in metadata_spans
+                )
+                or not _kramdown_codespan_opening_is_eligible(
+                    content,
+                    index=candidate[0],
+                    width=candidate[1],
+                )
+            ):
+                candidate = _next_unescaped_backtick_run(
+                    content, candidate[0] + candidate[1]
+                )
+            return candidate
+
+        cursor = 0
+        while cursor < len(content):
+            if in_comment:
+                closing_comment = content.find("-->", cursor)
+                if closing_comment < 0:
+                    break
+                in_comment = False
+                cursor = closing_comment + 3
+                continue
+
+            if code_width is not None:
+                closing_code = _next_unescaped_backtick_run(
+                    content,
+                    cursor,
+                    required_width=code_width,
+                )
+                if closing_code is None:
+                    break
+                closing_index, closing_width = closing_code
+                if crossed_line and code_start is not None:
+                    spans.append(
+                        (
+                            code_start,
+                            offset + closing_index + closing_width,
+                        )
+                    )
+                cursor = closing_index + closing_width
+                code_width = None
+                code_start = None
+                code_quote_depth = 0
+                crossed_line = False
+                continue
+
+            comment = _next_unescaped_html_comment_open(content, cursor)
+            opening_code = next_idle_code(cursor)
+            opening_index = opening_code[0] if opening_code is not None else -1
+            if comment >= 0 and (opening_index < 0 or comment < opening_index):
+                in_comment = True
+                cursor = comment + 4
+                continue
+            if opening_code is None:
+                break
+            code_start = offset + opening_index
+            code_width = opening_code[1]
+            code_quote_depth = _finite_effective_blockquote_depth(
+                source_lines, line_index
+            )
+            crossed_line = False
+            cursor = opening_index + code_width
+
+        if code_width is not None:
+            crossed_line = True
+        offset += len(line)
+    return tuple(spans)
+
+
 def _reject_interpreted_kramdown_extension(
     value: str, *, location: str
 ) -> None:
-    """Reject finite Kramdown comment pairs on reader-visible Markdown.
+    """Reject finite paired extensions on reader-visible Markdown.
 
     Kramdown turns ``{::comment}...{:/comment}`` into an HTML comment before
-    publication, which can join protected prose around the removed body.  The
-    Chapter 4 publication contract does not need comment extensions, so an
-    exact matched pair in one finite inline/block paragraph context fails
-    closed.  An opener wholly inside same-line code, a finite Markdown link
+    publication, which can join protected prose around the removed body.
+    ``{::nomarkdown}...{:/nomarkdown}`` keeps its body but removes the paired
+    delimiters, which can likewise join protected prose that the source scan
+    saw as separated.  Whitespace/attribute start tags (including a source-line
+    continuation), anonymous ``{:/}`` stops, and self-closing forms are also
+    interpreted by the pinned grammar.  Chapter 4 needs neither extension, so
+    each finite interpreted form in one inline/block paragraph context fails
+    closed.
+
+    An opener wholly inside same-line code, a finite Markdown link
     destination/title, an actual HTML comment, or a true indented/fenced code
-    block is literal.  After an eligible opener starts, however, pinned
-    Kramdown recognizes the raw exact close even inside such syntax.  Unmatched
-    and escaped openers remain reader-visible literal source.
+    block is literal.  After an eligible opener starts, however, the pinned
+    renderer recognizes the raw exact close even inside such syntax.  Unmatched
+    and escaped openers remain reader-visible literal source.  This finite
+    tuple is the single source of truth; it is not a broad ``{::...}`` token
+    ban or a complete Kramdown parser.
     """
 
     lines = value.splitlines(keepends=True)
+    source_lines = [line.rstrip("\r\n") for line in lines]
     line_offsets: list[int] = []
     line_offset = 0
     for line in lines:
         line_offsets.append(line_offset)
         line_offset += len(line)
-    html_comment_spans = _finite_interpreted_html_comment_spans(value)
+    multiline_code_spans = _finite_multiline_inline_code_spans(value)
+    html_comment_spans = _finite_interpreted_html_comment_spans(
+        value,
+        protected_multiline_code_spans=multiline_code_spans,
+    )
 
-    match_start: int | None = None
-    for line_index, line in enumerate(lines):
-        content = line.rstrip("\r\n")
+    def line_index_at(position: int) -> int:
+        return max(0, bisect_right(line_offsets, position) - 1)
+
+    matched: tuple[int, _InterpretedKramdownExtension, str] | None = None
+    for opening_match in _KRAMDOWN_INTERPRETED_EXTENSION_OPEN.finditer(value):
+        opening = opening_match.start()
+        opening_end = opening_match.end()
+        line_index = line_index_at(opening)
+        end_line_index = line_index_at(opening_end - 1)
+        content = source_lines[line_index]
+        opening_column = opening - line_offsets[line_index]
         protected = tuple(
             sorted(
-                set(_finite_same_line_code_spans(content))
+                set(_finite_extension_same_line_code_spans(content))
                 | set(_finite_markdown_link_noncontent_spans(content))
             )
         )
-        cursor = 0
-        while True:
-            opening_column = content.find(_KRAMDOWN_COMMENT_OPEN, cursor)
-            if opening_column < 0:
-                break
-            cursor = opening_column + len(_KRAMDOWN_COMMENT_OPEN)
-            opening = line_offsets[line_index] + opening_column
-            if (
-                _markdown_character_is_escaped(content, opening_column)
-                or any(
-                    start <= opening_column < end for start, end in protected
-                )
-                or any(
-                    start <= opening < end for start, end in html_comment_spans
-                )
+        if (
+            _markdown_character_is_escaped(content, opening_column)
+            or any(start <= opening_column < end for start, end in protected)
+            or any(start <= opening < end for start, end in html_comment_spans)
+            or any(start <= opening < end for start, end in multiline_code_spans)
+        ):
+            continue
+
+        opening_quote_depth = _finite_effective_blockquote_depth(
+            source_lines, line_index
+        )
+        opener_crosses_boundary = False
+        for continuation_index in range(line_index + 1, end_line_index + 1):
+            continuation = lines[continuation_index].rstrip("\r\n")
+            if not _finite_extension_line_continues_quote(
+                continuation,
+                opening_quote_depth=opening_quote_depth,
             ):
-                continue
-
-            prefix = content[:opening_column]
-            suffix = content[cursor:]
-            standalone = bool(
-                not suffix.strip()
-                and _KRAMDOWN_BLOCK_IAL_PREFIX.fullmatch(prefix)
-            )
-            previous_is_boundary = bool(
-                line_index == 0
-                or _finite_markdown_structural_boundary(lines[line_index - 1])
-            )
-            top_level_block = bool(
-                standalone
-                and previous_is_boundary
-                and ">" not in prefix
-                and not re.search(
-                    r"(?:^|[ \t>])(?:[-+*]|\d+[.)])[ \t]+$",
-                    prefix,
-                )
-            )
-
-            search_end = len(value)
-            if not top_level_block:
-                opening_quote_depth, _ = _finite_blockquote_context(content)
-                for boundary_index in range(line_index + 1, len(lines)):
-                    boundary_line = lines[boundary_index].rstrip("\r\n")
-                    boundary_quote_depth, _ = _finite_blockquote_context(
-                        boundary_line
-                    )
-                    if (
-                        boundary_quote_depth != opening_quote_depth
-                        or _finite_markdown_structural_boundary(boundary_line)
-                    ):
-                        search_end = line_offsets[boundary_index]
-                        break
-            closing = value.find(
-                _KRAMDOWN_COMMENT_CLOSE,
-                opening + len(_KRAMDOWN_COMMENT_OPEN),
-                search_end,
-            )
-            if closing >= 0:
-                match_start = opening
+                opener_crosses_boundary = True
                 break
-        if match_start is not None:
+        if opener_crosses_boundary:
+            continue
+
+        extension = _KRAMDOWN_INTERPRETED_EXTENSION_BY_NAME[
+            opening_match.group("name")
+        ]
+        if opening_match.group("self_closing"):
+            matched = (opening, extension, "self-closing token")
             break
 
-    if match_start is None:
+        end_content = lines[end_line_index].rstrip("\r\n")
+        end_column = opening_end - line_offsets[end_line_index]
+        prefix = content[:opening_column]
+        suffix = end_content[end_column:]
+        standalone = bool(
+            line_index == end_line_index
+            and not suffix.strip()
+            and _KRAMDOWN_BLOCK_IAL_PREFIX.fullmatch(prefix)
+        )
+        previous_is_boundary = bool(
+            line_index == 0
+            or _finite_markdown_structural_boundary(lines[line_index - 1])
+        )
+        top_level_block = bool(
+            standalone
+            and previous_is_boundary
+            and ">" not in prefix
+            and not re.search(
+                r"(?:^|[ \t>])(?:[-+*]|\d+[.)])[ \t]+$",
+                prefix,
+            )
+        )
+
+        search_end = len(value)
+        if not top_level_block:
+            for boundary_index in range(end_line_index + 1, len(lines)):
+                boundary_line = lines[boundary_index].rstrip("\r\n")
+                if not _finite_extension_line_continues_quote(
+                    boundary_line,
+                    opening_quote_depth=opening_quote_depth,
+                ):
+                    search_end = line_offsets[boundary_index]
+                    break
+        closing_candidates = (
+            value.find(extension.closer, opening_end, search_end),
+            value.find(
+                _KRAMDOWN_ANONYMOUS_EXTENSION_CLOSE,
+                opening_end,
+                search_end,
+            ),
+        )
+        closing = min(
+            (candidate for candidate in closing_candidates if candidate >= 0),
+            default=-1,
+        )
+        if closing >= 0:
+            matched = (opening, extension, "pair")
+            break
+
+    if matched is None:
         return
+    match_start, extension, interpreted_form = matched
     line_number = value.count("\n", 0, match_start) + 1
     line_start = value.rfind("\n", 0, match_start) + 1
     column = match_start - line_start + 1
     raise ValueError(
-        f"{location}:{line_number}:{column}: interpreted Kramdown comment "
-        "extension pair is disallowed before Policy scanning"
+        f"{location}:{line_number}:{column}: interpreted Kramdown "
+        f"{extension.name} extension {interpreted_form} is disallowed before "
+        "Policy scanning"
     )
 
 
@@ -4195,7 +4591,65 @@ def kramdown_extension_surface_regressions(
     label: str,
     contract_errors: Callable[[str, str], list[str]],
 ) -> None:
-    """Reject interpreted comment pairs while preserving literal source."""
+    """Reject finite interpreted pairs while preserving literal source."""
+
+    def for_extension(
+        value: str, extension: _InterpretedKramdownExtension
+    ) -> str:
+        return value.replace(
+            _KRAMDOWN_COMMENT_EXTENSION.opener,
+            extension.opener,
+        ).replace(
+            _KRAMDOWN_COMMENT_EXTENSION.closer,
+            extension.closer,
+        )
+
+    # Freeze raw HTML-comment versus multiline-code precedence at the guard
+    # boundary itself.  The full document adapter deliberately rejects an
+    # HTML-comment-shaped multiline code span before reaching this guard, so a
+    # direct probe is required to prove that such a literal opener cannot hide
+    # a later interpreted extension if that outer fail-closed rule changes.
+    multiline_code_comment_precedence_unsafe = (
+        "`<!--\n` 第三者の{::nomarkdown}本番{:/nomarkdown}"
+        "システムへ接続する。\n-->"
+    )
+    try:
+        _reject_interpreted_kramdown_extension(
+            multiline_code_comment_precedence_unsafe,
+            location=f"negative {label} Kramdown multiline-code precedence",
+        )
+    except ValueError as exc:
+        if "interpreted Kramdown nomarkdown extension pair" not in str(exc):
+            error(
+                f"{label}: multiline-code/comment precedence returned an "
+                f"unexpected diagnostic: {exc}"
+            )
+    else:
+        error(
+            f"{label}: a literal HTML-comment opener inside multiline code "
+            "hid a later interpreted nomarkdown extension"
+        )
+
+    for name, safe_precedence_probe in (
+        (
+            "extension inside multiline code",
+            "`prefix\n{::nomarkdown}本番{:/nomarkdown}\nsuffix`",
+        ),
+        (
+            "extension inside actual HTML comment containing backticks",
+            "<!-- `\n{::nomarkdown}本番{:/nomarkdown}\n` -->",
+        ),
+    ):
+        try:
+            _reject_interpreted_kramdown_extension(
+                safe_precedence_probe,
+                location=f"safe {label} Kramdown precedence {name}",
+            )
+        except ValueError as exc:
+            error(
+                f"{label}: literal Kramdown precedence probe {name} was "
+                f"rejected: {exc}"
+            )
 
     suffix = "" if not text or text.endswith("\n") else "\n"
     unsafe_probes = (
@@ -4217,6 +4671,61 @@ def kramdown_extension_surface_regressions(
             "blockquote comment splice",
             "> 第三者の\n> {::comment}\n> hidden\n> {:/comment}\n"
             "> 本番システムへ接続する。",
+        ),
+        (
+            "blockquote lazy close splice",
+            "> 第三者の{::comment}\n"
+            "lazy hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "nested blockquote partially unwrapped lazy close splice",
+            "> > 第三者の{::comment}\n"
+            "> lazy hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "depth-three blockquote partially unwrapped lazy close splice",
+            "> > > 第三者の{::comment}\n"
+            "> lazy hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "lazy line opener returning to explicit blockquote close",
+            "> intro\nlazy 第三者の{::comment}\n"
+            "> hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "depth-two lazy line opener returning to explicit close",
+            "> > intro\n> lazy 第三者の{::comment}\n"
+            "> > hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "blockquote heading then lazy opener returning to explicit close",
+            "> intro\n# heading\nlazy 第三者の{::comment}\n"
+            "> hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "blockquote list then lazy opener returning to explicit close",
+            "> intro\n- item\nlazy 第三者の{::comment}\n"
+            "> hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "quoted EOB then lazy opener returning to explicit close",
+            "> intro\n> ^\nlazy 第三者の{::comment}\n"
+            "> hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "quoted block IAL then lazy opener returning to explicit close",
+            "> intro\n> {:.probe}\nlazy 第三者の{::comment}\n"
+            "> hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "unmatched named closer within lazy quote ownership",
+            "> intro\n{:/nomarkdown}\nlazy 第三者の{::comment}\n"
+            "> hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "unmatched anonymous closer within lazy quote ownership",
+            "> intro\n{:/}\nlazy 第三者の{::comment}\n"
+            "> hidden{:/comment}本番システムへ接続する。",
         ),
         (
             "list comment splice",
@@ -4336,23 +4845,120 @@ def kramdown_extension_surface_regressions(
             "        {::comment}\n        hidden\n        {:/comment}\n"
             "        本番システムへ接続する。",
         ),
+        (
+            "blank paragraph fictional multiline code span",
+            "before `\n\n{::comment}hidden{:/comment}\n\n` after\n"
+            "第三者の本番システムへ接続する。",
+        ),
+        (
+            "heading boundary fictional multiline code span",
+            "before `\n# New block\n{::comment}hidden{:/comment}\n"
+            "` after\n第三者の本番システムへ接続する。",
+        ),
+        (
+            "list boundary fictional multiline code span",
+            "before `\n- New item\n{::comment}hidden{:/comment}\n"
+            "` after\n第三者の本番システムへ接続する。",
+        ),
+        (
+            "whitespace-ineligible single-backtick opener",
+            "before `\nordinary\n{::comment}hidden{:/comment}\n"
+            "` after\n第三者の本番システムへ接続する。",
+        ),
+        (
+            "no-space blockquote single-backtick opener",
+            ">`\nordinary\n{::comment}hidden{:/comment}\n"
+            "` after\n第三者の本番システムへ接続する。",
+        ),
+        (
+            "no-space depth-two blockquote single-backtick opener",
+            ">>`\n> ordinary\n> {::comment}hidden{:/comment}\n"
+            "> ` after\n> 第三者の本番システムへ接続する。",
+        ),
+        (
+            "no-space depth-three blockquote single-backtick opener",
+            ">>>`\n> ordinary\n> {::comment}hidden{:/comment}\n"
+            "> ` after\n> 第三者の本番システムへ接続する。",
+        ),
+        (
+            "setext equals boundary fictional multiline code span",
+            "before `prefix\n====\n{::comment}hidden{:/comment}\n"
+            "suffix` after\n第三者の本番システムへ接続する。",
+        ),
+        (
+            "setext hyphen boundary fictional multiline code span",
+            "before `prefix\n----\n{::comment}hidden{:/comment}\n"
+            "suffix` after\n第三者の本番システムへ接続する。",
+        ),
+        (
+            "link metadata backtick fictional code span",
+            "[safe](/local/`){::comment}hidden{:/comment}` end\n"
+            "第三者の本番システムへ接続する。",
+        ),
+        (
+            "code opener before link metadata",
+            "`[safe](/local/`){::comment}hidden{:/comment}` end\n"
+            "第三者の本番システムへ接続する。",
+        ),
+        (
+            "escaped HTML comment opener",
+            r"before \<!-- {::comment}hidden{:/comment} --> after",
+        ),
     )
-    for name, probe in unsafe_probes:
-        failures = contract_errors(
-            f"{text}{suffix}\n{probe}\n",
-            f"negative {label} Kramdown extension {name}",
+    for extension in _KRAMDOWN_INTERPRETED_EXTENSIONS:
+        extension_probes = tuple(
+            (name, for_extension(probe, extension))
+            for name, probe in unsafe_probes
         )
-        if not any(
-            "interpreted Kramdown comment extension pair" in failure
-            for failure in failures
-        ):
-            error(
-                f"{label}: interpreted Kramdown extension {name} "
-                "did not fail closed"
+        for name, probe in extension_probes:
+            failures = contract_errors(
+                f"{text}{suffix}\n{probe}\n",
+                f"negative {label} Kramdown {extension.name} extension {name}",
             )
+            expected_message = (
+                f"interpreted Kramdown {extension.name} extension pair"
+            )
+            if not any(expected_message in failure for failure in failures):
+                error(
+                    f"{label}: interpreted Kramdown {extension.name} "
+                    f"extension {name} did not fail closed"
+                )
 
     safe_near_misses = (
         "第三者の`{::comment}hidden{:/comment}`本番システムへ接続しない。",
+        "[`{::comment}hidden{:/comment}`](/local) remains literal code.",
+        "> > before `prefix\n"
+        "> {::comment}hidden{:/comment}\n"
+        "> suffix` after",
+        "before `prefix\nordinary\n{::comment}hidden{:/comment}\n"
+        "suffix` after",
+        "before\u00a0`\nordinary\n{::comment}hidden{:/comment}\n"
+        "suffix` after",
+        ">``\nordinary\n{::comment}hidden{:/comment}\n`` after",
+        "> intro\nlazy `prefix\n"
+        "> {::comment}hidden{:/comment}\n"
+        "> suffix` after",
+        "> > intro\n> lazy `prefix\n"
+        "> > {::comment}hidden{:/comment}\n"
+        "> > suffix` after",
+        "> intro\n> # heading\nlazy `prefix\n"
+        "> {::comment}hidden{:/comment}\n"
+        "> suffix` after",
+        "> intro\n> - item\nlazy `prefix\n"
+        "> {::comment}hidden{:/comment}\n"
+        "> suffix` after",
+        "> intro\n> ^\nlazy `prefix\n"
+        "> {::comment}hidden{:/comment}\n"
+        "> suffix` after",
+        "> intro\n> {:.probe}\nlazy `prefix\n"
+        "> {::comment}hidden{:/comment}\n"
+        "> suffix` after",
+        "> intro\n{:/nomarkdown}\nlazy `prefix\n"
+        "> {::comment}hidden{:/comment}\n"
+        "> suffix` after",
+        "> intro\n{:/}\nlazy `prefix\n"
+        "> {::comment}hidden{:/comment}\n"
+        "> suffix` after",
         "```text\n第三者の{::comment}hidden{:/comment}本番システムへ接続しない。\n```",
         "Literal extension source:\n\n"
         "    第三者の{::comment}hidden{:/comment}本番システムへ接続しない。",
@@ -4375,6 +4981,12 @@ def kramdown_extension_surface_regressions(
         "- {::comment}\n- {:/comment}",
         "> {::comment}\n>> {:/comment}",
         "before{::comment}\n# New block\n{:/comment}\nafter",
+        "before{::comment}\n====\n{:/comment}\nafter",
+        "before{::comment}\n----\n{:/comment}\nafter",
+        "> intro\n^\nlazy before{::comment}\n"
+        "> {:/comment} after",
+        "> intro\n{:.probe}\nlazy before{::comment}\n"
+        "> {:/comment} after",
         "# Safe heading\n    {::comment}literal{:/comment}",
         "***\n    {::comment}literal{:/comment}",
         ">     {::comment}literal{:/comment}",
@@ -4402,18 +5014,23 @@ def kramdown_extension_surface_regressions(
         "- outer\n  1. Safe nested item\n     continuation\n\n"
         "         {::comment}literal{:/comment}",
     )
-    for probe in safe_near_misses:
-        failures = contract_errors(
-            f"{text}{suffix}\n{probe}\n",
-            f"safe {label} literal Kramdown extension near-miss",
+    for extension in _KRAMDOWN_INTERPRETED_EXTENSIONS:
+        extension_near_misses = tuple(
+            for_extension(probe, extension) for probe in safe_near_misses
         )
-        if failures:
-            error(
-                f"{label}: literal Kramdown extension near-miss was rejected: "
-                f"{probe!r} / {failures!r}"
+        for probe in extension_near_misses:
+            failures = contract_errors(
+                f"{text}{suffix}\n{probe}\n",
+                f"safe {label} literal Kramdown {extension.name} "
+                "extension near-miss",
             )
+            if failures:
+                error(
+                    f"{label}: literal Kramdown {extension.name} extension "
+                    f"near-miss was rejected: {probe!r} / {failures!r}"
+                )
 
-    for name, value in (
+    unsafe_table_values = (
         (
             "inline pair",
             "第三者の{::comment}hidden{:/comment}本番システムへ接続する。",
@@ -4428,26 +5045,41 @@ def kramdown_extension_surface_regressions(
             "第三者の{::comment}<!-- filler{:/comment}<!-- -->"
             "本番システムへ接続する。",
         ),
-    ):
-        extension_table = (
-            "| Field | Value |\n|---|---|\n"
-            f"| row | {value} |\n"
+        (
+            "escaped HTML comment opener",
+            r"before \<!-- {::comment}hidden{:/comment} --> after",
+        ),
+        (
+            "link metadata backtick",
+            "[safe](/local/`){::comment}hidden{:/comment}` end",
+        ),
+    )
+    for extension in _KRAMDOWN_INTERPRETED_EXTENSIONS:
+        extension_table_values = tuple(
+            (name, for_extension(value, extension))
+            for name, value in unsafe_table_values
         )
-        _, table_messages = classified_table_fields(
-            extension_table,
-            f"negative {label} Kramdown extension table {name}",
-            {FIELD_VALUE_HEADER: 1},
-        )
-        if not any(
-            "interpreted Kramdown comment extension pair" in message
-            for message in table_messages
-        ):
-            error(
-                f"{label}: table-cell Kramdown extension {name} "
-                "did not fail closed"
+        for name, value in extension_table_values:
+            extension_table = (
+                "| Field | Value |\n|---|---|\n"
+                f"| row | {value} |\n"
             )
+            _, table_messages = classified_table_fields(
+                extension_table,
+                f"negative {label} Kramdown {extension.name} "
+                f"extension table {name}",
+                {FIELD_VALUE_HEADER: 1},
+            )
+            expected_message = (
+                f"interpreted Kramdown {extension.name} extension pair"
+            )
+            if not any(expected_message in message for message in table_messages):
+                error(
+                    f"{label}: table-cell Kramdown {extension.name} "
+                    f"extension {name} did not fail closed"
+                )
 
-    for name, value in (
+    safe_table_values = (
         ("inline-code pair", "`{::comment}literal{:/comment}`"),
         (
             "hidden-destination pair",
@@ -4462,18 +5094,293 @@ def kramdown_extension_surface_regressions(
             "opener in hidden destination",
             "[safe](/local/{::comment}){:/comment}",
         ),
-    ):
-        safe_table = f"| Field | Value |\n|---|---|\n| row | {value} |\n"
+    )
+    for extension in _KRAMDOWN_INTERPRETED_EXTENSIONS:
+        extension_table_values = tuple(
+            (name, for_extension(value, extension))
+            for name, value in safe_table_values
+        )
+        for name, value in extension_table_values:
+            safe_table = f"| Field | Value |\n|---|---|\n| row | {value} |\n"
+            safe_fields, safe_messages = classified_table_fields(
+                safe_table,
+                f"safe {label} Kramdown {extension.name} extension table {name}",
+                {FIELD_VALUE_HEADER: 1},
+            )
+            safe_findings = policy_errors(safe_fields)
+            if safe_messages or safe_findings:
+                error(
+                    f"{label}: safe table-cell Kramdown {extension.name} "
+                    f"extension {name} was rejected: {safe_messages!r} / "
+                    f"{safe_findings!r}"
+                )
+
+    # Freeze the additional start/stop grammar interpreted by pinned
+    # Kramdown 2.5.2.  This is an extension-name-bounded matrix, not a generic
+    # ``{::...}`` ban.  Invalid attributes still remove a valid extension tag
+    # after a renderer warning, so they are unsafe publication input too.
+    interpreted_variant_probes = (
+        (
+            "nomarkdown trailing-space opener",
+            "第三者の{::nomarkdown }{:/nomarkdown}"
+            "本番システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown type attribute",
+            '第三者の{::nomarkdown type="html"}{:/nomarkdown}'
+            "本番システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown ALD reference",
+            "第三者の{::nomarkdown opts}{:/nomarkdown}"
+            "本番システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown invalid attribute",
+            "第三者の{::nomarkdown ???}{:/nomarkdown}"
+            "本番システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown LF attribute continuation",
+            '第三者の{::nomarkdown\ntype="html"}{:/nomarkdown}'
+            "本番システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown LF indented attribute continuation",
+            '第三者の{::nomarkdown\n type="html"}{:/nomarkdown}'
+            "本番システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown CR attribute continuation",
+            '第三者の{::nomarkdown\rtype="html"}{:/nomarkdown}'
+            "本番システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown blockquote lazy attribute continuation",
+            '> 第三者の{::nomarkdown\ntype="html"}'
+            "本番{:/nomarkdown}システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown nested blockquote lazy attribute continuation",
+            '> > 第三者の{::nomarkdown\n> type="html"}'
+            "本番{:/nomarkdown}システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown lazy opener returning to explicit blockquote",
+            '> intro\nlazy 第三者の{::nomarkdown\n> type="html"}'
+            "本番{:/nomarkdown}システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown depth-two lazy opener returning to explicit quote",
+            '> > intro\n> lazy 第三者の{::nomarkdown\n'
+            '> > type="html"}本番{:/nomarkdown}システムへ接続する。',
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown blockquote heading then lazy attribute opener",
+            '> intro\n# heading\nlazy 第三者の{::nomarkdown\n'
+            '> type="html"}本番{:/nomarkdown}システムへ接続する。',
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown quoted EOB then lazy attribute opener",
+            '> intro\n> ^\nlazy 第三者の{::nomarkdown\n'
+            '> type="html"}本番{:/nomarkdown}システムへ接続する。',
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown quoted block IAL then lazy attribute opener",
+            '> intro\n> {:.probe}\nlazy 第三者の{::nomarkdown\n'
+            '> type="html"}本番{:/nomarkdown}システムへ接続する。',
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown anonymous close",
+            "第三者の{::nomarkdown}本番{:/}システムへ接続する。",
+            "nomarkdown extension pair",
+        ),
+        (
+            "nomarkdown self-closing token",
+            "第三者の{::nomarkdown/}本番システムへ接続する。",
+            "nomarkdown extension self-closing token",
+        ),
+        (
+            "nomarkdown attributed self-closing token",
+            '第三者の{::nomarkdown type="html"/}'
+            "本番システムへ接続する。",
+            "nomarkdown extension self-closing token",
+        ),
+        (
+            "comment trailing-space opener",
+            "第三者の{::comment }hidden{:/comment}"
+            "本番システムへ接続する。",
+            "comment extension pair",
+        ),
+        (
+            "comment LF attribute continuation",
+            '第三者の{::comment\ntype="html"}hidden{:/comment}'
+            "本番システムへ接続する。",
+            "comment extension pair",
+        ),
+        (
+            "comment blockquote lazy attribute continuation",
+            '> 第三者の{::comment\ntype="html"}'
+            "hidden{:/comment}本番システムへ接続する。",
+            "comment extension pair",
+        ),
+        (
+            "comment nested blockquote lazy attribute continuation",
+            '> > 第三者の{::comment\n> type="html"}'
+            "hidden{:/comment}本番システムへ接続する。",
+            "comment extension pair",
+        ),
+        (
+            "comment lazy opener returning to explicit blockquote",
+            '> intro\nlazy 第三者の{::comment\n> type="html"}'
+            "hidden{:/comment}本番システムへ接続する。",
+            "comment extension pair",
+        ),
+        (
+            "comment depth-two lazy opener returning to explicit quote",
+            '> > intro\n> lazy 第三者の{::comment\n'
+            '> > type="html"}hidden{:/comment}本番システムへ接続する。',
+            "comment extension pair",
+        ),
+        (
+            "comment blockquote heading then lazy attribute opener",
+            '> intro\n# heading\nlazy 第三者の{::comment\n'
+            '> type="html"}hidden{:/comment}本番システムへ接続する。',
+            "comment extension pair",
+        ),
+        (
+            "comment quoted EOB then lazy attribute opener",
+            '> intro\n> ^\nlazy 第三者の{::comment\n'
+            '> type="html"}hidden{:/comment}本番システムへ接続する。',
+            "comment extension pair",
+        ),
+        (
+            "comment quoted block IAL then lazy attribute opener",
+            '> intro\n> {:.probe}\nlazy 第三者の{::comment\n'
+            '> type="html"}hidden{:/comment}本番システムへ接続する。',
+            "comment extension pair",
+        ),
+        (
+            "comment anonymous close",
+            "第三者の{::comment}hidden{:/}本番システムへ接続する。",
+            "comment extension pair",
+        ),
+        (
+            "comment self-closing token",
+            "第三者の{::comment/}本番システムへ接続する。",
+            "comment extension self-closing token",
+        ),
+    )
+    for name, probe, expected_message in interpreted_variant_probes:
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"negative {label} Kramdown finite grammar {name}",
+        )
+        if not any(expected_message in failure for failure in failures):
+            error(
+                f"{label}: interpreted Kramdown finite grammar {name} "
+                "did not fail closed"
+            )
+
+    literal_variant_probes = (
+        "Unmatched marker: {::nomarkdown type=\"html\"}",
+        "Unmatched marker after link: "
+        "[safe](/local){::nomarkdown type=\"html\"}",
+        "Anonymous stop marker: {:/}",
+        '`{::nomarkdown type="html"}{:/nomarkdown}`',
+        "`{::nomarkdown\ntype=\"html\"}{:/nomarkdown}`",
+        "```text\n{::nomarkdown type=\"html\"}{:/nomarkdown}\n```",
+        "```text\n{::nomarkdown\ntype=\"html\"}"
+        "{:/nomarkdown}\n```",
+        "Literal extension source:\n\n"
+        "    {::nomarkdown type=\"html\"}{:/nomarkdown}",
+        "Literal extension source:\n\n"
+        "    {::nomarkdown\n    type=\"html\"}{:/nomarkdown}",
+        '[safe](</local/{::nomarkdown type="html"}{:/nomarkdown}>)',
+        '<!-- {::nomarkdown type="html"}{:/nomarkdown} -->',
+        '<!-- {::nomarkdown\ntype="html"}{:/nomarkdown} -->',
+        '<!-- `\n{::nomarkdown}本番{:/nomarkdown}\n` -->',
+        r'\{::nomarkdown type="html"}{:/nomarkdown}',
+        '\\{::nomarkdown\ntype="html"}{:/nomarkdown}',
+        "&#123;::nomarkdown type=&quot;html&quot;}"
+        "&#123;:/nomarkdown}",
+        "before{::unknown type=\"html\"}x{:/unknown}after",
+        "{::nomarkdown\ntype=\"html\"} unmatched multiline opener",
+        "{::nomarkdown\n\ntype=\"html\"}{:/nomarkdown}"
+        " is split by a paragraph boundary",
+    )
+    literal_table_variants = (
+        "Unmatched marker: {::nomarkdown type=\"html\"}",
+        "Unmatched marker after link: "
+        "[safe](/local){::nomarkdown type=\"html\"}",
+        "Anonymous stop marker: {:/}",
+        '`{::nomarkdown type="html"}{:/nomarkdown}`',
+        '[safe](</local/{::nomarkdown type="html"}{:/nomarkdown}>)',
+        '<!-- {::nomarkdown type="html"}{:/nomarkdown} -->',
+        r'\{::nomarkdown type="html"}{:/nomarkdown}',
+        "&#123;::nomarkdown type=&quot;html&quot;}"
+        "&#123;:/nomarkdown}",
+        "before{::unknown type=\"html\"}x{:/unknown}after",
+    )
+    for probe in literal_variant_probes:
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"safe {label} literal Kramdown finite grammar near-miss",
+        )
+        if failures:
+            error(
+                f"{label}: literal Kramdown finite grammar near-miss was "
+                f"rejected: {probe!r} / {failures!r}"
+            )
+
+    interpreted_table_variants = tuple(
+        variant
+        for variant in interpreted_variant_probes
+        if "\n" not in variant[1] and "\r" not in variant[1]
+    )
+    for name, value, expected_message in interpreted_table_variants:
+        extension_table = (
+            "| Field | Value |\n|---|---|\n"
+            f"| row | {value} |\n"
+        )
+        _, table_messages = classified_table_fields(
+            extension_table,
+            f"negative {label} Kramdown finite grammar table {name}",
+            {FIELD_VALUE_HEADER: 1},
+        )
+        if not any(expected_message in message for message in table_messages):
+            error(
+                f"{label}: table-cell Kramdown finite grammar {name} "
+                "did not fail closed"
+            )
+
+    for probe in literal_table_variants:
+        safe_table = f"| Field | Value |\n|---|---|\n| row | {probe} |\n"
         safe_fields, safe_messages = classified_table_fields(
             safe_table,
-            f"safe {label} Kramdown extension table {name}",
+            f"safe {label} Kramdown finite grammar table near-miss",
             {FIELD_VALUE_HEADER: 1},
         )
         safe_findings = policy_errors(safe_fields)
         if safe_messages or safe_findings:
             error(
-                f"{label}: safe table-cell Kramdown extension {name} was "
-                f"rejected: {safe_messages!r} / {safe_findings!r}"
+                f"{label}: safe table-cell Kramdown finite grammar near-miss "
+                f"was rejected: {probe!r} / {safe_messages!r} / "
+                f"{safe_findings!r}"
             )
 
 
