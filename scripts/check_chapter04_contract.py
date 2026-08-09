@@ -163,7 +163,7 @@ EXPECTED_CASE_IDS: dict[str, set[str]] = {
     "ASM": {f"ASM-2026-{number:03d}" for number in range(1, 4)},
     "GAP": {f"GAP-2026-{number:03d}" for number in range(1, 5)},
     "EREQ": {f"EREQ-2026-{number:03d}" for number in range(1, 5)},
-    "ACT-TM": {f"ACT-TM-2026-{number:03d}" for number in range(1, 7)},
+    "ACT-TM": {f"ACT-TM-2026-{number:03d}" for number in range(1, 8)},
     "REA-TM": {f"REA-TM-2026-{number:03d}" for number in range(1, 5)},
 }
 EXPECTED_CASE_REFERENCE_IDS = {
@@ -395,7 +395,7 @@ EXPECTED_HANDOFF_ROWS = {
         "Finding Report、Retest Record",
         "`CTRL-2026-005` / `CTRL-2026-006` / `CTRL-2026-007` / "
         "`CTRL-2026-008` / `CTRL-2026-009`、`GAP-2026-001`〜`004`、"
-        "`ACT-TM-2026-001`〜`006`、`REA-TM-2026-001`〜`004`",
+        "`ACT-TM-2026-001`〜`007`、`REA-TM-2026-001`〜`004`",
     ),
     "HO-TM-2026-027": (
         "第27章 AI / Agent固有Threat Model",
@@ -634,7 +634,8 @@ TH_003_006_ALLOCATION_HEADER = (
 EXPECTED_TH_003_006_ALLOCATION_ROWS = (
     (
         "Refinement only",
-        "`CTRL-2026-009`, `ASM-2026-002`, `GAP-2026-001`, `ACT-TM-2026-003`",
+        "`CTRL-2026-009`, `ASM-2026-002`, `GAP-2026-001`, `ACT-TM-2026-003`, "
+        "`ACT-TM-2026-007`",
         "summary-only Field、機会条件、影響範囲の限定可能性だけを扱い、"
         "発生有無を直接判定しない",
     ),
@@ -776,7 +777,8 @@ EXPECTED_EVIDENCE_SUPPLIER_SCHEDULE_ROWS = (
     ),
     (
         "`EREQ-2026-003`",
-        "`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`",
+        "`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`, "
+        "`ACT-TM-2026-007`",
         "2026-08-18",
         "2026-08-18",
         "`GAP-2026-001`, `GAP-2026-003`",
@@ -798,6 +800,7 @@ EXPECTED_ACTION_DUE_DATES = {
     "ACT-TM-2026-004": "2026-08-15",
     "ACT-TM-2026-005": "2026-08-18",
     "ACT-TM-2026-006": "2026-08-18",
+    "ACT-TM-2026-007": "2026-08-15",
 }
 EXPECTED_EVIDENCE_REQUIREMENT_DUE_DATES = {
     "EREQ-2026-001": "2026-08-15",
@@ -8669,6 +8672,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "EREQ-2026-004",
         "ACT-TM-2026-001",
         "ACT-TM-2026-006",
+        "ACT-TM-2026-007",
         "REA-TM-2026-001",
         "REA-TM-2026-004",
     )
@@ -9973,6 +9977,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "ACT-TM-2026-006": (
             "`TH-2026-002`, `TH-2026-005`, `CTRL-2026-008`, `GAP-2026-004`"
         ),
+        "ACT-TM-2026-007": (
+            "`TH-2026-004`, `TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001`"
+        ),
     }
     action_relation_index = action_header.index("Related Gap / Control / Threat")
     observed_action_relations = {
@@ -9998,7 +10005,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             )
 
     expected_gap_actions = {
-        "GAP-2026-001": "`ACT-TM-2026-003`",
+        "GAP-2026-001": "`ACT-TM-2026-003`, `ACT-TM-2026-007`",
         "GAP-2026-002": "`ACT-TM-2026-001`, `ACT-TM-2026-004`",
         "GAP-2026-003": "`ACT-TM-2026-002`, `ACT-TM-2026-005`",
         "GAP-2026-004": "`ACT-TM-2026-006`",
@@ -10262,6 +10269,39 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "各Phase未実施の間はpreflight / default-deny / Cleanup結果未収集",
             ),
         },
+        "ACT-TM-2026-007": {
+            "action": (
+                "source fixture ID / version / hash",
+                "合成manifest field inventory",
+                "合成manual import requirement fixture",
+                "offlineで比較",
+                "必須fieldのcoverage",
+                "例外 / Unknown / 不一致",
+                "Finance Data Owner",
+                "resultとlimitation",
+                "sign-off",
+                "manifest representativeness comparison result",
+                "新Evidence ID",
+                "`REA-TM-2026-002`へ供給",
+                "実Customer Data",
+                "live Tenant",
+                "外部Network",
+                "Production変更",
+                "停止する",
+            ),
+            "success": (
+                "source fixture ID / version / hash",
+                "必須field coverage matrix",
+                "例外 / Unknown / 不一致",
+                "新Evidence ID付きmanifest representativeness comparison result",
+                "Finance Data Owner sign-off",
+                "`REA-TM-2026-002`への供給",
+                "未実施の場合はresult未収集",
+                "`ASM-2026-002`をAssumedに維持",
+                "`CTRL-2026-009`をValidatedにせず",
+                "`GAP-2026-001`を閉じない",
+            ),
+        },
     }
     for action_id, requirements in expected_action_semantics.items():
         row = action_rows_by_id.get(action_id)
@@ -10331,6 +10371,23 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             for marker in markers:
                 if marker not in value:
                     messages.append(f"{label}: GAP-2026-002 {field} missing {marker!r}")
+    telemetry_gap = gap_rows_by_id.get("GAP-2026-001")
+    if telemetry_gap is None:
+        messages.append(f"{label}: missing manifest/telemetry Gap GAP-2026-001")
+    else:
+        missing_information = telemetry_gap[
+            gap_header.index("Missing information / control / telemetry")
+        ]
+        for marker in (
+            "TH-2026-006",
+            "CTRL-2026-009",
+            "resource / operation粒度",
+            "合成manifest field inventory",
+            "manual import要件",
+            "代表性が未検証",
+        ):
+            if marker not in missing_information:
+                messages.append(f"{label}: GAP-2026-001 missing coordination marker {marker!r}")
     lab_gap = gap_rows_by_id.get("GAP-2026-004")
     if lab_gap is None:
         messages.append(f"{label}: missing dedicated lab-safety Gap GAP-2026-004")
@@ -10453,6 +10510,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     if telemetry_requirement is None:
         messages.append(f"{label}: missing API telemetry Evidence Requirement EREQ-2026-003")
     else:
+        telemetry_question = telemetry_requirement[
+            evidence_requirement_header.index("Question")
+        ]
         telemetry_minimum = telemetry_requirement[
             evidence_requirement_header.index("Minimum sufficient evidence")
         ]
@@ -10462,9 +10522,24 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         telemetry_resulting = telemetry_requirement[
             evidence_requirement_header.index("Resulting Evidence IDs")
         ]
+        telemetry_owner = telemetry_requirement[
+            evidence_requirement_header.index("Owner")
+        ]
+        if "合成manifest field inventoryがmanual import要件を十分代表するか" not in telemetry_question:
+            messages.append(
+                f"{label}: EREQ-2026-003 question must include manifest representativeness"
+            )
+        if telemetry_owner != "SOC、Platform、Finance Data Owner":
+            messages.append(
+                f"{label}: EREQ-2026-003 Owner {telemetry_owner!r} != "
+                "'SOC、Platform、Finance Data Owner'"
+            )
         for marker in (
             "resource / operation Field contract",
             "承認後のpost-change telemetry result",
+            "source fixture ID / version / hash付きmanifest / manual import field coverage matrix",
+            "例外 / Unknown / 不一致",
+            "Finance Data Owner sign-off",
         ):
             if marker not in telemetry_minimum:
                 messages.append(f"{label}: EREQ-2026-003 minimum evidence missing {marker!r}")
@@ -10472,6 +10547,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "Production変更や実Dataが必要な工程を第4章内で実行しない",
             "PIIを収集しない",
             "実Tenantへ接続しない",
+            "manifest代表性比較には合成fixtureだけを使用する",
         ):
             if marker not in telemetry_forbidden:
                 messages.append(f"{label}: EREQ-2026-003 safety boundary missing {marker!r}")
@@ -10481,6 +10557,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "NEG-2026-001",
             "resource / operation Fieldの実装記録とpost-change telemetry resultは未収集",
             "承認済み運用工程後に新Evidence IDを割り当てる",
+            "manifest representativeness comparison resultは未収集",
+            "`ACT-TM-2026-007`完了後に新Evidence IDを割り当てる",
         ):
             if marker not in telemetry_resulting:
                 messages.append(
@@ -10863,6 +10941,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "新Evidence ID付きpost-change API telemetry result",
                 "resource / operation Coverage",
                 "review sign-off",
+                "source fixture ID / version / hash付きmanifest / manual import field coverage matrix",
+                "例外 / Unknown / 不一致",
+                "新Evidence ID付きmanifest representativeness comparison result",
+                "Finance Data Owner sign-off",
             ),
             "Closure criteria": (
                 "新Authorization Record / RoE承認後にのみ両Event classの合成Rule testを再実施",
@@ -10878,6 +10960,15 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "過剰収集なし",
                 "CTRL-2026-009",
                 "GAP-2026-001",
+                "manifest representativeness comparison result",
+                "全必須manual import要件fieldのcoverage",
+                "source fixture ID / version / hash",
+                "Finance Data Owner sign-off",
+                "`ASM-2026-002`をConfirmed",
+                "comparison resultが未収集、FailedまたはInconclusive",
+                "`ASM-2026-002`をAssumedに維持",
+                "`CTRL-2026-009`をValidatedにせず",
+                "`GAP-2026-001`を閉じない",
                 "CTRL-2026-007`のEvidenceを`CTRL-2026-009`へ流用しない",
             ),
         },
@@ -10990,6 +11081,26 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in case_tables.get(assumption_header, [])
         if len(row) == len(assumption_header)
     }
+    manifest_assumption = assumptions_by_id.get("ASM-2026-002")
+    if manifest_assumption is None:
+        messages.append(f"{label}: missing manifest representativeness Assumption ASM-2026-002")
+    else:
+        expected_manifest_assumption_fields = {
+            "Owner": "Finance Data Owner",
+            "Validation method": "field inventoryとmanual import要件の比較",
+            "Due date": "2026-08-15",
+            "Status": "Assumed",
+            "Related IDs": (
+                "`TH-2026-004`, `TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001`, "
+                "`EREQ-2026-003`, `ACT-TM-2026-007`, `REA-TM-2026-002`"
+            ),
+        }
+        for field, expected in expected_manifest_assumption_fields.items():
+            actual = manifest_assumption[assumption_header.index(field)]
+            if actual != expected:
+                messages.append(
+                    f"{label}: ASM-2026-002 {field} {actual!r} != {expected!r}"
+                )
     refinement_consumer_contracts = (
         (
             "PATH-2026-001",
@@ -11145,6 +11256,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "ACT-TM-2026-004": set(),
                 "ACT-TM-2026-005": {"TH-2026-005"},
                 "ACT-TM-2026-006": {"TH-2026-002", "TH-2026-005"},
+                "ACT-TM-2026-007": set(),
             },
         ),
         (
@@ -11255,6 +11367,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "ACT-TM-2026-004": set(),
                 "ACT-TM-2026-005": set(),
                 "ACT-TM-2026-006": set(),
+                "ACT-TM-2026-007": {"TH-2026-006"},
             },
         ),
         (
@@ -11499,6 +11612,13 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             action_header,
             "Related Gap / Control / Threat",
             {"CTRL-2026-008"},
+        ),
+        (
+            "ACT-TM-2026-007",
+            action_rows_by_id.get("ACT-TM-2026-007"),
+            action_header,
+            "Related Gap / Control / Threat",
+            {"CTRL-2026-009"},
         ),
         (
             "REA-TM-2026-001 Scope",
@@ -12939,8 +13059,10 @@ def negative_regressions(
             (
                 "ASM-2026-002 falls back to inherited occurrence",
                 case.replace(
-                    "`TH-2026-004`, `TH-2026-006`, `EREQ-2026-003`",
-                    "`TH-2026-003`, `TH-2026-004`, `EREQ-2026-003`",
+                    "`TH-2026-004`, `TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001`, "
+                    "`EREQ-2026-003`, `ACT-TM-2026-007`, `REA-TM-2026-002`",
+                    "`TH-2026-003`, `TH-2026-004`, `CTRL-2026-009`, `GAP-2026-001`, "
+                    "`EREQ-2026-003`, `ACT-TM-2026-007`, `REA-TM-2026-002`",
                     1,
                 ),
             ),
@@ -12955,8 +13077,8 @@ def negative_regressions(
             (
                 "GAP-2026-001 falls back to inherited occurrence",
                 case.replace(
-                    "`TH-2026-006` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する",
-                    "`TH-2026-003` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する",
+                    "`TH-2026-006` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足し、",
+                    "`TH-2026-003` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足し、",
                     1,
                 ),
             ),
@@ -12989,10 +13111,10 @@ def negative_regressions(
             (
                 "REA-TM-2026-002 drops opportunity refinement",
                 case.replace(
-                    "| `REA-TM-2026-002` | Rule導入、Field追加、retention変更 | "
+                    "| `REA-TM-2026-002` | Rule導入、Field追加、retention変更、manifest requirement変更 | "
                     "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `TH-2026-006`, "
                     "`CTRL-2026-007`, `CTRL-2026-009` |",
-                    "| `REA-TM-2026-002` | Rule導入、Field追加、retention変更 | "
+                    "| `REA-TM-2026-002` | Rule導入、Field追加、retention変更、manifest requirement変更 | "
                     "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, "
                     "`CTRL-2026-007`, `CTRL-2026-009` |",
                     1,
@@ -13002,7 +13124,7 @@ def negative_regressions(
                 "TH-2026-003/006 reader allocation drift",
                 case.replace(
                     "| Refinement only | `CTRL-2026-009`, `ASM-2026-002`, "
-                    "`GAP-2026-001`, `ACT-TM-2026-003` |",
+                    "`GAP-2026-001`, `ACT-TM-2026-003`, `ACT-TM-2026-007` |",
                     "| Refinement only | `CTRL-2026-009`, `ASM-2026-002`, "
                     "`GAP-2026-001` |",
                     1,
@@ -13675,6 +13797,86 @@ def negative_regressions(
                 ),
             ),
             (
+                "ASM-2026-002 drops its manifest comparison producer",
+                case.replace(
+                    "`TH-2026-004`, `TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001`, "
+                    "`EREQ-2026-003`, `ACT-TM-2026-007`, `REA-TM-2026-002`",
+                    "`TH-2026-004`, `TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001`, "
+                    "`EREQ-2026-003`, `REA-TM-2026-002`",
+                    1,
+                ),
+            ),
+            (
+                "GAP-2026-001 drops the manifest comparison Action",
+                case.replace(
+                    "`ACT-TM-2026-003`, `ACT-TM-2026-007` | `REA-TM-2026-002` |",
+                    "`ACT-TM-2026-003` | `REA-TM-2026-002` |",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-003 omits manifest representativeness question",
+                case.replace(
+                    "、合成manifest field inventoryがmanual import要件を十分代表するか",
+                    "",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-003 omits manifest comparison minimum evidence",
+                case.replace(
+                    "、source fixture ID / version / hash付きmanifest / manual import field coverage matrix、"
+                    "例外 / Unknown / 不一致、Finance Data Owner sign-off",
+                    "",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-003 allows non-synthetic manifest comparison",
+                case.replace(
+                    "manifest代表性比較には合成fixtureだけを使用する。",
+                    "manifest代表性比較には任意の入力を使用する。",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-003 omits uncollected manifest comparison result",
+                case.replace(
+                    "。manifest representativeness comparison resultは未収集"
+                    "（`ACT-TM-2026-007`完了後に新Evidence IDを割り当てる）",
+                    "",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-007 omits offline comparison",
+                case.replace(
+                    "合成manual import requirement fixtureをofflineで比較し",
+                    "合成manual import requirement fixtureを参照し",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-007 omits Finance Data Owner sign-off",
+                case.replace(
+                    "新Evidence ID付きmanifest representativeness comparison result、"
+                    "Finance Data Owner sign-off、`REA-TM-2026-002`への供給",
+                    "新Evidence ID付きmanifest representativeness comparison result、"
+                    "`REA-TM-2026-002`への供給",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-007 overclaims completed manifest comparison",
+                case.replace(
+                    "未実施の場合はresult未収集、`ASM-2026-002`をAssumedに維持し、"
+                    "`CTRL-2026-009`をValidatedにせず`GAP-2026-001`を閉じない",
+                    "比較は完了済みで`ASM-2026-002`をConfirmedとし、"
+                    "`CTRL-2026-009`をValidatedとして`GAP-2026-001`を閉じる",
+                    1,
+                ),
+            ),
+            (
                 "EREQ-2026-002 omits uncollected Rule-test result handoff",
                 case.replace(
                     "Coverage result: `EVD-2026-003`（Admin consent Eventのみ）; App identity lifecycle EventのCoverageと両Event classのRule test結果は未収集（承認後に新Evidence IDを割り当てる）",
@@ -13730,7 +13932,7 @@ def negative_regressions(
                     "新Authorization Record / RoE承認後にのみ両Event classの合成Rule testを再実施し、"
                     "Detection test結果に新Evidence IDを割り当てる。両Event classのEvidenceで"
                     "`CTRL-2026-007`をValidatedとする。API telemetryは新Authorization Record / "
-                    "change approval後の承認済み運用工程でのみ変更・収集し",
+                    "change approval後の承認済み運用工程でのみ変更・収集する。",
                     "両Event classのEvidenceで`CTRL-2026-007`をValidatedとする。API telemetryを変更・収集し",
                     1,
                 ),
@@ -13739,9 +13941,38 @@ def negative_regressions(
                 "REA-TM-2026-002 omits CTRL-2026-009 post-change closure threshold",
                 case.replace(
                     "post-change Evidenceがrequired API Eventのresource / operation Field、Coverage、"
-                    "retention、過剰収集なしを示す場合に限り`CTRL-2026-009`を承認scope内でValidatedとし"
-                    "`GAP-2026-001`を閉じる",
-                    "`CTRL-2026-009`をValidatedとし`GAP-2026-001`を閉じる",
+                    "retention、過剰収集なしを示し、かつmanifest representativeness comparison resultが",
+                    "post-change Evidenceがあるだけで",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 omits manifest comparison inputs",
+                case.replace(
+                    "、source fixture ID / version / hash付きmanifest / manual import field coverage matrix、"
+                    "例外 / Unknown / 不一致、新Evidence ID付きmanifest representativeness comparison result、"
+                    "Finance Data Owner sign-off",
+                    "",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 validates telemetry without manifest comparison",
+                case.replace(
+                    "かつmanifest representativeness comparison resultが合成manifest field inventoryによる"
+                    "全必須manual import要件fieldのcoverage、例外 / Unknown / 不一致、source fixture ID / "
+                    "version / hash、Finance Data Owner sign-offを示す場合に限り、`ASM-2026-002`をConfirmedとし、",
+                    "`ASM-2026-002`をConfirmedとし、",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 closes manifest gap when comparison is absent",
+                case.replace(
+                    "comparison resultが未収集、FailedまたはInconclusiveなら`ASM-2026-002`をAssumedに維持し、"
+                    "`CTRL-2026-009`をValidatedにせず`GAP-2026-001`を閉じない。",
+                    "comparison resultが未収集でも`ASM-2026-002`をConfirmedとし、"
+                    "`CTRL-2026-009`をValidatedとして`GAP-2026-001`を閉じる。",
                     1,
                 ),
             ),
@@ -13831,7 +14062,18 @@ def negative_regressions(
                     1,
                     3,
                     "Supplier Action IDs",
-                    "`ACT-TM-2026-002`, `ACT-TM-2026-005`",
+                    "`ACT-TM-2026-002`, `ACT-TM-2026-005`, `ACT-TM-2026-007`",
+                ),
+            ),
+            (
+                "supplier schedule drops ACT-TM-2026-007 from EREQ-2026-003",
+                mutate_table_cell(
+                    case,
+                    EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
+                    1,
+                    3,
+                    "Supplier Action IDs",
+                    "`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`",
                 ),
             ),
             (
@@ -14051,13 +14293,17 @@ def negative_regressions(
             ),
             (
                 "Evidence Requirement status mixed with Model status",
-                case.replace("| SOC、Platform | 2026-08-18 | Required |", "| SOC、Platform | 2026-08-18 | Needs Evidence |", 1),
+                case.replace(
+                    "| SOC、Platform、Finance Data Owner | 2026-08-18 | Required |",
+                    "| SOC、Platform、Finance Data Owner | 2026-08-18 | Needs Evidence |",
+                    1,
+                ),
             ),
             (
                 "Gap missing owner and due date",
                 case.replace(
-                    "| `GAP-2026-001` | `TH-2026-006` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない | Platform | 2026-08-18 |",
-                    "| `GAP-2026-001` | `TH-2026-006` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足する | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない |  |  |",
+                    "| `GAP-2026-001` | `TH-2026-006` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足し、合成manifest field inventoryのmanual import要件に対する代表性が未検証である | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない | Platform | 2026-08-18 |",
+                    "| `GAP-2026-001` | `TH-2026-006` / `CTRL-2026-009`: API利用Telemetryのresource / operation粒度が不足し、合成manifest field inventoryのmanual import要件に対する代表性が未検証である | `DR-2026-001`: 既往影響をsummary-only境界までしか限定できない |  |  |",
                     1,
                 ),
             ),
@@ -14092,7 +14338,7 @@ def negative_regressions(
             (
                 "Chapter 15 lab-safety trace handoff drift",
                 case.replace(
-                    "`GAP-2026-001`〜`004`、`ACT-TM-2026-001`〜`006`、`REA-TM-2026-001`〜`004`",
+                    "`GAP-2026-001`〜`004`、`ACT-TM-2026-001`〜`007`、`REA-TM-2026-001`〜`004`",
                     "`GAP-2026-001`〜`003`、`ACT-TM-2026-001`〜`005`、`REA-TM-2026-001`〜`003`",
                     1,
                 ),
