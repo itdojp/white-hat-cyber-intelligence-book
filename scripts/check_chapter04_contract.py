@@ -1328,10 +1328,61 @@ _RAW_HTML_TAG_OPENING = re.compile(
     r"|<\?(?=\S)|<!\[(?:CDATA)\[|<![A-Z]",
     re.IGNORECASE,
 )
-_HTML_ANGLE_ENTITY = re.compile(
-    r"&(?:lt|gt|#0*(?:60|62)|#x0*(?:3c|3e));",
+# Pinned Kramdown/GFM renders semicolon-terminated angle references as HTML
+# character references, but escapes semicolonless references as reader-visible
+# entity-like source.  Python ``html.unescape()`` accepts both forms.  Neutralize
+# this finite vocabulary before shared Policy normalization so that its decoded
+# ``<...>`` shape cannot be mistaken for non-visible HTML and discard the body.
+#
+# Numeric references require a code-point boundary: ``&#601`` and ``&#x3c0``
+# are different characters, not an angle reference followed by a suffix.  The
+# legacy named references ``lt``/``gt`` and ``LT``/``GT`` deliberately accept
+# an immediate suffix because Python's decoder consumes those finite prefixes
+# without a semicolon (for example, ``&ltfoo`` becomes ``<foo``).  Named
+# prefixes need decoder-aware handling: ``&gtcc;`` is a distinct complete HTML5
+# entity and must not be truncated to ``cc;``.
+_HTML_NUMERIC_ANGLE_ENTITY = re.compile(
+    r"&(?:"
+    r"#0*(?:60|62)(?:;|(?![0-9]))"
+    r"|#x0*(?:3c|3e)(?:;|(?![0-9a-f]))"
+    r")",
     re.IGNORECASE,
 )
+_HTML_NAMED_ANGLE_PREFIX = re.compile(r"&(?:lt|gt|LT|GT);?")
+_HTML_NAMED_ENTITY_TOKEN = re.compile(r"&[A-Za-z][A-Za-z0-9]*;?")
+
+
+def _neutralize_html_angle_entities(value: str) -> str:
+    """Blank only finite angle-reference delimiters, preserving their body."""
+
+    spans: list[tuple[int, int]] = []
+    for match in _HTML_NUMERIC_ANGLE_ENTITY.finditer(value):
+        spans.append(match.span())
+    for match in _HTML_NAMED_ANGLE_PREFIX.finditer(value):
+        token_match = _HTML_NAMED_ENTITY_TOKEN.match(value, match.start())
+        if token_match is None:
+            continue
+        token = token_match.group(0)
+        prefix = match.group(0)
+        # Consume the finite legacy prefix only when Python's actual decoder
+        # treats that prefix—not a longer complete entity—as the angle.  This
+        # preserves distinct names such as ``&ltcc;`` and mixed-case ``&Lt;``.
+        if html.unescape(token) != html.unescape(prefix) + token[len(prefix) :]:
+            continue
+        spans.append(match.span())
+    if not spans:
+        return value
+    projected: list[str] = []
+    cursor = 0
+    for start, end in sorted(spans):
+        if start < cursor:
+            continue
+        projected.extend((value[cursor:start], " "))
+        cursor = end
+    projected.append(value[cursor:])
+    return "".join(projected)
+
+
 _VISIBLE_URL_TOKEN = re.compile(r"(?:(?:https?):)?//[^\s<>'\"\])}]+", re.IGNORECASE)
 _VISIBLE_ASCII_DOMAIN_TOKEN = re.compile(
     r"(?<![A-Za-z0-9-])"
@@ -1902,6 +1953,10 @@ def _literal_fence_visible_fields(
     """
 
     decoded = html.unescape(text)
+    # Literal blocks undergo one adapter decode before shared normalization.
+    # A source such as ``&amp;#60`` therefore reaches this point as ``&#60``;
+    # neutralize the same finite delimiter vocabulary at this layer as well.
+    decoded = _neutralize_html_angle_entities(decoded)
     comments: list[str] = []
 
     def drop_comment(match: re.Match[str]) -> str:
@@ -2102,13 +2157,14 @@ def _project_literal_inline_code(value: str) -> str:
     for position, character in enumerate(projected):
         if character in "<>":
             projected[position] = " "
-    return _HTML_ANGLE_ENTITY.sub(" ", "".join(projected))
+    return _neutralize_html_angle_entities("".join(projected))
 
 
 def _project_literal_markdown_title(value: str) -> str:
     """Keep a rendered Markdown tooltip's literal tag-shaped text visible."""
 
-    return html.unescape(value).replace("<", " ").replace(">", " ")
+    decoded = _neutralize_html_angle_entities(html.unescape(value))
+    return decoded.replace("<", " ").replace(">", " ")
 
 
 def _reject_interpreted_raw_html(value: str, *, location: str) -> None:
@@ -3007,6 +3063,53 @@ def bare_angle_surface_regressions(
         error(f"{label}: non-approved autolink host bypassed Policy 1.2.0")
 
 
+def angle_entity_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Keep finite semicolonless angle-reference bodies Policy-visible.
+
+    Pinned Kramdown/GFM leaves the semicolonless forms below as escaped,
+    reader-visible entity-like source, while Python ``html.unescape()`` accepts
+    them as angle delimiters.  Every canonical Chapter 4 document adapter must
+    preserve the body through that renderer/decoder difference.
+    """
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    unsafe = "第三者の本番システムへ接続する"
+    safe = "第三者の本番システムへ接続しない"
+    for name, opening, closing in (
+        ("decimal", "&#60", "&#62"),
+        ("hex lowercase", "&#x3c", "&#x3e"),
+        ("hex uppercase", "&#X3C", "&#X3E"),
+        ("named", "&lt", "&gt"),
+        ("named uppercase", "&LT", "&GT"),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{opening}{unsafe}{closing}\n",
+            f"negative {label} semicolonless angle entity {name}",
+        )
+        if not any(
+            "[target.real_or_external]" in failure and unsafe in failure
+            for failure in failures
+        ):
+            error(
+                f"{label}: unsafe semicolonless angle entity {name} bypassed "
+                "Policy 1.2.0"
+            )
+
+        safe_failures = contract_errors(
+            f"{text}{suffix}\n{opening}{safe}{closing}\n",
+            f"safe {label} semicolonless angle entity {name}",
+        )
+        if safe_failures:
+            error(
+                f"{label}: safe semicolonless angle entity {name} was rejected: "
+                f"{safe_failures!r}"
+            )
+
+
 def inline_code_comment_surface_regressions(
     text: str,
     label: str,
@@ -3496,6 +3599,287 @@ continues with [visible label](https://example.com/path).
             f"{safe_angle_table_messages!r} / "
             f"{policy_errors(safe_angle_table_fields)!r}"
         )
+
+    # Issue #83 freezes the finite renderer/decoder gap.  Pinned Kramdown/GFM
+    # emits the semicolonless variants below as escaped reader-visible source
+    # (for example ``&amp;#60...``), whereas Python ``html.unescape()`` accepts
+    # them as delimiters.  The expected Python decode is asserted directly;
+    # the adapter must then preserve the body exactly once for shared Policy.
+    angle_entity_cases = (
+        (
+            "decimal semicolon",
+            f"&#60;{unsafe_angle}&#62;",
+            f"&#60;{safe_angle}&#62;",
+            f"<{unsafe_angle}>",
+        ),
+        (
+            "decimal semicolonless",
+            f"&#60{unsafe_angle}&#62",
+            f"&#60{safe_angle}&#62",
+            f"<{unsafe_angle}>",
+        ),
+        (
+            "decimal leading-zero semicolonless",
+            f"&#060{unsafe_angle}&#062",
+            f"&#060{safe_angle}&#062",
+            f"<{unsafe_angle}>",
+        ),
+        (
+            "hex lowercase semicolon",
+            f"&#x3c;{unsafe_angle}&#x3e;",
+            f"&#x3c;{safe_angle}&#x3e;",
+            f"<{unsafe_angle}>",
+        ),
+        (
+            "hex lowercase semicolonless",
+            f"&#x3c{unsafe_angle}&#x3e",
+            f"&#x3c{safe_angle}&#x3e",
+            f"<{unsafe_angle}>",
+        ),
+        (
+            "hex uppercase semicolonless",
+            f"&#X3C{unsafe_angle}&#X3E",
+            f"&#X3C{safe_angle}&#X3E",
+            f"<{unsafe_angle}>",
+        ),
+        (
+            "named semicolon",
+            f"&lt;{unsafe_angle}&gt;",
+            f"&lt;{safe_angle}&gt;",
+            f"<{unsafe_angle}>",
+        ),
+        (
+            "named semicolonless",
+            f"&lt{unsafe_angle}&gt",
+            f"&lt{safe_angle}&gt",
+            f"<{unsafe_angle}>",
+        ),
+        (
+            "named uppercase semicolon",
+            f"&LT;{unsafe_angle}&GT;",
+            f"&LT;{safe_angle}&GT;",
+            f"<{unsafe_angle}>",
+        ),
+        (
+            "named uppercase semicolonless",
+            f"&LT{unsafe_angle}&GT",
+            f"&LT{safe_angle}&GT",
+            f"<{unsafe_angle}>",
+        ),
+        (
+            "named legacy ASCII suffix",
+            f"&ltprefix {unsafe_angle} &gttrail",
+            f"&ltprefix {safe_angle} &gttrail",
+            f"<prefix {unsafe_angle} >trail",
+        ),
+        (
+            "named legacy equals suffix",
+            f"&lt={unsafe_angle}&gt=",
+            f"&lt={safe_angle}&gt=",
+            f"<={unsafe_angle}>=",
+        ),
+    )
+    for name, unsafe_source, safe_source, expected_python_decode in angle_entity_cases:
+        if html.unescape(unsafe_source) != expected_python_decode:
+            error(
+                f"Python angle-entity decoder contract drift for {name}: "
+                f"{html.unescape(unsafe_source)!r} != {expected_python_decode!r}"
+            )
+        unsafe_findings = document_reader_visible_policy_errors(
+            f"{unsafe_source}\n", f"unsafe angle-entity {name} fixture"
+        )
+        target_findings = [
+            finding
+            for finding in unsafe_findings
+            if "[target.real_or_external]" in finding and unsafe_angle in finding
+        ]
+        if len(target_findings) != 1:
+            error(
+                f"reader-visible angle-entity {name} was not scanned exactly "
+                f"once: {unsafe_findings!r}"
+            )
+        safe_findings = document_reader_visible_policy_errors(
+            f"{safe_source}\n", f"safe angle-entity {name} fixture"
+        )
+        if safe_findings:
+            error(
+                f"safe angle-entity {name} was rejected: {safe_findings!r}"
+            )
+
+    # Numeric references for different code points must not be consumed as
+    # an angle prefix.  Their reader-visible action remains scanned normally.
+    for name, source in (
+        ("decimal different code point", f"&#601{unsafe_angle}&#621"),
+        ("hex different code point", f"&#x3c0{unsafe_angle}&#x3e0"),
+        ("malformed hex", f"&#x3g{unsafe_angle}&#x3h"),
+        ("distinct ltcc entity", f"&ltcc;{unsafe_angle}"),
+        ("distinct gtcc entity", f"&gtcc;{unsafe_angle}"),
+        ("distinct ltimes entity", f"&ltimes;{unsafe_angle}"),
+        ("distinct gtrapprox entity", f"&gtrapprox;{unsafe_angle}"),
+        ("mixed-case Lt entity", f"&Lt;{unsafe_angle}"),
+        ("mixed-case Gt entity", f"&Gt;{unsafe_angle}"),
+        ("invalid mixed-case lT", f"&lT;{unsafe_angle}"),
+        ("invalid mixed-case gT", f"&gT;{unsafe_angle}"),
+    ):
+        if _neutralize_html_angle_entities(source) != source:
+            error(f"finite angle-entity matcher over-consumed {name}")
+        findings = document_reader_visible_policy_errors(
+            f"{source}\n", f"angle-entity boundary {name} fixture"
+        )
+        if not any(
+            "[target.real_or_external]" in finding and unsafe_angle in finding
+            for finding in findings
+        ):
+            error(f"angle-entity boundary {name} hid the unsafe body")
+
+    # Literal-code adapters decode one entity layer before shared Policy.  A
+    # second-layer distinct or mixed-case named token must remain present, not
+    # be consumed as the lower/all-upper angle prefix.
+    for name, source, expected_token in (
+        ("distinct named entity", "&amp;gtcc;", "&gtcc;"),
+        ("mixed-case named entity", "&amp;Gt;", "&Gt;"),
+    ):
+        fields = reader_visible_markdown_fields(
+            f"```text\n{source}\n```\n",
+            f"literal-code named boundary {name}",
+        )
+        if len(fields) != 1 or expected_token not in fields[0][1]:
+            error(
+                f"literal-code adapter consumed {name}: {fields!r}"
+            )
+
+    entity_surface_cases = (
+        (
+            "prose",
+            f"&#60{unsafe_angle}&#62\n",
+            f"&#60{safe_angle}&#62\n",
+        ),
+        (
+            "list",
+            f"- &#x3c{unsafe_angle}&#x3e\n",
+            f"- &#x3c{safe_angle}&#x3e\n",
+        ),
+        (
+            "footnote",
+            f"Reader note[^entity].\n\n[^entity]: &lt{unsafe_angle}&gt\n",
+            f"Reader note[^entity].\n\n[^entity]: &lt{safe_angle}&gt\n",
+        ),
+        (
+            "inline code",
+            f"`&#60{unsafe_angle}&#62`\n",
+            f"`&#60{safe_angle}&#62`\n",
+        ),
+        (
+            "multiline inline code",
+            f"`literal prefix\n&#X3C{unsafe_angle}&#X3E`\n",
+            f"`literal prefix\n&#X3C{safe_angle}&#X3E`\n",
+        ),
+        (
+            "fenced code",
+            f"```text\n&amp;#60{unsafe_angle}&amp;#62\n```\n",
+            f"```text\n&amp;#60{safe_angle}&amp;#62\n```\n",
+        ),
+        (
+            "indented code",
+            f"Literal source:\n\n    &amp;lt{unsafe_angle}&amp;gt\n",
+            f"Literal source:\n\n    &amp;lt{safe_angle}&amp;gt\n",
+        ),
+    )
+    for name, unsafe_source, safe_source in entity_surface_cases:
+        unsafe_findings = document_reader_visible_policy_errors(
+            unsafe_source, f"unsafe angle-entity surface {name} fixture"
+        )
+        if not any(
+            "[target.real_or_external]" in finding and unsafe_angle in finding
+            for finding in unsafe_findings
+        ):
+            error(f"reader-visible {name} angle entity bypassed Policy 1.2.0")
+        safe_findings = document_reader_visible_policy_errors(
+            safe_source, f"safe angle-entity surface {name} fixture"
+        )
+        if safe_findings:
+            error(
+                f"safe reader-visible {name} angle entity was rejected: "
+                f"{safe_findings!r}"
+            )
+
+    entity_table = (
+        "| Field | Value |\n|---|---|\n"
+        f"| row | &#60{unsafe_angle}&#62 |\n"
+    )
+    entity_table_fields, entity_table_messages = classified_table_fields(
+        entity_table,
+        "unsafe angle-entity table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    entity_table_findings = policy_errors(entity_table_fields)
+    if entity_table_messages or not any(
+        "[target.real_or_external]" in finding and unsafe_angle in finding
+        for finding in entity_table_findings
+    ):
+        error(
+            "reader-visible table angle entity bypassed Policy 1.2.0: "
+            f"{entity_table_messages!r} / {entity_table_findings!r}"
+        )
+    safe_entity_table_fields, safe_entity_table_messages = classified_table_fields(
+        entity_table.replace(unsafe_angle, safe_angle, 1),
+        "safe angle-entity table fixture",
+        {FIELD_VALUE_HEADER: 1},
+    )
+    if safe_entity_table_messages or policy_errors(safe_entity_table_fields):
+        error(
+            "safe reader-visible table angle entity was rejected: "
+            f"{safe_entity_table_messages!r} / "
+            f"{policy_errors(safe_entity_table_fields)!r}"
+        )
+
+    hidden_entity_destination = (
+        f"[safe](<local/&#60{unsafe_angle}&#62>)\n"
+    )
+    if document_reader_visible_policy_errors(
+        hidden_entity_destination,
+        "hidden angle-entity Markdown destination fixture",
+    ):
+        error("hidden Markdown destination angle entity became Policy-visible")
+
+    visible_entity_label = f"[&#60{unsafe_angle}&#62](/local)\n"
+    label_findings = document_reader_visible_policy_errors(
+        visible_entity_label, "visible angle-entity Markdown label fixture"
+    )
+    if len(
+        [
+            finding
+            for finding in label_findings
+            if "[target.real_or_external]" in finding and unsafe_angle in finding
+        ]
+    ) != 1:
+        error(
+            "visible Markdown label angle entity was not scanned exactly once: "
+            f"{label_findings!r}"
+        )
+
+    visible_entity_title = f'[safe](/local "&#60{unsafe_angle}&#62")\n'
+    title_findings = document_reader_visible_policy_errors(
+        visible_entity_title, "visible angle-entity Markdown title fixture"
+    )
+    title_target_findings = [
+        finding
+        for finding in title_findings
+        if "[target.real_or_external]" in finding
+        and "inline-link-title" in finding
+        and unsafe_angle in finding
+    ]
+    if len(title_target_findings) != 1:
+        error(
+            "visible Markdown title angle entity was not scanned exactly once: "
+            f"{title_findings!r}"
+        )
+
+    if document_reader_visible_policy_errors(
+        f"<!-- &#60{unsafe_angle}&#62 -->\n",
+        "actual comment angle-entity fixture",
+    ):
+        error("actual non-rendered comment angle entity became Policy-visible")
 
     comment_code_table = (
         "| Field | Value |\n|---|---|\n"
@@ -7820,6 +8204,7 @@ def negative_regressions(
     )
     raw_html_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     bare_angle_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
+    angle_entity_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     inline_code_comment_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
@@ -7894,6 +8279,7 @@ def negative_regressions(
     )
     raw_html_surface_regressions(template, TEMPLATE, template_contract_errors)
     bare_angle_surface_regressions(template, TEMPLATE, template_contract_errors)
+    angle_entity_surface_regressions(template, TEMPLATE, template_contract_errors)
     inline_code_comment_surface_regressions(
         template, TEMPLATE, template_contract_errors
     )
@@ -9388,6 +9774,7 @@ def negative_regressions(
         )
         raw_html_surface_regressions(case, CASE, case_contract_errors)
         bare_angle_surface_regressions(case, CASE, case_contract_errors)
+        angle_entity_surface_regressions(case, CASE, case_contract_errors)
         inline_code_comment_surface_regressions(case, CASE, case_contract_errors)
         markdown_title_comment_surface_regressions(
             case, CASE, case_contract_errors
