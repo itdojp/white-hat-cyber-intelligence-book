@@ -1367,6 +1367,9 @@ def policy_errors(fields: list[tuple[str, str]]) -> list[str]:
 
 
 _MARKDOWN_LIST_ITEM = re.compile(r"^\s*(?:[-+*]|\d+[.)])\s+(?P<body>.*)$")
+_FINITE_LIST_ITEM_PREFIX = re.compile(
+    r"^(?P<indent>[ \t]*)(?P<marker>[-+*]|\d+[.)])(?P<gap>[ \t]+)"
+)
 _MARKDOWN_HEADING = re.compile(r"^\s{0,3}#{1,6}(?:[ \t]+|$)(?P<body>.*)$")
 _MARKDOWN_FENCE = re.compile(
     r"^(?P<indent> {0,3})(?P<marker>`{3,}|~{3,})(?P<info>[^\r\n]*)$"
@@ -1967,9 +1970,11 @@ def _rendered_indented_code_spans(
 
     This is deliberately a bounded publication adapter rather than a complete
     CommonMark block parser.  Every nonblank line beginning with four spaces or
-    one tab outside a parsed fenced block is treated as reader-visible literal
-    code.  Blank continuation lines stay inside a span only when another
-    indented line follows, so ordinary paragraph boundaries remain stable.
+    one tab after the finite blockquote prefix, and outside a parsed fenced
+    block, is treated as reader-visible literal code.  Blank lines split finite
+    spans: pinned Kramdown can change a list paragraph continuation into nested
+    literal code after that boundary, so each post-blank opening must be
+    classified independently.
     """
 
     spans: list[MarkdownIndentedCodeSpan] = []
@@ -1979,9 +1984,10 @@ def _rendered_indented_code_spans(
             index += 1
             continue
         line = lines[index]
-        if line.startswith("    "):
+        quote_depth, line_remainder = _finite_blockquote_context(line)
+        if line_remainder.startswith("    "):
             indentation = "spaces"
-        elif line.startswith("\t"):
+        elif line_remainder.startswith("\t"):
             indentation = "tab"
         else:
             index += 1
@@ -1992,35 +1998,23 @@ def _rendered_indented_code_spans(
         closing_index = index
         while closing_index < len(lines) and closing_index not in excluded_lines:
             candidate = lines[closing_index]
-            if candidate.startswith("    "):
+            candidate_quote_depth, candidate_remainder = (
+                _finite_blockquote_context(candidate)
+            )
+            if candidate_quote_depth != quote_depth:
+                break
+            if candidate_remainder.startswith("    "):
                 indentation_kinds.add("spaces")
-                content.append(candidate[4:])
+                content.append(candidate_remainder[4:])
                 closing_index += 1
                 continue
-            if candidate.startswith("\t"):
+            if candidate_remainder.startswith("\t"):
                 indentation_kinds.add("tab")
-                content.append(candidate[1:])
+                content.append(candidate_remainder[1:])
                 closing_index += 1
                 continue
             if not candidate.strip():
-                lookahead = closing_index + 1
-                while (
-                    lookahead < len(lines)
-                    and lookahead not in excluded_lines
-                    and not lines[lookahead].strip()
-                ):
-                    lookahead += 1
-                if (
-                    lookahead < len(lines)
-                    and lookahead not in excluded_lines
-                    and (
-                        lines[lookahead].startswith("    ")
-                        or lines[lookahead].startswith("\t")
-                    )
-                ):
-                    content.append("")
-                    closing_index += 1
-                    continue
+                break
             break
         indentation = (
             next(iter(indentation_kinds))
@@ -2037,6 +2031,177 @@ def _rendered_indented_code_spans(
         )
         index = closing_index
     return spans
+
+
+def _finite_blockquote_context(line: str) -> tuple[int, str]:
+    """Return the bounded quote depth and content used by block contracts."""
+
+    remainder = line
+    depth = 0
+    while depth < _MAX_FENCE_QUOTE_DEPTH:
+        quote = re.match(r"^ {0,3}>[ \t]?", remainder)
+        if quote is None:
+            break
+        remainder = remainder[quote.end() :]
+        depth += 1
+    return depth, remainder
+
+
+def _finite_markdown_structural_boundary(line: str) -> bool:
+    """Return whether one finite line ends or starts a Markdown block."""
+
+    _, remainder = _finite_blockquote_context(line)
+    stripped = remainder.strip()
+    return bool(
+        not stripped
+        or _MARKDOWN_HEADING.match(remainder)
+        or stripped in {"---", "***", "___"}
+        or _MARKDOWN_LIST_ITEM.match(remainder)
+    )
+
+
+def _markdown_source_columns(value: str, *, start_column: int = 0) -> int:
+    """Return finite Markdown source columns using four-column tab stops."""
+
+    column = start_column
+    for character in value:
+        if character == "\t":
+            column += 4 - (column % 4)
+        else:
+            column += 1
+    return column
+
+
+def _consume_kramdown_indent_units(value: str, count: int) -> int | None:
+    """Consume pinned Kramdown ``(?:\t| {4}){count}`` from ``value``."""
+
+    position = 0
+    for _ in range(count):
+        if value.startswith("\t", position):
+            position += 1
+        elif value.startswith("    ", position):
+            position += 4
+        else:
+            return None
+    return position
+
+
+def _finite_list_line_is_consumed(value: str, indentation: int) -> bool:
+    """Mirror the finite prefix alternatives in Kramdown 2.5.2 list.rb."""
+
+    units, remainder = divmod(indentation, 4)
+    exact_units_end = _consume_kramdown_indent_units(value, units)
+    if (
+        exact_units_end is not None
+        and value.startswith(" " * remainder, exact_units_end)
+    ):
+        return True
+    return _consume_kramdown_indent_units(value, units + 1) is not None
+
+
+def _finite_list_indentation_is_literal_code(
+    list_prefix: str,
+    opening_indent: str,
+) -> bool:
+    """Return whether a blank-separated list line renders as literal code.
+
+    Pure-space nested lists are decided in absolute source columns: a line
+    outside the owning indentation is top-level code at four spaces, while a
+    line inside the item needs four additional columns.  For top-level tabbed
+    prefixes, the helper follows Kramdown 2.5.2's finite ``content_re`` and
+    leading-tab normalization before testing the inner code indentation.  A
+    mixed or nested tab shape outside that bounded model fails closed as
+    reader-visible prose.
+    """
+
+    content_column = _markdown_source_columns(list_prefix)
+    opening_column = _markdown_source_columns(opening_indent)
+
+    if "\t" not in opening_indent and "\t" not in list_prefix:
+        return bool(
+            opening_column >= 4
+            and (
+                opening_column < content_column
+                or opening_column >= content_column + 4
+            )
+        )
+
+    list_match = _FINITE_LIST_ITEM_PREFIX.fullmatch(list_prefix)
+    if list_match is None or list_match.group("indent"):
+        return False
+
+    if not _finite_list_line_is_consumed(opening_indent, content_column):
+        return opening_indent.startswith(("\t", "    "))
+
+    normalized = opening_indent
+    leading_tabs = len(normalized) - len(normalized.lstrip("\t"))
+    if leading_tabs:
+        normalized = " " * (4 * leading_tabs) + normalized[leading_tabs:]
+    if normalized.startswith(" " * content_column):
+        normalized = normalized[content_column:]
+    return normalized.startswith(("\t", "    "))
+
+
+def _indented_span_starts_at_block_boundary(
+    lines: list[str],
+    span: MarkdownIndentedCodeSpan,
+    *,
+    start_index: int,
+    excluded_lines: set[int],
+) -> bool:
+    """Distinguish a literal indented block from a lazy paragraph line.
+
+    Pinned Kramdown does not let four-space source interrupt an active
+    paragraph.  The ordinary adapter conservatively selects every finite
+    indented span, but extension masking excludes only true literal code.  In
+    a list, the code threshold is the owning item's content indentation plus
+    four source columns, not a fixed eight-space rule.  Bounded indented list
+    continuations may be crossed to recover that owning marker; an unindented
+    paragraph or structural boundary terminates the search.
+    """
+
+    if span.opening_index <= start_index:
+        return True
+    opening_line = lines[span.opening_index]
+    opening_quote_depth, opening_remainder = _finite_blockquote_context(
+        opening_line
+    )
+    previous = span.opening_index - 1
+    cursor = previous
+    saw_blank = False
+    while cursor >= start_index:
+        if cursor in excluded_lines:
+            break
+        candidate = lines[cursor]
+        candidate_quote_depth, remainder = _finite_blockquote_context(candidate)
+        if not remainder.strip():
+            saw_blank = True
+            cursor -= 1
+            continue
+        if candidate_quote_depth != opening_quote_depth:
+            break
+        list_prefix = _FINITE_LIST_ITEM_PREFIX.match(remainder)
+        if list_prefix is not None:
+            opening_indent_match = re.match(r"^[ \t]*", opening_remainder)
+            opening_indent = (
+                opening_indent_match.group(0)
+                if opening_indent_match is not None
+                else ""
+            )
+            return saw_blank and _finite_list_indentation_is_literal_code(
+                list_prefix.group(0),
+                opening_indent,
+            )
+        if _finite_markdown_structural_boundary(candidate):
+            break
+        if remainder.startswith((" ", "\t")):
+            cursor -= 1
+            continue
+        break
+    return (
+        previous in excluded_lines
+        or _finite_markdown_structural_boundary(lines[previous])
+    )
 
 
 def _rendered_footnote_spans(
@@ -2859,6 +3024,15 @@ def _project_kramdown_attribute_lists(
             # hidden metadata.  Leave it visible for the ordinary Policy path.
             continue
 
+        exact_token = value[start : end + 1]
+        if exact_token in _KRAMDOWN_COMMENT_DELIMITERS:
+            # The paired comment-extension contract is owned by the
+            # document/table pre-projection guard.  An unmatched delimiter is
+            # reader-visible literal source in pinned Kramdown and must not be
+            # misclassified as an unsupported attribute list.
+            cursor = end + 1
+            continue
+
         body = value[start + 2 : end]
         attachment = _kramdown_ial_attachment_kind(
             value,
@@ -3031,6 +3205,166 @@ def _inline_link_title_fields(value: str, *, location: str) -> list[tuple[str, s
 
 
 _INTERPRETED_LIQUID_OPENING = re.compile(r"\{\{|\{%")
+_KRAMDOWN_COMMENT_OPEN = "{::comment}"
+_KRAMDOWN_COMMENT_CLOSE = "{:/comment}"
+_KRAMDOWN_COMMENT_DELIMITERS = frozenset(
+    (_KRAMDOWN_COMMENT_OPEN, _KRAMDOWN_COMMENT_CLOSE)
+)
+
+
+def _finite_interpreted_html_comment_spans(
+    value: str,
+) -> tuple[tuple[int, int], ...]:
+    """Locate actual raw HTML comments before Markdown extension precedence.
+
+    An HTML-comment opener inside finite same-line code or link metadata is
+    literal.  Once an eligible opener starts, its first raw close owns the
+    comment.  These spans exclude Kramdown comment openers from eligibility;
+    they never hide a raw Kramdown close after another eligible opener.
+    """
+
+    spans: list[tuple[int, int]] = []
+    lines = value.splitlines(keepends=True)
+    offset = 0
+    in_comment: int | None = None
+    for line in lines:
+        content = line.rstrip("\r\n")
+        protected = tuple(
+            sorted(
+                set(_finite_same_line_code_spans(content))
+                | set(_finite_markdown_link_noncontent_spans(content))
+            )
+        )
+        cursor = 0
+        while cursor < len(content):
+            if in_comment is not None:
+                close = content.find("-->", cursor)
+                if close < 0:
+                    break
+                spans.append((in_comment, offset + close + 3))
+                in_comment = None
+                cursor = close + 3
+                continue
+            opening = content.find("<!--", cursor)
+            while opening >= 0 and any(
+                start <= opening < end for start, end in protected
+            ):
+                opening = content.find("<!--", opening + 1)
+            if opening < 0:
+                break
+            in_comment = offset + opening
+            cursor = opening + 4
+        offset += len(line)
+    if in_comment is not None:
+        spans.append((in_comment, len(value)))
+    return tuple(spans)
+
+
+def _reject_interpreted_kramdown_extension(
+    value: str, *, location: str
+) -> None:
+    """Reject finite Kramdown comment pairs on reader-visible Markdown.
+
+    Kramdown turns ``{::comment}...{:/comment}`` into an HTML comment before
+    publication, which can join protected prose around the removed body.  The
+    Chapter 4 publication contract does not need comment extensions, so an
+    exact matched pair in one finite inline/block paragraph context fails
+    closed.  An opener wholly inside same-line code, a finite Markdown link
+    destination/title, an actual HTML comment, or a true indented/fenced code
+    block is literal.  After an eligible opener starts, however, pinned
+    Kramdown recognizes the raw exact close even inside such syntax.  Unmatched
+    and escaped openers remain reader-visible literal source.
+    """
+
+    lines = value.splitlines(keepends=True)
+    line_offsets: list[int] = []
+    line_offset = 0
+    for line in lines:
+        line_offsets.append(line_offset)
+        line_offset += len(line)
+    html_comment_spans = _finite_interpreted_html_comment_spans(value)
+
+    match_start: int | None = None
+    for line_index, line in enumerate(lines):
+        content = line.rstrip("\r\n")
+        protected = tuple(
+            sorted(
+                set(_finite_same_line_code_spans(content))
+                | set(_finite_markdown_link_noncontent_spans(content))
+            )
+        )
+        cursor = 0
+        while True:
+            opening_column = content.find(_KRAMDOWN_COMMENT_OPEN, cursor)
+            if opening_column < 0:
+                break
+            cursor = opening_column + len(_KRAMDOWN_COMMENT_OPEN)
+            opening = line_offsets[line_index] + opening_column
+            if (
+                _markdown_character_is_escaped(content, opening_column)
+                or any(
+                    start <= opening_column < end for start, end in protected
+                )
+                or any(
+                    start <= opening < end for start, end in html_comment_spans
+                )
+            ):
+                continue
+
+            prefix = content[:opening_column]
+            suffix = content[cursor:]
+            standalone = bool(
+                not suffix.strip()
+                and _KRAMDOWN_BLOCK_IAL_PREFIX.fullmatch(prefix)
+            )
+            previous_is_boundary = bool(
+                line_index == 0
+                or _finite_markdown_structural_boundary(lines[line_index - 1])
+            )
+            top_level_block = bool(
+                standalone
+                and previous_is_boundary
+                and ">" not in prefix
+                and not re.search(
+                    r"(?:^|[ \t>])(?:[-+*]|\d+[.)])[ \t]+$",
+                    prefix,
+                )
+            )
+
+            search_end = len(value)
+            if not top_level_block:
+                opening_quote_depth, _ = _finite_blockquote_context(content)
+                for boundary_index in range(line_index + 1, len(lines)):
+                    boundary_line = lines[boundary_index].rstrip("\r\n")
+                    boundary_quote_depth, _ = _finite_blockquote_context(
+                        boundary_line
+                    )
+                    if (
+                        boundary_quote_depth != opening_quote_depth
+                        or _finite_markdown_structural_boundary(boundary_line)
+                    ):
+                        search_end = line_offsets[boundary_index]
+                        break
+            closing = value.find(
+                _KRAMDOWN_COMMENT_CLOSE,
+                opening + len(_KRAMDOWN_COMMENT_OPEN),
+                search_end,
+            )
+            if closing >= 0:
+                match_start = opening
+                break
+        if match_start is not None:
+            break
+
+    if match_start is None:
+        return
+    line_number = value.count("\n", 0, match_start) + 1
+    line_start = value.rfind("\n", 0, match_start) + 1
+    column = match_start - line_start + 1
+    raise ValueError(
+        f"{location}:{line_number}:{column}: interpreted Kramdown comment "
+        "extension pair is disallowed before Policy scanning"
+    )
 
 
 def _reject_interpreted_liquid(value: str, *, location: str) -> None:
@@ -3100,6 +3434,46 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
         source_lines,
         start_index=content_start,
         excluded_lines=fenced_lines | footnote_lines,
+    )
+    literal_extension_lines = fenced_lines | {
+        index
+        for span in indented_spans
+        if _indented_span_starts_at_block_boundary(
+            source_lines,
+            span,
+            start_index=content_start,
+            excluded_lines=fenced_lines | footnote_lines,
+        )
+        for index in range(span.opening_index, span.closing_index + 1)
+    }
+    for footnote_span in footnote_spans:
+        nested_code_spans = _rendered_indented_code_spans(
+            list(footnote_span.content),
+            start_index=0,
+            excluded_lines=set(),
+        )
+        literal_extension_lines.update(
+            footnote_span.opening_index + nested_index
+            for nested_span in nested_code_spans
+            if _indented_span_starts_at_block_boundary(
+                list(footnote_span.content),
+                nested_span,
+                start_index=0,
+                excluded_lines=set(),
+            )
+            for nested_index in range(
+                nested_span.opening_index,
+                nested_span.closing_index + 1,
+            )
+        )
+    extension_source_lines = [
+        "" if index in literal_extension_lines else line
+        for index, line in enumerate(source_lines)
+        if index >= content_start
+    ]
+    _reject_interpreted_kramdown_extension(
+        "\n".join(extension_source_lines),
+        location=label,
     )
     covered_lines = fenced_lines | footnote_lines | {
         index
@@ -3572,6 +3946,10 @@ def classified_table_fields(
                         row_index,
                     )
                     try:
+                        _reject_interpreted_kramdown_extension(
+                            value,
+                            location=location,
+                        )
                         visible_parts = _strip_html_comments([(1, value)])
                         visible_value = "".join(part for _, part in visible_parts)
                         _reject_interpreted_raw_html(
@@ -3810,6 +4188,293 @@ def liquid_surface_regressions(
         error(
             f"{label}: entity-encoded Liquid near-miss was rejected: {failures!r}"
         )
+
+
+def kramdown_extension_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Reject interpreted comment pairs while preserving literal source."""
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    unsafe_probes = (
+        (
+            "inline comment splice",
+            "第三者の{::comment}hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "block comment splice",
+            "第三者の\n{::comment}\nhidden\n{:/comment}\n"
+            "本番システムへ接続する。",
+        ),
+        (
+            "wrapped inline comment splice",
+            "第三者の{::comment}\nhidden\n{:/comment}"
+            "本番システムへ接続する。",
+        ),
+        (
+            "blockquote comment splice",
+            "> 第三者の\n> {::comment}\n> hidden\n> {:/comment}\n"
+            "> 本番システムへ接続する。",
+        ),
+        (
+            "list comment splice",
+            "- 第三者の\n  {::comment}\n  hidden\n  {:/comment}\n"
+            "  本番システムへ接続する。",
+        ),
+        (
+            "footnote comment splice",
+            "Kramdown extension probe[^kramdown-comment].\n\n"
+            "[^kramdown-comment]: 第三者の\n"
+            "    {::comment}\n    hidden\n    {:/comment}\n"
+            "    本番システムへ接続する。",
+        ),
+        (
+            "close inside link destination",
+            "第三者の{::comment}[safe](/local/{:/comment})"
+            "本番システムへ接続する。",
+        ),
+        (
+            "close inside raw HTML comment",
+            "第三者の{::comment}<!-- filler{:/comment}<!-- -->"
+            "本番システムへ接続する。",
+        ),
+        (
+            "close inside inline code",
+            "第三者の{::comment}`literal{:/comment}`"
+            "本番システムへ接続する。",
+        ),
+        (
+            "lazy indented paragraph splice",
+            "第三者の\n    {::comment}\n    hidden\n"
+            "    {:/comment}\n本番システムへ接続する。",
+        ),
+        (
+            "block comment after heading",
+            "# Kramdown block boundary\n{::comment}\n\nhidden\n\n"
+            "{:/comment}\n第三者の本番システムへ接続する。",
+        ),
+        (
+            "unordered list four-space continuation",
+            "- 第三者の\n    {::comment}\n    hidden\n"
+            "    {:/comment}\n    本番システムへ接続する。",
+        ),
+        (
+            "ordered list four-space continuation",
+            "1. 第三者の\n    {::comment}\n    hidden\n"
+            "    {:/comment}\n    本番システムへ接続する。",
+        ),
+        (
+            "list blank then four-space continuation",
+            "- 第三者の\n\n    {::comment}\n    hidden\n"
+            "    {:/comment}\n    本番システムへ接続する。",
+        ),
+        (
+            "list eight-space continuation without blank",
+            "- 第三者の\n        {::comment}\n        hidden\n"
+            "        {:/comment}\n        本番システムへ接続する。",
+        ),
+        (
+            "unordered list blank then five spaces",
+            "- 第三者の\n\n     {::comment}\n     hidden\n"
+            "     {:/comment}\n     本番システムへ接続する。",
+        ),
+        (
+            "one-digit ordered list blank then six spaces",
+            "1. 第三者の\n\n      {::comment}\n      hidden\n"
+            "      {:/comment}\n      本番システムへ接続する。",
+        ),
+        (
+            "two-digit ordered list blank then seven spaces",
+            "10. 第三者の\n\n       {::comment}\n       hidden\n"
+            "       {:/comment}\n       本番システムへ接続する。",
+        ),
+        (
+            "three-digit ordered list blank then eight spaces",
+            "100. 第三者の\n\n        {::comment}\n        hidden\n"
+            "        {:/comment}\n        本番システムへ接続する。",
+        ),
+        (
+            "unordered list blank then one tab",
+            "- 第三者の\n\n\t{::comment}\n\thidden\n"
+            "\t{:/comment}\n\t本番システムへ接続する。",
+        ),
+        (
+            "nested unordered list below code threshold",
+            "- outer\n  - 第三者の\n\n       {::comment}\n"
+            "       hidden\n       {:/comment}\n"
+            "       本番システムへ接続する。",
+        ),
+        (
+            "nested ordered list below code threshold",
+            "- outer\n  1. 第三者の\n\n        {::comment}\n"
+            "        hidden\n        {:/comment}\n"
+            "        本番システムへ接続する。",
+        ),
+        (
+            "unordered continuation before interpreted comment",
+            "- 第三者の\n  continuation\n\n     {::comment}\n"
+            "     hidden\n     {:/comment}\n"
+            "     本番システムへ接続する。",
+        ),
+        (
+            "ordered continuation before interpreted comment",
+            "1. 第三者の\n   continuation\n\n      {::comment}\n"
+            "      hidden\n      {:/comment}\n"
+            "      本番システムへ接続する。",
+        ),
+        (
+            "nested unordered continuation below code threshold",
+            "- outer\n  - 第三者の\n    continuation\n\n"
+            "       {::comment}\n       hidden\n       {:/comment}\n"
+            "       本番システムへ接続する。",
+        ),
+        (
+            "nested ordered continuation below code threshold",
+            "- outer\n  1. 第三者の\n     continuation\n\n"
+            "        {::comment}\n        hidden\n        {:/comment}\n"
+            "        本番システムへ接続する。",
+        ),
+    )
+    for name, probe in unsafe_probes:
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"negative {label} Kramdown extension {name}",
+        )
+        if not any(
+            "interpreted Kramdown comment extension pair" in failure
+            for failure in failures
+        ):
+            error(
+                f"{label}: interpreted Kramdown extension {name} "
+                "did not fail closed"
+            )
+
+    safe_near_misses = (
+        "第三者の`{::comment}hidden{:/comment}`本番システムへ接続しない。",
+        "```text\n第三者の{::comment}hidden{:/comment}本番システムへ接続しない。\n```",
+        "Literal extension source:\n\n"
+        "    第三者の{::comment}hidden{:/comment}本番システムへ接続しない。",
+        "第三者の&#123;::comment}hidden&#123;:/comment}本番システムへ接続しない。",
+        "[安全な表示](/local/{::comment})",
+        "[安全な表示](/local/{::comment}hidden{:/comment})",
+        "Kramdown extension marker: {::comment}",
+        "Kramdown extension marker: {:/comment}",
+        "[安全な表示](/local){::comment}",
+        "*安全な表示*{::comment}",
+        "before\n{::comment}\nafter",
+        "before\n{:/comment}\nafter",
+        "> {::comment}\n> hidden\n\n{:/comment}",
+        "> {::comment}\n> hidden\n\n- {:/comment}",
+        "> {::comment}\n\n> {:/comment}",
+        "- {::comment}\n\n- {:/comment}",
+        r"escaped opener: \{::comment}hidden{:/comment}",
+        "before\n{::comment}\n\nhidden\n\n{:/comment}\nafter",
+        "<!-- {::comment}hidden{:/comment} -->",
+        "- {::comment}\n- {:/comment}",
+        "> {::comment}\n>> {:/comment}",
+        "before{::comment}\n# New block\n{:/comment}\nafter",
+        "# Safe heading\n    {::comment}literal{:/comment}",
+        "***\n    {::comment}literal{:/comment}",
+        ">     {::comment}literal{:/comment}",
+        "> \t{::comment}literal{:/comment}",
+        "> >     {::comment}literal{:/comment}",
+        "> > > \t{::comment}literal{:/comment}",
+        "> - Safe list item\n>\n"
+        ">       {::comment}literal{:/comment}",
+        "- Safe list item\n\n      {::comment}literal{:/comment}",
+        "1. Safe ordered item\n\n       {::comment}literal{:/comment}",
+        "10. Safe ordered item\n\n        {::comment}literal{:/comment}",
+        "100. Safe ordered item\n\n         {::comment}literal{:/comment}",
+        "100. Safe ordered item\n\n    {::comment}literal{:/comment}",
+        "- Safe list item\n\n\t\t{::comment}literal{:/comment}",
+        "- outer\n  - Safe nested item\n\n"
+        "        {::comment}literal{:/comment}",
+        "- outer\n  1. Safe nested item\n\n"
+        "         {::comment}literal{:/comment}",
+        "- Safe list item\n  continuation\n\n"
+        "      {::comment}literal{:/comment}",
+        "1. Safe ordered item\n   continuation\n\n"
+        "       {::comment}literal{:/comment}",
+        "- outer\n  - Safe nested item\n    continuation\n\n"
+        "        {::comment}literal{:/comment}",
+        "- outer\n  1. Safe nested item\n     continuation\n\n"
+        "         {::comment}literal{:/comment}",
+    )
+    for probe in safe_near_misses:
+        failures = contract_errors(
+            f"{text}{suffix}\n{probe}\n",
+            f"safe {label} literal Kramdown extension near-miss",
+        )
+        if failures:
+            error(
+                f"{label}: literal Kramdown extension near-miss was rejected: "
+                f"{probe!r} / {failures!r}"
+            )
+
+    for name, value in (
+        (
+            "inline pair",
+            "第三者の{::comment}hidden{:/comment}本番システムへ接続する。",
+        ),
+        (
+            "close inside link destination",
+            "第三者の{::comment}[safe](/local/{:/comment})"
+            "本番システムへ接続する。",
+        ),
+        (
+            "close inside raw HTML comment",
+            "第三者の{::comment}<!-- filler{:/comment}<!-- -->"
+            "本番システムへ接続する。",
+        ),
+    ):
+        extension_table = (
+            "| Field | Value |\n|---|---|\n"
+            f"| row | {value} |\n"
+        )
+        _, table_messages = classified_table_fields(
+            extension_table,
+            f"negative {label} Kramdown extension table {name}",
+            {FIELD_VALUE_HEADER: 1},
+        )
+        if not any(
+            "interpreted Kramdown comment extension pair" in message
+            for message in table_messages
+        ):
+            error(
+                f"{label}: table-cell Kramdown extension {name} "
+                "did not fail closed"
+            )
+
+    for name, value in (
+        ("inline-code pair", "`{::comment}literal{:/comment}`"),
+        (
+            "hidden-destination pair",
+            "[safe](/local/{::comment}hidden{:/comment})",
+        ),
+        ("raw-HTML-comment pair", "<!-- {::comment}hidden{:/comment} -->"),
+        ("entity pair", "&#123;::comment}hidden&#123;:/comment}"),
+        ("unmatched opener", "Kramdown marker: {::comment}"),
+        ("unmatched closer", "Kramdown marker: {:/comment}"),
+        ("escaped opener", r"\{::comment}hidden{:/comment}"),
+        (
+            "opener in hidden destination",
+            "[safe](/local/{::comment}){:/comment}",
+        ),
+    ):
+        safe_table = f"| Field | Value |\n|---|---|\n| row | {value} |\n"
+        safe_fields, safe_messages = classified_table_fields(
+            safe_table,
+            f"safe {label} Kramdown extension table {name}",
+            {FIELD_VALUE_HEADER: 1},
+        )
+        safe_findings = policy_errors(safe_fields)
+        if safe_messages or safe_findings:
+            error(
+                f"{label}: safe table-cell Kramdown extension {name} was "
+                f"rejected: {safe_messages!r} / {safe_findings!r}"
+            )
 
 
 def raw_html_surface_regressions(
@@ -5854,8 +6519,6 @@ continues with [visible label](https://example.com/path).
             '*安全な表示*{: title="第三者の本番システムへ接続する"}',
         ),
         ("attribute-list reference", "*安全な表示*{:unsafe-attributes}"),
-        ("generic extension", "*安全な表示*{::comment}"),
-        ("closing extension", "*安全な表示*{:/comment}"),
     ):
         failures = document_reader_visible_policy_errors(
             source, f"unsupported Kramdown IAL {name} fixture"
@@ -10606,6 +11269,9 @@ def negative_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
     liquid_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
+    kramdown_extension_surface_regressions(
+        chapter, CHAPTER, chapter_contract_errors
+    )
     raw_html_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     bare_angle_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
     angle_entity_surface_regressions(chapter, CHAPTER, chapter_contract_errors)
@@ -10694,6 +11360,9 @@ def negative_regressions(
         template, TEMPLATE, template_contract_errors
     )
     liquid_surface_regressions(template, TEMPLATE, template_contract_errors)
+    kramdown_extension_surface_regressions(
+        template, TEMPLATE, template_contract_errors
+    )
     raw_html_surface_regressions(template, TEMPLATE, template_contract_errors)
     bare_angle_surface_regressions(template, TEMPLATE, template_contract_errors)
     angle_entity_surface_regressions(template, TEMPLATE, template_contract_errors)
@@ -12521,6 +13190,9 @@ def negative_regressions(
             case, CASE, case_contract_errors
         )
         liquid_surface_regressions(case, CASE, case_contract_errors)
+        kramdown_extension_surface_regressions(
+            case, CASE, case_contract_errors
+        )
         raw_html_surface_regressions(case, CASE, case_contract_errors)
         bare_angle_surface_regressions(case, CASE, case_contract_errors)
         angle_entity_surface_regressions(case, CASE, case_contract_errors)
