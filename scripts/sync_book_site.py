@@ -29,8 +29,9 @@ SCHEMA_VERSION = "1.1.0"
 DIRECTORY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 STATIC_PATH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]*\.json$")
 LINE_TERMINATOR_RE = re.compile(r"[\r\n\u2028\u2029]")
-# Freeze the Python-compatible whitespace set and the Unicode 15.0 Cc, Cs, Cf,
-# and Mark sets used by the schema and parser.  Do not derive these tables from
+# Freeze the Python-compatible whitespace set, the Unicode 15.0 Cc, Cs, Cf,
+# and Mark sets, and the finite invisible-base corpus used by the schema and
+# parser.  Do not derive these tables from
 # the runner's Unicode database: the publication contract must remain stable
 # when Python or Node ships another Unicode database.  Cc controls are rejected
 # anywhere in a published navigation title because they are not portable,
@@ -396,6 +397,17 @@ PAGE_TITLE_MARK_RANGES = (
     (0x1E944, 0x1E94A),
     (0xE0100, 0xE01EF),
 )
+# Unicode assigns these characters base categories, but their defined glyph is
+# intentionally blank/filler-like in ordinary navigation rendering.  Keep the
+# verified finite Unicode 15.0 corpus explicit: it prevents an invisible-only
+# page title without claiming to classify every visually blank glyph.
+PAGE_TITLE_INVISIBLE_BASE_UNICODE_VERSION = "15.0.0"
+PAGE_TITLE_INVISIBLE_BASE_RANGES = (
+    (0x115F, 0x115F),  # HANGUL CHOSEONG FILLER
+    (0x2800, 0x2800),  # BRAILLE PATTERN BLANK
+    (0x3164, 0x3164),  # HANGUL FILLER
+    (0xFFA0, 0xFFA0),  # HALFWIDTH HANGUL FILLER
+)
 PAGE_TITLE_WHITESPACE_CODEPOINTS = frozenset(
     codepoint
     for start, end in PAGE_TITLE_WHITESPACE_RANGES
@@ -421,11 +433,17 @@ PAGE_TITLE_MARK_CODEPOINTS = frozenset(
     for start, end in PAGE_TITLE_MARK_RANGES
     for codepoint in range(start, end + 1)
 )
+PAGE_TITLE_INVISIBLE_BASE_CODEPOINTS = frozenset(
+    codepoint
+    for start, end in PAGE_TITLE_INVISIBLE_BASE_RANGES
+    for codepoint in range(start, end + 1)
+)
 PAGE_TITLE_NON_BASE_CODEPOINTS = (
     PAGE_TITLE_WHITESPACE_CODEPOINTS
     | PAGE_TITLE_CONTROL_CODEPOINTS
     | PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS
     | PAGE_TITLE_MARK_CODEPOINTS
+    | PAGE_TITLE_INVISIBLE_BASE_CODEPOINTS
 )
 PAGE_TITLE_FORBIDDEN_ANYWHERE_CODEPOINTS = (
     PAGE_TITLE_CONTROL_CODEPOINTS | PAGE_TITLE_SURROGATE_CODEPOINTS
@@ -1606,6 +1624,10 @@ def run_registry_security_regressions() -> list[str]:
         ("combining-grapheme-joiner-only published page title", "\u034f"),
         ("combining-acute-only published page title", "\u0301"),
         ("Mongolian-variation-selector-only published page title", "\u180b"),
+        ("BRAILLE-PATTERN-BLANK-only published page title", "\u2800"),
+        ("HANGUL-CHOSEONG-FILLER-only published page title", "\u115f"),
+        ("HANGUL-FILLER-only published page title", "\u3164"),
+        ("HALFWIDTH-HANGUL-FILLER-only published page title", "\uffa0"),
         ("raw HTML published page title", "<span>Visible title</span>"),
         (
             "raw script-element published page title",
@@ -1620,6 +1642,10 @@ def run_registry_security_regressions() -> list[str]:
         "か\u3099",
         "𐀀\U000101fd",
         "😀\ufe0f",
+        "Visible\u2800title",
+        "Visible\u115ftitle",
+        "Visible\u3164title",
+        "Visible\uffa0title",
     )
 
     try:
@@ -1628,7 +1654,7 @@ def run_registry_security_regressions() -> list[str]:
         if title_schema.get("pattern") != PAGE_TITLE_SCHEMA_PATTERN:
             failures.append(
                 "site-pages schema title pattern is not synchronized with the "
-                "frozen whitespace/Cc/Cs/Cf/Mark parser contract"
+                "frozen whitespace/Cc/Cs/Cf/Mark/invisible-base parser contract"
             )
         title_pattern = re.compile(PAGE_TITLE_SCHEMA_PATTERN)
         for name, title in (
@@ -1651,6 +1677,10 @@ def run_registry_security_regressions() -> list[str]:
             ("combining grapheme joiner", "\u034f"),
             ("combining acute", "\u0301"),
             ("Mongolian variation selector", "\u180b"),
+            ("BRAILLE PATTERN BLANK", "\u2800"),
+            ("HANGUL CHOSEONG FILLER", "\u115f"),
+            ("HANGUL FILLER", "\u3164"),
+            ("HALFWIDTH HANGUL FILLER", "\uffa0"),
             ("raw HTML", "<span>Visible title</span>"),
         ):
             if title_pattern.fullmatch(title):
@@ -1707,6 +1737,15 @@ def run_registry_security_regressions() -> list[str]:
             failures.append(
                 "site-pages title Mark table drifted from the frozen "
                 "Unicode 15.0 contract (310 ranges / 2450 code points)"
+            )
+        if (
+            PAGE_TITLE_INVISIBLE_BASE_UNICODE_VERSION != "15.0.0"
+            or len(PAGE_TITLE_INVISIBLE_BASE_RANGES) != 4
+            or len(PAGE_TITLE_INVISIBLE_BASE_CODEPOINTS) != 4
+        ):
+            failures.append(
+                "site-pages title invisible-base corpus drifted from the frozen "
+                "Unicode 15.0 finite contract (4 ranges / 4 code points)"
             )
         all_format_controls = "".join(
             chr(codepoint) for codepoint in sorted(PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS)
@@ -1770,6 +1809,26 @@ def run_registry_security_regressions() -> list[str]:
             failures.append(
                 "site-pages parser accepted the complete Mark title corpus"
             )
+        all_invisible_bases = "".join(
+            chr(codepoint)
+            for codepoint in sorted(PAGE_TITLE_INVISIBLE_BASE_CODEPOINTS)
+        )
+        if title_pattern.fullmatch(all_invisible_bases):
+            failures.append(
+                "site-pages schema title pattern accepted the complete "
+                "invisible-base corpus"
+            )
+        try:
+            parse_registry_data(
+                page_title_fixture(all_invisible_bases),
+                "complete invisible-base title corpus",
+            )
+        except SitePageRegistryError:
+            pass
+        else:
+            failures.append(
+                "site-pages parser accepted the complete invisible-base title corpus"
+            )
         all_whitespace = "".join(
             chr(codepoint) for codepoint in sorted(PAGE_TITLE_WHITESPACE_CODEPOINTS)
         )
@@ -1804,6 +1863,10 @@ def run_registry_security_regressions() -> list[str]:
             "\u0301",
             "\ufe0f",
             "\u180b",
+            "\u2800",
+            "\u115f",
+            "\u3164",
+            "\uffa0",
             "\U000101fd",
             "\U000e0100",
             all_whitespace,
@@ -1811,6 +1874,7 @@ def run_registry_security_regressions() -> list[str]:
             all_surrogates,
             all_format_controls,
             all_marks,
+            all_invisible_bases,
         )
         ecmascript_samples = ecmascript_unsafe_titles + schema_safe_titles
         ecmascript_results = ecmascript_title_pattern_results(

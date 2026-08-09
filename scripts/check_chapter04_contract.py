@@ -8,6 +8,7 @@ import json
 import re
 import subprocess
 import sys
+import unicodedata
 from collections import Counter
 from collections.abc import Callable
 from copy import deepcopy
@@ -79,6 +80,10 @@ UNSAFE_PAGE_TITLES = (
     "実Tokenを\r取得してEvidenceにする",
     "個人情報を\u2028収集する",
     "マルウェアを\u2029実行する",
+    "\u2800",
+    "\u115f",
+    "\u3164",
+    "\uffa0",
 )
 
 SAFE_PAGE_TITLES = (
@@ -93,6 +98,10 @@ SAFE_PAGE_TITLES = (
     "か\u3099",
     "𐀀\U000101fd",
     "😀\ufe0f",
+    "Visible\u2800title",
+    "Visible\u115ftitle",
+    "Visible\u3164title",
+    "Visible\uffa0title",
 )
 
 MODEL_STATUSES = {
@@ -2121,6 +2130,139 @@ def _markdown_character_is_escaped(value: str, index: int) -> bool:
     return backslashes % 2 == 1
 
 
+@dataclass(frozen=True)
+class _MarkdownUnderscoreDelimiter:
+    """One finite underscore delimiter run in pinned Kramdown/GFM prose."""
+
+    start: int
+    end: int
+    width: int
+    can_open: bool
+    can_close: bool
+
+
+_KRAMDOWN_UNDERSCORE_EMPHASIS_WIDTHS = frozenset({1, 2, 3})
+
+
+def _markdown_punctuation_or_symbol(character: str) -> bool:
+    """Use CommonMark's Unicode punctuation/symbol class for flank tests."""
+
+    return bool(character) and unicodedata.category(character)[0] in {"P", "S"}
+
+
+def _kramdown_underscore_delimiters(
+    value: str,
+    *,
+    protected: tuple[tuple[int, int], ...],
+) -> tuple[_MarkdownUnderscoreDelimiter, ...]:
+    """Classify a bounded same-line underscore delimiter corpus.
+
+    Pinned Kramdown 2.5.2 with kramdown-parser-gfm 1.1.0 follows the
+    CommonMark left/right-flanking rules for underscore emphasis.  This
+    adapter owns only unescaped runs of width 1, 2, or 3 on one source line.
+    Wider, multiline, malformed, intraword, code, destination, and title forms
+    remain literal source instead of being guessed into rendered emphasis.
+    """
+
+    def overlaps(start: int, end: int) -> bool:
+        return any(
+            start < span_end and span_start < end
+            for span_start, span_end in protected
+        )
+
+    delimiters: list[_MarkdownUnderscoreDelimiter] = []
+    for match in re.finditer(r"_+", value):
+        start, end = match.span()
+        width = end - start
+        if (
+            width not in _KRAMDOWN_UNDERSCORE_EMPHASIS_WIDTHS
+            or overlaps(start, end)
+            or _markdown_character_is_escaped(value, start)
+            or "\n" in value[start:end]
+        ):
+            continue
+
+        before = value[start - 1] if start else "\n"
+        after = value[end] if end < len(value) else "\n"
+        before_whitespace = before.isspace()
+        after_whitespace = after.isspace()
+        before_punctuation = _markdown_punctuation_or_symbol(before)
+        after_punctuation = _markdown_punctuation_or_symbol(after)
+        left_flanking = not after_whitespace and (
+            not after_punctuation or before_whitespace or before_punctuation
+        )
+        right_flanking = not before_whitespace and (
+            not before_punctuation or after_whitespace or after_punctuation
+        )
+        delimiters.append(
+            _MarkdownUnderscoreDelimiter(
+                start=start,
+                end=end,
+                width=width,
+                can_open=left_flanking
+                and (not right_flanking or before_punctuation),
+                can_close=right_flanking
+                and (not left_flanking or after_punctuation),
+            )
+        )
+    return tuple(delimiters)
+
+
+def _project_kramdown_underscore_emphasis(value: str) -> str:
+    """Project finite rendered underscore emphasis to its visible text.
+
+    The delimiter stack consumes underscore units nearest the emphasized
+    content first.  This projects both same-width pairs and mixed-width forms
+    that Kramdown decomposes into nested emphasis/strong nodes, while refusing
+    crossing or whitespace-only pairs.  This is deliberately a finite renderer
+    adapter for runs of width 1--3, not a complete Markdown emphasis parser.
+    """
+
+    protected = tuple(
+        sorted(
+            set(_finite_same_line_code_spans(value))
+            | set(_finite_markdown_link_noncontent_spans(value))
+        )
+    )
+    delimiters = _kramdown_underscore_delimiters(value, protected=protected)
+    # Each opener unit carries the end of its source run.  The latter prevents
+    # underscores in a delimiter run from making a whitespace-only body appear
+    # non-empty when a mixed-width closer is considered.
+    stack: list[tuple[int, int]] = []
+    pairs: list[tuple[int, int]] = []
+    for delimiter in delimiters:
+        consumed_closers = 0
+        if delimiter.can_close:
+            for closer_index in range(delimiter.start, delimiter.end):
+                if not stack:
+                    break
+                opener_index, content_start = stack[-1]
+                if not any(
+                    not character.isspace()
+                    for character in value[content_start : delimiter.start]
+                ):
+                    break
+                stack.pop()
+                pairs.append((opener_index, closer_index))
+                consumed_closers += 1
+        if delimiter.can_open:
+            stack.extend(
+                (opener_index, delimiter.end)
+                for opener_index in range(
+                    delimiter.start + consumed_closers,
+                    delimiter.end,
+                )
+            )
+
+    if not pairs:
+        return value
+    projected = list(value)
+    for opener_index, closer_index in pairs:
+        projected[opener_index] = ""
+        projected[closer_index] = ""
+    return "".join(projected)
+
+
 def _finite_same_line_code_spans(value: str) -> tuple[tuple[int, int], ...]:
     """Return finite same-line Markdown code-span ranges.
 
@@ -2572,11 +2714,12 @@ def _project_literal_inline_code(
         ial_projected,
         reference_labels=reference_labels,
     )
-    projected = list(reference_projected)
-    for start, end in _finite_markdown_link_noncontent_spans(reference_projected):
+    emphasis_projected = _project_kramdown_underscore_emphasis(reference_projected)
+    projected = list(emphasis_projected)
+    for start, end in _finite_markdown_link_noncontent_spans(emphasis_projected):
         projected[start:end] = " " * (end - start)
 
-    for start, end in _finite_same_line_code_spans(reference_projected):
+    for start, end in _finite_same_line_code_spans(emphasis_projected):
         for position in range(start, end):
             if projected[position] in "<>":
                 projected[position] = " "
@@ -3665,6 +3808,62 @@ def reference_link_label_surface_regressions(
             f"{label}: hidden reference identifier became Policy-visible: "
             f"{hidden_failures!r}"
         )
+
+
+def kramdown_underscore_emphasis_surface_regressions(
+    text: str,
+    label: str,
+    contract_errors: Callable[[str, str], list[str]],
+) -> None:
+    """Bind finite underscore emphasis to its pinned rendered text."""
+
+    suffix = "" if not text or text.endswith("\n") else "\n"
+    unsafe = "第三者の本番システムへ接続する"
+    for name, unsafe_source, safe_source in (
+        (
+            "emphasis",
+            "第三者の _本番_ システムへ接続する",
+            "第三者の _本番_ システムへ接続しない",
+        ),
+        (
+            "strong",
+            "第三者の __本番__ システムへ接続する",
+            "第三者の __本番__ システムへ接続しない",
+        ),
+        (
+            "strong-emphasis",
+            "第三者の ___本番___ システムへ接続する",
+            "第三者の ___本番___ システムへ接続しない",
+        ),
+        (
+            "mixed-width strong/emphasis",
+            "第三者の ___本番__ システムへ接続する_",
+            "第三者の ___本番__ システムへ接続しない_",
+        ),
+    ):
+        failures = contract_errors(
+            f"{text}{suffix}\n{unsafe_source}\n",
+            f"negative {label} rendered underscore {name}",
+        )
+        if not any(
+            "[target.real_or_external]" in failure
+            and unsafe in re.sub(r"\s+", "", failure)
+            for failure in failures
+        ):
+            error(
+                f"{label}: unsafe rendered underscore {name} bypassed "
+                "Policy 1.2.0"
+            )
+
+        safe_failures = contract_errors(
+            f"{text}{suffix}\n{safe_source}\n",
+            f"safe {label} rendered underscore {name}",
+        )
+        if safe_failures:
+            error(
+                f"{label}: safe rendered underscore {name} was rejected: "
+                f"{safe_failures!r}"
+            )
 
 
 def kramdown_ial_surface_regressions(
@@ -4756,6 +4955,170 @@ continues with [visible label](https://example.com/path).
     ):
         if "hidden-ref" in _markdown_reference_definition_labels(hidden_definition):
             error(f"{name} created a non-rendered Markdown reference definition")
+
+    # Final Ready-transition review 4890636366 freezes the finite underscore
+    # emphasis boundary.  Valid pinned-renderer delimiters disappear, while
+    # escaped/intraword/malformed/code/metadata forms remain reader-visible
+    # literal source.
+    underscore_surface_cases = (
+        (
+            "prose emphasis",
+            "第三者の _本番_ システムへ接続する\n",
+            "第三者の _本番_ システムへ接続しない\n",
+        ),
+        (
+            "heading strong",
+            "# 第三者の __本番__ システムへ接続する\n",
+            "# 第三者の __本番__ システムへ接続しない\n",
+        ),
+        (
+            "list strong-emphasis",
+            "- 第三者の ___本番___ システムへ接続する\n",
+            "- 第三者の ___本番___ システムへ接続しない\n",
+        ),
+        (
+            "inline-link label",
+            "[第三者の _本番_ システムへ接続する](/local)\n",
+            "[第三者の _本番_ システムへ接続しない](/local)\n",
+        ),
+        (
+            "footnote",
+            "Note[^underscore].\n\n"
+            "[^underscore]: 第三者の __本番__ システムへ接続する\n",
+            "Note[^underscore].\n\n"
+            "[^underscore]: 第三者の __本番__ システムへ接続しない\n",
+        ),
+        (
+            "mixed-width footnote",
+            "Note[^underscore-mixed].\n\n"
+            "[^underscore-mixed]: 第三者の ___本番__ "
+            "システムへ接続する_\n",
+            "Note[^underscore-mixed].\n\n"
+            "[^underscore-mixed]: 第三者の ___本番__ "
+            "システムへ接続しない_\n",
+        ),
+    )
+    for name, unsafe_source, safe_source in underscore_surface_cases:
+        unsafe_findings = document_reader_visible_policy_errors(
+            unsafe_source, f"unsafe underscore emphasis {name} fixture"
+        )
+        target_findings = [
+            finding
+            for finding in unsafe_findings
+            if "[target.real_or_external]" in finding
+            and unsafe_angle in re.sub(r"\s+", "", finding)
+        ]
+        if len(target_findings) != 1:
+            error(
+                f"rendered underscore emphasis {name} was not scanned exactly "
+                f"once: {unsafe_findings!r}"
+            )
+        safe_findings = document_reader_visible_policy_errors(
+            safe_source, f"safe underscore emphasis {name} fixture"
+        )
+        if safe_findings:
+            error(
+                f"safe rendered underscore emphasis {name} was rejected: "
+                f"{safe_findings!r}"
+            )
+
+    for table_name, table_value in (
+        ("same-width", "第三者の _本番_ システムへ接続する"),
+        ("mixed-width", "第三者の ___本番__ システムへ接続する_"),
+    ):
+        underscore_table = (
+            "| Field | Value |\n|---|---|\n"
+            f"| row | {table_value} |\n"
+        )
+        underscore_table_fields, underscore_table_messages = (
+            classified_table_fields(
+                underscore_table,
+                f"unsafe {table_name} underscore emphasis table fixture",
+                {FIELD_VALUE_HEADER: 1},
+            )
+        )
+        underscore_table_findings = policy_errors(underscore_table_fields)
+        if underscore_table_messages or len(
+            [
+                finding
+                for finding in underscore_table_findings
+                if "[target.real_or_external]" in finding
+                and unsafe_angle in re.sub(r"\s+", "", finding)
+            ]
+        ) != 1:
+            error(
+                f"rendered {table_name} underscore emphasis table value was "
+                "not scanned exactly once: "
+                f"{underscore_table_messages!r} / {underscore_table_findings!r}"
+            )
+        safe_underscore_table_fields, safe_underscore_table_messages = (
+            classified_table_fields(
+                underscore_table.replace("接続する", "接続しない", 1),
+                f"safe {table_name} underscore emphasis table fixture",
+                {FIELD_VALUE_HEADER: 1},
+            )
+        )
+        safe_underscore_table_findings = policy_errors(
+            safe_underscore_table_fields
+        )
+        if safe_underscore_table_messages or safe_underscore_table_findings:
+            error(
+                f"safe rendered {table_name} underscore emphasis table value "
+                "was rejected: "
+                f"{safe_underscore_table_messages!r} / "
+                f"{safe_underscore_table_findings!r}"
+            )
+
+    for source, expected in (
+        ("第三者の _本番_ システム", "第三者の 本番 システム"),
+        ("第三者の __本番__ システム", "第三者の 本番 システム"),
+        ("第三者の ___本番___ システム", "第三者の 本番 システム"),
+        (
+            "第三者の __外側 _本番_ 外側__ システム",
+            "第三者の 外側 本番 外側 システム",
+        ),
+        (
+            "第三者の ___本番__ システム_",
+            "第三者の 本番 システム",
+        ),
+        ("安全な __表示_ literal", "安全な _表示 literal"),
+        ("安全な _表示__ literal", "安全な 表示_ literal"),
+        ("第三者の (_本番_) システム", "第三者の (本番) システム"),
+    ):
+        projected = _project_kramdown_underscore_emphasis(source)
+        if projected != expected:
+            error(
+                "finite underscore emphasis projection drifted: "
+                f"{source!r} -> {projected!r} != {expected!r}"
+            )
+
+    for name, source in (
+        ("Japanese intraword", "第三者の_本番_システム"),
+        ("ASCII intraword", "foo_bar_baz"),
+        ("escaped emphasis", r"安全な \_表示\_ literal"),
+        ("escaped strong", r"安全な \__表示\__ literal"),
+        ("unclosed emphasis", "安全な _表示 literal"),
+        ("unclosed strong", "安全な __表示 literal"),
+        ("inner whitespace", "安全な _ 表示 _ literal"),
+        ("inline code", "安全な `_表示_` literal"),
+        ("horizontal rule", "___"),
+        ("unsupported wider run", "安全な ____表示____ literal"),
+    ):
+        projected = _project_kramdown_underscore_emphasis(source)
+        if projected != source:
+            error(
+                f"literal underscore {name} was interpreted as emphasis: "
+                f"{projected!r}"
+            )
+
+    hidden_underscore_destination = (
+        "[安全な表示](/第三者の_本番_システムへ接続する)\n"
+    )
+    if document_reader_visible_policy_errors(
+        hidden_underscore_destination,
+        "hidden underscore Markdown destination fixture",
+    ):
+        error("hidden underscore Markdown destination became Policy-visible")
 
     # Ready-transition review 4890449002 freezes Kramdown IAL ownership.
     # Safe class/id shorthand is hidden metadata and must be removed before
@@ -9365,6 +9728,9 @@ def negative_regressions(
     reference_link_label_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
+    kramdown_underscore_emphasis_surface_regressions(
+        chapter, CHAPTER, chapter_contract_errors
+    )
     kramdown_ial_surface_regressions(
         chapter, CHAPTER, chapter_contract_errors
     )
@@ -9444,6 +9810,9 @@ def negative_regressions(
     bare_angle_surface_regressions(template, TEMPLATE, template_contract_errors)
     angle_entity_surface_regressions(template, TEMPLATE, template_contract_errors)
     reference_link_label_surface_regressions(
+        template, TEMPLATE, template_contract_errors
+    )
+    kramdown_underscore_emphasis_surface_regressions(
         template, TEMPLATE, template_contract_errors
     )
     kramdown_ial_surface_regressions(
@@ -11134,6 +11503,9 @@ def negative_regressions(
         reference_link_label_surface_regressions(
             case, CASE, case_contract_errors
         )
+        kramdown_underscore_emphasis_surface_regressions(
+            case, CASE, case_contract_errors
+        )
         kramdown_ial_surface_regressions(
             case, CASE, case_contract_errors
         )
@@ -11273,6 +11645,10 @@ def negative_regressions(
             ("combining grapheme joiner Mark", "\u034f"),
             ("combining acute Mark", "\u0301"),
             ("Mongolian variation selector Mark", "\u180b"),
+            ("BRAILLE PATTERN BLANK invisible base", "\u2800"),
+            ("HANGUL CHOSEONG FILLER invisible base", "\u115f"),
+            ("HANGUL FILLER invisible base", "\u3164"),
+            ("HALFWIDTH HANGUL FILLER invisible base", "\uffa0"),
             ("raw HTML", "<span>Visible title</span>"),
         ):
             invalid_title_registry = {
