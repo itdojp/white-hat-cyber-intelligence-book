@@ -43,7 +43,7 @@
 | Decision Requirement ID | `DR-2026-001` |
 | Business process | 会計連携前の請求書集約、同期、証跡保持 |
 | Decision to support | 請求書連携OAuthアプリを即時停止するか、権限縮小と監視強化で継続するか |
-| Decision deadline | 2026-08-19T18:00:00+09:00 |
+| Decision deadline | 2026-07-22T09:00:00+09:00 |
 | In-scope environment | Synthetic Lab |
 | Out-of-scope environment | Production / Third-party / Unknown |
 | Scope statement | 隔離された合成Tenantのread-only設定Review、無害な合成Event、既存Audit export、summary-onlyのData説明 |
@@ -56,6 +56,7 @@
 
 ### Decision notes
 
+- Inherited decision boundary: `DR-2026-001`のDecision deadline `2026-07-22T09:00:00+09:00`は、第1章で完了した判断の時点を保持する。Document Controlの`Review deadline`は`TM-2026-001`のReview期限であり、`DR-2026-001`のDecision deadlineを更新しない。第1章の`REA-2026-001`は`2026-08-21`のまま維持し、`REA-TM-2026-001`〜`004`はその判断を置換せず、後続Evidenceを収集するTrigger、Scheduled date、Closure criteriaを管理する。
 - OWN boundary: Asset、Flow、Boundary、Threat Hypothesis、非OperationalなAttack Path、Evidence Requirement、Action、Reassessmentを`DR-2026-001`へ接続する。
 - BRIDGE boundary: `ART-10`、`AUTH-CASE-2026-001`、Content Safety Policy 1.2.0、後続章の評価・観測・RoEへ引き渡す。
 - DELEGATE boundary: 製品固有Hardening、Vulnerability固有Exploit、認証・Cloud・Network・Container実装、AI / Agent固有Modelを専門章へ委譲する。

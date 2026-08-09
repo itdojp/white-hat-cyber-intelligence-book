@@ -267,6 +267,14 @@ DECISION_CONFIDENCE_VALUE = (
     "`GAP-2026-001` / `GAP-2026-003`がOpen / Escalatedのため、再評価前の確信は限定される"
 )
 DECISION_CONFIDENCE_ROW = f"| Confidence | {DECISION_CONFIDENCE_VALUE} |"
+INHERITED_DECISION_BOUNDARY = (
+    "Inherited decision boundary: `DR-2026-001`のDecision deadline "
+    "`2026-07-22T09:00:00+09:00`は、第1章で完了した判断の時点を保持する。"
+    "Document Controlの`Review deadline`は`TM-2026-001`のReview期限であり、"
+    "`DR-2026-001`のDecision deadlineを更新しない。第1章の`REA-2026-001`は"
+    "`2026-08-21`のまま維持し、`REA-TM-2026-001`〜`004`はその判断を置換せず、"
+    "後続Evidenceを収集するTrigger、Scheduled date、Closure criteriaを管理する。"
+)
 IDENTITY_ASSURANCE_THRESHOLD_SECTION = """### `REA-TM-2026-001`のIdentity assurance判定閾値
 
 - `Workload-only binding check: Passed`は、Workload identity binding snapshotとTenant binding差分に記録されたactive bindingのHuman identityが0件で、すべてが承認済みWorkload identity、Owner、Tenant、scope matrixへ一致する場合だけ記録する。不一致、分類不能または未収集は`Failed / Inconclusive / Not collected`とする。
@@ -8597,6 +8605,7 @@ def template_contract_errors(text: str, label: str) -> list[str]:
 
 def case_contract_errors(text: str, label: str) -> list[str]:
     messages: list[str] = []
+    chapter1_case = read_text("cases/ch01-integrated-security-case-example.md")
     messages.extend(require_order(label, text, EXPECTED_CASE_HEADINGS))
     observed_h2 = tuple(re.findall(r"^## .+$", text, re.MULTILINE))
     if observed_h2 != EXPECTED_CASE_HEADINGS:
@@ -8702,6 +8711,39 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(
             f"{label}: Decision Context fields/order {observed_decision_fields!r} != {DECISION_CONTEXT_FIELDS!r}"
         )
+    decision_fields = {row[0]: row[1] for row in decision_rows if len(row) == 2}
+
+    chapter1_decision_rows, chapter1_decision_messages = table_by_header(
+        section(chapter1_case, "## 1. Decision Requirement"),
+        ("Field", "Value"),
+        "cases/ch01-integrated-security-case-example.md",
+    )
+    messages.extend(chapter1_decision_messages)
+    chapter1_decision_fields = {
+        row[0]: row[1] for row in chapter1_decision_rows if len(row) == 2
+    }
+    inherited_decision_contract = {
+        "Decision Requirement ID": chapter1_decision_fields.get(
+            "Decision Requirement ID"
+        ),
+        "Decision deadline": chapter1_decision_fields.get("Decision deadline"),
+        "Decision to support": chapter1_decision_fields.get("Decision to make"),
+    }
+    for field, expected in inherited_decision_contract.items():
+        observed = decision_fields.get(field)
+        if expected is None:
+            messages.append(
+                f"{label}: Chapter 1 inherited Decision field for {field!r} is missing"
+            )
+        elif observed != expected:
+            messages.append(
+                f"{label}: Decision Context {field!r} {observed!r} must preserve "
+                f"Chapter 1 value {expected!r}"
+            )
+    if text.count(INHERITED_DECISION_BOUNDARY) != 1:
+        messages.append(
+            f"{label}: requires one exact inherited Decision deadline/reassessment boundary"
+        )
 
     table_contracts: tuple[tuple[tuple[str, ...], str, set[str], int], ...] = (
         (("Asset ID", "Type", "Name", "Business role / outcome", "Owner", "Criticality", "Data classification", "Knowledge state", "Evidence IDs", "Dependency IDs"), "Type", ASSET_TYPES, 7),
@@ -8740,7 +8782,6 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "Control",
         "Failure consequence",
     )
-    chapter1_case = read_text("cases/ch01-integrated-security-case-example.md")
     chapter1_boundary_rows, chapter1_boundary_messages = table_by_header(
         chapter1_case,
         chapter1_boundary_header,
@@ -12340,7 +12381,38 @@ def negative_regressions(
             ),
             (
                 "Decision Context field drift",
-                case.replace("| Decision deadline | 2026-08-19T18:00:00+09:00 |", "| Review date | 2026-08-19T18:00:00+09:00 |", 1),
+                case.replace("| Decision deadline | 2026-07-22T09:00:00+09:00 |", "| Review date | 2026-07-22T09:00:00+09:00 |", 1),
+            ),
+            (
+                "inherited Decision deadline drift",
+                case.replace(
+                    "| Decision deadline | 2026-07-22T09:00:00+09:00 |",
+                    "| Decision deadline | 2026-08-19T18:00:00+09:00 |",
+                    1,
+                ),
+            ),
+            (
+                "inherited Decision Requirement ID drift",
+                case.replace(
+                    "## 1. Decision Context\n\n| Field | Value |\n|---|---|\n"
+                    "| Decision Requirement ID | `DR-2026-001` |",
+                    "## 1. Decision Context\n\n| Field | Value |\n|---|---|\n"
+                    "| Decision Requirement ID | `DR-2026-099` |",
+                    1,
+                ),
+            ),
+            (
+                "inherited Decision statement drift",
+                case.replace(
+                    "| Decision to support | 請求書連携OAuthアプリを即時停止するか、"
+                    "権限縮小と監視強化で継続するか |",
+                    "| Decision to support | 請求書連携OAuthアプリを無条件で継続するか |",
+                    1,
+                ),
+            ),
+            (
+                "inherited Decision boundary missing",
+                case.replace(f"- {INHERITED_DECISION_BOUNDARY}\n", "", 1),
             ),
             (
                 "Decision handoff Confidence missing",
