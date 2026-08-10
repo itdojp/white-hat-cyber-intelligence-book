@@ -12502,6 +12502,18 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         for row in case_tables.get(assumption_header, [])
         if len(row) == len(assumption_header)
     }
+    requirements_assumption = assumptions_by_id.get("ASM-2026-001")
+    if requirements_assumption is None:
+        messages.append(f"{label}: missing requirements Assumption ASM-2026-001")
+    else:
+        requirements_due = requirements_assumption[
+            assumption_header.index("Due date")
+        ]
+        if requirements_due != "2026-08-19":
+            messages.append(
+                f"{label}: ASM-2026-001 Due date {requirements_due!r} must align "
+                "with REA-TM-2026-001 after ACT-TM-2026-004 supplies Evidence"
+            )
     manifest_assumption = assumptions_by_id.get("ASM-2026-002")
     if manifest_assumption is None:
         messages.append(f"{label}: missing manifest representativeness Assumption ASM-2026-002")
@@ -15952,6 +15964,17 @@ def negative_regressions(
                 mutate_table_cell(
                     case,
                     EVIDENCE_REQUIREMENT_HEADER,
+                    1,
+                    1,
+                    "Due date",
+                    "2026-08-12",
+                ),
+            ),
+            (
+                "ASM-2026-001 is due before ACT-TM-2026-004 and REA-TM-2026-001",
+                mutate_table_cell(
+                    case,
+                    ASSUMPTION_HEADER,
                     1,
                     1,
                     "Due date",

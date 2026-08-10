@@ -258,7 +258,7 @@ Controlは「あるかどうか」ではなく、どのassurance stateにある�
 
 | Assumption ID | Statement | Owner | Validation method | Due date | Status | Related IDs |
 |---|---|---|---|---|---|---|
-| `ASM-2026-001` | 業務要件表は2026-08-06時点の請求書同期要件を正しく反映している | Finance Operations | 承認ticketとscope matrixの再照合 | 2026-08-12 | Assumed | `TH-2026-001`, `TH-2026-004`, `EREQ-2026-001`, `GAP-2026-002` |
+| `ASM-2026-001` | 業務要件表は2026-08-06時点の請求書同期要件を正しく反映している | Finance Operations | 承認ticketとscope matrixの再照合 | 2026-08-19 | Assumed | `TH-2026-001`, `TH-2026-004`, `EREQ-2026-001`, `GAP-2026-002` |
 | `ASM-2026-002` | 合成manifest field inventoryはsummary-only境界の最小Data集合を十分代表している | Finance Data Owner | field inventoryとmanual import要件の比較 | 2026-08-15 | Assumed | `TH-2026-004`, `TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001`, `EREQ-2026-003`, `ACT-TM-2026-007`, `REA-TM-2026-002` |
 | `ASM-2026-003` | historical summary exportの欠落期間はDecisionの優先順位を変えるほど大きくない | SOC | retention note、coverage差分、再評価時のsummary再採取 | 2026-08-20 | Assumed | `TH-2026-003`, `TH-2026-006`, `EREQ-2026-003`, `ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`, `REA-TM-2026-002`, `GAP-2026-003` |
 
