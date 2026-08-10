@@ -129,6 +129,18 @@ GAP_STATUSES = {"Open", "Accepted temporarily", "Escalated", "Closed"}
 DETECTION_RESULT_VALUES = frozenset(
     {"Passed", "Failed", "Inconclusive", "Not collected"}
 )
+ASSUMPTION_RESULT_VALUES = frozenset(
+    {"Passed", "Failed", "Inconclusive", "Not collected"}
+)
+DECISION_PRIORITY_IMPACT_VALUES = frozenset(
+    {
+        "No priority change",
+        "Escalate before continuation",
+        "De-escalate after review",
+        "Inconclusive",
+        "Not collected",
+    }
+)
 DETECTION_EVENT_CLASSES = (
     "Admin consent change Event",
     "App identity lifecycle Event",
@@ -271,6 +283,10 @@ DECISION_CONFIDENCE_VALUE = (
     "scope縮小`Passed`はあるが、post-remediation current scope Snapshotが未収集で、"
     "`GAP-2026-001` / `GAP-2026-003`がOpen / Escalatedのため、再評価前の確信は限定される"
 )
+DECISION_SUPPORTED_OPTION_VALUE = "権限縮小と監視強化で継続"
+DECISION_STRONGEST_UNCERTAINTY_VALUE = (
+    "post-remediation current scope Snapshotが未収集であり、過去利用の完全追跡もできない"
+)
 DECISION_CONFIDENCE_ROW = f"| Confidence | {DECISION_CONFIDENCE_VALUE} |"
 INHERITED_DECISION_BOUNDARY = (
     "Inherited decision boundary: `DR-2026-001`のDecision deadline "
@@ -305,6 +321,45 @@ REQUIREMENTS_APPROVAL_CONTRADICTORY_MARKERS = (
 DETECTION_VALIDATION_HEADING = (
     "### `CTRL-2026-007` Detection validation decision contract"
 )
+ASSUMPTION_REASSESSMENT_HEADING = (
+    "### `ASM-2026-003` Decision-priority reassessment contract"
+)
+ASSUMPTION_REASSESSMENT_PRODUCER_ACTIONS = (
+    "`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`"
+)
+ASSUMPTION_REASSESSMENT_THRESHOLD_SECTION = """### `ASM-2026-003` Decision-priority reassessment contract
+
+対象は`historical summary exportの欠落期間はDecisionの優先順位を変えるほど大きくない`という既存Assumptionだけであり、resultは`Passed / Failed / Inconclusive / Not collected`の有限集合だけを使用する。
+
+| Threshold field | Required value / Evidence | Current canonical state |
+|---|---|---|
+| Reassessment result | `Passed / Failed / Inconclusive / Not collected` | Not collected |
+| Source Evidence IDs | 判断に使うすべてのsource Evidence ID | `EVD-2026-004`, `NEG-2026-001`はhistorical inputsのみ |
+| Newly collected Evidence IDs | Coverage、retention、refreshed summary、comparison、sign-offごとの新Evidence ID | 未収集。Evidence IDを創作しない |
+| Query / version or collection method | 固定したquery / versionまたはcollection method | 未収集 |
+| 90-day Coverage matrix | Admin consent change Event、App identity lifecycle Event、API resource / operation Eventの90日matrix | 未収集 |
+| Required Coverage threshold | 各relevant Event classのrequired-field Coverage 100% | 未収集 |
+| Retention configuration / actual retained period | retention設定と実保持期間 | `EVD-2026-004`のhistorical noteだけで、current comparisonは未収集 |
+| Missing-period inventory | 欠落する全日 / 期間を定量化 | historical 18日だけで、refreshed inventoryは未収集 |
+| Refreshed current / historical summary | 同一collection methodで再採取したsummary | 未収集 |
+| Decision-priority impact comparison | Decision handoff summaryのSupported option、Confidence、Strongest uncertaintyとAction priority / due orderに対する比較 | 未収集 |
+| Decision-priority impact outcome | `No priority change / Escalate before continuation / De-escalate after review / Inconclusive / Not collected` | Not collected |
+| Unresolved Unknown count | 0 | 未収集 |
+| Unresolved mismatch count | 0 | 未収集 |
+| Unsupported-period count | 0、または0より大きい有限値 | 未収集 |
+| Bounded risk acceptance | Unsupported-period countが0より大きい場合、全itemをDecision ownerへ有限なrisk acceptanceとしてEscalate | 未収集 |
+| SOC Reviewer sign-off Evidence ID | result、limitation、priority impactへの新Evidence ID付きsign-off | 未収集 |
+
+- Decision-priority impact outcomeは、`Decision handoff summary`のSupported option、Confidence、Strongest uncertaintyとAction priority / due orderを再採取前後で比較して記録する。いずれも再順序化または追加Escalation / de-escalationを要しない場合だけ`No priority change`とする。
+- `Passed`は、表のEvidenceがすべてそろい、Decision-priority impact outcomeが`No priority change`で、各relevant Event classのrequired-field Coverageが100%、未解決Unknownとmismatchが0件で、unsupported periodが0件、または全itemがDecision ownerへ有限なrisk acceptanceとして明示的にEscalateされた場合だけ記録する。
+- declared priority assumptionが偽、または有限thresholdがadverseなら`Failed`、入力、Coverage、retention、summary、comparisonまたはsign-off不足で判断できなければ`Inconclusive`、比較を未実施なら`Not collected`とする。Evidenceの存在、retention note、Negative Finding、Detection resultまたはReviewer名だけでは`Passed`ではない。
+- `Passed`と対応する新Evidence ID / SOC Reviewer sign-offがそろう場合だけ`ASM-2026-003`を`Confirmed`とし、このAssumptionに関する`GAP-2026-003` closure contributionを満たす。`Failed / Inconclusive / Not collected`またはthreshold不足なら`ASM-2026-003`を`Assumed`、`GAP-2026-003`を`Escalated` / openに維持し、Decision-priority uncertainty、Owner、due date、次回reassessmentを記録する。
+- `ACT-TM-2026-002`はAdmin consent change Eventのsource / new Evidence ID、固定query / rule version、Coverage rowを供給する。
+- `ACT-TM-2026-003`はAPI resource / operation Eventの固定query / versionまたはcollection method、Coverage row、retention設定 / 実保持期間 / missing-period inventory、refreshed current / historical summaryを供給する。
+- `ACT-TM-2026-005`はApp identity lifecycle Eventのsource / new Evidence ID、固定query / rule version、Coverage rowを供給する。SOC Reviewerは3つのproducer出力を比較してDecision-priority impact、各count、result、limitationを新Evidence ID付きでsign-offする。
+- Producer Action setは`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`に固定する。Coverage / retention / refreshed-summary Evidenceを`EREQ-2026-003`から`REA-TM-2026-002`へ供給し、`ASM-2026-003` statusと`GAP-2026-003`のcontinued escalationまたはclosure contributionを決める。
+- `CTRL-2026-007` Detection validation、`CTRL-2026-009` API telemetry validation、`ASM-2026-003` Decision-priority assumptionは独立して判定し、一方のEvidence / resultを他方のresultとして流用しない。Assumption resultが`Passed`でない間は、他のControl resultだけで`GAP-2026-003`を閉じない。
+"""
 DETECTION_REQUIREMENT_MINIMUM_EVIDENCE = (
     "Admin consent change EventとApp identity lifecycle Eventごとの有限result、"
     "宣言済み合成fixture / test condition、新Authorization Record / RoE、"
@@ -333,14 +388,25 @@ MANIFEST_REQUIREMENT_MINIMUM_EVIDENCE = (
     "source fixture ID / version / hash付きmanifest / manual import field coverage matrix、"
     "全必須field coverage率、未解決の例外件数、Unknown件数、不一致件数、"
     "有限result（Passed / Failed / Inconclusive / Not collected）、"
-    "Finance Data Owner sign-off"
+    "Finance Data Owner sign-off、ASM-2026-003のsource / new Evidence ID、固定query / versionまたは"
+    "collection method、Admin consent change Event / App identity lifecycle Event / API resource / "
+    "operation Eventの90-day Coverage matrix、各required-field Coverage 100%、retention設定 / 実保持期間 / "
+    "全missing period inventory、refreshed current / historical summary、Decision-priority impact comparison、"
+    "有限priority impact outcome（No priority change / Escalate before continuation / "
+    "De-escalate after review / Inconclusive / Not collected）、"
+    "unresolved Unknown count、unresolved mismatch count、unsupported-period countまたはDecision ownerへの"
+    "bounded risk acceptance escalation、新Evidence ID付きSOC Reviewer sign-off"
 )
 MANIFEST_REQUIREMENT_RESULTING_EVIDENCE = (
     "Historical inputs only: `EVD-2026-004`, `NEG-2026-001`; resource / operation "
     "Fieldの実装記録とpost-change telemetry resultは未収集"
     "（承認済み運用工程後に新Evidence IDを割り当てる）。manifest representativeness "
     "comparison result（有限resultと各count）は未収集"
-    "（`ACT-TM-2026-007`完了後に新Evidence IDを割り当てる）"
+    "（`ACT-TM-2026-007`完了後に新Evidence IDを割り当てる）。ASM-2026-003 reassessment result: "
+    "Not collected; Decision-priority impact outcome: Not collected; Coverage / retention / "
+    "refreshed-summary Evidence、Decision-priority impact comparison、"
+    "SOC Reviewer sign-offは未収集（`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`完了後に"
+    "それぞれ新Evidence IDを割り当てる）"
 )
 MANIFEST_COMPARISON_ACTION = (
     "source fixture ID / version / hashを固定した合成manifest field inventoryと"
@@ -364,7 +430,7 @@ MANIFEST_COMPARISON_SUCCESS_EVIDENCE = (
 )
 MANIFEST_REASSESSMENT_SCOPE = (
     "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `TH-2026-006`, "
-    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `EREQ-2026-002`, "
+    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `ASM-2026-003`, `EREQ-2026-002`, "
     "`EREQ-2026-003`, `GAP-2026-001`, `GAP-2026-003`"
 )
 MANIFEST_REASSESSMENT_INPUTS = (
@@ -381,7 +447,15 @@ MANIFEST_REASSESSMENT_INPUTS = (
     "全必須field coverage、未解決の例外件数、Unknown件数、不一致件数、"
     "有限result（Passed / Failed / Inconclusive / Not collected）、"
     "新Evidence ID付きmanifest representativeness comparison result、"
-    "Finance Data Owner sign-off"
+    "Finance Data Owner sign-off、ASM-2026-003の有限result、判断に使うsource Evidence IDと"
+    "Coverage / retention / refreshed summary / comparison / SOC Reviewer sign-offごとの新Evidence ID、"
+    "固定query / versionまたはcollection method、Admin consent change Event / App identity lifecycle Event / "
+    "API resource / operation Eventの90-day Coverage matrix、各required-field Coverage 100%、retention設定と"
+    "実保持期間、全missing period inventory、refreshed current / historical summary、Decision-priority "
+    "impact comparison、有限priority impact outcome（No priority change / Escalate before continuation / "
+    "De-escalate after review / Inconclusive / Not collected）、unresolved Unknown count、"
+    "unresolved mismatch count、unsupported-period count、"
+    "Decision ownerへのbounded risk acceptance escalation、SOC Reviewer sign-off"
 )
 MANIFEST_REASSESSMENT_CLOSURE = (
     "Admin consent change EventとApp identity lifecycle Eventの両方がPassedで、両Event classについて"
@@ -390,7 +464,8 @@ MANIFEST_REASSESSMENT_CLOSURE = (
     "90日Coverage / retention Evidence、新Evidence ID付きreviewer sign-off、Lab safety entryの"
     "署名済みpreflight Evidence / default-deny Evidence / entry-gate sign-off、終了または停止後の"
     "Cleanup Evidence、resultとlimitationsがすべてそろう場合だけ`CTRL-2026-007`をValidatedとし、"
-    "`GAP-2026-003`を閉じる。いずれかのEvent classがFailed / Inconclusive / Not collected、"
+    "`GAP-2026-003`のDetection側closure条件を満たす。ただしこの結果だけではGapを閉じない。"
+    "いずれかのEvent classがFailed / Inconclusive / Not collected、"
     "またはいずれかのthresholdが未達 / 未収集なら`CTRL-2026-007`をDocumented、"
     "`GAP-2026-003`をEscalated / openに維持し、Owner、due date、reassessmentと未達 / adverseの"
     "Event class / thresholdを記録する。API telemetryは新Authorization Record / "
@@ -403,7 +478,18 @@ MANIFEST_REASSESSMENT_CLOSURE = (
     "承認scope内でValidatedとして`GAP-2026-001`を閉じる。comparison resultが"
     "Not collected、FailedまたはInconclusiveなら`ASM-2026-002`をAssumedに維持し、"
     "`CTRL-2026-009`をValidatedにせず`GAP-2026-001`を閉じない。"
-    "`CTRL-2026-007`のEvidenceを`CTRL-2026-009`へ流用しない。`TH-2026-003`の"
+    "`CTRL-2026-007`のEvidenceを`CTRL-2026-009`へ流用しない。ASM-2026-003のresultがPassedで、"
+    "source / new Evidence ID、固定query / versionまたはcollection method、3つのrelevant Event classの"
+    "90-day Coverage matrixと各required-field Coverage 100%、retention設定 / 実保持期間 / 全missing "
+    "period inventory、refreshed current / historical summary、Decision-priority impact comparisonと"
+    "No priority change outcome、"
+    "unresolved Unknown 0件、unresolved mismatch 0件、unsupported period 0件または全itemのDecision ownerへの"
+    "bounded risk acceptance escalation、新Evidence ID付きSOC Reviewer sign-offがそろう場合だけ"
+    "`ASM-2026-003`をConfirmedとし、このAssumptionに関する`GAP-2026-003` closure contributionを満たす。"
+    "resultがFailed / Inconclusive / Not collectedまたはthreshold不足なら`ASM-2026-003`をAssumed、"
+    "`GAP-2026-003`をEscalated / openに維持し、Decision-priority uncertainty、Owner、due date、次回"
+    "reassessmentを記録する。`CTRL-2026-007`、`CTRL-2026-009`、`ASM-2026-003`のEvidence / resultを"
+    "相互流用せず、Assumption resultがPassedでない間はGapを閉じない。`TH-2026-003`の"
     "発生有無と`TH-2026-006`の機会条件・影響範囲は同じEvidenceから別々に再評価する。"
     "未達時は各Gap ownerと期限を更新する"
 )
@@ -879,6 +965,85 @@ EXPECTED_DETECTION_VALIDATION_ROWS = (
     ("Cleanup Evidence ID", "未収集", "未収集"),
     ("Result and limitations", "未収集", "未収集"),
 )
+ASSUMPTION_REASSESSMENT_HEADER = (
+    "Threshold field",
+    "Required value / Evidence",
+    "Current canonical state",
+)
+EXPECTED_ASSUMPTION_REASSESSMENT_ROWS = (
+    (
+        "Reassessment result",
+        "`Passed / Failed / Inconclusive / Not collected`",
+        "Not collected",
+    ),
+    (
+        "Source Evidence IDs",
+        "判断に使うすべてのsource Evidence ID",
+        "`EVD-2026-004`, `NEG-2026-001`はhistorical inputsのみ",
+    ),
+    (
+        "Newly collected Evidence IDs",
+        "Coverage、retention、refreshed summary、comparison、sign-offごとの新Evidence ID",
+        "未収集。Evidence IDを創作しない",
+    ),
+    (
+        "Query / version or collection method",
+        "固定したquery / versionまたはcollection method",
+        "未収集",
+    ),
+    (
+        "90-day Coverage matrix",
+        "Admin consent change Event、App identity lifecycle Event、API resource / operation Eventの90日matrix",
+        "未収集",
+    ),
+    (
+        "Required Coverage threshold",
+        "各relevant Event classのrequired-field Coverage 100%",
+        "未収集",
+    ),
+    (
+        "Retention configuration / actual retained period",
+        "retention設定と実保持期間",
+        "`EVD-2026-004`のhistorical noteだけで、current comparisonは未収集",
+    ),
+    (
+        "Missing-period inventory",
+        "欠落する全日 / 期間を定量化",
+        "historical 18日だけで、refreshed inventoryは未収集",
+    ),
+    (
+        "Refreshed current / historical summary",
+        "同一collection methodで再採取したsummary",
+        "未収集",
+    ),
+    (
+        "Decision-priority impact comparison",
+        "Decision handoff summaryのSupported option、Confidence、Strongest uncertaintyとAction priority / due orderに対する比較",
+        "未収集",
+    ),
+    (
+        "Decision-priority impact outcome",
+        "`No priority change / Escalate before continuation / De-escalate after review / Inconclusive / Not collected`",
+        "Not collected",
+    ),
+    ("Unresolved Unknown count", "0", "未収集"),
+    ("Unresolved mismatch count", "0", "未収集"),
+    (
+        "Unsupported-period count",
+        "0、または0より大きい有限値",
+        "未収集",
+    ),
+    (
+        "Bounded risk acceptance",
+        "Unsupported-period countが0より大きい場合、全itemをDecision ownerへ有限なrisk acceptanceとしてEscalate",
+        "未収集",
+    ),
+    (
+        "SOC Reviewer sign-off Evidence ID",
+        "result、limitation、priority impactへの新Evidence ID付きsign-off",
+        "未収集",
+    ),
+)
 ACTION_HEADER = (
     "Action ID",
     "Related Gap / Control / Threat",
@@ -1327,6 +1492,298 @@ def detection_validation_decision_regressions() -> None:
 
 
 @dataclass(frozen=True)
+class AssumptionThresholdEvidence:
+    source_evidence_ids_recorded: bool
+    new_evidence_ids_recorded: bool
+    query_or_collection_method_recorded: bool
+    coverage_matrix_90_days_recorded: bool
+    relevant_event_classes_complete: bool
+    required_coverage_thresholds_met: bool
+    retention_configuration_recorded: bool
+    actual_retained_period_recorded: bool
+    missing_periods_quantified: bool
+    refreshed_summary_collected: bool
+    decision_priority_impact_evaluated: bool
+    decision_priority_impact_outcome: str | None
+    unresolved_unknown_count: int | None
+    unresolved_mismatch_count: int | None
+    unsupported_period_count: int | None
+    unsupported_periods_escalated_to_decision_owner: bool
+    soc_reviewer_signoff_evidence_id: bool
+
+
+@dataclass(frozen=True)
+class AssumptionClosureDecision:
+    may_confirm_assumption: bool
+    may_contribute_to_gap_closure: bool
+    required_assumption_state: str
+    required_gap_state: str
+    reasons: tuple[str, ...]
+
+
+def _nonnegative_zero(value: int | None) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value == 0
+
+
+def _unsupported_period_contract(item: AssumptionThresholdEvidence) -> bool:
+    count = item.unsupported_period_count
+    return (
+        isinstance(count, int)
+        and not isinstance(count, bool)
+        and count >= 0
+        and (
+            count == 0
+            or item.unsupported_periods_escalated_to_decision_owner
+        )
+    )
+
+
+ASSUMPTION_THRESHOLD_CHECKS: tuple[
+    tuple[str, Callable[[AssumptionThresholdEvidence], bool]], ...
+] = (
+    ("source Evidence IDs", lambda item: item.source_evidence_ids_recorded),
+    ("new Evidence IDs", lambda item: item.new_evidence_ids_recorded),
+    (
+        "fixed query / version or collection method",
+        lambda item: item.query_or_collection_method_recorded,
+    ),
+    ("90-day Coverage matrix", lambda item: item.coverage_matrix_90_days_recorded),
+    (
+        "complete relevant Event-class set",
+        lambda item: item.relevant_event_classes_complete,
+    ),
+    (
+        "required Coverage threshold for every Event class",
+        lambda item: item.required_coverage_thresholds_met,
+    ),
+    (
+        "retention configuration",
+        lambda item: item.retention_configuration_recorded,
+    ),
+    (
+        "actual retained period",
+        lambda item: item.actual_retained_period_recorded,
+    ),
+    ("quantified missing periods", lambda item: item.missing_periods_quantified),
+    ("refreshed summary", lambda item: item.refreshed_summary_collected),
+    (
+        "Decision-priority impact comparison",
+        lambda item: item.decision_priority_impact_evaluated,
+    ),
+    (
+        "Decision-priority impact outcome No priority change",
+        lambda item: item.decision_priority_impact_outcome == "No priority change",
+    ),
+    (
+        "unresolved Unknown count 0",
+        lambda item: _nonnegative_zero(item.unresolved_unknown_count),
+    ),
+    (
+        "unresolved mismatch count 0",
+        lambda item: _nonnegative_zero(item.unresolved_mismatch_count),
+    ),
+    ("unsupported-period disposition", _unsupported_period_contract),
+    (
+        "SOC Reviewer sign-off Evidence ID",
+        lambda item: item.soc_reviewer_signoff_evidence_id,
+    ),
+)
+
+
+def evaluate_assumption_reassessment(
+    result: str | None,
+    threshold_evidence: AssumptionThresholdEvidence,
+) -> AssumptionClosureDecision:
+    """Evaluate only ASM-2026-003's finite Decision-priority contract."""
+
+    reasons: list[str] = []
+    if result not in ASSUMPTION_RESULT_VALUES:
+        reasons.append(f"invalid or missing result {result!r}")
+    elif result != "Passed":
+        reasons.append(f"result {result}")
+    else:
+        for marker, predicate in ASSUMPTION_THRESHOLD_CHECKS:
+            if not predicate(threshold_evidence):
+                reasons.append(f"missing or adverse {marker}")
+
+    if reasons:
+        return AssumptionClosureDecision(
+            may_confirm_assumption=False,
+            may_contribute_to_gap_closure=False,
+            required_assumption_state="Assumed",
+            required_gap_state="Escalated",
+            reasons=tuple(reasons),
+        )
+    return AssumptionClosureDecision(
+        may_confirm_assumption=True,
+        may_contribute_to_gap_closure=True,
+        required_assumption_state="Confirmed",
+        required_gap_state="Closure contribution satisfied",
+        reasons=(),
+    )
+
+
+def complete_assumption_threshold_evidence() -> AssumptionThresholdEvidence:
+    return AssumptionThresholdEvidence(
+        source_evidence_ids_recorded=True,
+        new_evidence_ids_recorded=True,
+        query_or_collection_method_recorded=True,
+        coverage_matrix_90_days_recorded=True,
+        relevant_event_classes_complete=True,
+        required_coverage_thresholds_met=True,
+        retention_configuration_recorded=True,
+        actual_retained_period_recorded=True,
+        missing_periods_quantified=True,
+        refreshed_summary_collected=True,
+        decision_priority_impact_evaluated=True,
+        decision_priority_impact_outcome="No priority change",
+        unresolved_unknown_count=0,
+        unresolved_mismatch_count=0,
+        unsupported_period_count=0,
+        unsupported_periods_escalated_to_decision_owner=False,
+        soc_reviewer_signoff_evidence_id=True,
+    )
+
+
+def uncollected_assumption_threshold_evidence() -> AssumptionThresholdEvidence:
+    return AssumptionThresholdEvidence(
+        source_evidence_ids_recorded=True,
+        new_evidence_ids_recorded=False,
+        query_or_collection_method_recorded=False,
+        coverage_matrix_90_days_recorded=False,
+        relevant_event_classes_complete=False,
+        required_coverage_thresholds_met=False,
+        retention_configuration_recorded=False,
+        actual_retained_period_recorded=False,
+        missing_periods_quantified=False,
+        refreshed_summary_collected=False,
+        decision_priority_impact_evaluated=False,
+        decision_priority_impact_outcome=None,
+        unresolved_unknown_count=None,
+        unresolved_mismatch_count=None,
+        unsupported_period_count=None,
+        unsupported_periods_escalated_to_decision_owner=False,
+        soc_reviewer_signoff_evidence_id=False,
+    )
+
+
+def assumption_reassessment_decision_regressions() -> None:
+    complete = complete_assumption_threshold_evidence()
+    for result in sorted(ASSUMPTION_RESULT_VALUES):
+        decision = evaluate_assumption_reassessment(result, complete)
+        should_contribute = result == "Passed"
+        if (
+            decision.may_confirm_assumption != should_contribute
+            or decision.may_contribute_to_gap_closure != should_contribute
+            or decision.required_assumption_state
+            != ("Confirmed" if should_contribute else "Assumed")
+            or decision.required_gap_state
+            != ("Closure contribution satisfied" if should_contribute else "Escalated")
+        ):
+            error(
+                "ASM-2026-003 finite result matrix produced an invalid decision: "
+                f"{result!r}: {decision!r}"
+            )
+
+    missing_threshold_variants = (
+        ("source Evidence IDs", {"source_evidence_ids_recorded": False}),
+        ("new Evidence IDs", {"new_evidence_ids_recorded": False}),
+        (
+            "query / version or collection method",
+            {"query_or_collection_method_recorded": False},
+        ),
+        ("90-day Coverage matrix", {"coverage_matrix_90_days_recorded": False}),
+        ("relevant Event class", {"relevant_event_classes_complete": False}),
+        ("Coverage below threshold", {"required_coverage_thresholds_met": False}),
+        ("retention configuration", {"retention_configuration_recorded": False}),
+        ("actual retained period", {"actual_retained_period_recorded": False}),
+        ("missing periods not quantified", {"missing_periods_quantified": False}),
+        ("refreshed summary", {"refreshed_summary_collected": False}),
+        (
+            "Decision-priority impact comparison",
+            {"decision_priority_impact_evaluated": False},
+        ),
+        (
+            "Decision-priority impact outcome absent",
+            {"decision_priority_impact_outcome": None},
+        ),
+        ("Unknown count positive", {"unresolved_unknown_count": 1}),
+        ("Unknown count absent", {"unresolved_unknown_count": None}),
+        ("mismatch count positive", {"unresolved_mismatch_count": 1}),
+        ("mismatch count absent", {"unresolved_mismatch_count": None}),
+        (
+            "unsupported period not escalated",
+            {
+                "unsupported_period_count": 1,
+                "unsupported_periods_escalated_to_decision_owner": False,
+            },
+        ),
+        ("unsupported-period count absent", {"unsupported_period_count": None}),
+        ("SOC Reviewer sign-off", {"soc_reviewer_signoff_evidence_id": False}),
+    )
+    for variant_name, changes in missing_threshold_variants:
+        decision = evaluate_assumption_reassessment(
+            "Passed", replace(complete, **changes)
+        )
+        if decision.may_confirm_assumption or decision.may_contribute_to_gap_closure:
+            error(
+                "ASM-2026-003 threshold mutation incorrectly closed assurance: "
+                f"{variant_name}"
+            )
+
+    for adverse_outcome in sorted(
+        DECISION_PRIORITY_IMPACT_VALUES - {"No priority change"}
+    ):
+        decision = evaluate_assumption_reassessment(
+            "Passed", replace(complete, decision_priority_impact_outcome=adverse_outcome)
+        )
+        if decision.may_confirm_assumption:
+            error(
+                "non-stable Decision-priority impact outcome confirmed ASM-2026-003: "
+                f"{adverse_outcome}"
+            )
+
+    risk_accepted = replace(
+        complete,
+        unsupported_period_count=2,
+        unsupported_periods_escalated_to_decision_owner=True,
+    )
+    if not evaluate_assumption_reassessment(
+        "Passed", risk_accepted
+    ).may_contribute_to_gap_closure:
+        error("bounded Decision-owner risk acceptance was not recognized")
+
+    evidence_without_result = evaluate_assumption_reassessment(None, complete)
+    if evidence_without_result.may_confirm_assumption:
+        error("Evidence IDs without a finite result confirmed ASM-2026-003")
+
+    retention_note_only = replace(
+        uncollected_assumption_threshold_evidence(),
+        retention_configuration_recorded=True,
+        actual_retained_period_recorded=True,
+    )
+    if evaluate_assumption_reassessment(
+        "Passed", retention_note_only
+    ).may_confirm_assumption:
+        error("retention note alone confirmed ASM-2026-003")
+
+    negative_finding_only = replace(
+        uncollected_assumption_threshold_evidence(),
+        source_evidence_ids_recorded=True,
+    )
+    if evaluate_assumption_reassessment(
+        "Passed", negative_finding_only
+    ).may_confirm_assumption:
+        error("Negative Finding alone confirmed ASM-2026-003")
+
+    for reused_result in ("CTRL-2026-007 Passed", "CTRL-2026-009 Passed"):
+        if evaluate_assumption_reassessment(
+            reused_result, complete
+        ).may_confirm_assumption:
+            error(f"cross-Control result reused for ASM-2026-003: {reused_result}")
+
+
+@dataclass(frozen=True)
 class TableSafetyPolicy:
     """Finite field classification for one public ART-03 Markdown table."""
 
@@ -1552,6 +2009,12 @@ TABLE_SAFETY_POLICIES = {
             ),
         ),
         table_safety_policy(
+            ASSUMPTION_REASSESSMENT_HEADER,
+            structural=("Threshold field",),
+            finite=(),
+            reader_visible=("Required value / Evidence", "Current canonical state"),
+        ),
+        table_safety_policy(
             EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
             structural=(
                 "Evidence Requirement ID",
@@ -1693,6 +2156,7 @@ CASE_TABLE_OCCURRENCES = {
         GAP_HEADER,
         EVIDENCE_REQUIREMENT_HEADER,
         DETECTION_VALIDATION_HEADER,
+        ASSUMPTION_REASSESSMENT_HEADER,
         EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
         COLLECTED_EVIDENCE_HEADER,
         NEGATIVE_FINDING_HEADER,
@@ -10536,7 +11000,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     expected_action_relations = {
         "ACT-TM-2026-001": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `GAP-2026-002`",
         "ACT-TM-2026-002": "`TH-2026-002`, `CTRL-2026-007`, `GAP-2026-003`",
-        "ACT-TM-2026-003": "`TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001`",
+        "ACT-TM-2026-003": (
+            "`TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001`, `GAP-2026-003`"
+        ),
         "ACT-TM-2026-004": "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002`",
         "ACT-TM-2026-005": "`TH-2026-005`, `CTRL-2026-007`, `GAP-2026-003`",
         "ACT-TM-2026-006": (
@@ -10572,7 +11038,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
     expected_gap_actions = {
         "GAP-2026-001": "`ACT-TM-2026-003`, `ACT-TM-2026-007`",
         "GAP-2026-002": "`ACT-TM-2026-001`, `ACT-TM-2026-004`",
-        "GAP-2026-003": "`ACT-TM-2026-002`, `ACT-TM-2026-005`",
+        "GAP-2026-003": (
+            "`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`"
+        ),
         "GAP-2026-004": "`ACT-TM-2026-006`",
     }
     gap_action_index = gap_header.index("Action ID")
@@ -10674,6 +11142,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "query / version",
                 "Coverage",
                 "retention",
+                "retention設定 / 実保持期間",
+                "全missing period inventory",
+                "refreshed current / historical summary",
                 "review sign-off",
                 "`REA-TM-2026-002`へ供給",
                 "未承認、過剰収集、scope外変更が必要な場合は停止する",
@@ -10693,9 +11164,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "query / version",
                 "resource / operation Coverage",
                 "retention note",
+                "retention設定 / 実保持期間",
+                "全missing period inventory",
+                "新Evidence ID付きrefreshed current / historical summary",
                 "review sign-off",
                 "`REA-TM-2026-002`への供給",
-                "Phase B未実施の間はpost-change result未収集",
+                "Phase B未実施の間はpost-change result、retention比較、refreshed summaryをすべて未収集",
             ),
         },
         "ACT-TM-2026-004": {
@@ -11200,6 +11674,91 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 f"{label}: CTRL-2026-007 Detection decision contract missing {marker!r}"
             )
 
+    assumption_heading_count = text.count(ASSUMPTION_REASSESSMENT_HEADING)
+    if assumption_heading_count != 1:
+        messages.append(
+            f"{label}: ASM-2026-003 reassessment heading count "
+            f"{assumption_heading_count} != 1"
+        )
+    assumption_threshold_occurrences = text.count(
+        ASSUMPTION_REASSESSMENT_THRESHOLD_SECTION
+    )
+    if assumption_threshold_occurrences != 1:
+        messages.append(
+            f"{label}: ASM-2026-003 finite threshold section count "
+            f"{assumption_threshold_occurrences} != 1"
+        )
+    assumption_reassessment_rows, assumption_reassessment_messages = table_by_header(
+        text, ASSUMPTION_REASSESSMENT_HEADER, label
+    )
+    messages.extend(assumption_reassessment_messages)
+    observed_assumption_reassessment_rows = tuple(
+        tuple(row) for row in assumption_reassessment_rows
+    )
+    if observed_assumption_reassessment_rows != EXPECTED_ASSUMPTION_REASSESSMENT_ROWS:
+        messages.append(
+            f"{label}: ASM-2026-003 threshold matrix "
+            f"{observed_assumption_reassessment_rows!r} != "
+            f"{EXPECTED_ASSUMPTION_REASSESSMENT_ROWS!r}"
+        )
+    if assumption_reassessment_rows:
+        canonical_assumption_result = assumption_reassessment_rows[0][2]
+        if canonical_assumption_result not in ASSUMPTION_RESULT_VALUES:
+            messages.append(
+                f"{label}: ASM-2026-003 result outside finite set: "
+                f"{canonical_assumption_result!r}"
+            )
+        if canonical_assumption_result != "Not collected":
+            messages.append(
+                f"{label}: canonical ASM-2026-003 result must remain Not collected: "
+                f"{canonical_assumption_result!r}"
+            )
+        canonical_assumption_decision = evaluate_assumption_reassessment(
+            canonical_assumption_result,
+            uncollected_assumption_threshold_evidence(),
+        )
+        if (
+            canonical_assumption_decision.may_confirm_assumption
+            or canonical_assumption_decision.may_contribute_to_gap_closure
+            or canonical_assumption_decision.required_assumption_state != "Assumed"
+            or canonical_assumption_decision.required_gap_state != "Escalated"
+        ):
+            messages.append(
+                f"{label}: canonical not-collected ASM-2026-003 state closed assurance: "
+                f"{canonical_assumption_decision!r}"
+            )
+        outcome_rows = {
+            row[0]: row for row in assumption_reassessment_rows if len(row) == 3
+        }
+        canonical_impact_outcome = outcome_rows.get(
+            "Decision-priority impact outcome", ("", "", None)
+        )[2]
+        if canonical_impact_outcome not in DECISION_PRIORITY_IMPACT_VALUES:
+            messages.append(
+                f"{label}: Decision-priority impact outcome outside finite set: "
+                f"{canonical_impact_outcome!r}"
+            )
+        if canonical_impact_outcome != "Not collected":
+            messages.append(
+                f"{label}: canonical Decision-priority impact outcome must remain "
+                f"Not collected: {canonical_impact_outcome!r}"
+            )
+    for marker in (
+        "Evidenceの存在、retention note、Negative Finding、Detection resultまたはReviewer名だけでは`Passed`ではない",
+        "`ASM-2026-003`を`Confirmed`",
+        "`ASM-2026-003`を`Assumed`",
+        "`GAP-2026-003`を`Escalated` / openに維持",
+        "Decision-priority uncertainty、Owner、due date、次回reassessment",
+        ASSUMPTION_REASSESSMENT_PRODUCER_ACTIONS,
+        "Coverage / retention / refreshed-summary Evidenceを`EREQ-2026-003`から`REA-TM-2026-002`へ供給",
+        "`CTRL-2026-007` Detection validation、`CTRL-2026-009` API telemetry validation、`ASM-2026-003` Decision-priority assumptionは独立して判定",
+        "Assumption resultが`Passed`でない間は、他のControl resultだけで`GAP-2026-003`を閉じない",
+    ):
+        if marker not in text:
+            messages.append(
+                f"{label}: ASM-2026-003 decision contract missing {marker!r}"
+            )
+
     telemetry_requirement = evidence_rows_by_id.get("EREQ-2026-003")
     if telemetry_requirement is None:
         messages.append(f"{label}: missing API telemetry Evidence Requirement EREQ-2026-003")
@@ -11219,9 +11778,16 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         telemetry_owner = telemetry_requirement[
             evidence_requirement_header.index("Owner")
         ]
-        if "合成manifest field inventoryがmanual import要件を十分代表するか" not in telemetry_question:
+        if "合成manifest field inventoryがmanual import要件を十分代表し" not in telemetry_question:
             messages.append(
                 f"{label}: EREQ-2026-003 question must include manifest representativeness"
+            )
+        if (
+            "historical summary exportの欠落期間がDecisionの優先順位を変えるほど大きくないか"
+            not in telemetry_question
+        ):
+            messages.append(
+                f"{label}: EREQ-2026-003 question must include ASM-2026-003 priority reassessment"
             )
         if telemetry_owner != "SOC、Platform、Finance Data Owner":
             messages.append(
@@ -11255,6 +11821,16 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "不一致件数",
             "Passed / Failed / Inconclusive / Not collected",
             "Finance Data Owner sign-off",
+            "ASM-2026-003のsource / new Evidence ID",
+            "90-day Coverage matrix",
+            "retention設定 / 実保持期間 / 全missing period inventory",
+            "refreshed current / historical summary",
+            "Decision-priority impact comparison",
+            "有限priority impact outcome",
+            "unresolved Unknown count",
+            "unresolved mismatch count",
+            "unsupported-period count",
+            "SOC Reviewer sign-off",
         ):
             if marker not in telemetry_minimum:
                 messages.append(f"{label}: EREQ-2026-003 minimum evidence missing {marker!r}")
@@ -11275,6 +11851,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "manifest representativeness comparison result（有限resultと各count）は未収集",
             "有限resultと各count",
             "`ACT-TM-2026-007`完了後に新Evidence IDを割り当てる",
+            "ASM-2026-003 reassessment result: Not collected",
+            "Decision-priority impact outcome: Not collected",
+            "Coverage / retention / refreshed-summary Evidence",
+            "Decision-priority impact comparison",
+            "SOC Reviewer sign-offは未収集",
+            "`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`完了後",
         ):
             if marker not in telemetry_resulting:
                 messages.append(
@@ -11596,10 +12178,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                     gap_row[gap_header.index("Reassessment ID")],
                 )
             )
-        if gap_action_union != supplier_ids:
+        if not supplier_ids <= gap_action_union:
             messages.append(
                 f"{label}: {requirement_id} supplier Actions "
-                f"{sorted(supplier_ids)!r} != Action union from Gaps "
+                f"{sorted(supplier_ids)!r} are not covered by Action union from Gaps "
                 f"{sorted(gap_action_union)!r}"
             )
         if gap_reassessment_union != reassessment_ids:
@@ -11673,6 +12255,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "REA-TM-2026-002": {
             "Scope": (
                 "ASM-2026-002",
+                "ASM-2026-003",
                 "EREQ-2026-002",
                 "EREQ-2026-003",
                 "GAP-2026-001",
@@ -11708,6 +12291,20 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "Passed / Failed / Inconclusive / Not collected",
                 "新Evidence ID付きmanifest representativeness comparison result",
                 "Finance Data Owner sign-off",
+                "ASM-2026-003の有限result",
+                "Coverage / retention / refreshed summary / comparison / SOC Reviewer sign-offごとの新Evidence ID",
+                "固定query / versionまたはcollection method",
+                "API resource / operation Eventの90-day Coverage matrix",
+                "retention設定と実保持期間",
+                "全missing period inventory",
+                "refreshed current / historical summary",
+                "Decision-priority impact comparison",
+                "有限priority impact outcome",
+                "unresolved Unknown count",
+                "unresolved mismatch count",
+                "unsupported-period count",
+                "Decision ownerへのbounded risk acceptance escalation",
+                "SOC Reviewer sign-off",
             ),
             "Closure criteria": (
                 "Admin consent change EventとApp identity lifecycle Eventの両方がPassed",
@@ -11717,7 +12314,8 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "署名済みpreflight Evidence / default-deny Evidence / entry-gate sign-off",
                 "Cleanup Evidence",
                 "`CTRL-2026-007`をValidated",
-                "`GAP-2026-003`を閉じる",
+                "`GAP-2026-003`のDetection側closure条件を満たす",
+                "ただしこの結果だけではGapを閉じない",
                 "Failed / Inconclusive / Not collected",
                 "`CTRL-2026-007`をDocumented",
                 "`GAP-2026-003`をEscalated / openに維持",
@@ -11746,6 +12344,15 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "`CTRL-2026-009`をValidatedにせず",
                 "`GAP-2026-001`を閉じない",
                 "CTRL-2026-007`のEvidenceを`CTRL-2026-009`へ流用しない",
+                "ASM-2026-003のresultがPassed",
+                "No priority change outcome",
+                "`ASM-2026-003`をConfirmed",
+                "closure contributionを満たす",
+                "resultがFailed / Inconclusive / Not collectedまたはthreshold不足",
+                "`ASM-2026-003`をAssumed",
+                "Decision-priority uncertainty",
+                "`CTRL-2026-007`、`CTRL-2026-009`、`ASM-2026-003`のEvidence / resultを相互流用せず",
+                "Assumption resultがPassedでない間はGapを閉じない",
             ),
         },
         "REA-TM-2026-004": {
@@ -11804,6 +12411,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "CTRL-2026-007",
             "CTRL-2026-009",
             "ASM-2026-002",
+            "ASM-2026-003",
             "EREQ-2026-002",
             "EREQ-2026-003",
             "GAP-2026-001",
@@ -11913,6 +12521,31 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             if actual != expected:
                 messages.append(
                     f"{label}: ASM-2026-002 {field} {actual!r} != {expected!r}"
+                )
+    priority_assumption = assumptions_by_id.get("ASM-2026-003")
+    if priority_assumption is None:
+        messages.append(f"{label}: missing Decision-priority Assumption ASM-2026-003")
+    else:
+        expected_priority_assumption_fields = {
+            "Statement": (
+                "historical summary exportの欠落期間はDecisionの優先順位を"
+                "変えるほど大きくない"
+            ),
+            "Owner": "SOC",
+            "Validation method": "retention note、coverage差分、再評価時のsummary再採取",
+            "Due date": "2026-08-20",
+            "Status": "Assumed",
+            "Related IDs": (
+                "`TH-2026-003`, `TH-2026-006`, `EREQ-2026-003`, "
+                "`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`, "
+                "`REA-TM-2026-002`, `GAP-2026-003`"
+            ),
+        }
+        for field, expected in expected_priority_assumption_fields.items():
+            actual = priority_assumption[assumption_header.index(field)]
+            if actual != expected:
+                messages.append(
+                    f"{label}: ASM-2026-003 {field} {actual!r} != {expected!r}"
                 )
     refinement_consumer_contracts = (
         (
@@ -12326,6 +12959,15 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{label}: Decision handoff Confidence drifted from the bounded "
             "evidence/limitation contract"
         )
+    for field, expected in (
+        ("Supported option", DECISION_SUPPORTED_OPTION_VALUE),
+        ("Strongest uncertainty", DECISION_STRONGEST_UNCERTAINTY_VALUE),
+    ):
+        if decision_values.get(field) != expected:
+            messages.append(
+                f"{label}: Decision handoff {field} drifted from the "
+                "ASM-2026-003 priority-comparison baseline"
+            )
 
     control_consumer_contracts = (
         (
@@ -13051,6 +13693,7 @@ def negative_regressions(
     changelog: str,
 ) -> None:
     detection_validation_decision_regressions()
+    assumption_reassessment_decision_regressions()
     reader_visible_adapter_contract_regressions()
     inherited_descriptor_exception_scope_regressions(case)
     chapter_mutations = (
@@ -13364,6 +14007,22 @@ def negative_regressions(
                 case.replace(
                     DECISION_CONFIDENCE_ROW,
                     "| Confidence | 高。既存のhistorical Evidenceだけで不確実性はない |",
+                    1,
+                ),
+            ),
+            (
+                "Decision handoff Supported option drifts from ASM-2026-003 baseline",
+                case.replace(
+                    f"| Supported option | {DECISION_SUPPORTED_OPTION_VALUE} |",
+                    "| Supported option | 無条件で継続 |",
+                    1,
+                ),
+            ),
+            (
+                "Decision handoff Strongest uncertainty drifts from ASM-2026-003 baseline",
+                case.replace(
+                    f"| Strongest uncertainty | {DECISION_STRONGEST_UNCERTAINTY_VALUE} |",
+                    "| Strongest uncertainty | 不確実性はない |",
                     1,
                 ),
             ),
@@ -13893,8 +14552,12 @@ def negative_regressions(
             (
                 "ASM-2026-003 drops opportunity refinement",
                 case.replace(
-                    "`TH-2026-003`, `TH-2026-006`, `EREQ-2026-003`, `REA-TM-2026-002`",
-                    "`TH-2026-003`, `EREQ-2026-003`, `REA-TM-2026-002`",
+                    "`TH-2026-003`, `TH-2026-006`, `EREQ-2026-003`, "
+                    "`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`, "
+                    "`REA-TM-2026-002`, `GAP-2026-003`",
+                    "`TH-2026-003`, `EREQ-2026-003`, `ACT-TM-2026-002`, "
+                    "`ACT-TM-2026-003`, `ACT-TM-2026-005`, `REA-TM-2026-002`, "
+                    "`GAP-2026-003`",
                     1,
                 ),
             ),
@@ -13918,17 +14581,19 @@ def negative_regressions(
                 "EREQ-2026-003 drops opportunity refinement",
                 case.replace(
                     "`TH-2026-001`, `TH-2026-003`, `TH-2026-004`, `TH-2026-006`, "
-                    "`CTRL-2026-009`, `GAP-2026-001`, `GAP-2026-003`",
+                    "`CTRL-2026-009`, `ASM-2026-003`, `GAP-2026-001`, `GAP-2026-003`",
                     "`TH-2026-001`, `TH-2026-003`, `TH-2026-004`, `CTRL-2026-009`, "
-                    "`GAP-2026-001`, `GAP-2026-003`",
+                    "`ASM-2026-003`, `GAP-2026-001`, `GAP-2026-003`",
                     1,
                 ),
             ),
             (
                 "ACT-TM-2026-003 falls back to inherited occurrence",
                 case.replace(
-                    "| `ACT-TM-2026-003` | `TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001` |",
-                    "| `ACT-TM-2026-003` | `TH-2026-003`, `CTRL-2026-009`, `GAP-2026-001` |",
+                    "| `ACT-TM-2026-003` | `TH-2026-006`, `CTRL-2026-009`, "
+                    "`GAP-2026-001`, `GAP-2026-003` |",
+                    "| `ACT-TM-2026-003` | `TH-2026-003`, `CTRL-2026-009`, "
+                    "`GAP-2026-001`, `GAP-2026-003` |",
                     1,
                 ),
             ),
@@ -14740,9 +15405,8 @@ def negative_regressions(
             (
                 "ACT-TM-2026-003 success omits post-change telemetry result",
                 case.replace(
-                    "実装記録、新Evidence ID付きpost-change API telemetry result、query / version、"
-                    "resource / operation Coverage、retention note、review sign-off",
-                    "実装記録、query / version、resource / operation Coverage、retention note、review sign-off",
+                    "新Evidence ID付きpost-change API telemetry result、",
+                    "",
                     1,
                 ),
             ),
@@ -14777,7 +15441,7 @@ def negative_regressions(
             (
                 "EREQ-2026-003 omits manifest representativeness question",
                 case.replace(
-                    "、合成manifest field inventoryがmanual import要件を十分代表するか",
+                    "、合成manifest field inventoryがmanual import要件を十分代表し",
                     "",
                     1,
                 ),
@@ -14864,6 +15528,181 @@ def negative_regressions(
             (
                 "Detection validation decision heading omitted",
                 case.replace(f"{DETECTION_VALIDATION_HEADING}\n", "", 1),
+            ),
+            (
+                "ASM-2026-003 reassessment threshold section omitted",
+                case.replace(
+                    f"{ASSUMPTION_REASSESSMENT_THRESHOLD_SECTION}\n", "", 1
+                ),
+            ),
+            (
+                "ASM-2026-003 Evidence exists without finite result",
+                mutate_table_cell(
+                    case,
+                    ASSUMPTION_REASSESSMENT_HEADER,
+                    1,
+                    1,
+                    "Current canonical state",
+                    "",
+                ),
+            ),
+            (
+                "canonical ASM-2026-003 state overclaims Passed",
+                mutate_table_cell(
+                    case,
+                    ASSUMPTION_REASSESSMENT_HEADER,
+                    1,
+                    1,
+                    "Current canonical state",
+                    "Passed",
+                ),
+            ),
+            (
+                "CTRL-2026-007 result reused as ASM-2026-003 result",
+                mutate_table_cell(
+                    case,
+                    ASSUMPTION_REASSESSMENT_HEADER,
+                    1,
+                    1,
+                    "Current canonical state",
+                    "CTRL-2026-007 Passed",
+                ),
+            ),
+            (
+                "CTRL-2026-009 result reused as ASM-2026-003 result",
+                mutate_table_cell(
+                    case,
+                    ASSUMPTION_REASSESSMENT_HEADER,
+                    1,
+                    1,
+                    "Current canonical state",
+                    "CTRL-2026-009 Passed",
+                ),
+            ),
+            (
+                "ASM-2026-003 reverse trace omits producer Action",
+                case.replace(
+                    "`TH-2026-003`, `TH-2026-006`, `EREQ-2026-003`, "
+                    "`ACT-TM-2026-002`, `ACT-TM-2026-003`, `ACT-TM-2026-005`, "
+                    "`REA-TM-2026-002`, `GAP-2026-003`",
+                    "`TH-2026-003`, `TH-2026-006`, `EREQ-2026-003`, "
+                    "`ACT-TM-2026-002`, `ACT-TM-2026-005`, "
+                    "`REA-TM-2026-002`, `GAP-2026-003`",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-003 omits GAP-2026-003 reverse trace",
+                mutate_table_cell(
+                    case,
+                    ACTION_HEADER,
+                    1,
+                    3,
+                    "Related Gap / Control / Threat",
+                    "`TH-2026-006`, `CTRL-2026-009`, `GAP-2026-001`",
+                ),
+            ),
+            (
+                "GAP-2026-003 omits ACT-TM-2026-003 supplier",
+                mutate_table_cell(
+                    case,
+                    GAP_HEADER,
+                    1,
+                    3,
+                    "Action ID",
+                    "`ACT-TM-2026-002`, `ACT-TM-2026-005`",
+                ),
+            ),
+            (
+                "ACT-TM-2026-003 omits actual retention and missing-period inventory",
+                case.replace(
+                    "retention note、retention設定 / 実保持期間、全missing period inventory、",
+                    "retention note、",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-003 omits refreshed summary Evidence",
+                case.replace(
+                    "新Evidence ID付きrefreshed current / historical summary、review sign-off",
+                    "review sign-off",
+                    1,
+                ),
+            ),
+            (
+                "ASM-2026-003 producer Action set incomplete",
+                case.replace(
+                    ASSUMPTION_REASSESSMENT_THRESHOLD_SECTION,
+                    ASSUMPTION_REASSESSMENT_THRESHOLD_SECTION.replace(
+                        ASSUMPTION_REASSESSMENT_PRODUCER_ACTIONS,
+                        "`ACT-TM-2026-002`, `ACT-TM-2026-005`",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 Scope omits ASM-2026-003",
+                case.replace(
+                    MANIFEST_REASSESSMENT_SCOPE,
+                    MANIFEST_REASSESSMENT_SCOPE.replace(
+                        "`ASM-2026-003`, ", "", 1
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 Scope omits EREQ-2026-003",
+                case.replace(
+                    MANIFEST_REASSESSMENT_SCOPE,
+                    MANIFEST_REASSESSMENT_SCOPE.replace(
+                        "`EREQ-2026-003`, ", "", 1
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 Scope omits GAP-2026-003 for ASM closure",
+                case.replace(
+                    MANIFEST_REASSESSMENT_SCOPE,
+                    MANIFEST_REASSESSMENT_SCOPE.replace(
+                        ", `GAP-2026-003`", "", 1
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 omits Decision-priority impact input",
+                case.replace(
+                    MANIFEST_REASSESSMENT_INPUTS,
+                    MANIFEST_REASSESSMENT_INPUTS.replace(
+                        "Decision-priority impact comparison、", "", 1
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "adverse ASM-2026-003 result closes GAP-2026-003",
+                case.replace(
+                    MANIFEST_REASSESSMENT_CLOSURE,
+                    MANIFEST_REASSESSMENT_CLOSURE.replace(
+                        "resultがFailed / Inconclusive / Not collectedまたはthreshold不足なら"
+                        "`ASM-2026-003`をAssumed、`GAP-2026-003`をEscalated / openに維持し",
+                        "resultがFailedでも`ASM-2026-003`をConfirmed、"
+                        "`GAP-2026-003`をClosedとし",
+                        1,
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "current canonical ASM-2026-003 state changed to Confirmed",
+                case.replace(
+                    "| 2026-08-20 | Assumed | `TH-2026-003`, `TH-2026-006`, "
+                    "`EREQ-2026-003`, `ACT-TM-2026-002`,",
+                    "| 2026-08-20 | Confirmed | `TH-2026-003`, `TH-2026-006`, "
+                    "`EREQ-2026-003`, `ACT-TM-2026-002`,",
+                    1,
+                ),
             ),
             (
                 "historical consent observation treated as new Passed result",
