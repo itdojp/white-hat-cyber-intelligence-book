@@ -33,4 +33,6 @@
 
 `ART-14`は、`ART-01 Learning Route Plan`をTask、Knowledge / Skill、許可されたPractice、Artifact Evidence、Review、Gap、Learning Action、Reassessmentへ分解する。Capability Judgmentは、複数Evidenceに基づく限定結論としてScope、Conditions、Reviewer、Limitations、Expiry、Reassessment Triggerを持つ。第3章の合成記入例は`cases/ch03-capability-evidence-example.md`を参照する。
 
+`ART-03`は、Decision RequirementからBusiness Outcome、具体的なAsset typeに記録するBusiness Asset role、Flow、Trust Boundary、Exposure、Threat Hypothesis、非OperationalなAttack Path、Control assurance、Gap、Evidence Requirement、Action、Reassessmentまでを共通IDで接続する。Network SegmentをTrust Boundaryの定義とせず、Controlの存在とValidationを分離する。第4章の合成記入例は`cases/ch04-threat-model-example.md`を参照する。
+
 成果物IDは章間・演習・評価ルーブリックで共通利用する。

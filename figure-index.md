@@ -17,6 +17,12 @@
 | F-03-01 | Capability Evidence Trace | `manuscript/03-capability-evidence.md` | Implemented |
 | T-03-01 | Evidenceの四分類 | `manuscript/03-capability-evidence.md` | Implemented |
 | T-03-02 | 本書固有の学習進行 | `manuscript/03-capability-evidence.md` | Implemented |
+| F-04-01 | Decision RequirementからReassessmentまでのTrace | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| F-04-02 | 境界、Flow、攻撃面の読み分け | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| T-04-01 | 資産の型と最小記録項目 | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| T-04-02 | 似て見える用語の違い | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| T-04-03 | Control assurance states | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| T-04-04 | Knowledge stateとHypothesis statusの分離 | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
 | F-11-01 | DecisionからDetectionまでの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | F-11-02 | Request・Evidence・Telemetry・Decisionの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | T-11-01 | ChecklistとHypothesis Packの違い | `manuscript/11-web-api-hypothesis.md` | Implemented |

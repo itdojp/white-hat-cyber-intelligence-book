@@ -20,6 +20,13 @@
       "title": "第3章 能力を分解し、証拠で学習する"
     },
     {
+      "source": "manuscript/04-assets-boundaries-threat-model.md",
+      "destination": "chapters/chapter-04/index.md",
+      "section": "chapters",
+      "order": 47,
+      "title": "第4章 資産、信頼境界、攻撃面、脅威モデル"
+    },
+    {
       "source": "manuscript/11-web-api-hypothesis.md",
       "destination": "chapters/chapter-11/index.md",
       "section": "chapters",
@@ -88,6 +95,27 @@
       "section": "additional",
       "order": 240,
       "title": "Web/API Assessment Hypothesis Pack"
+    },
+    {
+      "source": "templates/threat-model.md",
+      "destination": "templates/threat-model/index.md",
+      "section": "additional",
+      "order": 150,
+      "title": "Threat Model"
+    },
+    {
+      "source": "cases/ch04-threat-model-example.md",
+      "destination": "cases/chapter-04-threat-model/index.md",
+      "section": "additional",
+      "order": 241,
+      "title": "第4章 合成記入例：資産・信頼境界・脅威モデル"
+    },
+    {
+      "source": "references/ch04-source-review-2026-08-08.md",
+      "destination": "references/chapter-04-source-review/index.md",
+      "section": "additional",
+      "order": 242,
+      "title": "第4章 Source Review Note：Threat Model"
     },
     {
       "source": "cases/ch11-web-api-assessment-example.md",

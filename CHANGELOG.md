@@ -23,6 +23,7 @@
 - 固定SHAのGitHub Actionsだけを許可するWorkflow契約検査を追加
 - `Book Contract`、`Book QA`、GitHub Pages deployment workflowを追加
 - Jekyll built-site smoke testとPreview artifactを追加
+- 第4章「資産、信頼境界、攻撃面、脅威モデル」、ART-03 Threat Model、合成Case、fail-closed Chapter contractを追加
 
 ### Changed
 
@@ -30,6 +31,7 @@
 - `package.json`とlockfileのLicense metadataを本文・コードの適用範囲に合わせて更新
 - GitHubの編集Linkが生成済み`docs/`ではなくcanonical `source_path`を指すように共有layoutへ決定的変換を適用
 - `book-formatter`を監査済みrevision `764f644850c21983c96919d0e13706413d59c089`、shared component version `3.2.3`へ更新
+- 第4章の判断要求からThreat ModelへのTrace根拠としてNIST CSF 2.0、NIST SP 800-30 Rev.1、OWASP Threat Modeling Projectを再監査し、Source Registryの章対応、確認日、次回確認条件を更新。Framework mappingは実装、検証、完全性の証明ではないことを明記
 
 ### Fixed
 
