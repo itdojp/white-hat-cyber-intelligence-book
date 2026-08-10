@@ -11,9 +11,9 @@ import sys
 import unicodedata
 from bisect import bisect_right
 from collections import Counter
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date
 from pathlib import Path
 
@@ -126,6 +126,13 @@ KNOWLEDGE_STATES = {"Unknown", "Assumed", "Confirmed", "Not Applicable"}
 FLOW_TYPES = {"Data", "Identity", "Control"}
 COLLECTED_EVIDENCE_STATUSES = {"Planned", "Collected", "Rejected", "Inconclusive"}
 GAP_STATUSES = {"Open", "Accepted temporarily", "Escalated", "Closed"}
+DETECTION_RESULT_VALUES = frozenset(
+    {"Passed", "Failed", "Inconclusive", "Not collected"}
+)
+DETECTION_EVENT_CLASSES = (
+    "Admin consent change Event",
+    "App identity lifecycle Event",
+)
 BOUNDARY_TYPES = {
     "Identity Authority",
     "Data Ownership",
@@ -279,6 +286,25 @@ IDENTITY_ASSURANCE_THRESHOLD_SECTION = """### `REA-TM-2026-001`のIdentity assur
 - `Rotation-management check: Passed`は、rotation手順Review記録にOwner、review interval / trigger、last review result、next review date、exception / failure escalationがあり、未管理または期限超過のactive bindingが0件である場合だけ記録する。欠落、不合格または未収集は`Failed / Inconclusive / Not collected`とする。
 - `CTRL-2026-006`は両checkが`Passed`で、対応する新Evidence IDとReviewer sign-offがそろう場合だけ`Observed`へ進める。どちらか一方でも`Failed / Inconclusive / Not collected`なら`Documented`に維持し、`GAP-2026-002`を閉じない。`CTRL-2026-005`のscope判定はこのIdentity判定と分離する。
 """
+DETECTION_VALIDATION_HEADING = (
+    "### `CTRL-2026-007` Detection validation decision contract"
+)
+DETECTION_REQUIREMENT_MINIMUM_EVIDENCE = (
+    "Admin consent change EventとApp identity lifecycle Eventごとの有限result、"
+    "宣言済み合成fixture / test condition、新Authorization Record / RoE、"
+    "署名済みpreflight Evidence、default-deny Evidence、entry-gate sign-off、"
+    "新Detection-result Evidence ID、query / rule version、required-field Coverage 100%、"
+    "両Event classに適用される90日Coverage / retention Evidence、"
+    "新Evidence ID付きreviewer sign-off、resultとlimitations、"
+    "終了または停止後のCleanup Evidence"
+)
+DETECTION_REQUIREMENT_RESULTING_EVIDENCE = (
+    "Historical observation only: `EVD-2026-003`（Admin consent Eventのみ。"
+    "新Rule-test resultではない）; Admin consent change Event result: Not collected; "
+    "App identity lifecycle Event result: Not collected; 両Event classの新Detection-result "
+    "Evidence、threshold Evidence、reviewer sign-off、Cleanup Evidenceは未収集"
+    "（承認後に新Evidence IDを割り当てる）"
+)
 MANIFEST_COMPARISON_THRESHOLD_SECTION = """### `REA-TM-2026-002`のmanifest代表性比較判定閾値
 
 - `Manifest representativeness comparison: Passed`は、source fixture ID / version / hashが固定され、全必須manual import要件fieldのcoverageが100%で、未解決の例外、Unknown、不一致がすべて0件であり、Finance Data Owner sign-offがある場合だけ記録する。
@@ -322,13 +348,17 @@ MANIFEST_COMPARISON_SUCCESS_EVIDENCE = (
 )
 MANIFEST_REASSESSMENT_SCOPE = (
     "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `TH-2026-006`, "
-    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `EREQ-2026-003`, "
-    "`GAP-2026-001`"
+    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `EREQ-2026-002`, "
+    "`EREQ-2026-003`, `GAP-2026-001`, `GAP-2026-003`"
 )
 MANIFEST_REASSESSMENT_INPUTS = (
-    "Admin consent EventとApp identity lifecycle EventのAudit export、Rule test計画、"
-    "新Authorization Record / RoE、両Event classのDetection test結果、query version、"
-    "coverage表、retention note、Field contract、合成sample summary、change proposal、"
+    "Admin consent change EventとApp identity lifecycle Eventごとの有限Detection resultと"
+    "新Detection-result Evidence ID、各query / rule version、各required-field Coverage result、"
+    "両Event classに適用される90日Coverage / retention Evidence、各Event classの新Evidence ID付き"
+    "reviewer sign-off、宣言済み合成fixture / test condition、新Authorization Record / RoE、"
+    "Rule test開始前の新Evidence ID付き署名済みpreflight Evidence / default-deny Evidence / "
+    "entry-gate sign-off、Rule test終了または停止後の新Evidence ID付きCleanup Evidence、"
+    "resultとlimitations、Field contract、合成sample summary、change proposal、"
     "Telemetry Field change approval、Field実装記録、新Evidence ID付きpost-change "
     "API telemetry result、resource / operation Coverage、review sign-off、"
     "source fixture ID / version / hash付きmanifest / manual import field coverage matrix、"
@@ -338,9 +368,16 @@ MANIFEST_REASSESSMENT_INPUTS = (
     "Finance Data Owner sign-off"
 )
 MANIFEST_REASSESSMENT_CLOSURE = (
-    "新Authorization Record / RoE承認後にのみ両Event classの合成Rule testを再実施し、"
-    "Detection test結果に新Evidence IDを割り当てる。両Event classのEvidenceで"
-    "`CTRL-2026-007`をValidatedとする。API telemetryは新Authorization Record / "
+    "Admin consent change EventとApp identity lifecycle Eventの両方がPassedで、両Event classについて"
+    "新Authorization Record / RoE、宣言済み合成fixture / test condition、新Detection-result "
+    "Evidence ID、query / rule version、required-field Coverage 100%、両Event classに適用される"
+    "90日Coverage / retention Evidence、新Evidence ID付きreviewer sign-off、Lab safety entryの"
+    "署名済みpreflight Evidence / default-deny Evidence / entry-gate sign-off、終了または停止後の"
+    "Cleanup Evidence、resultとlimitationsがすべてそろう場合だけ`CTRL-2026-007`をValidatedとし、"
+    "`GAP-2026-003`を閉じる。いずれかのEvent classがFailed / Inconclusive / Not collected、"
+    "またはいずれかのthresholdが未達 / 未収集なら`CTRL-2026-007`をDocumented、"
+    "`GAP-2026-003`をEscalated / openに維持し、Owner、due date、reassessmentと未達 / adverseの"
+    "Event class / thresholdを記録する。API telemetryは新Authorization Record / "
     "change approval後の承認済み運用工程でのみ変更・収集する。post-change Evidenceが"
     "required API Eventのresource / operation Field、Coverage、retention、過剰収集なしを示し、"
     "かつmanifest representativeness comparison resultがPassedで、合成manifest field "
@@ -774,6 +811,39 @@ EVIDENCE_REQUIREMENT_HEADER = (
     "Status",
     "Resulting Evidence IDs",
 )
+DETECTION_VALIDATION_HEADER = (
+    "Threshold field",
+    "Admin consent change Event",
+    "App identity lifecycle Event",
+)
+EXPECTED_DETECTION_VALIDATION_ROWS = (
+    ("Detection result", "Not collected", "Not collected"),
+    (
+        "Current Evidence boundary",
+        "`EVD-2026-003`はhistorical observationのみで、新Rule-test resultではない",
+        "新Rule-test resultは未収集",
+    ),
+    ("New Authorization Record / RoE", "未収集", "未収集"),
+    ("Signed preflight Evidence", "未収集", "未収集"),
+    ("Default-deny Evidence", "未収集", "未収集"),
+    ("Entry-gate sign-off", "未収集", "未収集"),
+    ("Declared synthetic fixture / test condition", "未収集", "未収集"),
+    ("New Detection-result Evidence ID", "未収集", "未収集"),
+    ("Query / rule version", "未収集", "未収集"),
+    (
+        "Required-field Coverage",
+        "100%必須。現在は未収集",
+        "100%必須。現在は未収集",
+    ),
+    (
+        "90-day Coverage / retention Evidence",
+        "両Event classへの適用、90日以上、欠損期間0を要する。現在は未収集",
+        "両Event classへの適用、90日以上、欠損期間0を要する。現在は未収集",
+    ),
+    ("Reviewer sign-off Evidence ID", "未収集", "未収集"),
+    ("Cleanup Evidence ID", "未収集", "未収集"),
+    ("Result and limitations", "未収集", "未収集"),
+)
 ACTION_HEADER = (
     "Action ID",
     "Related Gap / Control / Threat",
@@ -933,6 +1003,292 @@ FIELD_STRUCTURAL = "structural identifier/reference"
 FIELD_FINITE = "finite enum/date/metadata"
 FIELD_READER_VISIBLE = "reader-visible descriptive/action-bearing"
 FIELD_CLASSES = {FIELD_STRUCTURAL, FIELD_FINITE, FIELD_READER_VISIBLE}
+
+
+@dataclass(frozen=True)
+class DetectionThresholdEvidence:
+    approved_authorization_roe: bool
+    signed_preflight_evidence: bool
+    default_deny_evidence: bool
+    entry_gate_signoff: bool
+    synthetic_fixture_declared: bool
+    detection_result_evidence_id: bool
+    query_rule_version: bool
+    required_field_coverage_percent: int | None
+    retention_days: int | None
+    retention_gap_count: int | None
+    retention_applies_to_event: bool
+    reviewer_signoff_evidence_id: bool
+    cleanup_evidence_id: bool
+    result_and_limitations_recorded: bool
+
+
+@dataclass(frozen=True)
+class DetectionClosureDecision:
+    may_validate_control: bool
+    may_close_gap: bool
+    required_control_state: str
+    required_gap_state: str
+    reasons: tuple[str, ...]
+
+
+DETECTION_THRESHOLD_CHECKS: tuple[
+    tuple[str, Callable[[DetectionThresholdEvidence], bool]], ...
+] = (
+    ("approved Authorization Record / RoE", lambda item: item.approved_authorization_roe),
+    ("signed preflight Evidence", lambda item: item.signed_preflight_evidence),
+    ("default-deny Evidence", lambda item: item.default_deny_evidence),
+    ("entry-gate sign-off", lambda item: item.entry_gate_signoff),
+    ("declared synthetic fixture / test condition", lambda item: item.synthetic_fixture_declared),
+    ("new Detection-result Evidence ID", lambda item: item.detection_result_evidence_id),
+    ("query / rule version", lambda item: item.query_rule_version),
+    (
+        "required-field Coverage exactly 100%",
+        lambda item: item.required_field_coverage_percent == 100,
+    ),
+    ("90-day Coverage / retention Evidence", lambda item: (item.retention_days or 0) >= 90),
+    ("retention gap count 0", lambda item: item.retention_gap_count == 0),
+    ("retention Evidence applicable to event class", lambda item: item.retention_applies_to_event),
+    ("reviewer sign-off Evidence ID", lambda item: item.reviewer_signoff_evidence_id),
+    ("cleanup Evidence ID", lambda item: item.cleanup_evidence_id),
+    ("result and limitations", lambda item: item.result_and_limitations_recorded),
+)
+
+
+def evaluate_detection_validation(
+    event_results: Mapping[str, str],
+    threshold_evidence: Mapping[str, DetectionThresholdEvidence],
+) -> DetectionClosureDecision:
+    """Evaluate the finite two-event CTRL-2026-007 assurance contract."""
+
+    reasons: list[str] = []
+    expected_classes = frozenset(DETECTION_EVENT_CLASSES)
+    result_classes = frozenset(event_results)
+    evidence_classes = frozenset(threshold_evidence)
+    for missing in sorted(expected_classes - result_classes):
+        reasons.append(f"{missing}: result missing")
+    for unexpected in sorted(result_classes - expected_classes):
+        reasons.append(f"{unexpected}: unexpected result event class")
+    for missing in sorted(expected_classes - evidence_classes):
+        reasons.append(f"{missing}: threshold Evidence missing")
+    for unexpected in sorted(evidence_classes - expected_classes):
+        reasons.append(f"{unexpected}: unexpected threshold event class")
+
+    for event_class in DETECTION_EVENT_CLASSES:
+        result = event_results.get(event_class)
+        if result not in DETECTION_RESULT_VALUES:
+            reasons.append(f"{event_class}: invalid result {result!r}")
+            continue
+        if result != "Passed":
+            reasons.append(f"{event_class}: result {result}")
+            continue
+        evidence = threshold_evidence.get(event_class)
+        if evidence is None:
+            continue
+        for marker, predicate in DETECTION_THRESHOLD_CHECKS:
+            if not predicate(evidence):
+                reasons.append(f"{event_class}: missing or adverse {marker}")
+
+    if reasons:
+        return DetectionClosureDecision(
+            may_validate_control=False,
+            may_close_gap=False,
+            required_control_state="Documented",
+            required_gap_state="Escalated",
+            reasons=tuple(reasons),
+        )
+    return DetectionClosureDecision(
+        may_validate_control=True,
+        may_close_gap=True,
+        required_control_state="Validated",
+        required_gap_state="Closed",
+        reasons=(),
+    )
+
+
+def complete_detection_threshold_evidence() -> DetectionThresholdEvidence:
+    return DetectionThresholdEvidence(
+        approved_authorization_roe=True,
+        signed_preflight_evidence=True,
+        default_deny_evidence=True,
+        entry_gate_signoff=True,
+        synthetic_fixture_declared=True,
+        detection_result_evidence_id=True,
+        query_rule_version=True,
+        required_field_coverage_percent=100,
+        retention_days=90,
+        retention_gap_count=0,
+        retention_applies_to_event=True,
+        reviewer_signoff_evidence_id=True,
+        cleanup_evidence_id=True,
+        result_and_limitations_recorded=True,
+    )
+
+
+def uncollected_detection_threshold_evidence() -> DetectionThresholdEvidence:
+    return DetectionThresholdEvidence(
+        approved_authorization_roe=False,
+        signed_preflight_evidence=False,
+        default_deny_evidence=False,
+        entry_gate_signoff=False,
+        synthetic_fixture_declared=False,
+        detection_result_evidence_id=False,
+        query_rule_version=False,
+        required_field_coverage_percent=None,
+        retention_days=None,
+        retention_gap_count=None,
+        retention_applies_to_event=False,
+        reviewer_signoff_evidence_id=False,
+        cleanup_evidence_id=False,
+        result_and_limitations_recorded=False,
+    )
+
+
+def detection_validation_decision_regressions() -> None:
+    complete = complete_detection_threshold_evidence()
+    complete_evidence = {
+        event_class: complete for event_class in DETECTION_EVENT_CLASSES
+    }
+
+    cross_product_count = 0
+    for admin_result in sorted(DETECTION_RESULT_VALUES):
+        for lifecycle_result in sorted(DETECTION_RESULT_VALUES):
+            cross_product_count += 1
+            decision = evaluate_detection_validation(
+                {
+                    DETECTION_EVENT_CLASSES[0]: admin_result,
+                    DETECTION_EVENT_CLASSES[1]: lifecycle_result,
+                },
+                complete_evidence,
+            )
+            should_close = admin_result == lifecycle_result == "Passed"
+            if (
+                decision.may_validate_control != should_close
+                or decision.may_close_gap != should_close
+                or decision.required_control_state
+                != ("Validated" if should_close else "Documented")
+                or decision.required_gap_state
+                != ("Closed" if should_close else "Escalated")
+            ):
+                error(
+                    "Detection 4 x 4 result matrix produced an invalid closure: "
+                    f"{admin_result!r} / {lifecycle_result!r}: {decision!r}"
+                )
+    if cross_product_count != 16:
+        error(f"Detection result cross-product count {cross_product_count} != 16")
+
+    missing_threshold_variants = (
+        ("Authorization / RoE", {"approved_authorization_roe": False}),
+        ("signed preflight", {"signed_preflight_evidence": False}),
+        ("default-deny", {"default_deny_evidence": False}),
+        ("entry-gate sign-off", {"entry_gate_signoff": False}),
+        ("synthetic fixture", {"synthetic_fixture_declared": False}),
+        ("Detection-result Evidence ID", {"detection_result_evidence_id": False}),
+        ("query / rule version", {"query_rule_version": False}),
+        ("Coverage below 100%", {"required_field_coverage_percent": 99}),
+        ("Coverage absent", {"required_field_coverage_percent": None}),
+        ("90-day retention absent", {"retention_days": None}),
+        ("retention below 90 days", {"retention_days": 89}),
+        ("retention gap", {"retention_gap_count": 1}),
+        ("retention not applicable", {"retention_applies_to_event": False}),
+        ("reviewer sign-off", {"reviewer_signoff_evidence_id": False}),
+        ("cleanup Evidence", {"cleanup_evidence_id": False}),
+        ("result / limitations", {"result_and_limitations_recorded": False}),
+    )
+    passed_results = {event_class: "Passed" for event_class in DETECTION_EVENT_CLASSES}
+    for event_class in DETECTION_EVENT_CLASSES:
+        for variant_name, changes in missing_threshold_variants:
+            evidence = dict(complete_evidence)
+            evidence[event_class] = replace(complete, **changes)
+            decision = evaluate_detection_validation(passed_results, evidence)
+            if decision.may_validate_control or decision.may_close_gap:
+                error(
+                    "Detection threshold mutation incorrectly closed assurance: "
+                    f"{event_class} / {variant_name}"
+                )
+
+    one_event_retention = dict(complete_evidence)
+    one_event_retention[DETECTION_EVENT_CLASSES[1]] = replace(
+        complete, retention_applies_to_event=False
+    )
+    if evaluate_detection_validation(passed_results, one_event_retention).may_close_gap:
+        error("retention Evidence for only one event class closed GAP-2026-003")
+
+    evidence_id_without_result = dict(complete_evidence)
+    not_collected_results = {
+        event_class: "Not collected" for event_class in DETECTION_EVENT_CLASSES
+    }
+    if evaluate_detection_validation(
+        not_collected_results, evidence_id_without_result
+    ).may_validate_control:
+        error("Evidence IDs without finite Passed results validated CTRL-2026-007")
+
+    plan_and_approval_only = {
+        event_class: replace(
+            complete,
+            signed_preflight_evidence=False,
+            default_deny_evidence=False,
+            entry_gate_signoff=False,
+            synthetic_fixture_declared=False,
+            detection_result_evidence_id=False,
+            query_rule_version=False,
+            required_field_coverage_percent=None,
+            retention_days=None,
+            retention_gap_count=None,
+            retention_applies_to_event=False,
+            reviewer_signoff_evidence_id=False,
+            cleanup_evidence_id=False,
+            result_and_limitations_recorded=False,
+        )
+        for event_class in DETECTION_EVENT_CLASSES
+    }
+    if evaluate_detection_validation(
+        passed_results, plan_and_approval_only
+    ).may_validate_control:
+        error("plan / approval ticket alone validated CTRL-2026-007")
+
+    invalid_or_incomplete_inputs = (
+        (
+            "missing event result",
+            {DETECTION_EVENT_CLASSES[0]: "Passed"},
+            complete_evidence,
+        ),
+        (
+            "invalid result",
+            {
+                DETECTION_EVENT_CLASSES[0]: "Succeeded",
+                DETECTION_EVENT_CLASSES[1]: "Passed",
+            },
+            complete_evidence,
+        ),
+        (
+            "missing event Evidence",
+            passed_results,
+            {DETECTION_EVENT_CLASSES[0]: complete},
+        ),
+        (
+            "unexpected event class",
+            {**passed_results, "Other Event": "Passed"},
+            complete_evidence,
+        ),
+        (
+            "unexpected threshold event class",
+            passed_results,
+            {**complete_evidence, "Other Event": complete},
+        ),
+    )
+    for variant_name, results, evidence in invalid_or_incomplete_inputs:
+        decision = evaluate_detection_validation(results, evidence)
+        if decision.may_validate_control or decision.may_close_gap:
+            error(f"fail-closed Detection input accepted: {variant_name}")
+
+    first = evaluate_detection_validation(passed_results, one_event_retention)
+    reversed_evidence = dict(reversed(tuple(one_event_retention.items())))
+    second = evaluate_detection_validation(
+        dict(reversed(tuple(passed_results.items()))), reversed_evidence
+    )
+    if first != second:
+        error("Detection closure decision depends on mapping insertion order")
 
 
 @dataclass(frozen=True)
@@ -1152,6 +1508,15 @@ TABLE_SAFETY_POLICIES = {
             reader_visible=("Question", "Minimum sufficient evidence", "Forbidden / over-collection boundary", "Owner"),
         ),
         table_safety_policy(
+            DETECTION_VALIDATION_HEADER,
+            structural=("Threshold field",),
+            finite=(),
+            reader_visible=(
+                "Admin consent change Event",
+                "App identity lifecycle Event",
+            ),
+        ),
+        table_safety_policy(
             EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
             structural=(
                 "Evidence Requirement ID",
@@ -1292,6 +1657,7 @@ CASE_TABLE_OCCURRENCES = {
         ASSUMPTION_HEADER,
         GAP_HEADER,
         EVIDENCE_REQUIREMENT_HEADER,
+        DETECTION_VALIDATION_HEADER,
         EVIDENCE_SUPPLIER_SCHEDULE_HEADER,
         COLLECTED_EVIDENCE_HEADER,
         NEGATIVE_FINDING_HEADER,
@@ -10219,11 +10585,18 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "新Authorization Record / RoE申請",
                 "Phase B",
                 "`ACT-TM-2026-006` Phase B-entry",
-                "新Evidence ID付き署名済みpreflight report / default-deny結果の成功を開始条件",
+                "新Evidence ID付き署名済みpreflight report / default-deny結果",
+                "entry-gate sign-offの成功を開始条件",
+                "宣言済みの合成fixture / test condition",
                 "no-outboundの合成Lab",
-                "新Evidence IDを割り当て",
+                "有限resultとlimitations",
+                "新Detection-result Evidence ID",
+                "query / rule version",
+                "required-field Coverage 100%",
+                "両Event classに適用される90日Coverage / retention Evidence",
+                "新Evidence ID付きreviewer sign-off",
                 "`REA-TM-2026-002`へ供給",
-                "Phase CのCleanup verificationを完了するまで本Actionを完了扱いにしない",
+                "Phase Cの新Evidence ID付きCleanup verificationを完了するまで本Actionを完了扱いにしない",
                 "entry gate失敗",
                 "開始しない",
             ),
@@ -10233,13 +10606,20 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "新Authorization Record / RoE申請ticket",
                 "Phase B",
                 "approval ticket",
+                "承認済みの新Authorization Record / RoE",
+                "宣言済み合成fixture / test condition",
                 "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果",
+                "entry-gate sign-off",
                 "新Evidence ID付きAdmin consent Detection test結果",
-                "query version",
-                "Coverage",
+                "有限resultとlimitations",
+                "query / rule version",
+                "required-field Coverage 100%",
+                "両Event classに適用される90日Coverage / retention Evidence",
+                "新Evidence ID付きreviewer sign-off",
                 "Phase Cの新Evidence ID付きCleanup verification",
                 "`REA-TM-2026-002`への供給",
-                "Phase B / C未実施の間は結果未収集",
+                "Phase B / C未実施の間はAdmin consent change Event resultをNot collected",
+                "threshold EvidenceとCleanup結果も未収集",
             ),
         },
         "ACT-TM-2026-003": {
@@ -10355,20 +10735,22 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "Phase B",
                 "対象・method・time window",
                 "`ACT-TM-2026-006` Phase B-entry",
-                "新Evidence ID付き署名済みpreflight report / default-deny結果の成功を開始条件",
+                "新Evidence ID付き署名済みpreflight report / default-deny結果",
+                "entry-gate sign-offの成功を開始条件",
+                "宣言済みの合成fixture / test condition",
                 "no-outboundの合成Lab",
                 "no-outboundの合成LabでApp identity lifecycle Eventの合成Rule testを実行",
                 "合成Rule testを実行",
-                "Detection test結果を収集",
-                "新Evidence IDを割り当て",
-                "query version",
-                "review sign-off",
-                "query version、Coverage、90日retention証跡、review sign-offとともに"
-                "`REA-TM-2026-002`へ供給する",
+                "有限resultとlimitations",
+                "新Detection-result Evidence ID",
+                "query / rule version",
+                "required-field Coverage 100%",
+                "両Event classに適用される90日Coverage / retention Evidence",
+                "新Evidence ID付きreviewer sign-off",
                 "`REA-TM-2026-002`へ供給",
                 "Admin consent change Event側は`ACT-TM-2026-002`が扱い",
                 "App identity lifecycle Event側だけを扱う",
-                "Phase CのCleanup verificationを完了するまで本Actionを完了扱いにしない",
+                "Phase Cの新Evidence ID付きCleanup verificationを完了するまで本Actionを完了扱いにしない",
                 "entry gate失敗",
                 "外向き通信",
                 "実Target",
@@ -10387,16 +10769,19 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "Phase B",
                 "approval ticket",
                 "承認済みの新Authorization Record / RoE",
+                "宣言済み合成fixture / test condition",
                 "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果",
+                "entry-gate sign-off",
                 "新Evidence ID付きApp identity lifecycle Event Detection test結果",
-                "query version",
-                "review sign-off",
+                "有限resultとlimitations",
+                "query / rule version",
+                "required-field Coverage 100%",
+                "両Event classに適用される90日Coverage / retention Evidence",
+                "新Evidence ID付きreviewer sign-off",
                 "Phase Cの新Evidence ID付きCleanup verification",
-                "新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、"
-                "Coverage表、retention record、review sign-off、Phase Cの新Evidence ID付き"
-                "Cleanup verification、`REA-TM-2026-002`への供給",
                 "`REA-TM-2026-002`への供給",
-                "Phase B / C未実施の間はApp identity lifecycle EventのDetection test結果とCleanup結果は未収集",
+                "Phase B / C未実施の間はApp identity lifecycle Event resultをNot collected",
+                "threshold EvidenceとCleanup結果も未収集",
             ),
         },
         "ACT-TM-2026-006": {
@@ -10663,16 +11048,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         rule_test_resulting = rule_test_requirement[
             evidence_requirement_header.index("Resulting Evidence IDs")
         ]
-        for marker in (
-            "Coverage result",
-            "EVD-2026-003",
-            "Admin consent Eventのみ",
-            "App identity lifecycle EventのCoverage",
-            "両Event classのRule test結果は未収集",
-            "承認後に新Evidence IDを割り当てる",
-        ):
-            if marker not in rule_test_resulting:
-                messages.append(f"{label}: EREQ-2026-002 Resulting Evidence IDs missing {marker!r}")
+        if rule_test_resulting != DETECTION_REQUIREMENT_RESULTING_EVIDENCE:
+            messages.append(
+                f"{label}: EREQ-2026-002 Resulting Evidence IDs "
+                f"{rule_test_resulting!r} != finite Detection contract "
+                f"{DETECTION_REQUIREMENT_RESULTING_EVIDENCE!r}"
+            )
         if "EVD-AUTH-2026-001" in rule_test_resulting:
             messages.append(
                 f"{label}: EREQ-2026-002 must not count Authorization provenance as Resulting Evidence"
@@ -10684,13 +11065,75 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         rule_test_minimum = rule_test_requirement[
             evidence_requirement_header.index("Minimum sufficient evidence")
         ]
-        for marker in (
-            "合成同意Event",
-            "合成App identity lifecycle Event",
-            "両Event classのRule test結果",
+        if rule_test_minimum != DETECTION_REQUIREMENT_MINIMUM_EVIDENCE:
+            messages.append(
+                f"{label}: EREQ-2026-002 Minimum sufficient evidence "
+                f"{rule_test_minimum!r} != finite Detection contract "
+                f"{DETECTION_REQUIREMENT_MINIMUM_EVIDENCE!r}"
+            )
+
+    detection_heading_count = text.count(DETECTION_VALIDATION_HEADING)
+    if detection_heading_count != 1:
+        messages.append(
+            f"{label}: CTRL-2026-007 Detection decision heading count "
+            f"{detection_heading_count} != 1"
+        )
+    detection_rows, detection_messages = table_by_header(
+        text, DETECTION_VALIDATION_HEADER, label
+    )
+    messages.extend(detection_messages)
+    observed_detection_rows = tuple(tuple(row) for row in detection_rows)
+    if observed_detection_rows != EXPECTED_DETECTION_VALIDATION_ROWS:
+        messages.append(
+            f"{label}: CTRL-2026-007 Detection threshold matrix "
+            f"{observed_detection_rows!r} != {EXPECTED_DETECTION_VALIDATION_ROWS!r}"
+        )
+    if detection_rows:
+        result_row = detection_rows[0]
+        observed_results = tuple(result_row[1:])
+        if any(result not in DETECTION_RESULT_VALUES for result in observed_results):
+            messages.append(
+                f"{label}: Detection result outside finite set: {observed_results!r}"
+            )
+        if observed_results != ("Not collected", "Not collected"):
+            messages.append(
+                f"{label}: canonical Detection results must remain not collected: "
+                f"{observed_results!r}"
+            )
+        canonical_decision = evaluate_detection_validation(
+            dict(zip(DETECTION_EVENT_CLASSES, observed_results, strict=True)),
+            {
+                event_class: uncollected_detection_threshold_evidence()
+                for event_class in DETECTION_EVENT_CLASSES
+            },
+        )
+        if (
+            canonical_decision.may_validate_control
+            or canonical_decision.may_close_gap
+            or canonical_decision.required_control_state != "Documented"
+            or canonical_decision.required_gap_state != "Escalated"
         ):
-            if marker not in rule_test_minimum:
-                messages.append(f"{label}: EREQ-2026-002 minimum evidence missing {marker!r}")
+            messages.append(
+                f"{label}: canonical not-collected Detection state closed assurance: "
+                f"{canonical_decision!r}"
+            )
+    for marker in (
+        "単なるEvidence ID、計画、approval ticketまたはhistorical observationは`Passed`ではない",
+        "required-field Coverage 100%未満となった場合は`Failed`",
+        "不足して判定できない場合は`Inconclusive`",
+        "test / resultが未収集なら`Not collected`",
+        "両Event classが`Passed`",
+        "`CTRL-2026-007`を`Validated`",
+        "`GAP-2026-003`をclosure可能",
+        "`CTRL-2026-007`を`Documented`",
+        "`GAP-2026-003`を`Escalated` / openに維持",
+        "未達またはadverseとなったEvent class / threshold",
+        "`CTRL-2026-007`のDetection Evidenceは`CTRL-2026-009`のAPI telemetry / manifest判定へ流用しない",
+    ):
+        if marker not in text:
+            messages.append(
+                f"{label}: CTRL-2026-007 Detection decision contract missing {marker!r}"
+            )
 
     telemetry_requirement = evidence_rows_by_id.get("EREQ-2026-003")
     if telemetry_requirement is None:
@@ -11142,16 +11585,25 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         "REA-TM-2026-002": {
             "Scope": (
                 "ASM-2026-002",
+                "EREQ-2026-002",
                 "EREQ-2026-003",
                 "GAP-2026-001",
+                "GAP-2026-003",
             ),
             "Inputs required": (
-                "Admin consent Event",
+                "Admin consent change Event",
                 "App identity lifecycle Event",
-                "Rule test計画",
+                "有限Detection result",
+                "新Detection-result Evidence ID",
+                "各query / rule version",
+                "各required-field Coverage result",
+                "両Event classに適用される90日Coverage / retention Evidence",
+                "各Event classの新Evidence ID付きreviewer sign-off",
+                "宣言済み合成fixture / test condition",
                 "新Authorization Record / RoE",
-                "両Event classのDetection test結果",
-                "query version",
+                "署名済みpreflight Evidence / default-deny Evidence / entry-gate sign-off",
+                "新Evidence ID付きCleanup Evidence",
+                "resultとlimitations",
                 "Field contract",
                 "合成sample summary",
                 "change proposal",
@@ -11170,11 +11622,18 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "Finance Data Owner sign-off",
             ),
             "Closure criteria": (
-                "新Authorization Record / RoE承認後にのみ両Event classの合成Rule testを再実施",
-                "Detection test結果に新Evidence IDを割り当てる",
-                "両Event classのEvidence",
-                "CTRL-2026-007",
-                "Validated",
+                "Admin consent change EventとApp identity lifecycle Eventの両方がPassed",
+                "required-field Coverage 100%",
+                "両Event classに適用される90日Coverage / retention Evidence",
+                "新Evidence ID付きreviewer sign-off",
+                "署名済みpreflight Evidence / default-deny Evidence / entry-gate sign-off",
+                "Cleanup Evidence",
+                "`CTRL-2026-007`をValidated",
+                "`GAP-2026-003`を閉じる",
+                "Failed / Inconclusive / Not collected",
+                "`CTRL-2026-007`をDocumented",
+                "`GAP-2026-003`をEscalated / openに維持",
+                "未達 / adverseのEvent class / threshold",
                 "新Authorization Record / change approval後の承認済み運用工程",
                 "post-change Evidence",
                 "required API Eventのresource / operation Field",
@@ -11183,6 +11642,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "過剰収集なし",
                 "CTRL-2026-009",
                 "GAP-2026-001",
+                "GAP-2026-003",
                 "manifest representativeness comparison result",
                 "resultがPassed",
                 "全必須manual import要件fieldのcoverage",
@@ -11256,8 +11716,10 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "CTRL-2026-007",
             "CTRL-2026-009",
             "ASM-2026-002",
+            "EREQ-2026-002",
             "EREQ-2026-003",
             "GAP-2026-001",
+            "GAP-2026-003",
         }
         if observed_manifest_scope_ids != expected_manifest_scope_ids:
             messages.append(
@@ -12500,6 +12962,7 @@ def negative_regressions(
     note: str,
     changelog: str,
 ) -> None:
+    detection_validation_decision_regressions()
     reader_visible_adapter_contract_regressions()
     inherited_descriptor_exception_scope_regressions(case)
     chapter_mutations = (
@@ -13089,18 +13552,20 @@ def negative_regressions(
             (
                 "EREQ-2026-002 omits lifecycle evidence class",
                 case.replace(
-                    "合成同意Event、合成App identity lifecycle Event、Audit export、両Event classのRule test結果",
-                    "合成同意Event、Audit export、Rule test結果",
+                    DETECTION_REQUIREMENT_MINIMUM_EVIDENCE,
+                    DETECTION_REQUIREMENT_MINIMUM_EVIDENCE.replace(
+                        "Admin consent change EventとApp identity lifecycle Eventごとの",
+                        "Admin consent change Eventだけの",
+                        1,
+                    ),
                     1,
                 ),
             ),
             (
                 "REA-TM-2026-002 closes on consent-only evidence",
                 case.replace(
-                    "新Authorization Record / RoE承認後にのみ両Event classの合成Rule testを再実施し、"
-                    "Detection test結果に新Evidence IDを割り当てる。両Event classのEvidence",
-                    "Admin consent Eventだけの合成Rule testを再実施し、Detection test結果に"
-                    "新Evidence IDを割り当てる。Admin consent EventのEvidence",
+                    "Admin consent change EventとApp identity lifecycle Eventの両方がPassed",
+                    "Admin consent change EventだけがPassed",
                     1,
                 ),
             ),
@@ -13389,14 +13854,10 @@ def negative_regressions(
             (
                 "REA-TM-2026-002 drops opportunity refinement",
                 case.replace(
-                    "| `REA-TM-2026-002` | Rule導入、Field追加、retention変更、manifest requirement変更 | "
-                    "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, `TH-2026-006`, "
-                    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `EREQ-2026-003`, "
-                    "`GAP-2026-001` |",
-                    "| `REA-TM-2026-002` | Rule導入、Field追加、retention変更、manifest requirement変更 | "
-                    "`TH-2026-002`, `TH-2026-003`, `TH-2026-005`, "
-                    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `EREQ-2026-003`, "
-                    "`GAP-2026-001` |",
+                    MANIFEST_REASSESSMENT_SCOPE,
+                    MANIFEST_REASSESSMENT_SCOPE.replace(
+                        "`TH-2026-006`, ", "", 1
+                    ),
                     1,
                 ),
             ),
@@ -13924,8 +14385,9 @@ def negative_regressions(
                 "ACT-TM-2026-002 bypasses renewed Authorization and RoE",
                 case.replace(
                     "Phase Bでは対象・method・time windowの承認と`ACT-TM-2026-006` "
-                    "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果の"
-                    "成功を開始条件とし、no-outboundの合成LabでAdmin consent change Eventの"
+                    "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果"
+                    "およびentry-gate sign-offの成功を開始条件とし、宣言済みの合成fixture / "
+                    "test conditionを使うno-outboundの合成LabでAdmin consent change Eventの"
                     "合成Rule testを実行",
                     "Phase Bでは直ちにno-outboundの合成LabでAdmin consent change Eventの"
                     "合成Rule testを実行",
@@ -13936,8 +14398,9 @@ def negative_regressions(
                 "ACT-TM-2026-005 bypasses renewed Authorization and RoE",
                 case.replace(
                     "Phase Bでは対象・method・time windowの承認と`ACT-TM-2026-006` "
-                    "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果の"
-                    "成功を開始条件とし、no-outboundの合成LabでApp identity lifecycle Eventの"
+                    "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果"
+                    "およびentry-gate sign-offの成功を開始条件とし、宣言済みの合成fixture / "
+                    "test conditionを使うno-outboundの合成LabでApp identity lifecycle Eventの"
                     "合成Rule testを実行",
                     "Phase Bでは直ちにno-outboundの合成LabでApp identity lifecycle Eventの"
                     "合成Rule testを実行",
@@ -13948,8 +14411,9 @@ def negative_regressions(
                 "ACT-TM-2026-005 omits default-deny Phase B entry evidence",
                 case.replace(
                     "Phase Bでは対象・method・time windowの承認と`ACT-TM-2026-006` "
-                    "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果の"
-                    "成功を開始条件とし、no-outboundの合成LabでApp identity lifecycle Event",
+                    "Phase B-entryの新Evidence ID付き署名済みpreflight report / default-deny結果"
+                    "およびentry-gate sign-offの成功を開始条件とし、宣言済みの合成fixture / "
+                    "test conditionを使うno-outboundの合成LabでApp identity lifecycle Event",
                     "Phase Bでは対象・method・time windowの承認と`ACT-TM-2026-006` "
                     "Phase B-entryの新Evidence ID付き署名済みpreflight reportの成功を開始条件とし、"
                     "no-outboundの合成LabでApp identity lifecycle Event",
@@ -13959,9 +14423,10 @@ def negative_regressions(
             (
                 "ACT-TM-2026-005 omits signed preflight success evidence",
                 case.replace(
-                    "承認済みの新Authorization Record / RoE、`ACT-TM-2026-006` Phase B-entryの"
-                    "新Evidence ID付き署名済みpreflight report / default-deny結果、新Evidence ID付き"
-                    "App identity lifecycle Event Detection test結果",
+                    "承認済みの新Authorization Record / RoE、宣言済み合成fixture / test condition、"
+                    "`ACT-TM-2026-006` Phase B-entryの新Evidence ID付き署名済みpreflight report / "
+                    "default-deny結果、entry-gate sign-off、新Evidence ID付きApp identity lifecycle "
+                    "Event Detection test結果",
                     "承認済みの新Authorization Record / RoE、新Evidence ID付きApp identity "
                     "lifecycle Event Detection test結果",
                     1,
@@ -13970,16 +14435,18 @@ def negative_regressions(
             (
                 "ACT-TM-2026-005 lifecycle result omits new Evidence ID",
                 case.replace(
-                    "Detection test結果を収集して新Evidence IDを割り当て",
-                    "Detection test結果を収集して",
+                    "新Evidence ID付きApp identity lifecycle Event Detection test結果",
+                    "App identity lifecycle Event Detection test結果",
                     1,
                 ),
             ),
             (
                 "ACT-TM-2026-005 lifecycle result overclaims collection before execution",
                 case.replace(
-                    "Phase B / C未実施の間はApp identity lifecycle EventのDetection test結果とCleanup結果は未収集",
-                    "Phase B / C実施前からApp identity lifecycle EventのDetection test結果とCleanup結果は収集済み",
+                    "Phase B / C未実施の間はApp identity lifecycle Event resultをNot collectedとし、"
+                    "threshold EvidenceとCleanup結果も未収集",
+                    "Phase B / C実施前からApp identity lifecycle Event resultをPassedとし、"
+                    "threshold EvidenceとCleanup結果も収集済み",
                     1,
                 ),
             ),
@@ -13987,7 +14454,7 @@ def negative_regressions(
                 "ACT-TM-2026-005 omits post-test Cleanup completion gate",
                 case.replace(
                     "本ActionはApp identity lifecycle Event側だけを扱う。両Event classのRule test"
-                    "終了または停止後は`ACT-TM-2026-006` Phase CのCleanup verificationを完了するまで"
+                    "終了または停止後は`ACT-TM-2026-006` Phase Cの新Evidence ID付きCleanup verificationを完了するまで"
                     "本Actionを完了扱いにしない。",
                     "本ActionはApp identity lifecycle Event側だけを扱う。",
                     1,
@@ -13996,8 +14463,8 @@ def negative_regressions(
             (
                 "ACT-TM-2026-005 omits lifecycle event class",
                 case.replace(
-                    "no-outboundの合成LabでApp identity lifecycle Eventの合成Rule testを実行し",
-                    "no-outboundの合成Labで合成Rule testを実行し",
+                    "no-outboundの合成LabでApp identity lifecycle Eventの合成Rule testを実行する",
+                    "no-outboundの合成Labで合成Rule testを実行する",
                     1,
                 ),
             ),
@@ -14012,20 +14479,22 @@ def negative_regressions(
             (
                 "ACT-TM-2026-005 Phase B omits coverage and retention handoff",
                 case.replace(
-                    "query version、Coverage、90日retention証跡、review sign-offとともに"
+                    "query / rule version、required-field Coverage 100%、両Event classに適用される"
+                    "90日Coverage / retention Evidence、新Evidence ID付きreviewer sign-offを"
                     "`REA-TM-2026-002`へ供給する",
-                    "query version、review sign-offとともに`REA-TM-2026-002`へ供給する",
+                    "query / rule versionとreviewer sign-offを`REA-TM-2026-002`へ供給する",
                     1,
                 ),
             ),
             (
                 "ACT-TM-2026-005 Phase B success omits coverage and retention evidence",
                 case.replace(
-                    "新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、"
-                    "Coverage表、retention record、review sign-off、Phase Cの新Evidence ID付き"
+                    "新Evidence ID付きApp identity lifecycle Event Detection test結果、有限resultとlimitations、"
+                    "query / rule version、required-field Coverage 100%、両Event classに適用される90日Coverage / "
+                    "retention Evidence、新Evidence ID付きreviewer sign-off、Phase Cの新Evidence ID付き"
                     "Cleanup verification、`REA-TM-2026-002`への供給",
-                    "新Evidence ID付きApp identity lifecycle Event Detection test結果、query version、"
-                    "review sign-off、Phase Cの新Evidence ID付きCleanup verification、"
+                    "新Evidence ID付きApp identity lifecycle Event Detection test結果、query / rule version、"
+                    "reviewer sign-off、Phase Cの新Evidence ID付きCleanup verification、"
                     "`REA-TM-2026-002`への供給",
                     1,
                 ),
@@ -14182,9 +14651,83 @@ def negative_regressions(
                 case.replace(f"{MANIFEST_COMPARISON_THRESHOLD_SECTION}\n", "", 1),
             ),
             (
+                "Detection validation decision heading omitted",
+                case.replace(f"{DETECTION_VALIDATION_HEADING}\n", "", 1),
+            ),
+            (
+                "historical consent observation treated as new Passed result",
+                mutate_table_cell(
+                    case,
+                    DETECTION_VALIDATION_HEADER,
+                    1,
+                    1,
+                    "Admin consent change Event",
+                    "Passed",
+                ),
+            ),
+            (
+                "Detection Evidence exists without a finite result",
+                mutate_table_cell(
+                    case,
+                    DETECTION_VALIDATION_HEADER,
+                    1,
+                    1,
+                    "App identity lifecycle Event",
+                    "",
+                ),
+            ),
+            (
+                "Detection threshold matrix omits a query version row",
+                mutate_table_cell(
+                    case,
+                    DETECTION_VALIDATION_HEADER,
+                    1,
+                    9,
+                    "Threshold field",
+                    "Query",
+                ),
+            ),
+            (
+                "REA-TM-2026-002 Scope omits Detection Evidence Requirement",
+                case.replace(
+                    MANIFEST_REASSESSMENT_SCOPE,
+                    MANIFEST_REASSESSMENT_SCOPE.replace(
+                        "`EREQ-2026-002`, ", "", 1
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-002 Scope omits Detection Gap",
+                case.replace(
+                    MANIFEST_REASSESSMENT_SCOPE,
+                    MANIFEST_REASSESSMENT_SCOPE.replace(
+                        ", `GAP-2026-003`", "", 1
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "adverse Detection result promotes CTRL-2026-007",
+                case.replace(
+                    "いずれかのEvent classがFailed / Inconclusive / Not collected、またはいずれかの"
+                    "thresholdが未達 / 未収集なら`CTRL-2026-007`をDocumented",
+                    "いずれかのEvent classがFailedでも`CTRL-2026-007`をValidated",
+                    1,
+                ),
+            ),
+            (
+                "adverse Detection result closes GAP-2026-003",
+                case.replace(
+                    "`GAP-2026-003`をEscalated / openに維持し",
+                    "`GAP-2026-003`を閉じ",
+                    1,
+                ),
+            ),
+            (
                 "EREQ-2026-002 omits uncollected Rule-test result handoff",
                 case.replace(
-                    "Coverage result: `EVD-2026-003`（Admin consent Eventのみ）; App identity lifecycle EventのCoverageと両Event classのRule test結果は未収集（承認後に新Evidence IDを割り当てる）",
+                    DETECTION_REQUIREMENT_RESULTING_EVIDENCE,
                     "`EVD-2026-003`, `EVD-AUTH-2026-001`",
                     1,
                 ),
@@ -14192,9 +14735,10 @@ def negative_regressions(
             (
                 "EREQ-2026-002 counts Authorization provenance as coverage result",
                 case.replace(
-                    "Coverage result: `EVD-2026-003`（Admin consent Eventのみ）;",
-                    "Coverage result: `EVD-2026-003`（Admin consent Eventのみ）, "
-                    "`EVD-AUTH-2026-001`;",
+                    "Historical observation only: `EVD-2026-003`（Admin consent Eventのみ。"
+                    "新Rule-test resultではない）;",
+                    "Historical observation only: `EVD-2026-003`, `EVD-AUTH-2026-001` "
+                    "（Admin consent Eventのみ。新Rule-test resultではない）;",
                     1,
                 ),
             ),
@@ -14222,23 +14766,18 @@ def negative_regressions(
             (
                 "REA-TM-2026-002 omits Action result inputs",
                 case.replace(
-                    "Admin consent EventとApp identity lifecycle EventのAudit export、Rule test計画、"
-                    "新Authorization Record / RoE、両Event classのDetection test結果、query version、"
-                    "coverage表、retention note、Field contract、合成sample summary、change proposal、"
-                    "Telemetry Field change approval、Field実装記録、新Evidence ID付きpost-change "
-                    "API telemetry result、resource / operation Coverage、review sign-off",
-                    "Audit export、Rule test計画、新Authorization Record / RoE、coverage表、retention note、Telemetry Field change approval",
+                    MANIFEST_REASSESSMENT_INPUTS,
+                    "新Authorization Record / RoE、Field contract、Telemetry Field change approval、"
+                    "source fixture ID / version / hash付きmanifest / manual import field coverage matrix",
                     1,
                 ),
             ),
             (
                 "REA-TM-2026-002 omits renewed authorization gate",
                 case.replace(
-                    "新Authorization Record / RoE承認後にのみ両Event classの合成Rule testを再実施し、"
-                    "Detection test結果に新Evidence IDを割り当てる。両Event classのEvidenceで"
-                    "`CTRL-2026-007`をValidatedとする。API telemetryは新Authorization Record / "
-                    "change approval後の承認済み運用工程でのみ変更・収集する。",
-                    "両Event classのEvidenceで`CTRL-2026-007`をValidatedとする。API telemetryを変更・収集し",
+                    "新Authorization Record / RoE、宣言済み合成fixture / test condition、新Detection-result "
+                    "Evidence ID",
+                    "approval ticket、新Detection-result Evidence ID",
                     1,
                 ),
             ),
@@ -14266,10 +14805,10 @@ def negative_regressions(
             (
                 "REA-TM-2026-002 omits manifest assumption and gap from Scope",
                 case.replace(
-                    "`CTRL-2026-007`, `CTRL-2026-009`, `ASM-2026-002`, `EREQ-2026-003`, "
-                    "`GAP-2026-001` | SOC、Platform、Vendor Management、Finance Data Owner |",
-                    "`CTRL-2026-007`, `CTRL-2026-009` | "
-                    "SOC、Platform、Vendor Management、Finance Data Owner |",
+                    MANIFEST_REASSESSMENT_SCOPE,
+                    MANIFEST_REASSESSMENT_SCOPE.replace(
+                        "`ASM-2026-002`, ", "", 1
+                    ).replace("`GAP-2026-001`, ", "", 1),
                     1,
                 ),
             ),
@@ -14614,12 +15153,14 @@ def negative_regressions(
                 case.replace(
                     "Phase A: query approval template、lifecycle Rule test計画、新Authorization Record / "
                     "RoE申請ticket、Coverage表、retention record、deny例。Phase B: approval ticket、"
-                    "承認済みの新Authorization Record / RoE、`ACT-TM-2026-006` Phase B-entryの"
-                    "新Evidence ID付き署名済みpreflight report / default-deny結果、新Evidence ID付き"
-                    "App identity lifecycle Event Detection test結果、query version、Coverage表、"
-                    "retention record、review sign-off、Phase Cの新Evidence ID付きCleanup verification、"
-                    "`REA-TM-2026-002`への供給。Phase B / C未実施の間はApp identity lifecycle Eventの"
-                    "Detection test結果とCleanup結果は未収集",
+                    "承認済みの新Authorization Record / RoE、宣言済み合成fixture / test condition、"
+                    "`ACT-TM-2026-006` Phase B-entryの新Evidence ID付き署名済みpreflight report / "
+                    "default-deny結果、entry-gate sign-off、新Evidence ID付きApp identity lifecycle "
+                    "Event Detection test結果、有限resultとlimitations、query / rule version、"
+                    "required-field Coverage 100%、両Event classに適用される90日Coverage / retention "
+                    "Evidence、新Evidence ID付きreviewer sign-off、Phase Cの新Evidence ID付きCleanup "
+                    "verification、`REA-TM-2026-002`への供給。Phase B / C未実施の間はApp identity "
+                    "lifecycle Event resultをNot collectedとし、threshold EvidenceとCleanup結果も未収集",
                     "query approval template、deny例、review sign-off",
                     1,
                 ),
