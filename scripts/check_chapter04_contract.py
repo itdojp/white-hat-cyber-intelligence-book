@@ -29,6 +29,10 @@ from scripts.content_safety_policy import (  # noqa: E402
     scan_fields,
     scan_host_policy,
 )
+from scripts.publication_text import (  # noqa: E402
+    normalize_html_collapsible_whitespace_entities,
+    protect_html_collapsible_whitespace_entities,
+)
 from scripts.render_reference_baseline import render as render_reference_baseline  # noqa: E402
 from scripts.sync_book_site import (  # noqa: E402
     SitePageRegistryError,
@@ -84,6 +88,7 @@ UNSAFE_PAGE_TITLES = (
     "マルウェアを\u2029実行する",
     "\u2800",
     "\u115f",
+    "\u1160",
     "\u3164",
     "\uffa0",
 )
@@ -102,6 +107,7 @@ SAFE_PAGE_TITLES = (
     "😀\ufe0f",
     "Visible\u2800title",
     "Visible\u115ftitle",
+    "Visible\u1160title",
     "Visible\u3164title",
     "Visible\uffa0title",
 )
@@ -3243,7 +3249,10 @@ def _literal_fence_visible_fields(
     1.2.0.
     """
 
-    decoded = html.unescape(text)
+    decoded = html.unescape(
+        normalize_html_collapsible_whitespace_entities(text)
+    )
+    decoded = protect_html_collapsible_whitespace_entities(decoded)
     # Literal blocks undergo one adapter decode before shared normalization.
     # A source such as ``&amp;#60`` therefore reaches this point as ``&#60``;
     # neutralize the same finite delimiter vocabulary at this layer as well.
@@ -4075,7 +4084,11 @@ def _project_literal_inline_code(
 def _project_literal_markdown_title(value: str) -> str:
     """Keep a rendered Markdown tooltip's literal tag-shaped text visible."""
 
-    decoded = _neutralize_html_angle_entities(html.unescape(value))
+    decoded = html.unescape(
+        normalize_html_collapsible_whitespace_entities(value)
+    )
+    decoded = protect_html_collapsible_whitespace_entities(decoded)
+    decoded = _neutralize_html_angle_entities(decoded)
     return decoded.replace("<", " ").replace(">", " ")
 
 
@@ -5073,7 +5086,13 @@ def reader_visible_markdown_fields(text: str, label: str) -> list[tuple[str, str
                     (f"{label}:{line_number}-{end_line} {kind}", rendered),
                 )
             )
-    return [field for _, field in sorted(selected, key=lambda item: item[0])]
+    return [
+        (
+            location,
+            normalize_html_collapsible_whitespace_entities(value),
+        )
+        for _, (location, value) in sorted(selected, key=lambda item: item[0])
+    ]
 
 
 def _visible_idn_tokens(text: str) -> set[str]:
@@ -5357,7 +5376,13 @@ def classified_table_fields(
                         )
                     )
                     fields.extend(title_fields)
-    return fields, messages
+    return [
+        (
+            location,
+            normalize_html_collapsible_whitespace_entities(value),
+        )
+        for location, value in fields
+    ], messages
 
 
 def mutate_table_cell(
@@ -7511,6 +7536,108 @@ continues with [visible label](https://example.com/path).
     link_paragraph = dict(expected_fields)["adapter fixture:5-6 paragraph"]
     if visible_host_tokens(link_paragraph):
         error("reader-visible prose adapter must not scan hidden Markdown link destinations as visible hosts")
+
+    # Issue #96 freezes one shared Publication projection before Policy 1.2.0:
+    # HTML references that render as collapsible ASCII whitespace join a
+    # bounded reader-visible clause with an ordinary space.  Literal source
+    # paragraph boundaries remain boundaries, and an encoded entity example is
+    # decoded only once.
+    whitespace_entity_tokens = (
+        "&NewLine;",
+        "&Tab;",
+        "&#10;",
+        "&#x0A;",
+        "&#10",
+        "&#x0A",
+        "&#9",
+        "&#x09",
+    )
+    for entity in whitespace_entity_tokens:
+        unsafe = f"第三者の{entity}本番システムへ接続する。"
+        unsafe_findings = document_reader_visible_policy_errors(
+            f"{unsafe}\n",
+            f"unsafe Publication whitespace entity {entity!r} prose fixture",
+        )
+        if not any("[target.real_or_external]" in finding for finding in unsafe_findings):
+            error(
+                "reader-visible Publication whitespace entity split an unsafe "
+                f"prose clause: {entity!r} / {unsafe_findings!r}"
+            )
+
+        table = f"| Field | Value |\n|---|---|\n| row | {unsafe} |\n"
+        table_fields, table_messages = classified_table_fields(
+            table,
+            f"unsafe Publication whitespace entity {entity!r} table fixture",
+            {FIELD_VALUE_HEADER: 1},
+        )
+        table_findings = policy_errors(table_fields)
+        if table_messages or not any(
+            "[target.real_or_external]" in finding for finding in table_findings
+        ):
+            error(
+                "reader-visible Publication whitespace entity split an unsafe "
+                f"table clause: {entity!r} / {table_messages!r} / "
+                f"{table_findings!r}"
+            )
+
+        safe = unsafe.replace("接続する", "接続しない")
+        safe_findings = document_reader_visible_policy_errors(
+            f"{safe}\n",
+            f"safe Publication whitespace entity {entity!r} prose fixture",
+        )
+        if safe_findings:
+            error(
+                "reader-visible Publication whitespace projection rejected an "
+                f"explicit prohibition: {entity!r} / {safe_findings!r}"
+            )
+
+    for name, source in (
+        (
+            "inline-link title",
+            '[safe](/local "第三者の&NewLine;本番システムへ接続する。")\n',
+        ),
+        (
+            "literal fence",
+            "```text\n第三者の&NewLine;本番システムへ接続する。\n```\n",
+        ),
+    ):
+        findings = document_reader_visible_policy_errors(
+            source,
+            f"unsafe Publication whitespace entity {name} fixture",
+        )
+        if not any("[target.real_or_external]" in finding for finding in findings):
+            error(
+                f"reader-visible Publication whitespace entity bypassed {name}: "
+                f"{findings!r}"
+            )
+
+    for name, source in (
+        (
+            "double-encoded prose literal",
+            "第三者の&amp;NewLine;本番システムへ接続する。\n",
+        ),
+        (
+            "double-encoded literal fence",
+            "```text\n第三者の&amp;NewLine;本番システムへ接続する。\n```\n",
+        ),
+        (
+            "entity syntax explanation",
+            "`&amp;NewLine;`はHTML entityの表記例である。\n",
+        ),
+        (
+            "actual paragraph boundary",
+            "第三者の\n\n本番システムへ接続する。\n",
+        ),
+    ):
+        findings = document_reader_visible_policy_errors(
+            source,
+            f"safe Publication whitespace entity {name} fixture",
+        )
+        if findings:
+            error(
+                "Publication whitespace projection double-decoded an entity or "
+                f"collapsed a real paragraph boundary: {name} / {findings!r}"
+            )
 
     # Issue #81 freezes the finite precedence between bare literal delimiters
     # and every reader-visible Markdown surface owned by this adapter.  These
@@ -16531,6 +16658,8 @@ def negative_regressions(
             ("Mongolian variation selector Mark", "\u180b"),
             ("BRAILLE PATTERN BLANK invisible base", "\u2800"),
             ("HANGUL CHOSEONG FILLER invisible base", "\u115f"),
+            ("HANGUL JUNGSEONG FILLER invisible base", "\u1160"),
+            ("entity-encoded HANGUL JUNGSEONG FILLER", "&#x1160;"),
             ("HANGUL FILLER invisible base", "\u3164"),
             ("HALFWIDTH HANGUL FILLER invisible base", "\uffa0"),
             ("raw HTML", "<span>Visible title</span>"),
