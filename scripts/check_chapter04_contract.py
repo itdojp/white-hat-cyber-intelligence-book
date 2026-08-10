@@ -286,6 +286,22 @@ IDENTITY_ASSURANCE_THRESHOLD_SECTION = """### `REA-TM-2026-001`のIdentity assur
 - `Rotation-management check: Passed`は、rotation手順Review記録にOwner、review interval / trigger、last review result、next review date、exception / failure escalationがあり、未管理または期限超過のactive bindingが0件である場合だけ記録する。欠落、不合格または未収集は`Failed / Inconclusive / Not collected`とする。
 - `CTRL-2026-006`は両checkが`Passed`で、対応する新Evidence IDとReviewer sign-offがそろう場合だけ`Observed`へ進める。どちらか一方でも`Failed / Inconclusive / Not collected`なら`Documented`に維持し、`GAP-2026-002`を閉じない。`CTRL-2026-005`のscope判定はこのIdentity判定と分離する。
 """
+REQUIREMENTS_APPROVAL_THRESHOLD_SECTION = """### `REA-TM-2026-001`のrequirements approval判定閾値
+
+- `Requirements approval comparison`のresultは`Passed / Failed / Inconclusive / Not collected`の有限集合だけを使用する。
+- `Passed`は、approval ticket ID / version / hash、scope matrix ID / version / hash、業務要件表ID / version / hash、post-remediation current scope snapshotのEvidence IDを固定し、approval ticket承認scopeとscope matrixの不一致0件、scope matrixと業務要件表の未承認scope 0件 / 不足scope 0件、current scope snapshotと承認scope / scope matrixの不一致0件で、Finance Operationsの新Evidence ID付きsign-offがある場合だけ記録する。
+- 上記いずれかの不一致、未承認scopeまたは不足scopeが1件以上なら`Failed`、ticket、matrix、要件表、current scope snapshot、hashまたはsign-offが不足して判定できない場合は`Inconclusive`、比較結果が未収集なら`Not collected`とする。
+- `Passed`と新Evidence ID付きcomparison result / sign-offがそろう場合だけ`ASM-2026-001`を`Confirmed`とし、`CTRL-2026-005`のassurance更新と`GAP-2026-002`のclosureへ進める。それ以外は`ASM-2026-001`を`Assumed`、`CTRL-2026-005`を`Documented`、`GAP-2026-002`をopenに維持する。
+"""
+REQUIREMENTS_APPROVAL_CONTRADICTORY_MARKERS = (
+    "approval ticketとscope matrixが不一致でもPassed",
+    "approval ticket承認scopeとscope matrixが不一致でもPassed",
+    "業務要件との不一致が1件以上でもPassed",
+    "未承認scopeが1件以上でもPassed",
+    "不足scopeが1件以上でもPassed",
+    "current scope snapshotと承認scopeが不一致でもPassed",
+    "Current resultはPassed、ASM-2026-001はConfirmed",
+)
 DETECTION_VALIDATION_HEADING = (
     "### `CTRL-2026-007` Detection validation decision contract"
 )
@@ -391,17 +407,36 @@ MANIFEST_REASSESSMENT_CLOSURE = (
     "発生有無と`TH-2026-006`の機会条件・影響範囲は同じEvidenceから別々に再評価する。"
     "未達時は各Gap ownerと期限を更新する"
 )
+REA_TM_001_SCOPE = (
+    "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, "
+    "`ASM-2026-001`, `GAP-2026-002`"
+)
 REA_TM_001_INPUTS_REQUIRED = (
     "2026-07-25 remediation後のApp registration export、scope matrix、"
     "Tenant binding差分、Workload identity binding snapshot、rotation手順Review記録、"
+    "approval ticket ID / version / hash、scope matrix ID / version / hash、業務要件表ID / version / hash、"
+    "approval ticket承認scope / scope matrix不一致件数、scope matrix / 業務要件表の"
+    "未承認scope件数 / 不足scope件数、current scope snapshot / 承認scope / scope matrix"
+    "不一致件数、"
+    "新Evidence ID付きRequirements approval comparison result、Finance Operationsの"
+    "新Evidence ID付きsign-off、"
     "新Evidence ID付き・source Evidence IDを記録したWorkload-only binding check結果、"
     "新Evidence ID付き・source Evidence IDを記録したRotation-management check結果、"
     "新Evidence ID付きReviewer sign-off、approval ticket、新Authorization Record / RoE"
 )
 REA_TM_001_CLOSURE_CRITERIA = (
     "post-remediation current scopeがEvidenceで`Confirmed`となり、最小scope案と"
-    "要件の差分がゼロである。新Authorization Record / RoE承認後にのみ変更し、"
-    "scope条件が満たされた場合だけ`CTRL-2026-005`を少なくともImplementedとする。"
+    "要件の差分がゼロである。`Requirements approval comparison`が`Passed`で、"
+    "approval ticket ID / version / hash、scope matrix ID / version / hash、業務要件表ID / version / hash、"
+    "post-remediation current scope snapshotのEvidence ID、approval ticket承認scopeとscope matrixの"
+    "不一致0件、scope matrixと業務要件表の未承認scope 0件 / 不足scope 0件、current scope snapshotと"
+    "承認scope / scope matrixの不一致0件、新Evidence ID付きcomparison resultと"
+    "Finance Operationsの新Evidence ID付きsign-offがそろう場合だけ`ASM-2026-001`を"
+    "`Confirmed`とする。新Authorization Record / RoE承認後にのみ変更し、"
+    "scope条件と`ASM-2026-001: Confirmed`が満たされた場合だけ`CTRL-2026-005`を"
+    "少なくともImplementedとする。comparison resultが`Failed / Inconclusive / Not collected`、"
+    "または必要なEvidence / sign-offが不足する場合は`ASM-2026-001`を`Assumed`、"
+    "`CTRL-2026-005`を`Documented`に維持し、`GAP-2026-002`を閉じない。"
     "`Workload-only binding check`と`Rotation-management check`の両方が"
     "`Passed`で、新Evidence ID付き・source Evidence IDを記録した各check結果と"
     "新Evidence ID付きReviewer sign-offがそろう場合だけ`CTRL-2026-006`を"
@@ -10683,6 +10718,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "offline機械的突合",
                 "新Evidence ID",
                 "offline機械的突合",
+                "Requirements approval comparison",
+                "approval ticket、scope matrix、業務要件表の各ID / version / hash",
+                "current scope snapshotのEvidence ID",
+                "approval ticket承認scopeとscope matrixの不一致0件",
+                "scope matrixと業務要件表の未承認scope 0件 / 不足scope 0件",
+                "current scope snapshotと承認scope / scope matrixの不一致0件",
+                "有限resultとlimitation",
+                "Finance Operations",
                 "source Evidence ID",
                 "Workload-only binding check結果",
                 "Rotation-management check結果",
@@ -10706,6 +10749,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "approval ticket",
                 "承認済みの新Authorization Record / RoE",
                 "新Evidence ID付きpost-remediation App registration export",
+                "approval ticket / scope matrix / 業務要件表の各ID / version / hash",
+                "approval ticket承認scope / scope matrix不一致件数",
+                "scope matrix / 業務要件表の未承認scope件数 / 不足scope件数",
+                "current scope snapshot / 承認scope / scope matrix不一致件数",
+                "新Evidence ID付きRequirements approval comparison result",
+                "Finance Operationsの新Evidence ID付きsign-off",
                 "Tenant binding差分",
                 "Workload identity binding snapshot",
                 "Tenant binding snapshot",
@@ -10718,7 +10767,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "新Evidence ID付きIdentity Assurance Reviewer sign-off",
                 "`REA-TM-2026-001`への供給",
                 "承認runbook",
-                "Phase B未実施の間は未収集",
+                "Phase B未実施の間はRequirements approval comparison resultをNot collected",
+                "`ASM-2026-001`をAssumed",
+                "その他のEvidenceも未収集",
             ),
         },
         "ACT-TM-2026-005": {
@@ -10999,6 +11050,14 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             "Minimum sufficient evidence": (
                 "post-remediation App registration export",
                 "scope差分表",
+                "approval ticket ID / version / hash",
+                "scope matrix ID / version / hash",
+                "業務要件表ID / version / hash",
+                "approval ticket承認scope / scope matrix不一致件数",
+                "未承認scope件数 / 不足scope件数",
+                "current scope snapshot / 承認scope / scope matrix不一致件数",
+                "新Evidence ID付きRequirements approval comparison result",
+                "Finance Operationsの新Evidence ID付きsign-off",
                 "Workload identity binding snapshot",
                 "Tenant binding差分",
                 "rotation手順Review記録",
@@ -11014,6 +11073,12 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 "いずれも2026-07-20",
                 "New post-remediation result",
                 "current-scope snapshot",
+                "approval ticket / scope matrix / 業務要件表のID / version / hash",
+                "approval ticket承認scope / scope matrix不一致件数",
+                "未承認scope件数 / 不足scope件数",
+                "current scope snapshot / 承認scope / scope matrix不一致件数",
+                "新Evidence ID付きRequirements approval comparison result",
+                "Finance Operationsの新Evidence ID付きsign-off",
                 "Workload identity binding snapshot",
                 "Tenant binding差分",
                 "rotation手順Review記録",
@@ -11249,6 +11314,19 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             f"{label}: REA-TM-2026-001 identity closure threshold section "
             f"count {threshold_occurrences} != 1"
         )
+    requirements_threshold_occurrences = text.count(
+        REQUIREMENTS_APPROVAL_THRESHOLD_SECTION
+    )
+    if requirements_threshold_occurrences != 1:
+        messages.append(
+            f"{label}: REA-TM-2026-001 requirements approval threshold section "
+            f"count {requirements_threshold_occurrences} != 1"
+        )
+    for marker in REQUIREMENTS_APPROVAL_CONTRADICTORY_MARKERS:
+        if marker in text:
+            messages.append(
+                f"{label}: contradictory requirements approval exception {marker!r}"
+            )
     manifest_threshold_occurrences = text.count(MANIFEST_COMPARISON_THRESHOLD_SECTION)
     if manifest_threshold_occurrences != 1:
         messages.append(
@@ -11543,6 +11621,7 @@ def case_contract_errors(text: str, label: str) -> list[str]:
         messages.append(f"{label}: missing REA-TM-2026-001 exact identity contract")
     else:
         for field, expected in (
+            ("Scope", REA_TM_001_SCOPE),
             ("Inputs required", REA_TM_001_INPUTS_REQUIRED),
             ("Closure criteria", REA_TM_001_CLOSURE_CRITERIA),
         ):
@@ -11554,11 +11633,17 @@ def case_contract_errors(text: str, label: str) -> list[str]:
                 )
     expected_reassessment_markers = {
         "REA-TM-2026-001": {
+            "Scope": (
+                "ASM-2026-001",
+                "GAP-2026-002",
+            ),
             "Inputs required": (
                 "2026-07-25 remediation後のApp registration export",
                 "Tenant binding差分",
                 "Workload identity binding snapshot",
                 "rotation手順Review記録",
+                "Requirements approval comparison result",
+                "Finance Operations",
                 "Workload-only binding check結果",
                 "Rotation-management check結果",
                 "Reviewer sign-off",
@@ -11566,6 +11651,9 @@ def case_contract_errors(text: str, label: str) -> list[str]:
             ),
             "Closure criteria": (
                 "post-remediation current scopeがEvidenceで`Confirmed`",
+                "Requirements approval comparison",
+                "`ASM-2026-001`を`Confirmed`",
+                "`ASM-2026-001`を`Assumed`",
                 "新Authorization Record / RoE承認後にのみ変更",
                 "CTRL-2026-005",
                 "Implemented",
@@ -13478,16 +13566,9 @@ def negative_regressions(
             (
                 "EREQ-2026-001 invents post-remediation evidence",
                 case.replace(
-                    "New post-remediation result: current-scope snapshot、"
-                    "Workload identity binding snapshot、Tenant binding差分、"
-                    "rotation手順Review記録、offline機械的突合結果、"
-                    "新Evidence ID付き・source Evidence IDを記録した"
-                    "Workload-only binding check結果、"
-                    "新Evidence ID付き・source Evidence IDを記録した"
-                    "Rotation-management check結果、"
                     "新Evidence ID付きReviewer sign-offは未収集"
                     "（承認後にそれぞれ新Evidence IDを割り当てる）",
-                    "New post-remediation result: current-scope snapshotは収集済み",
+                    "新Evidence ID付きReviewer sign-offを収集済み",
                     1,
                 ),
             ),
@@ -14063,11 +14144,141 @@ def negative_regressions(
                 "REA-TM-2026-001 drops summary refinement hypothesis",
                 case.replace(
                     "| `REA-TM-2026-001` | scope、Identity binding、rotationまたは承認ticket変更 | "
-                    "`TH-2026-001`, `TH-2026-004`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` |",
+                    + REA_TM_001_SCOPE
+                    + " |",
                     "| `REA-TM-2026-001` | scope、Identity binding、rotationまたは承認ticket変更 | "
-                    "`TH-2026-001`, `CTRL-2026-005`, `CTRL-2026-006`, `GAP-2026-002` |",
+                    "`TH-2026-001`, `CTRL-2026-005`, `CTRL-2026-006`, "
+                    "`ASM-2026-001`, `GAP-2026-002` |",
                     1,
                 ),
+            ),
+            (
+                "REA-TM-2026-001 requirements approval threshold omitted",
+                case.replace(REQUIREMENTS_APPROVAL_THRESHOLD_SECTION, "", 1),
+            ),
+            (
+                "REA-TM-2026-001 scope omits ASM-2026-001",
+                case.replace(
+                    REA_TM_001_SCOPE,
+                    REA_TM_001_SCOPE.replace("`ASM-2026-001`, ", ""),
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-001 omits requirements approval comparison Evidence",
+                case.replace(
+                    "approval ticket ID / version / hash、scope matrix ID / version / hash、"
+                    "業務要件表ID / version / hash、approval ticket承認scope / "
+                    "scope matrix不一致件数、scope matrix / 業務要件表の未承認scope件数 / "
+                    "不足scope件数、current scope snapshot / 承認scope / scope matrix"
+                    "不一致件数、新Evidence ID付き"
+                    "Requirements approval comparison result、Finance Operationsの"
+                    "新Evidence ID付きsign-off、",
+                    "",
+                    1,
+                ),
+            ),
+            (
+                "EREQ-2026-001 minimum omits approval ticket revision provenance",
+                case.replace(
+                    "post-remediation App registration export、要件表、scope差分表、"
+                    "approval ticket ID / version / hash",
+                    "post-remediation App registration export、要件表、scope差分表、"
+                    "approval ticket ID",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-004 omits requirements approval producer",
+                case.replace(
+                    "Finance Operationsはapproval ticket、scope matrix、業務要件表の"
+                    "各ID / version / hashとcurrent scope snapshotのEvidence IDを固定して"
+                    "Requirements approval comparisonを実施する。approval ticket承認scopeと"
+                    "scope matrixの不一致0件、scope matrixと業務要件表の未承認scope 0件 / "
+                    "不足scope 0件、current scope snapshotと承認scope / scope matrixの"
+                    "不一致0件の場合だけPassedとし、各不一致件数、有限resultとlimitationを"
+                    "新Evidence ID付きでsign-offする。",
+                    "",
+                    1,
+                ),
+            ),
+            (
+                "ACT-TM-2026-004 invents a current requirements Passed result",
+                case.replace(
+                    "Phase B未実施の間はRequirements approval comparison resultを"
+                    "Not collected、`ASM-2026-001`をAssumed",
+                    "Phase B未実施でもRequirements approval comparison resultを"
+                    "Passed、`ASM-2026-001`をConfirmed",
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 inputs omit requirements approval result",
+                case.replace(
+                    REA_TM_001_INPUTS_REQUIRED,
+                    REA_TM_001_INPUTS_REQUIRED.replace(
+                        "approval ticket ID / version / hash、scope matrix ID / version / hash、"
+                        "業務要件表ID / version / hash、approval ticket承認scope / "
+                        "scope matrix不一致件数、scope matrix / 業務要件表の未承認scope件数 / "
+                        "不足scope件数、current scope snapshot / 承認scope / scope matrix"
+                        "不一致件数、新Evidence ID付き"
+                        "Requirements approval comparison result、Finance Operationsの"
+                        "新Evidence ID付きsign-off、",
+                        "",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 inputs omit approval ticket revision provenance",
+                case.replace(
+                    REA_TM_001_INPUTS_REQUIRED,
+                    REA_TM_001_INPUTS_REQUIRED.replace(
+                        "approval ticket ID / version / hash",
+                        "approval ticket ID",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 closure omits approval ticket revision provenance",
+                case.replace(
+                    REA_TM_001_CLOSURE_CRITERIA,
+                    REA_TM_001_CLOSURE_CRITERIA.replace(
+                        "approval ticket ID / version / hash",
+                        "approval ticket ID",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "REA-TM-2026-001 closes scope gap for non-Passed comparison",
+                case.replace(
+                    REA_TM_001_CLOSURE_CRITERIA,
+                    REA_TM_001_CLOSURE_CRITERIA.replace(
+                        "comparison resultが`Failed / Inconclusive / Not collected`、"
+                        "または必要なEvidence / sign-offが不足する場合は"
+                        "`ASM-2026-001`を`Assumed`、`CTRL-2026-005`を"
+                        "`Documented`に維持し、`GAP-2026-002`を閉じない。",
+                        "comparison resultが`Failed / Inconclusive / Not collected`でも"
+                        "`ASM-2026-001`を`Confirmed`として`GAP-2026-002`を閉じる。",
+                    ),
+                    1,
+                ),
+            ),
+            (
+                "requirements approval permits ticket-matrix mismatch",
+                case
+                + "\n\napproval ticketとscope matrixが不一致でもPassedとしてよい。\n",
+            ),
+            (
+                "requirements approval permits business-requirement mismatch",
+                case + "\n\n業務要件との不一致が1件以上でもPassedとしてよい。\n",
+            ),
+            (
+                "requirements approval appends a false current result",
+                case
+                + "\n\nCurrent resultはPassed、ASM-2026-001はConfirmedとする。\n",
             ),
             (
                 "REA-TM-2026-001 workload-only pass threshold removed",
@@ -14209,8 +14420,8 @@ def negative_regressions(
                 case.replace(
                     "Platformはsource Evidence IDをWorkload-only binding check結果と"
                     "Rotation-management check結果へ記録し、Identity Assurance Reviewerは"
-                    "有限閾値に対するresultとlimitationをsign-offする。両check結果と"
-                    "Reviewer sign-offへ別々の新Evidence IDを割り当てて"
+                    "有限閾値に対するresultとlimitationをsign-offする。comparison result、"
+                    "両check結果、各Reviewer sign-offへ別々の新Evidence IDを割り当てて"
                     "`REA-TM-2026-001`へ供給する。",
                     "Platformはoffline機械的突合結果を保存する。",
                     1,
@@ -15118,7 +15329,13 @@ def negative_regressions(
             ),
             (
                 "ACT-TM-2026-004 success overclaims unexecuted collection phase",
-                case.replace("Phase B未実施の間は未収集", "Phase BのEvidenceは収集済み", 1),
+                case.replace(
+                    "Phase B未実施の間はRequirements approval comparison resultを"
+                    "Not collected、`ASM-2026-001`をAssumedとし、その他のEvidenceも未収集",
+                    "Phase B未実施でもRequirements approval comparison resultを"
+                    "Passed、`ASM-2026-001`をConfirmedとし、その他のEvidenceも収集済み",
+                    1,
+                ),
             ),
             (
                 "ACT-TM-2026-004 does not supply reassessment approval ticket",
