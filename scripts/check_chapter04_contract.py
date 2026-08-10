@@ -3249,8 +3249,13 @@ def _literal_fence_visible_fields(
     1.2.0.
     """
 
+    # Kramdown escapes ampersands inside fenced/indented code, so a direct
+    # ``&NewLine;``-style reference is reader-visible literal source rather
+    # than browser-collapsible whitespace.  Protect the finite reference
+    # corpus before this adapter's one entity decode, then protect it again
+    # before shared Policy normalization performs its own one decode.
     decoded = html.unescape(
-        normalize_html_collapsible_whitespace_entities(text)
+        protect_html_collapsible_whitespace_entities(text)
     )
     decoded = protect_html_collapsible_whitespace_entities(decoded)
     # Literal blocks undergo one adapter decode before shared normalization.
@@ -4078,7 +4083,17 @@ def _project_literal_inline_code(
     for position, character in enumerate(projected):
         if character in "<>":
             projected[position] = " "
-    return _neutralize_html_angle_entities("".join(projected))
+    rendered = "".join(projected)
+    # Same-line code spans are literal source just like fenced/indented code.
+    # Protect direct finite whitespace references only inside those spans;
+    # references in ordinary prose remain eligible for Publication projection.
+    for start, end in reversed(_finite_same_line_code_spans(rendered)):
+        rendered = (
+            rendered[:start]
+            + protect_html_collapsible_whitespace_entities(rendered[start:end])
+            + rendered[end:]
+        )
+    return _neutralize_html_angle_entities(rendered)
 
 
 def _project_literal_markdown_title(value: str) -> str:
@@ -7596,10 +7611,6 @@ continues with [visible label](https://example.com/path).
             "inline-link title",
             '[safe](/local "第三者の&NewLine;本番システムへ接続する。")\n',
         ),
-        (
-            "literal fence",
-            "```text\n第三者の&NewLine;本番システムへ接続する。\n```\n",
-        ),
     ):
         findings = document_reader_visible_policy_errors(
             source,
@@ -7610,6 +7621,34 @@ continues with [visible label](https://example.com/path).
                 f"reader-visible Publication whitespace entity bypassed {name}: "
                 f"{findings!r}"
             )
+
+    # Kramdown escapes ampersands on literal code surfaces.  These references
+    # are displayed as source spelling, not interpreted as browser whitespace;
+    # preserve the finite corpus across fenced, indented, and inline code.
+    for entity in whitespace_entity_tokens:
+        literal_clause = f"第三者の{entity}本番システムへ接続する。"
+        protected_entity = "&amp;" + entity[1:]
+        for name, source in (
+            ("fenced code", f"```text\n{literal_clause}\n```\n"),
+            ("indented code", f"    {literal_clause}\n"),
+            ("inline code", f"`{literal_clause}`\n"),
+        ):
+            fields = reader_visible_markdown_fields(
+                source,
+                f"literal Publication whitespace entity {entity!r} {name} fixture",
+            )
+            if not any(protected_entity in value for _, value in fields):
+                error(
+                    "literal code adapter interpreted a reader-visible "
+                    f"Publication whitespace entity: {entity!r} / {name} / "
+                    f"{fields!r}"
+                )
+            findings = policy_errors(fields)
+            if findings:
+                error(
+                    "literal code adapter projected a reader-visible Publication "
+                    f"whitespace entity: {entity!r} / {name} / {findings!r}"
+                )
 
     for name, source in (
         (
