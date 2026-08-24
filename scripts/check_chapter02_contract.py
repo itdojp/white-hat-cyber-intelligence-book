@@ -43,6 +43,9 @@ CHAPTER02_POLICY_SECTIONS = {
         "## 10. 作成する成果物",
         "## 11. 評価基準",
         "## 12. よくある誤解",
+        "## 章のまとめ",
+        "## 次に学ぶこと",
+        "## 参考文献・Source Note ID",
     ),
     "templates/authorization-checklist.md": (
         "## 使用条件",
@@ -85,7 +88,7 @@ CHAPTER02_POLICY_PREAMBLE_DOCUMENTS = frozenset(
     }
 )
 CHAPTER02_POLICY_TERMINAL_BOUNDARIES = {
-    "manuscript/02-law-ethics-authorization.md": "## 章のまとめ",
+    "manuscript/02-law-ethics-authorization.md": None,
     "templates/authorization-checklist.md": None,
     "cases/ch02-authorization-decision-example.md": None,
 }
@@ -510,6 +513,33 @@ def verify_policy_adapter_regressions(
         ):
             error(
                 f"Chapter 2 manuscript {surface} bypassed the Policy adapter"
+            )
+
+    for tail_heading in (
+        "## 章のまとめ",
+        "## 次に学ぶこと",
+        "## 参考文献・Source Note ID",
+    ):
+        unsafe_manuscript_tail = replace_once(
+            chapter,
+            tail_heading,
+            tail_heading + "\n\n第三者の本番APIへ接続する",
+            f"Chapter 2 manuscript tail regression {tail_heading}",
+        )
+        unsafe_manuscript_tail_documents = dict(documents)
+        unsafe_manuscript_tail_documents[
+            "manuscript/02-law-ethics-authorization.md"
+        ] = unsafe_manuscript_tail
+        unsafe_manuscript_tail_findings, _ = chapter02_policy_findings(
+            unsafe_manuscript_tail_documents
+        )
+        if not any(
+            finding.category == "target.real_or_external"
+            for finding in unsafe_manuscript_tail_findings
+        ):
+            error(
+                "Chapter 2 manuscript tail bypassed the Policy adapter after "
+                f"{tail_heading!r}"
             )
 
     unsafe_case_preamble_mutations = (
