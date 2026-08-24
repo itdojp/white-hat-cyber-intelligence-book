@@ -89,6 +89,26 @@ CHAPTER02_POLICY_PREAMBLE_DOCUMENTS = frozenset(
         "cases/ch02-authorization-decision-example.md",
     }
 )
+CHAPTER02_POLICY_PREAMBLE_HEADINGS = {
+    "manuscript/02-law-ethics-authorization.md": (
+        "# 第2章　法、倫理、許可、責任ある開示",
+        "## この章の位置付け",
+        "## 本章の責任境界",
+        "### OWN",
+        "### BRIDGE",
+        "### DELEGATE",
+        "## 学習目標",
+        "## 前提知識",
+        "## 導入ケース",
+    ),
+    "templates/authorization-checklist.md": (
+        "# Authorization Checklist",
+        "## 目的",
+    ),
+    "cases/ch02-authorization-decision-example.md": (
+        "# 第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+    ),
+}
 CHAPTER02_POLICY_TERMINAL_BOUNDARIES = {
     "manuscript/02-law-ethics-authorization.md": None,
     "templates/authorization-checklist.md": None,
@@ -126,7 +146,9 @@ CHAPTER02_INVALID_BACKTICK_FENCE = re.compile(
 )
 CHAPTER02_UNDERSCORE_EMPHASIS = re.compile(
     r"(?<![\w\\])(?P<delimiter>_{1,3})(?=\S)"
-    r"(?P<body>[^\r\n]*?\S)(?P=delimiter)(?!\w)"
+    r"(?P<body>(?:(?!\r?\n[ \t]*\r?\n).)*?\S)"
+    r"(?P=delimiter)(?![A-Za-z0-9_])",
+    re.DOTALL,
 )
 CHAPTER02_REFERENCE_LINK = re.compile(
     r"\[[^\]\r\n]+\]\[[^\]\r\n]*\]|"
@@ -149,6 +171,12 @@ CHAPTER02_EMPTY_LINK_DESTINATION = re.compile(
 CHAPTER02_BALANCED_PAREN_LINK_DESTINATION = re.compile(
     r"(?<!\\)!?\[[^\]\r\n]+\]"
     r"\([^\r\n)]*\([^\r\n)]*\)[^\r\n)]*\)"
+)
+CHAPTER02_ESCAPED_PAREN_LINK_DESTINATION = re.compile(
+    r"(?<!\\)!?\[[^\]\r\n]+\]\([^\r\n)]*\\[()]"
+)
+CHAPTER02_BACKTICK_LINK_DESTINATION = re.compile(
+    r"(?<!\\)!?\[[^\]\r\n]*\]\([^\r\n)]*`[^\r\n)]*\)"
 )
 CHAPTER02_SPECIAL_URL = re.compile(
     r"(?:(?:https?:)?[\\/]{2})[^<>\x00-\x20]+",
@@ -735,7 +763,8 @@ def _mask_markdown_literal_code(text: str) -> str:
 def _project_literal_code_for_policy(value: str) -> str:
     """Preserve literal code text that Policy would otherwise treat as HTML."""
 
-    projected = re.sub(r"[\t\r\n\f\v]+", " ", value)
+    projected = unicodedata.normalize("NFKC", html.unescape(value))
+    projected = re.sub(r"[\t\r\n\f\v]+", " ", projected)
     projected = projected.replace("<!--", "").replace("-->", "")
     return projected.replace("<", " ").replace(">", " ")
 
@@ -821,13 +850,11 @@ def _bare_angle_policy_fields(
     relative: str,
     render_guard_source: str,
 ) -> list[tuple[str, str]]:
-    """Select non-tag angle bodies that pinned Kramdown renders literally."""
+    """Select non-tag and entity-delimited text Kramdown renders literally."""
 
     fields: list[tuple[str, str]] = []
-    for occurrence, match in enumerate(
-        CHAPTER02_ANGLE_TEXT.finditer(render_guard_source),
-        start=1,
-    ):
+    occurrence = 0
+    for match in CHAPTER02_ANGLE_TEXT.finditer(render_guard_source):
         token = match.group(0)
         if (
             CHAPTER02_RAW_HTML_TAG.fullmatch(token) is not None
@@ -838,10 +865,38 @@ def _bare_angle_policy_fields(
             continue
         visible = unicodedata.normalize("NFKC", html.unescape(match.group("body")))
         if visible.strip():
+            occurrence += 1
             line = render_guard_source.count("\n", 0, match.start()) + 1
             fields.append(
                 (
                     f"{relative} bare-angle text line {line} occurrence {occurrence}",
+                    visible,
+                )
+            )
+
+    # Protect source angle brackets before decoding. Any delimiters that appear
+    # after this transformation came from character references or compatibility
+    # characters and are reader-visible literal text, not raw HTML/autolinks.
+    protected_lt = "\U000f0000CHAPTER02-LT\U000f0000"
+    protected_gt = "\U000f0000CHAPTER02-GT\U000f0000"
+    encoded_angle_source = render_guard_source.replace("<", protected_lt).replace(
+        ">", protected_gt
+    )
+    decoded_angle_source = unicodedata.normalize(
+        "NFKC",
+        html.unescape(encoded_angle_source),
+    )
+    for match in CHAPTER02_ANGLE_TEXT.finditer(decoded_angle_source):
+        visible = match.group("body").replace(protected_lt, "<").replace(
+            protected_gt, ">"
+        )
+        if visible.strip():
+            occurrence += 1
+            line = decoded_angle_source.count("\n", 0, match.start()) + 1
+            fields.append(
+                (
+                    f"{relative} encoded-angle text line {line} "
+                    f"occurrence {occurrence}",
                     visible,
                 )
             )
@@ -1017,6 +1072,20 @@ def chapter02_reader_visible_policy_fields(
         ]
         if len(first_heading_matches) == 1:
             preamble_end = first_heading_matches[0][0]
+            actual_preamble_headings = tuple(
+                heading
+                for line, _, heading in headings
+                if line < preamble_end
+            )
+            expected_preamble_headings = CHAPTER02_POLICY_PREAMBLE_HEADINGS[
+                relative
+            ]
+            if actual_preamble_headings != expected_preamble_headings:
+                messages.append(
+                    f"{relative}: unexpected Policy preamble heading inventory: "
+                    f"{actual_preamble_headings!r}; expected "
+                    f"{expected_preamble_headings!r}"
+                )
             claimed_lines.update(range(0, preamble_end))
             fields.extend(
                 _reader_visible_policy_blocks(
@@ -1330,6 +1399,7 @@ def chapter02_policy_findings(
         if text is None:
             messages.append(f"{relative}: missing document for Chapter 2 Policy adapter")
             continue
+        block_guard_source = _mask_markdown_block_code(text)
         render_guard_source = _mask_markdown_literal_code(text)
         raw_html_source = CHAPTER02_MARKDOWN_AUTOLINK.sub("", render_guard_source)
         raw_html_tags = sorted(
@@ -1422,6 +1492,16 @@ def chapter02_policy_findings(
             messages.append(
                 f"{relative}: Markdown link/image destinations with balanced "
                 "parentheses are unsupported in the bounded Policy surface"
+            )
+        if CHAPTER02_ESCAPED_PAREN_LINK_DESTINATION.search(render_guard_source):
+            messages.append(
+                f"{relative}: Markdown link/image destinations with escaped "
+                "parentheses are unsupported in the bounded Policy surface"
+            )
+        if CHAPTER02_BACKTICK_LINK_DESTINATION.search(block_guard_source):
+            messages.append(
+                f"{relative}: backticks in Markdown link/image destinations are "
+                "unsupported in the bounded Policy surface"
             )
         rendered_text = unicodedata.normalize(
             "NFKC",
@@ -2118,6 +2198,10 @@ def verify_policy_adapter_regressions(
             "Markdown underscore-emphasis syntax is unsupported",
         ),
         (
+            "第三者の _本番\nシステム_へ接続する\n\n",
+            "Markdown underscore-emphasis syntax is unsupported",
+        ),
+        (
             "実Credentialを取[得][x]する\n\n[x]: #safe\n\n",
             "Markdown reference-link syntax is unsupported",
         ),
@@ -2144,6 +2228,14 @@ def verify_policy_adapter_regressions(
         (
             "第三者の[本](foo(and)bar)番システムへ接続する\n\n",
             "destinations with balanced parentheses are unsupported",
+        ),
+        (
+            "第三者の[本](foo\\)bar)番システムへ接続する\n\n",
+            "destinations with escaped parentheses are unsupported",
+        ),
+        (
+            "[x](foo`)<script>alert(1)</script>[y](bar`)\n\n",
+            "backticks in Markdown link/image destinations are unsupported",
         ),
         (
             "[safe](javascript:alert(1))\n\n",
@@ -2215,8 +2307,10 @@ def verify_policy_adapter_regressions(
 
     literal_projection_mutations = (
         "`<!--第三者の本番システムへ接続する-->`\n\n",
+        "`&lt;第三者の本番システムへ接続する&gt;`\n\n",
         "<第三者の本番システムへ接続する>\n\n",
         "<&#31532;三者の本番システムへ接続する>\n\n",
+        "&lt;第三者の本番システムへ接続する&gt;\n\n",
     )
     for literal_projection in literal_projection_mutations:
         literal_projection_template = replace_once(
@@ -2260,6 +2354,28 @@ def verify_policy_adapter_regressions(
         for finding in multiline_inline_findings
     ):
         error("Chapter 2 adapter split a multiline inline-code payload")
+
+    unclassified_preamble_template = replace_once(
+        template,
+        "## 使用条件",
+        "## Unclassified operational section\n\n## 使用条件",
+        "Chapter 2 unclassified preamble section regression",
+    )
+    unclassified_preamble_documents = dict(documents)
+    unclassified_preamble_documents["templates/authorization-checklist.md"] = (
+        unclassified_preamble_template
+    )
+    _, unclassified_preamble_errors = chapter02_policy_findings(
+        unclassified_preamble_documents
+    )
+    if not any(
+        "unexpected Policy preamble heading inventory" in message
+        for message in unclassified_preamble_errors
+    ):
+        error(
+            "Chapter 2 Policy adapter accepted an unclassified preamble "
+            "section boundary"
+        )
 
     unclassified_section_template = replace_once(
         template,
