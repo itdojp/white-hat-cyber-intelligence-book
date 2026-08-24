@@ -114,6 +114,10 @@ CHAPTER02_LIQUID_CONSTRUCT = re.compile(r"{{|{%")
 CHAPTER02_DEFINITION_ITEM = re.compile(r"(?m)^[ \t]*:[ \t]+\S")
 CHAPTER02_KRAMDOWN_IAL = re.compile(r"(?<!\\)\{:")
 CHAPTER02_FOOTNOTE = re.compile(r"\[\^[^\]\r\n]+\]")
+CHAPTER02_ABBREVIATION_DEFINITION = re.compile(
+    r"^ {0,3}\*\[[^\]\r\n]+\]:",
+    re.MULTILINE,
+)
 CHAPTER02_REFERENCE_LINK = re.compile(
     r"\[[^\]\r\n]+\]\[[^\]\r\n]*\]|"
     r"^ {0,3}\[[^\]\r\n]+\]:",
@@ -881,6 +885,11 @@ def chapter02_policy_findings(
                 f"{relative}: Kramdown footnote syntax is unsupported in the "
                 "bounded Policy surface"
             )
+        if CHAPTER02_ABBREVIATION_DEFINITION.search(text):
+            messages.append(
+                f"{relative}: Kramdown abbreviation syntax is unsupported in "
+                "the bounded Policy surface"
+            )
         if CHAPTER02_REFERENCE_LINK.search(text):
             messages.append(
                 f"{relative}: Markdown reference-link syntax is unsupported in "
@@ -1407,6 +1416,10 @@ def verify_policy_adapter_regressions(
         (
             "実Credentialを[^x]\n\n[^x]: 取得する\n\n",
             "Kramdown footnote syntax is unsupported",
+        ),
+        (
+            "実CredentialをCRED\n\n*[CRED]: 取得する\n\n",
+            "Kramdown abbreviation syntax is unsupported",
         ),
         (
             "実Credentialを取[得][x]する\n\n[x]: #safe\n\n",
