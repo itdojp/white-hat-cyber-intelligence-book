@@ -118,6 +118,7 @@ CHAPTER02_ABBREVIATION_DEFINITION = re.compile(
     r"^ {0,3}\*\[[^\]\r\n]+\]:",
     re.MULTILINE,
 )
+CHAPTER02_KRAMDOWN_MATH = re.compile(r"(?<!\\)\$\$")
 CHAPTER02_REFERENCE_LINK = re.compile(
     r"\[[^\]\r\n]+\]\[[^\]\r\n]*\]|"
     r"^ {0,3}\[[^\]\r\n]+\]:",
@@ -962,6 +963,11 @@ def chapter02_policy_findings(
                 f"{relative}: Kramdown abbreviation syntax is unsupported in "
                 "the bounded Policy surface"
             )
+        if CHAPTER02_KRAMDOWN_MATH.search(render_guard_source):
+            messages.append(
+                f"{relative}: Kramdown math syntax is unsupported in the "
+                "bounded Policy surface"
+            )
         if CHAPTER02_REFERENCE_LINK.search(render_guard_source):
             messages.append(
                 f"{relative}: Markdown reference-link syntax is unsupported in "
@@ -1542,6 +1548,10 @@ def verify_policy_adapter_regressions(
         (
             "実CredentialをCRED\n\n*[CRED]: 取得する\n\n",
             "Kramdown abbreviation syntax is unsupported",
+        ),
+        (
+            "実Credentialを取$$得$$する\n\n",
+            "Kramdown math syntax is unsupported",
         ),
         (
             "実Credentialを取[得][x]する\n\n[x]: #safe\n\n",
