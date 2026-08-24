@@ -83,6 +83,11 @@ CHAPTER02_POLICY_PREAMBLE_DOCUMENTS = frozenset(
         "cases/ch02-authorization-decision-example.md",
     }
 )
+CHAPTER02_POLICY_TERMINAL_BOUNDARIES = {
+    "manuscript/02-law-ethics-authorization.md": "## 章のまとめ",
+    "templates/authorization-checklist.md": None,
+    "cases/ch02-authorization-decision-example.md": None,
+}
 
 # These exact lines are reviewed non-operative context: an uncertainty, question,
 # prohibition, or reject/return boundary.  Scanning the fragments without their
@@ -360,14 +365,17 @@ def chapter02_reader_visible_policy_fields(
                 end = candidate
                 boundary_heading = candidate_heading
                 break
-        if heading_index + 1 < len(expected_headings):
-            expected_boundary = expected_headings[heading_index + 1]
-            if boundary_heading != expected_boundary:
-                messages.append(
-                    f"{relative}: unexpected Policy section boundary after "
-                    f"{expected_heading!r}: {boundary_heading!r}; expected "
-                    f"{expected_boundary!r}"
-                )
+        expected_boundary = (
+            expected_headings[heading_index + 1]
+            if heading_index + 1 < len(expected_headings)
+            else CHAPTER02_POLICY_TERMINAL_BOUNDARIES[relative]
+        )
+        if boundary_heading != expected_boundary:
+            messages.append(
+                f"{relative}: unexpected Policy section boundary after "
+                f"{expected_heading!r}: {boundary_heading!r}; expected "
+                f"{expected_boundary!r}"
+            )
         for index in range(start, end):
             if index in claimed_lines:
                 messages.append(
@@ -520,6 +528,23 @@ def verify_policy_adapter_regressions(
     _, unclassified_errors = chapter02_policy_findings(unclassified_documents)
     if not any("unexpected Policy section boundary" in message for message in unclassified_errors):
         error("Chapter 2 Policy adapter accepted an unclassified section boundary")
+
+    trailing_section_template = template + (
+        "\n## Unclassified trailing operational section\n\n"
+        "第三者の本番APIへ接続する\n"
+    )
+    trailing_section_documents = dict(documents)
+    trailing_section_documents["templates/authorization-checklist.md"] = (
+        trailing_section_template
+    )
+    _, trailing_section_errors = chapter02_policy_findings(
+        trailing_section_documents
+    )
+    if not any(
+        "unexpected Policy section boundary" in message
+        for message in trailing_section_errors
+    ):
+        error("Chapter 2 Policy adapter accepted an unclassified trailing section")
 
     action_anchor = "| Allowed methods |  |"
     unsafe_actions = (
