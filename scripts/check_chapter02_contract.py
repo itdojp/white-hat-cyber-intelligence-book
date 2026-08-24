@@ -197,6 +197,7 @@ CHAPTER02_SPECIAL_URL = re.compile(
     re.IGNORECASE,
 )
 CHAPTER02_INLINE_CODE_DELIMITER = re.compile(r"(?<!`)(`+)(?!`)")
+CHAPTER02_KRAMDOWN_ASCII_WHITESPACE = frozenset(" \t\n\v\f\r")
 CHAPTER02_ANGLE_TEXT = re.compile(r"<(?P<body>[^<>\r\n]+)>")
 CHAPTER02_EXECUTABLE_URL_PREFIXES = (
     "javascript:",
@@ -774,6 +775,28 @@ def _has_authorityless_http_link_destination(value: str) -> bool:
     return False
 
 
+def _kramdown_codespan_opening_is_eligible(
+    value: str,
+    *,
+    index: int,
+    width: int,
+) -> bool:
+    """Mirror pinned Kramdown's single-backtick opener exception."""
+
+    if width != 1:
+        return True
+    before_is_whitespace = (
+        index == 0
+        or value[index - 1] in CHAPTER02_KRAMDOWN_ASCII_WHITESPACE
+    )
+    after = index + width
+    after_is_whitespace = (
+        after >= len(value)
+        or value[after] in CHAPTER02_KRAMDOWN_ASCII_WHITESPACE
+    )
+    return not (before_is_whitespace and after_is_whitespace)
+
+
 def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
     """Return finite code spans with unescaped, equal-length delimiters."""
 
@@ -799,7 +822,13 @@ def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
         if _markdown_character_is_escaped(
             value,
             opening.start(),
-        ) or opening_is_in_raw_html_tag(opening.start()):
+        ) or opening_is_in_raw_html_tag(
+            opening.start()
+        ) or not _kramdown_codespan_opening_is_eligible(
+            value,
+            index=opening.start(),
+            width=len(opening.group(1)),
+        ):
             search_start = opening.end()
             continue
         marker = opening.group(1)
@@ -2154,6 +2183,7 @@ def verify_policy_adapter_regressions(
         '<img alt=">`" src=x onerror="alert(1)">X`\n\n',
         '<?pi `?><script>alert(1)</script>`\n\n',
         '<`foo@example.test><script>alert(1)</script>`\n\n',
+        '` <script>alert(1)</script>`\n\n',
         "<javascript:alert(document.domain)>\n\n",
         '<br onmouseover="alert(document.domain)">\n\n',
     )
