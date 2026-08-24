@@ -93,16 +93,16 @@ CHAPTER02_POLICY_TERMINAL_BOUNDARIES = {
     "cases/ch02-authorization-decision-example.md": None,
 }
 
-# Kramdown publishes these tags as structural raw HTML.  The Chapter 2 adapter
-# preserves Markdown heading/list/table relationships explicitly, but does not
-# maintain a second HTML parser.  Fail closed on raw block structure; ``br`` is
-# the sole structural HTML exception and is projected to whitespace below.
-CHAPTER02_RAW_BLOCK_HTML = re.compile(
-    r"</?(?P<tag>address|article|aside|blockquote|dd|div|dl|dt|fieldset|"
-    r"figcaption|figure|footer|form|h[1-6]|header|hr|li|main|nav|ol|p|pre|"
-    r"section|table|tbody|td|tfoot|th|thead|tr|ul)\b[^>]*>",
+# Kramdown/Jekyll can publish structures whose rendered relationships differ from
+# the source blocks delegated to Policy 1.2.0.  The adapter does not maintain a
+# second HTML/Liquid renderer, so it rejects these constructs.  ``br`` is the sole
+# raw HTML exception and is projected to whitespace below.
+CHAPTER02_RAW_HTML_TAG = re.compile(
+    r"</?(?P<tag>[A-Z][A-Z0-9:-]*)\b[^>]*>",
     re.IGNORECASE,
 )
+CHAPTER02_LIQUID_CONSTRUCT = re.compile(r"{{|{%")
+CHAPTER02_DEFINITION_ITEM = re.compile(r"(?m)^[ \t]*:[ \t]+\S")
 
 # These exact lines are reviewed non-operative context: an uncertainty, question,
 # prohibition, or reject/return boundary.  Scanning the fragments without their
@@ -618,17 +618,28 @@ def chapter02_policy_findings(
         if text is None:
             messages.append(f"{relative}: missing document for Chapter 2 Policy adapter")
             continue
-        raw_block_tags = sorted(
+        raw_html_tags = sorted(
             {
                 match.group("tag").casefold()
-                for match in CHAPTER02_RAW_BLOCK_HTML.finditer(text)
+                for match in CHAPTER02_RAW_HTML_TAG.finditer(text)
+                if match.group("tag").casefold() != "br"
             }
         )
-        if raw_block_tags:
+        if raw_html_tags:
             messages.append(
-                f"{relative}: raw block HTML is unsupported in the bounded "
-                "Policy surface; use the equivalent Markdown structure: "
-                f"{raw_block_tags!r}"
+                f"{relative}: raw HTML other than br is unsupported in the "
+                "bounded Policy surface; use equivalent Markdown: "
+                f"{raw_html_tags!r}"
+            )
+        if CHAPTER02_LIQUID_CONSTRUCT.search(text):
+            messages.append(
+                f"{relative}: interpreted Liquid is unsupported in the bounded "
+                "Policy surface"
+            )
+        if CHAPTER02_DEFINITION_ITEM.search(text):
+            messages.append(
+                f"{relative}: Kramdown definition-list syntax is unsupported in "
+                "the bounded Policy surface"
             )
         fields, selection_errors = chapter02_reader_visible_policy_fields(relative, text)
         messages.extend(selection_errors)
@@ -957,6 +968,10 @@ def verify_policy_adapter_regressions(
             "<ul><li>実Credentialを<ul><li>取得する</li></ul>"
             "</li></ul>\n\n"
         ),
+        (
+            "<details><summary>実Credentialを</summary>\n\n"
+            "取得する\n\n</details>\n\n"
+        ),
     )
     for unsafe_raw_html_structure in unsafe_raw_html_structures:
         raw_html_template = replace_once(
@@ -971,12 +986,57 @@ def verify_policy_adapter_regressions(
         )
         _, raw_html_messages = chapter02_policy_findings(raw_html_documents)
         if not any(
-            "raw block HTML is unsupported" in message
+            "raw HTML other than br is unsupported" in message
             for message in raw_html_messages
         ):
             error(
-                "Chapter 2 adapter accepted unsupported raw block HTML: "
+                "Chapter 2 adapter accepted unsupported raw HTML: "
                 f"{unsafe_raw_html_structure!r}"
+            )
+
+    unsupported_render_constructs = (
+        (
+            '| Allowed methods | 実Credentialを取{{ "得" }}する |',
+            "interpreted Liquid is unsupported",
+        ),
+        (
+            '{% assign operation = "実Credentialを取得する" %}\n'
+            "{{ operation }}\n\n",
+            "interpreted Liquid is unsupported",
+        ),
+        (
+            "実Credentialを\n: 取得する\n\n",
+            "Kramdown definition-list syntax is unsupported",
+        ),
+    )
+    for unsupported_construct, expected_message in unsupported_render_constructs:
+        if unsupported_construct.startswith("| Allowed methods"):
+            unsupported_template = replace_once(
+                template,
+                hard_break_anchor,
+                unsupported_construct,
+                "Chapter 2 unsupported render construct regression",
+            )
+        else:
+            unsupported_template = replace_once(
+                template,
+                heading_association_anchor,
+                unsupported_construct + heading_association_anchor,
+                "Chapter 2 unsupported render construct regression",
+            )
+        unsupported_documents = dict(documents)
+        unsupported_documents["templates/authorization-checklist.md"] = (
+            unsupported_template
+        )
+        _, unsupported_messages = chapter02_policy_findings(
+            unsupported_documents
+        )
+        if not any(
+            expected_message in message for message in unsupported_messages
+        ):
+            error(
+                "Chapter 2 adapter accepted an unsupported rendered construct: "
+                f"{unsupported_construct!r}"
             )
 
     unclassified_section_template = replace_once(
