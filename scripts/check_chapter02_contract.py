@@ -753,6 +753,27 @@ def _link_destination_parenthesis_risks(value: str) -> tuple[bool, bool]:
     return angle_literal, decoded
 
 
+def _has_authorityless_http_link_destination(value: str) -> bool:
+    """Reject HTTP(S) destinations whose browser authority is source-relative."""
+
+    for match in CHAPTER02_SIMPLE_INLINE_LINK.finditer(value):
+        destination = match.group("destination")
+        body = (
+            destination[1:-1]
+            if destination.startswith("<") and destination.endswith(">")
+            else destination
+        )
+        normalized = unicodedata.normalize("NFKC", html.unescape(body)).strip()
+        normalized = CHAPTER02_MARKDOWN_PUNCTUATION_ESCAPE.sub(
+            r"\1",
+            normalized,
+        )
+        scheme = re.match(r"https?:", normalized, re.IGNORECASE)
+        if scheme is not None and not normalized[scheme.end() :].startswith("//"):
+            return True
+    return False
+
+
 def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
     """Return finite code spans with unescaped, equal-length delimiters."""
 
@@ -1632,6 +1653,11 @@ def chapter02_policy_findings(
                 f"{relative}: decoded parentheses in Markdown link/image "
                 "destinations are unsupported in the bounded Policy surface"
             )
+        if _has_authorityless_http_link_destination(render_guard_source):
+            messages.append(
+                f"{relative}: authority-less HTTP(S) Markdown link/image "
+                "destinations are unsupported in the bounded Policy surface"
+            )
         rendered_text = unicodedata.normalize(
             "NFKC",
             html.unescape(render_guard_source),
@@ -2387,6 +2413,11 @@ def verify_policy_adapter_regressions(
         (
             "[safe](javascript\\:document.body.textContent='x')\n\n",
             "Markdown punctuation escapes in link/image destinations are "
+            "unsupported",
+        ),
+        (
+            "[safe](http:attacker.com)\n\n",
+            "authority-less HTTP(S) Markdown link/image destinations are "
             "unsupported",
         ),
         (
