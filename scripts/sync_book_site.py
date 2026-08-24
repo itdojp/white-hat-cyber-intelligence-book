@@ -23,6 +23,12 @@ from scripts.content_safety_policy import (  # noqa: E402
     SafetyFinding,
     scan_fields,
 )
+from scripts.publication_text import (  # noqa: E402
+    HTML_COLLAPSIBLE_WHITESPACE_CODEPOINTS,
+    HTML_COLLAPSIBLE_WHITESPACE_NAMED_ENTITIES,
+    normalize_html_collapsible_whitespace_entities,
+    protect_html_collapsible_whitespace_entities,
+)
 
 REGISTRY_PATH = ROOT / "site-pages.json"
 SCHEMA_PATH = ROOT / "schemas/site-pages.schema.json"
@@ -404,7 +410,7 @@ PAGE_TITLE_MARK_RANGES = (
 # page title without claiming to classify every visually blank glyph.
 PAGE_TITLE_INVISIBLE_BASE_UNICODE_VERSION = "15.0.0"
 PAGE_TITLE_INVISIBLE_BASE_RANGES = (
-    (0x115F, 0x115F),  # HANGUL CHOSEONG FILLER
+    (0x115F, 0x1160),  # HANGUL CHOSEONG/JUNGSEONG FILLER
     (0x2800, 0x2800),  # BRAILLE PATTERN BLANK
     (0x3164, 0x3164),  # HANGUL FILLER
     (0xFFA0, 0xFFA0),  # HALFWIDTH HANGUL FILLER
@@ -693,6 +699,14 @@ def validate_static_json(data: bytes, label: str) -> None:
         )
 
 
+def project_published_page_title(title: str) -> str:
+    """Project exactly one browser entity layer for title validation/scanning."""
+
+    return html.unescape(
+        normalize_html_collapsible_whitespace_entities(title)
+    )
+
+
 def published_page_title_findings(
     registry: dict,
     label: str = "site-pages.json",
@@ -721,7 +735,7 @@ def published_page_title_findings(
         # scan.  Neutralize any remaining ampersand as well so a double-encoded
         # entity is not decoded a second time by the shared normalizer when a
         # browser would display that entity text literally.
-        policy_title = html.unescape(title).translate(
+        policy_title = project_published_page_title(title).translate(
             str.maketrans({"<": " ", ">": " ", "&": " "})
         )
         fields.append((location, policy_title))
@@ -849,6 +863,15 @@ def parse_registry_data(value: object, label: str = "site-pages.json") -> dict:
         ):
             raise SitePageRegistryError(
                 f"pages[{index}].title must contain a base reader-visible character"
+            )
+        projected_title = project_published_page_title(title)
+        if not any(
+            ord(character) not in PAGE_TITLE_NON_BASE_CODEPOINTS
+            for character in projected_title
+        ):
+            raise SitePageRegistryError(
+                f"pages[{index}].title must render a base reader-visible character "
+                "after one HTML entity projection"
             )
         if PAGE_TITLE_HTML_DELIMITER_RE.search(title):
             raise SitePageRegistryError(
@@ -1639,6 +1662,9 @@ def run_registry_security_regressions() -> list[str]:
         ("Mongolian-variation-selector-only published page title", "\u180b"),
         ("BRAILLE-PATTERN-BLANK-only published page title", "\u2800"),
         ("HANGUL-CHOSEONG-FILLER-only published page title", "\u115f"),
+        ("HANGUL-JUNGSEONG-FILLER-only published page title", "\u1160"),
+        ("entity-encoded HANGUL-JUNGSEONG-FILLER-only title", "&#x1160;"),
+        ("entity-encoded whitespace-only published page title", "&NewLine;&Tab;"),
         ("HANGUL-FILLER-only published page title", "\u3164"),
         ("HALFWIDTH-HANGUL-FILLER-only published page title", "\uffa0"),
         ("raw HTML published page title", "<span>Visible title</span>"),
@@ -1657,6 +1683,9 @@ def run_registry_security_regressions() -> list[str]:
         "😀\ufe0f",
         "Visible\u2800title",
         "Visible\u115ftitle",
+        "Visible\u1160title",
+        "Visible&#x1160;title",
+        "&amp;#x1160;",
         "Visible\u3164title",
         "Visible\uffa0title",
     )
@@ -1692,6 +1721,7 @@ def run_registry_security_regressions() -> list[str]:
             ("Mongolian variation selector", "\u180b"),
             ("BRAILLE PATTERN BLANK", "\u2800"),
             ("HANGUL CHOSEONG FILLER", "\u115f"),
+            ("HANGUL JUNGSEONG FILLER", "\u1160"),
             ("HANGUL FILLER", "\u3164"),
             ("HALFWIDTH HANGUL FILLER", "\uffa0"),
             ("raw HTML", "<span>Visible title</span>"),
@@ -1754,11 +1784,11 @@ def run_registry_security_regressions() -> list[str]:
         if (
             PAGE_TITLE_INVISIBLE_BASE_UNICODE_VERSION != "15.0.0"
             or len(PAGE_TITLE_INVISIBLE_BASE_RANGES) != 4
-            or len(PAGE_TITLE_INVISIBLE_BASE_CODEPOINTS) != 4
+            or len(PAGE_TITLE_INVISIBLE_BASE_CODEPOINTS) != 5
         ):
             failures.append(
                 "site-pages title invisible-base corpus drifted from the frozen "
-                "Unicode 15.0 finite contract (4 ranges / 4 code points)"
+                "Unicode 15.0 finite contract (4 ranges / 5 code points)"
             )
         all_format_controls = "".join(
             chr(codepoint) for codepoint in sorted(PAGE_TITLE_FORMAT_CONTROL_CODEPOINTS)
@@ -1878,6 +1908,7 @@ def run_registry_security_regressions() -> list[str]:
             "\u180b",
             "\u2800",
             "\u115f",
+            "\u1160",
             "\u3164",
             "\uffa0",
             "\U000101fd",
@@ -1929,6 +1960,67 @@ def run_registry_security_regressions() -> list[str]:
     ) as exc:
         failures.append(f"site-pages schema title contract cannot be read: {exc}")
 
+    if HTML_COLLAPSIBLE_WHITESPACE_CODEPOINTS != frozenset(
+        {0x0009, 0x000A, 0x000C, 0x000D, 0x0020}
+    ):
+        failures.append(
+            "publication whitespace-entity code-point corpus drifted from the "
+            "finite HTML collapsible-whitespace contract"
+        )
+    if HTML_COLLAPSIBLE_WHITESPACE_NAMED_ENTITIES != ("NewLine", "Tab"):
+        failures.append(
+            "publication whitespace-entity named corpus drifted from the finite "
+            "HTML5 contract"
+        )
+
+    whitespace_entity_tokens = tuple(
+        [f"&{name};" for name in HTML_COLLAPSIBLE_WHITESPACE_NAMED_ENTITIES]
+        + [
+            token
+            for codepoint in sorted(HTML_COLLAPSIBLE_WHITESPACE_CODEPOINTS)
+            for token in (
+                f"&#{codepoint};",
+                f"&#{codepoint}",
+                f"&#x{codepoint:X};",
+                f"&#x{codepoint:X}",
+                f"&#X{codepoint:04x};",
+                f"&#X{codepoint:04x}",
+            )
+        ]
+    )
+    for token in whitespace_entity_tokens:
+        projected = normalize_html_collapsible_whitespace_entities(
+            f"left{token}right"
+        )
+        if projected != "left right":
+            failures.append(
+                f"publication whitespace entity was not projected to one space: "
+                f"{token!r} -> {projected!r}"
+            )
+        protected = protect_html_collapsible_whitespace_entities(token)
+        if html.unescape(protected) != token:
+            failures.append(
+                f"publication whitespace entity was not protected from a second "
+                f"decode: {token!r} -> {protected!r}"
+            )
+
+    for source in (
+        "left\nright",
+        "left\r\nright",
+        "left&NewLine right",
+        "left&Tab right",
+        "left&amp;NewLine;right",
+        "left&amp;#10;right",
+        "left&amp;#x0A;right",
+        "left&nbsp;right",
+    ):
+        if normalize_html_collapsible_whitespace_entities(source) != source:
+            failures.append(
+                "publication whitespace projection changed a paragraph boundary, "
+                f"semicolon-required name, double-encoded literal, or non-collapsible "
+                f"entity: {source!r}"
+            )
+
     unsafe_titles = (
         "第三者の本番システムへ接続する",
         "実Tokenを取得してEvidenceにする",
@@ -1949,6 +2041,9 @@ def run_registry_security_regressions() -> list[str]:
         "&LT第三者の本番システムへ接続する&GT",
         "&amp;lt;第三者の本番システムへ接続する&amp;gt;",
         "&amp;#60;第三者の本番システムへ接続する&amp;#62;",
+    ) + tuple(
+        f"第三者の{token}本番システムへ接続する。"
+        for token in whitespace_entity_tokens
     )
     for index, title in enumerate(unsafe_titles, start=1):
         expect_invalid_registry(
@@ -1967,7 +2062,13 @@ def run_registry_security_regressions() -> list[str]:
         "&lt;第三者の本番システムへ接続しない&gt;",
         "A &lt; B",
         "A &amp;lt; B",
-    ) + schema_safe_titles
+        "第三者の&amp;NewLine;本番システムへ接続する。",
+        "第三者の&amp;#10;本番システムへ接続する。",
+        "第三者の&amp;#x0A;本番システムへ接続する。",
+    ) + schema_safe_titles + tuple(
+        f"第三者の{token}本番システムへ接続しない。"
+        for token in whitespace_entity_tokens
+    )
     for index, title in enumerate(safe_titles, start=1):
         try:
             parse_registry_data(
