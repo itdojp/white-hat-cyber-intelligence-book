@@ -323,8 +323,15 @@ def _reader_visible_policy_blocks(
 
     blocks: list[tuple[str, str]] = []
     pending: list[tuple[int, str]] = []
+    frontmatter_delimiters: set[int] = set()
+    if start == 0 and lines and lines[0].strip() == "---":
+        frontmatter_delimiters.add(0)
+        for index in range(1, len(lines)):
+            if lines[index].strip() in {"---", "..."}:
+                frontmatter_delimiters.add(index)
+                break
 
-    def flush() -> None:
+    def flush(*, heading_level: int | None = None) -> None:
         if not pending:
             return
         start_line = pending[0][0] + 1
@@ -343,12 +350,27 @@ def _reader_visible_policy_blocks(
         # this in-field line-break tag to whitespace before delegating.  This
         # prevents an object/action pair from being split inside one table cell.
         visible_text = _project_in_field_hard_breaks(visible_text)
+        if heading_level is not None:
+            visible_text = f"{'#' * heading_level} {visible_text}"
         blocks.append((f"{location_prefix} {line_label}", visible_text))
         pending.clear()
 
     for index in range(start, end):
         value = lines[index]
-        if not value.strip() or _is_markdown_table_delimiter(value):
+        if not value.strip():
+            flush()
+            continue
+        setext_match = re.fullmatch(r"\s*(=+|-+)\s*", value)
+        if (
+            setext_match is not None
+            and index not in frontmatter_delimiters
+            and pending
+            and not _is_markdown_policy_block_start(pending[0][1])
+        ):
+            heading_level = 1 if setext_match.group(1).startswith("=") else 2
+            flush(heading_level=heading_level)
+            continue
+        if _is_markdown_table_delimiter(value):
             flush()
             continue
         if _is_markdown_policy_block_start(value):
@@ -803,11 +825,24 @@ def verify_policy_adapter_regressions(
 
     heading_association_anchor = "## 3. Scope Gate"
     unsafe_heading_associations = (
-        "### 実Credentialを\n\n取得する\n\n",
-        "### 実Credentialを\n\n#### 操作\n\n取得する\n\n",
-        "### 実Credentialを\n\n前提を確認する。\n\n取得する\n\n",
+        ("### 実Credentialを\n\n取得する\n\n", "secret.credential"),
+        (
+            "### 実Credentialを\n\n#### 操作\n\n取得する\n\n",
+            "secret.credential",
+        ),
+        (
+            "### 実Credentialを\n\n前提を確認する。\n\n取得する\n\n",
+            "secret.credential",
+        ),
+        (
+            "Tokenを\n---\n\n再利用する\n\n",
+            "operation.authentication_or_session",
+        ),
+        ("実Credentialを\n===\n\n取得する\n\n", "secret.credential"),
     )
-    for unsafe_heading_association in unsafe_heading_associations:
+    for unsafe_heading_association, expected_category in (
+        unsafe_heading_associations
+    ):
         heading_association_template = replace_once(
             template,
             heading_association_anchor,
@@ -822,7 +857,7 @@ def verify_policy_adapter_regressions(
             heading_association_documents
         )
         if not any(
-            finding.category == "secret.credential"
+            finding.category == expected_category
             for finding in heading_association_findings
         ):
             error(
