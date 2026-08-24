@@ -841,6 +841,9 @@ def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
             )
             if candidate is None:
                 break
+            if _markdown_character_is_escaped(value, candidate.start()):
+                closing_start = candidate.end()
+                continue
             if candidate.group(1) == marker:
                 closing = candidate
                 break
@@ -2207,6 +2210,22 @@ def verify_policy_adapter_regressions(
                 "Chapter 2 adapter accepted unsupported raw HTML: "
                 f"{unsafe_raw_html_structure!r}"
             )
+
+    escaped_closing_backtick_template = (
+        template + "\n`<script>alert(1)</script>\\`\n"
+    )
+    escaped_closing_backtick_documents = dict(documents)
+    escaped_closing_backtick_documents["templates/authorization-checklist.md"] = (
+        escaped_closing_backtick_template
+    )
+    _, escaped_closing_backtick_messages = chapter02_policy_findings(
+        escaped_closing_backtick_documents
+    )
+    if not any(
+        "raw HTML other than attribute-free br is unsupported" in message
+        for message in escaped_closing_backtick_messages
+    ):
+        error("Chapter 2 adapter treated an escaped backtick as a code-span close")
 
     unsafe_fenced_blocks = (
         "```text\n実Credentialを\n\n取得する\n```\n\n",
