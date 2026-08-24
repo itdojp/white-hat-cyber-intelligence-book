@@ -591,6 +591,40 @@ def _is_closing_fence_context(
     return _is_closing_fence(line[container_column:], marker)
 
 
+def _completed_nonparagraph_block_line_indexes(lines: list[str]) -> set[int]:
+    """Return lines after which an indented code block may open directly."""
+
+    completed = _markdown_table_row_indexes(lines, start=0, end=len(lines))
+    fence_marker: str | None = None
+    fence_container_column = 0
+    for index, line in enumerate(lines):
+        if fence_marker is not None:
+            if _is_closing_fence_context(
+                line,
+                fence_marker,
+                fence_container_column,
+            ):
+                completed.add(index)
+                fence_marker = None
+            continue
+        opening_fence = _opening_fence_context(lines, index)
+        if opening_fence is not None:
+            fence_marker, fence_container_column = opening_fence
+            continue
+        if re.fullmatch(r" {0,3}#{1,6}(?:[ \t]+.*)?", line):
+            completed.add(index)
+            continue
+        if re.fullmatch(r" {0,3}(?:=+|-+)[ \t]*", line):
+            completed.add(index)
+            continue
+        if re.fullmatch(
+            r" {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})",
+            line,
+        ):
+            completed.add(index)
+    return completed
+
+
 def _literal_indented_code_line_indexes(lines: list[str]) -> set[int]:
     """Select finite root/list indented code using source-column thresholds."""
 
@@ -598,6 +632,7 @@ def _literal_indented_code_line_indexes(lines: list[str]) -> set[int]:
     list_item = re.compile(
         r"^(?P<prefix>[ \t]*(?:[-+*]|\d+[.)])[ \t]+)"
     )
+    completed_nonparagraph_blocks = _completed_nonparagraph_block_line_indexes(lines)
     index = 0
     while index < len(lines):
         line = lines[index]
@@ -606,7 +641,11 @@ def _literal_indented_code_line_indexes(lines: list[str]) -> set[int]:
             continue
         # Pinned Kramdown does not let an indented code block interrupt an
         # active paragraph.  Require a document/block boundary for its opener.
-        if index > 0 and lines[index - 1].strip():
+        if (
+            index > 0
+            and lines[index - 1].strip()
+            and index - 1 not in completed_nonparagraph_blocks
+        ):
             index += 1
             continue
 
@@ -715,7 +754,11 @@ def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
     spans: list[tuple[int, int, str]] = []
     raw_html_tag_spans = tuple(
         (match.start(), match.end())
-        for pattern in (CHAPTER02_RAW_HTML_TAG, CHAPTER02_RAW_HTML_NON_TAG)
+        for pattern in (
+            CHAPTER02_RAW_HTML_TAG,
+            CHAPTER02_RAW_HTML_NON_TAG,
+            CHAPTER02_MARKDOWN_AUTOLINK,
+        )
         for match in pattern.finditer(value)
     )
 
@@ -2068,6 +2111,7 @@ def verify_policy_adapter_regressions(
         '<img alt="`" src=x onerror="alert(1)">X`\n\n',
         '<img alt=">`" src=x onerror="alert(1)">X`\n\n',
         '<?pi `?><script>alert(1)</script>`\n\n',
+        '<`foo@example.test><script>alert(1)</script>`\n\n',
         "<javascript:alert(document.domain)>\n\n",
         '<br onmouseover="alert(document.domain)">\n\n',
     )
@@ -2146,6 +2190,7 @@ def verify_policy_adapter_regressions(
         "`<div>safe example</div>`\n\n",
         "`<div>safe example</div>\\`\n\n",
         "`<?safe processing instruction?>`\n\n",
+        "### Safe literal example\n    <div>safe literal</div>\n\n",
     )
     for literal_code_example in literal_code_examples:
         literal_code_template = replace_once(
