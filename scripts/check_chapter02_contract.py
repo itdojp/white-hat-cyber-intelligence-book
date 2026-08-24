@@ -142,6 +142,7 @@ CHAPTER02_TITLED_INLINE_LINK = re.compile(
     r"\((?:\\.|[^()\\\r\n])*\))"
     r"[ \t\r\n]*\)"
 )
+CHAPTER02_EMPTY_INLINE_LINK = re.compile(r"(?<!\\)!?\[\]\(")
 CHAPTER02_SPECIAL_URL = re.compile(
     r"(?:(?:https?:)?[\\/]{2})[^<>\x00-\x20]+",
     re.IGNORECASE,
@@ -850,9 +851,10 @@ def chapter02_reader_visible_policy_fields(
         if opening_fence is not None:
             fence_marker = opening_fence
             continue
-        match = re.fullmatch(r"(#{1,6})\s+(.+?)\s*", line)
+        match = re.fullmatch(r" {0,3}(#{1,6})[ \t]+(.+?)[ \t]*", line)
         if match:
-            headings.append((index, len(match.group(1)), line.rstrip()))
+            normalized_heading = f"{match.group(1)} {match.group(2)}"
+            headings.append((index, len(match.group(1)), normalized_heading))
             continue
         setext = re.fullmatch(r" {0,3}(=+|-+)[ \t]*", line)
         if (
@@ -1260,6 +1262,11 @@ def chapter02_policy_findings(
             messages.append(
                 f"{relative}: Markdown link/image titles are unsupported in "
                 "the bounded Policy surface"
+            )
+        if CHAPTER02_EMPTY_INLINE_LINK.search(render_guard_source):
+            messages.append(
+                f"{relative}: Markdown links/images with an empty label are "
+                "unsupported in the bounded Policy surface"
             )
         rendered_text = unicodedata.normalize(
             "NFKC",
@@ -1927,6 +1934,10 @@ def verify_policy_adapter_regressions(
             "Markdown link/image titles are unsupported",
         ),
         (
+            "実Credentialを取[](#)得する\n\n",
+            "Markdown links/images with an empty label are unsupported",
+        ),
+        (
             "[safe](javascript:alert(1))\n\n",
             "executable URL scheme is unsupported",
         ),
@@ -2036,6 +2047,29 @@ def verify_policy_adapter_regressions(
     _, unclassified_errors = chapter02_policy_findings(unclassified_documents)
     if not any("unexpected Policy section boundary" in message for message in unclassified_errors):
         error("Chapter 2 Policy adapter accepted an unclassified section boundary")
+
+    indented_unclassified_template = replace_once(
+        template,
+        "## 3. Scope Gate",
+        "  ## Unclassified operational section\n\n"
+        "第三者の本番APIへ接続する\n\n## 3. Scope Gate",
+        "Chapter 2 indented unclassified ATX section regression",
+    )
+    indented_unclassified_documents = dict(documents)
+    indented_unclassified_documents["templates/authorization-checklist.md"] = (
+        indented_unclassified_template
+    )
+    _, indented_unclassified_errors = chapter02_policy_findings(
+        indented_unclassified_documents
+    )
+    if not any(
+        "unexpected Policy section boundary" in message
+        for message in indented_unclassified_errors
+    ):
+        error(
+            "Chapter 2 Policy adapter accepted an indented unclassified ATX "
+            "boundary"
+        )
 
     unclassified_setext_template = replace_once(
         template,
