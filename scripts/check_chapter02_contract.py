@@ -178,6 +178,10 @@ CHAPTER02_ESCAPED_PAREN_LINK_DESTINATION = re.compile(
 CHAPTER02_BACKTICK_LINK_DESTINATION = re.compile(
     r"(?<!\\)!?\[[^\]\r\n]*\]\([^\r\n)]*`[^\r\n)]*\)"
 )
+CHAPTER02_SIMPLE_INLINE_LINK = re.compile(
+    r"(?<!\\)!?\[[^\]\r\n]+\]"
+    r"\((?P<destination><[^>\r\n]*>|[^\s\r\n)]*)\)"
+)
 CHAPTER02_SPECIAL_URL = re.compile(
     r"(?:(?:https?:)?[\\/]{2})[^<>\x00-\x20]+",
     re.IGNORECASE,
@@ -677,6 +681,27 @@ def _has_escaped_inline_link_opener(value: str) -> bool:
         if _markdown_character_is_escaped(value, match.start()):
             return True
     return False
+
+
+def _link_destination_parenthesis_risks(value: str) -> tuple[bool, bool]:
+    """Return angle-literal and decode-introduced parenthesis risks."""
+
+    angle_literal = False
+    decoded = False
+    for match in CHAPTER02_SIMPLE_INLINE_LINK.finditer(value):
+        destination = match.group("destination")
+        body = (
+            destination[1:-1]
+            if destination.startswith("<") and destination.endswith(">")
+            else destination
+        )
+        has_source_parenthesis = "(" in body or ")" in body
+        if destination.startswith("<") and has_source_parenthesis:
+            angle_literal = True
+        normalized = unicodedata.normalize("NFKC", html.unescape(body))
+        if not has_source_parenthesis and ("(" in normalized or ")" in normalized):
+            decoded = True
+    return angle_literal, decoded
 
 
 def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
@@ -1528,6 +1553,19 @@ def chapter02_policy_findings(
                 f"{relative}: escaped Markdown link/image openers are unsupported "
                 "in the bounded Policy surface"
             )
+        angle_parenthesis, decoded_parenthesis = (
+            _link_destination_parenthesis_risks(render_guard_source)
+        )
+        if angle_parenthesis:
+            messages.append(
+                f"{relative}: parentheses in angle-bracket Markdown link/image "
+                "destinations are unsupported in the bounded Policy surface"
+            )
+        if decoded_parenthesis:
+            messages.append(
+                f"{relative}: decoded parentheses in Markdown link/image "
+                "destinations are unsupported in the bounded Policy surface"
+            )
         rendered_text = unicodedata.normalize(
             "NFKC",
             html.unescape(render_guard_source),
@@ -2258,6 +2296,14 @@ def verify_policy_adapter_regressions(
         (
             "第三者の[本](foo\\)bar)番システムへ接続する\n\n",
             "destinations with escaped parentheses are unsupported",
+        ),
+        (
+            "第三者の[本](<./foo)bar>)番システムへ接続する\n\n",
+            "parentheses in angle-bracket Markdown link/image destinations",
+        ),
+        (
+            "第三者の[本](foo&#41;bar)番システムへ接続する\n\n",
+            "decoded parentheses in Markdown link/image destinations",
         ),
         (
             "[x](foo`)<script>alert(1)</script>[y](bar`)\n\n",
