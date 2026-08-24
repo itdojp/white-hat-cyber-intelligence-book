@@ -79,6 +79,7 @@ CHAPTER02_POLICY_SECTIONS = {
 }
 CHAPTER02_POLICY_PREAMBLE_DOCUMENTS = frozenset(
     {
+        "manuscript/02-law-ethics-authorization.md",
         "templates/authorization-checklist.md",
         "cases/ch02-authorization-decision-example.md",
     }
@@ -121,7 +122,12 @@ CHAPTER02_REVIEWED_ACTION_CONTEXT = {
 # inherit this exemption.
 CHAPTER02_REVIEWED_HOST_CONTEXT = {
     "manuscript/02-law-ethics-authorization.md": frozenset(
-        {"- 対象: `billing-bridge.example`の合成Tenant"}
+        {
+            "- 詳細な攻撃技法と脆弱性の悪用は、許可済み評価の専門的な方法、成果物、安全境界を詳述する[実務で使えるペネトレーションテスト大全](https://itdojp.github.io/pentest-learning-book/)へ委譲する",
+            "- 認証・認可Protocol内部と安全な実装は、OAuth、OIDC、SAML等の設計と実装を詳述する[実践 認証認可システム設計](https://itdojp.github.io/practical-auth-book/)へ委譲する",
+            "- Infrastructure Hardeningと防御実装は、Network、OS、Cloud、ContainerのSecurity実装を詳述する[インフラエンジニアのための情報セキュリティ実装ガイド](https://itdojp.github.io/it-infra-security-guide-book/)へ委譲する",
+            "- 対象: `billing-bridge.example`の合成Tenant",
+        }
     ),
     "templates/authorization-checklist.md": frozenset(),
     "cases/ch02-authorization-decision-example.md": frozenset(
@@ -315,9 +321,10 @@ def chapter02_reader_visible_policy_fields(
 
     The adapter owns section and line selection.  Shared Policy 1.2.0 owns
     normalization, protected-action semantics, and host/address classification.
-    Public DELEGATE and Source URLs intentionally remain outside this synthetic
-    execution surface; their stability is enforced by the existing Chapter 2
-    publication/source contracts.
+    Reader-visible DELEGATE URLs remain in this surface.  The three canonical
+    publication links are exact reviewed host contexts; an edited line returns
+    to normal Policy scanning.  Source-note fields stay outside the contracted
+    sections and remain governed by the Chapter 2 publication/source contracts.
     """
 
     expected_headings = CHAPTER02_POLICY_SECTIONS.get(relative)
@@ -469,6 +476,41 @@ def verify_policy_adapter_regressions(
         error(message)
     for finding in canonical_findings:
         error(format_policy_finding(finding))
+
+    unsafe_manuscript_preamble_mutations = (
+        (
+            "introductory action",
+            replace_once(
+                chapter,
+                "- 誰が検証を承認できるか",
+                "- 第三者の本番APIへ接続する",
+                "Chapter 2 manuscript introductory action regression",
+            ),
+            "target.real_or_external",
+        ),
+        (
+            "leading host",
+            "https://example.com/runbook\n" + chapter,
+            "network.host_or_address",
+        ),
+    )
+    for surface, unsafe_manuscript_preamble, expected_category in (
+        unsafe_manuscript_preamble_mutations
+    ):
+        unsafe_manuscript_preamble_documents = dict(documents)
+        unsafe_manuscript_preamble_documents[
+            "manuscript/02-law-ethics-authorization.md"
+        ] = unsafe_manuscript_preamble
+        unsafe_manuscript_preamble_findings, _ = chapter02_policy_findings(
+            unsafe_manuscript_preamble_documents
+        )
+        if not any(
+            finding.category == expected_category
+            for finding in unsafe_manuscript_preamble_findings
+        ):
+            error(
+                f"Chapter 2 manuscript {surface} bypassed the Policy adapter"
+            )
 
     unsafe_case_preamble_mutations = (
         ("leading preamble", "https://example.com/runbook\n" + example),
@@ -755,11 +797,38 @@ def verify_policy_adapter_regressions(
     )
     selected_chapter_text = "\n".join(value for _, value in chapter_fields)
     for delegated_url in delegated_urls:
-        if delegated_url in selected_chapter_text:
+        if delegated_url not in selected_chapter_text:
             error(
-                "Chapter 2 Policy adapter incorrectly included a public DELEGATE "
-                f"destination in the synthetic host surface: {delegated_url}"
+                "Chapter 2 Policy adapter omitted a reviewed public DELEGATE "
+                f"destination from its reader-visible surface: {delegated_url}"
             )
+
+    delegated_line = next(
+        value
+        for value in CHAPTER02_REVIEWED_HOST_CONTEXT[
+            "manuscript/02-law-ethics-authorization.md"
+        ]
+        if "pentest-learning-book" in value
+    )
+    unsafe_delegate_chapter = replace_once(
+        chapter,
+        delegated_line,
+        delegated_line + "。追加参照: https://example.com/runbook",
+        "Chapter 2 DELEGATE host exemption regression",
+    )
+    unsafe_delegate_documents = dict(documents)
+    unsafe_delegate_documents[
+        "manuscript/02-law-ethics-authorization.md"
+    ] = unsafe_delegate_chapter
+    unsafe_delegate_findings, _ = chapter02_policy_findings(
+        unsafe_delegate_documents
+    )
+    if not any(
+        finding.category == "network.host_or_address"
+        and "non-approved host suffix" in finding.reason
+        for finding in unsafe_delegate_findings
+    ):
+        error("Chapter 2 public DELEGATE exemption survived a line mutation")
 
 
 def main() -> int:
