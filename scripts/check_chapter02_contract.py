@@ -146,6 +146,10 @@ CHAPTER02_EMPTY_INLINE_LINK = re.compile(r"(?<!\\)!?\[\]\(")
 CHAPTER02_EMPTY_LINK_DESTINATION = re.compile(
     r"(?<!\\)!?\[[^\]\r\n]+\]\([ \t\r\n]*\)"
 )
+CHAPTER02_BALANCED_PAREN_LINK_DESTINATION = re.compile(
+    r"(?<!\\)!?\[[^\]\r\n]+\]"
+    r"\([^\r\n)]*\([^\r\n)]*\)[^\r\n)]*\)"
+)
 CHAPTER02_SPECIAL_URL = re.compile(
     r"(?:(?:https?:)?[\\/]{2})[^<>\x00-\x20]+",
     re.IGNORECASE,
@@ -479,6 +483,77 @@ def _is_closing_fence(line: str, marker: str) -> bool:
     )
 
 
+def _applicable_list_content_column(
+    lines: list[str],
+    *,
+    index: int,
+    opening_column: int,
+) -> int | None:
+    """Resolve the nearest ancestor list containing a line at this column."""
+
+    list_item = re.compile(
+        r"^(?P<prefix>[ \t]*(?:[-+*]|\d+[.)])[ \t]+)"
+    )
+    columns: list[int] = []
+    cursor = index - 1
+    while cursor >= 0:
+        candidate = lines[cursor]
+        if not candidate.strip():
+            cursor -= 1
+            continue
+        owner = list_item.match(candidate)
+        if owner is not None:
+            prefix = owner.group("prefix")
+            if "\t" in prefix:
+                return None
+            columns.append(len(prefix))
+            cursor -= 1
+            continue
+        if candidate.startswith((" ", "\t")):
+            cursor -= 1
+            continue
+        break
+    return next(
+        (column for column in columns if opening_column >= column),
+        None,
+    )
+
+
+def _opening_fence_context(
+    lines: list[str],
+    index: int,
+) -> tuple[str, int] | None:
+    """Recognize root or list-relative fenced-code openers."""
+
+    line = lines[index]
+    marker = _opening_fence_marker(line)
+    if marker is not None:
+        return marker, 0
+    indentation = re.match(r"^[ \t]*", line).group(0)
+    if "\t" in indentation:
+        return None
+    opening_column = len(indentation)
+    container_column = _applicable_list_content_column(
+        lines,
+        index=index,
+        opening_column=opening_column,
+    )
+    if container_column is None:
+        return None
+    marker = _opening_fence_marker(line[container_column:])
+    return (marker, container_column) if marker is not None else None
+
+
+def _is_closing_fence_context(
+    line: str,
+    marker: str,
+    container_column: int,
+) -> bool:
+    if "\t" in line[:container_column]:
+        return False
+    return _is_closing_fence(line[container_column:], marker)
+
+
 def _literal_indented_code_line_indexes(lines: list[str]) -> set[int]:
     """Select finite root/list indented code using source-column thresholds."""
 
@@ -621,17 +696,22 @@ def _mask_markdown_block_code(text: str) -> str:
     indented_code_indexes = _literal_indented_code_line_indexes(source_lines)
     offset = 0
     fence_marker: str | None = None
+    fence_container_column = 0
     for line_index, line in enumerate(text.splitlines(keepends=True)):
         source_line = line.rstrip("\r\n")
         line_end = offset + len(line)
         if fence_marker is not None:
             mask(offset, line_end)
-            if _is_closing_fence(source_line, fence_marker):
+            if _is_closing_fence_context(
+                source_line,
+                fence_marker,
+                fence_container_column,
+            ):
                 fence_marker = None
         else:
-            opening_fence = _opening_fence_marker(source_line)
+            opening_fence = _opening_fence_context(source_lines, line_index)
             if opening_fence is not None:
-                fence_marker = opening_fence
+                fence_marker, fence_container_column = opening_fence
                 mask(offset, line_end)
             elif line_index in indented_code_indexes:
                 mask(offset, line_end)
@@ -670,11 +750,16 @@ def _literal_code_policy_fields(
     indented_indexes = _literal_indented_code_line_indexes(lines)
     fields: list[tuple[str, str]] = []
     fence_marker: str | None = None
+    fence_container_column = 0
     fence_start = 0
     fence_payload: list[str] = []
     for index, line in enumerate(lines):
         if fence_marker is not None:
-            if _is_closing_fence(line, fence_marker):
+            if _is_closing_fence_context(
+                line,
+                fence_marker,
+                fence_container_column,
+            ):
                 projected = _project_literal_code_for_policy(
                     "\n".join(fence_payload)
                 )
@@ -691,9 +776,9 @@ def _literal_code_policy_fields(
             else:
                 fence_payload.append(line)
             continue
-        opening_fence = _opening_fence_marker(line)
+        opening_fence = _opening_fence_context(lines, index)
         if opening_fence is not None:
-            fence_marker = opening_fence
+            fence_marker, fence_container_column = opening_fence
             fence_start = index
             fence_payload = []
             continue
@@ -775,6 +860,7 @@ def _reader_visible_policy_blocks(
     blocks: list[tuple[str, str]] = []
     pending: list[tuple[int, str]] = []
     fence_marker: str | None = None
+    fence_container_column = 0
     frontmatter_delimiters: set[int] = set()
     if start == 0 and lines and lines[0].strip() == "---":
         frontmatter_delimiters.add(0)
@@ -819,17 +905,21 @@ def _reader_visible_policy_blocks(
     for index in range(start, end):
         value = lines[index]
         if fence_marker is not None:
-            if _is_closing_fence(value, fence_marker):
+            if _is_closing_fence_context(
+                value,
+                fence_marker,
+                fence_container_column,
+            ):
                 flush(field_kind="fenced code")
                 fence_marker = None
             else:
                 # Blank source lines remain inside the same rendered code block.
                 pending.append((index, value))
             continue
-        opening_fence = _opening_fence_marker(value)
+        opening_fence = _opening_fence_context(lines, index)
         if opening_fence is not None:
             flush()
-            fence_marker = opening_fence
+            fence_marker, fence_container_column = opening_fence
             continue
         if not value.strip():
             flush()
@@ -887,14 +977,19 @@ def chapter02_reader_visible_policy_fields(
                 frontmatter_delimiters.add(index)
                 break
     fence_marker: str | None = None
+    fence_container_column = 0
     for index, line in enumerate(lines):
         if fence_marker is not None:
-            if _is_closing_fence(line, fence_marker):
+            if _is_closing_fence_context(
+                line,
+                fence_marker,
+                fence_container_column,
+            ):
                 fence_marker = None
             continue
-        opening_fence = _opening_fence_marker(line)
+        opening_fence = _opening_fence_context(lines, index)
         if opening_fence is not None:
-            fence_marker = opening_fence
+            fence_marker, fence_container_column = opening_fence
             continue
         match = re.fullmatch(r" {0,3}(#{1,6})[ \t]+(.+?)[ \t]*", line)
         if match:
@@ -1322,6 +1417,11 @@ def chapter02_policy_findings(
             messages.append(
                 f"{relative}: Markdown links/images with an empty destination "
                 "are unsupported in the bounded Policy surface"
+            )
+        if CHAPTER02_BALANCED_PAREN_LINK_DESTINATION.search(render_guard_source):
+            messages.append(
+                f"{relative}: Markdown link/image destinations with balanced "
+                "parentheses are unsupported in the bounded Policy surface"
             )
         rendered_text = unicodedata.normalize(
             "NFKC",
@@ -1880,6 +1980,10 @@ def verify_policy_adapter_regressions(
 
     literal_code_examples = (
         "```html\n<div>safe example</div>\n```\n\n",
+        (
+            "- example\n\n    ~~~html\n"
+            "    <div>safe example</div>\n    ~~~\n\n"
+        ),
         "    <div>safe example</div>\n\n",
         "- safe\n\n      <div>safe example</div>\n\n",
         "`<div>safe example</div>`\n\n",
@@ -2036,6 +2140,10 @@ def verify_policy_adapter_regressions(
         (
             "実Credentialを取[得]()する\n\n",
             "Markdown links/images with an empty destination are unsupported",
+        ),
+        (
+            "第三者の[本](foo(and)bar)番システムへ接続する\n\n",
+            "destinations with balanced parentheses are unsupported",
         ),
         (
             "[safe](javascript:alert(1))\n\n",
