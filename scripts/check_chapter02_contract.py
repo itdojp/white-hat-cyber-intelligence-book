@@ -297,6 +297,16 @@ def _reader_visible_policy_blocks(
         # soft wrap rendered as whitespace.  Project it to a space before Policy
         # scanning so an object/action pair cannot be split across source lines.
         visible_text = " ".join(value.strip() for _, value in pending)
+        # An HTML ``br`` is a reader-visible hard break inside the same field.
+        # Shared Policy treats block tags as clause boundaries, so project only
+        # this in-field line-break tag to whitespace before delegating.  This
+        # prevents an object/action pair from being split inside one table cell.
+        visible_text = re.sub(
+            r"</?br\b[^>]*>",
+            " ",
+            visible_text,
+            flags=re.IGNORECASE,
+        )
         blocks.append((f"{location_prefix} {line_label}", visible_text))
         pending.clear()
 
@@ -585,6 +595,28 @@ def verify_policy_adapter_regressions(
         finding.category == "secret.credential" for finding in soft_wrap_findings
     ):
         error("Chapter 2 Markdown soft wrap split a protected object from its action")
+
+    hard_break_anchor = "| Allowed methods |  |"
+    for hard_break in ("<br>", "<br/>", "<br />", '<BR class="wrap">'):
+        hard_break_template = replace_once(
+            template,
+            hard_break_anchor,
+            f"| Allowed methods | 実Credentialを{hard_break}取得する |",
+            f"Chapter 2 Markdown hard-break regression {hard_break}",
+        )
+        hard_break_documents = dict(documents)
+        hard_break_documents["templates/authorization-checklist.md"] = (
+            hard_break_template
+        )
+        hard_break_findings, _ = chapter02_policy_findings(hard_break_documents)
+        if not any(
+            finding.category == "secret.credential"
+            for finding in hard_break_findings
+        ):
+            error(
+                "Chapter 2 Markdown hard break split a protected object from "
+                f"its action: {hard_break!r}"
+            )
 
     unclassified_section_template = replace_once(
         template,
