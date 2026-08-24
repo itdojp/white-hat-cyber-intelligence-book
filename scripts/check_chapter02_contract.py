@@ -5,6 +5,7 @@ import html
 import json
 import re
 import sys
+import unicodedata
 from collections import Counter
 from copy import deepcopy
 from pathlib import Path
@@ -342,6 +343,35 @@ def _project_in_field_whitespace(value: str) -> str:
     return CHAPTER02_SAFE_BR_TAG.sub(" ", value)
 
 
+def _join_markdown_policy_lines(
+    pending: list[tuple[int, str]],
+    *,
+    field_kind: str | None,
+) -> str:
+    """Join source lines using their Markdown reader-visible boundaries."""
+
+    if field_kind == "fenced code":
+        return " ".join(value.strip() for _, value in pending)
+
+    visible_text = ""
+    for offset, (_, source_line) in enumerate(pending):
+        projected_line = source_line.strip()
+        separator = " "
+        if len(source_line) - len(source_line.rstrip(" ")) >= 2:
+            # Markdown's two-space hard break does not insert a text token
+            # between adjacent reader-visible characters.
+            separator = ""
+        elif projected_line.endswith("\\"):
+            # The terminal backslash is the alternative Markdown hard-break
+            # marker and is not part of the rendered text.
+            projected_line = projected_line[:-1]
+            separator = ""
+        visible_text += projected_line
+        if offset + 1 < len(pending):
+            visible_text += separator
+    return visible_text
+
+
 def _opening_fence_marker(line: str) -> str | None:
     match = re.fullmatch(r"[ ]{0,3}(?P<marker>`{3,}|~{3,}).*", line)
     return match.group("marker") if match is not None else None
@@ -393,7 +423,10 @@ def _reader_visible_policy_blocks(
         # A normal Markdown source newline inside one paragraph or list item is a
         # soft wrap rendered as whitespace.  Project it to a space before Policy
         # scanning so an object/action pair cannot be split across source lines.
-        visible_text = " ".join(value.strip() for _, value in pending)
+        visible_text = _join_markdown_policy_lines(
+            pending,
+            field_kind=field_kind,
+        )
         # An HTML ``br`` is a reader-visible hard break inside the same field.
         # Shared Policy treats block tags as clause boundaries, so project only
         # this in-field line-break tag to whitespace before delegating.  This
@@ -844,9 +877,10 @@ def chapter02_policy_findings(
                 f"{relative}: Markdown reference-link syntax is unsupported in "
                 "the bounded Policy surface"
             )
+        rendered_text = unicodedata.normalize("NFKC", html.unescape(text))
         if any(
             "\\" in match.group(0)
-            for match in CHAPTER02_HTTP_URL.finditer(text)
+            for match in CHAPTER02_HTTP_URL.finditer(rendered_text)
         ):
             messages.append(
                 f"{relative}: HTTP(S) URL containing backslash is unsupported "
@@ -855,7 +889,7 @@ def chapter02_policy_findings(
         executable_scheme_view = re.sub(
             r"[\t\r\n\f]",
             "",
-            html.unescape(text),
+            rendered_text,
         ).casefold()
         executable_prefixes = [
             prefix
@@ -1061,6 +1095,34 @@ def verify_policy_adapter_regressions(
         finding.category == "secret.credential" for finding in soft_wrap_findings
     ):
         error("Chapter 2 Markdown soft wrap split a protected object from its action")
+
+    for source_hard_break in ("  \n", "\\\n"):
+        hard_wrapped_template = replace_once(
+            template,
+            soft_wrap_anchor,
+            (
+                soft_wrap_anchor
+                + "\n\n実Credentialを取"
+                + source_hard_break
+                + "得する"
+            ),
+            "Chapter 2 Markdown source hard-break regression",
+        )
+        hard_wrapped_documents = dict(documents)
+        hard_wrapped_documents["templates/authorization-checklist.md"] = (
+            hard_wrapped_template
+        )
+        hard_wrapped_findings, _ = chapter02_policy_findings(
+            hard_wrapped_documents
+        )
+        if not any(
+            finding.category == "secret.credential"
+            for finding in hard_wrapped_findings
+        ):
+            error(
+                "Chapter 2 Markdown source hard break split a protected token: "
+                f"{source_hard_break!r}"
+            )
 
     hard_break_anchor = "| Allowed methods |  |"
     for hard_break in (
@@ -1351,6 +1413,10 @@ def verify_policy_adapter_regressions(
         ),
         (
             "[safe](https://example.com\\\\@lab.test/)\n\n",
+            "HTTP(S) URL containing backslash is unsupported",
+        ),
+        (
+            "[safe](https://example.com&#92;&#92;@lab.test/)\n\n",
             "HTTP(S) URL containing backslash is unsupported",
         ),
         (
