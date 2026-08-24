@@ -112,6 +112,7 @@ CHAPTER02_MARKDOWN_AUTOLINK = re.compile(
 )
 CHAPTER02_LIQUID_CONSTRUCT = re.compile(r"{{|{%")
 CHAPTER02_DEFINITION_ITEM = re.compile(r"(?m)^[ \t]*:[ \t]+\S")
+CHAPTER02_BLOCKQUOTE = re.compile(r"^ {0,3}>", re.MULTILINE)
 CHAPTER02_KRAMDOWN_IAL = re.compile(r"(?<!\\)\{:")
 CHAPTER02_FOOTNOTE = re.compile(r"\[\^[^\]\r\n]+\]")
 CHAPTER02_ABBREVIATION_DEFINITION = re.compile(
@@ -425,6 +426,76 @@ def _is_closing_fence(line: str, marker: str) -> bool:
     )
 
 
+def _literal_indented_code_line_indexes(lines: list[str]) -> set[int]:
+    """Select finite root/list indented code using source-column thresholds."""
+
+    indexes: set[int] = set()
+    list_item = re.compile(
+        r"^(?P<prefix>[ \t]*(?:[-+*]|\d+[.)])[ \t]+)"
+    )
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        if not re.match(r"(?: {4}|\t)", line):
+            index += 1
+            continue
+        # Pinned Kramdown does not let an indented code block interrupt an
+        # active paragraph.  Require a document/block boundary for its opener.
+        if index > 0 and lines[index - 1].strip():
+            index += 1
+            continue
+
+        owner_prefix: str | None = None
+        cursor = index - 1
+        while cursor >= 0:
+            candidate = lines[cursor]
+            if not candidate.strip():
+                cursor -= 1
+                continue
+            owner = list_item.match(candidate)
+            if owner is not None:
+                owner_prefix = owner.group("prefix")
+                break
+            if candidate.startswith((" ", "\t")):
+                cursor -= 1
+                continue
+            break
+
+        opening_indent = re.match(r"^[ \t]*", line).group(0)
+        opening_column = _markdown_indent_width(opening_indent)
+        required_column = 4
+        if owner_prefix is not None:
+            # Ambiguous tabbed list ownership fails closed as rendered list
+            # content rather than being hidden from render-time guards.
+            if "\t" in owner_prefix or "\t" in opening_indent:
+                index += 1
+                continue
+            content_column = len(owner_prefix.expandtabs(4))
+            if opening_column < content_column:
+                required_column = 4
+            else:
+                required_column = content_column + 4
+            if opening_column < required_column:
+                index += 1
+                continue
+
+        cursor = index
+        while cursor < len(lines):
+            candidate = lines[cursor]
+            if not candidate.strip():
+                cursor += 1
+                continue
+            indentation = re.match(r"^[ \t]*", candidate).group(0)
+            if "\t" in indentation and owner_prefix is not None:
+                break
+            if _markdown_indent_width(indentation) < required_column:
+                break
+            indexes.add(cursor)
+            cursor += 1
+        index = max(index + 1, cursor)
+    return indexes
+
+
 def _mask_markdown_literal_code(text: str) -> str:
     """Mask code syntax for render guards while preserving line offsets."""
 
@@ -435,9 +506,11 @@ def _mask_markdown_literal_code(text: str) -> str:
             if masked[position] not in "\r\n":
                 masked[position] = " "
 
+    source_lines = text.splitlines()
+    indented_code_indexes = _literal_indented_code_line_indexes(source_lines)
     offset = 0
     fence_marker: str | None = None
-    for line in text.splitlines(keepends=True):
+    for line_index, line in enumerate(text.splitlines(keepends=True)):
         source_line = line.rstrip("\r\n")
         line_end = offset + len(line)
         if fence_marker is not None:
@@ -449,7 +522,7 @@ def _mask_markdown_literal_code(text: str) -> str:
             if opening_fence is not None:
                 fence_marker = opening_fence
                 mask(offset, line_end)
-            elif re.match(r"(?: {4}|\t)", source_line):
+            elif line_index in indented_code_indexes:
                 mask(offset, line_end)
         offset = line_end
 
@@ -589,6 +662,13 @@ def chapter02_reader_visible_policy_fields(
 
     lines = text.splitlines()
     headings: list[tuple[int, int, str]] = []
+    frontmatter_delimiters: set[int] = set()
+    if lines and lines[0].strip() == "---":
+        frontmatter_delimiters.add(0)
+        for index in range(1, len(lines)):
+            if lines[index].strip() in {"---", "..."}:
+                frontmatter_delimiters.add(index)
+                break
     fence_marker: str | None = None
     for index, line in enumerate(lines):
         if fence_marker is not None:
@@ -602,6 +682,18 @@ def chapter02_reader_visible_policy_fields(
         match = re.fullmatch(r"(#{1,6})\s+(.+?)\s*", line)
         if match:
             headings.append((index, len(match.group(1)), line.rstrip()))
+            continue
+        setext = re.fullmatch(r" {0,3}(=+|-+)[ \t]*", line)
+        if (
+            setext is not None
+            and index not in frontmatter_delimiters
+            and index > 0
+            and lines[index - 1].strip()
+            and not _is_markdown_policy_block_start(lines[index - 1])
+        ):
+            level = 1 if setext.group(1).startswith("=") else 2
+            title = lines[index - 1].strip()
+            headings.append((index - 1, level, f"{'#' * level} {title}"))
 
     fields: list[tuple[str, str]] = []
     messages: list[str] = []
@@ -952,6 +1044,11 @@ def chapter02_policy_findings(
             messages.append(
                 f"{relative}: Kramdown definition-list syntax is unsupported in "
                 "the bounded Policy surface"
+            )
+        if CHAPTER02_BLOCKQUOTE.search(render_guard_source):
+            messages.append(
+                f"{relative}: Markdown blockquote syntax is unsupported in the "
+                "bounded Policy surface"
             )
         if CHAPTER02_KRAMDOWN_IAL.search(render_guard_source):
             messages.append(
@@ -1313,13 +1410,23 @@ def verify_policy_adapter_regressions(
         heading_association_documents[
             "templates/authorization-checklist.md"
         ] = heading_association_template
-        heading_association_findings, _ = chapter02_policy_findings(
-            heading_association_documents
+        heading_association_findings, heading_association_messages = (
+            chapter02_policy_findings(
+                heading_association_documents
+            )
         )
-        if not any(
+        expected_finding = any(
             finding.category == expected_category
             for finding in heading_association_findings
-        ):
+        )
+        rejected_setext_boundary = "\n---" in unsafe_heading_association or (
+            "\n===" in unsafe_heading_association
+        )
+        rejected_setext_boundary = rejected_setext_boundary and any(
+            "unexpected Policy section boundary" in message
+            for message in heading_association_messages
+        )
+        if not expected_finding and not rejected_setext_boundary:
             error(
                 "Chapter 2 Markdown heading split a protected object from its "
                 f"associated action: {unsafe_heading_association!r}"
@@ -1408,6 +1515,7 @@ def verify_policy_adapter_regressions(
             "<details><summary>実Credentialを</summary>\n\n"
             "取得する\n\n</details>\n\n"
         ),
+        "- safe\n\n    <script>alert(1)</script>\n\n",
         "<javascript:alert(document.domain)>\n\n",
         '<br onmouseover="alert(document.domain)">\n\n',
     )
@@ -1478,6 +1586,7 @@ def verify_policy_adapter_regressions(
     literal_code_examples = (
         "```html\n<div>safe example</div>\n```\n\n",
         "    <div>safe example</div>\n\n",
+        "- safe\n\n      <div>safe example</div>\n\n",
         "`<div>safe example</div>`\n\n",
     )
     for literal_code_example in literal_code_examples:
@@ -1569,6 +1678,10 @@ def verify_policy_adapter_regressions(
         (
             "実Credentialを\n: 取得する\n\n",
             "Kramdown definition-list syntax is unsupported",
+        ),
+        (
+            "> 実Credentialを\n>\n> 取得する\n\n",
+            "Markdown blockquote syntax is unsupported",
         ),
         (
             '[safe](#){: href="javascript:alert(1)" }\n\n',
@@ -1684,6 +1797,28 @@ def verify_policy_adapter_regressions(
     _, unclassified_errors = chapter02_policy_findings(unclassified_documents)
     if not any("unexpected Policy section boundary" in message for message in unclassified_errors):
         error("Chapter 2 Policy adapter accepted an unclassified section boundary")
+
+    unclassified_setext_template = replace_once(
+        template,
+        "## 3. Scope Gate",
+        "Unclassified operational section\n---\n\n"
+        "第三者の本番APIへ接続する\n\n## 3. Scope Gate",
+        "Chapter 2 unclassified Setext section regression",
+    )
+    unclassified_setext_documents = dict(documents)
+    unclassified_setext_documents["templates/authorization-checklist.md"] = (
+        unclassified_setext_template
+    )
+    _, unclassified_setext_errors = chapter02_policy_findings(
+        unclassified_setext_documents
+    )
+    if not any(
+        "unexpected Policy section boundary" in message
+        for message in unclassified_setext_errors
+    ):
+        error(
+            "Chapter 2 Policy adapter accepted an unclassified Setext boundary"
+        )
 
     trailing_section_template = template + (
         "\n## Unclassified trailing operational section\n\n"
