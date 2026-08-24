@@ -102,6 +102,8 @@ CHAPTER02_RAW_HTML_TAG = re.compile(
     r"</?(?P<tag>[A-Z][A-Z0-9:-]*)\b[^>]*>",
     re.IGNORECASE,
 )
+CHAPTER02_SAFE_BR_TAG = re.compile(r"<br\s*/?>", re.IGNORECASE)
+CHAPTER02_HTML_COMMENT_DELIMITER = re.compile(r"<!--")
 CHAPTER02_MARKDOWN_AUTOLINK = re.compile(
     r"<(?:(?:https?://|mailto:)[^<>\x00-\x20]*|"
     r"[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,})>",
@@ -331,12 +333,7 @@ def _project_in_field_whitespace(value: str) -> str:
     """Project rendered in-field whitespace to Policy-safe spaces."""
 
     value = re.sub(r"[\t\r\n\f\v]+", " ", html.unescape(value))
-    return re.sub(
-        r"</?br\b[^>]*>",
-        " ",
-        value,
-        flags=re.IGNORECASE,
-    )
+    return CHAPTER02_SAFE_BR_TAG.sub(" ", value)
 
 
 def _opening_fence_marker(line: str) -> str | None:
@@ -801,18 +798,24 @@ def chapter02_policy_findings(
             {
                 match.group("tag").casefold()
                 for match in CHAPTER02_RAW_HTML_TAG.finditer(raw_html_source)
-                if match.group("tag").casefold() != "br"
+                if CHAPTER02_SAFE_BR_TAG.fullmatch(match.group(0)) is None
             }
         )
         if raw_html_tags:
             messages.append(
-                f"{relative}: raw HTML other than br is unsupported in the "
+                f"{relative}: raw HTML other than attribute-free br is "
+                "unsupported in the "
                 "bounded Policy surface; use equivalent Markdown: "
                 f"{raw_html_tags!r}"
             )
         if CHAPTER02_LIQUID_CONSTRUCT.search(text):
             messages.append(
                 f"{relative}: interpreted Liquid is unsupported in the bounded "
+                "Policy surface"
+            )
+        if CHAPTER02_HTML_COMMENT_DELIMITER.search(text):
+            messages.append(
+                f"{relative}: HTML comments are unsupported in the bounded "
                 "Policy surface"
             )
         if CHAPTER02_DEFINITION_ITEM.search(text):
@@ -1045,7 +1048,7 @@ def verify_policy_adapter_regressions(
         "<br>",
         "<br/>",
         "<br />",
-        '<BR class="wrap">',
+        "<BR>",
         "&#10;",
         "&#x0A;",
         "&NewLine;",
@@ -1197,6 +1200,7 @@ def verify_policy_adapter_regressions(
             "取得する\n\n</details>\n\n"
         ),
         "<javascript:alert(document.domain)>\n\n",
+        '<br onmouseover="alert(document.domain)">\n\n',
     )
     for unsafe_raw_html_structure in unsafe_raw_html_structures:
         raw_html_template = replace_once(
@@ -1211,7 +1215,7 @@ def verify_policy_adapter_regressions(
         )
         _, raw_html_messages = chapter02_policy_findings(raw_html_documents)
         if not any(
-            "raw HTML other than br is unsupported" in message
+            "raw HTML other than attribute-free br is unsupported" in message
             for message in raw_html_messages
         ):
             error(
@@ -1321,6 +1325,10 @@ def verify_policy_adapter_regressions(
         (
             "[safe](data:text/html,<script>alert(1)</script>)\n\n",
             "executable URL scheme is unsupported",
+        ),
+        (
+            "実Credentialを取<!--\n- hidden\n-->得する\n\n",
+            "HTML comments are unsupported",
         ),
     )
     for unsupported_construct, expected_message in unsupported_render_constructs:
