@@ -573,8 +573,8 @@ def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
     return spans
 
 
-def _mask_markdown_literal_code(text: str) -> str:
-    """Mask code syntax for render guards while preserving line offsets."""
+def _mask_markdown_block_code(text: str) -> str:
+    """Mask fenced/indented code while preserving inline code and offsets."""
 
     masked = list(text)
 
@@ -603,9 +603,18 @@ def _mask_markdown_literal_code(text: str) -> str:
                 mask(offset, line_end)
         offset = line_end
 
-    block_masked = "".join(masked)
+    return "".join(masked)
+
+
+def _mask_markdown_literal_code(text: str) -> str:
+    """Mask all code syntax for render guards while preserving line offsets."""
+
+    block_masked = _mask_markdown_block_code(text)
+    masked = list(block_masked)
     for start, end, _ in _inline_code_spans(block_masked):
-        mask(start, end)
+        for position in range(start, end):
+            if masked[position] not in "\r\n":
+                masked[position] = " "
     return "".join(masked)
 
 
@@ -661,19 +670,6 @@ def _literal_code_policy_fields(
                     (f"{relative} literal indented code line {index + 1}", projected)
                 )
             continue
-        for occurrence, (_, _, body) in enumerate(
-            _inline_code_spans(line),
-            start=1,
-        ):
-            projected = _project_literal_code_for_policy(body)
-            if projected.strip():
-                fields.append(
-                    (
-                        f"{relative} literal inline code line {index + 1} "
-                        f"occurrence {occurrence}",
-                        projected,
-                    )
-                )
     if fence_marker is not None and fence_payload:
         projected = _project_literal_code_for_policy("\n".join(fence_payload))
         if projected.strip():
@@ -681,6 +677,21 @@ def _literal_code_policy_fields(
                 (
                     f"{relative} literal unclosed fenced code from line "
                     f"{fence_start + 1}",
+                    projected,
+                )
+            )
+    block_masked = _mask_markdown_block_code(text)
+    for occurrence, (start, _, body) in enumerate(
+        _inline_code_spans(block_masked),
+        start=1,
+    ):
+        projected = _project_literal_code_for_policy(body)
+        if projected.strip():
+            line = block_masked.count("\n", 0, start) + 1
+            fields.append(
+                (
+                    f"{relative} literal inline code from line {line} "
+                    f"occurrence {occurrence}",
                     projected,
                 )
             )
@@ -1081,7 +1092,12 @@ def _nested_list_action_fields(
             if not line.strip():
                 flush_terminal_continuation()
                 continue
-            if _markdown_indent_width(line) <= stack[-1][0]:
+            indentation = _markdown_indent_width(line)
+            if indentation <= stack[-1][0]:
+                flush_terminal_continuation()
+                while stack and indentation <= stack[-1][0]:
+                    stack.pop()
+            if not stack:
                 break
             paragraph.append(line)
         flush_terminal_continuation()
@@ -1664,6 +1680,25 @@ def verify_policy_adapter_regressions(
                 f"its associated action: {unsafe_nested_list!r}"
             )
 
+    terminal_dedented_template = template + (
+        "\n- 実Credentialを\n  - safe\n\n  取得する\n"
+    )
+    terminal_dedented_documents = dict(documents)
+    terminal_dedented_documents["templates/authorization-checklist.md"] = (
+        terminal_dedented_template
+    )
+    terminal_dedented_findings, _ = chapter02_policy_findings(
+        terminal_dedented_documents
+    )
+    if not any(
+        finding.category == "secret.credential"
+        for finding in terminal_dedented_findings
+    ):
+        error(
+            "Chapter 2 terminal list continuation did not resolve its outer "
+            "ancestor"
+        )
+
     unsafe_header_tables = (
         "| 実Credentialを |\n|---|\n| 取得する |\n\n",
         (
@@ -2032,6 +2067,26 @@ def verify_policy_adapter_regressions(
                 "Chapter 2 adapter discarded reader-visible literal text: "
                 f"{literal_projection!r}"
             )
+
+    multiline_inline_code = "`実Credentialを\n\n取得する`\n\n"
+    multiline_inline_template = replace_once(
+        template,
+        heading_association_anchor,
+        multiline_inline_code + heading_association_anchor,
+        "Chapter 2 multiline inline-code projection regression",
+    )
+    multiline_inline_documents = dict(documents)
+    multiline_inline_documents["templates/authorization-checklist.md"] = (
+        multiline_inline_template
+    )
+    multiline_inline_findings, _ = chapter02_policy_findings(
+        multiline_inline_documents
+    )
+    if not any(
+        finding.category == "secret.credential"
+        for finding in multiline_inline_findings
+    ):
+        error("Chapter 2 adapter split a multiline inline-code payload")
 
     unclassified_section_template = replace_once(
         template,
