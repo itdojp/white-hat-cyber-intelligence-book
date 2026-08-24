@@ -110,6 +110,14 @@ CHAPTER02_MARKDOWN_AUTOLINK = re.compile(
 CHAPTER02_LIQUID_CONSTRUCT = re.compile(r"{{|{%")
 CHAPTER02_DEFINITION_ITEM = re.compile(r"(?m)^[ \t]*:[ \t]+\S")
 CHAPTER02_KRAMDOWN_IAL = re.compile(r"(?<!\\)\{:")
+CHAPTER02_FOOTNOTE = re.compile(r"\[\^[^\]\r\n]+\]")
+CHAPTER02_EXECUTABLE_URL_PREFIXES = (
+    "javascript:",
+    "vbscript:",
+    "data:text/html",
+    "data:application/xhtml+xml",
+    "data:image/svg+xml",
+)
 
 # These exact lines are reviewed non-operative context: an uncertainty, question,
 # prohibition, or reject/return boundary.  Scanning the fragments without their
@@ -331,6 +339,20 @@ def _project_in_field_whitespace(value: str) -> str:
     )
 
 
+def _opening_fence_marker(line: str) -> str | None:
+    match = re.fullmatch(r"[ ]{0,3}(?P<marker>`{3,}|~{3,}).*", line)
+    return match.group("marker") if match is not None else None
+
+
+def _is_closing_fence(line: str, marker: str) -> bool:
+    match = re.fullmatch(r"[ ]{0,3}([`~]+)[ \t]*", line)
+    return bool(
+        match is not None
+        and match.group(1)[0] == marker[0]
+        and len(match.group(1)) >= len(marker)
+    )
+
+
 def _reader_visible_policy_blocks(
     lines: list[str],
     *,
@@ -351,7 +373,11 @@ def _reader_visible_policy_blocks(
                 frontmatter_delimiters.add(index)
                 break
 
-    def flush(*, heading_level: int | None = None) -> None:
+    def flush(
+        *,
+        heading_level: int | None = None,
+        field_kind: str | None = None,
+    ) -> None:
         if not pending:
             return
         start_line = pending[0][0] + 1
@@ -372,31 +398,24 @@ def _reader_visible_policy_blocks(
         visible_text = _project_in_field_whitespace(visible_text)
         if heading_level is not None:
             visible_text = f"{'#' * heading_level} {visible_text}"
-        blocks.append((f"{location_prefix} {line_label}", visible_text))
+        kind_label = f" {field_kind}" if field_kind is not None else ""
+        blocks.append((f"{location_prefix}{kind_label} {line_label}", visible_text))
         pending.clear()
 
     for index in range(start, end):
         value = lines[index]
         if fence_marker is not None:
-            closing_fence = re.fullmatch(r"[ ]{0,3}([`~]+)[ \t]*", value)
-            if (
-                closing_fence is not None
-                and closing_fence.group(1)[0] == fence_marker[0]
-                and len(closing_fence.group(1)) >= len(fence_marker)
-            ):
-                flush()
+            if _is_closing_fence(value, fence_marker):
+                flush(field_kind="fenced code")
                 fence_marker = None
             else:
                 # Blank source lines remain inside the same rendered code block.
                 pending.append((index, value))
             continue
-        opening_fence = re.fullmatch(
-            r"[ ]{0,3}(?P<marker>`{3,}|~{3,}).*",
-            value,
-        )
+        opening_fence = _opening_fence_marker(value)
         if opening_fence is not None:
             flush()
-            fence_marker = opening_fence.group("marker")
+            fence_marker = opening_fence
             continue
         if not value.strip():
             flush()
@@ -421,7 +440,7 @@ def _reader_visible_policy_blocks(
                 flush()
             continue
         pending.append((index, value))
-    flush()
+    flush(field_kind="fenced code" if fence_marker is not None else None)
     return blocks
 
 
@@ -446,7 +465,16 @@ def chapter02_reader_visible_policy_fields(
 
     lines = text.splitlines()
     headings: list[tuple[int, int, str]] = []
+    fence_marker: str | None = None
     for index, line in enumerate(lines):
+        if fence_marker is not None:
+            if _is_closing_fence(line, fence_marker):
+                fence_marker = None
+            continue
+        opening_fence = _opening_fence_marker(line)
+        if opening_fence is not None:
+            fence_marker = opening_fence
+            continue
         match = re.fullmatch(r"(#{1,6})\s+(.+?)\s*", line)
         if match:
             headings.append((index, len(match.group(1)), line.rstrip()))
@@ -521,7 +549,11 @@ def _heading_associated_action_fields(
     heading_stack: list[tuple[int, str]] = []
     associated: list[tuple[str, str, str]] = []
     for location, value in fields:
-        match = re.match(r"^(#{1,6})\s+", value)
+        match = (
+            None
+            if " fenced code " in location
+            else re.match(r"^(#{1,6})\s+", value)
+        )
         if match:
             level = len(match.group(1))
             heading_stack = [
@@ -792,6 +824,26 @@ def chapter02_policy_findings(
             messages.append(
                 f"{relative}: Kramdown IAL syntax is unsupported in the bounded "
                 "Policy surface"
+            )
+        if CHAPTER02_FOOTNOTE.search(text):
+            messages.append(
+                f"{relative}: Kramdown footnote syntax is unsupported in the "
+                "bounded Policy surface"
+            )
+        executable_scheme_view = re.sub(
+            r"[\t\r\n\f]",
+            "",
+            html.unescape(text),
+        ).casefold()
+        executable_prefixes = [
+            prefix
+            for prefix in CHAPTER02_EXECUTABLE_URL_PREFIXES
+            if prefix in executable_scheme_view
+        ]
+        if executable_prefixes:
+            messages.append(
+                f"{relative}: executable URL scheme is unsupported in the "
+                f"bounded Policy surface: {executable_prefixes!r}"
             )
         fields, selection_errors = chapter02_reader_visible_policy_fields(relative, text)
         messages.extend(selection_errors)
@@ -1190,6 +1242,26 @@ def verify_policy_adapter_regressions(
                 f"{unsafe_fenced_block!r}"
             )
 
+    safe_fenced_heading = "```markdown\n## Example\n\nSafe text.\n```\n\n"
+    safe_fenced_heading_template = replace_once(
+        template,
+        heading_association_anchor,
+        safe_fenced_heading + heading_association_anchor,
+        "Chapter 2 fenced-heading boundary regression",
+    )
+    safe_fenced_heading_documents = dict(documents)
+    safe_fenced_heading_documents[
+        "templates/authorization-checklist.md"
+    ] = safe_fenced_heading_template
+    _, safe_fenced_heading_messages = chapter02_policy_findings(
+        safe_fenced_heading_documents
+    )
+    if any(
+        "unexpected Policy section boundary" in message
+        for message in safe_fenced_heading_messages
+    ):
+        error("Chapter 2 treated a fenced-code heading as a section boundary")
+
     unsafe_indented_blocks = (
         "    実Credentialを\n\n    取得する\n\n",
         "\t実Credentialを\n\n\t取得する\n\n",
@@ -1232,6 +1304,23 @@ def verify_policy_adapter_regressions(
         (
             '[safe](#){: href="javascript:alert(1)" }\n\n',
             "Kramdown IAL syntax is unsupported",
+        ),
+        (
+            "実Credentialを[^x]\n\n[^x]: 取得する\n\n",
+            "Kramdown footnote syntax is unsupported",
+        ),
+        (
+            "[safe](javascript:alert(1))\n\n",
+            "executable URL scheme is unsupported",
+        ),
+        (
+            "[safe][unsafe-ref]\n\n"
+            "[unsafe-ref]: vbscript:msgbox(1)\n\n",
+            "executable URL scheme is unsupported",
+        ),
+        (
+            "[safe](data:text/html,<script>alert(1)</script>)\n\n",
+            "executable URL scheme is unsupported",
         ),
     )
     for unsupported_construct, expected_message in unsupported_render_constructs:
