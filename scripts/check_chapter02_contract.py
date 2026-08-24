@@ -183,6 +183,11 @@ CHAPTER02_ESCAPED_PAREN_LINK_DESTINATION = re.compile(
 CHAPTER02_BACKTICK_LINK_DESTINATION = re.compile(
     r"(?<!\\)!?\[[^\]\r\n]*\]\([^\r\n)]*`[^\r\n)]*\)"
 )
+CHAPTER02_MARKDOWN_PUNCTUATION_ESCAPE = re.compile(r"\\([!-/:-@\[-`{-~])")
+CHAPTER02_ESCAPED_PUNCTUATION_LINK_DESTINATION = re.compile(
+    r"(?<!\\)!?\[[^\]\r\n]+\]\("
+    r"(?:<[^>\r\n]*|[^\r\n)]*)\\[!-/:-@\[-`{-~]"
+)
 CHAPTER02_SIMPLE_INLINE_LINK = re.compile(
     r"(?<!\\)!?\[[^\]\r\n]+\]"
     r"\((?P<destination><[^>\r\n]*>|[^\s\r\n)]*)\)"
@@ -1602,6 +1607,13 @@ def chapter02_policy_findings(
                 f"{relative}: backticks in Markdown link/image destinations are "
                 "unsupported in the bounded Policy surface"
             )
+        if CHAPTER02_ESCAPED_PUNCTUATION_LINK_DESTINATION.search(
+            render_guard_source
+        ):
+            messages.append(
+                f"{relative}: Markdown punctuation escapes in link/image "
+                "destinations are unsupported in the bounded Policy surface"
+            )
         if _has_escaped_inline_link_opener(render_guard_source):
             messages.append(
                 f"{relative}: escaped Markdown link/image openers are unsupported "
@@ -1624,6 +1636,10 @@ def chapter02_policy_findings(
             "NFKC",
             html.unescape(render_guard_source),
         )
+        markdown_rendered_text = CHAPTER02_MARKDOWN_PUNCTUATION_ESCAPE.sub(
+            r"\1",
+            rendered_text,
+        )
         if any(
             "\\" in match.group(0)
             for match in CHAPTER02_SPECIAL_URL.finditer(rendered_text)
@@ -1635,7 +1651,7 @@ def chapter02_policy_findings(
         executable_scheme_view = re.sub(
             r"[\t\r\n\f]",
             "",
-            rendered_text,
+            markdown_rendered_text,
         ).casefold()
         executable_prefixes = [
             prefix
@@ -2367,6 +2383,11 @@ def verify_policy_adapter_regressions(
         (
             "[x](foo`)<script>alert(1)</script>[y](bar`)\n\n",
             "backticks in Markdown link/image destinations are unsupported",
+        ),
+        (
+            "[safe](javascript\\:document.body.textContent='x')\n\n",
+            "Markdown punctuation escapes in link/image destinations are "
+            "unsupported",
         ),
         (
             "\\[safe](実Credentialを取得する)\n\n",
