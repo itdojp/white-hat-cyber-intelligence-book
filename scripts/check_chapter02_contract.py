@@ -108,6 +108,7 @@ CHAPTER02_MARKDOWN_AUTOLINK = re.compile(
 )
 CHAPTER02_LIQUID_CONSTRUCT = re.compile(r"{{|{%")
 CHAPTER02_DEFINITION_ITEM = re.compile(r"(?m)^[ \t]*:[ \t]+\S")
+CHAPTER02_KRAMDOWN_IAL = re.compile(r"(?<!\\)\{:")
 
 # These exact lines are reviewed non-operative context: an uncertainty, question,
 # prohibition, or reject/return boundary.  Scanning the fragments without their
@@ -539,6 +540,11 @@ _MARKDOWN_LIST_ITEM = re.compile(
 )
 
 
+def _markdown_indent_width(line: str) -> int:
+    prefix_length = len(line) - len(line.lstrip(" \t"))
+    return len(line[:prefix_length].expandtabs(4))
+
+
 def _nested_list_action_fields(
     relative: str,
     text: str,
@@ -570,23 +576,36 @@ def _nested_list_action_fields(
         indentation = len(match.group("indent").expandtabs(4))
         records.append((index, end, indentation, visible_value, raw_value))
 
-    stack: list[tuple[int, str]] = []
+    stack: list[tuple[int, list[str]]] = []
     associated: list[tuple[str, str, str]] = []
     previous_end = 0
     for start, end, indentation, value, raw_value in records:
-        if any(line.strip() for line in lines[previous_end:start]):
-            stack.clear()
         stack = [item for item in stack if item[0] < indentation]
-        if stack:
-            ancestor_context = " ".join(item for _, item in stack)
-            associated.append(
-                (
-                    f"{relative} nested list line {start + 1}",
-                    f"{ancestor_context} {value}",
-                    raw_value,
+        continuation_lines = [
+            line for line in lines[previous_end:start] if line.strip()
+        ]
+        if continuation_lines:
+            if not stack or any(
+                _markdown_indent_width(line) <= stack[-1][0]
+                for line in continuation_lines
+            ):
+                stack.clear()
+            else:
+                continuation_text = _project_in_field_hard_breaks(
+                    " ".join(line.strip() for line in continuation_lines)
                 )
-            )
-        stack.append((indentation, value))
+                stack[-1][1].append(continuation_text)
+        if stack:
+            for _, ancestor_contexts in stack:
+                for ancestor_context in ancestor_contexts:
+                    associated.append(
+                        (
+                            f"{relative} nested list line {start + 1}",
+                            f"{ancestor_context} {value}",
+                            raw_value,
+                        )
+                    )
+        stack.append((indentation, [value]))
         previous_end = end
     return associated
 
@@ -711,6 +730,11 @@ def chapter02_policy_findings(
             messages.append(
                 f"{relative}: Kramdown definition-list syntax is unsupported in "
                 "the bounded Policy surface"
+            )
+        if CHAPTER02_KRAMDOWN_IAL.search(text):
+            messages.append(
+                f"{relative}: Kramdown IAL syntax is unsupported in the bounded "
+                "Policy surface"
             )
         fields, selection_errors = chapter02_reader_visible_policy_fields(relative, text)
         messages.extend(selection_errors)
@@ -975,6 +999,14 @@ def verify_policy_adapter_regressions(
         "- 実Credentialを\n  - 取得する\n\n",
         "- 実Credentialを\n  - 前提\n    - 取得する\n\n",
         "1. 実Credentialを\n   1. 取得する\n\n",
+        (
+            "- 実Credentialを\n\n  前提を確認する。\n\n"
+            "  - 取得する\n\n"
+        ),
+        (
+            "- 前提\n\n  実Credentialを\n\n"
+            "  - 取得する\n\n"
+        ),
     )
     for unsafe_nested_list in unsafe_nested_lists:
         nested_list_template = replace_once(
@@ -1127,6 +1159,10 @@ def verify_policy_adapter_regressions(
         (
             "実Credentialを\n: 取得する\n\n",
             "Kramdown definition-list syntax is unsupported",
+        ),
+        (
+            '[safe](#){: href="javascript:alert(1)" }\n\n',
+            "Kramdown IAL syntax is unsupported",
         ),
     )
     for unsupported_construct, expected_message in unsupported_render_constructs:
