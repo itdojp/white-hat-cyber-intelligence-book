@@ -334,6 +334,7 @@ def _reader_visible_policy_blocks(
 
     blocks: list[tuple[str, str]] = []
     pending: list[tuple[int, str]] = []
+    fence_marker: str | None = None
     frontmatter_delimiters: set[int] = set()
     if start == 0 and lines and lines[0].strip() == "---":
         frontmatter_delimiters.add(0)
@@ -368,6 +369,27 @@ def _reader_visible_policy_blocks(
 
     for index in range(start, end):
         value = lines[index]
+        if fence_marker is not None:
+            closing_fence = re.fullmatch(r"[ ]{0,3}([`~]+)[ \t]*", value)
+            if (
+                closing_fence is not None
+                and closing_fence.group(1)[0] == fence_marker[0]
+                and len(closing_fence.group(1)) >= len(fence_marker)
+            ):
+                flush()
+                fence_marker = None
+            else:
+                # Blank source lines remain inside the same rendered code block.
+                pending.append((index, value))
+            continue
+        opening_fence = re.fullmatch(
+            r"[ ]{0,3}(?P<marker>`{3,}|~{3,}).*",
+            value,
+        )
+        if opening_fence is not None:
+            flush()
+            fence_marker = opening_fence.group("marker")
+            continue
         if not value.strip():
             flush()
             continue
@@ -992,6 +1014,29 @@ def verify_policy_adapter_regressions(
             error(
                 "Chapter 2 adapter accepted unsupported raw HTML: "
                 f"{unsafe_raw_html_structure!r}"
+            )
+
+    unsafe_fenced_blocks = (
+        "```text\n実Credentialを\n\n取得する\n```\n\n",
+        "~~~~text\n実Credentialを\n\n取得する\n~~~~\n\n",
+    )
+    for unsafe_fenced_block in unsafe_fenced_blocks:
+        fenced_template = replace_once(
+            template,
+            heading_association_anchor,
+            unsafe_fenced_block + heading_association_anchor,
+            "Chapter 2 fenced-code association regression",
+        )
+        fenced_documents = dict(documents)
+        fenced_documents["templates/authorization-checklist.md"] = fenced_template
+        fenced_findings, _ = chapter02_policy_findings(fenced_documents)
+        if not any(
+            finding.category == "secret.credential"
+            for finding in fenced_findings
+        ):
+            error(
+                "Chapter 2 fenced code split a protected object from its action: "
+                f"{unsafe_fenced_block!r}"
             )
 
     unsupported_render_constructs = (
