@@ -120,6 +120,10 @@ CHAPTER02_ABBREVIATION_DEFINITION = re.compile(
     re.MULTILINE,
 )
 CHAPTER02_KRAMDOWN_MATH = re.compile(r"(?<!\\)\$\$")
+CHAPTER02_UNDERSCORE_EMPHASIS = re.compile(
+    r"(?<![\w\\])(?P<delimiter>_{1,3})(?=\S)"
+    r"(?P<body>[^\r\n]*?\S)(?P=delimiter)(?!\w)"
+)
 CHAPTER02_REFERENCE_LINK = re.compile(
     r"\[[^\]\r\n]+\]\[[^\]\r\n]*\]|"
     r"^ {0,3}\[[^\]\r\n]+\]:",
@@ -138,6 +142,10 @@ CHAPTER02_SPECIAL_URL = re.compile(
     r"(?:(?:https?:)?[\\/]{2})[^<>\x00-\x20]+",
     re.IGNORECASE,
 )
+CHAPTER02_INLINE_CODE_SPAN = re.compile(
+    r"(?<!`)(?P<ticks>`+)(?!`)(?P<body>.*?)(?<!`)(?P=ticks)(?!`)"
+)
+CHAPTER02_ANGLE_TEXT = re.compile(r"<(?P<body>[^<>\r\n]+)>")
 CHAPTER02_EXECUTABLE_URL_PREFIXES = (
     "javascript:",
     "vbscript:",
@@ -544,6 +552,115 @@ def _mask_markdown_literal_code(text: str) -> str:
         block_masked = "".join(masked)
         search_start = closing.end()
     return "".join(masked)
+
+
+def _project_literal_code_for_policy(value: str) -> str:
+    """Preserve literal code text that Policy would otherwise treat as HTML."""
+
+    projected = re.sub(r"[\t\r\n\f\v]+", " ", value)
+    projected = projected.replace("<!--", "").replace("-->", "")
+    return projected.replace("<", " ").replace(">", " ")
+
+
+def _literal_code_policy_fields(
+    relative: str,
+    text: str,
+) -> list[tuple[str, str]]:
+    """Select reader-visible fenced, indented, and inline code payloads."""
+
+    lines = text.splitlines()
+    indented_indexes = _literal_indented_code_line_indexes(lines)
+    fields: list[tuple[str, str]] = []
+    fence_marker: str | None = None
+    fence_start = 0
+    fence_payload: list[str] = []
+    for index, line in enumerate(lines):
+        if fence_marker is not None:
+            if _is_closing_fence(line, fence_marker):
+                projected = _project_literal_code_for_policy(
+                    "\n".join(fence_payload)
+                )
+                if projected.strip():
+                    fields.append(
+                        (
+                            f"{relative} literal fenced code lines "
+                            f"{fence_start + 1}-{index + 1}",
+                            projected,
+                        )
+                    )
+                fence_marker = None
+                fence_payload = []
+            else:
+                fence_payload.append(line)
+            continue
+        opening_fence = _opening_fence_marker(line)
+        if opening_fence is not None:
+            fence_marker = opening_fence
+            fence_start = index
+            fence_payload = []
+            continue
+        if index in indented_indexes:
+            projected = _project_literal_code_for_policy(line.strip())
+            if projected.strip():
+                fields.append(
+                    (f"{relative} literal indented code line {index + 1}", projected)
+                )
+            continue
+        for occurrence, match in enumerate(
+            CHAPTER02_INLINE_CODE_SPAN.finditer(line),
+            start=1,
+        ):
+            projected = _project_literal_code_for_policy(match.group("body"))
+            if projected.strip():
+                fields.append(
+                    (
+                        f"{relative} literal inline code line {index + 1} "
+                        f"occurrence {occurrence}",
+                        projected,
+                    )
+                )
+    if fence_marker is not None and fence_payload:
+        projected = _project_literal_code_for_policy("\n".join(fence_payload))
+        if projected.strip():
+            fields.append(
+                (
+                    f"{relative} literal unclosed fenced code from line "
+                    f"{fence_start + 1}",
+                    projected,
+                )
+            )
+    return fields
+
+
+def _bare_angle_policy_fields(
+    relative: str,
+    render_guard_source: str,
+) -> list[tuple[str, str]]:
+    """Select non-tag angle bodies that pinned Kramdown renders literally."""
+
+    fields: list[tuple[str, str]] = []
+    for occurrence, match in enumerate(
+        CHAPTER02_ANGLE_TEXT.finditer(render_guard_source),
+        start=1,
+    ):
+        token = match.group(0)
+        if (
+            CHAPTER02_RAW_HTML_TAG.fullmatch(token) is not None
+            or CHAPTER02_SAFE_BR_TAG.fullmatch(token) is not None
+            or CHAPTER02_MARKDOWN_AUTOLINK.fullmatch(token) is not None
+            or token.startswith("<!--")
+        ):
+            continue
+        visible = unicodedata.normalize("NFKC", html.unescape(match.group("body")))
+        if visible.strip():
+            line = render_guard_source.count("\n", 0, match.start()) + 1
+            fields.append(
+                (
+                    f"{relative} bare-angle text line {line} occurrence {occurrence}",
+                    visible,
+                )
+            )
+    return fields
 
 
 def _reader_visible_policy_blocks(
@@ -1070,6 +1187,11 @@ def chapter02_policy_findings(
                 f"{relative}: Kramdown math syntax is unsupported in the "
                 "bounded Policy surface"
             )
+        if CHAPTER02_UNDERSCORE_EMPHASIS.search(render_guard_source):
+            messages.append(
+                f"{relative}: Markdown underscore-emphasis syntax is "
+                "unsupported in the bounded Policy surface"
+            )
         if CHAPTER02_REFERENCE_LINK.search(render_guard_source):
             messages.append(
                 f"{relative}: Markdown reference-link syntax is unsupported in "
@@ -1160,6 +1282,12 @@ def chapter02_policy_findings(
                 if body_value in CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]:
                     continue
                 findings.update(scan_action_text(value, location=location))
+        for location, value in (
+            _literal_code_policy_fields(relative, text)
+            + _bare_angle_policy_fields(relative, render_guard_source)
+        ):
+            findings.update(scan_action_text(value, location=location))
+            findings.update(scan_host_policy(value, location=location))
 
     return sorted(findings, key=_finding_sort_key), messages
 
@@ -1700,6 +1828,18 @@ def verify_policy_adapter_regressions(
             "Kramdown math syntax is unsupported",
         ),
         (
+            "第三者の _本番_ システムへ接続する\n\n",
+            "Markdown underscore-emphasis syntax is unsupported",
+        ),
+        (
+            "第三者の __本番__ システムへ接続する\n\n",
+            "Markdown underscore-emphasis syntax is unsupported",
+        ),
+        (
+            "第三者の ___本番___ システムへ接続する\n\n",
+            "Markdown underscore-emphasis syntax is unsupported",
+        ),
+        (
             "実Credentialを取[得][x]する\n\n[x]: #safe\n\n",
             "Markdown reference-link syntax is unsupported",
         ),
@@ -1781,6 +1921,34 @@ def verify_policy_adapter_regressions(
             error(
                 "Chapter 2 adapter accepted an unsupported rendered construct: "
                 f"{unsupported_construct!r}"
+            )
+
+    literal_projection_mutations = (
+        "`<!--第三者の本番システムへ接続する-->`\n\n",
+        "<第三者の本番システムへ接続する>\n\n",
+        "<&#31532;三者の本番システムへ接続する>\n\n",
+    )
+    for literal_projection in literal_projection_mutations:
+        literal_projection_template = replace_once(
+            template,
+            heading_association_anchor,
+            literal_projection + heading_association_anchor,
+            "Chapter 2 literal reader-visible projection regression",
+        )
+        literal_projection_documents = dict(documents)
+        literal_projection_documents["templates/authorization-checklist.md"] = (
+            literal_projection_template
+        )
+        literal_projection_findings, _ = chapter02_policy_findings(
+            literal_projection_documents
+        )
+        if not any(
+            finding.category == "target.real_or_external"
+            for finding in literal_projection_findings
+        ):
+            error(
+                "Chapter 2 adapter discarded reader-visible literal text: "
+                f"{literal_projection!r}"
             )
 
     unclassified_section_template = replace_once(
