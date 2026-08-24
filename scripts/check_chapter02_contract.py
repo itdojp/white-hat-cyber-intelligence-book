@@ -120,7 +120,12 @@ CHAPTER02_POLICY_TERMINAL_BOUNDARIES = {
 # second HTML/Liquid renderer, so it rejects these constructs.  ``br`` is the sole
 # raw HTML exception and is projected to whitespace below.
 CHAPTER02_RAW_HTML_TAG = re.compile(
-    r"</?(?P<tag>[A-Z][A-Z0-9:-]*)\b[^>]*>",
+    r"</?(?P<tag>[A-Z][A-Z0-9:-]*)\b"
+    r"(?:\"[^\"]*\"|'[^']*'|[^'\">])*>",
+    re.IGNORECASE,
+)
+CHAPTER02_RAW_HTML_NON_TAG = re.compile(
+    r"<(?:(?:\?[\s\S]*?\?>)|(?:!\[CDATA\[[\s\S]*?\]\]>)|(?:![A-Z][^>]*>))",
     re.IGNORECASE,
 )
 CHAPTER02_SAFE_BR_TAG = re.compile(r"<br\s*/?>", re.IGNORECASE)
@@ -710,7 +715,8 @@ def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
     spans: list[tuple[int, int, str]] = []
     raw_html_tag_spans = tuple(
         (match.start(), match.end())
-        for match in CHAPTER02_RAW_HTML_TAG.finditer(value)
+        for pattern in (CHAPTER02_RAW_HTML_TAG, CHAPTER02_RAW_HTML_NON_TAG)
+        for match in pattern.finditer(value)
     )
 
     def opening_is_in_raw_html_tag(position: int) -> bool:
@@ -1461,6 +1467,11 @@ def chapter02_policy_findings(
                 "bounded Policy surface; use equivalent Markdown: "
                 f"{raw_html_tags!r}"
             )
+        if CHAPTER02_RAW_HTML_NON_TAG.search(render_guard_source):
+            messages.append(
+                f"{relative}: raw HTML processing instructions, declarations, "
+                "and CDATA are unsupported in the bounded Policy surface"
+            )
         # Jekyll evaluates Liquid before Markdown, including source that later
         # becomes fenced, indented, or inline code.  Inspect the unmasked source.
         if CHAPTER02_LIQUID_CONSTRUCT.search(text):
@@ -2055,6 +2066,8 @@ def verify_policy_adapter_regressions(
         ),
         '\\`<span onmouseover="alert(1)">safe</span>`\n\n',
         '<img alt="`" src=x onerror="alert(1)">X`\n\n',
+        '<img alt=">`" src=x onerror="alert(1)">X`\n\n',
+        '<?pi `?><script>alert(1)</script>`\n\n',
         "<javascript:alert(document.domain)>\n\n",
         '<br onmouseover="alert(document.domain)">\n\n',
     )
@@ -2132,6 +2145,7 @@ def verify_policy_adapter_regressions(
         "- safe\n\n      <div>safe example</div>\n\n",
         "`<div>safe example</div>`\n\n",
         "`<div>safe example</div>\\`\n\n",
+        "`<?safe processing instruction?>`\n\n",
     )
     for literal_code_example in literal_code_examples:
         literal_code_template = replace_once(
@@ -2349,6 +2363,21 @@ def verify_policy_adapter_regressions(
         (
             "実Credentialを取<!--\n- hidden\n-->得する\n\n",
             "HTML comments are unsupported",
+        ),
+        (
+            "<?safe processing instruction?>\n\n",
+            "raw HTML processing instructions, declarations, and CDATA are "
+            "unsupported",
+        ),
+        (
+            "<!DOCTYPE html>\n\n",
+            "raw HTML processing instructions, declarations, and CDATA are "
+            "unsupported",
+        ),
+        (
+            "<![CDATA[safe text]]>\n\n",
+            "raw HTML processing instructions, declarations, and CDATA are "
+            "unsupported",
         ),
     )
     for unsupported_construct, expected_message in unsupported_render_constructs:
