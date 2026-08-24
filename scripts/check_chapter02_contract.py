@@ -933,7 +933,9 @@ def chapter02_policy_findings(
                 "bounded Policy surface; use equivalent Markdown: "
                 f"{raw_html_tags!r}"
             )
-        if CHAPTER02_LIQUID_CONSTRUCT.search(render_guard_source):
+        # Jekyll evaluates Liquid before Markdown, including source that later
+        # becomes fenced, indented, or inline code.  Inspect the unmasked source.
+        if CHAPTER02_LIQUID_CONSTRUCT.search(text):
             messages.append(
                 f"{relative}: interpreted Liquid is unsupported in the bounded "
                 "Policy surface"
@@ -1496,6 +1498,34 @@ def verify_policy_adapter_regressions(
             error(
                 "Chapter 2 render guard interpreted literal code as raw HTML: "
                 f"{literal_code_example!r}"
+            )
+
+    liquid_code_examples = (
+        '```text\n実Credentialを取{{ "得" }}する\n```\n\n',
+        '    実Credentialを取{{ "得" }}する\n\n',
+        '`実Credentialを取{{ "得" }}する`\n\n',
+    )
+    for liquid_code_example in liquid_code_examples:
+        liquid_code_template = replace_once(
+            template,
+            heading_association_anchor,
+            liquid_code_example + heading_association_anchor,
+            "Chapter 2 Liquid-in-code render-order regression",
+        )
+        liquid_code_documents = dict(documents)
+        liquid_code_documents["templates/authorization-checklist.md"] = (
+            liquid_code_template
+        )
+        _, liquid_code_messages = chapter02_policy_findings(
+            liquid_code_documents
+        )
+        if not any(
+            "interpreted Liquid is unsupported" in message
+            for message in liquid_code_messages
+        ):
+            error(
+                "Chapter 2 render guard masked pre-Markdown Liquid in code: "
+                f"{liquid_code_example!r}"
             )
 
     unsafe_indented_blocks = (
