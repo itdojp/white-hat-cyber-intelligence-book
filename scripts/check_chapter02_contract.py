@@ -190,7 +190,7 @@ CHAPTER02_ESCAPED_PUNCTUATION_LINK_DESTINATION = re.compile(
 )
 CHAPTER02_SIMPLE_INLINE_LINK = re.compile(
     r"(?<!\\)!?\[[^\]\r\n]+\]"
-    r"\((?P<destination><[^>\r\n]*>|[^\s\r\n)]*)\)"
+    r"\([ \t]*(?P<destination><[^>\r\n]*>|[^\s\r\n)]*)[ \t]*\)"
 )
 CHAPTER02_SPECIAL_URL = re.compile(
     r"(?:(?:https?:)?[\\/]{2})[^<>\x00-\x20]+",
@@ -2447,6 +2447,16 @@ def verify_policy_adapter_regressions(
         ),
         (
             "[safe](http:attacker.com)\n\n",
+            "authority-less HTTP(S) Markdown link/image destinations are "
+            "unsupported",
+        ),
+        (
+            "[safe]( http:attacker.com)\n\n",
+            "authority-less HTTP(S) Markdown link/image destinations are "
+            "unsupported",
+        ),
+        (
+            "[safe](\thttp:attacker.com)\n\n",
             "authority-less HTTP(S) Markdown link/image destinations are "
             "unsupported",
         ),
