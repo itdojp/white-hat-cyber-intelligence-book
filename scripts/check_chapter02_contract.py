@@ -133,7 +133,10 @@ CHAPTER02_TITLED_INLINE_LINK = re.compile(
     r"\((?:\\.|[^()\\\r\n])*\))"
     r"[ \t\r\n]*\)"
 )
-CHAPTER02_HTTP_URL = re.compile(r"https?://[^<>\x00-\x20]+", re.IGNORECASE)
+CHAPTER02_SPECIAL_URL = re.compile(
+    r"(?:(?:https?:)?[\\/]{2})[^<>\x00-\x20]+",
+    re.IGNORECASE,
+)
 CHAPTER02_EXECUTABLE_URL_PREFIXES = (
     "javascript:",
     "vbscript:",
@@ -986,11 +989,11 @@ def chapter02_policy_findings(
         )
         if any(
             "\\" in match.group(0)
-            for match in CHAPTER02_HTTP_URL.finditer(rendered_text)
+            for match in CHAPTER02_SPECIAL_URL.finditer(rendered_text)
         ):
             messages.append(
-                f"{relative}: HTTP(S) URL containing backslash is unsupported "
-                "in the bounded Policy surface"
+                f"{relative}: HTTP(S) or scheme-relative special URL containing "
+                "backslash is unsupported in the bounded Policy surface"
             )
         executable_scheme_view = re.sub(
             r"[\t\r\n\f]",
@@ -1614,11 +1617,23 @@ def verify_policy_adapter_regressions(
         ),
         (
             "[safe](https://example.com\\\\@lab.test/)\n\n",
-            "HTTP(S) URL containing backslash is unsupported",
+            "special URL containing backslash is unsupported",
         ),
         (
             "[safe](https://example.com&#92;&#92;@lab.test/)\n\n",
-            "HTTP(S) URL containing backslash is unsupported",
+            "special URL containing backslash is unsupported",
+        ),
+        (
+            "[safe](//attacker.com\\\\@lab.test/)\n\n",
+            "special URL containing backslash is unsupported",
+        ),
+        (
+            "[safe](//attacker.com&#92;&#92;@lab.test/)\n\n",
+            "special URL containing backslash is unsupported",
+        ),
+        (
+            "[safe](\\\\attacker.com\\@lab.test/)\n\n",
+            "special URL containing backslash is unsupported",
         ),
         (
             "実Credentialを取<!--\n- hidden\n-->得する\n\n",
