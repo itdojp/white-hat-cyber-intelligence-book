@@ -77,6 +77,12 @@ CHAPTER02_POLICY_SECTIONS = {
         "## 12. Review",
     ),
 }
+CHAPTER02_POLICY_PREAMBLE_DOCUMENTS = frozenset(
+    {
+        "templates/authorization-checklist.md",
+        "cases/ch02-authorization-decision-example.md",
+    }
+)
 
 # These exact lines are reviewed non-operative context: an uncertainty, question,
 # prohibition, or reject/return boundary.  Scanning the fragments without their
@@ -242,6 +248,60 @@ def _is_markdown_table_delimiter(line: str) -> bool:
     return bool(cells) and all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells)
 
 
+def _is_markdown_policy_block_start(line: str) -> bool:
+    stripped = line.lstrip()
+    return bool(
+        re.match(r"#{1,6}\s+", stripped)
+        or stripped.startswith("|")
+        or re.match(r"(?:[-+*]|\d+[.)])\s+", stripped)
+    )
+
+
+def _reader_visible_policy_blocks(
+    lines: list[str],
+    *,
+    start: int,
+    end: int,
+    location_prefix: str,
+) -> list[tuple[str, str]]:
+    """Project Markdown soft-wrapped source into bounded visible blocks."""
+
+    blocks: list[tuple[str, str]] = []
+    pending: list[tuple[int, str]] = []
+
+    def flush() -> None:
+        if not pending:
+            return
+        start_line = pending[0][0] + 1
+        end_line = pending[-1][0] + 1
+        line_label = (
+            f"line {start_line}"
+            if start_line == end_line
+            else f"lines {start_line}-{end_line}"
+        )
+        # A normal Markdown source newline inside one paragraph or list item is a
+        # soft wrap rendered as whitespace.  Project it to a space before Policy
+        # scanning so an object/action pair cannot be split across source lines.
+        visible_text = " ".join(value.strip() for _, value in pending)
+        blocks.append((f"{location_prefix} {line_label}", visible_text))
+        pending.clear()
+
+    for index in range(start, end):
+        value = lines[index]
+        if not value.strip() or _is_markdown_table_delimiter(value):
+            flush()
+            continue
+        if _is_markdown_policy_block_start(value):
+            flush()
+            pending.append((index, value))
+            if value.lstrip().startswith(("#", "|")):
+                flush()
+            continue
+        pending.append((index, value))
+    flush()
+    return blocks
+
+
 def chapter02_reader_visible_policy_fields(
     relative: str,
     text: str,
@@ -269,6 +329,21 @@ def chapter02_reader_visible_policy_fields(
     fields: list[tuple[str, str]] = []
     messages: list[str] = []
     claimed_lines: set[int] = set()
+    if relative in CHAPTER02_POLICY_PREAMBLE_DOCUMENTS:
+        first_heading_matches = [
+            item for item in headings if item[2] == expected_headings[0]
+        ]
+        if len(first_heading_matches) == 1:
+            preamble_end = first_heading_matches[0][0]
+            claimed_lines.update(range(0, preamble_end))
+            fields.extend(
+                _reader_visible_policy_blocks(
+                    lines,
+                    start=0,
+                    end=preamble_end,
+                    location_prefix=f"{relative} document preamble",
+                )
+            )
     for heading_index, expected_heading in enumerate(expected_headings):
         matches = [item for item in headings if item[2] == expected_heading]
         if len(matches) != 1:
@@ -298,17 +373,15 @@ def chapter02_reader_visible_policy_fields(
                 messages.append(
                     f"{relative}: overlapping Policy section selection at line {index + 1}"
                 )
-                continue
             claimed_lines.add(index)
-            value = lines[index]
-            if not value.strip() or _is_markdown_table_delimiter(value):
-                continue
-            fields.append(
-                (
-                    f"{relative} {expected_heading} line {index + 1}",
-                    value,
-                )
+        fields.extend(
+            _reader_visible_policy_blocks(
+                lines,
+                start=start,
+                end=end,
+                location_prefix=f"{relative} {expected_heading}",
             )
+        )
     return fields, messages
 
 
@@ -388,6 +461,50 @@ def verify_policy_adapter_regressions(
         error(message)
     for finding in canonical_findings:
         error(format_policy_finding(finding))
+
+    unsafe_case_preamble_mutations = (
+        ("leading preamble", "https://example.com/runbook\n" + example),
+        (
+            "H1 title",
+            replace_once(
+                example,
+                "# 第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+                "# 第2章 合成記入例：https://example.com/runbook",
+                "Chapter 2 Case H1 regression",
+            ),
+        ),
+    )
+    for surface, unsafe_case_preamble in unsafe_case_preamble_mutations:
+        unsafe_case_preamble_documents = dict(documents)
+        unsafe_case_preamble_documents[
+            "cases/ch02-authorization-decision-example.md"
+        ] = unsafe_case_preamble
+        unsafe_case_preamble_findings, _ = chapter02_policy_findings(
+            unsafe_case_preamble_documents
+        )
+        if not any(
+            finding.category == "network.host_or_address"
+            and "non-approved host suffix" in finding.reason
+            for finding in unsafe_case_preamble_findings
+        ):
+            error(
+                f"Chapter 2 Case {surface} bypassed the host Policy adapter"
+            )
+
+    soft_wrap_anchor = "- 不足情報を推測でPassにしない。"
+    soft_wrapped_template = replace_once(
+        template,
+        soft_wrap_anchor,
+        soft_wrap_anchor + "\n- 実Credentialを\n  取得する",
+        "Chapter 2 Markdown soft-wrap regression",
+    )
+    soft_wrap_documents = dict(documents)
+    soft_wrap_documents["templates/authorization-checklist.md"] = soft_wrapped_template
+    soft_wrap_findings, _ = chapter02_policy_findings(soft_wrap_documents)
+    if not any(
+        finding.category == "secret.credential" for finding in soft_wrap_findings
+    ):
+        error("Chapter 2 Markdown soft wrap split a protected object from its action")
 
     unclassified_section_template = replace_once(
         template,
