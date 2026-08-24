@@ -143,6 +143,9 @@ CHAPTER02_TITLED_INLINE_LINK = re.compile(
     r"[ \t\r\n]*\)"
 )
 CHAPTER02_EMPTY_INLINE_LINK = re.compile(r"(?<!\\)!?\[\]\(")
+CHAPTER02_EMPTY_LINK_DESTINATION = re.compile(
+    r"(?<!\\)!?\[[^\]\r\n]+\]\([ \t\r\n]*\)"
+)
 CHAPTER02_SPECIAL_URL = re.compile(
     r"(?:(?:https?:)?[\\/]{2})[^<>\x00-\x20]+",
     re.IGNORECASE,
@@ -379,12 +382,43 @@ def _markdown_table_row_indexes(
         header_index = delimiter_index - 1
         if header_index < start or not _is_markdown_table_row(lines[header_index]):
             continue
+        if _markdown_table_cell_count(lines[header_index]) != (
+            _markdown_table_cell_count(lines[delimiter_index])
+        ):
+            continue
         indexes.update({header_index, delimiter_index})
         body_index = delimiter_index + 1
         while body_index < end and _is_markdown_table_row(lines[body_index]):
             indexes.add(body_index)
             body_index += 1
     return indexes
+
+
+def _markdown_table_cell_count(line: str) -> int:
+    """Count finite GFM cells while protecting escapes and inline code."""
+
+    value = line.strip()
+    if value.startswith("|"):
+        value = value[1:]
+    if value.endswith("|") and not _markdown_character_is_escaped(
+        value,
+        len(value) - 1,
+    ):
+        value = value[:-1]
+    if not value:
+        return 0
+    protected = [
+        (start, end)
+        for start, end, _ in _inline_code_spans(value)
+    ]
+    separators = 0
+    for position, character in enumerate(value):
+        if character != "|" or _markdown_character_is_escaped(value, position):
+            continue
+        if any(start <= position < end for start, end in protected):
+            continue
+        separators += 1
+    return separators + 1
 
 
 def _project_in_field_whitespace(value: str) -> str:
@@ -1284,6 +1318,11 @@ def chapter02_policy_findings(
                 f"{relative}: Markdown links/images with an empty label are "
                 "unsupported in the bounded Policy surface"
             )
+        if CHAPTER02_EMPTY_LINK_DESTINATION.search(render_guard_source):
+            messages.append(
+                f"{relative}: Markdown links/images with an empty destination "
+                "are unsupported in the bounded Policy surface"
+            )
         rendered_text = unicodedata.normalize(
             "NFKC",
             html.unescape(render_guard_source),
@@ -1529,6 +1568,28 @@ def verify_policy_adapter_regressions(
     ):
         error(
             "Chapter 2 pipe-prefixed prose was treated as an unconfirmed table"
+        )
+
+    mismatched_table_template = replace_once(
+        template,
+        soft_wrap_anchor,
+        soft_wrap_anchor
+        + "\n\n| 実Credentialを |\n|---|---|\n取得する",
+        "Chapter 2 mismatched table-column regression",
+    )
+    mismatched_table_documents = dict(documents)
+    mismatched_table_documents["templates/authorization-checklist.md"] = (
+        mismatched_table_template
+    )
+    mismatched_table_findings, _ = chapter02_policy_findings(
+        mismatched_table_documents
+    )
+    if not any(
+        finding.category == "secret.credential"
+        for finding in mismatched_table_findings
+    ):
+        error(
+            "Chapter 2 mismatched table columns split ordinary paragraph text"
         )
 
     for source_hard_break in ("  \n", "\\\n"):
@@ -1971,6 +2032,10 @@ def verify_policy_adapter_regressions(
         (
             "実Credentialを取[](#)得する\n\n",
             "Markdown links/images with an empty label are unsupported",
+        ),
+        (
+            "実Credentialを取[得]()する\n\n",
+            "Markdown links/images with an empty destination are unsupported",
         ),
         (
             "[safe](javascript:alert(1))\n\n",
