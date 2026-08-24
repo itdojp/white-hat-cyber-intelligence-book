@@ -113,6 +113,12 @@ CHAPTER02_LIQUID_CONSTRUCT = re.compile(r"{{|{%")
 CHAPTER02_DEFINITION_ITEM = re.compile(r"(?m)^[ \t]*:[ \t]+\S")
 CHAPTER02_KRAMDOWN_IAL = re.compile(r"(?<!\\)\{:")
 CHAPTER02_FOOTNOTE = re.compile(r"\[\^[^\]\r\n]+\]")
+CHAPTER02_REFERENCE_LINK = re.compile(
+    r"\[[^\]\r\n]+\]\[[^\]\r\n]*\]|"
+    r"^ {0,3}\[[^\]\r\n]+\]:",
+    re.MULTILINE,
+)
+CHAPTER02_HTTP_URL = re.compile(r"https?://[^<>\x00-\x20]+", re.IGNORECASE)
 CHAPTER02_EXECUTABLE_URL_PREFIXES = (
     "javascript:",
     "vbscript:",
@@ -833,6 +839,19 @@ def chapter02_policy_findings(
                 f"{relative}: Kramdown footnote syntax is unsupported in the "
                 "bounded Policy surface"
             )
+        if CHAPTER02_REFERENCE_LINK.search(text):
+            messages.append(
+                f"{relative}: Markdown reference-link syntax is unsupported in "
+                "the bounded Policy surface"
+            )
+        if any(
+            "\\" in match.group(0)
+            for match in CHAPTER02_HTTP_URL.finditer(text)
+        ):
+            messages.append(
+                f"{relative}: HTTP(S) URL containing backslash is unsupported "
+                "in the bounded Policy surface"
+            )
         executable_scheme_view = re.sub(
             r"[\t\r\n\f]",
             "",
@@ -1314,6 +1333,10 @@ def verify_policy_adapter_regressions(
             "Kramdown footnote syntax is unsupported",
         ),
         (
+            "実Credentialを取[得][x]する\n\n[x]: #safe\n\n",
+            "Markdown reference-link syntax is unsupported",
+        ),
+        (
             "[safe](javascript:alert(1))\n\n",
             "executable URL scheme is unsupported",
         ),
@@ -1325,6 +1348,10 @@ def verify_policy_adapter_regressions(
         (
             "[safe](data:text/html,<script>alert(1)</script>)\n\n",
             "executable URL scheme is unsupported",
+        ),
+        (
+            "[safe](https://example.com\\\\@lab.test/)\n\n",
+            "HTTP(S) URL containing backslash is unsupported",
         ),
         (
             "実Credentialを取<!--\n- hidden\n-->得する\n\n",

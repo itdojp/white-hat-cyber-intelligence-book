@@ -13,7 +13,7 @@ Issue #59ではPR #57のbranch、Chapter 3本文、`ART-14`、Case、NICE Source
 - `scripts/check_chapter02_contract.py`をshared Policy `1.2.0`へ厳密pinする。
 - Chapter 2本文のH1 / document preambleから参考文献・Source Note IDまで、`ART-13 Authorization Checklist`と合成CaseのH1 / document preambleから全Record sectionまでを、有限なreader-visible fieldとして選択する。Markdown paragraph / list item内のsoft wrap、field内の`<br>`、character reference由来の空白は表示上のspaceへ投影し、各本文fieldは所属するATX / Setext heading階層、nested list itemとcontinuation paragraphは祖先item、table body rowはheader rowとも関連付けて検査する。
 - backtick / tildeによるfenced codeと4-space / tabによるindented codeは、空行を含むreader-visible payload全体を単一fieldとして検査する。
-- Kramdown / Jekyllのrender後にsource fieldとの意味差が生じるraw HTML、HTML comment、Liquid、definition list、IAL、footnoteはfail-closedで拒否する。raw HTMLは属性なしの`<br>` / `<br/>` / `<br />`だけを許可し、それ以外は同等のMarkdown heading / list / tableを使用する。Markdown link / autolink / reference linkの実行可能URL schemeも拒否する。
+- Kramdown / Jekyllのrender後にsource fieldとの意味差が生じるraw HTML、HTML comment、Liquid、definition list、IAL、footnote、reference-style linkはfail-closedで拒否する。raw HTMLは属性なしの`<br>` / `<br/>` / `<br />`だけを許可し、それ以外は同等のMarkdown heading / list / tableを使用する。Markdown link / autolinkの実行可能URL schemeと、HTTP(S) destination内のbackslashも拒否する。
 - 選択したfieldは`scan_action_text()`と`scan_host_policy()`へ渡し、実Target、Credential / Token / Cookie / Session、PII、Malware / C2、DoS / 破壊操作、非承認Hostを共有Policyへ委譲する。
 - `.localhost`はtechnically reservedだがRepository Policyでdisallowedとし、non-reservedとは診断しない。
 - `.example` / `.test` / `.invalid`、IPv4 documentation range、`2001:db8::/32`を維持する。公開済み専門書への3件のDELEGATE URLはreader-visible surfaceへ含めつつ、既存のChapter 2 publication contractと同じ完全一致行だけをreviewed host contextとして固定し、行変更時は通常のPolicy scanへ戻す。
