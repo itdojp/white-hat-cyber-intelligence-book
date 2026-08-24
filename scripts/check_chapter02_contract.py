@@ -7,7 +7,6 @@ import sys
 from collections import Counter
 from copy import deepcopy
 from pathlib import Path
-from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -16,12 +15,111 @@ if str(ROOT) not in sys.path:
 from scripts.render_reference_baseline import (  # noqa: E402
     render as render_reference_baseline,
 )
+from scripts.content_safety_policy import (  # noqa: E402
+    POLICY_VERSION as CONTENT_SAFETY_POLICY_VERSION,
+    SafetyFinding,
+    scan_action_text,
+    scan_host_policy,
+)
 from scripts.sync_book_site import (  # noqa: E402
     SitePageRegistryError,
     parse_registry_data,
 )
 
 ERRORS: list[str] = []
+EXPECTED_CONTENT_SAFETY_POLICY_VERSION = "1.2.0"
+
+CHAPTER02_POLICY_SECTIONS = {
+    "manuscript/02-law-ethics-authorization.md": (
+        "## 1. 四つのGate",
+        "## 2. 法、契約、組織権限、倫理を分離する",
+        "## 3. 書面による許可",
+        "## 4. Data、Secret、証拠の取扱い",
+        "## 5. 委託、再委託、Cloud / SaaS",
+        "## 6. 脆弱性を発見したとき",
+        "## 7. 四つの視点",
+        "## 8. Handoff Contract",
+        "## 9. 安全な演習",
+        "## 10. 作成する成果物",
+        "## 11. 評価基準",
+        "## 12. よくある誤解",
+    ),
+    "templates/authorization-checklist.md": (
+        "## 使用条件",
+        "## 0. Document Control",
+        "## 1. Decision Requirement",
+        "## 2. Authority Gate",
+        "## 3. Scope Gate",
+        "## 4. Safety Gate",
+        "## 5. Disclosure Gate",
+        "## 6. Legal, Contractual, and Policy Questions",
+        "## 7. Conditions",
+        "## 8. Decision Record",
+        "## 9. RoE Handoff",
+        "## 10. Reassessment",
+        "## 11. Traceability Check",
+        "## 12. Review",
+    ),
+    "cases/ch02-authorization-decision-example.md": (
+        "## この記入例の扱い",
+        "## 0. Document Control",
+        "## 1. Decision Requirement",
+        "## 2. Authority Gate",
+        "## 3. Scope Gate",
+        "## 4. Safety Gate",
+        "## 5. Disclosure Gate",
+        "## 6. Legal, Contractual, and Policy Questions",
+        "## 7. Conditions",
+        "## 8. Decision Record",
+        "## 9. RoE Handoff",
+        "## 10. Reassessment",
+        "## 11. Traceability Check",
+        "## 12. Review",
+    ),
+}
+
+# These exact lines are reviewed non-operative context: an uncertainty, question,
+# prohibition, or reject/return boundary.  Scanning the fragments without their
+# table/paragraph semantics would turn them into affirmative instructions.  Any
+# edit removes the exemption and is delegated to Policy 1.2.0 until this finite
+# reviewed set is updated deliberately.
+CHAPTER02_REVIEWED_ACTION_CONTEXT = {
+    "manuscript/02-law-ethics-authorization.md": frozenset(
+        {
+            "一つの層がPassしても、他の層を自動的にPassさせない。たとえば契約にSecurity testingの記載があっても、第三者Tenantや実利用者Dataまで対象になるとは限らない。",
+            "- 未確認: 委託先が管理するApp credentialの変更権限",
+        }
+    ),
+    "templates/authorization-checklist.md": frozenset(),
+    "cases/ch02-authorization-decision-example.md": frozenset(
+        {
+            "| Maximum acceptable uncertainty | 委託先が管理するProduction credentialの変更権限は未確定でも、合成Tenantのread-only設定Reviewだけを分離できること |",
+            "| Authority gaps | Production credential変更権限と委託契約上の作業範囲は未確認 |",
+            "| Prohibited methods | Token取得・利用、外部API call、Credential変更、権限昇格、横展開、DoS、Data変更 |",
+            "| `LQ-AUTH-2026-002` | 委託契約はProduction credential変更を許容するか | Synthetic contract | Procurement / Legal | Escalated | 本Decisionでは不要。Production変更前に確認 | Production変更案承認前 |",
+            "| `LQ-AUTH-2026-004` | 許可外の認証試行を行ってよいか | `SRC-JP-LAW-001`、internal policy | Legal | Answered | 行わない。合成Tenant・明示許可操作だけに限定 | Scope変更時 |",
+            "| Information gaps | Production credential変更権限、実Vendor窓口、契約通知期限 |",
+            "| `HO-AUTH-2026-004` | Method boundary | Read-only、禁止操作、Rate | Pass | Token利用・外部API追加 | Lab Operator |",
+        }
+    ),
+}
+
+# Issue #67 tracks the shared core's Japanese-particle host-token boundary.  Until
+# that independent Policy change lands, keep only these exact approved-host lines
+# frozen.  A changed line is scanned normally, so .localhost or a real host cannot
+# inherit this exemption.
+CHAPTER02_REVIEWED_HOST_CONTEXT = {
+    "manuscript/02-law-ethics-authorization.md": frozenset(
+        {"- 対象: `billing-bridge.example`の合成Tenant"}
+    ),
+    "templates/authorization-checklist.md": frozenset(),
+    "cases/ch02-authorization-decision-example.md": frozenset(
+        {
+            "- Domainは予約済みの`.example`を使用する。",
+            "| In-scope target identifiers | `tenant-auth-lab-01.test`、`billing-bridge.example`の合成App registration、設定Export |",
+        }
+    ),
+}
 
 EXPECTED_CHAPTER02_PAGES = {
     (
@@ -136,19 +234,390 @@ def chapter_body_and_references(text: str) -> tuple[str, str]:
     return body, references
 
 
-def check_reserved_names(relative: str, text: str) -> None:
-    allowed_suffixes = (".example", ".test", ".invalid", ".localhost")
-    for raw_url in re.findall(r"https?://[^\s`)\]>]+", text):
-        host = (urlparse(raw_url).hostname or "").lower()
-        if host and not host.endswith(allowed_suffixes):
-            error(f"{relative}: non-reserved URL in synthetic content: {raw_url}")
+def _is_markdown_table_delimiter(line: str) -> bool:
+    stripped = line.strip().strip("|")
+    if not stripped:
+        return False
+    cells = [cell.strip() for cell in stripped.split("|")]
+    return bool(cells) and all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells)
 
-    domain_pattern = re.compile(
-        r"(?<![A-Za-z0-9_-])(?:[A-Za-z0-9-]+\.)+(?:com|net|org|jp|io|dev|app|cloud)(?![A-Za-z0-9_-])",
-        re.IGNORECASE,
+
+def chapter02_reader_visible_policy_fields(
+    relative: str,
+    text: str,
+) -> tuple[list[tuple[str, str]], list[str]]:
+    """Select the finite Chapter 2 action/authorization publication surface.
+
+    The adapter owns section and line selection.  Shared Policy 1.2.0 owns
+    normalization, protected-action semantics, and host/address classification.
+    Public DELEGATE and Source URLs intentionally remain outside this synthetic
+    execution surface; their stability is enforced by the existing Chapter 2
+    publication/source contracts.
+    """
+
+    expected_headings = CHAPTER02_POLICY_SECTIONS.get(relative)
+    if expected_headings is None:
+        return [], [f"{relative}: no Chapter 2 Policy section contract"]
+
+    lines = text.splitlines()
+    headings: list[tuple[int, int, str]] = []
+    for index, line in enumerate(lines):
+        match = re.fullmatch(r"(#{1,6})\s+(.+?)\s*", line)
+        if match:
+            headings.append((index, len(match.group(1)), line.rstrip()))
+
+    fields: list[tuple[str, str]] = []
+    messages: list[str] = []
+    claimed_lines: set[int] = set()
+    for heading_index, expected_heading in enumerate(expected_headings):
+        matches = [item for item in headings if item[2] == expected_heading]
+        if len(matches) != 1:
+            messages.append(
+                f"{relative}: expected Policy section exactly once: "
+                f"{expected_heading!r}; found {len(matches)}"
+            )
+            continue
+        start, level, _ = matches[0]
+        end = len(lines)
+        boundary_heading: str | None = None
+        for candidate, candidate_level, candidate_heading in headings:
+            if candidate > start and candidate_level <= level:
+                end = candidate
+                boundary_heading = candidate_heading
+                break
+        if heading_index + 1 < len(expected_headings):
+            expected_boundary = expected_headings[heading_index + 1]
+            if boundary_heading != expected_boundary:
+                messages.append(
+                    f"{relative}: unexpected Policy section boundary after "
+                    f"{expected_heading!r}: {boundary_heading!r}; expected "
+                    f"{expected_boundary!r}"
+                )
+        for index in range(start, end):
+            if index in claimed_lines:
+                messages.append(
+                    f"{relative}: overlapping Policy section selection at line {index + 1}"
+                )
+                continue
+            claimed_lines.add(index)
+            value = lines[index]
+            if not value.strip() or _is_markdown_table_delimiter(value):
+                continue
+            fields.append(
+                (
+                    f"{relative} {expected_heading} line {index + 1}",
+                    value,
+                )
+            )
+    return fields, messages
+
+
+def _finding_sort_key(finding: SafetyFinding) -> tuple[str, str, str, str, str]:
+    return (
+        finding.location,
+        finding.category,
+        finding.normalized_excerpt,
+        finding.reason,
+        finding.policy_version,
     )
-    for domain in domain_pattern.findall(text):
-        error(f"{relative}: possible real domain in synthetic content: {domain}")
+
+
+def chapter02_policy_findings(
+    documents: dict[str, str],
+) -> tuple[list[SafetyFinding], list[str]]:
+    findings: set[SafetyFinding] = set()
+    messages: list[str] = []
+    for relative in CHAPTER02_POLICY_SECTIONS:
+        text = documents.get(relative)
+        if text is None:
+            messages.append(f"{relative}: missing document for Chapter 2 Policy adapter")
+            continue
+        fields, selection_errors = chapter02_reader_visible_policy_fields(relative, text)
+        messages.extend(selection_errors)
+        selected_value_counts = Counter(value for _, value in fields)
+        for context_name, reviewed_lines in (
+            ("action", CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]),
+            ("host", CHAPTER02_REVIEWED_HOST_CONTEXT[relative]),
+        ):
+            for value in sorted(reviewed_lines):
+                count = selected_value_counts[value]
+                if count != 1:
+                    messages.append(
+                        f"{relative}: reviewed {context_name} context must occur "
+                        f"exactly once in the bounded Policy surface; found {count}: "
+                        f"{value!r}"
+                    )
+
+        for location, value in fields:
+            if value not in CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]:
+                findings.update(scan_action_text(value, location=location))
+            if value not in CHAPTER02_REVIEWED_HOST_CONTEXT[relative]:
+                findings.update(scan_host_policy(value, location=location))
+
+    return sorted(findings, key=_finding_sort_key), messages
+
+
+def format_policy_finding(finding: SafetyFinding) -> str:
+    return (
+        f"{finding.location}: [{finding.category}] {finding.reason}: "
+        f"{finding.normalized_excerpt!r} "
+        f"(Content Safety Policy {finding.policy_version})"
+    )
+
+
+def replace_once(text: str, old: str, new: str, label: str) -> str:
+    count = text.count(old)
+    if count != 1:
+        error(f"{label}: mutation anchor must occur exactly once; found {count}")
+        return text
+    return text.replace(old, new, 1)
+
+
+def verify_policy_adapter_regressions(
+    chapter: str,
+    template: str,
+    example: str,
+) -> None:
+    documents = {
+        "manuscript/02-law-ethics-authorization.md": chapter,
+        "templates/authorization-checklist.md": template,
+        "cases/ch02-authorization-decision-example.md": example,
+    }
+    canonical_findings, selection_errors = chapter02_policy_findings(documents)
+    for message in selection_errors:
+        error(message)
+    for finding in canonical_findings:
+        error(format_policy_finding(finding))
+
+    unclassified_section_template = replace_once(
+        template,
+        "## 3. Scope Gate",
+        "## Unclassified operational section\n\n第三者の本番APIへ接続する\n\n"
+        "## 3. Scope Gate",
+        "Chapter 2 unclassified section regression",
+    )
+    unclassified_documents = dict(documents)
+    unclassified_documents["templates/authorization-checklist.md"] = (
+        unclassified_section_template
+    )
+    _, unclassified_errors = chapter02_policy_findings(unclassified_documents)
+    if not any("unexpected Policy section boundary" in message for message in unclassified_errors):
+        error("Chapter 2 Policy adapter accepted an unclassified section boundary")
+
+    action_anchor = "| Allowed methods |  |"
+    unsafe_actions = (
+        ("real target", "第三者の本番APIへ接続する", "target.real_or_external"),
+        ("credential", "実Credentialを取得する", "secret.credential"),
+        ("token reuse", "Tokenを再利用する", "operation.authentication_or_session"),
+        ("cookie", "Cookieを取得する", "secret.credential"),
+        ("session", "synthetic sessionをreplayする", "operation.authentication_or_session"),
+        ("PII", "個人情報を収集する", "data.pii"),
+        ("malware", "keyloggerを作る", "operation.malware"),
+        ("C2", "C2 serverを構築する", "operation.c2_or_phishing"),
+        ("DoS", "DoSを実行する", "operation.disruption_or_destruction"),
+        ("destruction", "本番データを破壊する", "operation.disruption_or_destruction"),
+    )
+    for name, unsafe_text, expected_category in unsafe_actions:
+        mutated_template = replace_once(
+            template,
+            action_anchor,
+            f"| Allowed methods | {unsafe_text} |",
+            f"Chapter 2 unsafe {name} regression",
+        )
+        mutated_documents = dict(documents)
+        mutated_documents["templates/authorization-checklist.md"] = mutated_template
+        findings, _ = chapter02_policy_findings(mutated_documents)
+        if not any(finding.category == expected_category for finding in findings):
+            error(
+                f"Chapter 2 Policy adapter accepted unsafe {name} mutation; "
+                f"expected category {expected_category}"
+            )
+
+    unsafe_chapter = replace_once(
+        chapter,
+        "- 目的: OAuth permissionの設定Review",
+        "- 目的: OAuth permissionの設定Review\n- 第三者の本番APIへ接続する",
+        "Chapter 2 manuscript action-surface regression",
+    )
+    unsafe_chapter_documents = dict(documents)
+    unsafe_chapter_documents["manuscript/02-law-ethics-authorization.md"] = unsafe_chapter
+    chapter_findings, _ = chapter02_policy_findings(unsafe_chapter_documents)
+    if not any(
+        finding.category == "target.real_or_external" for finding in chapter_findings
+    ):
+        error("Chapter 2 manuscript action-bearing field bypassed Policy 1.2.0")
+
+    unsafe_case = replace_once(
+        example,
+        "| `COND-AUTH-2026-001` | Production credentialを操作しない |",
+        "| `COND-AUTH-2026-001` | 実Credentialを取得する |",
+        "Chapter 2 Case condition-surface regression",
+    )
+    unsafe_case_documents = dict(documents)
+    unsafe_case_documents["cases/ch02-authorization-decision-example.md"] = unsafe_case
+    case_findings, _ = chapter02_policy_findings(unsafe_case_documents)
+    if not any(finding.category == "secret.credential" for finding in case_findings):
+        error("Chapter 2 Case Condition field bypassed Policy 1.2.0")
+
+    reviewed_boundary = (
+        "| Prohibited methods | Token取得・利用、外部API call、Credential変更、"
+        "権限昇格、横展開、DoS、Data変更 |"
+    )
+    unsafe_reviewed_boundary_case = replace_once(
+        example,
+        reviewed_boundary,
+        reviewed_boundary[:-1] + "。しかし実Credentialを取得する |",
+        "Chapter 2 reviewed-context invalidation regression",
+    )
+    reviewed_boundary_documents = dict(documents)
+    reviewed_boundary_documents["cases/ch02-authorization-decision-example.md"] = (
+        unsafe_reviewed_boundary_case
+    )
+    reviewed_boundary_findings, _ = chapter02_policy_findings(
+        reviewed_boundary_documents
+    )
+    if not any(
+        finding.category == "secret.credential"
+        for finding in reviewed_boundary_findings
+    ):
+        error("Chapter 2 reviewed context exemption survived a line mutation")
+
+    safe_explanations = (
+        "第三者の本番APIへ接続しない",
+        "Tokenを取得しない",
+        "個人情報の収集リスクを分析する",
+        "keyloggerを作ることを禁止する",
+        "DoSを実行しない",
+    )
+    safe_explanation_anchor = (
+        "- `Proceed with conditions`では、Condition、Owner、期限、再確認方法を必須とする。"
+    )
+    for safe_text in safe_explanations:
+        mutated_template = replace_once(
+            template,
+            safe_explanation_anchor,
+            f"{safe_explanation_anchor}\n- {safe_text}",
+            "Chapter 2 explicit prohibition regression",
+        )
+        mutated_documents = dict(documents)
+        mutated_documents["templates/authorization-checklist.md"] = mutated_template
+        findings, _ = chapter02_policy_findings(mutated_documents)
+        action_findings = [
+            finding
+            for finding in findings
+            if finding.category != "network.host_or_address"
+        ]
+        if action_findings:
+            error(
+                "Chapter 2 Policy adapter rejected a legal/safety explanation or "
+                f"explicit prohibition {safe_text!r}: "
+                f"{[format_policy_finding(item) for item in action_findings]!r}"
+            )
+
+    host_anchor = "| In-scope target identifiers |  |"
+    unsafe_hosts = (
+        ("https://lab.localhost/", "technically reserved but disallowed by the synthetic publication policy"),
+        ("lab.localhost", "technically reserved but disallowed by the synthetic publication policy"),
+        ("8.8.8.8", "non-documentation IP literal is disallowed"),
+        ("https://example.com/runbook", "non-approved host suffix"),
+    )
+    for host, required_reason in unsafe_hosts:
+        mutated_template = replace_once(
+            template,
+            host_anchor,
+            f"| In-scope target identifiers | {host} |",
+            f"Chapter 2 unsafe host regression {host}",
+        )
+        mutated_documents = dict(documents)
+        mutated_documents["templates/authorization-checklist.md"] = mutated_template
+        findings, _ = chapter02_policy_findings(mutated_documents)
+        host_findings = [
+            finding for finding in findings if finding.category == "network.host_or_address"
+        ]
+        if not any(required_reason in finding.reason for finding in host_findings):
+            error(
+                f"Chapter 2 Policy adapter accepted unsafe host {host!r} or emitted "
+                f"the wrong diagnostic: {[item.reason for item in host_findings]!r}"
+            )
+        if host.endswith(".localhost") or ".localhost/" in host:
+            if any("non-reserved" in finding.reason for finding in host_findings):
+                error(
+                    "Chapter 2 Policy adapter misclassified reserved .localhost as "
+                    "non-reserved"
+                )
+
+    localhost_case = replace_once(
+        example,
+        "`tenant-auth-lab-01.test`、`billing-bridge.example`の合成App registration、設定Export",
+        "`tenant-auth-lab-01.test`、`lab.localhost`の合成App registration、設定Export",
+        "Chapter 2 Case .localhost regression",
+    )
+    localhost_case_documents = dict(documents)
+    localhost_case_documents["cases/ch02-authorization-decision-example.md"] = (
+        localhost_case
+    )
+    localhost_case_findings, _ = chapter02_policy_findings(localhost_case_documents)
+    localhost_host_findings = [
+        finding
+        for finding in localhost_case_findings
+        if finding.category == "network.host_or_address"
+    ]
+    if not any(
+        "technically reserved but disallowed by the synthetic publication policy"
+        in finding.reason
+        for finding in localhost_host_findings
+    ):
+        error("Chapter 2 Case accepted .localhost through its former suffix allowance")
+    if any("non-reserved" in finding.reason for finding in localhost_host_findings):
+        error("Chapter 2 Case .localhost regression used the obsolete non-reserved diagnostic")
+
+    safe_hosts = (
+        "lab.example",
+        "https://lab.test/runbook",
+        "node.invalid",
+        "192.0.2.10",
+        "198.51.100.10",
+        "203.0.113.10",
+        "https://[2001:db8::10]/fixture",
+    )
+    for host in safe_hosts:
+        mutated_template = replace_once(
+            template,
+            host_anchor,
+            f"| In-scope target identifiers | {host} |",
+            f"Chapter 2 approved host regression {host}",
+        )
+        mutated_documents = dict(documents)
+        mutated_documents["templates/authorization-checklist.md"] = mutated_template
+        findings, _ = chapter02_policy_findings(mutated_documents)
+        host_findings = [
+            finding for finding in findings if finding.category == "network.host_or_address"
+        ]
+        if host_findings:
+            error(
+                f"Chapter 2 Policy adapter rejected approved host/address {host!r}: "
+                f"{[format_policy_finding(item) for item in host_findings]!r}"
+            )
+
+    chapter_fields, selection_errors = chapter02_reader_visible_policy_fields(
+        "manuscript/02-law-ethics-authorization.md",
+        chapter,
+    )
+    if selection_errors:
+        for message in selection_errors:
+            error(message)
+    delegated_urls = (
+        "https://itdojp.github.io/pentest-learning-book/",
+        "https://itdojp.github.io/practical-auth-book/",
+        "https://itdojp.github.io/it-infra-security-guide-book/",
+    )
+    selected_chapter_text = "\n".join(value for _, value in chapter_fields)
+    for delegated_url in delegated_urls:
+        if delegated_url in selected_chapter_text:
+            error(
+                "Chapter 2 Policy adapter incorrectly included a public DELEGATE "
+                f"destination in the synthetic host surface: {delegated_url}"
+            )
 
 
 def main() -> int:
@@ -167,11 +636,19 @@ def main() -> int:
         "references/sources.json",
         "references/reference-baseline.md",
         "references/ch02-source-review-2026-08-05.md",
+        "CONTENT_SAFETY_POLICY_MIGRATION.md",
         "package.json",
     )
     for relative in required_files:
         if not (ROOT / relative).is_file():
             error(f"missing required file: {relative}")
+
+    if CONTENT_SAFETY_POLICY_VERSION != EXPECTED_CONTENT_SAFETY_POLICY_VERSION:
+        error(
+            "scripts/check_chapter02_contract.py: Content Safety Policy version "
+            f"{CONTENT_SAFETY_POLICY_VERSION!r} != strict adapter pin "
+            f"{EXPECTED_CONTENT_SAFETY_POLICY_VERSION!r}"
+        )
 
     config = load_json("book-config.json")
     chapters = config.get("structure", {}).get("chapters", [])
@@ -348,7 +825,7 @@ def main() -> int:
             "SYNTH-REV-AUTH-DEC-001",
         ),
     )
-    check_reserved_names(example_path, example)
+    verify_policy_adapter_regressions(chapter, template, example)
 
     secret_patterns = (
         re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
@@ -570,6 +1047,19 @@ def main() -> int:
     if baseline != render_reference_baseline():
         error(f"{baseline_path}: out of sync with references/sources.json")
 
+    migration_note_path = "CONTENT_SAFETY_POLICY_MIGRATION.md"
+    migration_note = read_text(migration_note_path)
+    require_tokens(
+        migration_note_path,
+        migration_note,
+        (
+            "## Chapter 2 adapter status (Issue #65)",
+            "Policy `1.2.0`へ厳密pin",
+            "`.localhost`はtechnically reservedだがRepository Policyでdisallowed",
+            "Chapter 2固有のAuthority / Scope / Source / Traceability契約は移行しない",
+        ),
+    )
+
     package = load_json("package.json")
     scripts = package.get("scripts", {})
     if scripts.get("check:chapter02") != "python3 scripts/check_chapter02_contract.py":
@@ -584,7 +1074,8 @@ def main() -> int:
 
     print(
         "chapter 2 contract passed: manuscript, authorization artifact, synthetic case, "
-        "source mapping, publication registry, safety boundary, and handoff traceability"
+        "source mapping, publication registry, Content Safety Policy 1.2.0 adapter, "
+        "and handoff traceability"
     )
     return 0
 

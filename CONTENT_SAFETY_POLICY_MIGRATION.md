@@ -8,6 +8,16 @@
 
 Issue #59ではPR #57のbranch、Chapter 3本文、`ART-14`、Case、NICE Source、index、site-page registryを変更しない。PR #57の`check_chapter03_contract.py`からは、chapter-independentなnormalization、protected category、正負regressionだけをIssue #59のgeneric corpusへ抽出した。
 
+## Chapter 2 adapter status (Issue #65)
+
+- `scripts/check_chapter02_contract.py`をshared Policy `1.2.0`へ厳密pinする。
+- Chapter 2本文のGateから演習まで、`ART-13 Authorization Checklist`の使用条件と全Record section、合成Caseの取扱いと全Record sectionを、有限なreader-visible fieldとして選択する。
+- 選択したfieldは`scan_action_text()`と`scan_host_policy()`へ渡し、実Target、Credential / Token / Cookie / Session、PII、Malware / C2、DoS / 破壊操作、非承認Hostを共有Policyへ委譲する。
+- `.localhost`はtechnically reservedだがRepository Policyでdisallowedとし、non-reservedとは診断しない。
+- `.example` / `.test` / `.invalid`、IPv4 documentation range、`2001:db8::/32`を維持する。公開済み専門書へのDELEGATE URLはsynthetic execution fieldではなく、既存のChapter 2 publication contractで固定する。
+- Policyの構造を欠くfragmentとなる既存のQuestion、Unknown、Prohibited、Reject / return fieldは、有限のreviewed contextとして完全一致で保持する。変更時は自動的に通常のPolicy scanへ戻す。
+- Chapter 2固有のAuthority / Scope / Source / Traceability契約は移行しない。Canonical本文、Template、Caseの意味内容もPolicy適合だけを目的には変更しない。
+
 ## Reference extraction inventory
 
 | Reference concern | Shared core / corpusでの扱い |
