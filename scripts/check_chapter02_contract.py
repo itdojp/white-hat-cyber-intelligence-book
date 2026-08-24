@@ -119,6 +119,36 @@ CHAPTER02_REVIEWED_ACTION_CONTEXT = {
     ),
 }
 
+# Policy fields normally preserve Markdown block boundaries.  Heading text also
+# scopes the body blocks below it, so the adapter scans each body once more with
+# its active heading hierarchy.  These three exact composites are reviewed
+# non-operative prose that the additional association would otherwise classify
+# without their question, list-continuation, or prohibition semantics.
+CHAPTER02_REVIEWED_HEADING_ACTION_CONTEXT = {
+    "manuscript/02-law-ethics-authorization.md": frozenset(
+        {
+            (
+                "# 第2章　法、倫理、許可、責任ある開示 ## 導入ケース "
+                "- SaaS Tenantと外部APIのどこまでがA社の管理範囲か"
+            ),
+            (
+                "# 第2章　法、倫理、許可、責任ある開示 "
+                "## 4. Data、Secret、証拠の取扱い ### 4.2 Secret "
+                "を記録し、値自体はSecret管理経路で扱う。"
+            ),
+        }
+    ),
+    "templates/authorization-checklist.md": frozenset(
+        {
+            (
+                "# Authorization Checklist ## 使用条件 - 実Credential、Token、"
+                "Cookie、Personal Data、Secret valueを記載しない。"
+            ),
+        }
+    ),
+    "cases/ch02-authorization-decision-example.md": frozenset(),
+}
+
 # Issue #67 tracks the shared core's Japanese-particle host-token boundary.  Until
 # that independent Policy change lands, keep only these exact approved-host lines
 # frozen.  A changed line is scanned normally, so .localhost or a real host cannot
@@ -413,6 +443,30 @@ def chapter02_reader_visible_policy_fields(
     return fields, messages
 
 
+def _heading_associated_action_fields(
+    fields: list[tuple[str, str]],
+) -> list[tuple[str, str, str]]:
+    """Associate each visible body block with its active ATX heading hierarchy."""
+
+    heading_stack: list[tuple[int, str]] = []
+    associated: list[tuple[str, str, str]] = []
+    for location, value in fields:
+        match = re.match(r"^(#{1,6})\s+", value)
+        if match:
+            level = len(match.group(1))
+            heading_stack = [
+                item for item in heading_stack if item[0] < level
+            ]
+            heading_stack.append((level, value))
+            continue
+        if not heading_stack:
+            continue
+        heading_context = " ".join(heading for _, heading in heading_stack)
+        composite = f"{heading_context} {value}"
+        associated.append((f"{location} heading association", composite, value))
+    return associated
+
+
 def _finding_sort_key(finding: SafetyFinding) -> tuple[str, str, str, str, str]:
     return (
         finding.location,
@@ -449,11 +503,34 @@ def chapter02_policy_findings(
                         f"{value!r}"
                     )
 
+        heading_action_fields = _heading_associated_action_fields(fields)
+        selected_heading_action_counts = Counter(
+            value for _, value, _ in heading_action_fields
+        )
+        for value in sorted(
+            CHAPTER02_REVIEWED_HEADING_ACTION_CONTEXT[relative]
+        ):
+            count = selected_heading_action_counts[value]
+            if count != 1:
+                messages.append(
+                    f"{relative}: reviewed heading/action context must occur "
+                    f"exactly once in the bounded Policy surface; found {count}: "
+                    f"{value!r}"
+                )
+
         for location, value in fields:
             if value not in CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]:
                 findings.update(scan_action_text(value, location=location))
             if value not in CHAPTER02_REVIEWED_HOST_CONTEXT[relative]:
                 findings.update(scan_host_policy(value, location=location))
+        for location, value, body_value in heading_action_fields:
+            # A reviewed body remains a question, uncertainty, prohibition, or
+            # reject/return record when its unchanged heading hierarchy is added.
+            if body_value in CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]:
+                continue
+            if value in CHAPTER02_REVIEWED_HEADING_ACTION_CONTEXT[relative]:
+                continue
+            findings.update(scan_action_text(value, location=location))
 
     return sorted(findings, key=_finding_sort_key), messages
 
@@ -616,6 +693,35 @@ def verify_policy_adapter_regressions(
             error(
                 "Chapter 2 Markdown hard break split a protected object from "
                 f"its action: {hard_break!r}"
+            )
+
+    heading_association_anchor = "## 3. Scope Gate"
+    unsafe_heading_associations = (
+        "### 実Credentialを\n\n取得する\n\n",
+        "### 実Credentialを\n\n#### 操作\n\n取得する\n\n",
+        "### 実Credentialを\n\n前提を確認する。\n\n取得する\n\n",
+    )
+    for unsafe_heading_association in unsafe_heading_associations:
+        heading_association_template = replace_once(
+            template,
+            heading_association_anchor,
+            unsafe_heading_association + heading_association_anchor,
+            "Chapter 2 heading/body association regression",
+        )
+        heading_association_documents = dict(documents)
+        heading_association_documents[
+            "templates/authorization-checklist.md"
+        ] = heading_association_template
+        heading_association_findings, _ = chapter02_policy_findings(
+            heading_association_documents
+        )
+        if not any(
+            finding.category == "secret.credential"
+            for finding in heading_association_findings
+        ):
+            error(
+                "Chapter 2 Markdown heading split a protected object from its "
+                f"associated action: {unsafe_heading_association!r}"
             )
 
     unclassified_section_template = replace_once(
