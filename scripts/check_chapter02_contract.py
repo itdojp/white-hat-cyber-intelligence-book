@@ -101,6 +101,11 @@ CHAPTER02_RAW_HTML_TAG = re.compile(
     r"</?(?P<tag>[A-Z][A-Z0-9:-]*)\b[^>]*>",
     re.IGNORECASE,
 )
+CHAPTER02_MARKDOWN_AUTOLINK = re.compile(
+    r"<(?:[A-Z][A-Z0-9+.-]{1,31}:[^<>\x00-\x20]*|"
+    r"[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,})>",
+    re.IGNORECASE,
+)
 CHAPTER02_LIQUID_CONSTRUCT = re.compile(r"{{|{%")
 CHAPTER02_DEFINITION_ITEM = re.compile(r"(?m)^[ \t]*:[ \t]+\S")
 
@@ -620,6 +625,49 @@ def _table_header_action_fields(
     return associated
 
 
+def _indented_code_action_fields(
+    relative: str,
+    text: str,
+) -> list[tuple[str, str, str]]:
+    """Keep blank-separated four-space/tab code payloads in one Policy field."""
+
+    lines = text.splitlines()
+    associated: list[tuple[str, str, str]] = []
+    index = 0
+    while index < len(lines):
+        if not re.match(r"(?: {4}|\t)", lines[index]):
+            index += 1
+            continue
+        start = index
+        payload: list[str] = []
+        while index < len(lines):
+            line = lines[index]
+            if not line.strip():
+                payload.append("")
+                index += 1
+                continue
+            if line.startswith("\t"):
+                payload.append(line[1:])
+                index += 1
+                continue
+            if line.startswith("    "):
+                payload.append(line[4:])
+                index += 1
+                continue
+            break
+        visible_value = _project_in_field_hard_breaks(
+            " ".join(item.strip() for item in payload)
+        )
+        associated.append(
+            (
+                f"{relative} indented code lines {start + 1}-{index}",
+                visible_value,
+                visible_value,
+            )
+        )
+    return associated
+
+
 def _finding_sort_key(finding: SafetyFinding) -> tuple[str, str, str, str, str]:
     return (
         finding.location,
@@ -640,10 +688,11 @@ def chapter02_policy_findings(
         if text is None:
             messages.append(f"{relative}: missing document for Chapter 2 Policy adapter")
             continue
+        raw_html_source = CHAPTER02_MARKDOWN_AUTOLINK.sub("", text)
         raw_html_tags = sorted(
             {
                 match.group("tag").casefold()
-                for match in CHAPTER02_RAW_HTML_TAG.finditer(text)
+                for match in CHAPTER02_RAW_HTML_TAG.finditer(raw_html_source)
                 if match.group("tag").casefold() != "br"
             }
         )
@@ -710,6 +759,7 @@ def chapter02_policy_findings(
         for structural_fields in (
             _nested_list_action_fields(relative, text),
             _table_header_action_fields(relative, text),
+            _indented_code_action_fields(relative, text),
         ):
             for location, value, body_value in structural_fields:
                 if body_value in CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]:
@@ -1039,6 +1089,31 @@ def verify_policy_adapter_regressions(
                 f"{unsafe_fenced_block!r}"
             )
 
+    unsafe_indented_blocks = (
+        "    実Credentialを\n\n    取得する\n\n",
+        "\t実Credentialを\n\n\t取得する\n\n",
+    )
+    for unsafe_indented_block in unsafe_indented_blocks:
+        indented_template = replace_once(
+            template,
+            heading_association_anchor,
+            unsafe_indented_block + heading_association_anchor,
+            "Chapter 2 indented-code association regression",
+        )
+        indented_documents = dict(documents)
+        indented_documents["templates/authorization-checklist.md"] = (
+            indented_template
+        )
+        indented_findings, _ = chapter02_policy_findings(indented_documents)
+        if not any(
+            finding.category == "secret.credential"
+            for finding in indented_findings
+        ):
+            error(
+                "Chapter 2 indented code split a protected object from its "
+                f"action: {unsafe_indented_block!r}"
+            )
+
     unsupported_render_constructs = (
         (
             '| Allowed methods | 実Credentialを取{{ "得" }}する |',
@@ -1286,6 +1361,8 @@ def verify_policy_adapter_regressions(
     safe_hosts = (
         "lab.example",
         "https://lab.test/runbook",
+        "<https://lab.test/runbook>",
+        "<security@example.test>",
         "node.invalid",
         "192.0.2.10",
         "198.51.100.10",

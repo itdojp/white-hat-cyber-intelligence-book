@@ -12,7 +12,7 @@ Issue #59ではPR #57のbranch、Chapter 3本文、`ART-14`、Case、NICE Source
 
 - `scripts/check_chapter02_contract.py`をshared Policy `1.2.0`へ厳密pinする。
 - Chapter 2本文のH1 / document preambleから参考文献・Source Note IDまで、`ART-13 Authorization Checklist`と合成CaseのH1 / document preambleから全Record sectionまでを、有限なreader-visible fieldとして選択する。Markdown paragraph / list item内のsoft wrapとfield内の`<br>`は表示上のspaceへ投影し、各本文fieldは所属するATX / Setext heading階層、nested list itemは祖先item、table body rowはheader rowとも関連付けて検査する。
-- backtick / tildeによるfenced codeは、空行を含むreader-visible payload全体を単一fieldとして検査する。
+- backtick / tildeによるfenced codeと4-space / tabによるindented codeは、空行を含むreader-visible payload全体を単一fieldとして検査する。
 - Kramdown / Jekyllのrender後にsource fieldとの意味差が生じるraw HTML、Liquid、definition listはfail-closedで拒否する。raw HTMLは`<br>`だけを許可し、それ以外は同等のMarkdown heading / list / tableを使用する。
 - 選択したfieldは`scan_action_text()`と`scan_host_policy()`へ渡し、実Target、Credential / Token / Cookie / Session、PII、Malware / C2、DoS / 破壊操作、非承認Hostを共有Policyへ委譲する。
 - `.localhost`はtechnically reservedだがRepository Policyでdisallowedとし、non-reservedとは診断しない。
