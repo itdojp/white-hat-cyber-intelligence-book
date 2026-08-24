@@ -301,6 +301,17 @@ def _is_markdown_policy_block_start(line: str) -> bool:
     )
 
 
+def _project_in_field_hard_breaks(value: str) -> str:
+    """Project reader-visible HTML line breaks to Policy-safe whitespace."""
+
+    return re.sub(
+        r"</?br\b[^>]*>",
+        " ",
+        value,
+        flags=re.IGNORECASE,
+    )
+
+
 def _reader_visible_policy_blocks(
     lines: list[str],
     *,
@@ -331,12 +342,7 @@ def _reader_visible_policy_blocks(
         # Shared Policy treats block tags as clause boundaries, so project only
         # this in-field line-break tag to whitespace before delegating.  This
         # prevents an object/action pair from being split inside one table cell.
-        visible_text = re.sub(
-            r"</?br\b[^>]*>",
-            " ",
-            visible_text,
-            flags=re.IGNORECASE,
-        )
+        visible_text = _project_in_field_hard_breaks(visible_text)
         blocks.append((f"{location_prefix} {line_label}", visible_text))
         pending.clear()
 
@@ -366,8 +372,9 @@ def chapter02_reader_visible_policy_fields(
     normalization, protected-action semantics, and host/address classification.
     Reader-visible DELEGATE URLs remain in this surface.  The three canonical
     publication links are exact reviewed host contexts; an edited line returns
-    to normal Policy scanning.  Source-note fields stay outside the contracted
-    sections and remain governed by the Chapter 2 publication/source contracts.
+    to normal Policy scanning.  The final Source-note section remains inside the
+    bounded surface and its relative references also retain the existing Chapter
+    2 publication/source contracts.
     """
 
     expected_headings = CHAPTER02_POLICY_SECTIONS.get(relative)
@@ -467,6 +474,97 @@ def _heading_associated_action_fields(
     return associated
 
 
+_MARKDOWN_LIST_ITEM = re.compile(
+    r"^(?P<indent>[ \t]*)(?:[-+*]|\d+[.)])\s+(?P<body>.+?)\s*$"
+)
+
+
+def _nested_list_action_fields(
+    relative: str,
+    text: str,
+) -> list[tuple[str, str, str]]:
+    """Associate each nested list item with its visible ancestor items."""
+
+    lines = text.splitlines()
+    records: list[tuple[int, int, int, str, str]] = []
+    for index, line in enumerate(lines):
+        match = _MARKDOWN_LIST_ITEM.match(line)
+        if match is None:
+            continue
+        continuation: list[str] = []
+        end = index + 1
+        while end < len(lines):
+            candidate = lines[end]
+            if not candidate.strip() or _is_markdown_policy_block_start(candidate):
+                break
+            continuation.append(candidate.strip())
+            end += 1
+        raw_value = _project_in_field_hard_breaks(
+            " ".join([line.strip(), *continuation])
+        )
+        # List markers are layout, not reader-visible clause punctuation.  Drop
+        # them in the association so numbered markers cannot split object/action.
+        visible_value = _project_in_field_hard_breaks(
+            " ".join([match.group("body").strip(), *continuation])
+        )
+        indentation = len(match.group("indent").expandtabs(4))
+        records.append((index, end, indentation, visible_value, raw_value))
+
+    stack: list[tuple[int, str]] = []
+    associated: list[tuple[str, str, str]] = []
+    previous_end = 0
+    for start, end, indentation, value, raw_value in records:
+        if any(line.strip() for line in lines[previous_end:start]):
+            stack.clear()
+        stack = [item for item in stack if item[0] < indentation]
+        if stack:
+            ancestor_context = " ".join(item for _, item in stack)
+            associated.append(
+                (
+                    f"{relative} nested list line {start + 1}",
+                    f"{ancestor_context} {value}",
+                    raw_value,
+                )
+            )
+        stack.append((indentation, value))
+        previous_end = end
+    return associated
+
+
+def _is_markdown_table_row(line: str) -> bool:
+    stripped = line.strip()
+    return bool(stripped and "|" in stripped and not _is_markdown_table_delimiter(line))
+
+
+def _table_header_action_fields(
+    relative: str,
+    text: str,
+) -> list[tuple[str, str, str]]:
+    """Associate each pipe-table body row with its reader-visible header row."""
+
+    lines = text.splitlines()
+    associated: list[tuple[str, str, str]] = []
+    for delimiter_index, delimiter in enumerate(lines):
+        if not _is_markdown_table_delimiter(delimiter) or delimiter_index == 0:
+            continue
+        header = lines[delimiter_index - 1]
+        if not _is_markdown_table_row(header):
+            continue
+        header_value = _project_in_field_hard_breaks(header.strip())
+        body_index = delimiter_index + 1
+        while body_index < len(lines) and _is_markdown_table_row(lines[body_index]):
+            body_value = _project_in_field_hard_breaks(lines[body_index].strip())
+            associated.append(
+                (
+                    f"{relative} table row line {body_index + 1}",
+                    f"{header_value} {body_value}",
+                    body_value,
+                )
+            )
+            body_index += 1
+    return associated
+
+
 def _finding_sort_key(finding: SafetyFinding) -> tuple[str, str, str, str, str]:
     return (
         finding.location,
@@ -531,6 +629,14 @@ def chapter02_policy_findings(
             if value in CHAPTER02_REVIEWED_HEADING_ACTION_CONTEXT[relative]:
                 continue
             findings.update(scan_action_text(value, location=location))
+        for structural_fields in (
+            _nested_list_action_fields(relative, text),
+            _table_header_action_fields(relative, text),
+        ):
+            for location, value, body_value in structural_fields:
+                if body_value in CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]:
+                    continue
+                findings.update(scan_action_text(value, location=location))
 
     return sorted(findings, key=_finding_sort_key), messages
 
@@ -722,6 +828,65 @@ def verify_policy_adapter_regressions(
             error(
                 "Chapter 2 Markdown heading split a protected object from its "
                 f"associated action: {unsafe_heading_association!r}"
+            )
+
+    unsafe_nested_lists = (
+        "- 実Credentialを\n  - 取得する\n\n",
+        "- 実Credentialを\n  - 前提\n    - 取得する\n\n",
+        "1. 実Credentialを\n   1. 取得する\n\n",
+    )
+    for unsafe_nested_list in unsafe_nested_lists:
+        nested_list_template = replace_once(
+            template,
+            heading_association_anchor,
+            unsafe_nested_list + heading_association_anchor,
+            "Chapter 2 nested-list association regression",
+        )
+        nested_list_documents = dict(documents)
+        nested_list_documents["templates/authorization-checklist.md"] = (
+            nested_list_template
+        )
+        nested_list_findings, _ = chapter02_policy_findings(
+            nested_list_documents
+        )
+        if not any(
+            finding.category == "secret.credential"
+            for finding in nested_list_findings
+        ):
+            error(
+                "Chapter 2 Markdown nested list split a protected object from "
+                f"its associated action: {unsafe_nested_list!r}"
+            )
+
+    unsafe_header_tables = (
+        "| 実Credentialを |\n|---|\n| 取得する |\n\n",
+        (
+            "| Field | 実Credentialを |\n"
+            "|---|---|\n"
+            "| Value | 取得する |\n\n"
+        ),
+    )
+    for unsafe_header_table in unsafe_header_tables:
+        header_table_template = replace_once(
+            template,
+            heading_association_anchor,
+            unsafe_header_table + heading_association_anchor,
+            "Chapter 2 table-header association regression",
+        )
+        header_table_documents = dict(documents)
+        header_table_documents["templates/authorization-checklist.md"] = (
+            header_table_template
+        )
+        header_table_findings, _ = chapter02_policy_findings(
+            header_table_documents
+        )
+        if not any(
+            finding.category == "secret.credential"
+            for finding in header_table_findings
+        ):
+            error(
+                "Chapter 2 Markdown table header split a protected object from "
+                f"its associated body cell: {unsafe_header_table!r}"
             )
 
     unclassified_section_template = replace_once(
