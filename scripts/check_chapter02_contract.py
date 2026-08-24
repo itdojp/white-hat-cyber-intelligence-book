@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import html
 import json
 import re
 import sys
@@ -102,7 +103,7 @@ CHAPTER02_RAW_HTML_TAG = re.compile(
     re.IGNORECASE,
 )
 CHAPTER02_MARKDOWN_AUTOLINK = re.compile(
-    r"<(?:[A-Z][A-Z0-9+.-]{1,31}:[^<>\x00-\x20]*|"
+    r"<(?:(?:https?://|mailto:)[^<>\x00-\x20]*|"
     r"[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,})>",
     re.IGNORECASE,
 )
@@ -318,9 +319,10 @@ def _is_markdown_policy_block_start(line: str) -> bool:
     )
 
 
-def _project_in_field_hard_breaks(value: str) -> str:
-    """Project reader-visible HTML line breaks to Policy-safe whitespace."""
+def _project_in_field_whitespace(value: str) -> str:
+    """Project rendered in-field whitespace to Policy-safe spaces."""
 
+    value = re.sub(r"[\t\r\n\f\v]+", " ", html.unescape(value))
     return re.sub(
         r"</?br\b[^>]*>",
         " ",
@@ -367,7 +369,7 @@ def _reader_visible_policy_blocks(
         # Shared Policy treats block tags as clause boundaries, so project only
         # this in-field line-break tag to whitespace before delegating.  This
         # prevents an object/action pair from being split inside one table cell.
-        visible_text = _project_in_field_hard_breaks(visible_text)
+        visible_text = _project_in_field_whitespace(visible_text)
         if heading_level is not None:
             visible_text = f"{'#' * heading_level} {visible_text}"
         blocks.append((f"{location_prefix} {line_label}", visible_text))
@@ -565,12 +567,12 @@ def _nested_list_action_fields(
                 break
             continuation.append(candidate.strip())
             end += 1
-        raw_value = _project_in_field_hard_breaks(
+        raw_value = _project_in_field_whitespace(
             " ".join([line.strip(), *continuation])
         )
         # List markers are layout, not reader-visible clause punctuation.  Drop
         # them in the association so numbered markers cannot split object/action.
-        visible_value = _project_in_field_hard_breaks(
+        visible_value = _project_in_field_whitespace(
             " ".join([match.group("body").strip(), *continuation])
         )
         indentation = len(match.group("indent").expandtabs(4))
@@ -578,35 +580,90 @@ def _nested_list_action_fields(
 
     stack: list[tuple[int, list[str]]] = []
     associated: list[tuple[str, str, str]] = []
+
+    def associate_with_ancestors(
+        context_stack: list[tuple[int, list[str]]],
+        *,
+        location: str,
+        value: str,
+        raw_value: str,
+    ) -> None:
+        for _, ancestor_contexts in context_stack:
+            for ancestor_context in ancestor_contexts:
+                associated.append(
+                    (location, f"{ancestor_context} {value}", raw_value)
+                )
+
     previous_end = 0
     for start, end, indentation, value, raw_value in records:
-        stack = [item for item in stack if item[0] < indentation]
-        continuation_lines = [
-            line for line in lines[previous_end:start] if line.strip()
-        ]
-        if continuation_lines:
-            if not stack or any(
-                _markdown_indent_width(line) <= stack[-1][0]
-                for line in continuation_lines
-            ):
-                stack.clear()
-            else:
-                continuation_text = _project_in_field_hard_breaks(
+        gap_lines = lines[previous_end:start]
+        first_continuation = next(
+            (line for line in gap_lines if line.strip()),
+            None,
+        )
+        if first_continuation is not None:
+            continuation_indent = _markdown_indent_width(first_continuation)
+            owner_stack = [
+                item for item in stack if item[0] < continuation_indent
+            ]
+            continuation_lines: list[str] = []
+            reached_outer_block = False
+            if owner_stack:
+                for line in gap_lines:
+                    if not line.strip():
+                        continue
+                    if _markdown_indent_width(line) <= owner_stack[-1][0]:
+                        reached_outer_block = True
+                        break
+                    continuation_lines.append(line)
+            if owner_stack and continuation_lines:
+                continuation_text = _project_in_field_whitespace(
                     " ".join(line.strip() for line in continuation_lines)
                 )
-                stack[-1][1].append(continuation_text)
+                associate_with_ancestors(
+                    owner_stack,
+                    location=f"{relative} list continuation before line {start + 1}",
+                    value=continuation_text,
+                    raw_value=continuation_text,
+                )
+                owner_stack[-1][1].append(continuation_text)
+            stack = [] if reached_outer_block else owner_stack
+        stack = [item for item in stack if item[0] < indentation]
         if stack:
-            for _, ancestor_contexts in stack:
-                for ancestor_context in ancestor_contexts:
-                    associated.append(
-                        (
-                            f"{relative} nested list line {start + 1}",
-                            f"{ancestor_context} {value}",
-                            raw_value,
-                        )
-                    )
+            associate_with_ancestors(
+                stack,
+                location=f"{relative} nested list line {start + 1}",
+                value=value,
+                raw_value=raw_value,
+            )
         stack.append((indentation, [value]))
         previous_end = end
+
+    if stack:
+        paragraph: list[str] = []
+
+        def flush_terminal_continuation() -> None:
+            if not paragraph:
+                return
+            continuation_text = _project_in_field_whitespace(
+                " ".join(line.strip() for line in paragraph)
+            )
+            associate_with_ancestors(
+                stack,
+                location=f"{relative} terminal list continuation",
+                value=continuation_text,
+                raw_value=continuation_text,
+            )
+            paragraph.clear()
+
+        for line in lines[previous_end:]:
+            if not line.strip():
+                flush_terminal_continuation()
+                continue
+            if _markdown_indent_width(line) <= stack[-1][0]:
+                break
+            paragraph.append(line)
+        flush_terminal_continuation()
     return associated
 
 
@@ -629,10 +686,10 @@ def _table_header_action_fields(
         header = lines[delimiter_index - 1]
         if not _is_markdown_table_row(header):
             continue
-        header_value = _project_in_field_hard_breaks(header.strip())
+        header_value = _project_in_field_whitespace(header.strip())
         body_index = delimiter_index + 1
         while body_index < len(lines) and _is_markdown_table_row(lines[body_index]):
-            body_value = _project_in_field_hard_breaks(lines[body_index].strip())
+            body_value = _project_in_field_whitespace(lines[body_index].strip())
             associated.append(
                 (
                     f"{relative} table row line {body_index + 1}",
@@ -674,7 +731,7 @@ def _indented_code_action_fields(
                 index += 1
                 continue
             break
-        visible_value = _project_in_field_hard_breaks(
+        visible_value = _project_in_field_whitespace(
             " ".join(item.strip() for item in payload)
         )
         associated.append(
@@ -932,7 +989,16 @@ def verify_policy_adapter_regressions(
         error("Chapter 2 Markdown soft wrap split a protected object from its action")
 
     hard_break_anchor = "| Allowed methods |  |"
-    for hard_break in ("<br>", "<br/>", "<br />", '<BR class="wrap">'):
+    for hard_break in (
+        "<br>",
+        "<br/>",
+        "<br />",
+        '<BR class="wrap">',
+        "&#10;",
+        "&#x0A;",
+        "&NewLine;",
+        "&Tab;",
+    ):
         hard_break_template = replace_once(
             template,
             hard_break_anchor,
@@ -1007,6 +1073,8 @@ def verify_policy_adapter_regressions(
             "- 前提\n\n  実Credentialを\n\n"
             "  - 取得する\n\n"
         ),
+        "- 実Credentialを\n\n  取得する\n\n",
+        "- 実Credentialを\n\n    取得する\n\n",
     )
     for unsafe_nested_list in unsafe_nested_lists:
         nested_list_template = replace_once(
@@ -1076,6 +1144,7 @@ def verify_policy_adapter_regressions(
             "<details><summary>実Credentialを</summary>\n\n"
             "取得する\n\n</details>\n\n"
         ),
+        "<javascript:alert(document.domain)>\n\n",
     )
     for unsafe_raw_html_structure in unsafe_raw_html_structures:
         raw_html_template = replace_once(
