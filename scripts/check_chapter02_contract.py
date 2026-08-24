@@ -120,6 +120,10 @@ CHAPTER02_ABBREVIATION_DEFINITION = re.compile(
     re.MULTILINE,
 )
 CHAPTER02_KRAMDOWN_MATH = re.compile(r"(?<!\\)\$\$")
+CHAPTER02_INVALID_BACKTICK_FENCE = re.compile(
+    r"^ {0,3}`{3,}[^`\r\n]*`",
+    re.MULTILINE,
+)
 CHAPTER02_UNDERSCORE_EMPHASIS = re.compile(
     r"(?<![\w\\])(?P<delimiter>_{1,3})(?=\S)"
     r"(?P<body>[^\r\n]*?\S)(?P=delimiter)(?!\w)"
@@ -142,9 +146,7 @@ CHAPTER02_SPECIAL_URL = re.compile(
     r"(?:(?:https?:)?[\\/]{2})[^<>\x00-\x20]+",
     re.IGNORECASE,
 )
-CHAPTER02_INLINE_CODE_SPAN = re.compile(
-    r"(?<!`)(?P<ticks>`+)(?!`)(?P<body>.*?)(?<!`)(?P=ticks)(?!`)"
-)
+CHAPTER02_INLINE_CODE_DELIMITER = re.compile(r"(?<!`)(`+)(?!`)")
 CHAPTER02_ANGLE_TEXT = re.compile(r"<(?P<body>[^<>\r\n]+)>")
 CHAPTER02_EXECUTABLE_URL_PREFIXES = (
     "javascript:",
@@ -421,8 +423,16 @@ def _join_markdown_policy_lines(
 
 
 def _opening_fence_marker(line: str) -> str | None:
-    match = re.fullmatch(r"[ ]{0,3}(?P<marker>`{3,}|~{3,}).*", line)
-    return match.group("marker") if match is not None else None
+    match = re.fullmatch(
+        r"[ ]{0,3}(?P<marker>`{3,}|~{3,})(?P<info>.*)",
+        line,
+    )
+    if match is None:
+        return None
+    marker = match.group("marker")
+    if marker.startswith("`") and "`" in match.group("info"):
+        return None
+    return marker
 
 
 def _is_closing_fence(line: str, marker: str) -> bool:
@@ -453,7 +463,7 @@ def _literal_indented_code_line_indexes(lines: list[str]) -> set[int]:
             index += 1
             continue
 
-        owner_prefix: str | None = None
+        owner_prefixes: list[str] = []
         cursor = index - 1
         while cursor >= 0:
             candidate = lines[cursor]
@@ -462,8 +472,9 @@ def _literal_indented_code_line_indexes(lines: list[str]) -> set[int]:
                 continue
             owner = list_item.match(candidate)
             if owner is not None:
-                owner_prefix = owner.group("prefix")
-                break
+                owner_prefixes.append(owner.group("prefix"))
+                cursor -= 1
+                continue
             if candidate.startswith((" ", "\t")):
                 cursor -= 1
                 continue
@@ -471,6 +482,14 @@ def _literal_indented_code_line_indexes(lines: list[str]) -> set[int]:
 
         opening_indent = re.match(r"^[ \t]*", line).group(0)
         opening_column = _markdown_indent_width(opening_indent)
+        owner_prefix = next(
+            (
+                prefix
+                for prefix in owner_prefixes
+                if opening_column >= len(prefix.expandtabs(4))
+            ),
+            None,
+        )
         required_column = 4
         if owner_prefix is not None:
             # Ambiguous tabbed list ownership fails closed as rendered list
@@ -504,6 +523,55 @@ def _literal_indented_code_line_indexes(lines: list[str]) -> set[int]:
     return indexes
 
 
+def _markdown_character_is_escaped(value: str, position: int) -> bool:
+    backslashes = 0
+    cursor = position - 1
+    while cursor >= 0 and value[cursor] == "\\":
+        backslashes += 1
+        cursor -= 1
+    return backslashes % 2 == 1
+
+
+def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
+    """Return finite code spans with unescaped, equal-length delimiters."""
+
+    spans: list[tuple[int, int, str]] = []
+    search_start = 0
+    while True:
+        opening = CHAPTER02_INLINE_CODE_DELIMITER.search(value, search_start)
+        if opening is None:
+            break
+        if _markdown_character_is_escaped(value, opening.start()):
+            search_start = opening.end()
+            continue
+        marker = opening.group(1)
+        closing_start = opening.end()
+        closing = None
+        while True:
+            candidate = CHAPTER02_INLINE_CODE_DELIMITER.search(
+                value,
+                closing_start,
+            )
+            if candidate is None:
+                break
+            if candidate.group(1) == marker:
+                closing = candidate
+                break
+            closing_start = candidate.end()
+        if closing is None:
+            search_start = opening.end()
+            continue
+        spans.append(
+            (
+                opening.start(),
+                closing.end(),
+                value[opening.end() : closing.start()],
+            )
+        )
+        search_start = closing.end()
+    return spans
+
+
 def _mask_markdown_literal_code(text: str) -> str:
     """Mask code syntax for render guards while preserving line offsets."""
 
@@ -535,22 +603,8 @@ def _mask_markdown_literal_code(text: str) -> str:
         offset = line_end
 
     block_masked = "".join(masked)
-    opener = re.compile(r"(?<!`)(`+)(?!`)")
-    search_start = 0
-    while True:
-        opening = opener.search(block_masked, search_start)
-        if opening is None:
-            break
-        marker = opening.group(1)
-        closing = re.compile(
-            rf"(?<!`){re.escape(marker)}(?!`)"
-        ).search(block_masked, opening.end())
-        if closing is None:
-            search_start = opening.end()
-            continue
-        mask(opening.start(), closing.end())
-        block_masked = "".join(masked)
-        search_start = closing.end()
+    for start, end, _ in _inline_code_spans(block_masked):
+        mask(start, end)
     return "".join(masked)
 
 
@@ -606,11 +660,11 @@ def _literal_code_policy_fields(
                     (f"{relative} literal indented code line {index + 1}", projected)
                 )
             continue
-        for occurrence, match in enumerate(
-            CHAPTER02_INLINE_CODE_SPAN.finditer(line),
+        for occurrence, (_, _, body) in enumerate(
+            _inline_code_spans(line),
             start=1,
         ):
-            projected = _project_literal_code_for_policy(match.group("body"))
+            projected = _project_literal_code_for_policy(body)
             if projected.strip():
                 fields.append(
                     (
@@ -1152,6 +1206,11 @@ def chapter02_policy_findings(
                 f"{relative}: interpreted Liquid is unsupported in the bounded "
                 "Policy surface"
             )
+        if CHAPTER02_INVALID_BACKTICK_FENCE.search(text):
+            messages.append(
+                f"{relative}: backtick in a backtick-fence info string is "
+                "unsupported in the bounded Policy surface"
+            )
         if CHAPTER02_HTML_COMMENT_DELIMITER.search(render_guard_source):
             messages.append(
                 f"{relative}: HTML comments are unsupported in the bounded "
@@ -1644,6 +1703,11 @@ def verify_policy_adapter_regressions(
             "取得する\n\n</details>\n\n"
         ),
         "- safe\n\n    <script>alert(1)</script>\n\n",
+        (
+            "- outer\n    - inner\n\n"
+            '    <span onmouseover="alert(1)">safe</span>\n\n'
+        ),
+        '\\`<span onmouseover="alert(1)">safe</span>`\n\n',
         "<javascript:alert(document.domain)>\n\n",
         '<br onmouseover="alert(document.domain)">\n\n',
     )
@@ -1716,6 +1780,7 @@ def verify_policy_adapter_regressions(
         "    <div>safe example</div>\n\n",
         "- safe\n\n      <div>safe example</div>\n\n",
         "`<div>safe example</div>`\n\n",
+        "`<div>safe example</div>\\`\n\n",
     )
     for literal_code_example in literal_code_examples:
         literal_code_template = replace_once(
@@ -1826,6 +1891,12 @@ def verify_policy_adapter_regressions(
         (
             "実Credentialを取$$得$$する\n\n",
             "Kramdown math syntax is unsupported",
+        ),
+        (
+            "```text`bad\n"
+            '<span onmouseover="alert(1)">safe</span>\n'
+            "```\n\n",
+            "backtick in a backtick-fence info string is unsupported",
         ),
         (
             "第三者の _本番_ システムへ接続する\n\n",
