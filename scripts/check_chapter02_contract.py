@@ -683,12 +683,23 @@ def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
     """Return finite code spans with unescaped, equal-length delimiters."""
 
     spans: list[tuple[int, int, str]] = []
+    raw_html_tag_spans = tuple(
+        (match.start(), match.end())
+        for match in CHAPTER02_RAW_HTML_TAG.finditer(value)
+    )
+
+    def opening_is_in_raw_html_tag(position: int) -> bool:
+        return any(start <= position < end for start, end in raw_html_tag_spans)
+
     search_start = 0
     while True:
         opening = CHAPTER02_INLINE_CODE_DELIMITER.search(value, search_start)
         if opening is None:
             break
-        if _markdown_character_is_escaped(value, opening.start()):
+        if _markdown_character_is_escaped(
+            value,
+            opening.start(),
+        ) or opening_is_in_raw_html_tag(opening.start()):
             search_start = opening.end()
             continue
         marker = opening.group(1)
@@ -2005,6 +2016,7 @@ def verify_policy_adapter_regressions(
             '    <span onmouseover="alert(1)">safe</span>\n\n'
         ),
         '\\`<span onmouseover="alert(1)">safe</span>`\n\n',
+        '<img alt="`" src=x onerror="alert(1)">X`\n\n',
         "<javascript:alert(document.domain)>\n\n",
         '<br onmouseover="alert(document.domain)">\n\n',
     )
