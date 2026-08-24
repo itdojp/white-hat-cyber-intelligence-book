@@ -344,9 +344,31 @@ def _is_markdown_policy_block_start(line: str) -> bool:
     stripped = line.lstrip()
     return bool(
         re.match(r"#{1,6}\s+", stripped)
-        or stripped.startswith("|")
         or re.match(r"(?:[-+*]|\d+[.)])\s+", stripped)
     )
+
+
+def _markdown_table_row_indexes(
+    lines: list[str],
+    *,
+    start: int,
+    end: int,
+) -> set[int]:
+    """Return rows belonging to a table confirmed by its delimiter row."""
+
+    indexes: set[int] = set()
+    for delimiter_index in range(max(start + 1, 1), end):
+        if not _is_markdown_table_delimiter(lines[delimiter_index]):
+            continue
+        header_index = delimiter_index - 1
+        if header_index < start or not _is_markdown_table_row(lines[header_index]):
+            continue
+        indexes.update({header_index, delimiter_index})
+        body_index = delimiter_index + 1
+        while body_index < end and _is_markdown_table_row(lines[body_index]):
+            indexes.add(body_index)
+            body_index += 1
+    return indexes
 
 
 def _project_in_field_whitespace(value: str) -> str:
@@ -399,6 +421,54 @@ def _is_closing_fence(line: str, marker: str) -> bool:
     )
 
 
+def _mask_markdown_literal_code(text: str) -> str:
+    """Mask code syntax for render guards while preserving line offsets."""
+
+    masked = list(text)
+
+    def mask(start: int, end: int) -> None:
+        for position in range(start, end):
+            if masked[position] not in "\r\n":
+                masked[position] = " "
+
+    offset = 0
+    fence_marker: str | None = None
+    for line in text.splitlines(keepends=True):
+        source_line = line.rstrip("\r\n")
+        line_end = offset + len(line)
+        if fence_marker is not None:
+            mask(offset, line_end)
+            if _is_closing_fence(source_line, fence_marker):
+                fence_marker = None
+        else:
+            opening_fence = _opening_fence_marker(source_line)
+            if opening_fence is not None:
+                fence_marker = opening_fence
+                mask(offset, line_end)
+            elif re.match(r"(?: {4}|\t)", source_line):
+                mask(offset, line_end)
+        offset = line_end
+
+    block_masked = "".join(masked)
+    opener = re.compile(r"(?<!`)(`+)(?!`)")
+    search_start = 0
+    while True:
+        opening = opener.search(block_masked, search_start)
+        if opening is None:
+            break
+        marker = opening.group(1)
+        closing = re.compile(
+            rf"(?<!`){re.escape(marker)}(?!`)"
+        ).search(block_masked, opening.end())
+        if closing is None:
+            search_start = opening.end()
+            continue
+        mask(opening.start(), closing.end())
+        block_masked = "".join(masked)
+        search_start = closing.end()
+    return "".join(masked)
+
+
 def _reader_visible_policy_blocks(
     lines: list[str],
     *,
@@ -418,6 +488,7 @@ def _reader_visible_policy_blocks(
             if lines[index].strip() in {"---", "..."}:
                 frontmatter_delimiters.add(index)
                 break
+    table_row_indexes = _markdown_table_row_indexes(lines, start=start, end=end)
 
     def flush(
         *,
@@ -479,13 +550,13 @@ def _reader_visible_policy_blocks(
             heading_level = 1 if setext_match.group(1).startswith("=") else 2
             flush(heading_level=heading_level)
             continue
-        if _is_markdown_table_delimiter(value):
+        if index in table_row_indexes and _is_markdown_table_delimiter(value):
             flush()
             continue
-        if _is_markdown_policy_block_start(value):
+        if _is_markdown_policy_block_start(value) or index in table_row_indexes:
             flush()
             pending.append((index, value))
-            if value.lstrip().startswith(("#", "|")):
+            if value.lstrip().startswith("#") or index in table_row_indexes:
                 flush()
             continue
         pending.append((index, value))
@@ -845,7 +916,8 @@ def chapter02_policy_findings(
         if text is None:
             messages.append(f"{relative}: missing document for Chapter 2 Policy adapter")
             continue
-        raw_html_source = CHAPTER02_MARKDOWN_AUTOLINK.sub("", text)
+        render_guard_source = _mask_markdown_literal_code(text)
+        raw_html_source = CHAPTER02_MARKDOWN_AUTOLINK.sub("", render_guard_source)
         raw_html_tags = sorted(
             {
                 match.group("tag").casefold()
@@ -860,47 +932,50 @@ def chapter02_policy_findings(
                 "bounded Policy surface; use equivalent Markdown: "
                 f"{raw_html_tags!r}"
             )
-        if CHAPTER02_LIQUID_CONSTRUCT.search(text):
+        if CHAPTER02_LIQUID_CONSTRUCT.search(render_guard_source):
             messages.append(
                 f"{relative}: interpreted Liquid is unsupported in the bounded "
                 "Policy surface"
             )
-        if CHAPTER02_HTML_COMMENT_DELIMITER.search(text):
+        if CHAPTER02_HTML_COMMENT_DELIMITER.search(render_guard_source):
             messages.append(
                 f"{relative}: HTML comments are unsupported in the bounded "
                 "Policy surface"
             )
-        if CHAPTER02_DEFINITION_ITEM.search(text):
+        if CHAPTER02_DEFINITION_ITEM.search(render_guard_source):
             messages.append(
                 f"{relative}: Kramdown definition-list syntax is unsupported in "
                 "the bounded Policy surface"
             )
-        if CHAPTER02_KRAMDOWN_IAL.search(text):
+        if CHAPTER02_KRAMDOWN_IAL.search(render_guard_source):
             messages.append(
                 f"{relative}: Kramdown IAL syntax is unsupported in the bounded "
                 "Policy surface"
             )
-        if CHAPTER02_FOOTNOTE.search(text):
+        if CHAPTER02_FOOTNOTE.search(render_guard_source):
             messages.append(
                 f"{relative}: Kramdown footnote syntax is unsupported in the "
                 "bounded Policy surface"
             )
-        if CHAPTER02_ABBREVIATION_DEFINITION.search(text):
+        if CHAPTER02_ABBREVIATION_DEFINITION.search(render_guard_source):
             messages.append(
                 f"{relative}: Kramdown abbreviation syntax is unsupported in "
                 "the bounded Policy surface"
             )
-        if CHAPTER02_REFERENCE_LINK.search(text):
+        if CHAPTER02_REFERENCE_LINK.search(render_guard_source):
             messages.append(
                 f"{relative}: Markdown reference-link syntax is unsupported in "
                 "the bounded Policy surface"
             )
-        if CHAPTER02_TITLED_INLINE_LINK.search(text):
+        if CHAPTER02_TITLED_INLINE_LINK.search(render_guard_source):
             messages.append(
                 f"{relative}: Markdown link/image titles are unsupported in "
                 "the bounded Policy surface"
             )
-        rendered_text = unicodedata.normalize("NFKC", html.unescape(text))
+        rendered_text = unicodedata.normalize(
+            "NFKC",
+            html.unescape(render_guard_source),
+        )
         if any(
             "\\" in match.group(0)
             for match in CHAPTER02_HTTP_URL.finditer(rendered_text)
@@ -1118,6 +1193,25 @@ def verify_policy_adapter_regressions(
         finding.category == "secret.credential" for finding in soft_wrap_findings
     ):
         error("Chapter 2 Markdown soft wrap split a protected object from its action")
+
+    pipe_prose_template = replace_once(
+        template,
+        soft_wrap_anchor,
+        soft_wrap_anchor + "\n\n| 実Credentialを\n取得する",
+        "Chapter 2 pipe-prefixed prose regression",
+    )
+    pipe_prose_documents = dict(documents)
+    pipe_prose_documents["templates/authorization-checklist.md"] = (
+        pipe_prose_template
+    )
+    pipe_prose_findings, _ = chapter02_policy_findings(pipe_prose_documents)
+    if not any(
+        finding.category == "secret.credential"
+        for finding in pipe_prose_findings
+    ):
+        error(
+            "Chapter 2 pipe-prefixed prose was treated as an unconfirmed table"
+        )
 
     for source_hard_break in ("  \n", "\\\n"):
         hard_wrapped_template = replace_once(
@@ -1369,6 +1463,34 @@ def verify_policy_adapter_regressions(
         for message in safe_fenced_heading_messages
     ):
         error("Chapter 2 treated a fenced-code heading as a section boundary")
+
+    literal_code_examples = (
+        "```html\n<div>safe example</div>\n```\n\n",
+        "    <div>safe example</div>\n\n",
+        "`<div>safe example</div>`\n\n",
+    )
+    for literal_code_example in literal_code_examples:
+        literal_code_template = replace_once(
+            template,
+            heading_association_anchor,
+            literal_code_example + heading_association_anchor,
+            "Chapter 2 literal-code render-guard regression",
+        )
+        literal_code_documents = dict(documents)
+        literal_code_documents["templates/authorization-checklist.md"] = (
+            literal_code_template
+        )
+        _, literal_code_messages = chapter02_policy_findings(
+            literal_code_documents
+        )
+        if any(
+            "raw HTML other than attribute-free br is unsupported" in message
+            for message in literal_code_messages
+        ):
+            error(
+                "Chapter 2 render guard interpreted literal code as raw HTML: "
+                f"{literal_code_example!r}"
+            )
 
     unsafe_indented_blocks = (
         "    実Credentialを\n\n    取得する\n\n",
