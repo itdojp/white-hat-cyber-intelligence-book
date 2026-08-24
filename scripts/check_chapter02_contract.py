@@ -93,6 +93,17 @@ CHAPTER02_POLICY_TERMINAL_BOUNDARIES = {
     "cases/ch02-authorization-decision-example.md": None,
 }
 
+# Kramdown publishes these tags as structural raw HTML.  The Chapter 2 adapter
+# preserves Markdown heading/list/table relationships explicitly, but does not
+# maintain a second HTML parser.  Fail closed on raw block structure; ``br`` is
+# the sole structural HTML exception and is projected to whitespace below.
+CHAPTER02_RAW_BLOCK_HTML = re.compile(
+    r"</?(?P<tag>address|article|aside|blockquote|dd|div|dl|dt|fieldset|"
+    r"figcaption|figure|footer|form|h[1-6]|header|hr|li|main|nav|ol|p|pre|"
+    r"section|table|tbody|td|tfoot|th|thead|tr|ul)\b[^>]*>",
+    re.IGNORECASE,
+)
+
 # These exact lines are reviewed non-operative context: an uncertainty, question,
 # prohibition, or reject/return boundary.  Scanning the fragments without their
 # table/paragraph semantics would turn them into affirmative instructions.  Any
@@ -607,6 +618,18 @@ def chapter02_policy_findings(
         if text is None:
             messages.append(f"{relative}: missing document for Chapter 2 Policy adapter")
             continue
+        raw_block_tags = sorted(
+            {
+                match.group("tag").casefold()
+                for match in CHAPTER02_RAW_BLOCK_HTML.finditer(text)
+            }
+        )
+        if raw_block_tags:
+            messages.append(
+                f"{relative}: raw block HTML is unsupported in the bounded "
+                "Policy surface; use the equivalent Markdown structure: "
+                f"{raw_block_tags!r}"
+            )
         fields, selection_errors = chapter02_reader_visible_policy_fields(relative, text)
         messages.extend(selection_errors)
         selected_value_counts = Counter(value for _, value in fields)
@@ -922,6 +945,38 @@ def verify_policy_adapter_regressions(
             error(
                 "Chapter 2 Markdown table header split a protected object from "
                 f"its associated body cell: {unsafe_header_table!r}"
+            )
+
+    unsafe_raw_html_structures = (
+        (
+            "<table><tr><th>実Credentialを</th></tr>"
+            "<tr><td>取得する</td></tr></table>\n\n"
+        ),
+        "<h3>実Credentialを</h3>\n\n取得する\n\n",
+        (
+            "<ul><li>実Credentialを<ul><li>取得する</li></ul>"
+            "</li></ul>\n\n"
+        ),
+    )
+    for unsafe_raw_html_structure in unsafe_raw_html_structures:
+        raw_html_template = replace_once(
+            template,
+            heading_association_anchor,
+            unsafe_raw_html_structure + heading_association_anchor,
+            "Chapter 2 raw-HTML structure regression",
+        )
+        raw_html_documents = dict(documents)
+        raw_html_documents["templates/authorization-checklist.md"] = (
+            raw_html_template
+        )
+        _, raw_html_messages = chapter02_policy_findings(raw_html_documents)
+        if not any(
+            "raw block HTML is unsupported" in message
+            for message in raw_html_messages
+        ):
+            error(
+                "Chapter 2 adapter accepted unsupported raw block HTML: "
+                f"{unsafe_raw_html_structure!r}"
             )
 
     unclassified_section_template = replace_once(
