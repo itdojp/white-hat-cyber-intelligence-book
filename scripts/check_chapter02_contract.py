@@ -119,6 +119,15 @@ CHAPTER02_REFERENCE_LINK = re.compile(
     r"^ {0,3}\[[^\]\r\n]+\]:",
     re.MULTILINE,
 )
+CHAPTER02_TITLED_INLINE_LINK = re.compile(
+    r"(?<!\\)\]\("
+    r"(?:<[^>\r\n]*>|(?:\\.|[^\s])*)"
+    r"[ \t\r\n]+"
+    r'(?:"(?:\\.|[^"\\\r\n])*"|'
+    r"'(?:\\.|[^'\\\r\n])*'|"
+    r"\((?:\\.|[^()\\\r\n])*\))"
+    r"[ \t\r\n]*\)"
+)
 CHAPTER02_HTTP_URL = re.compile(r"https?://[^<>\x00-\x20]+", re.IGNORECASE)
 CHAPTER02_EXECUTABLE_URL_PREFIXES = (
     "javascript:",
@@ -877,6 +886,11 @@ def chapter02_policy_findings(
                 f"{relative}: Markdown reference-link syntax is unsupported in "
                 "the bounded Policy surface"
             )
+        if CHAPTER02_TITLED_INLINE_LINK.search(text):
+            messages.append(
+                f"{relative}: Markdown link/image titles are unsupported in "
+                "the bounded Policy surface"
+            )
         rendered_text = unicodedata.normalize("NFKC", html.unescape(text))
         if any(
             "\\" in match.group(0)
@@ -1397,6 +1411,18 @@ def verify_policy_adapter_regressions(
         (
             "実Credentialを取[得][x]する\n\n[x]: #safe\n\n",
             "Markdown reference-link syntax is unsupported",
+        ),
+        (
+            '[safe](# "実Credentialを取得する")\n\n',
+            "Markdown link/image titles are unsupported",
+        ),
+        (
+            "![safe](# '実Credentialを取得する')\n\n",
+            "Markdown link/image titles are unsupported",
+        ),
+        (
+            "[safe](# (実Credentialを取得する))\n\n",
+            "Markdown link/image titles are unsupported",
         ),
         (
             "[safe](javascript:alert(1))\n\n",
