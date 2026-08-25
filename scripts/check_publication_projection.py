@@ -22,21 +22,26 @@ from scripts.content_safety_policy import (  # noqa: E402
 )
 from scripts.publication_projection import (  # noqa: E402
     EXPECTED_RENDERER,
+    MAX_DOCUMENT_BYTES,
     MAX_PRODUCTION_CONFIG_BYTES,
+    MAX_REWRITE_CANDIDATES_PER_BATCH,
+    MAX_REWRITE_CANDIDATES_PER_DOCUMENT,
     PROJECTION_VERSION,
     ProjectedDocument,
     ProjectionField,
     ProjectionRuntimeError,
     UNSUPPORTED_SOURCE_CODE,
     _load_bounded_regular_json,
+    _publication_rewrite_context,
     is_absolute_destination,
     is_policy_scan_field,
     normalize_destination,
     project_documents,
 )
+from scripts import sync_site_source as site_source  # noqa: E402
 
 CORPUS = ROOT / "tests" / "fixtures" / "publication-projection" / "corpus.json"
-EXPECTED_CORPUS_SCHEMA = "1.0.0"
+EXPECTED_CORPUS_SCHEMA = "1.1.0"
 EXPECTED_POLICY_VERSION = "1.2.0"
 REQUIRED_ROLES = frozenset(
     {
@@ -203,6 +208,213 @@ def validate_resource_contract() -> None:
         else:
             fail("symlink production configuration was accepted")
 
+        duplicate = temporary_root / "duplicate.json"
+        duplicate.write_text('{"key": 1, "key": 2}\n', encoding="utf-8")
+        try:
+            _load_bounded_regular_json(duplicate)
+        except ProjectionRuntimeError:
+            pass
+        else:
+            fail("duplicate-key production configuration was accepted")
+
+
+def validate_production_rewrite_contract() -> None:
+    """Freeze production route precedence before the exact renderer runs."""
+
+    from scripts import sync_book_site
+
+    _publication_rewrite_context.cache_clear()
+    global_snapshot = (
+        site_source.PAGES,
+        tuple(sorted(site_source.DIRECTORY_ROUTES.items())),
+        site_source.CANONICAL_DIRECTORIES,
+        site_source.rewrite_links,
+        site_source.canonical_source_paths,
+        sync_book_site.STATIC_FILES,
+    )
+    context = _publication_rewrite_context()
+    first_state = sync_book_site.materialize_registry_state(
+        sync_book_site.parse_registry_data(
+            _load_bounded_regular_json(ROOT / "site-pages.json")
+        )
+    )
+    second_state = sync_book_site.materialize_registry_state(
+        sync_book_site.parse_registry_data(
+            _load_bounded_regular_json(ROOT / "site-pages.json")
+        )
+    )
+    if first_state != second_state or first_state.rewrite_context() != context:
+        fail("publication registry materialization is not deterministic")
+    if global_snapshot != (
+        site_source.PAGES,
+        tuple(sorted(site_source.DIRECTORY_ROUTES.items())),
+        site_source.CANONICAL_DIRECTORIES,
+        site_source.rewrite_links,
+        site_source.canonical_source_paths,
+        sync_book_site.STATIC_FILES,
+    ):
+        fail("publication registry materialization mutated generator globals")
+
+    destinations = dict(context.page_targets)
+    cases = (
+        (
+            "registered page",
+            "index.md",
+            "[quick](quickstart.md#intro)\n",
+            "[quick](quickstart/#intro)\n",
+        ),
+        (
+            "registered static artifact",
+            "manuscript/11-web-api-hypothesis.md",
+            "[dataset](../cases/fixtures/ch11-web-api-assessment-dataset.json#sample)\n",
+            "[dataset](../../downloads/ch11-web-api-assessment-dataset.json#sample)\n",
+        ),
+        (
+            "registered directory",
+            "index.md",
+            "[cases](cases/)\n",
+            "[cases](cases/)\n",
+        ),
+        (
+            "tracked unregistered file",
+            "index.md",
+            "[readme](README.md)\n",
+            "[readme](https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/main/README.md)\n",
+        ),
+        (
+            "tracked unregistered directory",
+            "index.md",
+            "[scripts](scripts/)\n",
+            "[scripts](https://github.com/itdojp/white-hat-cyber-intelligence-book/tree/main/scripts)\n",
+        ),
+        (
+            "missing relative target",
+            "index.md",
+            "[missing](not-a-publication-target.md)\n",
+            "[missing](not-a-publication-target.md)\n",
+        ),
+        (
+            "query-bearing relative target",
+            "index.md",
+            "[query](README.md?raw=1#part)\n",
+            "[query](README.md?raw=1#part)\n",
+        ),
+        (
+            "external absolute target",
+            "index.md",
+            "[external](https://example.com/runbook)\n",
+            "[external](https://example.com/runbook)\n",
+        ),
+        (
+            "angle target and title",
+            "index.md",
+            "[quick](<quickstart.md#intro> \"Title\")\n",
+            "[quick](<quickstart/#intro> \"Title\")\n",
+        ),
+        (
+            "fenced link-like source",
+            "index.md",
+            "```text\n[readme](README.md)\n```\n",
+            "```text\n[readme](README.md)\n```\n",
+        ),
+    )
+    for label, source, markdown, expected in cases:
+        actual = site_source.rewrite_publication_source(
+            markdown,
+            source,
+            destinations[source],
+            context,
+        )
+        if actual != expected:
+            fail(
+                f"production publication rewrite changed for {label}; "
+                f"expected={expected!r}; actual={actual!r}"
+            )
+        if actual.count("\n") != markdown.count("\n"):
+            fail(f"production publication rewrite moved a source line for {label}")
+
+    front_matter = (
+        "---\nlink: '[readme](README.md)'\n---\n\n"
+        "[readme](README.md)\n"
+    )
+    rewritten = site_source.rewrite_publication_source(
+        front_matter,
+        "index.md",
+        destinations["index.md"],
+        context,
+    )
+    if "link: '[readme](README.md)'" not in rewritten or rewritten.count(
+        "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/main/README.md"
+    ) != 1:
+        fail("production rewrite changed front matter or skipped its body boundary")
+
+    resource_cases = (
+        (
+            "per-document candidate amplification",
+            {
+                "PP-REWRITE-DOCUMENT-BUDGET": "[x](.)\n"
+                * (MAX_REWRITE_CANDIDATES_PER_DOCUMENT + 1)
+            },
+            {"PP-REWRITE-DOCUMENT-BUDGET": "index.md"},
+        ),
+        (
+            "post-rewrite output amplification",
+            {
+                "PP-REWRITE-OUTPUT-BUDGET": (
+                    "a" * (MAX_DOCUMENT_BYTES - len("\n[x](.)\n".encode("utf-8")))
+                    + "\n[x](.)\n"
+                )
+            },
+            {"PP-REWRITE-OUTPUT-BUDGET": "index.md"},
+        ),
+        (
+            "batch candidate amplification",
+            {
+                f"PP-REWRITE-BATCH-{index}": "[x](.)\n"
+                * (MAX_REWRITE_CANDIDATES_PER_BATCH // 3 + 1)
+                for index in range(3)
+            },
+            {
+                f"PP-REWRITE-BATCH-{index}": "index.md"
+                for index in range(3)
+            },
+        ),
+        (
+            "single-candidate local path component amplification",
+            {
+                "PP-REWRITE-LOCAL-PATH-BUDGET": (
+                    "[x](" + ("a/" * 900_000) + ")\n"
+                )
+            },
+            {"PP-REWRITE-LOCAL-PATH-BUDGET": "index.md"},
+        ),
+        (
+            "local path component-count overflow",
+            {"PP-REWRITE-LOCAL-COMPONENTS": "[x](" + ("a/" * 257) + ")\n"},
+            {"PP-REWRITE-LOCAL-COMPONENTS": "index.md"},
+        ),
+        (
+            "local path component-byte overflow",
+            {"PP-REWRITE-LOCAL-COMPONENT-BYTES": "[x](" + ("a" * 256) + ")\n"},
+            {"PP-REWRITE-LOCAL-COMPONENT-BYTES": "index.md"},
+        ),
+    )
+    from unittest.mock import patch
+
+    with patch("scripts.publication_projection._run_renderer") as renderer:
+        for label, documents, publication_sources in resource_cases:
+            try:
+                project_documents(
+                    documents,
+                    publication_sources=publication_sources,
+                )
+            except ProjectionRuntimeError:
+                pass
+            else:
+                fail(f"production rewrite accepted {label}")
+        if renderer.called:
+            fail("production rewrite resource failure invoked the Ruby renderer")
+
 
 def fail(message: str) -> None:
     raise ValueError(message)
@@ -222,6 +434,7 @@ def load_corpus() -> dict:
         "required_roles",
         "required_families",
         "historical_review_thread_ids",
+        "fresh_review_thread_ids",
         "external_chapter_selection_fixtures",
         "fixtures",
         "non_goals",
@@ -265,6 +478,16 @@ def validate_manifest(corpus: dict) -> None:
         fail("historical review thread inventory must contain exactly 70 unique IDs")
     if not all(item.startswith("PRRT_") for item in historical_ids):
         fail("historical review thread inventory contains an invalid GraphQL ID")
+    fresh_ids = string_list(
+        corpus["fresh_review_thread_ids"],
+        "fresh_review_thread_ids",
+    )
+    if len(fresh_ids) != len(set(fresh_ids)) or not all(
+        item.startswith("PRRT_") for item in fresh_ids
+    ):
+        fail("fresh review thread inventory contains duplicate or invalid IDs")
+    if set(historical_ids) & set(fresh_ids):
+        fail("historical and fresh review thread inventories overlap")
     string_list(corpus["non_goals"], "non_goals")
 
     fixtures = corpus["fixtures"]
@@ -314,6 +537,11 @@ def validate_manifest(corpus: dict) -> None:
         mapped_threads.extend(threads)
         if not isinstance(fixture.get("source_markdown"), str):
             fail(f"{fixture_id}: source_markdown must be a string")
+        publication_source = fixture.get("publication_source_path")
+        if publication_source is not None and (
+            not isinstance(publication_source, str) or not publication_source
+        ):
+            fail(f"{fixture_id}: publication_source_path must be a non-empty string")
         if "chapter02" in fixture["source_markdown"].casefold():
             fail(f"{fixture_id}: generic fixture contains Chapter 2 ownership")
         if not isinstance(fixture.get("notes"), str) or not fixture["notes"]:
@@ -366,11 +594,14 @@ def validate_manifest(corpus: dict) -> None:
         if fixture_id not in fixture["command"]:
             fail(f"{fixture_id}: reproduction command does not name the fixture")
 
-    if len(mapped_threads) != 70 or len(set(mapped_threads)) != 70:
-        fail("each historical review thread must be mapped exactly once")
-    if set(mapped_threads) != set(historical_ids):
-        missing = sorted(set(historical_ids) - set(mapped_threads))
-        extra = sorted(set(mapped_threads) - set(historical_ids))
+    expected_thread_ids = historical_ids + fresh_ids
+    if len(mapped_threads) != len(expected_thread_ids) or len(
+        set(mapped_threads)
+    ) != len(expected_thread_ids):
+        fail("each PR review thread must be mapped exactly once")
+    if set(mapped_threads) != set(expected_thread_ids):
+        missing = sorted(set(expected_thread_ids) - set(mapped_threads))
+        extra = sorted(set(mapped_threads) - set(expected_thread_ids))
         fail(f"review mapping mismatch; missing={missing!r}; extra={extra!r}")
     for family, covered_roles in family_roles.items():
         if covered_roles != REQUIRED_ROLES:
@@ -546,6 +777,7 @@ def main(argv: list[str] | None = None) -> int:
         corpus = load_corpus()
         validate_manifest(corpus)
         validate_destination_contract()
+        validate_production_rewrite_contract()
         validate_resource_contract()
         fixtures = corpus["fixtures"]
         if args.fixture:
@@ -556,7 +788,12 @@ def main(argv: list[str] | None = None) -> int:
                 fail(f"unknown generic fixture IDs: {missing!r}")
             fixtures = [item for item in fixtures if item["fixture_id"] in requested]
         projection = project_documents(
-            [(item["fixture_id"], item["source_markdown"]) for item in fixtures]
+            [(item["fixture_id"], item["source_markdown"]) for item in fixtures],
+            publication_sources={
+                item["fixture_id"]: item["publication_source_path"]
+                for item in fixtures
+                if "publication_source_path" in item
+            },
         )
         summaries = [
             validate_fixture(fixture, document)
@@ -575,7 +812,8 @@ def main(argv: list[str] | None = None) -> int:
     print(
         "publication projection contract passed: "
         f"version {PROJECTION_VERSION}, fixtures={len(fixtures)}, "
-        "review-thread mapping=70/70, exact renderer parity and deterministic "
+        "review-thread mapping=71/71 (70 historical + 1 fresh), exact renderer "
+        "parity and deterministic "
         "typed fields verified"
     )
     return 0

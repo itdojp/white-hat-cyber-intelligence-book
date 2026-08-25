@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
+from functools import lru_cache
 import html
 import json
 import os
@@ -21,12 +22,12 @@ import subprocess
 import unicodedata
 from urllib.parse import urlsplit
 
-from scripts.sync_site_source import render_config as render_site_config
+from scripts import sync_site_source as site_source
 
 
 ROOT = Path(__file__).resolve().parents[1]
 RENDERER = ROOT / "scripts" / "_publication_projection_renderer.rb"
-PROJECTION_VERSION = "1.0.0"
+PROJECTION_VERSION = "1.1.0"
 PROTOCOL_VERSION = "1"
 EXPECTED_RENDERER = {
     "ruby_series": "3.3",
@@ -49,8 +50,14 @@ FIELD_TYPES = frozenset(
 )
 SCANNABLE_TEXT_TYPES = frozenset({"reader_visible_text", "reader_visible_attribute"})
 MAX_DOCUMENTS = 256
-MAX_DOCUMENT_BYTES = 2_000_000
+MAX_DOCUMENT_BYTES = site_source.MAX_PUBLICATION_REWRITE_OUTPUT_BYTES
 MAX_TOTAL_BYTES = 8_000_000
+MAX_REWRITE_CANDIDATES_PER_DOCUMENT = (
+    site_source.MAX_PUBLICATION_REWRITE_CANDIDATES_PER_DOCUMENT
+)
+MAX_REWRITE_CANDIDATES_PER_BATCH = (
+    site_source.MAX_PUBLICATION_REWRITE_CANDIDATES_PER_BATCH
+)
 RENDER_TIMEOUT_SECONDS = 45
 RENDER_MAX_ADDRESS_SPACE_BYTES = 384 * 1024 * 1024
 RENDER_MAX_CPU_SECONDS = 30
@@ -235,6 +242,14 @@ def _limit_renderer_resources() -> None:
 def _load_bounded_regular_json(path: Path) -> dict:
     """Read one bounded, non-symlink regular JSON object without path races."""
 
+    def reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict:
+        value: dict[str, object] = {}
+        for key, item in pairs:
+            if key in value:
+                raise ValueError(f"duplicate JSON key: {key}")
+            value[key] = item
+        return value
+
     descriptor = -1
     try:
         lexical = path.lstat()
@@ -265,7 +280,10 @@ def _load_bounded_regular_json(path: Path) -> dict:
         raw = b"".join(chunks)
         if len(raw) > MAX_PRODUCTION_CONFIG_BYTES:
             raise ValueError("production configuration exceeds the input budget")
-        value = json.loads(raw.decode("utf-8"))
+        value = json.loads(
+            raw.decode("utf-8"),
+            object_pairs_hook=reject_duplicate_keys,
+        )
         if not isinstance(value, dict):
             raise ValueError("production configuration root must be an object")
         return value
@@ -286,7 +304,7 @@ def _load_bounded_regular_json(path: Path) -> dict:
 
 def _run_renderer(documents: list[tuple[str, str]]) -> dict:
     try:
-        production_config = render_site_config(
+        production_config = site_source.render_config(
             _load_bounded_regular_json(ROOT / "book-config.json")
         )
     except (ValueError, KeyError, TypeError, RecursionError) as exc:
@@ -335,6 +353,92 @@ def _run_renderer(documents: list[tuple[str, str]]) -> dict:
             "locked publication renderer root must be an object"
         )
     return value
+
+
+@lru_cache(maxsize=1)
+def _publication_rewrite_context() -> site_source.PublicationRewriteContext:
+    """Load and freeze the validated production routes once per process."""
+
+    # Import lazily to keep the generic source generator independent from the
+    # public projection module.  The registry owner validates paths, routes,
+    # static artifacts, and titles before returning immutable state.
+    from scripts import sync_book_site
+
+    try:
+        raw_registry = _load_bounded_regular_json(ROOT / "site-pages.json")
+        registry = sync_book_site.parse_registry_data(raw_registry)
+        state = sync_book_site.materialize_registry_state(registry)
+        context = state.rewrite_context()
+    except (OSError, TypeError, ValueError, RuntimeError, RecursionError) as exc:
+        raise ProjectionRuntimeError(
+            "locked publication rewrite context could not be materialized"
+        ) from exc
+    return context
+
+
+def _rewrite_publication_documents(
+    documents: list[tuple[str, str]],
+    publication_sources: Mapping[str, str] | None,
+) -> list[tuple[str, str]]:
+    """Apply the exact production body rewrite to registered publication sources."""
+
+    if publication_sources is None:
+        explicit_sources: dict[str, str] = {}
+    elif not isinstance(publication_sources, Mapping):
+        raise TypeError("publication_sources must map document IDs to source paths")
+    else:
+        explicit_sources = dict(publication_sources)
+
+    document_ids = {document_id for document_id, _ in documents}
+    if set(explicit_sources) - document_ids:
+        raise ValueError("publication_sources contains an unknown document ID")
+    if not all(
+        isinstance(key, str) and isinstance(value, str) and value
+        for key, value in explicit_sources.items()
+    ):
+        raise TypeError("publication_sources must contain non-empty string paths")
+
+    context = _publication_rewrite_context()
+    rewrite_budget = site_source.PublicationRewriteBudget(
+        remaining_candidates=MAX_REWRITE_CANDIDATES_PER_BATCH,
+        max_candidates_per_document=MAX_REWRITE_CANDIDATES_PER_DOCUMENT,
+        max_document_output_bytes=MAX_DOCUMENT_BYTES,
+    )
+
+    page_targets = dict(context.page_targets)
+    rewritten: list[tuple[str, str]] = []
+    try:
+        for document_id, markdown in documents:
+            source_path = explicit_sources.get(document_id)
+            if source_path is None and document_id in page_targets:
+                source_path = document_id
+            if source_path is None:
+                rewritten.append((document_id, markdown))
+                continue
+            destination = page_targets.get(source_path)
+            if destination is None:
+                raise ValueError(
+                    f"{document_id}: publication source is not a registered page"
+                )
+            rewritten.append(
+                (
+                    document_id,
+                    site_source.rewrite_publication_source(
+                        markdown,
+                        source_path,
+                        destination,
+                        context,
+                        budget=rewrite_budget,
+                    ),
+                )
+            )
+        # Revalidate both per-document and aggregate UTF-8 budgets after URL
+        # expansion and before serializing the Ruby child payload.
+        return _materialize_documents(rewritten)
+    except (OSError, TypeError, ValueError, RuntimeError) as exc:
+        raise ProjectionRuntimeError(
+            "production publication link rewrite failed closed"
+        ) from exc
 
 
 def _validated_runtime(raw: object) -> tuple[tuple[str, str], ...]:
@@ -694,11 +798,17 @@ def _validate_document(
 
 def project_documents(
     documents: Mapping[str, str] | Iterable[tuple[str, str]],
+    *,
+    publication_sources: Mapping[str, str] | None = None,
 ) -> ProjectionResult:
-    """Project a finite ordered document batch with the exact locked renderer."""
+    """Project production-rewritten Markdown with the exact locked renderer."""
 
     materialized = _materialize_documents(documents)
-    raw = _run_renderer(materialized)
+    publication_documents = _rewrite_publication_documents(
+        materialized,
+        publication_sources,
+    )
+    raw = _run_renderer(publication_documents)
     if set(raw) != {
         "protocol_version",
         "projection_version",
@@ -712,12 +822,14 @@ def project_documents(
         raise ProjectionRuntimeError("renderer projection version mismatch")
     runtime = _validated_runtime(raw["runtime"])
     if not isinstance(raw["documents"], list) or len(raw["documents"]) != len(
-        materialized
+        publication_documents
     ):
         raise ProjectionRuntimeError("renderer document count changed")
     projected = tuple(
         _validate_document(item, expected_document_id=document_id)
-        for (document_id, _), item in zip(materialized, raw["documents"], strict=True)
+        for (document_id, _), item in zip(
+            publication_documents, raw["documents"], strict=True
+        )
     )
     return ProjectionResult(
         projection_version=PROJECTION_VERSION,

@@ -12,7 +12,7 @@ require "kramdown"
 require "kramdown-parser-gfm"
 
 PROTOCOL_VERSION = "1"
-PROJECTION_VERSION = "1.0.0"
+PROJECTION_VERSION = "1.1.0"
 SUPPORTED_BLOCKS = %i[p codeblock ul ol blockquote table dl hr blank header].freeze
 MAX_FIELDS_PER_DOCUMENT = 5_000
 MAX_PROJECTED_TEXT_BYTES = 2_000_000

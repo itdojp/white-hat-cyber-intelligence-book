@@ -38,7 +38,7 @@ from scripts.sync_book_site import (  # noqa: E402
 
 ERRORS: list[str] = []
 EXPECTED_CONTENT_SAFETY_POLICY_VERSION = "1.2.0"
-EXPECTED_PUBLICATION_PROJECTION_VERSION = "1.0.0"
+EXPECTED_PUBLICATION_PROJECTION_VERSION = "1.1.0"
 
 CHAPTER02_DOCUMENTS = (
     "manuscript/02-law-ethics-authorization.md",
@@ -1279,6 +1279,7 @@ SELECTION_FIXTURE_IDS = (
     "CH02-SEL-059",
     "CH02-SEL-071",
     "CH02-SEL-072",
+    "CH02-SEL-073",
 )
 
 
@@ -1351,6 +1352,9 @@ def _selection_fixture_documents(
     if fixture_id == "CH02-SEL-072":
         documents[template_path] += "\n個人情報の収集リスクを分析する。\n"
         return documents, "accepted-bounded-explanation"
+    if fixture_id == "CH02-SEL-073":
+        documents[chapter_path] += "\n[Repository note](../README.md)\n"
+        return documents, "finding:network.host_or_address"
     raise ValueError(f"unknown Chapter 2 selection fixture: {fixture_id}")
 
 
