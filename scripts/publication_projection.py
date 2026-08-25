@@ -16,9 +16,12 @@ import os
 from pathlib import Path
 import re
 import resource
+import stat
 import subprocess
 import unicodedata
 from urllib.parse import urlsplit
+
+from scripts.sync_site_source import render_config as render_site_config
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,6 +54,7 @@ MAX_TOTAL_BYTES = 8_000_000
 RENDER_TIMEOUT_SECONDS = 45
 RENDER_MAX_ADDRESS_SPACE_BYTES = 384 * 1024 * 1024
 RENDER_MAX_CPU_SECONDS = 30
+MAX_PRODUCTION_CONFIG_BYTES = 100_000
 UNSUPPORTED_SOURCE_CODE = "PP1001"
 UNSAFE_DESTINATION_CODE = "PP1002"
 
@@ -228,8 +232,69 @@ def _limit_renderer_resources() -> None:
     )
 
 
+def _load_bounded_regular_json(path: Path) -> dict:
+    """Read one bounded, non-symlink regular JSON object without path races."""
+
+    descriptor = -1
+    try:
+        lexical = path.lstat()
+        if not stat.S_ISREG(lexical.st_mode):
+            raise ValueError("production configuration is not a regular file")
+        if lexical.st_size > MAX_PRODUCTION_CONFIG_BYTES:
+            raise ValueError("production configuration exceeds the input budget")
+        flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(
+            os, "O_NOFOLLOW", 0
+        )
+        descriptor = os.open(path, flags)
+        opened = os.fstat(descriptor)
+        if not stat.S_ISREG(opened.st_mode) or (
+            lexical.st_dev,
+            lexical.st_ino,
+        ) != (opened.st_dev, opened.st_ino):
+            raise ValueError("production configuration identity changed while opening")
+        if opened.st_size > MAX_PRODUCTION_CONFIG_BYTES:
+            raise ValueError("production configuration exceeds the input budget")
+        chunks: list[bytes] = []
+        remaining = MAX_PRODUCTION_CONFIG_BYTES + 1
+        while remaining:
+            chunk = os.read(descriptor, remaining)
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        raw = b"".join(chunks)
+        if len(raw) > MAX_PRODUCTION_CONFIG_BYTES:
+            raise ValueError("production configuration exceeds the input budget")
+        value = json.loads(raw.decode("utf-8"))
+        if not isinstance(value, dict):
+            raise ValueError("production configuration root must be an object")
+        return value
+    except (
+        OSError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        ValueError,
+        RecursionError,
+    ) as exc:
+        raise ProjectionRuntimeError(
+            "locked production publication configuration could not be read"
+        ) from exc
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+
+
 def _run_renderer(documents: list[tuple[str, str]]) -> dict:
+    try:
+        production_config = render_site_config(
+            _load_bounded_regular_json(ROOT / "book-config.json")
+        )
+    except (ValueError, KeyError, TypeError, RecursionError) as exc:
+        raise ProjectionRuntimeError(
+            "locked production publication configuration could not be generated"
+        ) from exc
     payload = {
+        "production_config": production_config,
         "documents": [
             {"document_id": document_id, "source": source}
             for document_id, source in documents

@@ -26,13 +26,22 @@ MAX_BATCH_DIAGNOSTICS = 2_000
 SUPPORTED_DIRECT_ATTRIBUTE_ENTITIES = %w[Tab NewLine amp lt gt quot apos].freeze
 DIRECT_NAMED_ENTITY = /&([A-Za-z][A-Za-z0-9]+);/
 REPOSITORY_ROOT = File.expand_path("..", __dir__)
-JEKYLL_CONFIG = Jekyll.configuration(
-  "config" => File.join(REPOSITORY_ROOT, "docs", "_config.yml"),
+payload = JSON.parse($stdin.read)
+production_config = payload.fetch("production_config")
+unless production_config.is_a?(String) && production_config.bytesize <= 100_000
+  raise "production publication configuration is malformed"
+end
+raw_config = SafeYAML.load(production_config)
+unless raw_config.is_a?(Hash)
+  raise "production publication configuration root must be a mapping"
+end
+JEKYLL_CONFIG = Jekyll.configuration(raw_config.merge(
+  "skip_config_files" => true,
   "source" => File.join(REPOSITORY_ROOT, "docs"),
   "destination" => File.join(REPOSITORY_ROOT, ".work", "publication-projection-site"),
   "quiet" => true,
   "safe" => true,
-).freeze
+)).validate.freeze
 MARKDOWN_CONVERTER = Jekyll::Converters::Markdown.new(JEKYLL_CONFIG)
 MARKDOWN_CONVERTER.setup
 KRAMDOWN_OPTIONS = JEKYLL_CONFIG.fetch("kramdown").freeze
@@ -56,7 +65,8 @@ class PublicationProjector
       reject("liquid", 1, "Liquid source is outside the frozen projection contract")
       return rejected_projection
     end
-    # Use the exact Jekyll-normalized Kramdown options from docs/_config.yml.
+    # Use the exact Jekyll-normalized Kramdown options from the tracked
+    # production configuration generator.
     # Constructing the matching JekyllDocument exposes the same AST that the
     # production Markdown converter turns into HTML without loading a Site or
     # executing configured plugins.
@@ -665,7 +675,6 @@ class PublicationProjector
   end
 end
 
-payload = JSON.parse($stdin.read)
 documents = payload.fetch("documents")
 projected_documents = []
 batch_fields = 0

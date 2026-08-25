@@ -89,7 +89,7 @@ executable destinationまたはparse不能なspecial network destinationは`PP10
 
 - YAML front matterはJekyll `4.4.1`の`YAML_FRONT_MATTER_REGEXP`と`SafeYAML`で分離する。
 - Liquidは安全上実行せずfail closedとする。
-- `docs/_config.yml`からJekyll production configurationを読み、`Jekyll::Converters::Markdown`のproduction HTMLと、field抽出に使用した`Kramdown::JekyllDocument` ASTのHTMLがbyte-for-byte一致しなければfail closedとする。`hard_wrap: false`と`syntax_highlighter: rouge`もruntime contractである。
+- tracked production generator `scripts/sync_site_source.py`の`render_config(book-config.json)`をPython ownerからprivate backendへ渡し、Jekyllのdefault merge/validationを適用する。これによりclean checkoutでも未追跡のgenerated `docs/_config.yml`へ依存せず、同じproduction configurationを使用する。`Jekyll::Converters::Markdown`のproduction HTMLと、field抽出に使用した`Kramdown::JekyllDocument` ASTのHTMLがbyte-for-byte一致しなければfail closedとする。`hard_wrap: false`と`syntax_highlighter: rouge`もruntime contractである。
 - Site、layout、include、plugin、Liquidをroot projectionで実行しない。最終siteのrewrite、link、anchor、layoutはBook QAのexact formatter / Jekyll build gateで別途検証する。
 - generic fixtureはtyped fieldsと`rendered_html`を固定し、exact renderer/version handshakeも検証する。
 - handshakeはRuby 3.3 series、Jekyll `4.4.1`、Kramdown `2.5.2`、`Kramdown::Parser::GFM`、GFM parser `1.1.0`、Liquid `4.0.4`、production base scheme `https`、`hard_wrap: false`、Rougeを検証する。

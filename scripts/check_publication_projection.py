@@ -8,6 +8,7 @@ from collections import Counter
 import json
 from pathlib import Path
 import sys
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -21,11 +22,13 @@ from scripts.content_safety_policy import (  # noqa: E402
 )
 from scripts.publication_projection import (  # noqa: E402
     EXPECTED_RENDERER,
+    MAX_PRODUCTION_CONFIG_BYTES,
     PROJECTION_VERSION,
     ProjectedDocument,
     ProjectionField,
     ProjectionRuntimeError,
     UNSUPPORTED_SOURCE_CODE,
+    _load_bounded_regular_json,
     is_absolute_destination,
     is_policy_scan_field,
     normalize_destination,
@@ -173,6 +176,32 @@ def validate_resource_contract() -> None:
         or diagnostic.kind != "kramdown-extension"
     ):
         fail("interpreted Kramdown options did not fail before exact rendering")
+
+    work_root = ROOT / ".work"
+    work_root.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(
+        prefix="publication-config-contract-", dir=work_root
+    ) as temporary:
+        temporary_root = Path(temporary)
+        oversized = temporary_root / "oversized.json"
+        oversized.write_bytes(b" " * (MAX_PRODUCTION_CONFIG_BYTES + 1))
+        try:
+            _load_bounded_regular_json(oversized)
+        except ProjectionRuntimeError:
+            pass
+        else:
+            fail("oversized production configuration was accepted")
+
+        regular = temporary_root / "regular.json"
+        regular.write_text("{}\n", encoding="utf-8")
+        symlink = temporary_root / "symlink.json"
+        symlink.symlink_to(regular.name)
+        try:
+            _load_bounded_regular_json(symlink)
+        except ProjectionRuntimeError:
+            pass
+        else:
+            fail("symlink production configuration was accepted")
 
 
 def fail(message: str) -> None:
