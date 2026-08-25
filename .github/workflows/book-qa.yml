@@ -50,6 +50,12 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Set up Ruby and install locked publication renderer
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
       - name: Run repository contract tests
         run: npm test
 
@@ -84,12 +90,6 @@ jobs:
             ${{ runner.temp }}/layout-risk-report.json
             ${{ runner.temp }}/markdown-structure-report.json
           if-no-files-found: ignore
-
-      - name: Set up Ruby and install locked gems
-        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
-        with:
-          ruby-version: '3.3'
-          bundler-cache: true
 
       - name: Build Jekyll site
         run: bundle exec jekyll build --source docs --config docs/_config.yml --destination _site --trace

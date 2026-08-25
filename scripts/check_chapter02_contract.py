@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import html
+import argparse
 import json
 import re
 import sys
-import unicodedata
 from collections import Counter
 from copy import deepcopy
 from pathlib import Path
@@ -14,14 +13,23 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.render_reference_baseline import (  # noqa: E402
-    render as render_reference_baseline,
-)
 from scripts.content_safety_policy import (  # noqa: E402
     POLICY_VERSION as CONTENT_SAFETY_POLICY_VERSION,
     SafetyFinding,
     scan_action_text,
     scan_host_policy,
+)
+from scripts.publication_projection import (  # noqa: E402
+    PROJECTION_VERSION,
+    ProjectedDocument,
+    ProjectionRuntimeError,
+    destination_fields,
+    is_absolute_destination,
+    is_policy_scan_field,
+    project_documents,
+)
+from scripts.render_reference_baseline import (  # noqa: E402
+    render as render_reference_baseline,
 )
 from scripts.sync_book_site import (  # noqa: E402
     SitePageRegistryError,
@@ -30,260 +38,758 @@ from scripts.sync_book_site import (  # noqa: E402
 
 ERRORS: list[str] = []
 EXPECTED_CONTENT_SAFETY_POLICY_VERSION = "1.2.0"
+EXPECTED_PUBLICATION_PROJECTION_VERSION = "1.0.0"
 
-CHAPTER02_POLICY_SECTIONS = {
+CHAPTER02_DOCUMENTS = (
+    "manuscript/02-law-ethics-authorization.md",
+    "templates/authorization-checklist.md",
+    "cases/ch02-authorization-decision-example.md",
+)
+
+# Layer A owns the complete ordered H1/H2 inventory. Layer B decides which source
+# constructs are headings, so Setext/indented/fenced precedence is not reimplemented
+# here. H3 and deeper content is still projected and scanned but does not define a
+# Chapter 2 top-level section boundary.
+EXPECTED_CHAPTER02_HEADINGS = {
     "manuscript/02-law-ethics-authorization.md": (
-        "## 1. 四つのGate",
-        "## 2. 法、契約、組織権限、倫理を分離する",
-        "## 3. 書面による許可",
-        "## 4. Data、Secret、証拠の取扱い",
-        "## 5. 委託、再委託、Cloud / SaaS",
-        "## 6. 脆弱性を発見したとき",
-        "## 7. 四つの視点",
-        "## 8. Handoff Contract",
-        "## 9. 安全な演習",
-        "## 10. 作成する成果物",
-        "## 11. 評価基準",
-        "## 12. よくある誤解",
-        "## 章のまとめ",
-        "## 次に学ぶこと",
-        "## 参考文献・Source Note ID",
+        (1, "第2章　法、倫理、許可、責任ある開示"),
+        (2, "この章の位置付け"),
+        (2, "本章の責任境界"),
+        (2, "学習目標"),
+        (2, "前提知識"),
+        (2, "導入ケース"),
+        (2, "1. 四つのGate"),
+        (2, "2. 法、契約、組織権限、倫理を分離する"),
+        (2, "3. 書面による許可"),
+        (2, "4. Data、Secret、証拠の取扱い"),
+        (2, "5. 委託、再委託、Cloud / SaaS"),
+        (2, "6. 脆弱性を発見したとき"),
+        (2, "7. 四つの視点"),
+        (2, "8. Handoff Contract"),
+        (2, "9. 安全な演習"),
+        (2, "10. 作成する成果物"),
+        (2, "11. 評価基準"),
+        (2, "12. よくある誤解"),
+        (2, "章のまとめ"),
+        (2, "次に学ぶこと"),
+        (2, "参考文献・Source Note ID"),
     ),
     "templates/authorization-checklist.md": (
-        "## 使用条件",
-        "## 0. Document Control",
-        "## 1. Decision Requirement",
-        "## 2. Authority Gate",
-        "## 3. Scope Gate",
-        "## 4. Safety Gate",
-        "## 5. Disclosure Gate",
-        "## 6. Legal, Contractual, and Policy Questions",
-        "## 7. Conditions",
-        "## 8. Decision Record",
-        "## 9. RoE Handoff",
-        "## 10. Reassessment",
-        "## 11. Traceability Check",
-        "## 12. Review",
+        (1, "Authorization Checklist"),
+        (2, "目的"),
+        (2, "使用条件"),
+        (2, "0. Document Control"),
+        (2, "1. Decision Requirement"),
+        (2, "2. Authority Gate"),
+        (2, "3. Scope Gate"),
+        (2, "4. Safety Gate"),
+        (2, "5. Disclosure Gate"),
+        (2, "6. Legal, Contractual, and Policy Questions"),
+        (2, "7. Conditions"),
+        (2, "8. Decision Record"),
+        (2, "9. RoE Handoff"),
+        (2, "10. Reassessment"),
+        (2, "11. Traceability Check"),
+        (2, "12. Review"),
     ),
     "cases/ch02-authorization-decision-example.md": (
-        "## この記入例の扱い",
-        "## 0. Document Control",
-        "## 1. Decision Requirement",
-        "## 2. Authority Gate",
-        "## 3. Scope Gate",
-        "## 4. Safety Gate",
-        "## 5. Disclosure Gate",
-        "## 6. Legal, Contractual, and Policy Questions",
-        "## 7. Conditions",
-        "## 8. Decision Record",
-        "## 9. RoE Handoff",
-        "## 10. Reassessment",
-        "## 11. Traceability Check",
-        "## 12. Review",
+        (1, "第2章 合成記入例：OAuth連携評価前のAuthorization判断"),
+        (2, "この記入例の扱い"),
+        (2, "0. Document Control"),
+        (2, "1. Decision Requirement"),
+        (2, "2. Authority Gate"),
+        (2, "3. Scope Gate"),
+        (2, "4. Safety Gate"),
+        (2, "5. Disclosure Gate"),
+        (2, "6. Legal, Contractual, and Policy Questions"),
+        (2, "7. Conditions"),
+        (2, "8. Decision Record"),
+        (2, "9. RoE Handoff"),
+        (2, "10. Reassessment"),
+        (2, "11. Traceability Check"),
+        (2, "12. Review"),
     ),
-}
-CHAPTER02_POLICY_PREAMBLE_DOCUMENTS = frozenset(
-    {
-        "manuscript/02-law-ethics-authorization.md",
-        "templates/authorization-checklist.md",
-        "cases/ch02-authorization-decision-example.md",
-    }
-)
-CHAPTER02_POLICY_PREAMBLE_HEADINGS = {
-    "manuscript/02-law-ethics-authorization.md": (
-        "# 第2章　法、倫理、許可、責任ある開示",
-        "## この章の位置付け",
-        "## 本章の責任境界",
-        "### OWN",
-        "### BRIDGE",
-        "### DELEGATE",
-        "## 学習目標",
-        "## 前提知識",
-        "## 導入ケース",
-    ),
-    "templates/authorization-checklist.md": (
-        "# Authorization Checklist",
-        "## 目的",
-    ),
-    "cases/ch02-authorization-decision-example.md": (
-        "# 第2章 合成記入例：OAuth連携評価前のAuthorization判断",
-    ),
-}
-CHAPTER02_POLICY_TERMINAL_BOUNDARIES = {
-    "manuscript/02-law-ethics-authorization.md": None,
-    "templates/authorization-checklist.md": None,
-    "cases/ch02-authorization-decision-example.md": None,
 }
 
-# Kramdown/Jekyll can publish structures whose rendered relationships differ from
-# the source blocks delegated to Policy 1.2.0.  The adapter does not maintain a
-# second HTML/Liquid renderer, so it rejects these constructs.  ``br`` is the sole
-# raw HTML exception and is projected to whitespace below.
-CHAPTER02_RAW_HTML_TAG = re.compile(
-    r"</?(?P<tag>[A-Z][A-Z0-9:-]*)\b"
-    r"(?:\"[^\"]*\"|'[^']*'|[^'\">])*>",
-    re.IGNORECASE,
-)
-CHAPTER02_RAW_HTML_NON_TAG = re.compile(
-    r"<(?:(?:\?[\s\S]*?\?>)|(?:!\[CDATA\[[\s\S]*?\]\]>)|(?:![A-Z][^>]*>))",
-    re.IGNORECASE,
-)
-CHAPTER02_SAFE_BR_TAG = re.compile(r"<br\s*/?>", re.IGNORECASE)
-CHAPTER02_HTML_COMMENT_DELIMITER = re.compile(r"<!--")
-CHAPTER02_MARKDOWN_AUTOLINK = re.compile(
-    r"<(?:(?:https?://|mailto:)[^<>\x00-\x20]*|"
-    r"[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,})>",
-    re.IGNORECASE,
-)
-CHAPTER02_LIQUID_CONSTRUCT = re.compile(r"{{|{%")
-CHAPTER02_DEFINITION_ITEM = re.compile(r"(?m)^[ \t]*:[ \t]+\S")
-CHAPTER02_BLOCKQUOTE = re.compile(r"^ {0,3}>", re.MULTILINE)
-CHAPTER02_KRAMDOWN_IAL = re.compile(r"(?<!\\)\{:")
-CHAPTER02_FOOTNOTE = re.compile(r"\[\^[^\]\r\n]+\]")
-CHAPTER02_ABBREVIATION_DEFINITION = re.compile(
-    r"^ {0,3}\*\[[^\]\r\n]+\]:",
-    re.MULTILINE,
-)
-CHAPTER02_KRAMDOWN_MATH = re.compile(r"(?<!\\)\$\$")
-CHAPTER02_INVALID_BACKTICK_FENCE = re.compile(
-    r"^ {0,3}`{3,}[^`\r\n]*`",
-    re.MULTILINE,
-)
-CHAPTER02_UNDERSCORE_EMPHASIS = re.compile(
-    r"(?<![\w\\])(?P<delimiter>_{1,3})(?=\S)"
-    r"(?P<body>(?:(?!\r?\n[ \t]*\r?\n).)*?\S)"
-    r"(?P=delimiter)(?![A-Za-z0-9_])",
-    re.DOTALL,
-)
-CHAPTER02_REFERENCE_LINK = re.compile(
-    r"\[[^\]\r\n]+\]\[[^\]\r\n]*\]|"
-    r"^ {0,3}\[[^\]\r\n]+\]:",
-    re.MULTILINE,
-)
-CHAPTER02_TITLED_INLINE_LINK = re.compile(
-    r"(?<!\\)\]\("
-    r"(?:<[^>\r\n]*>|(?:\\.|[^\s])*)"
-    r"[ \t\r\n]+"
-    r'(?:"(?:\\.|[^"\\\r\n])*"|'
-    r"'(?:\\.|[^'\\\r\n])*'|"
-    r"\((?:\\.|[^()\\\r\n])*\))"
-    r"[ \t\r\n]*\)"
-)
-CHAPTER02_EMPTY_INLINE_LINK = re.compile(r"(?<!\\)!?\[\]\(")
-CHAPTER02_EMPTY_LINK_DESTINATION = re.compile(
-    r"(?<!\\)!?\[[^\]\r\n]+\]\([ \t\r\n]*\)"
-)
-CHAPTER02_BALANCED_PAREN_LINK_DESTINATION = re.compile(
-    r"(?<!\\)!?\[[^\]\r\n]+\]"
-    r"\([^\r\n)]*\([^\r\n)]*\)[^\r\n)]*\)"
-)
-CHAPTER02_ESCAPED_PAREN_LINK_DESTINATION = re.compile(
-    r"(?<!\\)!?\[[^\]\r\n]+\]\([^\r\n)]*\\[()]"
-)
-CHAPTER02_BACKTICK_LINK_DESTINATION = re.compile(
-    r"(?<!\\)!?\[[^\]\r\n]*\]\([^\r\n)]*`[^\r\n)]*\)"
-)
-CHAPTER02_MARKDOWN_PUNCTUATION_ESCAPE = re.compile(r"\\([!-/:-@\[-`{-~])")
-CHAPTER02_ESCAPED_PUNCTUATION_LINK_DESTINATION = re.compile(
-    r"(?<!\\)!?\[[^\]\r\n]+\]\("
-    r"(?:<[^>\r\n]*|[^\r\n)]*)\\[!-/:-@\[-`{-~]"
-)
-CHAPTER02_SIMPLE_INLINE_LINK = re.compile(
-    r"(?<!\\)!?\[[^\]\r\n]+\]"
-    r"\([ \t]*(?P<destination><[^>\r\n]*>|[^\s\r\n)]*)[ \t]*\)"
-)
-CHAPTER02_SPECIAL_URL = re.compile(
-    r"(?:(?:https?:)?[\\/]{2})[^<>\x00-\x20]+",
-    re.IGNORECASE,
-)
-CHAPTER02_INLINE_CODE_DELIMITER = re.compile(r"(?<!`)(`+)(?!`)")
-CHAPTER02_KRAMDOWN_ASCII_WHITESPACE = frozenset(" \t\n\v\f\r")
-CHAPTER02_ANGLE_TEXT = re.compile(r"<(?P<body>[^<>\r\n]+)>")
-CHAPTER02_EXECUTABLE_URL_PREFIXES = (
-    "javascript:",
-    "vbscript:",
-    "data:text/html",
-    "data:application/xhtml+xml",
-    "data:image/svg+xml",
-)
-
-# These exact lines are reviewed non-operative context: an uncertainty, question,
-# prohibition, or reject/return boundary.  Scanning the fragments without their
-# table/paragraph semantics would turn them into affirmative instructions.  Any
-# edit removes the exemption and is delegated to Policy 1.2.0 until this finite
-# reviewed set is updated deliberately.
-CHAPTER02_REVIEWED_ACTION_CONTEXT = {
+# Layer A identities are document-scoped exact projected fields.  Absolute source
+# lines/ordinals remain diagnostic evidence, but are not semantic identifiers: an
+# unrelated safe insertion must not invalidate every later field.  Type, element
+# ownership, attribute, exact text, and exactly-once cardinality make moving a
+# token into code or duplicating an exemption fail closed.
+EXPECTED_CHAPTER02_SEMANTIC_FIELDS = {
     "manuscript/02-law-ethics-authorization.md": frozenset(
         {
-            "一つの層がPassしても、他の層を自動的にPassさせない。たとえば契約にSecurity testingの記載があっても、第三者Tenantや実利用者Dataまで対象になるとは限らない。",
-            "- 未確認: 委託先が管理するApp credentialの変更権限",
-        }
-    ),
-    "templates/authorization-checklist.md": frozenset(),
-    "cases/ch02-authorization-decision-example.md": frozenset(
-        {
-            "| Maximum acceptable uncertainty | 委託先が管理するProduction credentialの変更権限は未確定でも、合成Tenantのread-only設定Reviewだけを分離できること |",
-            "| Authority gaps | Production credential変更権限と委託契約上の作業範囲は未確認 |",
-            "| Prohibited methods | Token取得・利用、外部API call、Credential変更、権限昇格、横展開、DoS、Data変更 |",
-            "| `LQ-AUTH-2026-002` | 委託契約はProduction credential変更を許容するか | Synthetic contract | Procurement / Legal | Escalated | 本Decisionでは不要。Production変更前に確認 | Production変更案承認前 |",
-            "| `LQ-AUTH-2026-004` | 許可外の認証試行を行ってよいか | `SRC-JP-LAW-001`、internal policy | Legal | Answered | 行わない。合成Tenant・明示許可操作だけに限定 | Scope変更時 |",
-            "| Information gaps | Production credential変更権限、実Vendor窓口、契約通知期限 |",
-            "| `HO-AUTH-2026-004` | Method boundary | Read-only、禁止操作、Rate | Pass | Token利用・外部API追加 | Lab Operator |",
-        }
-    ),
-}
-
-# Policy fields normally preserve Markdown block boundaries.  Heading text also
-# scopes the body blocks below it, so the adapter scans each body once more with
-# its active heading hierarchy.  These three exact composites are reviewed
-# non-operative prose that the additional association would otherwise classify
-# without their question, list-continuation, or prohibition semantics.
-CHAPTER02_REVIEWED_HEADING_ACTION_CONTEXT = {
-    "manuscript/02-law-ethics-authorization.md": frozenset(
-        {
+            ("reader_visible_text", "heading", None, "1.1 Authority Gate"),
+            ("reader_visible_text", "heading", None, "1.2 Scope Gate"),
+            ("reader_visible_text", "heading", None, "1.3 Safety Gate"),
+            ("reader_visible_text", "heading", None, "1.4 Disclosure Gate"),
+            ("reader_visible_text", "heading", None, "BRIDGE"),
+            ("reader_visible_text", "heading", None, "DELEGATE"),
+            ("reader_visible_text", "heading", None, "OWN"),
             (
-                "# 第2章　法、倫理、許可、責任ある開示 ## 導入ケース "
-                "- SaaS Tenantと外部APIのどこまでがA社の管理範囲か"
+                "reader_visible_text",
+                "p",
+                None,
+                "本章の責任境界 本書は、実務上のAuthorization Gateと後続工程へのHandoffに責任を持つ。"
+                "本章は法的助言を提供せず、個別事案の法的判断と法令解釈は専門家へ委譲する。"
+                "専門領域の詳細は委譲先に残すが、委譲先へのリンクを読まなくても、"
+                "第2章の論旨と運用判断は単独で成立する。",
             ),
             (
-                "# 第2章　法、倫理、許可、責任ある開示 "
-                "## 4. Data、Secret、証拠の取扱い ### 4.2 Secret "
-                "を記録し、値自体はSecret管理経路で扱う。"
+                "reader_visible_text",
+                "list_path",
+                None,
+                "DELEGATE 個別事案の法的助言と法令解釈は、"
+                "適格な法務・契約専門家へ委譲する",
             ),
         }
     ),
     "templates/authorization-checklist.md": frozenset(
         {
             (
-                "# Authorization Checklist ## 使用条件 - 実Credential、Token、"
-                "Cookie、Personal Data、Secret valueを記載しない。"
+                "reader_visible_text",
+                "table_row",
+                None,
+                "0. Document Control Field Value Artifact ID ART-13",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "0. Document Control Field Value Parent Case ID CASE-YYYY-NNN",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "0. Document Control Field Value Relation "
+                "refines / supersedes / independent",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "10. Reassessment Field Value Reassessment ID REA-AUTH-001",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "8. Decision Record Field Value Authorization Decision ID DEC-AUTH-001",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "9. RoE Handoff Handoff ID Input to RoE "
+                "Acceptance criteria Actual status Reject / "
+                "return condition Owner HO-AUTH-001 Decision "
+                "Requirement Owner、期限、判断内容がある 抽象目的のみ",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "Authority evidence Evidence ID Description "
+                "Source / custodian Collected at Integrity / "
+                "reference Limitation EVD-AUTH-001",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "Condition ID Condition Reason Owner Due date "
+                "Verification Status COND-AUTH-001 Open / "
+                "Satisfied / Waived by authorized owner / "
+                "Failed",
             ),
         }
     ),
-    "cases/ch02-authorization-decision-example.md": frozenset(),
+    "cases/ch02-authorization-decision-example.md": frozenset(
+        {
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "0. Document Control Field Value Artifact ID ART-13",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "0. Document Control Field Value Parent Case ID CASE-2026-001",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "0. Document Control Field Value Relation refines",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "10. Reassessment Field Value Reassessment ID REA-AUTH-2026-001",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "7. Conditions Condition ID Condition "
+                "Reason Owner Due date Verification "
+                "Status COND-AUTH-2026-001 Production "
+                "credentialを操作しない 委託契約とAuthority未確認 "
+                "Lab Operator Assessment終了まで Evidence "
+                "/ operation log Open",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "8. Decision Record Field Value "
+                "Authorization Decision ID "
+                "DEC-AUTH-2026-001",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "9. RoE Handoff Handoff ID Input to "
+                "RoE Acceptance criteria Actual "
+                "status Reject / return condition "
+                "Owner HO-AUTH-2026-001 Decision "
+                "Requirement Owner、期限、判断内容 Pass "
+                "抽象目的のみ CTO",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "Authority evidence Evidence ID "
+                "Description Source / custodian "
+                "Collected at Integrity / reference "
+                "Limitation EVD-AUTH-2026-001 "
+                "合成Tenantを対象とした設定Review承認 CTO / "
+                "Ticket system "
+                "2026-08-05T10:15:00+09:00 "
+                "SYNTH-EVD-AUTH-001 "
+                "Production、外部API、実Credentialを含まない",
+            ),
+        }
+    ),
 }
 
-# Issue #67 tracks the shared core's Japanese-particle host-token boundary.  Until
-# that independent Policy change lands, keep only these exact approved-host lines
-# frozen.  A changed line is scanned normally, so .localhost or a real host cannot
-# inherit this exemption.
-CHAPTER02_REVIEWED_HOST_CONTEXT = {
+# These fields close the finite Layer A gaps that raw token checks cannot own:
+# core reader-visible Gate meaning and the Authorization/Decision chain IDs.
+EXPECTED_CHAPTER02_SEMANTIC_FIELDS[
+    "manuscript/02-law-ethics-authorization.md"
+] |= frozenset(
+    {
+        (
+            "reader_visible_text",
+            "p",
+            None,
+            "1.1 Authority Gate Authority Gateは、誰がその操作を許可できるかを確認する。",
+        ),
+        (
+            "reader_visible_text",
+            "p",
+            None,
+            "1.2 Scope Gate Scope Gateは、対象を技術的識別子へ変換する。",
+        ),
+        (
+            "reader_visible_text",
+            "p",
+            None,
+            "1.3 Safety Gate Safety Gateは、許可された操作の中から、判断に必要な最小操作を選ぶ。",
+        ),
+        (
+            "reader_visible_text",
+            "p",
+            None,
+            "1.4 Disclosure Gate Disclosure Gateは、発見情報の共有・調整・公開経路を事前に決める。",
+        ),
+    }
+)
+EXPECTED_CHAPTER02_SEMANTIC_FIELDS[
+    "templates/authorization-checklist.md"
+] |= frozenset(
+    {
+        (
+            "reader_visible_text",
+            "table_row",
+            None,
+            "0. Document Control Field Value Authorization Record ID AUTH-YYYY-NNN",
+        ),
+        (
+            "reader_visible_text",
+            "table_row",
+            None,
+            "1. Decision Requirement Field Value Decision Requirement ID DR-AUTH-001",
+        ),
+    }
+)
+EXPECTED_CHAPTER02_SEMANTIC_FIELDS[
+    "cases/ch02-authorization-decision-example.md"
+] |= frozenset(
+    {
+        (
+            "reader_visible_text",
+            "table_row",
+            None,
+            "0. Document Control Field Value Authorization Record ID AUTH-CASE-2026-001",
+        ),
+        (
+            "reader_visible_text",
+            "table_row",
+            None,
+            "1. Decision Requirement Field Value Decision Requirement ID DR-AUTH-2026-001",
+        ),
+    }
+)
+
+CHAPTER02_REVIEWED_ACTION_IDENTITIES = {
     "manuscript/02-law-ethics-authorization.md": frozenset(
         {
-            "- 詳細な攻撃技法と脆弱性の悪用は、許可済み評価の専門的な方法、成果物、安全境界を詳述する[実務で使えるペネトレーションテスト大全](https://itdojp.github.io/pentest-learning-book/)へ委譲する",
-            "- 認証・認可Protocol内部と安全な実装は、OAuth、OIDC、SAML等の設計と実装を詳述する[実践 認証認可システム設計](https://itdojp.github.io/practical-auth-book/)へ委譲する",
-            "- Infrastructure Hardeningと防御実装は、Network、OS、Cloud、ContainerのSecurity実装を詳述する[インフラエンジニアのための情報セキュリティ実装ガイド](https://itdojp.github.io/it-infra-security-guide-book/)へ委譲する",
-            "- 対象: `billing-bridge.example`の合成Tenant",
+            (
+                "reader_visible_text",
+                "list_path",
+                None,
+                "初期情報 未確認: 委託先が管理するApp credentialの変更権限",
+            ),
+            (
+                "reader_visible_text",
+                "p",
+                None,
+                "一つの層がPassしても、他の層を自動的にPassさせない。たとえば契約にSecurity "
+                "testingの記載があっても、第三者Tenantや実利用者Dataまで対象になるとは限らない。",
+            ),
+        }
+    ),
+    "templates/authorization-checklist.md": frozenset(
+        {
+            (
+                "reader_visible_text",
+                "list_path",
+                None,
+                "使用条件 実Credential、Token、Cookie、Personal "
+                "Data、Secret valueを記載しない。",
+            )
+        }
+    ),
+    "cases/ch02-authorization-decision-example.md": frozenset(
+        {
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "1. Decision Requirement Field Value "
+                "Maximum acceptable uncertainty "
+                "委託先が管理するProduction "
+                "credentialの変更権限は未確定でも、合成Tenantのread-only設定Reviewだけを分離できること",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "2. Authority Gate Field Value "
+                "Authority gaps Production "
+                "credential変更権限と委託契約上の作業範囲は未確認",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "3. Scope Gate Field Value Prohibited "
+                "methods Token取得・利用、外部API "
+                "call、Credential変更、権限昇格、横展開、DoS、Data変更",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "6. Legal, Contractual, and Policy "
+                "Questions Question ID Question "
+                "Applicable source / contract Owner "
+                "Status Answer / limitation Recheck "
+                "trigger LQ-AUTH-2026-002 "
+                "委託契約はProduction credential変更を許容するか "
+                "Synthetic contract Procurement / "
+                "Legal Escalated "
+                "本Decisionでは不要。Production変更前に確認 "
+                "Production変更案承認前",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "6. Legal, Contractual, and Policy "
+                "Questions Question ID Question "
+                "Applicable source / contract Owner "
+                "Status Answer / limitation Recheck "
+                "trigger LQ-AUTH-2026-004 "
+                "許可外の認証試行を行ってよいか "
+                "SRC-JP-LAW-001、internal policy Legal "
+                "Answered 行わない。合成Tenant・明示許可操作だけに限定 "
+                "Scope変更時",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "8. Decision Record Field Value "
+                "Information gaps Production "
+                "credential変更権限、実Vendor窓口、契約通知期限",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "9. RoE Handoff Handoff ID Input to "
+                "RoE Acceptance criteria Actual "
+                "status Reject / return condition "
+                "Owner HO-AUTH-2026-004 Method "
+                "boundary Read-only、禁止操作、Rate Pass "
+                "Token利用・外部API追加 Lab Operator",
+            ),
+        }
+    ),
+}
+
+CHAPTER02_REVIEWED_HOST_IDENTITIES = {
+    "manuscript/02-law-ethics-authorization.md": frozenset(
+        {
+            (
+                "reader_visible_text",
+                "list_path",
+                None,
+                "初期情報 対象: billing-bridge.exampleの合成Tenant",
+            )
         }
     ),
     "templates/authorization-checklist.md": frozenset(),
     "cases/ch02-authorization-decision-example.md": frozenset(
         {
-            "- Domainは予約済みの`.example`を使用する。",
-            "| In-scope target identifiers | `tenant-auth-lab-01.test`、`billing-bridge.example`の合成App registration、設定Export |",
+            (
+                "reader_visible_text",
+                "list_path",
+                None,
+                "Domainは予約済みの.exampleを使用する。",
+            ),
+            (
+                "reader_visible_text",
+                "table_row",
+                None,
+                "3. Scope Gate Field Value In-scope "
+                "target identifiers "
+                "tenant-auth-lab-01.test、billing-bridge.exampleの合成App "
+                "registration、設定Export",
+            ),
         }
     ),
 }
+
+# A reviewed Policy exemption belongs to one exact projected owner under one
+# exact Chapter 2 heading path.  The relational owner prevents identical text
+# from inheriting an exemption after it is copied or moved to another section.
+CHAPTER02_REVIEWED_ACTION_HEADING_PATHS = {
+    "manuscript/02-law-ethics-authorization.md": {
+        "初期情報 未確認: 委託先が管理するApp credentialの変更権限": (
+            "第2章　法、倫理、許可、責任ある開示",
+            "9. 安全な演習",
+            "初期情報",
+        ),
+        (
+            "一つの層がPassしても、他の層を自動的にPassさせない。たとえば契約にSecurity "
+            "testingの記載があっても、第三者Tenantや実利用者Dataまで対象になるとは限らない。"
+        ): (
+            "第2章　法、倫理、許可、責任ある開示",
+            "2. 法、契約、組織権限、倫理を分離する",
+            "T-02-01　許容性判断の層",
+        ),
+    },
+    "templates/authorization-checklist.md": {
+        "使用条件 実Credential、Token、Cookie、Personal Data、Secret valueを記載しない。": (
+            "Authorization Checklist",
+            "使用条件",
+        ),
+    },
+    "cases/ch02-authorization-decision-example.md": {
+        "1. Decision Requirement Field Value Maximum acceptable uncertainty "
+        "委託先が管理するProduction credentialの変更権限は未確定でも、合成Tenantのread-only設定Reviewだけを分離できること": (
+            "第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "1. Decision Requirement",
+        ),
+        "2. Authority Gate Field Value Authority gaps Production credential変更権限と委託契約上の作業範囲は未確認": (
+            "第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "2. Authority Gate",
+        ),
+        "3. Scope Gate Field Value Prohibited methods Token取得・利用、外部API call、Credential変更、権限昇格、横展開、DoS、Data変更": (
+            "第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "3. Scope Gate",
+        ),
+        "6. Legal, Contractual, and Policy Questions Question ID Question Applicable source / contract Owner Status Answer / limitation Recheck trigger LQ-AUTH-2026-002 委託契約はProduction credential変更を許容するか Synthetic contract Procurement / Legal Escalated 本Decisionでは不要。Production変更前に確認 Production変更案承認前": (
+            "第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "6. Legal, Contractual, and Policy Questions",
+        ),
+        "6. Legal, Contractual, and Policy Questions Question ID Question Applicable source / contract Owner Status Answer / limitation Recheck trigger LQ-AUTH-2026-004 許可外の認証試行を行ってよいか SRC-JP-LAW-001、internal policy Legal Answered 行わない。合成Tenant・明示許可操作だけに限定 Scope変更時": (
+            "第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "6. Legal, Contractual, and Policy Questions",
+        ),
+        "8. Decision Record Field Value Information gaps Production credential変更権限、実Vendor窓口、契約通知期限": (
+            "第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "8. Decision Record",
+        ),
+        "9. RoE Handoff Handoff ID Input to RoE Acceptance criteria Actual status Reject / return condition Owner HO-AUTH-2026-004 Method boundary Read-only、禁止操作、Rate Pass Token利用・外部API追加 Lab Operator": (
+            "第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "9. RoE Handoff",
+        ),
+    },
+}
+
+CHAPTER02_REVIEWED_HOST_HEADING_PATHS = {
+    "manuscript/02-law-ethics-authorization.md": {
+        "初期情報 対象: billing-bridge.exampleの合成Tenant": (
+            "第2章　法、倫理、許可、責任ある開示",
+            "9. 安全な演習",
+            "初期情報",
+        ),
+    },
+    "templates/authorization-checklist.md": {},
+    "cases/ch02-authorization-decision-example.md": {
+        "Domainは予約済みの.exampleを使用する。": (
+            "第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "この記入例の扱い",
+        ),
+        "3. Scope Gate Field Value In-scope target identifiers tenant-auth-lab-01.test、billing-bridge.exampleの合成App registration、設定Export": (
+            "第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "3. Scope Gate",
+        ),
+    },
+}
+
+CHAPTER02_REVIEWED_ACTION_RELATIONS = {
+    logical_path: frozenset(
+        (identity, CHAPTER02_REVIEWED_ACTION_HEADING_PATHS[logical_path][identity[3]])
+        for identity in identities
+    )
+    for logical_path, identities in CHAPTER02_REVIEWED_ACTION_IDENTITIES.items()
+}
+CHAPTER02_REVIEWED_HOST_RELATIONS = {
+    logical_path: frozenset(
+        (identity, CHAPTER02_REVIEWED_HOST_HEADING_PATHS[logical_path][identity[3]])
+        for identity in identities
+    )
+    for logical_path, identities in CHAPTER02_REVIEWED_HOST_IDENTITIES.items()
+}
+
+CHAPTER02_RESPONSIBILITY_BOUNDARY_RELATIONS = {
+    "manuscript/02-law-ethics-authorization.md": frozenset(
+        {
+            (
+                (
+                    "reader_visible_text",
+                    "p",
+                    None,
+                    "本章の責任境界 本書は、実務上のAuthorization Gateと後続工程へのHandoffに責任を持つ。"
+                    "本章は法的助言を提供せず、個別事案の法的判断と法令解釈は専門家へ委譲する。"
+                    "専門領域の詳細は委譲先に残すが、委譲先へのリンクを読まなくても、"
+                    "第2章の論旨と運用判断は単独で成立する。",
+                ),
+                (
+                    "第2章　法、倫理、許可、責任ある開示",
+                    "本章の責任境界",
+                ),
+            ),
+            (
+                (
+                    "reader_visible_text",
+                    "list_path",
+                    None,
+                    "DELEGATE 個別事案の法的助言と法令解釈は、"
+                    "適格な法務・契約専門家へ委譲する",
+                ),
+                (
+                    "第2章　法、倫理、許可、責任ある開示",
+                    "本章の責任境界",
+                    "DELEGATE",
+                ),
+            ),
+        }
+    ),
+    "templates/authorization-checklist.md": frozenset(),
+    "cases/ch02-authorization-decision-example.md": frozenset(),
+}
+
+CHAPTER02_REVIEWED_PROVENANCE_RELATIONS = {
+    "manuscript/02-law-ethics-authorization.md": frozenset(
+        {
+            (
+                (
+                    "destination",
+                    "link",
+                    "href",
+                    "https://itdojp.github.io/pentest-learning-book/",
+                ),
+                (
+                    "reader_visible_text",
+                    "list_path",
+                    None,
+                    "DELEGATE 詳細な攻撃技法と脆弱性の悪用は、許可済み評価の専門的な方法、成果物、安全境界を詳述する実務で使えるペネトレーションテスト大全へ委譲する",
+                ),
+            ),
+            (
+                (
+                    "destination",
+                    "link",
+                    "href",
+                    "https://itdojp.github.io/practical-auth-book/",
+                ),
+                (
+                    "reader_visible_text",
+                    "list_path",
+                    None,
+                    "DELEGATE 認証・認可Protocol内部と安全な実装は、OAuth、OIDC、SAML等の設計と実装を詳述する実践 認証認可システム設計へ委譲する",
+                ),
+            ),
+            (
+                (
+                    "destination",
+                    "link",
+                    "href",
+                    "https://itdojp.github.io/it-infra-security-guide-book/",
+                ),
+                (
+                    "reader_visible_text",
+                    "list_path",
+                    None,
+                    "DELEGATE Infrastructure Hardeningと防御実装は、Network、OS、Cloud、ContainerのSecurity実装を詳述するインフラエンジニアのための情報セキュリティ実装ガイドへ委譲する",
+                ),
+            ),
+        }
+    ),
+    "templates/authorization-checklist.md": frozenset(),
+    "cases/ch02-authorization-decision-example.md": frozenset(),
+}
+
+# Ordered exact-text keys add semantic sequence without coupling the contract to
+# absolute line/field ordinals.  The corresponding full identities above still
+# enforce projected type, owner element, attribute, and exactly-once cardinality.
+EXPECTED_CHAPTER02_SEMANTIC_ORDER = {
+    "manuscript/02-law-ethics-authorization.md": (
+        "本章の責任境界 本書は、実務上のAuthorization Gateと後続工程へのHandoffに責任を持つ。"
+        "本章は法的助言を提供せず、個別事案の法的判断と法令解釈は専門家へ委譲する。"
+        "専門領域の詳細は委譲先に残すが、委譲先へのリンクを読まなくても、"
+        "第2章の論旨と運用判断は単独で成立する。",
+        "OWN",
+        "BRIDGE",
+        "DELEGATE",
+        "DELEGATE 個別事案の法的助言と法令解釈は、適格な法務・契約専門家へ委譲する",
+        "1.1 Authority Gate",
+        "1.1 Authority Gate Authority Gateは、誰がその操作を許可できるかを確認する。",
+        "1.2 Scope Gate",
+        "1.2 Scope Gate Scope Gateは、対象を技術的識別子へ変換する。",
+        "1.3 Safety Gate",
+        "1.3 Safety Gate Safety Gateは、許可された操作の中から、判断に必要な最小操作を選ぶ。",
+        "1.4 Disclosure Gate",
+        "1.4 Disclosure Gate Disclosure Gateは、発見情報の共有・調整・公開経路を事前に決める。",
+    ),
+    "templates/authorization-checklist.md": (
+        "0. Document Control Field Value Artifact ID ART-13",
+        "0. Document Control Field Value Authorization Record ID AUTH-YYYY-NNN",
+        "0. Document Control Field Value Parent Case ID CASE-YYYY-NNN",
+        "0. Document Control Field Value Relation refines / supersedes / independent",
+        "1. Decision Requirement Field Value Decision Requirement ID DR-AUTH-001",
+        "Authority evidence Evidence ID Description Source / custodian Collected at Integrity / reference Limitation EVD-AUTH-001",
+        "Condition ID Condition Reason Owner Due date Verification Status COND-AUTH-001 Open / Satisfied / Waived by authorized owner / Failed",
+        "8. Decision Record Field Value Authorization Decision ID DEC-AUTH-001",
+        "9. RoE Handoff Handoff ID Input to RoE Acceptance criteria Actual status Reject / return condition Owner HO-AUTH-001 Decision Requirement Owner、期限、判断内容がある 抽象目的のみ",
+        "10. Reassessment Field Value Reassessment ID REA-AUTH-001",
+    ),
+    "cases/ch02-authorization-decision-example.md": (
+        "0. Document Control Field Value Artifact ID ART-13",
+        "0. Document Control Field Value Authorization Record ID AUTH-CASE-2026-001",
+        "0. Document Control Field Value Parent Case ID CASE-2026-001",
+        "0. Document Control Field Value Relation refines",
+        "1. Decision Requirement Field Value Decision Requirement ID DR-AUTH-2026-001",
+        "Authority evidence Evidence ID Description Source / custodian Collected at Integrity / reference Limitation EVD-AUTH-2026-001 合成Tenantを対象とした設定Review承認 CTO / Ticket system 2026-08-05T10:15:00+09:00 SYNTH-EVD-AUTH-001 Production、外部API、実Credentialを含まない",
+        "7. Conditions Condition ID Condition Reason Owner Due date Verification Status COND-AUTH-2026-001 Production credentialを操作しない 委託契約とAuthority未確認 Lab Operator Assessment終了まで Evidence / operation log Open",
+        "8. Decision Record Field Value Authorization Decision ID DEC-AUTH-2026-001",
+        "9. RoE Handoff Handoff ID Input to RoE Acceptance criteria Actual status Reject / return condition Owner HO-AUTH-2026-001 Decision Requirement Owner、期限、判断内容 Pass 抽象目的のみ CTO",
+        "10. Reassessment Field Value Reassessment ID REA-AUTH-2026-001",
+    ),
+}
+
+CHAPTER02_BOUNDED_HEADING_MEMBERS = {
+    "manuscript/02-law-ethics-authorization.md": (
+        (
+            "本章の責任境界",
+            "学習目標",
+            ("OWN", "BRIDGE", "DELEGATE"),
+        ),
+        (
+            "1. 四つのGate",
+            "2. 法、契約、組織権限、倫理を分離する",
+            (
+                "1.1 Authority Gate",
+                "1.2 Scope Gate",
+                "1.3 Safety Gate",
+                "1.4 Disclosure Gate",
+            ),
+        ),
+    ),
+    "templates/authorization-checklist.md": (),
+    "cases/ch02-authorization-decision-example.md": (),
+}
+
+# Every Gate body is a finite canonical Layer A surface.  Exact first/last
+# projected fields plus the visible field count reject an empty, truncated, or
+# structurally relocated Gate without re-parsing Markdown in the chapter checker.
+CHAPTER02_GATE_BODY_CONTRACT = {
+    "manuscript/02-law-ethics-authorization.md": (
+        (
+            "1.1 Authority Gate",
+            "1.2 Scope Gate",
+            21,
+            "1.1 Authority Gate Authority Gateは、誰がその操作を許可できるかを確認する。",
+            "口頭了解やChatの一文だけでは、対象・期間・手法・Dataの境界が不明な場合がある。形式よりも、後から同じ範囲を再現できる具体性を重視する。",
+        ),
+        (
+            "1.2 Scope Gate",
+            "1.3 Safety Gate",
+            11,
+            "1.2 Scope Gate Scope Gateは、対象を技術的識別子へ変換する。",
+            "ScopeはAsset inventoryと一致させる。対象外を明記し、DNSやRedirectで到達した別Domainを自動的に対象へ追加しない。",
+        ),
+        (
+            "1.3 Safety Gate",
+            "1.4 Disclosure Gate",
+            13,
+            "1.3 Safety Gate Safety Gateは、許可された操作の中から、判断に必要な最小操作を選ぶ。",
+            "たとえば設定上の過大権限を示すには、実Dataを取得せず、設定Exportと業務要件の差分で十分な場合がある。影響確認が必要でも、合成Data、Canary object、Read-only queryを優先する。",
+        ),
+        (
+            "1.4 Disclosure Gate",
+            "2. 法、契約、組織権限、倫理を分離する",
+            12,
+            "1.4 Disclosure Gate Disclosure Gateは、発見情報の共有・調整・公開経路を事前に決める。",
+            "届出や調整を行う場合、発見者、IPA / JPCERT/CC、製品開発者、ウェブサイト運営者等の役割を確認する。独自に公開時期を決める前に、現行の公式Guidelineと対象組織の窓口を確認する。SRC-IPA-VDP-001",
+        ),
+    ),
+    "templates/authorization-checklist.md": (),
+    "cases/ch02-authorization-decision-example.md": (),
+}
+
+EXPECTED_CHAPTER02_SOURCE_IDS = frozenset(
+    {"SRC-JP-LAW-001", "SRC-IPA-VDP-001"}
+)
+EXPECTED_CHAPTER02_BODY_SOURCE_COUNTS = Counter(
+    {"SRC-JP-LAW-001": 1, "SRC-IPA-VDP-001": 4}
+)
+EXPECTED_CHAPTER02_REFERENCE_SOURCE_COUNTS = Counter(
+    {"SRC-JP-LAW-001": 1, "SRC-IPA-VDP-001": 1}
+)
+
 
 EXPECTED_CHAPTER02_PAGES = {
     (
@@ -386,2586 +892,960 @@ def registry_mutation_is_rejected(registry: dict, label: str) -> bool:
     return bool(chapter02_page_contract_errors(parsed, label))
 
 
-def source_ids(text: str) -> set[str]:
-    return set(re.findall(r"\bSRC-[A-Z0-9-]+\b", text))
-
-
-def chapter_body_and_references(text: str) -> tuple[str, str]:
-    marker = "## 参考文献・Source Note ID"
-    if marker not in text:
-        return text, ""
-    body, references = text.split(marker, 1)
-    return body, references
-
-
-def _is_markdown_table_delimiter(line: str) -> bool:
-    stripped = line.strip().strip("|")
-    if not stripped:
-        return False
-    cells = [cell.strip() for cell in stripped.split("|")]
-    return bool(cells) and all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells)
-
-
-def _is_markdown_policy_block_start(line: str) -> bool:
-    stripped = line.lstrip()
-    return bool(
-        re.match(r"#{1,6}\s+", stripped)
-        or re.match(r"(?:[-+*]|\d+[.)])\s+", stripped)
+def chapter02_heading_inventory_errors(
+    document: ProjectedDocument,
+    logical_path: str,
+) -> list[str]:
+    expected = EXPECTED_CHAPTER02_HEADINGS.get(logical_path)
+    if expected is None:
+        return [f"{logical_path}: is not a canonical Chapter 2 publication surface"]
+    actual = tuple(
+        (int(field.metadata_value("level")), field.text)
+        for field in document.fields
+        if field.field_type == "reader_visible_text"
+        and field.element_kind == "heading"
+        and isinstance(field.metadata_value("level"), int)
+        and int(field.metadata_value("level")) <= 2
     )
-
-
-def _markdown_table_row_indexes(
-    lines: list[str],
-    *,
-    start: int,
-    end: int,
-) -> set[int]:
-    """Return rows belonging to a table confirmed by its delimiter row."""
-
-    indexes: set[int] = set()
-    for delimiter_index in range(max(start + 1, 1), end):
-        if not _is_markdown_table_delimiter(lines[delimiter_index]):
-            continue
-        header_index = delimiter_index - 1
-        if header_index < start or not _is_markdown_table_row(lines[header_index]):
-            continue
-        if _markdown_table_cell_count(lines[header_index]) != (
-            _markdown_table_cell_count(lines[delimiter_index])
-        ):
-            continue
-        indexes.update({header_index, delimiter_index})
-        body_index = delimiter_index + 1
-        while body_index < end and _is_markdown_table_row(lines[body_index]):
-            indexes.add(body_index)
-            body_index += 1
-    return indexes
-
-
-def _markdown_table_cell_count(line: str) -> int:
-    """Count finite GFM cells while protecting escapes and inline code."""
-
-    value = line.strip()
-    if value.startswith("|"):
-        value = value[1:]
-    if value.endswith("|") and not _markdown_character_is_escaped(
-        value,
-        len(value) - 1,
-    ):
-        value = value[:-1]
-    if not value:
-        return 0
-    protected = [
-        (start, end)
-        for start, end, _ in _inline_code_spans(value)
+    if actual == expected:
+        return []
+    return [
+        f"{logical_path}: finite H1/H2 inventory drift; "
+        f"expected {expected!r}, got {actual!r}"
     ]
-    separators = 0
-    for position, character in enumerate(value):
-        if character != "|" or _markdown_character_is_escaped(value, position):
-            continue
-        if any(start <= position < end for start, end in protected):
-            continue
-        separators += 1
-    return separators + 1
 
 
-def _project_in_field_whitespace(value: str) -> str:
-    """Project rendered in-field whitespace to Policy-safe spaces."""
+def _field_identity(field) -> tuple[str, str, str | None, str]:
+    """Return a document-scoped, relocation-stable Layer A identity."""
 
-    value = re.sub(r"[\t\r\n\f\v]+", " ", html.unescape(value))
-    return CHAPTER02_SAFE_BR_TAG.sub(" ", value)
-
-
-def _join_markdown_policy_lines(
-    pending: list[tuple[int, str]],
-    *,
-    field_kind: str | None,
-) -> str:
-    """Join source lines using their Markdown reader-visible boundaries."""
-
-    if field_kind == "fenced code":
-        return " ".join(value.strip() for _, value in pending)
-
-    visible_text = ""
-    for offset, (_, source_line) in enumerate(pending):
-        projected_line = source_line.strip()
-        separator = " "
-        if len(source_line) - len(source_line.rstrip(" ")) >= 2:
-            # Markdown's two-space hard break does not insert a text token
-            # between adjacent reader-visible characters.
-            separator = ""
-        elif projected_line.endswith("\\"):
-            # The terminal backslash is the alternative Markdown hard-break
-            # marker and is not part of the rendered text.
-            projected_line = projected_line[:-1]
-            separator = ""
-        visible_text += projected_line
-        if offset + 1 < len(pending):
-            visible_text += separator
-    return visible_text
-
-
-def _opening_fence_marker(line: str) -> str | None:
-    match = re.fullmatch(
-        r"[ ]{0,3}(?P<marker>`{3,}|~{3,})(?P<info>.*)",
-        line,
-    )
-    if match is None:
-        return None
-    marker = match.group("marker")
-    if marker.startswith("`") and "`" in match.group("info"):
-        return None
-    return marker
-
-
-def _is_closing_fence(line: str, marker: str) -> bool:
-    match = re.fullmatch(r"[ ]{0,3}([`~]+)[ \t]*", line)
-    return bool(
-        match is not None
-        and match.group(1)[0] == marker[0]
-        and len(match.group(1)) >= len(marker)
-    )
-
-
-def _applicable_list_content_column(
-    lines: list[str],
-    *,
-    index: int,
-    opening_column: int,
-) -> int | None:
-    """Resolve the nearest ancestor list containing a line at this column."""
-
-    list_item = re.compile(
-        r"^(?P<prefix>[ \t]*(?:[-+*]|\d+[.)])[ \t]+)"
-    )
-    columns: list[int] = []
-    cursor = index - 1
-    while cursor >= 0:
-        candidate = lines[cursor]
-        if not candidate.strip():
-            cursor -= 1
-            continue
-        owner = list_item.match(candidate)
-        if owner is not None:
-            prefix = owner.group("prefix")
-            if "\t" in prefix:
-                return None
-            columns.append(len(prefix))
-            cursor -= 1
-            continue
-        if candidate.startswith((" ", "\t")):
-            cursor -= 1
-            continue
-        break
-    return next(
-        (column for column in columns if opening_column >= column),
-        None,
-    )
-
-
-def _opening_fence_context(
-    lines: list[str],
-    index: int,
-) -> tuple[str, int] | None:
-    """Recognize root or list-relative fenced-code openers."""
-
-    line = lines[index]
-    marker = _opening_fence_marker(line)
-    if marker is not None:
-        return marker, 0
-    indentation = re.match(r"^[ \t]*", line).group(0)
-    if "\t" in indentation:
-        return None
-    opening_column = len(indentation)
-    container_column = _applicable_list_content_column(
-        lines,
-        index=index,
-        opening_column=opening_column,
-    )
-    if container_column is None:
-        return None
-    marker = _opening_fence_marker(line[container_column:])
-    return (marker, container_column) if marker is not None else None
-
-
-def _is_closing_fence_context(
-    line: str,
-    marker: str,
-    container_column: int,
-) -> bool:
-    if "\t" in line[:container_column]:
-        return False
-    return _is_closing_fence(line[container_column:], marker)
-
-
-def _completed_nonparagraph_block_line_indexes(lines: list[str]) -> set[int]:
-    """Return lines after which an indented code block may open directly."""
-
-    completed = _markdown_table_row_indexes(lines, start=0, end=len(lines))
-    fence_marker: str | None = None
-    fence_container_column = 0
-    for index, line in enumerate(lines):
-        if fence_marker is not None:
-            if _is_closing_fence_context(
-                line,
-                fence_marker,
-                fence_container_column,
-            ):
-                completed.add(index)
-                fence_marker = None
-            continue
-        opening_fence = _opening_fence_context(lines, index)
-        if opening_fence is not None:
-            fence_marker, fence_container_column = opening_fence
-            continue
-        if re.fullmatch(r" {0,3}#{1,6}(?:[ \t]+.*)?", line):
-            completed.add(index)
-            continue
-        if re.fullmatch(r" {0,3}(?:=+|-+)[ \t]*", line):
-            completed.add(index)
-            continue
-        if re.fullmatch(
-            r" {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})",
-            line,
-        ):
-            completed.add(index)
-    return completed
-
-
-def _literal_indented_code_line_indexes(lines: list[str]) -> set[int]:
-    """Select finite root/list indented code using source-column thresholds."""
-
-    indexes: set[int] = set()
-    list_item = re.compile(
-        r"^(?P<prefix>[ \t]*(?:[-+*]|\d+[.)])[ \t]+)"
-    )
-    completed_nonparagraph_blocks = _completed_nonparagraph_block_line_indexes(lines)
-    index = 0
-    while index < len(lines):
-        line = lines[index]
-        if not re.match(r"(?: {4}|\t)", line):
-            index += 1
-            continue
-        # Pinned Kramdown does not let an indented code block interrupt an
-        # active paragraph.  Require a document/block boundary for its opener.
-        if (
-            index > 0
-            and lines[index - 1].strip()
-            and index - 1 not in completed_nonparagraph_blocks
-        ):
-            index += 1
-            continue
-
-        owner_prefixes: list[str] = []
-        cursor = index - 1
-        while cursor >= 0:
-            candidate = lines[cursor]
-            if not candidate.strip():
-                cursor -= 1
-                continue
-            owner = list_item.match(candidate)
-            if owner is not None:
-                owner_prefixes.append(owner.group("prefix"))
-                cursor -= 1
-                continue
-            if candidate.startswith((" ", "\t")):
-                cursor -= 1
-                continue
-            break
-
-        opening_indent = re.match(r"^[ \t]*", line).group(0)
-        opening_column = _markdown_indent_width(opening_indent)
-        owner_prefix = next(
-            (
-                prefix
-                for prefix in owner_prefixes
-                if opening_column >= len(prefix.expandtabs(4))
-            ),
-            None,
-        )
-        required_column = 4
-        if owner_prefix is not None:
-            # Ambiguous tabbed list ownership fails closed as rendered list
-            # content rather than being hidden from render-time guards.
-            if "\t" in owner_prefix or "\t" in opening_indent:
-                index += 1
-                continue
-            content_column = len(owner_prefix.expandtabs(4))
-            if opening_column < content_column:
-                required_column = 4
-            else:
-                required_column = content_column + 4
-            if opening_column < required_column:
-                index += 1
-                continue
-
-        cursor = index
-        while cursor < len(lines):
-            candidate = lines[cursor]
-            if not candidate.strip():
-                cursor += 1
-                continue
-            indentation = re.match(r"^[ \t]*", candidate).group(0)
-            if "\t" in indentation and owner_prefix is not None:
-                break
-            if _markdown_indent_width(indentation) < required_column:
-                break
-            indexes.add(cursor)
-            cursor += 1
-        index = max(index + 1, cursor)
-    return indexes
-
-
-def _markdown_character_is_escaped(value: str, position: int) -> bool:
-    backslashes = 0
-    cursor = position - 1
-    while cursor >= 0 and value[cursor] == "\\":
-        backslashes += 1
-        cursor -= 1
-    return backslashes % 2 == 1
-
-
-def _has_escaped_inline_link_opener(value: str) -> bool:
-    """Return whether a link-like label starts at an escaped ``[`` token."""
-
-    for match in re.finditer(r"\[[^\]\r\n]*\]\(", value):
-        if _markdown_character_is_escaped(value, match.start()):
-            return True
-    return False
-
-
-def _link_destination_parenthesis_risks(value: str) -> tuple[bool, bool]:
-    """Return angle-literal and decode-introduced parenthesis risks."""
-
-    angle_literal = False
-    decoded = False
-    for match in CHAPTER02_SIMPLE_INLINE_LINK.finditer(value):
-        destination = match.group("destination")
-        body = (
-            destination[1:-1]
-            if destination.startswith("<") and destination.endswith(">")
-            else destination
-        )
-        has_source_parenthesis = "(" in body or ")" in body
-        if destination.startswith("<") and has_source_parenthesis:
-            angle_literal = True
-        normalized = unicodedata.normalize("NFKC", html.unescape(body))
-        if not has_source_parenthesis and ("(" in normalized or ")" in normalized):
-            decoded = True
-    return angle_literal, decoded
-
-
-def _has_authorityless_http_link_destination(value: str) -> bool:
-    """Reject HTTP(S) destinations whose browser authority is source-relative."""
-
-    for match in CHAPTER02_SIMPLE_INLINE_LINK.finditer(value):
-        destination = match.group("destination")
-        body = (
-            destination[1:-1]
-            if destination.startswith("<") and destination.endswith(">")
-            else destination
-        )
-        normalized = unicodedata.normalize("NFKC", html.unescape(body)).strip()
-        normalized = CHAPTER02_MARKDOWN_PUNCTUATION_ESCAPE.sub(
-            r"\1",
-            normalized,
-        )
-        scheme = re.match(r"https?:", normalized, re.IGNORECASE)
-        if scheme is not None and not normalized[scheme.end() :].startswith("//"):
-            return True
-    return False
-
-
-def _kramdown_codespan_opening_is_eligible(
-    value: str,
-    *,
-    index: int,
-    width: int,
-) -> bool:
-    """Mirror pinned Kramdown's single-backtick opener exception."""
-
-    if width != 1:
-        return True
-    before_is_whitespace = (
-        index == 0
-        or value[index - 1] in CHAPTER02_KRAMDOWN_ASCII_WHITESPACE
-    )
-    after = index + width
-    after_is_whitespace = (
-        after >= len(value)
-        or value[after] in CHAPTER02_KRAMDOWN_ASCII_WHITESPACE
-    )
-    return not (before_is_whitespace and after_is_whitespace)
-
-
-def _inline_code_spans(value: str) -> list[tuple[int, int, str]]:
-    """Return finite code spans with unescaped, equal-length delimiters."""
-
-    spans: list[tuple[int, int, str]] = []
-    raw_html_tag_spans = tuple(
-        (match.start(), match.end())
-        for pattern in (
-            CHAPTER02_RAW_HTML_TAG,
-            CHAPTER02_RAW_HTML_NON_TAG,
-            CHAPTER02_MARKDOWN_AUTOLINK,
-        )
-        for match in pattern.finditer(value)
-    )
-
-    def opening_is_in_raw_html_tag(position: int) -> bool:
-        return any(start <= position < end for start, end in raw_html_tag_spans)
-
-    search_start = 0
-    while True:
-        opening = CHAPTER02_INLINE_CODE_DELIMITER.search(value, search_start)
-        if opening is None:
-            break
-        if _markdown_character_is_escaped(
-            value,
-            opening.start(),
-        ) or opening_is_in_raw_html_tag(
-            opening.start()
-        ) or not _kramdown_codespan_opening_is_eligible(
-            value,
-            index=opening.start(),
-            width=len(opening.group(1)),
-        ):
-            search_start = opening.end()
-            continue
-        marker = opening.group(1)
-        closing_start = opening.end()
-        closing = None
-        while True:
-            candidate = CHAPTER02_INLINE_CODE_DELIMITER.search(
-                value,
-                closing_start,
-            )
-            if candidate is None:
-                break
-            if _markdown_character_is_escaped(value, candidate.start()):
-                closing_start = candidate.end()
-                continue
-            if candidate.group(1) == marker:
-                closing = candidate
-                break
-            closing_start = candidate.end()
-        if closing is None:
-            search_start = opening.end()
-            continue
-        spans.append(
-            (
-                opening.start(),
-                closing.end(),
-                value[opening.end() : closing.start()],
-            )
-        )
-        search_start = closing.end()
-    return spans
-
-
-def _mask_markdown_block_code(text: str) -> str:
-    """Mask fenced/indented code while preserving inline code and offsets."""
-
-    masked = list(text)
-
-    def mask(start: int, end: int) -> None:
-        for position in range(start, end):
-            if masked[position] not in "\r\n":
-                masked[position] = " "
-
-    source_lines = text.splitlines()
-    indented_code_indexes = _literal_indented_code_line_indexes(source_lines)
-    offset = 0
-    fence_marker: str | None = None
-    fence_container_column = 0
-    for line_index, line in enumerate(text.splitlines(keepends=True)):
-        source_line = line.rstrip("\r\n")
-        line_end = offset + len(line)
-        if fence_marker is not None:
-            mask(offset, line_end)
-            if _is_closing_fence_context(
-                source_line,
-                fence_marker,
-                fence_container_column,
-            ):
-                fence_marker = None
-        else:
-            opening_fence = _opening_fence_context(source_lines, line_index)
-            if opening_fence is not None:
-                fence_marker, fence_container_column = opening_fence
-                mask(offset, line_end)
-            elif line_index in indented_code_indexes:
-                mask(offset, line_end)
-        offset = line_end
-
-    return "".join(masked)
-
-
-def _mask_markdown_literal_code(text: str) -> str:
-    """Mask all code syntax for render guards while preserving line offsets."""
-
-    block_masked = _mask_markdown_block_code(text)
-    masked = list(block_masked)
-    for start, end, _ in _inline_code_spans(block_masked):
-        for position in range(start, end):
-            if masked[position] not in "\r\n":
-                masked[position] = " "
-    return "".join(masked)
-
-
-def _project_literal_code_for_policy(value: str) -> str:
-    """Preserve literal code text that Policy would otherwise treat as HTML."""
-
-    projected = unicodedata.normalize("NFKC", html.unescape(value))
-    projected = re.sub(r"[\t\r\n\f\v]+", " ", projected)
-    projected = projected.replace("<!--", "").replace("-->", "")
-    return projected.replace("<", " ").replace(">", " ")
-
-
-def _literal_code_policy_fields(
-    relative: str,
-    text: str,
-) -> list[tuple[str, str]]:
-    """Select reader-visible fenced, indented, and inline code payloads."""
-
-    lines = text.splitlines()
-    indented_indexes = _literal_indented_code_line_indexes(lines)
-    fields: list[tuple[str, str]] = []
-    fence_marker: str | None = None
-    fence_container_column = 0
-    fence_start = 0
-    fence_payload: list[str] = []
-    for index, line in enumerate(lines):
-        if fence_marker is not None:
-            if _is_closing_fence_context(
-                line,
-                fence_marker,
-                fence_container_column,
-            ):
-                projected = _project_literal_code_for_policy(
-                    "\n".join(fence_payload)
-                )
-                if projected.strip():
-                    fields.append(
-                        (
-                            f"{relative} literal fenced code lines "
-                            f"{fence_start + 1}-{index + 1}",
-                            projected,
-                        )
-                    )
-                fence_marker = None
-                fence_payload = []
-            else:
-                fence_payload.append(line)
-            continue
-        opening_fence = _opening_fence_context(lines, index)
-        if opening_fence is not None:
-            fence_marker, fence_container_column = opening_fence
-            fence_start = index
-            fence_payload = []
-            continue
-        if index in indented_indexes:
-            projected = _project_literal_code_for_policy(line.strip())
-            if projected.strip():
-                fields.append(
-                    (f"{relative} literal indented code line {index + 1}", projected)
-                )
-            continue
-    if fence_marker is not None and fence_payload:
-        projected = _project_literal_code_for_policy("\n".join(fence_payload))
-        if projected.strip():
-            fields.append(
-                (
-                    f"{relative} literal unclosed fenced code from line "
-                    f"{fence_start + 1}",
-                    projected,
-                )
-            )
-    block_masked = _mask_markdown_block_code(text)
-    for occurrence, (start, _, body) in enumerate(
-        _inline_code_spans(block_masked),
-        start=1,
-    ):
-        projected = _project_literal_code_for_policy(body)
-        if projected.strip():
-            line = block_masked.count("\n", 0, start) + 1
-            fields.append(
-                (
-                    f"{relative} literal inline code from line {line} "
-                    f"occurrence {occurrence}",
-                    projected,
-                )
-            )
-    return fields
-
-
-def _bare_angle_policy_fields(
-    relative: str,
-    render_guard_source: str,
-) -> list[tuple[str, str]]:
-    """Select non-tag and entity-delimited text Kramdown renders literally."""
-
-    fields: list[tuple[str, str]] = []
-    occurrence = 0
-    for match in CHAPTER02_ANGLE_TEXT.finditer(render_guard_source):
-        token = match.group(0)
-        if (
-            CHAPTER02_RAW_HTML_TAG.fullmatch(token) is not None
-            or CHAPTER02_SAFE_BR_TAG.fullmatch(token) is not None
-            or CHAPTER02_MARKDOWN_AUTOLINK.fullmatch(token) is not None
-            or token.startswith("<!--")
-        ):
-            continue
-        visible = unicodedata.normalize("NFKC", html.unescape(match.group("body")))
-        if visible.strip():
-            occurrence += 1
-            line = render_guard_source.count("\n", 0, match.start()) + 1
-            fields.append(
-                (
-                    f"{relative} bare-angle text line {line} occurrence {occurrence}",
-                    visible,
-                )
-            )
-
-    # Protect source angle brackets before decoding. Any delimiters that appear
-    # after this transformation came from character references or compatibility
-    # characters and are reader-visible literal text, not raw HTML/autolinks.
-    protected_lt = "\U000f0000CHAPTER02-LT\U000f0000"
-    protected_gt = "\U000f0000CHAPTER02-GT\U000f0000"
-    encoded_angle_source = render_guard_source.replace("<", protected_lt).replace(
-        ">", protected_gt
-    )
-    decoded_angle_source = unicodedata.normalize(
-        "NFKC",
-        html.unescape(encoded_angle_source),
-    )
-    for match in CHAPTER02_ANGLE_TEXT.finditer(decoded_angle_source):
-        visible = match.group("body").replace(protected_lt, "<").replace(
-            protected_gt, ">"
-        )
-        if visible.strip():
-            occurrence += 1
-            line = decoded_angle_source.count("\n", 0, match.start()) + 1
-            fields.append(
-                (
-                    f"{relative} encoded-angle text line {line} "
-                    f"occurrence {occurrence}",
-                    visible,
-                )
-            )
-    return fields
-
-
-def _reader_visible_policy_blocks(
-    lines: list[str],
-    *,
-    start: int,
-    end: int,
-    location_prefix: str,
-) -> list[tuple[str, str]]:
-    """Project Markdown soft-wrapped source into bounded visible blocks."""
-
-    blocks: list[tuple[str, str]] = []
-    pending: list[tuple[int, str]] = []
-    fence_marker: str | None = None
-    fence_container_column = 0
-    frontmatter_delimiters: set[int] = set()
-    if start == 0 and lines and lines[0].strip() == "---":
-        frontmatter_delimiters.add(0)
-        for index in range(1, len(lines)):
-            if lines[index].strip() in {"---", "..."}:
-                frontmatter_delimiters.add(index)
-                break
-    table_row_indexes = _markdown_table_row_indexes(lines, start=start, end=end)
-
-    def flush(
-        *,
-        heading_level: int | None = None,
-        field_kind: str | None = None,
-    ) -> None:
-        if not pending:
-            return
-        start_line = pending[0][0] + 1
-        end_line = pending[-1][0] + 1
-        line_label = (
-            f"line {start_line}"
-            if start_line == end_line
-            else f"lines {start_line}-{end_line}"
-        )
-        # A normal Markdown source newline inside one paragraph or list item is a
-        # soft wrap rendered as whitespace.  Project it to a space before Policy
-        # scanning so an object/action pair cannot be split across source lines.
-        visible_text = _join_markdown_policy_lines(
-            pending,
-            field_kind=field_kind,
-        )
-        # An HTML ``br`` is a reader-visible hard break inside the same field.
-        # Shared Policy treats block tags as clause boundaries, so project only
-        # this in-field line-break tag to whitespace before delegating.  This
-        # prevents an object/action pair from being split inside one table cell.
-        visible_text = _project_in_field_whitespace(visible_text)
-        if heading_level is not None:
-            visible_text = f"{'#' * heading_level} {visible_text}"
-        kind_label = f" {field_kind}" if field_kind is not None else ""
-        blocks.append((f"{location_prefix}{kind_label} {line_label}", visible_text))
-        pending.clear()
-
-    for index in range(start, end):
-        value = lines[index]
-        if fence_marker is not None:
-            if _is_closing_fence_context(
-                value,
-                fence_marker,
-                fence_container_column,
-            ):
-                flush(field_kind="fenced code")
-                fence_marker = None
-            else:
-                # Blank source lines remain inside the same rendered code block.
-                pending.append((index, value))
-            continue
-        opening_fence = _opening_fence_context(lines, index)
-        if opening_fence is not None:
-            flush()
-            fence_marker, fence_container_column = opening_fence
-            continue
-        if not value.strip():
-            flush()
-            continue
-        setext_match = re.fullmatch(r"\s*(=+|-+)\s*", value)
-        if (
-            setext_match is not None
-            and index not in frontmatter_delimiters
-            and pending
-            and not _is_markdown_policy_block_start(pending[0][1])
-        ):
-            heading_level = 1 if setext_match.group(1).startswith("=") else 2
-            flush(heading_level=heading_level)
-            continue
-        if index in table_row_indexes and _is_markdown_table_delimiter(value):
-            flush()
-            continue
-        if _is_markdown_policy_block_start(value) or index in table_row_indexes:
-            flush()
-            pending.append((index, value))
-            if value.lstrip().startswith("#") or index in table_row_indexes:
-                flush()
-            continue
-        pending.append((index, value))
-    flush(field_kind="fenced code" if fence_marker is not None else None)
-    return blocks
-
-
-def chapter02_reader_visible_policy_fields(
-    relative: str,
-    text: str,
-) -> tuple[list[tuple[str, str]], list[str]]:
-    """Select the finite Chapter 2 action/authorization publication surface.
-
-    The adapter owns section and line selection.  Shared Policy 1.2.0 owns
-    normalization, protected-action semantics, and host/address classification.
-    Reader-visible DELEGATE URLs remain in this surface.  The three canonical
-    publication links are exact reviewed host contexts; an edited line returns
-    to normal Policy scanning.  The final Source-note section remains inside the
-    bounded surface and its relative references also retain the existing Chapter
-    2 publication/source contracts.
-    """
-
-    expected_headings = CHAPTER02_POLICY_SECTIONS.get(relative)
-    if expected_headings is None:
-        return [], [f"{relative}: no Chapter 2 Policy section contract"]
-
-    lines = text.splitlines()
-    headings: list[tuple[int, int, str]] = []
-    frontmatter_delimiters: set[int] = set()
-    if lines and lines[0].strip() == "---":
-        frontmatter_delimiters.add(0)
-        for index in range(1, len(lines)):
-            if lines[index].strip() in {"---", "..."}:
-                frontmatter_delimiters.add(index)
-                break
-    fence_marker: str | None = None
-    fence_container_column = 0
-    for index, line in enumerate(lines):
-        if fence_marker is not None:
-            if _is_closing_fence_context(
-                line,
-                fence_marker,
-                fence_container_column,
-            ):
-                fence_marker = None
-            continue
-        opening_fence = _opening_fence_context(lines, index)
-        if opening_fence is not None:
-            fence_marker, fence_container_column = opening_fence
-            continue
-        match = re.fullmatch(r" {0,3}(#{1,6})[ \t]+(.+?)[ \t]*", line)
-        if match:
-            normalized_heading = f"{match.group(1)} {match.group(2)}"
-            headings.append((index, len(match.group(1)), normalized_heading))
-            continue
-        setext = re.fullmatch(r" {0,3}(=+|-+)[ \t]*", line)
-        if (
-            setext is not None
-            and index not in frontmatter_delimiters
-            and index > 0
-            and lines[index - 1].strip()
-            and not _is_markdown_policy_block_start(lines[index - 1])
-        ):
-            level = 1 if setext.group(1).startswith("=") else 2
-            title = lines[index - 1].strip()
-            headings.append((index - 1, level, f"{'#' * level} {title}"))
-
-    fields: list[tuple[str, str]] = []
-    messages: list[str] = []
-    claimed_lines: set[int] = set()
-    if relative in CHAPTER02_POLICY_PREAMBLE_DOCUMENTS:
-        first_heading_matches = [
-            item for item in headings if item[2] == expected_headings[0]
-        ]
-        if len(first_heading_matches) == 1:
-            preamble_end = first_heading_matches[0][0]
-            actual_preamble_headings = tuple(
-                heading
-                for line, _, heading in headings
-                if line < preamble_end
-            )
-            expected_preamble_headings = CHAPTER02_POLICY_PREAMBLE_HEADINGS[
-                relative
-            ]
-            if actual_preamble_headings != expected_preamble_headings:
-                messages.append(
-                    f"{relative}: unexpected Policy preamble heading inventory: "
-                    f"{actual_preamble_headings!r}; expected "
-                    f"{expected_preamble_headings!r}"
-                )
-            claimed_lines.update(range(0, preamble_end))
-            fields.extend(
-                _reader_visible_policy_blocks(
-                    lines,
-                    start=0,
-                    end=preamble_end,
-                    location_prefix=f"{relative} document preamble",
-                )
-            )
-    for heading_index, expected_heading in enumerate(expected_headings):
-        matches = [item for item in headings if item[2] == expected_heading]
-        if len(matches) != 1:
-            messages.append(
-                f"{relative}: expected Policy section exactly once: "
-                f"{expected_heading!r}; found {len(matches)}"
-            )
-            continue
-        start, level, _ = matches[0]
-        end = len(lines)
-        boundary_heading: str | None = None
-        for candidate, candidate_level, candidate_heading in headings:
-            if candidate > start and candidate_level <= level:
-                end = candidate
-                boundary_heading = candidate_heading
-                break
-        expected_boundary = (
-            expected_headings[heading_index + 1]
-            if heading_index + 1 < len(expected_headings)
-            else CHAPTER02_POLICY_TERMINAL_BOUNDARIES[relative]
-        )
-        if boundary_heading != expected_boundary:
-            messages.append(
-                f"{relative}: unexpected Policy section boundary after "
-                f"{expected_heading!r}: {boundary_heading!r}; expected "
-                f"{expected_boundary!r}"
-            )
-        for index in range(start, end):
-            if index in claimed_lines:
-                messages.append(
-                    f"{relative}: overlapping Policy section selection at line {index + 1}"
-                )
-            claimed_lines.add(index)
-        fields.extend(
-            _reader_visible_policy_blocks(
-                lines,
-                start=start,
-                end=end,
-                location_prefix=f"{relative} {expected_heading}",
-            )
-        )
-    return fields, messages
-
-
-def _heading_associated_action_fields(
-    fields: list[tuple[str, str]],
-) -> list[tuple[str, str, str]]:
-    """Associate each visible body block with its active ATX heading hierarchy."""
-
-    heading_stack: list[tuple[int, str]] = []
-    associated: list[tuple[str, str, str]] = []
-    for location, value in fields:
-        match = (
-            None
-            if " fenced code " in location
-            else re.match(r"^(#{1,6})\s+", value)
-        )
-        if match:
-            level = len(match.group(1))
-            heading_stack = [
-                item for item in heading_stack if item[0] < level
-            ]
-            heading_stack.append((level, value))
-            continue
-        if not heading_stack:
-            continue
-        heading_context = " ".join(heading for _, heading in heading_stack)
-        composite = f"{heading_context} {value}"
-        associated.append((f"{location} heading association", composite, value))
-    return associated
-
-
-_MARKDOWN_LIST_ITEM = re.compile(
-    r"^(?P<indent>[ \t]*)(?:[-+*]|\d+[.)])\s+(?P<body>.+?)\s*$"
-)
-
-
-def _markdown_indent_width(line: str) -> int:
-    prefix_length = len(line) - len(line.lstrip(" \t"))
-    return len(line[:prefix_length].expandtabs(4))
-
-
-def _nested_list_action_fields(
-    relative: str,
-    text: str,
-) -> list[tuple[str, str, str]]:
-    """Associate each nested list item with its visible ancestor items."""
-
-    lines = text.splitlines()
-    records: list[tuple[int, int, int, str, str]] = []
-    for index, line in enumerate(lines):
-        match = _MARKDOWN_LIST_ITEM.match(line)
-        if match is None:
-            continue
-        continuation: list[str] = []
-        end = index + 1
-        while end < len(lines):
-            candidate = lines[end]
-            if not candidate.strip() or _is_markdown_policy_block_start(candidate):
-                break
-            continuation.append(candidate.strip())
-            end += 1
-        raw_value = _project_in_field_whitespace(
-            " ".join([line.strip(), *continuation])
-        )
-        # List markers are layout, not reader-visible clause punctuation.  Drop
-        # them in the association so numbered markers cannot split object/action.
-        visible_value = _project_in_field_whitespace(
-            " ".join([match.group("body").strip(), *continuation])
-        )
-        indentation = len(match.group("indent").expandtabs(4))
-        records.append((index, end, indentation, visible_value, raw_value))
-
-    stack: list[tuple[int, list[str]]] = []
-    associated: list[tuple[str, str, str]] = []
-
-    def associate_with_ancestors(
-        context_stack: list[tuple[int, list[str]]],
-        *,
-        location: str,
-        value: str,
-        raw_value: str,
-    ) -> None:
-        for _, ancestor_contexts in context_stack:
-            for ancestor_context in ancestor_contexts:
-                associated.append(
-                    (location, f"{ancestor_context} {value}", raw_value)
-                )
-
-    previous_end = 0
-    for start, end, indentation, value, raw_value in records:
-        gap_lines = lines[previous_end:start]
-        first_continuation = next(
-            (line for line in gap_lines if line.strip()),
-            None,
-        )
-        if first_continuation is not None:
-            continuation_indent = _markdown_indent_width(first_continuation)
-            owner_stack = [
-                item for item in stack if item[0] < continuation_indent
-            ]
-            continuation_lines: list[str] = []
-            reached_outer_block = False
-            if owner_stack:
-                for line in gap_lines:
-                    if not line.strip():
-                        continue
-                    if _markdown_indent_width(line) <= owner_stack[-1][0]:
-                        reached_outer_block = True
-                        break
-                    continuation_lines.append(line)
-            if owner_stack and continuation_lines:
-                continuation_text = _project_in_field_whitespace(
-                    " ".join(line.strip() for line in continuation_lines)
-                )
-                associate_with_ancestors(
-                    owner_stack,
-                    location=f"{relative} list continuation before line {start + 1}",
-                    value=continuation_text,
-                    raw_value=continuation_text,
-                )
-                owner_stack[-1][1].append(continuation_text)
-            stack = [] if reached_outer_block else owner_stack
-        stack = [item for item in stack if item[0] < indentation]
-        if stack:
-            associate_with_ancestors(
-                stack,
-                location=f"{relative} nested list line {start + 1}",
-                value=value,
-                raw_value=raw_value,
-            )
-        stack.append((indentation, [value]))
-        previous_end = end
-
-    if stack:
-        paragraph: list[str] = []
-
-        def flush_terminal_continuation() -> None:
-            if not paragraph:
-                return
-            continuation_text = _project_in_field_whitespace(
-                " ".join(line.strip() for line in paragraph)
-            )
-            associate_with_ancestors(
-                stack,
-                location=f"{relative} terminal list continuation",
-                value=continuation_text,
-                raw_value=continuation_text,
-            )
-            paragraph.clear()
-
-        for line in lines[previous_end:]:
-            if not line.strip():
-                flush_terminal_continuation()
-                continue
-            indentation = _markdown_indent_width(line)
-            if indentation <= stack[-1][0]:
-                flush_terminal_continuation()
-                while stack and indentation <= stack[-1][0]:
-                    stack.pop()
-            if not stack:
-                break
-            paragraph.append(line)
-        flush_terminal_continuation()
-    return associated
-
-
-def _is_markdown_table_row(line: str) -> bool:
-    stripped = line.strip()
-    return bool(stripped and "|" in stripped and not _is_markdown_table_delimiter(line))
-
-
-def _table_header_action_fields(
-    relative: str,
-    text: str,
-) -> list[tuple[str, str, str]]:
-    """Associate each pipe-table body row with its reader-visible header row."""
-
-    lines = text.splitlines()
-    associated: list[tuple[str, str, str]] = []
-    for delimiter_index, delimiter in enumerate(lines):
-        if not _is_markdown_table_delimiter(delimiter) or delimiter_index == 0:
-            continue
-        header = lines[delimiter_index - 1]
-        if not _is_markdown_table_row(header):
-            continue
-        header_value = _project_in_field_whitespace(header.strip())
-        body_index = delimiter_index + 1
-        while body_index < len(lines) and _is_markdown_table_row(lines[body_index]):
-            body_value = _project_in_field_whitespace(lines[body_index].strip())
-            associated.append(
-                (
-                    f"{relative} table row line {body_index + 1}",
-                    f"{header_value} {body_value}",
-                    body_value,
-                )
-            )
-            body_index += 1
-    return associated
-
-
-def _indented_code_action_fields(
-    relative: str,
-    text: str,
-) -> list[tuple[str, str, str]]:
-    """Keep blank-separated four-space/tab code payloads in one Policy field."""
-
-    lines = text.splitlines()
-    associated: list[tuple[str, str, str]] = []
-    index = 0
-    while index < len(lines):
-        if not re.match(r"(?: {4}|\t)", lines[index]):
-            index += 1
-            continue
-        start = index
-        payload: list[str] = []
-        while index < len(lines):
-            line = lines[index]
-            if not line.strip():
-                payload.append("")
-                index += 1
-                continue
-            if line.startswith("\t"):
-                payload.append(line[1:])
-                index += 1
-                continue
-            if line.startswith("    "):
-                payload.append(line[4:])
-                index += 1
-                continue
-            break
-        visible_value = _project_in_field_whitespace(
-            " ".join(item.strip() for item in payload)
-        )
-        associated.append(
-            (
-                f"{relative} indented code lines {start + 1}-{index}",
-                visible_value,
-                visible_value,
-            )
-        )
-    return associated
-
-
-def _finding_sort_key(finding: SafetyFinding) -> tuple[str, str, str, str, str]:
     return (
-        finding.location,
-        finding.category,
-        finding.normalized_excerpt,
-        finding.reason,
-        finding.policy_version,
+        field.field_type,
+        field.element_kind,
+        field.attribute,
+        field.text,
+    )
+
+
+def _destination_relation(document: ProjectedDocument, field) -> tuple:
+    """Bind a destination to its exact same-line projected reader owner."""
+
+    owners = [
+        candidate
+        for candidate in document.fields
+        if candidate.ordinal < field.ordinal
+        and candidate.line == field.line
+        and candidate.field_type
+        in {
+            "reader_visible_text",
+            "reader_visible_attribute",
+        }
+    ]
+    owner_identity = (
+        _field_identity(max(owners, key=lambda item: item.ordinal)) if owners else None
+    )
+    return _field_identity(field), owner_identity
+
+
+def _heading_path(document: ProjectedDocument, field) -> tuple[str, ...]:
+    """Return the finite H1..H6 path preceding one projected field."""
+
+    levels: dict[int, str] = {}
+    for candidate in document.fields:
+        if candidate.ordinal >= field.ordinal:
+            break
+        level = candidate.metadata_value("level")
+        if (
+            candidate.field_type != "reader_visible_text"
+            or candidate.element_kind != "heading"
+            or not isinstance(level, int)
+            or not 1 <= level <= 6
+        ):
+            continue
+        levels[level] = candidate.text
+        for deeper in tuple(value for value in levels if value > level):
+            del levels[deeper]
+    return tuple(levels[level] for level in sorted(levels))
+
+
+def _reviewed_text_relation(
+    document: ProjectedDocument, field
+) -> tuple[tuple[str, str, str | None, str], tuple[str, ...]]:
+    return _field_identity(field), _heading_path(document, field)
+
+
+def chapter02_semantic_projection_errors(
+    document: ProjectedDocument,
+    logical_path: str,
+) -> list[str]:
+    errors: list[str] = []
+    actual = Counter(_field_identity(field) for field in document.fields)
+    for identity in sorted(
+        EXPECTED_CHAPTER02_SEMANTIC_FIELDS[logical_path], key=repr
+    ):
+        field_type, element_kind, attribute, text = identity
+        matching = [
+            field for field in document.fields if _field_identity(field) == identity
+        ]
+        if (
+            actual[identity] != 1
+            or field_type != "reader_visible_text"
+            or attribute is not None
+            or (
+                element_kind == "heading"
+                and (not matching or matching[0].metadata_value("level") != 3)
+            )
+        ):
+            errors.append(
+                f"{logical_path}: missing exact semantic projection field "
+                f"{identity!r}; count={actual[identity]}"
+            )
+
+    identities_by_text = {
+        identity[3]: identity
+        for identity in EXPECTED_CHAPTER02_SEMANTIC_FIELDS[logical_path]
+    }
+    ordered_fields = []
+    for text in EXPECTED_CHAPTER02_SEMANTIC_ORDER[logical_path]:
+        identity = identities_by_text[text]
+        matches = [
+            field for field in document.fields if _field_identity(field) == identity
+        ]
+        if len(matches) == 1:
+            ordered_fields.append(matches[0])
+    if len(ordered_fields) == len(EXPECTED_CHAPTER02_SEMANTIC_ORDER[logical_path]):
+        ordinals = tuple(field.ordinal for field in ordered_fields)
+        if ordinals != tuple(sorted(ordinals)):
+            errors.append(
+                f"{logical_path}: exact semantic projection field order changed; "
+                f"locations={tuple(field.location for field in ordered_fields)!r}"
+            )
+
+    headings = [
+        field
+        for field in document.fields
+        if field.field_type == "reader_visible_text" and field.element_kind == "heading"
+    ]
+    for parent_text, next_text, member_texts in CHAPTER02_BOUNDED_HEADING_MEMBERS[
+        logical_path
+    ]:
+        parents = [
+            field
+            for field in headings
+            if field.text == parent_text and field.metadata_value("level") == 2
+        ]
+        following = [
+            field
+            for field in headings
+            if field.text == next_text and field.metadata_value("level") == 2
+        ]
+        if len(parents) != 1 or len(following) != 1:
+            # The finite H1/H2 inventory reports the detailed parent error.
+            continue
+        for member_text in member_texts:
+            members = [
+                field
+                for field in headings
+                if field.text == member_text and field.metadata_value("level") == 3
+            ]
+            if (
+                len(members) != 1
+                or not parents[0].ordinal < members[0].ordinal < following[0].ordinal
+            ):
+                errors.append(
+                    f"{logical_path}: semantic heading {member_text!r} left "
+                    f"bounded section {parent_text!r}"
+                )
+
+    for parent_text, next_text, expected_count, first_text, last_text in (
+        CHAPTER02_GATE_BODY_CONTRACT[logical_path]
+    ):
+        parents = [field for field in headings if field.text == parent_text]
+        following = [field for field in headings if field.text == next_text]
+        if len(parents) != 1 or len(following) != 1:
+            continue
+        body_fields = [
+            field
+            for field in document.fields
+            if parents[0].ordinal < field.ordinal < following[0].ordinal
+            and is_policy_scan_field(field)
+        ]
+        actual_first = body_fields[0].text if body_fields else None
+        actual_last = body_fields[-1].text if body_fields else None
+        if (
+            len(body_fields) != expected_count
+            or actual_first != first_text
+            or actual_last != last_text
+        ):
+            errors.append(
+                f"{logical_path}: Gate body projection contract drift for "
+                f"{parent_text!r}; count={len(body_fields)}, "
+                f"first={actual_first!r}, last={actual_last!r}"
+            )
+
+    actual_text_relations = Counter(
+        _reviewed_text_relation(document, field)
+        for field in document.fields
+        if is_policy_scan_field(field)
+    )
+    for relation in sorted(
+        CHAPTER02_RESPONSIBILITY_BOUNDARY_RELATIONS[logical_path], key=repr
+    ):
+        if actual_text_relations[relation] != 1:
+            errors.append(
+                f"{logical_path}: responsibility boundary projection relation "
+                f"must exist exactly once: {relation!r}; "
+                f"count={actual_text_relations[relation]}"
+            )
+    exemption_sets = (
+        ("action", CHAPTER02_REVIEWED_ACTION_RELATIONS[logical_path]),
+        ("host", CHAPTER02_REVIEWED_HOST_RELATIONS[logical_path]),
+    )
+    for owner, relations in exemption_sets:
+        for relation in sorted(relations, key=repr):
+            if actual_text_relations[relation] != 1:
+                errors.append(
+                    f"{logical_path}: reviewed {owner} projection relation must "
+                    f"exist exactly once: {relation!r}; "
+                    f"count={actual_text_relations[relation]}"
+                )
+    actual_relations = Counter(
+        _destination_relation(document, field)
+        for field in document.fields
+        if field.field_type == "destination"
+    )
+    for relation in sorted(
+        CHAPTER02_REVIEWED_PROVENANCE_RELATIONS[logical_path], key=repr
+    ):
+        if actual_relations[relation] != 1:
+            errors.append(
+                f"{logical_path}: reviewed provenance projection relation must "
+                f"exist exactly once: {relation!r}; count={actual_relations[relation]}"
+            )
+
+    if logical_path == "manuscript/02-law-ethics-authorization.md":
+        reference_headings = [
+            field
+            for field in headings
+            if field.text == "参考文献・Source Note ID"
+            and field.metadata_value("level") == 2
+        ]
+        if len(reference_headings) == 1:
+            source_pattern = re.compile(r"\bSRC-[A-Z0-9-]+\b")
+            visible_fields = [
+                field for field in document.fields if is_policy_scan_field(field)
+            ]
+            body_source_counts = Counter(
+                match.group(0)
+                for field in visible_fields
+                if field.ordinal < reference_headings[0].ordinal
+                for match in source_pattern.finditer(field.text)
+            )
+            reference_source_counts = Counter(
+                match.group(0)
+                for field in visible_fields
+                if field.ordinal > reference_headings[0].ordinal
+                for match in source_pattern.finditer(field.text)
+            )
+            if body_source_counts != EXPECTED_CHAPTER02_BODY_SOURCE_COUNTS:
+                errors.append(
+                    f"{logical_path}: projected body source ID counts drift; "
+                    f"expected={EXPECTED_CHAPTER02_BODY_SOURCE_COUNTS!r}, "
+                    f"actual={body_source_counts!r}"
+                )
+            if (
+                reference_source_counts
+                != EXPECTED_CHAPTER02_REFERENCE_SOURCE_COUNTS
+            ):
+                errors.append(
+                    f"{logical_path}: projected reference source ID counts drift; "
+                    f"expected={EXPECTED_CHAPTER02_REFERENCE_SOURCE_COUNTS!r}, "
+                    f"actual={reference_source_counts!r}"
+                )
+    return errors
+
+
+def _projection_document_findings(
+    document: ProjectedDocument,
+    logical_path: str,
+) -> list[SafetyFinding]:
+    findings: list[SafetyFinding] = []
+    reviewed_actions = CHAPTER02_REVIEWED_ACTION_RELATIONS[logical_path]
+    reviewed_hosts = CHAPTER02_REVIEWED_HOST_RELATIONS[logical_path]
+    reviewed_provenance = CHAPTER02_REVIEWED_PROVENANCE_RELATIONS[logical_path]
+    text_relation_counts = Counter(
+        _reviewed_text_relation(document, candidate)
+        for candidate in document.fields
+        if is_policy_scan_field(candidate)
+    )
+    relation_counts = Counter(
+        _destination_relation(document, candidate)
+        for candidate in document.fields
+        if candidate.field_type == "destination"
+    )
+
+    for field in document.fields:
+        if is_policy_scan_field(field):
+            relation = _reviewed_text_relation(document, field)
+            if relation not in reviewed_actions or text_relation_counts[relation] != 1:
+                findings.extend(
+                    scan_action_text(field.normalized_text, location=field.location)
+                )
+            if relation not in reviewed_hosts or text_relation_counts[relation] != 1:
+                findings.extend(
+                    scan_host_policy(field.normalized_text, location=field.location)
+                )
+        elif field.field_type == "destination":
+            relation = _destination_relation(document, field)
+            if is_absolute_destination(field.normalized_text) and (
+                relation not in reviewed_provenance or relation_counts[relation] != 1
+            ):
+                findings.extend(
+                    scan_host_policy(field.normalized_text, location=field.location)
+                )
+    return sorted(
+        set(findings),
+        key=lambda item: (
+            item.location,
+            item.category,
+            item.normalized_excerpt,
+            item.reason,
+            item.policy_version,
+        ),
     )
 
 
 def chapter02_policy_findings(
     documents: dict[str, str],
 ) -> tuple[list[SafetyFinding], list[str]]:
-    findings: set[SafetyFinding] = set()
-    messages: list[str] = []
-    for relative in CHAPTER02_POLICY_SECTIONS:
-        text = documents.get(relative)
-        if text is None:
-            messages.append(f"{relative}: missing document for Chapter 2 Policy adapter")
-            continue
-        block_guard_source = _mask_markdown_block_code(text)
-        render_guard_source = _mask_markdown_literal_code(text)
-        raw_html_source = CHAPTER02_MARKDOWN_AUTOLINK.sub("", render_guard_source)
-        raw_html_tags = sorted(
-            {
-                match.group("tag").casefold()
-                for match in CHAPTER02_RAW_HTML_TAG.finditer(raw_html_source)
-                if CHAPTER02_SAFE_BR_TAG.fullmatch(match.group(0)) is None
-            }
-        )
-        if raw_html_tags:
-            messages.append(
-                f"{relative}: raw HTML other than attribute-free br is "
-                "unsupported in the "
-                "bounded Policy surface; use equivalent Markdown: "
-                f"{raw_html_tags!r}"
-            )
-        if CHAPTER02_RAW_HTML_NON_TAG.search(render_guard_source):
-            messages.append(
-                f"{relative}: raw HTML processing instructions, declarations, "
-                "and CDATA are unsupported in the bounded Policy surface"
-            )
-        # Jekyll evaluates Liquid before Markdown, including source that later
-        # becomes fenced, indented, or inline code.  Inspect the unmasked source.
-        if CHAPTER02_LIQUID_CONSTRUCT.search(text):
-            messages.append(
-                f"{relative}: interpreted Liquid is unsupported in the bounded "
-                "Policy surface"
-            )
-        if CHAPTER02_INVALID_BACKTICK_FENCE.search(text):
-            messages.append(
-                f"{relative}: backtick in a backtick-fence info string is "
-                "unsupported in the bounded Policy surface"
-            )
-        if CHAPTER02_HTML_COMMENT_DELIMITER.search(render_guard_source):
-            messages.append(
-                f"{relative}: HTML comments are unsupported in the bounded "
-                "Policy surface"
-            )
-        if CHAPTER02_DEFINITION_ITEM.search(render_guard_source):
-            messages.append(
-                f"{relative}: Kramdown definition-list syntax is unsupported in "
-                "the bounded Policy surface"
-            )
-        if CHAPTER02_BLOCKQUOTE.search(render_guard_source):
-            messages.append(
-                f"{relative}: Markdown blockquote syntax is unsupported in the "
-                "bounded Policy surface"
-            )
-        if CHAPTER02_KRAMDOWN_IAL.search(render_guard_source):
-            messages.append(
-                f"{relative}: Kramdown IAL syntax is unsupported in the bounded "
-                "Policy surface"
-            )
-        if CHAPTER02_FOOTNOTE.search(render_guard_source):
-            messages.append(
-                f"{relative}: Kramdown footnote syntax is unsupported in the "
-                "bounded Policy surface"
-            )
-        if CHAPTER02_ABBREVIATION_DEFINITION.search(render_guard_source):
-            messages.append(
-                f"{relative}: Kramdown abbreviation syntax is unsupported in "
-                "the bounded Policy surface"
-            )
-        if CHAPTER02_KRAMDOWN_MATH.search(render_guard_source):
-            messages.append(
-                f"{relative}: Kramdown math syntax is unsupported in the "
-                "bounded Policy surface"
-            )
-        if CHAPTER02_UNDERSCORE_EMPHASIS.search(render_guard_source):
-            messages.append(
-                f"{relative}: Markdown underscore-emphasis syntax is "
-                "unsupported in the bounded Policy surface"
-            )
-        if CHAPTER02_REFERENCE_LINK.search(render_guard_source):
-            messages.append(
-                f"{relative}: Markdown reference-link syntax is unsupported in "
-                "the bounded Policy surface"
-            )
-        if CHAPTER02_TITLED_INLINE_LINK.search(render_guard_source):
-            messages.append(
-                f"{relative}: Markdown link/image titles are unsupported in "
-                "the bounded Policy surface"
-            )
-        if CHAPTER02_EMPTY_INLINE_LINK.search(render_guard_source):
-            messages.append(
-                f"{relative}: Markdown links/images with an empty label are "
-                "unsupported in the bounded Policy surface"
-            )
-        if CHAPTER02_EMPTY_LINK_DESTINATION.search(render_guard_source):
-            messages.append(
-                f"{relative}: Markdown links/images with an empty destination "
-                "are unsupported in the bounded Policy surface"
-            )
-        if CHAPTER02_BALANCED_PAREN_LINK_DESTINATION.search(render_guard_source):
-            messages.append(
-                f"{relative}: Markdown link/image destinations with balanced "
-                "parentheses are unsupported in the bounded Policy surface"
-            )
-        if CHAPTER02_ESCAPED_PAREN_LINK_DESTINATION.search(render_guard_source):
-            messages.append(
-                f"{relative}: Markdown link/image destinations with escaped "
-                "parentheses are unsupported in the bounded Policy surface"
-            )
-        if CHAPTER02_BACKTICK_LINK_DESTINATION.search(block_guard_source):
-            messages.append(
-                f"{relative}: backticks in Markdown link/image destinations are "
-                "unsupported in the bounded Policy surface"
-            )
-        if CHAPTER02_ESCAPED_PUNCTUATION_LINK_DESTINATION.search(
-            render_guard_source
-        ):
-            messages.append(
-                f"{relative}: Markdown punctuation escapes in link/image "
-                "destinations are unsupported in the bounded Policy surface"
-            )
-        if _has_escaped_inline_link_opener(render_guard_source):
-            messages.append(
-                f"{relative}: escaped Markdown link/image openers are unsupported "
-                "in the bounded Policy surface"
-            )
-        angle_parenthesis, decoded_parenthesis = (
-            _link_destination_parenthesis_risks(render_guard_source)
-        )
-        if angle_parenthesis:
-            messages.append(
-                f"{relative}: parentheses in angle-bracket Markdown link/image "
-                "destinations are unsupported in the bounded Policy surface"
-            )
-        if decoded_parenthesis:
-            messages.append(
-                f"{relative}: decoded parentheses in Markdown link/image "
-                "destinations are unsupported in the bounded Policy surface"
-            )
-        if _has_authorityless_http_link_destination(render_guard_source):
-            messages.append(
-                f"{relative}: authority-less HTTP(S) Markdown link/image "
-                "destinations are unsupported in the bounded Policy surface"
-            )
-        rendered_text = unicodedata.normalize(
-            "NFKC",
-            html.unescape(render_guard_source),
-        )
-        markdown_rendered_text = CHAPTER02_MARKDOWN_PUNCTUATION_ESCAPE.sub(
-            r"\1",
-            rendered_text,
-        )
-        if any(
-            "\\" in match.group(0)
-            for match in CHAPTER02_SPECIAL_URL.finditer(rendered_text)
-        ):
-            messages.append(
-                f"{relative}: HTTP(S) or scheme-relative special URL containing "
-                "backslash is unsupported in the bounded Policy surface"
-            )
-        executable_scheme_view = re.sub(
-            r"[\t\r\n\f]",
-            "",
-            markdown_rendered_text,
-        ).casefold()
-        executable_prefixes = [
-            prefix
-            for prefix in CHAPTER02_EXECUTABLE_URL_PREFIXES
-            if prefix in executable_scheme_view
+    """Run the thin Chapter 2 Layer A → shared Layer B → Layer C flow."""
+
+    if tuple(documents) != CHAPTER02_DOCUMENTS:
+        return [], [
+            "Chapter 2 publication surface must contain the three canonical "
+            f"documents in order: {CHAPTER02_DOCUMENTS!r}"
         ]
-        if executable_prefixes:
-            messages.append(
-                f"{relative}: executable URL scheme is unsupported in the "
-                f"bounded Policy surface: {executable_prefixes!r}"
-            )
-        fields, selection_errors = chapter02_reader_visible_policy_fields(relative, text)
-        messages.extend(selection_errors)
-        selected_value_counts = Counter(value for _, value in fields)
-        for context_name, reviewed_lines in (
-            ("action", CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]),
-            ("host", CHAPTER02_REVIEWED_HOST_CONTEXT[relative]),
-        ):
-            for value in sorted(reviewed_lines):
-                count = selected_value_counts[value]
-                if count != 1:
-                    messages.append(
-                        f"{relative}: reviewed {context_name} context must occur "
-                        f"exactly once in the bounded Policy surface; found {count}: "
-                        f"{value!r}"
-                    )
+    try:
+        projection = project_documents(documents)
+    except (ProjectionRuntimeError, TypeError, ValueError) as exc:
+        return [], [f"shared Publication Projection failed closed: {exc}"]
 
-        heading_action_fields = _heading_associated_action_fields(fields)
-        selected_heading_action_counts = Counter(
-            value for _, value, _ in heading_action_fields
-        )
-        for value in sorted(
-            CHAPTER02_REVIEWED_HEADING_ACTION_CONTEXT[relative]
-        ):
-            count = selected_heading_action_counts[value]
-            if count != 1:
-                messages.append(
-                    f"{relative}: reviewed heading/action context must occur "
-                    f"exactly once in the bounded Policy surface; found {count}: "
-                    f"{value!r}"
-                )
-
-        for location, value in fields:
-            if value not in CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]:
-                findings.update(scan_action_text(value, location=location))
-            if value not in CHAPTER02_REVIEWED_HOST_CONTEXT[relative]:
-                findings.update(scan_host_policy(value, location=location))
-        for location, value, body_value in heading_action_fields:
-            # A reviewed body remains a question, uncertainty, prohibition, or
-            # reject/return record when its unchanged heading hierarchy is added.
-            if body_value in CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]:
-                continue
-            if value in CHAPTER02_REVIEWED_HEADING_ACTION_CONTEXT[relative]:
-                continue
-            findings.update(scan_action_text(value, location=location))
-        for structural_fields in (
-            _nested_list_action_fields(relative, text),
-            _table_header_action_fields(relative, text),
-            _indented_code_action_fields(relative, text),
-        ):
-            for location, value, body_value in structural_fields:
-                if body_value in CHAPTER02_REVIEWED_ACTION_CONTEXT[relative]:
-                    continue
-                findings.update(scan_action_text(value, location=location))
-        for location, value in (
-            _literal_code_policy_fields(relative, text)
-            + _bare_angle_policy_fields(relative, render_guard_source)
-        ):
-            findings.update(scan_action_text(value, location=location))
-            findings.update(scan_host_policy(value, location=location))
-
-    return sorted(findings, key=_finding_sort_key), messages
+    errors = [
+        f"{diagnostic.location}: {diagnostic.code} "
+        f"{diagnostic.kind}: {diagnostic.reason}"
+        for diagnostic in projection.diagnostics
+    ]
+    findings: list[SafetyFinding] = []
+    for document, logical_path in zip(
+        projection.documents,
+        CHAPTER02_DOCUMENTS,
+        strict=True,
+    ):
+        errors.extend(chapter02_heading_inventory_errors(document, logical_path))
+        errors.extend(chapter02_semantic_projection_errors(document, logical_path))
+        findings.extend(_projection_document_findings(document, logical_path))
+    return sorted(
+        set(findings),
+        key=lambda item: (
+            item.location,
+            item.category,
+            item.normalized_excerpt,
+            item.reason,
+            item.policy_version,
+        ),
+    ), errors
 
 
 def format_policy_finding(finding: SafetyFinding) -> str:
     return (
-        f"{finding.location}: [{finding.category}] {finding.reason}: "
-        f"{finding.normalized_excerpt!r} "
-        f"(Content Safety Policy {finding.policy_version})"
+        f"{finding.location}: [{finding.category}] {finding.reason}; "
+        f"excerpt={finding.normalized_excerpt!r}; Policy {finding.policy_version}"
     )
 
 
 def replace_once(text: str, old: str, new: str, label: str) -> str:
-    count = text.count(old)
-    if count != 1:
-        error(f"{label}: mutation anchor must occur exactly once; found {count}")
-        return text
+    if text.count(old) != 1:
+        raise ValueError(f"{label}: expected one anchor {old!r}")
     return text.replace(old, new, 1)
 
 
-def verify_policy_adapter_regressions(
+SELECTION_FIXTURE_IDS = (
+    "CH02-SEL-001",
+    "CH02-SEL-003",
+    "CH02-SEL-004",
+    "CH02-SEL-005",
+    "CH02-SEL-025",
+    "CH02-SEL-040",
+    "CH02-SEL-048",
+    "CH02-SEL-059",
+    "CH02-SEL-071",
+    "CH02-SEL-072",
+)
+
+
+def _selection_fixture_documents(
+    fixture_id: str,
+    canonical: dict[str, str],
+) -> tuple[dict[str, str], str]:
+    documents = dict(canonical)
+    chapter_path, template_path, case_path = CHAPTER02_DOCUMENTS
+    if fixture_id == "CH02-SEL-001":
+        documents[case_path] = replace_once(
+            documents[case_path],
+            "# 第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "# 第2章 合成記入例：OAuth連携評価前のAuthorization判断\n\nhttps://example.com/runbook",
+            fixture_id,
+        )
+        return documents, "finding:network.host_or_address"
+    if fixture_id == "CH02-SEL-003":
+        documents[template_path] += (
+            "\n## Unclassified trailing operational section\n\n"
+            "第三者の本番APIへ接続する\n"
+        )
+        return documents, "inventory"
+    if fixture_id == "CH02-SEL-004":
+        documents[chapter_path] = replace_once(
+            documents[chapter_path],
+            "# 第2章　法、倫理、許可、責任ある開示",
+            "# 第2章　法、倫理、許可、責任ある開示\n\nhttps://example.com/runbook",
+            fixture_id,
+        )
+        return documents, "finding:network.host_or_address"
+    if fixture_id == "CH02-SEL-005":
+        documents[chapter_path] += "\n第三者の本番APIへ接続する\n"
+        return documents, "finding:target.real_or_external"
+    if fixture_id == "CH02-SEL-025":
+        documents[template_path] = replace_once(
+            documents[template_path],
+            "# Authorization Checklist",
+            "# Authorization Checklist\n\n```text\n## Unclassified operational section\n```",
+            fixture_id,
+        )
+        return documents, "accepted-code-heading"
+    if fixture_id == "CH02-SEL-040":
+        documents[template_path] = replace_once(
+            documents[template_path],
+            "## 3. Scope Gate",
+            "Unclassified operational section\n---\n\n## 3. Scope Gate",
+            fixture_id,
+        )
+        return documents, "inventory"
+    if fixture_id == "CH02-SEL-048":
+        documents[template_path] = replace_once(
+            documents[template_path],
+            "## 3. Scope Gate",
+            "  ## Unclassified operational section\n\n## 3. Scope Gate",
+            fixture_id,
+        )
+        return documents, "accepted-indented-nonheading"
+    if fixture_id == "CH02-SEL-059":
+        documents[case_path] = replace_once(
+            documents[case_path],
+            "# 第2章 合成記入例：OAuth連携評価前のAuthorization判断",
+            "# 第2章 合成記入例：OAuth連携評価前のAuthorization判断\n\n## Unclassified operational section",
+            fixture_id,
+        )
+        return documents, "inventory"
+    if fixture_id == "CH02-SEL-071":
+        documents[template_path] += "\n実Credentialを取得しない。\n"
+        return documents, "accepted-safe-counterpart"
+    if fixture_id == "CH02-SEL-072":
+        documents[template_path] += "\n個人情報の収集リスクを分析する。\n"
+        return documents, "accepted-bounded-explanation"
+    raise ValueError(f"unknown Chapter 2 selection fixture: {fixture_id}")
+
+
+def run_selection_fixture(
+    fixture_id: str,
+    canonical: dict[str, str],
+) -> tuple[bool, str]:
+    documents, expectation = _selection_fixture_documents(fixture_id, canonical)
+    findings, selection_errors = chapter02_policy_findings(documents)
+    if expectation.startswith("finding:"):
+        category = expectation.split(":", 1)[1]
+        passed = any(item.category == category for item in findings)
+    elif expectation == "inventory":
+        passed = any(
+            "finite H1/H2 inventory drift" in item for item in selection_errors
+        )
+    elif expectation.startswith("accepted-"):
+        passed = not findings and not selection_errors
+    else:
+        raise AssertionError(expectation)
+    summary = (
+        f"{fixture_id}: expectation={expectation}; "
+        f"findings={[item.category for item in findings]!r}; errors={selection_errors!r}"
+    )
+    return passed, summary
+
+
+def verify_chapter02_adapter(
     chapter: str,
     template: str,
     example: str,
 ) -> None:
-    documents = {
-        "manuscript/02-law-ethics-authorization.md": chapter,
-        "templates/authorization-checklist.md": template,
-        "cases/ch02-authorization-decision-example.md": example,
-    }
-    canonical_findings, selection_errors = chapter02_policy_findings(documents)
+    canonical = dict(
+        zip(CHAPTER02_DOCUMENTS, (chapter, template, example), strict=True)
+    )
+    findings, selection_errors = chapter02_policy_findings(canonical)
     for message in selection_errors:
         error(message)
-    for finding in canonical_findings:
+    for finding in findings:
         error(format_policy_finding(finding))
 
-    unsafe_manuscript_preamble_mutations = (
-        (
-            "introductory action",
-            replace_once(
-                chapter,
-                "- 誰が検証を承認できるか",
-                "- 第三者の本番APIへ接続する",
-                "Chapter 2 manuscript introductory action regression",
-            ),
-            "target.real_or_external",
-        ),
-        (
-            "leading host",
-            "https://example.com/runbook\n" + chapter,
-            "network.host_or_address",
-        ),
-    )
-    for surface, unsafe_manuscript_preamble, expected_category in (
-        unsafe_manuscript_preamble_mutations
-    ):
-        unsafe_manuscript_preamble_documents = dict(documents)
-        unsafe_manuscript_preamble_documents[
-            "manuscript/02-law-ethics-authorization.md"
-        ] = unsafe_manuscript_preamble
-        unsafe_manuscript_preamble_findings, _ = chapter02_policy_findings(
-            unsafe_manuscript_preamble_documents
-        )
-        if not any(
-            finding.category == expected_category
-            for finding in unsafe_manuscript_preamble_findings
-        ):
-            error(
-                f"Chapter 2 manuscript {surface} bypassed the Policy adapter"
-            )
+    for fixture_id in SELECTION_FIXTURE_IDS:
+        passed, summary = run_selection_fixture(fixture_id, canonical)
+        if not passed:
+            error(f"Chapter 2 selection regression failed: {summary}")
 
-    for tail_heading in (
-        "## 章のまとめ",
-        "## 次に学ぶこと",
-        "## 参考文献・Source Note ID",
-    ):
-        unsafe_manuscript_tail = replace_once(
-            chapter,
-            tail_heading,
-            tail_heading + "\n\n第三者の本番APIへ接続する",
-            f"Chapter 2 manuscript tail regression {tail_heading}",
-        )
-        unsafe_manuscript_tail_documents = dict(documents)
-        unsafe_manuscript_tail_documents[
-            "manuscript/02-law-ethics-authorization.md"
-        ] = unsafe_manuscript_tail
-        unsafe_manuscript_tail_findings, _ = chapter02_policy_findings(
-            unsafe_manuscript_tail_documents
-        )
-        if not any(
-            finding.category == "target.real_or_external"
-            for finding in unsafe_manuscript_tail_findings
-        ):
-            error(
-                "Chapter 2 manuscript tail bypassed the Policy adapter after "
-                f"{tail_heading!r}"
-            )
-
-    unsafe_case_preamble_mutations = (
-        ("leading preamble", "https://example.com/runbook\n" + example),
-        (
-            "H1 title",
-            replace_once(
-                example,
-                "# 第2章 合成記入例：OAuth連携評価前のAuthorization判断",
-                "# 第2章 合成記入例：https://example.com/runbook",
-                "Chapter 2 Case H1 regression",
-            ),
-        ),
+    direct_mutations = (
+        ("target.real_or_external", "| Allowed methods | 第三者の本番APIへ接続する |"),
+        ("secret.credential", "| Allowed methods | 実Credentialを取得する |"),
+        ("data.pii", "| Allowed methods | 個人情報を収集する |"),
+        ("operation.malware", "| Allowed methods | keyloggerを作る |"),
     )
-    for surface, unsafe_case_preamble in unsafe_case_preamble_mutations:
-        unsafe_case_preamble_documents = dict(documents)
-        unsafe_case_preamble_documents[
-            "cases/ch02-authorization-decision-example.md"
-        ] = unsafe_case_preamble
-        unsafe_case_preamble_findings, _ = chapter02_policy_findings(
-            unsafe_case_preamble_documents
-        )
-        if not any(
-            finding.category == "network.host_or_address"
-            and "non-approved host suffix" in finding.reason
-            for finding in unsafe_case_preamble_findings
-        ):
-            error(
-                f"Chapter 2 Case {surface} bypassed the host Policy adapter"
-            )
-
-    soft_wrap_anchor = "- 不足情報を推測でPassにしない。"
-    soft_wrapped_template = replace_once(
-        template,
-        soft_wrap_anchor,
-        soft_wrap_anchor + "\n- 実Credentialを\n  取得する",
-        "Chapter 2 Markdown soft-wrap regression",
-    )
-    soft_wrap_documents = dict(documents)
-    soft_wrap_documents["templates/authorization-checklist.md"] = soft_wrapped_template
-    soft_wrap_findings, _ = chapter02_policy_findings(soft_wrap_documents)
-    if not any(
-        finding.category == "secret.credential" for finding in soft_wrap_findings
-    ):
-        error("Chapter 2 Markdown soft wrap split a protected object from its action")
-
-    pipe_prose_template = replace_once(
-        template,
-        soft_wrap_anchor,
-        soft_wrap_anchor + "\n\n| 実Credentialを\n取得する",
-        "Chapter 2 pipe-prefixed prose regression",
-    )
-    pipe_prose_documents = dict(documents)
-    pipe_prose_documents["templates/authorization-checklist.md"] = (
-        pipe_prose_template
-    )
-    pipe_prose_findings, _ = chapter02_policy_findings(pipe_prose_documents)
-    if not any(
-        finding.category == "secret.credential"
-        for finding in pipe_prose_findings
-    ):
-        error(
-            "Chapter 2 pipe-prefixed prose was treated as an unconfirmed table"
-        )
-
-    mismatched_table_template = replace_once(
-        template,
-        soft_wrap_anchor,
-        soft_wrap_anchor
-        + "\n\n| 実Credentialを |\n|---|---|\n取得する",
-        "Chapter 2 mismatched table-column regression",
-    )
-    mismatched_table_documents = dict(documents)
-    mismatched_table_documents["templates/authorization-checklist.md"] = (
-        mismatched_table_template
-    )
-    mismatched_table_findings, _ = chapter02_policy_findings(
-        mismatched_table_documents
-    )
-    if not any(
-        finding.category == "secret.credential"
-        for finding in mismatched_table_findings
-    ):
-        error(
-            "Chapter 2 mismatched table columns split ordinary paragraph text"
-        )
-
-    for source_hard_break in ("  \n", "\\\n"):
-        hard_wrapped_template = replace_once(
+    for category, mutation in direct_mutations:
+        mutated = replace_once(
             template,
-            soft_wrap_anchor,
-            (
-                soft_wrap_anchor
-                + "\n\n実Credentialを取"
-                + source_hard_break
-                + "得する"
-            ),
-            "Chapter 2 Markdown source hard-break regression",
+            "| Allowed methods |  |",
+            mutation,
+            f"Chapter 2 direct {category}",
         )
-        hard_wrapped_documents = dict(documents)
-        hard_wrapped_documents["templates/authorization-checklist.md"] = (
-            hard_wrapped_template
+        try:
+            document = project_documents(
+                {"templates/authorization-checklist.md": mutated}
+            ).document("templates/authorization-checklist.md")
+        except (ProjectionRuntimeError, TypeError, ValueError) as exc:
+            error(f"Chapter 2 direct mutation projection failed closed: {exc}")
+            continue
+        mutation_findings = _projection_document_findings(
+            document, "templates/authorization-checklist.md"
         )
-        hard_wrapped_findings, _ = chapter02_policy_findings(
-            hard_wrapped_documents
-        )
-        if not any(
-            finding.category == "secret.credential"
-            for finding in hard_wrapped_findings
-        ):
+        if not any(item.category == category for item in mutation_findings):
             error(
-                "Chapter 2 Markdown source hard break split a protected token: "
-                f"{source_hard_break!r}"
+                "Chapter 2 direct unsafe mutation bypassed shared "
+                f"projection/Policy: {category}"
             )
 
-    hard_break_anchor = "| Allowed methods |  |"
-    for hard_break in (
-        "<br>",
-        "<br/>",
-        "<br />",
-        "<BR>",
-        "&#10;",
-        "&#x0A;",
-        "&NewLine;",
-        "&Tab;",
-    ):
-        hard_break_template = replace_once(
-            template,
-            hard_break_anchor,
-            f"| Allowed methods | 実Credentialを{hard_break}取得する |",
-            f"Chapter 2 Markdown hard-break regression {hard_break}",
-        )
-        hard_break_documents = dict(documents)
-        hard_break_documents["templates/authorization-checklist.md"] = (
-            hard_break_template
-        )
-        hard_break_findings, _ = chapter02_policy_findings(hard_break_documents)
-        if not any(
-            finding.category == "secret.credential"
-            for finding in hard_break_findings
-        ):
-            error(
-                "Chapter 2 Markdown hard break split a protected object from "
-                f"its action: {hard_break!r}"
-            )
-
-    heading_association_anchor = "## 3. Scope Gate"
-    unsafe_heading_associations = (
-        ("### 実Credentialを\n\n取得する\n\n", "secret.credential"),
-        (
-            "### 実Credentialを\n\n#### 操作\n\n取得する\n\n",
-            "secret.credential",
-        ),
-        (
-            "### 実Credentialを\n\n前提を確認する。\n\n取得する\n\n",
-            "secret.credential",
-        ),
-        (
-            "Tokenを\n---\n\n再利用する\n\n",
-            "operation.authentication_or_session",
-        ),
-        ("実Credentialを\n===\n\n取得する\n\n", "secret.credential"),
-    )
-    for unsafe_heading_association, expected_category in (
-        unsafe_heading_associations
-    ):
-        heading_association_template = replace_once(
-            template,
-            heading_association_anchor,
-            unsafe_heading_association + heading_association_anchor,
-            "Chapter 2 heading/body association regression",
-        )
-        heading_association_documents = dict(documents)
-        heading_association_documents[
-            "templates/authorization-checklist.md"
-        ] = heading_association_template
-        heading_association_findings, heading_association_messages = (
-            chapter02_policy_findings(
-                heading_association_documents
-            )
-        )
-        expected_finding = any(
-            finding.category == expected_category
-            for finding in heading_association_findings
-        )
-        rejected_setext_boundary = "\n---" in unsafe_heading_association or (
-            "\n===" in unsafe_heading_association
-        )
-        rejected_setext_boundary = rejected_setext_boundary and any(
-            "unexpected Policy section boundary" in message
-            for message in heading_association_messages
-        )
-        if not expected_finding and not rejected_setext_boundary:
-            error(
-                "Chapter 2 Markdown heading split a protected object from its "
-                f"associated action: {unsafe_heading_association!r}"
-            )
-
-    unsafe_nested_lists = (
-        "- 実Credentialを\n  - 取得する\n\n",
-        "- 実Credentialを\n  - 前提\n    - 取得する\n\n",
-        "1. 実Credentialを\n   1. 取得する\n\n",
-        (
-            "- 実Credentialを\n\n  前提を確認する。\n\n"
-            "  - 取得する\n\n"
-        ),
-        (
-            "- 前提\n\n  実Credentialを\n\n"
-            "  - 取得する\n\n"
-        ),
-        "- 実Credentialを\n\n  取得する\n\n",
-        "- 実Credentialを\n\n    取得する\n\n",
-    )
-    for unsafe_nested_list in unsafe_nested_lists:
-        nested_list_template = replace_once(
-            template,
-            heading_association_anchor,
-            unsafe_nested_list + heading_association_anchor,
-            "Chapter 2 nested-list association regression",
-        )
-        nested_list_documents = dict(documents)
-        nested_list_documents["templates/authorization-checklist.md"] = (
-            nested_list_template
-        )
-        nested_list_findings, _ = chapter02_policy_findings(
-            nested_list_documents
-        )
-        if not any(
-            finding.category == "secret.credential"
-            for finding in nested_list_findings
-        ):
-            error(
-                "Chapter 2 Markdown nested list split a protected object from "
-                f"its associated action: {unsafe_nested_list!r}"
-            )
-
-    terminal_dedented_template = template + (
-        "\n- 実Credentialを\n  - safe\n\n  取得する\n"
-    )
-    terminal_dedented_documents = dict(documents)
-    terminal_dedented_documents["templates/authorization-checklist.md"] = (
-        terminal_dedented_template
-    )
-    terminal_dedented_findings, _ = chapter02_policy_findings(
-        terminal_dedented_documents
-    )
-    if not any(
-        finding.category == "secret.credential"
-        for finding in terminal_dedented_findings
-    ):
-        error(
-            "Chapter 2 terminal list continuation did not resolve its outer "
-            "ancestor"
-        )
-
-    unsafe_header_tables = (
-        "| 実Credentialを |\n|---|\n| 取得する |\n\n",
-        (
-            "| Field | 実Credentialを |\n"
-            "|---|---|\n"
-            "| Value | 取得する |\n\n"
-        ),
-    )
-    for unsafe_header_table in unsafe_header_tables:
-        header_table_template = replace_once(
-            template,
-            heading_association_anchor,
-            unsafe_header_table + heading_association_anchor,
-            "Chapter 2 table-header association regression",
-        )
-        header_table_documents = dict(documents)
-        header_table_documents["templates/authorization-checklist.md"] = (
-            header_table_template
-        )
-        header_table_findings, _ = chapter02_policy_findings(
-            header_table_documents
-        )
-        if not any(
-            finding.category == "secret.credential"
-            for finding in header_table_findings
-        ):
-            error(
-                "Chapter 2 Markdown table header split a protected object from "
-                f"its associated body cell: {unsafe_header_table!r}"
-            )
-
-    unsafe_raw_html_structures = (
-        (
-            "<table><tr><th>実Credentialを</th></tr>"
-            "<tr><td>取得する</td></tr></table>\n\n"
-        ),
-        "<h3>実Credentialを</h3>\n\n取得する\n\n",
-        (
-            "<ul><li>実Credentialを<ul><li>取得する</li></ul>"
-            "</li></ul>\n\n"
-        ),
-        (
-            "<details><summary>実Credentialを</summary>\n\n"
-            "取得する\n\n</details>\n\n"
-        ),
-        "- safe\n\n    <script>alert(1)</script>\n\n",
-        (
-            "- outer\n    - inner\n\n"
-            '    <span onmouseover="alert(1)">safe</span>\n\n'
-        ),
-        '\\`<span onmouseover="alert(1)">safe</span>`\n\n',
-        '<img alt="`" src=x onerror="alert(1)">X`\n\n',
-        '<img alt=">`" src=x onerror="alert(1)">X`\n\n',
-        '<?pi `?><script>alert(1)</script>`\n\n',
-        '<`foo@example.test><script>alert(1)</script>`\n\n',
-        '` <script>alert(1)</script>`\n\n',
-        "<javascript:alert(document.domain)>\n\n",
-        '<br onmouseover="alert(document.domain)">\n\n',
-    )
-    for unsafe_raw_html_structure in unsafe_raw_html_structures:
-        raw_html_template = replace_once(
-            template,
-            heading_association_anchor,
-            unsafe_raw_html_structure + heading_association_anchor,
-            "Chapter 2 raw-HTML structure regression",
-        )
-        raw_html_documents = dict(documents)
-        raw_html_documents["templates/authorization-checklist.md"] = (
-            raw_html_template
-        )
-        _, raw_html_messages = chapter02_policy_findings(raw_html_documents)
-        if not any(
-            "raw HTML other than attribute-free br is unsupported" in message
-            for message in raw_html_messages
-        ):
-            error(
-                "Chapter 2 adapter accepted unsupported raw HTML: "
-                f"{unsafe_raw_html_structure!r}"
-            )
-
-    escaped_closing_backtick_template = (
-        template + "\n`<script>alert(1)</script>\\`\n"
-    )
-    escaped_closing_backtick_documents = dict(documents)
-    escaped_closing_backtick_documents["templates/authorization-checklist.md"] = (
-        escaped_closing_backtick_template
-    )
-    _, escaped_closing_backtick_messages = chapter02_policy_findings(
-        escaped_closing_backtick_documents
-    )
-    if not any(
-        "raw HTML other than attribute-free br is unsupported" in message
-        for message in escaped_closing_backtick_messages
-    ):
-        error("Chapter 2 adapter treated an escaped backtick as a code-span close")
-
-    unsafe_fenced_blocks = (
-        "```text\n実Credentialを\n\n取得する\n```\n\n",
-        "~~~~text\n実Credentialを\n\n取得する\n~~~~\n\n",
-    )
-    for unsafe_fenced_block in unsafe_fenced_blocks:
-        fenced_template = replace_once(
-            template,
-            heading_association_anchor,
-            unsafe_fenced_block + heading_association_anchor,
-            "Chapter 2 fenced-code association regression",
-        )
-        fenced_documents = dict(documents)
-        fenced_documents["templates/authorization-checklist.md"] = fenced_template
-        fenced_findings, _ = chapter02_policy_findings(fenced_documents)
-        if not any(
-            finding.category == "secret.credential"
-            for finding in fenced_findings
-        ):
-            error(
-                "Chapter 2 fenced code split a protected object from its action: "
-                f"{unsafe_fenced_block!r}"
-            )
-
-    safe_fenced_heading = "```markdown\n## Example\n\nSafe text.\n```\n\n"
-    safe_fenced_heading_template = replace_once(
-        template,
-        heading_association_anchor,
-        safe_fenced_heading + heading_association_anchor,
-        "Chapter 2 fenced-heading boundary regression",
-    )
-    safe_fenced_heading_documents = dict(documents)
-    safe_fenced_heading_documents[
-        "templates/authorization-checklist.md"
-    ] = safe_fenced_heading_template
-    _, safe_fenced_heading_messages = chapter02_policy_findings(
-        safe_fenced_heading_documents
-    )
-    if any(
-        "unexpected Policy section boundary" in message
-        for message in safe_fenced_heading_messages
-    ):
-        error("Chapter 2 treated a fenced-code heading as a section boundary")
-
-    literal_code_examples = (
-        "```html\n<div>safe example</div>\n```\n\n",
-        (
-            "- example\n\n    ~~~html\n"
-            "    <div>safe example</div>\n    ~~~\n\n"
-        ),
-        "    <div>safe example</div>\n\n",
-        "- safe\n\n      <div>safe example</div>\n\n",
-        "`<div>safe example</div>`\n\n",
-        "`<div>safe example</div>\\`\n\n",
-        "`<?safe processing instruction?>`\n\n",
-        "### Safe literal example\n    <div>safe literal</div>\n\n",
-    )
-    for literal_code_example in literal_code_examples:
-        literal_code_template = replace_once(
-            template,
-            heading_association_anchor,
-            literal_code_example + heading_association_anchor,
-            "Chapter 2 literal-code render-guard regression",
-        )
-        literal_code_documents = dict(documents)
-        literal_code_documents["templates/authorization-checklist.md"] = (
-            literal_code_template
-        )
-        _, literal_code_messages = chapter02_policy_findings(
-            literal_code_documents
-        )
-        if any(
-            "raw HTML other than attribute-free br is unsupported" in message
-            for message in literal_code_messages
-        ):
-            error(
-                "Chapter 2 render guard interpreted literal code as raw HTML: "
-                f"{literal_code_example!r}"
-            )
-
-    liquid_code_examples = (
-        '```text\n実Credentialを取{{ "得" }}する\n```\n\n',
-        '    実Credentialを取{{ "得" }}する\n\n',
-        '`実Credentialを取{{ "得" }}する`\n\n',
-    )
-    for liquid_code_example in liquid_code_examples:
-        liquid_code_template = replace_once(
-            template,
-            heading_association_anchor,
-            liquid_code_example + heading_association_anchor,
-            "Chapter 2 Liquid-in-code render-order regression",
-        )
-        liquid_code_documents = dict(documents)
-        liquid_code_documents["templates/authorization-checklist.md"] = (
-            liquid_code_template
-        )
-        _, liquid_code_messages = chapter02_policy_findings(
-            liquid_code_documents
-        )
-        if not any(
-            "interpreted Liquid is unsupported" in message
-            for message in liquid_code_messages
-        ):
-            error(
-                "Chapter 2 render guard masked pre-Markdown Liquid in code: "
-                f"{liquid_code_example!r}"
-            )
-
-    unsafe_indented_blocks = (
-        "    実Credentialを\n\n    取得する\n\n",
-        "\t実Credentialを\n\n\t取得する\n\n",
-    )
-    for unsafe_indented_block in unsafe_indented_blocks:
-        indented_template = replace_once(
-            template,
-            heading_association_anchor,
-            unsafe_indented_block + heading_association_anchor,
-            "Chapter 2 indented-code association regression",
-        )
-        indented_documents = dict(documents)
-        indented_documents["templates/authorization-checklist.md"] = (
-            indented_template
-        )
-        indented_findings, _ = chapter02_policy_findings(indented_documents)
-        if not any(
-            finding.category == "secret.credential"
-            for finding in indented_findings
-        ):
-            error(
-                "Chapter 2 indented code split a protected object from its "
-                f"action: {unsafe_indented_block!r}"
-            )
-
-    unsupported_render_constructs = (
-        (
-            '| Allowed methods | 実Credentialを取{{ "得" }}する |',
-            "interpreted Liquid is unsupported",
-        ),
-        (
-            '{% assign operation = "実Credentialを取得する" %}\n'
-            "{{ operation }}\n\n",
-            "interpreted Liquid is unsupported",
-        ),
-        (
-            "実Credentialを\n: 取得する\n\n",
-            "Kramdown definition-list syntax is unsupported",
-        ),
-        (
-            "> 実Credentialを\n>\n> 取得する\n\n",
-            "Markdown blockquote syntax is unsupported",
-        ),
-        (
-            '[safe](#){: href="javascript:alert(1)" }\n\n',
-            "Kramdown IAL syntax is unsupported",
-        ),
-        (
-            "実Credentialを[^x]\n\n[^x]: 取得する\n\n",
-            "Kramdown footnote syntax is unsupported",
-        ),
-        (
-            "実CredentialをCRED\n\n*[CRED]: 取得する\n\n",
-            "Kramdown abbreviation syntax is unsupported",
-        ),
-        (
-            "実Credentialを取$$得$$する\n\n",
-            "Kramdown math syntax is unsupported",
-        ),
-        (
-            "```text`bad\n"
-            '<span onmouseover="alert(1)">safe</span>\n'
-            "```\n\n",
-            "backtick in a backtick-fence info string is unsupported",
-        ),
-        (
-            "第三者の _本番_ システムへ接続する\n\n",
-            "Markdown underscore-emphasis syntax is unsupported",
-        ),
-        (
-            "第三者の __本番__ システムへ接続する\n\n",
-            "Markdown underscore-emphasis syntax is unsupported",
-        ),
-        (
-            "第三者の ___本番___ システムへ接続する\n\n",
-            "Markdown underscore-emphasis syntax is unsupported",
-        ),
-        (
-            "第三者の _本番\nシステム_へ接続する\n\n",
-            "Markdown underscore-emphasis syntax is unsupported",
-        ),
-        (
-            "実Credentialを取[得][x]する\n\n[x]: #safe\n\n",
-            "Markdown reference-link syntax is unsupported",
-        ),
-        (
-            '[safe](# "実Credentialを取得する")\n\n',
-            "Markdown link/image titles are unsupported",
-        ),
-        (
-            "![safe](# '実Credentialを取得する')\n\n",
-            "Markdown link/image titles are unsupported",
-        ),
-        (
-            "[safe](# (実Credentialを取得する))\n\n",
-            "Markdown link/image titles are unsupported",
-        ),
-        (
-            "実Credentialを取[](#)得する\n\n",
-            "Markdown links/images with an empty label are unsupported",
-        ),
-        (
-            "実Credentialを取[得]()する\n\n",
-            "Markdown links/images with an empty destination are unsupported",
-        ),
-        (
-            "第三者の[本](foo(and)bar)番システムへ接続する\n\n",
-            "destinations with balanced parentheses are unsupported",
-        ),
-        (
-            "第三者の[本](foo\\)bar)番システムへ接続する\n\n",
-            "destinations with escaped parentheses are unsupported",
-        ),
-        (
-            "第三者の[本](<./foo)bar>)番システムへ接続する\n\n",
-            "parentheses in angle-bracket Markdown link/image destinations",
-        ),
-        (
-            "第三者の[本](foo&#41;bar)番システムへ接続する\n\n",
-            "decoded parentheses in Markdown link/image destinations",
-        ),
-        (
-            "[x](foo`)<script>alert(1)</script>[y](bar`)\n\n",
-            "backticks in Markdown link/image destinations are unsupported",
-        ),
-        (
-            "[safe](javascript\\:document.body.textContent='x')\n\n",
-            "Markdown punctuation escapes in link/image destinations are "
-            "unsupported",
-        ),
-        (
-            "[safe](http:attacker.com)\n\n",
-            "authority-less HTTP(S) Markdown link/image destinations are "
-            "unsupported",
-        ),
-        (
-            "[safe]( http:attacker.com)\n\n",
-            "authority-less HTTP(S) Markdown link/image destinations are "
-            "unsupported",
-        ),
-        (
-            "[safe](\thttp:attacker.com)\n\n",
-            "authority-less HTTP(S) Markdown link/image destinations are "
-            "unsupported",
-        ),
-        (
-            "\\[safe](実Credentialを取得する)\n\n",
-            "escaped Markdown link/image openers are unsupported",
-        ),
-        (
-            "[safe](javascript:alert(1))\n\n",
-            "executable URL scheme is unsupported",
-        ),
-        (
-            "[safe][unsafe-ref]\n\n"
-            "[unsafe-ref]: vbscript:msgbox(1)\n\n",
-            "executable URL scheme is unsupported",
-        ),
-        (
-            "[safe](data:text/html,<script>alert(1)</script>)\n\n",
-            "executable URL scheme is unsupported",
-        ),
-        (
-            "[safe](https://example.com\\\\@lab.test/)\n\n",
-            "special URL containing backslash is unsupported",
-        ),
-        (
-            "[safe](https://example.com&#92;&#92;@lab.test/)\n\n",
-            "special URL containing backslash is unsupported",
-        ),
-        (
-            "[safe](//attacker.com\\\\@lab.test/)\n\n",
-            "special URL containing backslash is unsupported",
-        ),
-        (
-            "[safe](//attacker.com&#92;&#92;@lab.test/)\n\n",
-            "special URL containing backslash is unsupported",
-        ),
-        (
-            "[safe](\\\\attacker.com\\@lab.test/)\n\n",
-            "special URL containing backslash is unsupported",
-        ),
-        (
-            "実Credentialを取<!--\n- hidden\n-->得する\n\n",
-            "HTML comments are unsupported",
-        ),
-        (
-            "<?safe processing instruction?>\n\n",
-            "raw HTML processing instructions, declarations, and CDATA are "
-            "unsupported",
-        ),
-        (
-            "<!DOCTYPE html>\n\n",
-            "raw HTML processing instructions, declarations, and CDATA are "
-            "unsupported",
-        ),
-        (
-            "<![CDATA[safe text]]>\n\n",
-            "raw HTML processing instructions, declarations, and CDATA are "
-            "unsupported",
-        ),
-    )
-    for unsupported_construct, expected_message in unsupported_render_constructs:
-        if unsupported_construct.startswith("| Allowed methods"):
-            unsupported_template = replace_once(
-                template,
-                hard_break_anchor,
-                unsupported_construct,
-                "Chapter 2 unsupported render construct regression",
-            )
-        else:
-            unsupported_template = replace_once(
-                template,
-                heading_association_anchor,
-                unsupported_construct + heading_association_anchor,
-                "Chapter 2 unsupported render construct regression",
-            )
-        unsupported_documents = dict(documents)
-        unsupported_documents["templates/authorization-checklist.md"] = (
-            unsupported_template
-        )
-        _, unsupported_messages = chapter02_policy_findings(
-            unsupported_documents
-        )
-        if not any(
-            expected_message in message for message in unsupported_messages
-        ):
-            error(
-                "Chapter 2 adapter accepted an unsupported rendered construct: "
-                f"{unsupported_construct!r}"
-            )
-
-    literal_projection_mutations = (
-        "`<!--第三者の本番システムへ接続する-->`\n\n",
-        "`&lt;第三者の本番システムへ接続する&gt;`\n\n",
-        "<第三者の本番システムへ接続する>\n\n",
-        "<&#31532;三者の本番システムへ接続する>\n\n",
-        "&lt;第三者の本番システムへ接続する&gt;\n\n",
-    )
-    for literal_projection in literal_projection_mutations:
-        literal_projection_template = replace_once(
-            template,
-            heading_association_anchor,
-            literal_projection + heading_association_anchor,
-            "Chapter 2 literal reader-visible projection regression",
-        )
-        literal_projection_documents = dict(documents)
-        literal_projection_documents["templates/authorization-checklist.md"] = (
-            literal_projection_template
-        )
-        literal_projection_findings, _ = chapter02_policy_findings(
-            literal_projection_documents
-        )
-        if not any(
-            finding.category == "target.real_or_external"
-            for finding in literal_projection_findings
-        ):
-            error(
-                "Chapter 2 adapter discarded reader-visible literal text: "
-                f"{literal_projection!r}"
-            )
-
-    multiline_inline_code = "`実Credentialを\n\n取得する`\n\n"
-    multiline_inline_template = replace_once(
-        template,
-        heading_association_anchor,
-        multiline_inline_code + heading_association_anchor,
-        "Chapter 2 multiline inline-code projection regression",
-    )
-    multiline_inline_documents = dict(documents)
-    multiline_inline_documents["templates/authorization-checklist.md"] = (
-        multiline_inline_template
-    )
-    multiline_inline_findings, _ = chapter02_policy_findings(
-        multiline_inline_documents
-    )
-    if not any(
-        finding.category == "secret.credential"
-        for finding in multiline_inline_findings
-    ):
-        error("Chapter 2 adapter split a multiline inline-code payload")
-
-    unclassified_preamble_template = replace_once(
-        template,
-        "## 使用条件",
-        "## Unclassified operational section\n\n## 使用条件",
-        "Chapter 2 unclassified preamble section regression",
-    )
-    unclassified_preamble_documents = dict(documents)
-    unclassified_preamble_documents["templates/authorization-checklist.md"] = (
-        unclassified_preamble_template
-    )
-    _, unclassified_preamble_errors = chapter02_policy_findings(
-        unclassified_preamble_documents
-    )
-    if not any(
-        "unexpected Policy preamble heading inventory" in message
-        for message in unclassified_preamble_errors
-    ):
-        error(
-            "Chapter 2 Policy adapter accepted an unclassified preamble "
-            "section boundary"
-        )
-
-    unclassified_section_template = replace_once(
-        template,
-        "## 3. Scope Gate",
-        "## Unclassified operational section\n\n第三者の本番APIへ接続する\n\n"
-        "## 3. Scope Gate",
-        "Chapter 2 unclassified section regression",
-    )
-    unclassified_documents = dict(documents)
-    unclassified_documents["templates/authorization-checklist.md"] = (
-        unclassified_section_template
-    )
-    _, unclassified_errors = chapter02_policy_findings(unclassified_documents)
-    if not any("unexpected Policy section boundary" in message for message in unclassified_errors):
-        error("Chapter 2 Policy adapter accepted an unclassified section boundary")
-
-    indented_unclassified_template = replace_once(
-        template,
-        "## 3. Scope Gate",
-        "  ## Unclassified operational section\n\n"
-        "第三者の本番APIへ接続する\n\n## 3. Scope Gate",
-        "Chapter 2 indented unclassified ATX section regression",
-    )
-    indented_unclassified_documents = dict(documents)
-    indented_unclassified_documents["templates/authorization-checklist.md"] = (
-        indented_unclassified_template
-    )
-    _, indented_unclassified_errors = chapter02_policy_findings(
-        indented_unclassified_documents
-    )
-    if not any(
-        "unexpected Policy section boundary" in message
-        for message in indented_unclassified_errors
-    ):
-        error(
-            "Chapter 2 Policy adapter accepted an indented unclassified ATX "
-            "boundary"
-        )
-
-    unclassified_setext_template = replace_once(
-        template,
-        "## 3. Scope Gate",
-        "Unclassified operational section\n---\n\n"
-        "第三者の本番APIへ接続する\n\n## 3. Scope Gate",
-        "Chapter 2 unclassified Setext section regression",
-    )
-    unclassified_setext_documents = dict(documents)
-    unclassified_setext_documents["templates/authorization-checklist.md"] = (
-        unclassified_setext_template
-    )
-    _, unclassified_setext_errors = chapter02_policy_findings(
-        unclassified_setext_documents
-    )
-    if not any(
-        "unexpected Policy section boundary" in message
-        for message in unclassified_setext_errors
-    ):
-        error(
-            "Chapter 2 Policy adapter accepted an unclassified Setext boundary"
-        )
-
-    trailing_section_template = template + (
-        "\n## Unclassified trailing operational section\n\n"
-        "第三者の本番APIへ接続する\n"
-    )
-    trailing_section_documents = dict(documents)
-    trailing_section_documents["templates/authorization-checklist.md"] = (
-        trailing_section_template
-    )
-    _, trailing_section_errors = chapter02_policy_findings(
-        trailing_section_documents
-    )
-    if not any(
-        "unexpected Policy section boundary" in message
-        for message in trailing_section_errors
-    ):
-        error("Chapter 2 Policy adapter accepted an unclassified trailing section")
-
-    action_anchor = "| Allowed methods |  |"
-    unsafe_actions = (
-        ("real target", "第三者の本番APIへ接続する", "target.real_or_external"),
-        ("credential", "実Credentialを取得する", "secret.credential"),
-        ("token reuse", "Tokenを再利用する", "operation.authentication_or_session"),
-        ("cookie", "Cookieを取得する", "secret.credential"),
-        ("session", "synthetic sessionをreplayする", "operation.authentication_or_session"),
-        ("PII", "個人情報を収集する", "data.pii"),
-        ("malware", "keyloggerを作る", "operation.malware"),
-        ("C2", "C2 serverを構築する", "operation.c2_or_phishing"),
-        ("DoS", "DoSを実行する", "operation.disruption_or_destruction"),
-        ("destruction", "本番データを破壊する", "operation.disruption_or_destruction"),
-    )
-    for name, unsafe_text, expected_category in unsafe_actions:
-        mutated_template = replace_once(
-            template,
-            action_anchor,
-            f"| Allowed methods | {unsafe_text} |",
-            f"Chapter 2 unsafe {name} regression",
-        )
-        mutated_documents = dict(documents)
-        mutated_documents["templates/authorization-checklist.md"] = mutated_template
-        findings, _ = chapter02_policy_findings(mutated_documents)
-        if not any(finding.category == expected_category for finding in findings):
-            error(
-                f"Chapter 2 Policy adapter accepted unsafe {name} mutation; "
-                f"expected category {expected_category}"
-            )
-
-    unsafe_chapter = replace_once(
-        chapter,
-        "- 目的: OAuth permissionの設定Review",
-        "- 目的: OAuth permissionの設定Review\n- 第三者の本番APIへ接続する",
-        "Chapter 2 manuscript action-surface regression",
-    )
-    unsafe_chapter_documents = dict(documents)
-    unsafe_chapter_documents["manuscript/02-law-ethics-authorization.md"] = unsafe_chapter
-    chapter_findings, _ = chapter02_policy_findings(unsafe_chapter_documents)
-    if not any(
-        finding.category == "target.real_or_external" for finding in chapter_findings
-    ):
-        error("Chapter 2 manuscript action-bearing field bypassed Policy 1.2.0")
-
-    unsafe_case = replace_once(
-        example,
-        "| `COND-AUTH-2026-001` | Production credentialを操作しない |",
-        "| `COND-AUTH-2026-001` | 実Credentialを取得する |",
-        "Chapter 2 Case condition-surface regression",
-    )
-    unsafe_case_documents = dict(documents)
-    unsafe_case_documents["cases/ch02-authorization-decision-example.md"] = unsafe_case
-    case_findings, _ = chapter02_policy_findings(unsafe_case_documents)
-    if not any(finding.category == "secret.credential" for finding in case_findings):
-        error("Chapter 2 Case Condition field bypassed Policy 1.2.0")
-
-    reviewed_boundary = (
-        "| Prohibited methods | Token取得・利用、外部API call、Credential変更、"
-        "権限昇格、横展開、DoS、Data変更 |"
-    )
-    unsafe_reviewed_boundary_case = replace_once(
-        example,
-        reviewed_boundary,
-        reviewed_boundary[:-1] + "。しかし実Credentialを取得する |",
-        "Chapter 2 reviewed-context invalidation regression",
-    )
-    reviewed_boundary_documents = dict(documents)
-    reviewed_boundary_documents["cases/ch02-authorization-decision-example.md"] = (
-        unsafe_reviewed_boundary_case
-    )
-    reviewed_boundary_findings, _ = chapter02_policy_findings(
-        reviewed_boundary_documents
-    )
-    if not any(
-        finding.category == "secret.credential"
-        for finding in reviewed_boundary_findings
-    ):
-        error("Chapter 2 reviewed context exemption survived a line mutation")
-
-    safe_explanations = (
+    safe_mutations = (
         "第三者の本番APIへ接続しない",
         "Tokenを取得しない",
         "個人情報の収集リスクを分析する",
         "keyloggerを作ることを禁止する",
-        "DoSを実行しない",
     )
-    safe_explanation_anchor = (
-        "- `Proceed with conditions`では、Condition、Owner、期限、再確認方法を必須とする。"
+    safe_block = "\n".join(f"- {text}" for text in safe_mutations)
+    safe_source = replace_once(
+        template,
+        "- `Proceed with conditions`では、Condition、Owner、期限、再確認方法を必須とする。",
+        "- `Proceed with conditions`では、Condition、Owner、期限、再確認方法を必須とする。\n"
+        + safe_block,
+        "Chapter 2 safe counterparts",
     )
-    for safe_text in safe_explanations:
-        mutated_template = replace_once(
-            template,
-            safe_explanation_anchor,
-            f"{safe_explanation_anchor}\n- {safe_text}",
-            "Chapter 2 explicit prohibition regression",
+    try:
+        safe_document = project_documents(
+            {"templates/authorization-checklist.md": safe_source}
+        ).document("templates/authorization-checklist.md")
+    except (ProjectionRuntimeError, TypeError, ValueError) as exc:
+        error(f"Chapter 2 safe mutation projection failed closed: {exc}")
+    else:
+        safe_findings = _projection_document_findings(
+            safe_document, "templates/authorization-checklist.md"
         )
-        mutated_documents = dict(documents)
-        mutated_documents["templates/authorization-checklist.md"] = mutated_template
-        findings, _ = chapter02_policy_findings(mutated_documents)
-        action_findings = [
-            finding
-            for finding in findings
-            if finding.category != "network.host_or_address"
-        ]
-        if action_findings:
+        if safe_findings:
             error(
-                "Chapter 2 Policy adapter rejected a legal/safety explanation or "
-                f"explicit prohibition {safe_text!r}: "
-                f"{[format_policy_finding(item) for item in action_findings]!r}"
+                "Chapter 2 safe counterparts produced findings: "
+                f"{[format_policy_finding(item) for item in safe_findings]!r}"
             )
 
-    host_anchor = "| In-scope target identifiers |  |"
-    unsafe_hosts = (
-        ("https://lab.localhost/", "technically reserved but disallowed by the synthetic publication policy"),
-        ("lab.localhost", "technically reserved but disallowed by the synthetic publication policy"),
-        ("8.8.8.8", "non-documentation IP literal is disallowed"),
-        ("https://example.com/runbook", "non-approved host suffix"),
-    )
-    for host, required_reason in unsafe_hosts:
-        mutated_template = replace_once(
-            template,
-            host_anchor,
-            f"| In-scope target identifiers | {host} |",
-            f"Chapter 2 unsafe host regression {host}",
-        )
-        mutated_documents = dict(documents)
-        mutated_documents["templates/authorization-checklist.md"] = mutated_template
-        findings, _ = chapter02_policy_findings(mutated_documents)
-        host_findings = [
-            finding for finding in findings if finding.category == "network.host_or_address"
-        ]
-        if not any(required_reason in finding.reason for finding in host_findings):
-            error(
-                f"Chapter 2 Policy adapter accepted unsafe host {host!r} or emitted "
-                f"the wrong diagnostic: {[item.reason for item in host_findings]!r}"
-            )
-        if host.endswith(".localhost") or ".localhost/" in host:
-            if any("non-reserved" in finding.reason for finding in host_findings):
-                error(
-                    "Chapter 2 Policy adapter misclassified reserved .localhost as "
-                    "non-reserved"
-                )
-
-    localhost_case = replace_once(
+    reviewed_action_mutation = replace_once(
         example,
-        "`tenant-auth-lab-01.test`、`billing-bridge.example`の合成App registration、設定Export",
-        "`tenant-auth-lab-01.test`、`lab.localhost`の合成App registration、設定Export",
-        "Chapter 2 Case .localhost regression",
+        "| Information gaps | Production credential変更権限、実Vendor窓口、契約通知期限 |",
+        "| Information gaps | Production credential変更権限、実Vendor窓口、契約通知期限。"
+        "しかし実Credentialを取得する |",
+        "Chapter 2 reviewed action mutation",
     )
-    localhost_case_documents = dict(documents)
-    localhost_case_documents["cases/ch02-authorization-decision-example.md"] = (
-        localhost_case
-    )
-    localhost_case_findings, _ = chapter02_policy_findings(localhost_case_documents)
-    localhost_host_findings = [
-        finding
-        for finding in localhost_case_findings
-        if finding.category == "network.host_or_address"
-    ]
-    if not any(
-        "technically reserved but disallowed by the synthetic publication policy"
-        in finding.reason
-        for finding in localhost_host_findings
-    ):
-        error("Chapter 2 Case accepted .localhost through its former suffix allowance")
-    if any("non-reserved" in finding.reason for finding in localhost_host_findings):
-        error("Chapter 2 Case .localhost regression used the obsolete non-reserved diagnostic")
-
-    safe_hosts = (
-        "lab.example",
-        "https://lab.test/runbook",
-        "<https://lab.test/runbook>",
-        "<security@example.test>",
-        "node.invalid",
-        "192.0.2.10",
-        "198.51.100.10",
-        "203.0.113.10",
-        "https://[2001:db8::10]/fixture",
-    )
-    for host in safe_hosts:
-        mutated_template = replace_once(
-            template,
-            host_anchor,
-            f"| In-scope target identifiers | {host} |",
-            f"Chapter 2 approved host regression {host}",
-        )
-        mutated_documents = dict(documents)
-        mutated_documents["templates/authorization-checklist.md"] = mutated_template
-        findings, _ = chapter02_policy_findings(mutated_documents)
-        host_findings = [
-            finding for finding in findings if finding.category == "network.host_or_address"
-        ]
-        if host_findings:
-            error(
-                f"Chapter 2 Policy adapter rejected approved host/address {host!r}: "
-                f"{[format_policy_finding(item) for item in host_findings]!r}"
-            )
-
-    chapter_fields, selection_errors = chapter02_reader_visible_policy_fields(
-        "manuscript/02-law-ethics-authorization.md",
+    provenance_mutation = replace_once(
         chapter,
-    )
-    if selection_errors:
-        for message in selection_errors:
-            error(message)
-    delegated_urls = (
         "https://itdojp.github.io/pentest-learning-book/",
-        "https://itdojp.github.io/practical-auth-book/",
-        "https://itdojp.github.io/it-infra-security-guide-book/",
+        "https://example.com/runbook",
+        "Chapter 2 reviewed provenance mutation",
     )
-    selected_chapter_text = "\n".join(value for _, value in chapter_fields)
-    for delegated_url in delegated_urls:
-        if delegated_url not in selected_chapter_text:
+    host_mutation = replace_once(
+        example,
+        "`billing-bridge.example`の合成App registration",
+        "`lab.localhost`の合成App registration",
+        "Chapter 2 Issue #67 exact host exemption mutation",
+    )
+    exemption_probes = (
+        (
+            "cases/ch02-authorization-decision-example.md",
+            reviewed_action_mutation,
+            "secret.credential",
+            "L160",
+            "reviewed action",
+        ),
+        (
+            "manuscript/02-law-ethics-authorization.md",
+            provenance_mutation,
+            "network.host_or_address",
+            "L41",
+            "reviewed provenance",
+        ),
+        (
+            "cases/ch02-authorization-decision-example.md",
+            host_mutation,
+            "network.host_or_address",
+            "L83",
+            "Issue #67 host",
+        ),
+    )
+    for logical_path, source, category, line_marker, label in exemption_probes:
+        try:
+            document = project_documents({logical_path: source}).document(logical_path)
+        except (ProjectionRuntimeError, TypeError, ValueError) as exc:
+            error(f"Chapter 2 exact {label} mutation projection failed: {exc}")
+            continue
+        probe_findings = _projection_document_findings(document, logical_path)
+        if not any(
+            item.category == category and line_marker in item.location
+            for item in probe_findings
+        ):
+            error(f"Chapter 2 exact {label} exemption survived its field mutation")
+
+    relocated_provenance = replace_once(
+        chapter,
+        "https://itdojp.github.io/pentest-learning-book/",
+        "../safe-local-reference",
+        "Chapter 2 reviewed provenance relocation source",
+    ) + (
+        "\nOperational target: [target]"
+        "(https://itdojp.github.io/pentest-learning-book/)\n"
+    )
+    relocated_document = project_documents(
+        {"manuscript/02-law-ethics-authorization.md": relocated_provenance}
+    ).document("manuscript/02-law-ethics-authorization.md")
+    relocated_findings = _projection_document_findings(
+        relocated_document, "manuscript/02-law-ethics-authorization.md"
+    )
+    relocated_errors = chapter02_semantic_projection_errors(
+        relocated_document, "manuscript/02-law-ethics-authorization.md"
+    )
+    if not any(
+        item.category == "network.host_or_address" for item in relocated_findings
+    ) or not any(
+        "reviewed provenance projection relation" in item for item in relocated_errors
+    ):
+        error("Chapter 2 provenance exemption followed a URL into a new owner")
+
+    duplicate_host = replace_once(
+        example,
+        "- Domainは予約済みの`.example`を使用する。",
+        "- Domainは予約済みの`.example`を使用する。\n"
+        "- Domainは予約済みの`.example`を使用する。",
+        "Chapter 2 exact host exemption duplicate",
+    )
+    duplicate_document = project_documents(
+        {"cases/ch02-authorization-decision-example.md": duplicate_host}
+    ).document("cases/ch02-authorization-decision-example.md")
+    duplicate_findings = _projection_document_findings(
+        duplicate_document, "cases/ch02-authorization-decision-example.md"
+    )
+    if not any(
+        item.category == "network.host_or_address" for item in duplicate_findings
+    ):
+        error("Chapter 2 host exemption expanded to an unreviewed duplicate location")
+
+    ownership_mutation = replace_once(
+        chapter, "### OWN", "`### OWN`", "Chapter 2 OWN semantic mutation"
+    )
+    _, ownership_errors = chapter02_policy_findings(
+        {
+            "manuscript/02-law-ethics-authorization.md": ownership_mutation,
+            "templates/authorization-checklist.md": template,
+            "cases/ch02-authorization-decision-example.md": example,
+        }
+    )
+    if not any(
+        "missing exact semantic projection field" in item for item in ownership_errors
+    ):
+        error("Chapter 2 OWN raw token satisfied the projected semantic contract")
+
+    relocated_ownership = (
+        replace_once(
+            chapter,
+            "### OWN\n",
+            "",
+            "Chapter 2 OWN bounded-section relocation source",
+        )
+        + "\n### OWN\n"
+    )
+    _, relocation_errors = chapter02_policy_findings(
+        {
+            "manuscript/02-law-ethics-authorization.md": relocated_ownership,
+            "templates/authorization-checklist.md": template,
+            "cases/ch02-authorization-decision-example.md": example,
+        }
+    )
+    if not any(
+        "semantic heading 'OWN' left bounded section" in item
+        for item in relocation_errors
+    ):
+        error("Chapter 2 OWN relocation preserved the bounded semantic contract")
+
+    responsibility_paragraph = (
+        "本書は、実務上のAuthorization Gateと後続工程へのHandoffに責任を持つ。"
+        "本章は法的助言を提供せず、個別事案の法的判断と法令解釈は専門家へ委譲する。"
+        "専門領域の詳細は委譲先に残すが、委譲先へのリンクを読まなくても、"
+        "第2章の論旨と運用判断は単独で成立する。"
+    )
+    legal_delegate = (
+        "- 個別事案の法的助言と法令解釈は、適格な法務・契約専門家へ委譲する"
+    )
+    responsibility_mutations = (
+        (
+            "responsibility paragraph",
+            responsibility_paragraph,
+        ),
+        (
+            "legal DELEGATE item",
+            legal_delegate,
+        ),
+    )
+    for label, source_owner in responsibility_mutations:
+        relocated_to_code = replace_once(
+            chapter,
+            source_owner + "\n",
+            "",
+            f"Chapter 2 {label} code relocation",
+        ) + f"\n```text\n{source_owner}\n```\n"
+        _, responsibility_errors = chapter02_policy_findings(
+            {
+                "manuscript/02-law-ethics-authorization.md": relocated_to_code,
+                "templates/authorization-checklist.md": template,
+                "cases/ch02-authorization-decision-example.md": example,
+            }
+        )
+        if not any(
+            "responsibility boundary projection relation" in item
+            for item in responsibility_errors
+        ) or not any(
+            "missing exact semantic projection field" in item
+            for item in responsibility_errors
+        ):
             error(
-                "Chapter 2 Policy adapter omitted a reviewed public DELEGATE "
-                f"destination from its reader-visible surface: {delegated_url}"
+                f"Chapter 2 {label} code literal satisfied the responsibility boundary"
             )
 
-    delegated_line = next(
-        value
-        for value in CHAPTER02_REVIEWED_HOST_CONTEXT[
+    artifact_mutation = (
+        replace_once(
+            template,
+            "| Artifact ID | `ART-13` |",
+            "| Identifier | NONE |",
+            "Chapter 2 ART-13 semantic mutation",
+        )
+        + "\n```text\n| Artifact ID | `ART-13` |\n```\n"
+    )
+    _, artifact_errors = chapter02_policy_findings(
+        {
+            "manuscript/02-law-ethics-authorization.md": chapter,
+            "templates/authorization-checklist.md": artifact_mutation,
+            "cases/ch02-authorization-decision-example.md": example,
+        }
+    )
+    if not any(
+        "missing exact semantic projection field" in item for item in artifact_errors
+    ):
+        error("Chapter 2 ART-13 code literal satisfied the projected table contract")
+
+    gate_start = chapter.index("### 1.1 Authority Gate")
+    gate_body_start = chapter.index("\n", gate_start) + 1
+    next_gate_start = chapter.index("### 1.2 Scope Gate", gate_body_start)
+    empty_authority_gate = (
+        chapter[:gate_body_start] + "\n" + chapter[next_gate_start:]
+    )
+    _, gate_errors = chapter02_policy_findings(
+        {
+            "manuscript/02-law-ethics-authorization.md": empty_authority_gate,
+            "templates/authorization-checklist.md": template,
+            "cases/ch02-authorization-decision-example.md": example,
+        }
+    )
+    if not any("Gate body projection contract drift" in item for item in gate_errors):
+        error("Chapter 2 empty Authority Gate body satisfied the finite surface")
+
+    major_id_mutations = (
+        (
+            "Authorization Record ID",
+            "| Authorization Record ID | `AUTH-CASE-2026-001` |",
+            "| Authorization Record ID | NONE |",
+        ),
+        (
+            "Decision Requirement ID",
+            "| Decision Requirement ID | `DR-AUTH-2026-001` |",
+            "| Decision Requirement ID | NONE |",
+        ),
+    )
+    for label, source_row, replacement_row in major_id_mutations:
+        mutated_example = replace_once(
+            example,
+            source_row,
+            replacement_row,
+            f"Chapter 2 {label} semantic mutation",
+        ) + f"\n```text\n{source_row}\n```\n"
+        _, identifier_errors = chapter02_policy_findings(
+            {
+                "manuscript/02-law-ethics-authorization.md": chapter,
+                "templates/authorization-checklist.md": template,
+                "cases/ch02-authorization-decision-example.md": mutated_example,
+            }
+        )
+        if not any(
+            "missing exact semantic projection field" in item
+            for item in identifier_errors
+        ):
+            error(f"Chapter 2 {label} code literal satisfied its table contract")
+
+    reference_marker = chapter.index("## 参考文献・Source Note ID")
+    source_id_body = replace_once(
+            chapter[:reference_marker],
+            "`SRC-JP-LAW-001`",
+            "`SOURCE-ID-REMOVED`",
+            "Chapter 2 projected source ID removal",
+        ) + chapter[reference_marker:]
+    hidden_source_id = replace_once(
+        source_id_body,
+        "\n---\n\n# 第2章",
+        "\nsource-id: SRC-JP-LAW-001\n---\n\n# 第2章",
+        "Chapter 2 hidden source ID insertion",
+    )
+    _, source_id_errors = chapter02_policy_findings(
+        {
+            "manuscript/02-law-ethics-authorization.md": hidden_source_id,
+            "templates/authorization-checklist.md": template,
+            "cases/ch02-authorization-decision-example.md": example,
+        }
+    )
+    if not any(
+        "projected body source ID counts drift" in item
+        for item in source_id_errors
+    ):
+        error("Chapter 2 hidden metadata satisfied a reader-visible source ID")
+
+    action_owner = (
+        "一つの層がPassしても、他の層を自動的にPassさせない。たとえば契約にSecurity "
+        "testingの記載があっても、第三者Tenantや実利用者Dataまで対象になるとは限らない。"
+    )
+    action_relocation = replace_once(
+        chapter,
+        action_owner + "\n",
+        "",
+        "Chapter 2 action relation relocation",
+    ) + f"\n{action_owner}\n"
+    action_duplicate = replace_once(
+        chapter,
+        action_owner,
+        action_owner + "\n\n" + action_owner,
+        "Chapter 2 action relation duplicate",
+    )
+    host_owner = "- Domainは予約済みの`.example`を使用する。"
+    host_relocation = replace_once(
+        example,
+        host_owner + "\n",
+        "",
+        "Chapter 2 host relation relocation",
+    ) + f"\n{host_owner}\n"
+    provenance_owner = (
+        "- 詳細な攻撃技法と脆弱性の悪用は、許可済み評価の専門的な方法、成果物、安全境界を詳述する"
+        "[実務で使えるペネトレーションテスト大全]"
+        "(https://itdojp.github.io/pentest-learning-book/)へ委譲する"
+    )
+    provenance_duplicate = replace_once(
+        chapter,
+        provenance_owner,
+        provenance_owner + "\n" + provenance_owner,
+        "Chapter 2 provenance relation duplicate",
+    )
+    relation_mutations = (
+        (
+            "action relocation",
+            "manuscript/02-law-ethics-authorization.md",
+            action_relocation,
+            "reviewed action projection relation",
+            "target.real_or_external",
+        ),
+        (
+            "action duplicate",
+            "manuscript/02-law-ethics-authorization.md",
+            action_duplicate,
+            "reviewed action projection relation",
+            "target.real_or_external",
+        ),
+        (
+            "host relocation",
+            "cases/ch02-authorization-decision-example.md",
+            host_relocation,
+            "reviewed host projection relation",
+            "network.host_or_address",
+        ),
+        (
+            "provenance duplicate",
+            "manuscript/02-law-ethics-authorization.md",
+            provenance_duplicate,
+            "reviewed provenance projection relation",
+            "network.host_or_address",
+        ),
+    )
+    for label, logical_path, source, error_marker, category in relation_mutations:
+        relation_document = project_documents({logical_path: source}).document(
+            logical_path
+        )
+        relation_errors = chapter02_semantic_projection_errors(
+            relation_document, logical_path
+        )
+        relation_findings = _projection_document_findings(
+            relation_document, logical_path
+        )
+        if not any(error_marker in item for item in relation_errors) or not any(
+            item.category == category for item in relation_findings
+        ):
+            error(
+                f"Chapter 2 reviewed {label} retained an expandable exemption"
+            )
+
+    delegated = {
+        relation[0][3]
+        for relation in CHAPTER02_REVIEWED_PROVENANCE_RELATIONS[
             "manuscript/02-law-ethics-authorization.md"
         ]
-        if "pentest-learning-book" in value
-    )
-    unsafe_delegate_chapter = replace_once(
-        chapter,
-        delegated_line,
-        delegated_line + "。追加参照: https://example.com/runbook",
-        "Chapter 2 DELEGATE host exemption regression",
-    )
-    unsafe_delegate_documents = dict(documents)
-    unsafe_delegate_documents[
-        "manuscript/02-law-ethics-authorization.md"
-    ] = unsafe_delegate_chapter
-    unsafe_delegate_findings, _ = chapter02_policy_findings(
-        unsafe_delegate_documents
-    )
-    if not any(
-        finding.category == "network.host_or_address"
-        and "non-approved host suffix" in finding.reason
-        for finding in unsafe_delegate_findings
-    ):
-        error("Chapter 2 public DELEGATE exemption survived a line mutation")
+    }
+    canonical_projection = project_documents(canonical)
+    projected_destinations = {
+        field.text
+        for field in destination_fields(canonical_projection)
+        if field.document_id == "manuscript/02-law-ethics-authorization.md"
+    }
+    if not delegated <= projected_destinations:
+        error(
+            "Chapter 2 shared projection omitted reviewed DELEGATE destinations: "
+            f"{sorted(delegated - projected_destinations)!r}"
+        )
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Validate the Chapter 2 contract")
+    parser.add_argument("--selection-fixture", choices=SELECTION_FIXTURE_IDS)
+    args = parser.parse_args(argv)
+
     required_files = (
         "manuscript/02-law-ethics-authorization.md",
         "templates/authorization-checklist.md",
         "cases/ch02-authorization-decision-example.md",
         "scripts/check_chapter02_contract.py",
+        "scripts/publication_projection.py",
+        "scripts/_publication_projection_renderer.rb",
+        "scripts/check_publication_projection.py",
+        "tests/fixtures/publication-projection/corpus.json",
+        "adr/0002-publication-projection-owner.md",
+        "CONTENT_SAFETY_POLICY_MIGRATION.md",
         "site-pages.json",
         "artifact-index.md",
         "figure-index.md",
@@ -2976,7 +1856,6 @@ def main() -> int:
         "references/sources.json",
         "references/reference-baseline.md",
         "references/ch02-source-review-2026-08-05.md",
-        "CONTENT_SAFETY_POLICY_MIGRATION.md",
         "package.json",
     )
     for relative in required_files:
@@ -2985,10 +1864,20 @@ def main() -> int:
 
     if CONTENT_SAFETY_POLICY_VERSION != EXPECTED_CONTENT_SAFETY_POLICY_VERSION:
         error(
-            "scripts/check_chapter02_contract.py: Content Safety Policy version "
-            f"{CONTENT_SAFETY_POLICY_VERSION!r} != strict adapter pin "
-            f"{EXPECTED_CONTENT_SAFETY_POLICY_VERSION!r}"
+            "Chapter 2 Content Safety Policy pin changed: "
+            f"{CONTENT_SAFETY_POLICY_VERSION!r} != {EXPECTED_CONTENT_SAFETY_POLICY_VERSION!r}"
         )
+    if PROJECTION_VERSION != EXPECTED_PUBLICATION_PROJECTION_VERSION:
+        error(
+            "Chapter 2 Publication Projection pin changed: "
+            f"{PROJECTION_VERSION!r} != {EXPECTED_PUBLICATION_PROJECTION_VERSION!r}"
+        )
+
+    if args.selection_fixture:
+        canonical = {path: read_text(path) for path in CHAPTER02_DOCUMENTS}
+        passed, summary = run_selection_fixture(args.selection_fixture, canonical)
+        print(("PASS: " if passed else "ERROR: ") + summary)
+        return 0 if passed else 1
 
     config = load_json("book-config.json")
     chapters = config.get("structure", {}).get("chapters", [])
@@ -3091,18 +1980,10 @@ def main() -> int:
         if forbidden in chapter:
             error(f"{chapter_path}: unsafe or unsupported assertion {forbidden!r}")
 
-    body, references = chapter_body_and_references(chapter)
-    used_ids = source_ids(body)
-    listed_ids = source_ids(references)
-    expected_source_ids = {"SRC-JP-LAW-001", "SRC-IPA-VDP-001"}
-    if used_ids != expected_source_ids:
-        error(
-            f"{chapter_path}: body source IDs {sorted(used_ids)} != expected {sorted(expected_source_ids)}"
-        )
-    if listed_ids != used_ids:
-        error(
-            f"{chapter_path}: chapter-end source IDs {sorted(listed_ids)} != body {sorted(used_ids)}"
-        )
+    # Exact body/reference occurrence checks run over Layer B reader-visible
+    # fields in chapter02_semantic_projection_errors(). Hidden front matter and
+    # source-only code cannot satisfy the Chapter 2 citation contract.
+    expected_source_ids = EXPECTED_CHAPTER02_SOURCE_IDS
 
     template_path = "templates/authorization-checklist.md"
     template = read_text(template_path)
@@ -3165,17 +2046,21 @@ def main() -> int:
             "SYNTH-REV-AUTH-DEC-001",
         ),
     )
-    verify_policy_adapter_regressions(chapter, template, example)
+    verify_chapter02_adapter(chapter, template, example)
 
     secret_patterns = (
         re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
         re.compile(r"AKIA[0-9A-Z]{16}"),
         re.compile(r"gh[pousr]_[A-Za-z0-9_]{20,}"),
-        re.compile(r"(?i)(?:password|api[_-]?key|secret|token)\s*[:=]\s*[A-Za-z0-9+/=_-]{16,}"),
+        re.compile(
+            r"(?i)(?:password|api[_-]?key|secret|token)\s*[:=]\s*[A-Za-z0-9+/=_-]{16,}"
+        ),
     )
     for pattern in secret_patterns:
         if pattern.search(example):
-            error(f"{example_path}: possible real credential or secret pattern detected")
+            error(
+                f"{example_path}: possible real credential or secret pattern detected"
+            )
 
     raw_registry = load_json("site-pages.json")
     try:
@@ -3187,17 +2072,23 @@ def main() -> int:
         error(message)
 
     pages = raw_registry.get("pages", [])
-    chapter_page = next(
-        (
-            item
-            for item in pages
-            if isinstance(item, dict)
-            and item.get("source") == "manuscript/02-law-ethics-authorization.md"
-        ),
-        None,
-    ) if isinstance(pages, list) else None
+    chapter_page = (
+        next(
+            (
+                item
+                for item in pages
+                if isinstance(item, dict)
+                and item.get("source") == "manuscript/02-law-ethics-authorization.md"
+            ),
+            None,
+        )
+        if isinstance(pages, list)
+        else None
+    )
     if chapter_page is None:
-        error("site-pages.json: missing Chapter 2 manuscript page for negative regressions")
+        error(
+            "site-pages.json: missing Chapter 2 manuscript page for negative regressions"
+        )
     else:
         negative_registries: list[tuple[str, dict]] = []
 
@@ -3387,25 +2278,18 @@ def main() -> int:
     if baseline != render_reference_baseline():
         error(f"{baseline_path}: out of sync with references/sources.json")
 
-    migration_note_path = "CONTENT_SAFETY_POLICY_MIGRATION.md"
-    migration_note = read_text(migration_note_path)
-    require_tokens(
-        migration_note_path,
-        migration_note,
-        (
-            "## Chapter 2 adapter status (Issue #65)",
-            "Policy `1.2.0`へ厳密pin",
-            "`.localhost`はtechnically reservedだがRepository Policyでdisallowed",
-            "Chapter 2固有のAuthority / Scope / Source / Traceability契約は移行しない",
-        ),
-    )
-
     package = load_json("package.json")
     scripts = package.get("scripts", {})
     if scripts.get("check:chapter02") != "python3 scripts/check_chapter02_contract.py":
         error("package.json: missing check:chapter02 script")
+    if scripts.get("check:publication-projection") != (
+        "python3 scripts/check_publication_projection.py"
+    ):
+        error("package.json: missing check:publication-projection script")
     if "check:chapter02" not in scripts.get("test", ""):
         error("package.json: npm test does not include check:chapter02")
+    if "check:publication-projection" not in scripts.get("test", ""):
+        error("package.json: npm test does not include check:publication-projection")
 
     for message in ERRORS:
         print(f"ERROR: {message}")
@@ -3414,7 +2298,8 @@ def main() -> int:
 
     print(
         "chapter 2 contract passed: manuscript, authorization artifact, synthetic case, "
-        "source mapping, publication registry, Content Safety Policy 1.2.0 adapter, "
+        "source mapping, publication registry, shared Publication Projection "
+        f"{PROJECTION_VERSION}, Content Safety Policy {CONTENT_SAFETY_POLICY_VERSION}, "
         "and handoff traceability"
     )
     return 0
