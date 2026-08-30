@@ -24,6 +24,12 @@ CODE_FENCE_RE = re.compile(r"^\s*```")
 LINK_RE = re.compile(r"(!?\[[^\]]*\]\()([^)]+)(\))")
 IGNORE_SCHEMES = {"http", "https", "mailto", "tel", "data"}
 CANONICAL_DIRECTORIES = ("manuscript", "appendices", "references", "templates")
+MAX_PUBLICATION_REWRITE_CANDIDATES_PER_DOCUMENT = 10_000
+MAX_PUBLICATION_REWRITE_CANDIDATES_PER_BATCH = 20_000
+MAX_PUBLICATION_REWRITE_OUTPUT_BYTES = 2_000_000
+MAX_PUBLICATION_LOCAL_TARGET_BYTES = 8_192
+MAX_PUBLICATION_LOCAL_TARGET_COMPONENTS = 256
+MAX_PUBLICATION_LOCAL_COMPONENT_BYTES = 255
 
 
 @dataclass(frozen=True)
@@ -33,6 +39,58 @@ class Page:
     section: str
     order: int
     title: str | None = None
+
+
+@dataclass(frozen=True)
+class PublicationRewriteContext:
+    """Immutable routing inputs for the production Markdown link rewrite."""
+
+    page_targets: tuple[tuple[str, str], ...]
+    directory_routes: tuple[tuple[str, str], ...]
+    static_targets: tuple[tuple[str, str], ...] = ()
+
+
+@dataclass
+class PublicationRewriteBudget:
+    """Shared finite candidate/output budget for an in-memory rewrite batch."""
+
+    remaining_candidates: int
+    max_candidates_per_document: int
+    max_document_output_bytes: int
+
+    def consume_candidate(self, source: str, document_count: int) -> None:
+        if document_count > self.max_candidates_per_document:
+            raise SiteGenerationError(
+                f"{source}: publication link rewrite candidate budget exceeded"
+            )
+        self.remaining_candidates -= 1
+        if self.remaining_candidates < 0:
+            raise SiteGenerationError(
+                "publication link rewrite batch candidate budget exceeded"
+            )
+
+
+def publication_rewrite_context(
+    pages: tuple[Page, ...],
+    directory_routes: dict[str, str],
+    static_targets: tuple[tuple[str, str], ...] = (),
+) -> PublicationRewriteContext:
+    """Freeze one deterministic production rewrite context."""
+
+    page_pairs = tuple(sorted((page.source, page.destination) for page in pages))
+    route_pairs = tuple(sorted(directory_routes.items()))
+    static_pairs = tuple(sorted(static_targets))
+    for label, pairs in (
+        ("page", page_pairs),
+        ("directory", route_pairs),
+        ("static", static_pairs),
+    ):
+        keys = [source for source, _ in pairs]
+        if len(keys) != len(set(keys)):
+            raise SiteGenerationError(
+                f"duplicate {label} source in publication rewrite context"
+            )
+    return PublicationRewriteContext(page_pairs, route_pairs, static_pairs)
 
 
 PAGES: tuple[Page, ...] = (
@@ -240,13 +298,65 @@ def repository_link(target: Path, fragment: str) -> str:
     return f"{REPOSITORY_URL}/{kind}/main/{quote(relative, safe='/')}{fragment}"
 
 
+def validate_local_link_target(path: str, source: str) -> None:
+    """Bound decoded local paths before any filesystem traversal."""
+
+    encoded = path.encode("utf-8")
+    if len(encoded) > MAX_PUBLICATION_LOCAL_TARGET_BYTES:
+        raise SiteGenerationError(
+            f"{source}: publication local link target byte budget exceeded"
+        )
+    if "\x00" in path:
+        raise SiteGenerationError(
+            f"{source}: publication local link target contains NUL"
+        )
+    components = path.split("/")
+    if len(components) > MAX_PUBLICATION_LOCAL_TARGET_COMPONENTS:
+        raise SiteGenerationError(
+            f"{source}: publication local link target component budget exceeded"
+        )
+    if any(
+        len(component.encode("utf-8")) > MAX_PUBLICATION_LOCAL_COMPONENT_BYTES
+        for component in components
+    ):
+        raise SiteGenerationError(
+            f"{source}: publication local link component byte budget exceeded"
+        )
+
+
 def rewrite_links(
     markdown: str,
     source: str,
     destination: str,
-    source_to_destination: dict[str, str],
+    source_to_destination: dict[str, str] | None = None,
+    *,
+    context: PublicationRewriteContext | None = None,
+    budget: PublicationRewriteBudget | None = None,
 ) -> str:
+    if context is None:
+        if source_to_destination is None:
+            raise TypeError("source_to_destination or context is required")
+        context = publication_rewrite_context(
+            tuple(
+                Page(item_source, item_destination, "", 0)
+                for item_source, item_destination in source_to_destination.items()
+            ),
+            DIRECTORY_ROUTES,
+        )
+    elif source_to_destination is not None:
+        raise TypeError("source_to_destination and context are mutually exclusive")
+
+    page_targets = dict(context.page_targets)
+    directory_routes = dict(context.directory_routes)
+    static_targets = dict(context.static_targets)
     source_path = (ROOT / source).resolve()
+    source_bytes = len(markdown.encode("utf-8"))
+    output_delta_bytes = 0
+    document_candidates = 0
+    if budget is not None and source_bytes > budget.max_document_output_bytes:
+        raise SiteGenerationError(
+            f"{source}: publication link rewrite output budget exceeded"
+        )
     lines: list[str] = []
     in_code = False
 
@@ -260,6 +370,11 @@ def rewrite_links(
             continue
 
         def replace(match: re.Match[str]) -> str:
+            nonlocal document_candidates, output_delta_bytes
+            document_candidates += 1
+            if budget is not None:
+                budget.consume_candidate(source, document_candidates)
+
             before, raw, after = match.groups()
             parsed = parse_link_target(raw)
             if parsed is None:
@@ -268,45 +383,117 @@ def rewrite_links(
             if query:
                 return match.group(0)
 
+            validate_local_link_target(path, source)
             target = (source_path.parent / path).resolve()
             try:
                 target_relative = target.relative_to(ROOT).as_posix()
             except ValueError:
                 return match.group(0)
 
-            if target_relative in source_to_destination:
-                url = relative_site_link(
-                    destination,
-                    source_to_destination[target_relative],
-                    fragment,
+            replacement = match.group(0)
+            if target_relative in static_targets:
+                current_dir = site_dir(destination)
+                relative = posixpath.relpath(
+                    static_targets[target_relative], current_dir
                 )
-                return before + formatter.format(url=url) + after
-
-            directory_key = target_relative.rstrip("/")
-            if target.is_dir() and directory_key in DIRECTORY_ROUTES:
-                url = relative_site_link(
-                    destination,
-                    DIRECTORY_ROUTES[directory_key],
-                    fragment,
-                )
-                return before + formatter.format(url=url) + after
-
-            if target.exists():
-                return before + formatter.format(
-                    url=repository_link(target, fragment)
+                replacement = before + formatter.format(
+                    url=relative + fragment
                 ) + after
-            return match.group(0)
+            elif target_relative in page_targets:
+                url = relative_site_link(
+                    destination,
+                    page_targets[target_relative],
+                    fragment,
+                )
+                replacement = before + formatter.format(url=url) + after
+            else:
+                directory_key = target_relative.rstrip("/")
+                if target.is_dir() and directory_key in directory_routes:
+                    url = relative_site_link(
+                        destination,
+                        directory_routes[directory_key],
+                        fragment,
+                    )
+                    replacement = before + formatter.format(url=url) + after
+                elif target.exists():
+                    replacement = before + formatter.format(
+                        url=repository_link(target, fragment)
+                    ) + after
+
+            if budget is not None and replacement != match.group(0):
+                output_delta_bytes += len(replacement.encode("utf-8")) - len(
+                    match.group(0).encode("utf-8")
+                )
+                if (
+                    source_bytes + output_delta_bytes
+                    > budget.max_document_output_bytes
+                ):
+                    raise SiteGenerationError(
+                        f"{source}: publication link rewrite output budget exceeded"
+                    )
+            return replacement
 
         lines.append(LINK_RE.sub(replace, line))
 
     if in_code:
         raise SiteGenerationError(f"{source}: unbalanced code fence during link rewrite")
-    return "\n".join(lines).rstrip() + "\n"
+    rewritten = "\n".join(lines).rstrip() + "\n"
+    if budget is not None and len(rewritten.encode("utf-8")) > (
+        budget.max_document_output_bytes
+    ):
+        raise SiteGenerationError(
+            f"{source}: publication link rewrite output budget exceeded"
+        )
+    return rewritten
+
+
+def rewrite_publication_source(
+    markdown: str,
+    source: str,
+    destination: str,
+    context: PublicationRewriteContext,
+    *,
+    budget: PublicationRewriteBudget | None = None,
+) -> str:
+    """Rewrite the production body while retaining canonical line locations."""
+
+    lines = markdown.splitlines(keepends=True)
+    body_index = 0
+    if lines and lines[0].strip() == "---":
+        for index in range(1, len(lines)):
+            if lines[index].strip() == "---":
+                body_index = index + 1
+                break
+        else:
+            raise SiteGenerationError(
+                f"{source}: front matter start found without closing delimiter"
+            )
+
+    prefix = "".join(lines[:body_index])
+    raw_body = "".join(lines[body_index:])
+    leading_newlines = len(raw_body) - len(raw_body.lstrip("\n"))
+    production_body = raw_body.lstrip("\n")
+    rewritten_body = rewrite_links(
+        production_body,
+        source,
+        destination,
+        context=context,
+        budget=budget,
+    )
+    rewritten = prefix + ("\n" * leading_newlines) + rewritten_body
+    if markdown.count("\n") != rewritten.count("\n"):
+        raise SiteGenerationError(
+            f"{source}: production link rewrite changed source line count"
+        )
+    return rewritten
 
 
 def render_page(
     page: Page,
-    source_to_destination: dict[str, str],
+    source_to_destination: dict[str, str] | None = None,
+    *,
+    context: PublicationRewriteContext | None = None,
+    rewrite_budget: PublicationRewriteBudget | None = None,
 ) -> tuple[str, str]:
     source_path = ROOT / page.source
     if not source_path.is_file():
@@ -314,7 +501,14 @@ def render_page(
     raw = source_path.read_text(encoding="utf-8")
     body = strip_front_matter(raw)
     title = page.title or extract_title(body, page.source)
-    body = rewrite_links(body, page.source, page.destination, source_to_destination)
+    body = rewrite_links(
+        body,
+        page.source,
+        page.destination,
+        source_to_destination,
+        context=context,
+        budget=rewrite_budget,
+    )
     front_matter = [
         "---",
         "layout: book",
@@ -497,18 +691,38 @@ def write_bytes(root: Path, relative: str, data: bytes) -> None:
     path.write_bytes(data)
 
 
-def generate(output: Path, components: dict[str, bytes], revision: dict) -> dict[str, str]:
+def generate(
+    output: Path,
+    components: dict[str, bytes],
+    revision: dict,
+    *,
+    rewrite_context: PublicationRewriteContext | None = None,
+    rewrite_budget: PublicationRewriteBudget | None = None,
+) -> dict[str, str]:
     if output.is_symlink():
         raise SiteGenerationError(f"refusing to replace symlink output: {output}")
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
 
-    source_to_destination = {page.source: page.destination for page in PAGES}
+    if rewrite_context is None:
+        rewrite_context = publication_rewrite_context(PAGES, DIRECTORY_ROUTES)
+    if rewrite_budget is None:
+        rewrite_budget = PublicationRewriteBudget(
+            remaining_candidates=MAX_PUBLICATION_REWRITE_CANDIDATES_PER_BATCH,
+            max_candidates_per_document=(
+                MAX_PUBLICATION_REWRITE_CANDIDATES_PER_DOCUMENT
+            ),
+            max_document_output_bytes=MAX_PUBLICATION_REWRITE_OUTPUT_BYTES,
+        )
     titles: dict[str, str] = {}
     page_manifest: list[dict] = []
     for page in PAGES:
-        rendered, title = render_page(page, source_to_destination)
+        rendered, title = render_page(
+            page,
+            context=rewrite_context,
+            rewrite_budget=rewrite_budget,
+        )
         write_bytes(output, page.destination, rendered.encode("utf-8"))
         titles[page.source] = title
         page_manifest.append(

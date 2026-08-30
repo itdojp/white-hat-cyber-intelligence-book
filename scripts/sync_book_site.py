@@ -5,7 +5,6 @@ import argparse
 import html
 import json
 import os
-import posixpath
 import re
 import subprocess
 import sys
@@ -533,8 +532,27 @@ class StaticFile:
     destination: str
 
 
+@dataclass(frozen=True)
+class PublicationRegistryState:
+    """One side-effect-free, validated publication registry snapshot."""
+
+    canonical_directories: tuple[str, ...]
+    pages: tuple[base.Page, ...]
+    directory_routes: tuple[tuple[str, str], ...]
+    static_files: tuple[StaticFile, ...]
+
+    def rewrite_context(self) -> base.PublicationRewriteContext:
+        return base.publication_rewrite_context(
+            self.pages,
+            dict(self.directory_routes),
+            tuple((item.source, item.destination) for item in self.static_files),
+        )
+
+
 STATIC_FILES: tuple[StaticFile, ...] = ()
-BASE_REWRITE_LINKS = base.rewrite_links
+BASE_PAGES = base.PAGES
+BASE_CANONICAL_DIRECTORIES = base.CANONICAL_DIRECTORIES
+BASE_DIRECTORY_ROUTES = tuple(sorted(base.DIRECTORY_ROUTES.items()))
 BASE_GENERATE = base.generate
 
 
@@ -991,56 +1009,17 @@ def rewrite_registered_links(
     destination: str,
     source_to_destination: dict[str, str],
 ) -> str:
-    # The common generator treats every registered target as a pretty-route page.
-    # Static artifacts retain their filename, so rewrite them separately first.
-    static_targets = {item.source: item.destination for item in STATIC_FILES}
-    if not static_targets:
-        return BASE_REWRITE_LINKS(
-            markdown, source, destination, source_to_destination
-        )
+    """Compatibility consumer of the single production rewrite owner."""
 
-    source_path = ROOT / source
-    current_dir = base.site_dir(destination)
-    lines: list[str] = []
-    in_code = False
-    for line in markdown.splitlines():
-        if base.CODE_FENCE_RE.match(line):
-            in_code = not in_code
-            lines.append(line)
-            continue
-        if in_code:
-            lines.append(line)
-            continue
-
-        def replace(match: re.Match[str]) -> str:
-            before, raw, after = match.groups()
-            parsed = base.parse_link_target(raw)
-            if parsed is None:
-                return match.group(0)
-            path, fragment, query, formatter = parsed
-            if query:
-                return match.group(0)
-            target = (source_path.parent / path).resolve()
-            try:
-                target_relative = target.relative_to(ROOT).as_posix()
-            except ValueError:
-                return match.group(0)
-            static_destination = static_targets.get(target_relative)
-            if static_destination is None:
-                return match.group(0)
-            relative = posixpath.relpath(static_destination, current_dir)
-            return before + formatter.format(url=relative + fragment) + after
-
-        lines.append(base.LINK_RE.sub(replace, line))
-
-    if in_code:
-        raise SitePageRegistryError(
-            f"{source}: unbalanced code fence during static link rewrite"
-        )
-    static_rewritten = "\n".join(lines).rstrip() + "\n"
-    return BASE_REWRITE_LINKS(
-        static_rewritten, source, destination, source_to_destination
+    context = base.publication_rewrite_context(
+        tuple(
+            base.Page(item_source, item_destination, "", 0)
+            for item_source, item_destination in source_to_destination.items()
+        ),
+        base.DIRECTORY_ROUTES,
+        tuple((item.source, item.destination) for item in STATIC_FILES),
     )
+    return base.rewrite_links(markdown, source, destination, context=context)
 
 
 def generate_registered_site(
@@ -1048,12 +1027,12 @@ def generate_registered_site(
     components: dict[str, bytes],
     revision: dict,
 ) -> dict[str, str]:
-    previous_rewrite_links = base.rewrite_links
-    base.rewrite_links = rewrite_registered_links
-    try:
-        BASE_GENERATE(output, components, revision)
-    finally:
-        base.rewrite_links = previous_rewrite_links
+    context = base.publication_rewrite_context(
+        base.PAGES,
+        base.DIRECTORY_ROUTES,
+        tuple((item.source, item.destination) for item in STATIC_FILES),
+    )
+    BASE_GENERATE(output, components, revision, rewrite_context=context)
 
     static_manifest: list[dict[str, str]] = []
     for item in STATIC_FILES:
@@ -1147,26 +1126,27 @@ def validated_canonical_source_paths() -> list[Path]:
     return sorted(paths, key=lambda path: path.relative_to(ROOT).as_posix())
 
 
-def apply_registry(registry: dict) -> None:
-    global STATIC_FILES
-    canonical_directories = list(base.CANONICAL_DIRECTORIES)
+def materialize_registry_state(registry: dict) -> PublicationRegistryState:
+    """Validate and freeze registry state without mutating generator globals."""
+
+    canonical_directories = list(BASE_CANONICAL_DIRECTORIES)
     for raw in registry["canonicalDirectories"]:
         directory = ROOT / raw
         validate_canonical_tree(ROOT, directory, raw)
         if raw not in canonical_directories:
             canonical_directories.append(raw)
-    base.CANONICAL_DIRECTORIES = tuple(canonical_directories)
+    frozen_canonical_directories = tuple(canonical_directories)
 
-    for directory_name in base.CANONICAL_DIRECTORIES:
+    for directory_name in frozen_canonical_directories:
         directory = ROOT / directory_name
         if directory.exists():
             validate_canonical_tree(ROOT, directory, directory_name)
 
-    pages = list(base.PAGES)
+    pages = list(BASE_PAGES)
     sources = {page.source for page in pages}
     destinations = {page.destination for page in pages}
     section_orders = {(page.section, page.order) for page in pages}
-    allowed_source_roots = set(base.CANONICAL_DIRECTORIES)
+    allowed_source_roots = set(frozen_canonical_directories)
 
     for index, item in enumerate(registry["pages"]):
         source = schema_markdown_path(item["source"], f"pages[{index}].source")
@@ -1206,7 +1186,7 @@ def apply_registry(registry: dict) -> None:
         section_orders.add((section, order))
 
     section_rank = {name: index for index, name in enumerate(base.SECTION_ORDER)}
-    base.PAGES = tuple(
+    materialized_pages = tuple(
         sorted(
             pages,
             key=lambda page: (
@@ -1217,7 +1197,7 @@ def apply_registry(registry: dict) -> None:
         )
     )
 
-    routes = dict(base.DIRECTORY_ROUTES)
+    routes = dict(BASE_DIRECTORY_ROUTES)
     for raw_directory, raw_destination in registry["directoryRoutes"].items():
         if raw_directory in routes:
             raise SitePageRegistryError(
@@ -1231,8 +1211,6 @@ def apply_registry(registry: dict) -> None:
                 f"directory route target is not a registered page: {destination}"
             )
         routes[raw_directory] = destination
-    base.DIRECTORY_ROUTES = routes
-
     static_files: list[StaticFile] = []
     static_sources: set[str] = set()
     static_destinations: set[str] = set()
@@ -1272,9 +1250,27 @@ def apply_registry(registry: dict) -> None:
         static_files.append(StaticFile(source, destination))
         static_sources.add(source)
         static_destinations.add(destination)
-    STATIC_FILES = tuple(
+    materialized_static_files = tuple(
         sorted(static_files, key=lambda item: (item.destination, item.source))
     )
+
+    return PublicationRegistryState(
+        canonical_directories=frozen_canonical_directories,
+        pages=materialized_pages,
+        directory_routes=tuple(sorted(routes.items())),
+        static_files=materialized_static_files,
+    )
+
+
+def apply_registry(registry: dict) -> None:
+    """Apply one materialized state for the legacy single-process generator."""
+
+    global STATIC_FILES
+    state = materialize_registry_state(registry)
+    base.CANONICAL_DIRECTORIES = state.canonical_directories
+    base.PAGES = state.pages
+    base.DIRECTORY_ROUTES = dict(state.directory_routes)
+    STATIC_FILES = state.static_files
 
     base.canonical_source_paths = validated_canonical_source_paths
 

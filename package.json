@@ -11,6 +11,7 @@
   "scripts": {
     "check:contract": "python3 scripts/check_contract.py",
     "check:content-safety-policy": "python3 scripts/check_content_safety_policy.py",
+    "check:publication-projection": "python3 scripts/check_publication_projection.py",
     "check:chapter1": "python3 scripts/check_chapter1_contract.py",
     "check:chapter02": "python3 scripts/check_chapter02_contract.py",
     "check:chapter03": "python3 scripts/check_chapter03_contract.py",
@@ -32,7 +33,7 @@
     "check:docs-sync": "python3 scripts/sync_book_site.py --check",
     "build": "npm run sync:docs && bundle exec jekyll build --source docs --config docs/_config.yml --destination _site",
     "serve": "npm run sync:docs && bundle exec jekyll serve --source docs --config docs/_config.yml --destination _site --livereload",
-    "test": "npm run check:contract && npm run check:content-safety-policy && npm run check:chapter1 && npm run check:chapter02 && npm run check:chapter03 && npm run check:chapter04 && npm run check:chapter11 && npm run check:chapter17 && npm run check:chapter17-replay && npm run check:chapter25 && npm run check:representative-gate && npm run check:site-pages-security && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync"
+    "test": "npm run check:contract && npm run check:content-safety-policy && npm run check:publication-projection && npm run check:chapter1 && npm run check:chapter02 && npm run check:chapter03 && npm run check:chapter04 && npm run check:chapter11 && npm run check:chapter17 && npm run check:chapter17-replay && npm run check:chapter25 && npm run check:representative-gate && npm run check:site-pages-security && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync"
   },
   "repository": {
     "type": "git",
