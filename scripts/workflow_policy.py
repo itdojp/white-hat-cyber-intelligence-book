@@ -460,6 +460,19 @@ def mandatory_execution_errors(
     return errors
 
 
+def forbidden_mapping_errors(
+    entries: list[MappingLine],
+    label: str,
+    subject: str,
+    forbidden: set[str],
+) -> list[str]:
+    present = sorted({entry.key for entry in entries} & forbidden)
+    return [
+        f"{label}: {subject} must not define {key!r}"
+        for key in present
+    ]
+
+
 def publication_renderer_setup_errors(
     parsed: ParsedWorkflow,
     label: str,
@@ -469,6 +482,10 @@ def publication_renderer_setup_errors(
     jobs = top_level_entry(parsed, "jobs")
     if jobs is None:
         return [f"{label}: missing jobs mapping for npm test"]
+    if top_level_entry(parsed, "defaults") is not None:
+        errors.append(
+            f"{label}: workflow running npm test must not override run defaults"
+        )
 
     npm_test_count = 0
     for job in direct_children(parsed, jobs):
@@ -483,11 +500,20 @@ def publication_renderer_setup_errors(
         if not npm_tests:
             continue
         npm_test_count += len(npm_tests)
+        job_entries = direct_children(parsed, job)
         errors.extend(
             mandatory_execution_errors(
-                direct_children(parsed, job),
+                job_entries,
                 label,
                 f"job {job.key!r} running npm test",
+            )
+        )
+        errors.extend(
+            forbidden_mapping_errors(
+                job_entries,
+                label,
+                f"job {job.key!r} running npm test",
+                {"defaults", "needs", "strategy"},
             )
         )
         for _, test_step in npm_tests:
@@ -496,6 +522,14 @@ def publication_renderer_setup_errors(
                     test_step,
                     label,
                     f"job {job.key!r} npm test step",
+                )
+            )
+            errors.extend(
+                forbidden_mapping_errors(
+                    test_step,
+                    label,
+                    f"job {job.key!r} npm test step",
+                    {"shell", "working-directory"},
                 )
             )
 
@@ -746,6 +780,75 @@ def check_parser_regressions(errors: list[str]) -> None:
           bundler-cache: true
       - run: npm test
         continue-on-error: true
+""",
+        "custom test shell": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        shell: bash -c 'source "$1" || true' -- {{0}}
+""",
+        "alternate test directory": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        working-directory: fixtures/passing-package
+""",
+        "job run defaults": f"""jobs:
+  test:
+    defaults:
+      run:
+        shell: bash -c 'source "$1" || true' -- {{0}}
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "workflow run defaults": f"""defaults:
+  run:
+    shell: bash -c 'source "$1" || true' -- {{0}}
+jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "dependent test job": f"""jobs:
+  prepare:
+    steps:
+      - run: echo prepare
+  test:
+    needs: prepare
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "matrix test job": f"""jobs:
+  test:
+    strategy:
+      matrix:
+        runner: [ubuntu-24.04]
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
 """,
         "late setup": f"""jobs:
   test:
