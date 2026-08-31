@@ -436,6 +436,30 @@ def direct_job_steps(
     ]
 
 
+def mandatory_execution_errors(
+    entries: list[MappingLine],
+    label: str,
+    subject: str,
+) -> list[str]:
+    errors: list[str] = []
+    if_entries = [entry for entry in entries if entry.key == "if"]
+    if if_entries:
+        errors.append(f"{label}: {subject} must not be conditional")
+
+    continue_entries = [
+        entry for entry in entries if entry.key == "continue-on-error"
+    ]
+    if len(continue_entries) > 1:
+        errors.append(
+            f"{label}: {subject} must define continue-on-error at most once"
+        )
+    elif continue_entries:
+        value = decoded_value(continue_entries[0], label, errors).strip().lower()
+        if value != "false":
+            errors.append(f"{label}: {subject} must not suppress failures")
+    return errors
+
+
 def publication_renderer_setup_errors(
     parsed: ParsedWorkflow,
     label: str,
@@ -449,16 +473,31 @@ def publication_renderer_setup_errors(
     npm_test_count = 0
     for job in direct_children(parsed, jobs):
         steps = direct_job_steps(parsed, job)
-        npm_test_entries = [
-            entry
+        npm_tests = [
+            (entry, step)
             for step in steps
             for entry in step
             if entry.key == "run"
             and decoded_value(entry, label, errors).strip() == "npm test"
         ]
-        if not npm_test_entries:
+        if not npm_tests:
             continue
-        npm_test_count += len(npm_test_entries)
+        npm_test_count += len(npm_tests)
+        errors.extend(
+            mandatory_execution_errors(
+                direct_children(parsed, job),
+                label,
+                f"job {job.key!r} running npm test",
+            )
+        )
+        for _, test_step in npm_tests:
+            errors.extend(
+                mandatory_execution_errors(
+                    test_step,
+                    label,
+                    f"job {job.key!r} npm test step",
+                )
+            )
 
         ruby_setups = [
             (entry, step)
@@ -475,7 +514,14 @@ def publication_renderer_setup_errors(
             continue
 
         setup, setup_step = ruby_setups[0]
-        first_test = min(entry.index for entry in npm_test_entries)
+        errors.extend(
+            mandatory_execution_errors(
+                setup_step,
+                label,
+                f"job {job.key!r} ruby/setup-ruby step",
+            )
+        )
+        first_test = min(entry.index for entry, _ in npm_tests)
         if setup.index >= first_test:
             errors.append(
                 f"{label}: job {job.key!r} must set up the locked "
@@ -613,6 +659,7 @@ def check_parser_regressions(errors: list[str]) -> None:
           ruby-version: '3.3'
           bundler-cache: true
       - run: npm test
+        continue-on-error: false
 """
     invalid_renderer_orders = {
         "commented test": """jobs:
@@ -659,6 +706,46 @@ def check_parser_regressions(errors: list[str]) -> None:
               bundler-cache: true
     steps:
       - run: echo test
+""",
+        "conditional job": f"""jobs:
+  test:
+    if: false
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "conditional setup": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        if: false
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "conditional test": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        if: false
+""",
+        "non-blocking test": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        continue-on-error: true
 """,
         "late setup": f"""jobs:
   test:
