@@ -473,6 +473,34 @@ def forbidden_mapping_errors(
     ]
 
 
+def environment_override_errors(
+    parsed: ParsedWorkflow,
+    entries: list[MappingLine],
+    label: str,
+    subject: str,
+) -> list[str]:
+    errors: list[str] = []
+    env_entries = [entry for entry in entries if entry.key == "env"]
+    if len(env_entries) > 1:
+        return [f"{label}: {subject} must contain at most one env mapping"]
+    if not env_entries:
+        return errors
+    env = env_entries[0]
+    if env.value:
+        return [f"{label}: {subject} env must be a block mapping"]
+
+    forbidden = {
+        entry.key
+        for entry in direct_children(parsed, env)
+        if entry.key.casefold() == "npm_config_script_shell"
+    }
+    for key in sorted(forbidden):
+        errors.append(
+            f"{label}: {subject} must not override npm script-shell via {key!r}"
+        )
+    return errors
+
+
 def publication_renderer_setup_errors(
     parsed: ParsedWorkflow,
     label: str,
@@ -486,6 +514,19 @@ def publication_renderer_setup_errors(
         errors.append(
             f"{label}: workflow running npm test must not override run defaults"
         )
+    workflow_entries = [
+        entry
+        for entry in parsed.entries
+        if not entry.sequence and entry.indent == 0
+    ]
+    errors.extend(
+        environment_override_errors(
+            parsed,
+            workflow_entries,
+            label,
+            "workflow running npm test",
+        )
+    )
 
     npm_test_count = 0
     for job in direct_children(parsed, jobs):
@@ -516,6 +557,14 @@ def publication_renderer_setup_errors(
                 {"defaults", "needs", "strategy"},
             )
         )
+        errors.extend(
+            environment_override_errors(
+                parsed,
+                job_entries,
+                label,
+                f"job {job.key!r} running npm test",
+            )
+        )
         for _, test_step in npm_tests:
             errors.extend(
                 mandatory_execution_errors(
@@ -530,6 +579,14 @@ def publication_renderer_setup_errors(
                     label,
                     f"job {job.key!r} npm test step",
                     {"shell", "working-directory"},
+                )
+            )
+            errors.extend(
+                environment_override_errors(
+                    parsed,
+                    test_step,
+                    label,
+                    f"job {job.key!r} npm test step",
                 )
             )
 
@@ -550,6 +607,14 @@ def publication_renderer_setup_errors(
         setup, setup_step = ruby_setups[0]
         errors.extend(
             mandatory_execution_errors(
+                setup_step,
+                label,
+                f"job {job.key!r} ruby/setup-ruby step",
+            )
+        )
+        errors.extend(
+            environment_override_errors(
+                parsed,
                 setup_step,
                 label,
                 f"job {job.key!r} ruby/setup-ruby step",
@@ -849,6 +914,39 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
       - run: npm test
+""",
+        "workflow npm script-shell override": f"""env:
+  npm_config_script_shell: /bin/true
+jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "job npm script-shell override": f"""jobs:
+  test:
+    env:
+      NPM_CONFIG_SCRIPT_SHELL: /bin/true
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "test npm script-shell override": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        env:
+          npm_config_script_shell: /bin/true
 """,
         "late setup": f"""jobs:
   test:
