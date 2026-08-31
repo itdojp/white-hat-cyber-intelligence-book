@@ -406,6 +406,36 @@ def permission_values(
     return values
 
 
+def direct_job_steps(
+    parsed: ParsedWorkflow,
+    job: MappingLine,
+) -> list[list[MappingLine]]:
+    steps_entries = [
+        entry for entry in direct_children(parsed, job) if entry.key == "steps"
+    ]
+    if len(steps_entries) != 1 or steps_entries[0].value:
+        return []
+
+    steps = steps_entries[0]
+    steps_end = block_end(parsed, steps)
+    starts = [
+        active
+        for active in parsed.active_lines
+        if steps.index < active.index < steps_end
+        and active.sequence
+        and active.indent == steps.indent + 2
+    ]
+    return [
+        direct_step_entries(
+            parsed,
+            start.index,
+            starts[index + 1].index if index + 1 < len(starts) else steps_end,
+            start.indent,
+        )
+        for index, start in enumerate(starts)
+    ]
+
+
 def publication_renderer_setup_errors(
     parsed: ParsedWorkflow,
     label: str,
@@ -418,15 +448,11 @@ def publication_renderer_setup_errors(
 
     npm_test_count = 0
     for job in direct_children(parsed, jobs):
-        job_end = block_end(parsed, job)
-        job_entries = [
-            entry
-            for entry in parsed.entries
-            if job.index < entry.index < job_end
-        ]
+        steps = direct_job_steps(parsed, job)
         npm_test_entries = [
             entry
-            for entry in job_entries
+            for step in steps
+            for entry in step
             if entry.key == "run"
             and decoded_value(entry, label, errors).strip() == "npm test"
         ]
@@ -435,8 +461,9 @@ def publication_renderer_setup_errors(
         npm_test_count += len(npm_test_entries)
 
         ruby_setups = [
-            entry
-            for entry in job_entries
+            (entry, step)
+            for step in steps
+            for entry in step
             if entry.key == "uses"
             and decoded_value(entry, label, errors).startswith("ruby/setup-ruby@")
         ]
@@ -447,7 +474,7 @@ def publication_renderer_setup_errors(
             )
             continue
 
-        setup = ruby_setups[0]
+        setup, setup_step = ruby_setups[0]
         first_test = min(entry.index for entry in npm_test_entries)
         if setup.index >= first_test:
             errors.append(
@@ -455,16 +482,7 @@ def publication_renderer_setup_errors(
                 "publication renderer before npm test"
             )
 
-        bounds = step_bounds(parsed, setup)
-        if bounds is None:
-            errors.append(
-                f"{label}:{setup.index + 1}: could not locate "
-                "ruby/setup-ruby step boundary"
-            )
-            continue
-        start, end, indent = bounds
-        step_entries = direct_step_entries(parsed, start, end, indent)
-        with_entries = [entry for entry in step_entries if entry.key == "with"]
+        with_entries = [entry for entry in setup_step if entry.key == "with"]
         if len(with_entries) != 1 or with_entries[0].value:
             errors.append(
                 f"{label}: job {job.key!r} ruby/setup-ruby must contain "
@@ -474,7 +492,7 @@ def publication_renderer_setup_errors(
 
         values = {
             entry.key: decoded_value(entry, label, errors).strip().lower()
-            for entry in direct_children(parsed, with_entries[0], end)
+            for entry in direct_children(parsed, with_entries[0])
         }
         if values.get("ruby-version") != "3.3":
             errors.append(
@@ -628,6 +646,19 @@ def check_parser_regressions(errors: list[str]) -> None:
           bundler-cache: true
       - run: npm test
       - run: npm test
+""",
+        "matrix metadata masquerading as steps": f"""jobs:
+  test:
+    strategy:
+      matrix:
+        include:
+          - uses: ruby/setup-ruby@{sha}
+            run: npm test
+            with:
+              ruby-version: '3.3'
+              bundler-cache: true
+    steps:
+      - run: echo test
 """,
         "late setup": f"""jobs:
   test:
