@@ -2433,6 +2433,7 @@ _DOTTED_VERSION_TAIL = re.compile(
     re.IGNORECASE,
 )
 _IPV4_JAPANESE_PROSE_BOUNDARY = re.compile(
+    r"[ぁ-んァ-ヶ一-龯々〆ヵヶー]*"
     r"(?P<address>(?:\d{1,3}\.){3}\d{1,3})"
     r"(?:へ|を|で)[ぁ-んァ-ヶ一-龯々〆ヵヶー]*$"
 )
@@ -2450,7 +2451,7 @@ def _is_documentation_address(address: ipaddress.IPv4Address | ipaddress.IPv6Add
 
 
 def _has_bounded_ipv4_japanese_prose_boundary(candidate: str) -> bool:
-    """Separate a valid IPv4 token from three frozen Japanese case particles."""
+    """Separate a valid IPv4 token surrounded by bounded Japanese prose."""
 
     match = _IPV4_JAPANESE_PROSE_BOUNDARY.fullmatch(candidate)
     if match is None:

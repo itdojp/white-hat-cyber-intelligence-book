@@ -6,6 +6,7 @@
     {"id": "IPV4-DOC-JA-PARTICLE-WO", "text": "198.51.100.10を確認する"},
     {"id": "IPV4-DOC-JA-PARTICLE-DE", "text": "203.0.113.10で検証する"},
     {"id": "IPV4-DOC-JA-PARTICLE-TOKEN-END", "text": "192.0.2.10へ"},
+    {"id": "IPV4-DOC-JA-PARTICLE-SURROUNDED", "text": "接続先は192.0.2.10へ接続する"},
     {"id": "DOMAIN-EXAMPLE", "text": "https://api.example/v1"},
     {"id": "DOMAIN-TEST", "text": "https://service.test/status"},
     {"id": "DOMAIN-INVALID", "text": "node.invalid"},
@@ -41,6 +42,12 @@
       "forbiddenReason": "non-approved bare IDN or punycode host"
     },
     {
+      "id": "IPV4-NONDOC-JA-PARTICLE-SURROUNDED",
+      "text": "接続先は10.0.0.1へ接続する",
+      "requiredReason": "non-documentation IP literal is disallowed",
+      "forbiddenReason": "non-approved bare IDN or punycode host"
+    },
+    {
       "id": "IPV4-DOC-JA-UNSUPPORTED-PARTICLE",
       "text": "192.0.2.10から接続する",
       "requiredReason": "non-approved bare IDN or punycode host",
@@ -55,6 +62,18 @@
     {
       "id": "IPV4-DOC-JA-ASCII-TAIL",
       "text": "192.0.2.10へconnect",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "IPV4-DOC-JA-ASCII-PREFIX",
+      "text": "target192.0.2.10へ接続する",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "IPV4-DOC-JA-IDN-PREFIX",
+      "text": "例え.テストは192.0.2.10へ接続する",
       "requiredReason": "non-approved bare IDN or punycode host",
       "forbiddenReason": ""
     },
