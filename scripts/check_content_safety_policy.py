@@ -421,6 +421,26 @@ REQUIRED_NORMALIZATION_CASES = {
     ),
 }
 REQUIRED_UNSAFE_HOST_CASES = {
+    "IPV4-NONDOC-JA-PARTICLE": (
+        "10.0.0.1へ接続する",
+        "non-documentation IP literal is disallowed",
+    ),
+    "IPV4-DOC-JA-UNSUPPORTED-PARTICLE": (
+        "192.0.2.10から接続する",
+        "non-approved bare IDN or punycode host",
+    ),
+    "IPV4-DOC-JA-IDN-SUFFIX": (
+        "192.0.2.10へ例え.テスト",
+        "non-approved bare IDN or punycode host",
+    ),
+    "IPV4-DOC-JA-ASCII-TAIL": (
+        "192.0.2.10へconnect",
+        "non-approved bare IDN or punycode host",
+    ),
+    "IPV4-INVALID-JA-PARTICLE": (
+        "192.0.2.999へ接続する",
+        "non-approved bare IDN or punycode host",
+    ),
     "ENTITY-ENCODED-MARKDOWN-URL": (
         "[external](https&#58;&#47;&#47;example&#46;com/runbook)",
         "non-approved host suffix",
@@ -495,6 +515,10 @@ REQUIRED_UNSAFE_HOST_CASES = {
     ),
 }
 REQUIRED_SAFE_HOST_CASES = {
+    "IPV4-DOC-JA-PARTICLE-HE": "192.0.2.10へ接続する",
+    "IPV4-DOC-JA-PARTICLE-WO": "198.51.100.10を確認する",
+    "IPV4-DOC-JA-PARTICLE-DE": "203.0.113.10で検証する",
+    "IPV4-DOC-JA-PARTICLE-TOKEN-END": "192.0.2.10へ",
     "HTML-DOUBLE-QUOTED-EXAMPLE": '<a href="https://lab.example">',
     "HTML-SINGLE-QUOTED-TEST": "<a href='https://lab.test/path?q=1#x'>",
     "HTML-DOUBLE-QUOTED-INVALID": '<img src="https://assets.invalid/image.png">',
@@ -1754,6 +1778,7 @@ def check_documentation() -> None:
             "unresolved thread 0",
             "1.2.0 finite grammar re-audit",
             "Issue #62 Publication coordination correction",
+            "Issue #67 IPv4 Japanese prose boundary correction",
         ),
     }
     for relative, markers in required_files.items():

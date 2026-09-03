@@ -105,6 +105,8 @@ Repositoryのsynthetic publication policyとして次を許容する。
 
 `.localhost`は技術的にはreservedだが、このRepositoryの公開Policyでは許容しない。診断は`non-reserved`とは記載せず、技術的reserved statusとRepository permissionを分離する。bare IDN / punycode hostも検査し、明示的な`.example` / `.test` / `.invalid` suffixだけを許容する。ただしnumeric-only terminal labelを持つdotted version/identifierはDNS TLDではないためhost候補から除外する（例: Unicode proseに続く`v2.2.0`）。曖昧なbare host/addressはfail closedにでき、許容suffix、URL形式、IPv6 bracket形式への書換えを案内する。
 
+有効なIPv4 literalに日本語case particleが直結する場合、`へ / を / で`の三つと、その後ろのtoken終端または日本語scriptだけを有限なprose境界として扱う。この境界処理はIPv4の許可判断を変更せず、documentation rangeは引き続き許容し、non-documentation IPv4はIP scannerがrejectする。未知の助詞、ASCII混在tail、追加のdotted IDN/punycode label、または無効なIPv4はIDN候補としてfail closedにする。これはhost tokenizationの既存実装修正であり、category、Stable API、Policy meaningを変更しないためPolicy versionは`1.2.0`を維持する。
+
 Chapter 2の既存chapter-specific checkerには`.localhost`を許容する旧suffix listが残るが、現行canonical contentに`.localhost`はない。共通coreをchapter adapterへ導入する際は、Policy `1.2.0`を正本としてこの差を解消し、canonical本文を警告回避だけの目的では変更しない。
 
 ## Versioning and re-audit

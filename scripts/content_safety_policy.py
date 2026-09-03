@@ -2432,6 +2432,10 @@ _DOTTED_VERSION_TAIL = re.compile(
     r"(?<![a-z0-9.-])v?\d+\.\d+\.\d+(?:-[0-9a-z]+(?:\.[0-9a-z-]+)*)?$",
     re.IGNORECASE,
 )
+_IPV4_JAPANESE_PROSE_BOUNDARY = re.compile(
+    r"(?P<address>(?:\d{1,3}\.){3}\d{1,3})"
+    r"(?:へ|を|で)[ぁ-んァ-ヶ一-龯々〆ヵヶー]*$"
+)
 
 
 def _parse_ip(value: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | None:
@@ -2443,6 +2447,15 @@ def _parse_ip(value: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | Non
 
 def _is_documentation_address(address: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
     return any(address in network for network in _DOCUMENTATION_NETWORKS)
+
+
+def _has_bounded_ipv4_japanese_prose_boundary(candidate: str) -> bool:
+    """Separate a valid IPv4 token from three frozen Japanese case particles."""
+
+    match = _IPV4_JAPANESE_PROSE_BOUNDARY.fullmatch(candidate)
+    if match is None:
+        return False
+    return isinstance(_parse_ip(match.group("address")), ipaddress.IPv4Address)
 
 
 def _host_finding(location: str, excerpt: str, reason: str) -> SafetyFinding:
@@ -2575,6 +2588,10 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
     for match in _IDN_DOMAIN_PATTERN.finditer(normalized):
         domain = match.group(0).casefold()
         if domain in url_hosts or _DOMAIN_PATTERN.fullmatch(domain):
+            continue
+        # A valid IPv4 literal directly followed by one of the frozen Japanese
+        # particles is owned by the IP scanner below, not by the IDN scanner.
+        if _has_bounded_ipv4_japanese_prose_boundary(domain):
             continue
         # Unicode prose can be consumed with a dotted version/identifier (for
         # example, ``Identifier...v2.2.0`` or ``Identifier...v2.2.0-rc1``).

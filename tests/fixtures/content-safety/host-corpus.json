@@ -2,6 +2,10 @@
   "schemaVersion": "1.0.0",
   "policyVersion": "1.2.0",
   "safe": [
+    {"id": "IPV4-DOC-JA-PARTICLE-HE", "text": "192.0.2.10へ接続する"},
+    {"id": "IPV4-DOC-JA-PARTICLE-WO", "text": "198.51.100.10を確認する"},
+    {"id": "IPV4-DOC-JA-PARTICLE-DE", "text": "203.0.113.10で検証する"},
+    {"id": "IPV4-DOC-JA-PARTICLE-TOKEN-END", "text": "192.0.2.10へ"},
     {"id": "DOMAIN-EXAMPLE", "text": "https://api.example/v1"},
     {"id": "DOMAIN-TEST", "text": "https://service.test/status"},
     {"id": "DOMAIN-INVALID", "text": "node.invalid"},
@@ -30,6 +34,36 @@
     {"id": "MARKDOWN-AUTOLINK-MAILTO-EXAMPLE", "text": "<mailto:user@lab.example>"}
   ],
   "unsafe": [
+    {
+      "id": "IPV4-NONDOC-JA-PARTICLE",
+      "text": "10.0.0.1へ接続する",
+      "requiredReason": "non-documentation IP literal is disallowed",
+      "forbiddenReason": "non-approved bare IDN or punycode host"
+    },
+    {
+      "id": "IPV4-DOC-JA-UNSUPPORTED-PARTICLE",
+      "text": "192.0.2.10から接続する",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "IPV4-DOC-JA-IDN-SUFFIX",
+      "text": "192.0.2.10へ例え.テスト",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "IPV4-DOC-JA-ASCII-TAIL",
+      "text": "192.0.2.10へconnect",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
+    {
+      "id": "IPV4-INVALID-JA-PARTICLE",
+      "text": "192.0.2.999へ接続する",
+      "requiredReason": "non-approved bare IDN or punycode host",
+      "forbiddenReason": ""
+    },
     {
       "id": "LOCALHOST-POLICY",
       "text": "https://api.localhost/status",
