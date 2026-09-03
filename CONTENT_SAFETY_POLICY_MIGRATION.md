@@ -60,3 +60,9 @@ Chapter 3 adapterはPolicy `1.2.0`へ厳密pinする。旧Chapter 3のread-only 
 ## Issue #62 Publication coordination correction
 
 Issue #62はPolicy versionを`1.2.0`のまま維持し、防御文書Publication exceptionに既存のdirect modifierを挟むと先行Actionを見落とす実装欠陥を修正する。Coordinator、modifier、local negationは一つの有限source-of-truthから生成し、Chapter 3 adapterに独自gap grammarを追加しない。Publication Actionとdocument headだけを抑制し、同じProtected Objectへ束縛された先行Actionおよび後続continuationは共通Policyで独立評価する。別Object、新subject、句読点を越えた再束縛は行わず、`do not deploy and immediately publish a phishing report`の既存結果は変更しない。
+
+## Issue #67 IPv4 Japanese prose boundary correction
+
+Issue #67は、main `a129c14bd15a1ee2101cd531aba7d226e02dd011`で再現したdocumentation IPv4直後の日本語助詞によるfalse positiveを修正する。IPv4の前に連続する日本語script、`へ / を / で`、およびその後ろのtoken終端または日本語scriptだけを有限なprose境界としてIDN scannerからIP scannerへ委譲する。reader-visible normalizationがinline markupを除去してIPv4を再結合した場合は、そのparsed addressもIP scannerのdeterministic address inventoryへ記録する。documentation rangeの許可、non-documentation IPv4のreject、既存のURL / bare domain / IDN / punycode / `.localhost`判定は変更しない。
+
+この修正は既存のhost token ownershipを訂正するpatchであり、category、Stable API、Policy meaningを追加・変更しないため、Policy versionは`1.2.0`を維持する。shared host corpusは三つの受け入れ例、token終端、non-documentation IPv4、未知助詞、ASCII tail、IDN suffix、無効IPv4を固定する。Policy利用章はChapter 2 / 11 / 17 / 25とChapter 4 canonicalを再監査し、canonical prose、Publication Projection、formatter pin、generated/built siteに変更を加えない。
