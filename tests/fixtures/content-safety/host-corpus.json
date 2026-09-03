@@ -7,6 +7,7 @@
     {"id": "IPV4-DOC-JA-PARTICLE-DE", "text": "203.0.113.10で検証する"},
     {"id": "IPV4-DOC-JA-PARTICLE-TOKEN-END", "text": "192.0.2.10へ"},
     {"id": "IPV4-DOC-JA-PARTICLE-SURROUNDED", "text": "接続先は192.0.2.10へ接続する"},
+    {"id": "IPV4-DOC-JA-MARKUP-REJOINED", "text": "192.0.<!--x-->2.10へ接続する"},
     {"id": "DOMAIN-EXAMPLE", "text": "https://api.example/v1"},
     {"id": "DOMAIN-TEST", "text": "https://service.test/status"},
     {"id": "DOMAIN-INVALID", "text": "node.invalid"},
@@ -44,6 +45,12 @@
     {
       "id": "IPV4-NONDOC-JA-PARTICLE-SURROUNDED",
       "text": "接続先は10.0.0.1へ接続する",
+      "requiredReason": "non-documentation IP literal is disallowed",
+      "forbiddenReason": "non-approved bare IDN or punycode host"
+    },
+    {
+      "id": "IPV4-NONDOC-JA-MARKUP-REJOINED",
+      "text": "10.0.<!--x-->0.1へ接続する",
       "requiredReason": "non-documentation IP literal is disallowed",
       "forbiddenReason": "non-approved bare IDN or punycode host"
     },

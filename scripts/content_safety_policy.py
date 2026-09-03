@@ -2450,13 +2450,16 @@ def _is_documentation_address(address: ipaddress.IPv4Address | ipaddress.IPv6Add
     return any(address in network for network in _DOCUMENTATION_NETWORKS)
 
 
-def _has_bounded_ipv4_japanese_prose_boundary(candidate: str) -> bool:
-    """Separate a valid IPv4 token surrounded by bounded Japanese prose."""
+def _bounded_ipv4_japanese_prose_address(
+    candidate: str,
+) -> ipaddress.IPv4Address | None:
+    """Return the IPv4 token surrounded by bounded Japanese prose, if valid."""
 
     match = _IPV4_JAPANESE_PROSE_BOUNDARY.fullmatch(candidate)
     if match is None:
-        return False
-    return isinstance(_parse_ip(match.group("address")), ipaddress.IPv4Address)
+        return None
+    address = _parse_ip(match.group("address"))
+    return address if isinstance(address, ipaddress.IPv4Address) else None
 
 
 def _host_finding(location: str, excerpt: str, reason: str) -> SafetyFinding:
@@ -2586,13 +2589,18 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
         elif not domain.endswith(_ALLOWED_HOST_SUFFIXES):
             findings.append(_host_finding(location, domain, "possible real domain in synthetic content"))
 
+    detected_addresses: dict[str, ipaddress.IPv4Address | ipaddress.IPv6Address] = {}
     for match in _IDN_DOMAIN_PATTERN.finditer(normalized):
         domain = match.group(0).casefold()
         if domain in url_hosts or _DOMAIN_PATTERN.fullmatch(domain):
             continue
         # A valid IPv4 literal directly followed by one of the frozen Japanese
         # particles is owned by the IP scanner below, not by the IDN scanner.
-        if _has_bounded_ipv4_japanese_prose_boundary(domain):
+        # Record the parsed normalized address here because markup removed during
+        # reader-visible normalization may split it in ``decoded_source``.
+        bounded_address = _bounded_ipv4_japanese_prose_address(domain)
+        if bounded_address is not None:
+            detected_addresses[str(bounded_address)] = bounded_address
             continue
         # Unicode prose can be consumed with a dotted version/identifier (for
         # example, ``Identifier...v2.2.0`` or ``Identifier...v2.2.0-rc1``).
@@ -2612,7 +2620,6 @@ def scan_host_policy(text: str, *, location: str) -> list[SafetyFinding]:
             )
         )
 
-    detected_addresses: dict[str, ipaddress.IPv4Address | ipaddress.IPv6Address] = {}
     raw_normalized = decoded_source
     for raw_token in re.findall(r"[A-Za-z0-9_.:\[\]-]+", raw_normalized):
         token = raw_token.rstrip(".,;")

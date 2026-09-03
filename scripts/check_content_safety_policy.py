@@ -429,6 +429,10 @@ REQUIRED_UNSAFE_HOST_CASES = {
         "接続先は10.0.0.1へ接続する",
         "non-documentation IP literal is disallowed",
     ),
+    "IPV4-NONDOC-JA-MARKUP-REJOINED": (
+        "10.0.<!--x-->0.1へ接続する",
+        "non-documentation IP literal is disallowed",
+    ),
     "IPV4-DOC-JA-UNSUPPORTED-PARTICLE": (
         "192.0.2.10から接続する",
         "non-approved bare IDN or punycode host",
@@ -532,6 +536,7 @@ REQUIRED_SAFE_HOST_CASES = {
     "IPV4-DOC-JA-PARTICLE-DE": "203.0.113.10で検証する",
     "IPV4-DOC-JA-PARTICLE-TOKEN-END": "192.0.2.10へ",
     "IPV4-DOC-JA-PARTICLE-SURROUNDED": "接続先は192.0.2.10へ接続する",
+    "IPV4-DOC-JA-MARKUP-REJOINED": "192.0.<!--x-->2.10へ接続する",
     "HTML-DOUBLE-QUOTED-EXAMPLE": '<a href="https://lab.example">',
     "HTML-SINGLE-QUOTED-TEST": "<a href='https://lab.test/path?q=1#x'>",
     "HTML-DOUBLE-QUOTED-INVALID": '<img src="https://assets.invalid/image.png">',
