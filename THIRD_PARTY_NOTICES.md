@@ -8,12 +8,12 @@ This file records third-party material copied into generated publication artifac
 |---|---|
 | Name | `itdojp/book-formatter` shared layouts, includes, styles, and scripts |
 | Source | <https://github.com/itdojp/book-formatter> |
-| Commit | `764f644850c21983c96919d0e13706413d59c089` |
+| Commit | `198935ff8f60653c40e513343dc5f02573d9968e` |
 | Upstream package version | `1.0.0` |
 | Shared component version | `3.2.3` |
 | Copyright holder / author | ITDO Inc.（株式会社アイティードゥ） |
 | License | MIT License, as declared by the pinned repository's `package.json` and README |
-| Retrieved / verified | 2026-08-04 |
+| Retrieved / verified | 2026-09-04 |
 | Verification | Each copied source file is verified against the Git blob SHA in `.book-formatter/revision.json` |
 | Distribution scope | Generated `docs/` site source and `_site/` publication artifact; the files are not human-authored canonical manuscript source |
 
