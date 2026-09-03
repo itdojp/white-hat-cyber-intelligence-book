@@ -406,6 +406,258 @@ def permission_values(
     return values
 
 
+def direct_job_steps(
+    parsed: ParsedWorkflow,
+    job: MappingLine,
+) -> list[list[MappingLine]]:
+    steps_entries = [
+        entry for entry in direct_children(parsed, job) if entry.key == "steps"
+    ]
+    if len(steps_entries) != 1 or steps_entries[0].value:
+        return []
+
+    steps = steps_entries[0]
+    steps_end = block_end(parsed, steps)
+    starts = [
+        active
+        for active in parsed.active_lines
+        if steps.index < active.index < steps_end
+        and active.sequence
+        and active.indent == steps.indent + 2
+    ]
+    return [
+        direct_step_entries(
+            parsed,
+            start.index,
+            starts[index + 1].index if index + 1 < len(starts) else steps_end,
+            start.indent,
+        )
+        for index, start in enumerate(starts)
+    ]
+
+
+def mandatory_execution_errors(
+    entries: list[MappingLine],
+    label: str,
+    subject: str,
+) -> list[str]:
+    errors: list[str] = []
+    if_entries = [entry for entry in entries if entry.key == "if"]
+    if if_entries:
+        errors.append(f"{label}: {subject} must not be conditional")
+
+    continue_entries = [
+        entry for entry in entries if entry.key == "continue-on-error"
+    ]
+    if len(continue_entries) > 1:
+        errors.append(
+            f"{label}: {subject} must define continue-on-error at most once"
+        )
+    elif continue_entries:
+        value = decoded_value(continue_entries[0], label, errors).strip().lower()
+        if value != "false":
+            errors.append(f"{label}: {subject} must not suppress failures")
+    return errors
+
+
+def forbidden_mapping_errors(
+    entries: list[MappingLine],
+    label: str,
+    subject: str,
+    forbidden: set[str],
+) -> list[str]:
+    present = sorted({entry.key for entry in entries} & forbidden)
+    return [
+        f"{label}: {subject} must not define {key!r}"
+        for key in present
+    ]
+
+
+def environment_override_errors(
+    parsed: ParsedWorkflow,
+    entries: list[MappingLine],
+    label: str,
+    subject: str,
+) -> list[str]:
+    errors: list[str] = []
+    env_entries = [entry for entry in entries if entry.key == "env"]
+    if len(env_entries) > 1:
+        return [f"{label}: {subject} must contain at most one env mapping"]
+    if not env_entries:
+        return errors
+    env = env_entries[0]
+    if env.value:
+        return [f"{label}: {subject} env must be a block mapping"]
+
+    forbidden = {
+        entry.key
+        for entry in direct_children(parsed, env)
+        if entry.key.casefold() == "npm_config_script_shell"
+    }
+    for key in sorted(forbidden):
+        errors.append(
+            f"{label}: {subject} must not override npm script-shell via {key!r}"
+        )
+    return errors
+
+
+def publication_renderer_setup_errors(
+    parsed: ParsedWorkflow,
+    label: str,
+) -> list[str]:
+    """Require the locked renderer before npm test in each consuming job."""
+    errors: list[str] = []
+    jobs = top_level_entry(parsed, "jobs")
+    if jobs is None:
+        return [f"{label}: missing jobs mapping for npm test"]
+    if top_level_entry(parsed, "defaults") is not None:
+        errors.append(
+            f"{label}: workflow running npm test must not override run defaults"
+        )
+    workflow_entries = [
+        entry
+        for entry in parsed.entries
+        if not entry.sequence and entry.indent == 0
+    ]
+    errors.extend(
+        environment_override_errors(
+            parsed,
+            workflow_entries,
+            label,
+            "workflow running npm test",
+        )
+    )
+
+    npm_test_count = 0
+    for job in direct_children(parsed, jobs):
+        steps = direct_job_steps(parsed, job)
+        npm_tests = [
+            (entry, step)
+            for step in steps
+            for entry in step
+            if entry.key == "run"
+            and decoded_value(entry, label, errors).strip() == "npm test"
+        ]
+        if not npm_tests:
+            continue
+        npm_test_count += len(npm_tests)
+        job_entries = direct_children(parsed, job)
+        errors.extend(
+            mandatory_execution_errors(
+                job_entries,
+                label,
+                f"job {job.key!r} running npm test",
+            )
+        )
+        errors.extend(
+            forbidden_mapping_errors(
+                job_entries,
+                label,
+                f"job {job.key!r} running npm test",
+                {"defaults", "needs", "strategy"},
+            )
+        )
+        errors.extend(
+            environment_override_errors(
+                parsed,
+                job_entries,
+                label,
+                f"job {job.key!r} running npm test",
+            )
+        )
+        for _, test_step in npm_tests:
+            errors.extend(
+                mandatory_execution_errors(
+                    test_step,
+                    label,
+                    f"job {job.key!r} npm test step",
+                )
+            )
+            errors.extend(
+                forbidden_mapping_errors(
+                    test_step,
+                    label,
+                    f"job {job.key!r} npm test step",
+                    {"shell", "working-directory"},
+                )
+            )
+            errors.extend(
+                environment_override_errors(
+                    parsed,
+                    test_step,
+                    label,
+                    f"job {job.key!r} npm test step",
+                )
+            )
+
+        ruby_setups = [
+            (entry, step)
+            for step in steps
+            for entry in step
+            if entry.key == "uses"
+            and decoded_value(entry, label, errors).startswith("ruby/setup-ruby@")
+        ]
+        if len(ruby_setups) != 1:
+            errors.append(
+                f"{label}: job {job.key!r} running npm test must contain "
+                "exactly one ruby/setup-ruby step"
+            )
+            continue
+
+        setup, setup_step = ruby_setups[0]
+        errors.extend(
+            mandatory_execution_errors(
+                setup_step,
+                label,
+                f"job {job.key!r} ruby/setup-ruby step",
+            )
+        )
+        errors.extend(
+            environment_override_errors(
+                parsed,
+                setup_step,
+                label,
+                f"job {job.key!r} ruby/setup-ruby step",
+            )
+        )
+        first_test = min(entry.index for entry, _ in npm_tests)
+        if setup.index >= first_test:
+            errors.append(
+                f"{label}: job {job.key!r} must set up the locked "
+                "publication renderer before npm test"
+            )
+
+        with_entries = [entry for entry in setup_step if entry.key == "with"]
+        if len(with_entries) != 1 or with_entries[0].value:
+            errors.append(
+                f"{label}: job {job.key!r} ruby/setup-ruby must contain "
+                "one active with mapping"
+            )
+            continue
+
+        values = {
+            entry.key: decoded_value(entry, label, errors).strip().lower()
+            for entry in direct_children(parsed, with_entries[0])
+        }
+        if values.get("ruby-version") != "3.3":
+            errors.append(
+                f"{label}: job {job.key!r} ruby/setup-ruby must pin "
+                "ruby-version 3.3"
+            )
+        if values.get("bundler-cache") != "true":
+            errors.append(
+                f"{label}: job {job.key!r} ruby/setup-ruby must enable "
+                "bundler-cache"
+            )
+
+    if npm_test_count != 1:
+        errors.append(
+            f"{label}: expected exactly one active 'run: npm test'; "
+            f"found {npm_test_count}"
+        )
+    return errors
+
+
 def check_parser_regressions(errors: list[str]) -> None:
     sha = "0" * 40
     valid_plain = f"""jobs:
@@ -498,6 +750,246 @@ def check_parser_regressions(errors: list[str]) -> None:
             "workflow parser regression failed closed on flow mapping"
         )
 
+    valid_renderer_order = f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        continue-on-error: false
+"""
+    invalid_renderer_orders = {
+        "commented test": """jobs:
+  test:
+    steps:
+      # - run: npm test
+      - run: echo test
+""",
+        "missing setup": """jobs:
+  test:
+    steps:
+      - run: npm test
+""",
+        "setup in another job": f"""jobs:
+  prepare:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+  test:
+    steps:
+      - run: npm test
+""",
+        "multiple active tests": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+      - run: npm test
+""",
+        "matrix metadata masquerading as steps": f"""jobs:
+  test:
+    strategy:
+      matrix:
+        include:
+          - uses: ruby/setup-ruby@{sha}
+            run: npm test
+            with:
+              ruby-version: '3.3'
+              bundler-cache: true
+    steps:
+      - run: echo test
+""",
+        "conditional job": f"""jobs:
+  test:
+    if: false
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "conditional setup": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        if: false
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "conditional test": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        if: false
+""",
+        "non-blocking test": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        continue-on-error: true
+""",
+        "custom test shell": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        shell: bash -c 'source "$1" || true' -- {{0}}
+""",
+        "alternate test directory": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        working-directory: fixtures/passing-package
+""",
+        "job run defaults": f"""jobs:
+  test:
+    defaults:
+      run:
+        shell: bash -c 'source "$1" || true' -- {{0}}
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "workflow run defaults": f"""defaults:
+  run:
+    shell: bash -c 'source "$1" || true' -- {{0}}
+jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "dependent test job": f"""jobs:
+  prepare:
+    steps:
+      - run: echo prepare
+  test:
+    needs: prepare
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "matrix test job": f"""jobs:
+  test:
+    strategy:
+      matrix:
+        runner: [ubuntu-24.04]
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "workflow npm script-shell override": f"""env:
+  npm_config_script_shell: /bin/true
+jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "job npm script-shell override": f"""jobs:
+  test:
+    env:
+      NPM_CONFIG_SCRIPT_SHELL: /bin/true
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+""",
+        "test npm script-shell override": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: npm test
+        env:
+          npm_config_script_shell: /bin/true
+""",
+        "late setup": f"""jobs:
+  test:
+    steps:
+      - run: npm test
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+""",
+        "missing bundler cache": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.3'
+      - run: npm test
+""",
+        "wrong ruby series": f"""jobs:
+  test:
+    steps:
+      - uses: ruby/setup-ruby@{sha}
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+      - run: npm test
+""",
+    }
+    parsed = parse_workflow(
+        valid_renderer_order,
+        "renderer setup regression valid order",
+    )
+    if publication_renderer_setup_errors(parsed, "valid renderer order"):
+        errors.append(
+            "workflow renderer setup regression failed for valid order"
+        )
+    for name, fixture in invalid_renderer_orders.items():
+        parsed = parse_workflow(fixture, f"renderer setup regression {name}")
+        if not publication_renderer_setup_errors(parsed, name):
+            errors.append(
+                "workflow renderer setup regression failed to reject: " + name
+            )
+
 
 def main() -> int:
     errors: list[str] = []
@@ -521,6 +1013,8 @@ def main() -> int:
             errors.append(f"{label}: missing Node 24 action guard")
         errors.extend(action_policy_errors(parsed, label))
         errors.extend(checkout_credential_errors(parsed, label))
+        if name in EXPECTED_WORKFLOWS:
+            errors.extend(publication_renderer_setup_errors(parsed, label))
 
     for name in EXPECTED_WORKFLOWS:
         if name in texts and PINNED_FORMATTER not in texts[name]:
@@ -669,6 +1163,7 @@ def main() -> int:
         "normalized YAML mapping keys, immutable action refs, "
         "non-persistent checkout credentials, ignored npm lifecycle "
         "scripts, operator-only Pages enablement, least-privilege "
-        "Pages jobs, pinned formatter, generated output untracked"
+        "Pages jobs, locked renderer before npm test, pinned formatter, "
+        "generated output untracked"
     )
     return 0
