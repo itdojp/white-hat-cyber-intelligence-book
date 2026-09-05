@@ -80,6 +80,7 @@ TERMINAL_ALTERNATIVE_DISPOSITIONS = {"rejected", "deferred", "superseded"}
 SELECTED_DISPOSITIONS = {"selected", "adopted", "rewritten"}
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
+FULL_DATE_RE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
 PACKAGE_ID_RE = re.compile(r"EIP-[0-9]{4}\Z")
 TARGET_ID_RE = re.compile(
     r"(?:chapter-[0-9]{2}|appendix-[a-z]|appendices-[a-z](?:-[a-z])+)\Z"
@@ -115,6 +116,8 @@ SUPPORTED_SCHEMA_KEYWORDS = {
     "title",
     "$defs",
 }
+SUPPORTED_SCHEMA_TYPES = {"null", "object", "array", "string", "integer", "boolean"}
+SUPPORTED_SCHEMA_FORMATS = {"date", "date-time"}
 
 
 class ManifestError(ValueError):
@@ -205,10 +208,12 @@ def require_pattern(value: Any, label: str, pattern: re.Pattern[str]) -> str:
 
 def require_iso_date(value: Any, label: str) -> str:
     text = require_string(value, label)
+    if not FULL_DATE_RE.fullmatch(text):
+        fail(f"{label}: invalid RFC 3339 full-date: {text!r}")
     try:
         date.fromisoformat(text)
     except ValueError as exc:
-        raise ManifestError(f"{label}: invalid ISO date: {text!r}") from exc
+        raise ManifestError(f"{label}: invalid RFC 3339 full-date: {text!r}") from exc
     return text
 
 
@@ -301,29 +306,95 @@ def validate_schema_contract(schema: Any) -> None:
         )
         if actual != expected:
             fail(f"schema: {name} enum drift: {sorted(actual ^ expected)}")
-    validate_supported_schema_nodes(root, "schema")
+    validate_supported_schema_nodes(root, "schema", root)
 
 
-def validate_supported_schema_nodes(raw_schema: Any, label: str) -> None:
+def validate_supported_schema_nodes(
+    raw_schema: Any, label: str, root: dict[str, Any]
+) -> None:
     node = require_object(raw_schema, label)
     unsupported = node.keys() - SUPPORTED_SCHEMA_KEYWORDS
     if unsupported:
         fail(f"{label}: unsupported JSON Schema keywords: {sorted(unsupported)!r}")
     if "$ref" in node and len(node) != 1:
         fail(f"{label}: sibling keywords beside $ref are unsupported")
+    if "$ref" in node:
+        # Invalid references in a non-matching oneOf branch are still schema
+        # errors. Validate every reference before inspecting an instance.
+        resolve_local_schema_ref(root, node["$ref"], label)
+        return
+    if "type" in node:
+        raw_types = node["type"]
+        types = raw_types if isinstance(raw_types, list) else [raw_types]
+        if (
+            not types
+            or not all(isinstance(item, str) for item in types)
+            or len(types) != len(set(types))
+        ):
+            fail(f"{label}.type: expected a type or unique non-empty type array")
+        unknown_types = set(types) - SUPPORTED_SCHEMA_TYPES
+        if unknown_types:
+            fail(
+                f"{label}.type: unsupported JSON Schema types: {sorted(unknown_types)!r}"
+            )
+    if "additionalProperties" in node and not isinstance(
+        node["additionalProperties"], bool
+    ):
+        fail(f"{label}.additionalProperties: expected boolean")
+    if "required" in node:
+        require_unique_strings(node["required"], f"{label}.required", nonempty=False)
+    if "enum" in node:
+        choices = require_list(node["enum"], f"{label}.enum", nonempty=True)
+        encoded = [
+            json.dumps(item, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            for item in choices
+        ]
+        if len(encoded) != len(set(encoded)):
+            fail(f"{label}.enum: duplicate values")
+    for keyword in ("minItems", "minLength"):
+        if keyword in node and (
+            not isinstance(node[keyword], int)
+            or isinstance(node[keyword], bool)
+            or node[keyword] < 0
+        ):
+            fail(f"{label}.{keyword}: expected non-negative integer")
+    if "uniqueItems" in node and not isinstance(node["uniqueItems"], bool):
+        fail(f"{label}.uniqueItems: expected boolean")
+    for keyword in ("minimum", "maximum"):
+        if keyword in node and (
+            not isinstance(node[keyword], int) or isinstance(node[keyword], bool)
+        ):
+            fail(f"{label}.{keyword}: expected integer")
+    if "minimum" in node and "maximum" in node and node["minimum"] > node["maximum"]:
+        fail(f"{label}: minimum exceeds maximum")
+    if "pattern" in node:
+        pattern = require_string(node["pattern"], f"{label}.pattern")
+        try:
+            re.compile(pattern)
+        except re.error as exc:
+            raise ManifestError(f"{label}.pattern: invalid regex: {exc}") from exc
+    if "format" in node:
+        format_name = require_string(node["format"], f"{label}.format")
+        if format_name not in SUPPORTED_SCHEMA_FORMATS:
+            fail(f"{label}.format: unsupported format: {format_name!r}")
+    for keyword in ("$schema", "$id", "title"):
+        if keyword in node:
+            require_string(node[keyword], f"{label}.{keyword}")
     for container_name in ("properties", "$defs"):
         if container_name not in node:
             continue
         container = require_object(node[container_name], f"{label}.{container_name}")
         for name, child in container.items():
-            validate_supported_schema_nodes(child, f"{label}.{container_name}.{name}")
+            validate_supported_schema_nodes(
+                child, f"{label}.{container_name}.{name}", root
+            )
     if "items" in node:
-        validate_supported_schema_nodes(node["items"], f"{label}.items")
+        validate_supported_schema_nodes(node["items"], f"{label}.items", root)
     if "oneOf" in node:
         for index, child in enumerate(
             require_list(node["oneOf"], f"{label}.oneOf", nonempty=True)
         ):
-            validate_supported_schema_nodes(child, f"{label}.oneOf[{index}]")
+            validate_supported_schema_nodes(child, f"{label}.oneOf[{index}]", root)
 
 
 def resolve_local_schema_ref(root: dict[str, Any], reference: Any, label: str) -> Any:
@@ -397,7 +468,7 @@ def validate_schema_instance_node(
             matches += 1
         if matches != 1:
             fail(f"{instance_label}: JSON Schema oneOf matched {matches} branches")
-        return
+        # oneOf is an applicator; Draft 2020-12 sibling constraints remain active.
     if "const" in node and value != node["const"]:
         fail(f"{instance_label}: JSON Schema const mismatch")
     if "enum" in node:
@@ -712,9 +783,7 @@ def validate_collision_acknowledgements(
             fail(f"collisionAcknowledgements: package set mismatch for {key!r}")
 
 
-def validate_status_history(
-    value: Any, target_label: str, current_status: str, expected_initial_status: str
-) -> None:
+def validate_status_history(value: Any, target_label: str, current_status: str) -> None:
     history_items = require_list(value, f"{target_label}.statusHistory", nonempty=True)
     previous_date: str | None = None
     previous_status: str | None = None
@@ -746,12 +815,14 @@ def validate_status_history(
             "superseded-with-record",
         },
         "blueprint-only": {
+            "candidate-selection-required",
             "selected-for-intake",
             "canonical-pr-open",
             "deferred",
             "superseded-with-record",
         },
         "generator-blueprint-only": {
+            "candidate-selection-required",
             "selected-for-intake",
             "canonical-pr-open",
             "deferred",
@@ -783,11 +854,6 @@ def validate_status_history(
                 )
         previous_date = effective
         previous_status = status_value
-    if history_items[0]["status"] != expected_initial_status:
-        fail(
-            f"{target_label}.statusHistory: expected immutable initial status "
-            f"{expected_initial_status}"
-        )
     if previous_status != current_status:
         fail(
             f"{target_label}.statusHistory: final status does not match current status"
@@ -1176,18 +1242,7 @@ def validate_targets(
                 or set(dispositions) != {"superseded"}
             ):
                 fail(f"{label}: superseded-with-record must supersede every candidate")
-        candidate_roles = {
-            files[(item["packageId"], item["inputPath"])]["role"] for item in candidates
-        }
-        if candidate_roles == {"blueprint-input"}:
-            initial_status = "blueprint-only"
-        elif candidate_roles == {"generator-blueprint-input"}:
-            initial_status = "generator-blueprint-only"
-        else:
-            initial_status = "registered-pending-prerequisites"
-        validate_status_history(
-            target["statusHistory"], label, status_value, initial_status
-        )
+        validate_status_history(target["statusHistory"], label, status_value)
         if status_value in {"canonical-pr-open", "consumed"}:
             assert selected_candidate is not None
             validate_intake_record(
@@ -1394,6 +1449,7 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
         )
     if normalized != sorted(normalized, key=lambda item: item["packageId"]):
         fail("registration snapshot: packages must use deterministic packageId order")
+    manifest_targets = {target["targetId"]: target for target in manifest["targets"]}
     normalized_targets: list[dict[str, Any]] = []
     for index, raw in enumerate(
         require_list(
@@ -1402,7 +1458,11 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
     ):
         label = f"registration snapshot.targets[{index}]"
         target = require_object(raw, label)
-        require_exact_keys(target, label, {"targetId", "issue", "targetKind"})
+        require_exact_keys(
+            target,
+            label,
+            {"targetId", "issue", "targetKind", "statusHistoryPrefix"},
+        )
         target_id = require_pattern(
             target["targetId"], f"{label}.targetId", TARGET_ID_RE
         )
@@ -1416,6 +1476,25 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
         target_kind = require_string(target["targetKind"], f"{label}.targetKind")
         if target_kind not in TARGET_KINDS:
             fail(f"{label}.targetKind: unsupported value")
+        prefix = require_list(
+            target["statusHistoryPrefix"],
+            f"{label}.statusHistoryPrefix",
+            nonempty=True,
+        )
+        prefix_status = require_object(
+            prefix[-1], f"{label}.statusHistoryPrefix[-1]"
+        ).get("status")
+        if prefix_status not in TARGET_STATUSES:
+            fail(f"{label}.statusHistoryPrefix[-1].status: unsupported value")
+        validate_status_history(prefix, f"{label}.statusHistoryPrefix", prefix_status)
+        current_target = manifest_targets.get(target_id)
+        if current_target is not None:
+            current_history = current_target["statusHistory"]
+            if (
+                len(current_history) < len(prefix)
+                or current_history[: len(prefix)] != prefix
+            ):
+                fail(f"{label}: statusHistory prefix mismatch")
         normalized_targets.append(
             {"targetId": target_id, "issue": issue, "targetKind": target_kind}
         )
@@ -1828,8 +1907,13 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
     elif mutation == "status-history-prefix-deleted":
         target = targets["chapter-04"]
         target["statusHistory"] = [target["statusHistory"][-1]]
+    elif mutation == "status-history-prefix-rewritten":
+        target = targets["chapter-05"]
+        target["statusHistory"][0]["reason"] = "rewritten provenance fixture"
     elif mutation == "schema-invalid-package-filename":
         packages[0]["filename"] = "invalid\\name.zip"
+    elif mutation == "schema-invalid-full-date":
+        manifest["auditedAt"] = "20260905"
     else:
         fail(f"regression corpus: unsupported mutation: {mutation}")
 
@@ -1859,6 +1943,7 @@ def run_manifest_regressions(
         )
         try:
             validate_manifest(mutated, schema)
+            validate_registration_snapshot(mutated, registration_snapshot)
         except ManifestError as exc:
             if expected not in str(exc):
                 fail(f"regression {case_id}: expected {expected!r}, got {str(exc)!r}")
@@ -1945,6 +2030,8 @@ def run_manifest_regressions(
     for initial_status, next_status in (
         ("blueprint-only", "selected-for-intake"),
         ("generator-blueprint-only", "canonical-pr-open"),
+        ("blueprint-only", "candidate-selection-required"),
+        ("generator-blueprint-only", "candidate-selection-required"),
     ):
         validate_status_history(
             [
@@ -1963,7 +2050,6 @@ def run_manifest_regressions(
             ],
             f"{initial_status} transition fixture",
             next_status,
-            initial_status,
         )
     unsupported_schema = copy.deepcopy(schema)
     unsupported_schema["$defs"]["safePath"]["maxLength"] = 4096
@@ -1974,7 +2060,29 @@ def run_manifest_regressions(
             fail(f"unsupported-schema regression returned unexpected error: {exc}")
     else:
         fail("unsupported-schema regression accepted an unknown validator keyword")
-    return len(cases) + 8
+    sibling_schema = copy.deepcopy(schema)
+    sibling_schema["$defs"]["target"]["properties"]["selectedCandidateId"][
+        "minLength"
+    ] = 100
+    try:
+        validate_manifest(manifest, sibling_schema)
+    except ManifestError as exc:
+        if "JSON Schema minLength violation" not in str(exc):
+            fail(f"oneOf-sibling regression returned unexpected error: {exc}")
+    else:
+        fail("oneOf-sibling regression ignored a supported sibling constraint")
+    invalid_branch_schema = copy.deepcopy(schema)
+    invalid_branch_schema["$defs"]["target"]["properties"]["selectedCandidateId"][
+        "oneOf"
+    ].append({"type": "number"})
+    try:
+        validate_schema_contract(invalid_branch_schema)
+    except ManifestError as exc:
+        if "unsupported JSON Schema types" not in str(exc):
+            fail(f"invalid-oneOf-schema regression returned unexpected error: {exc}")
+    else:
+        fail("invalid-oneOf-schema regression accepted an unsupported branch type")
+    return len(cases) + 13
 
 
 def write_test_zip(

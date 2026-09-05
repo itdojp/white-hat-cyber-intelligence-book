@@ -170,8 +170,8 @@ superseded-with-record
 - 同一Targetに複数Candidateがある場合は`candidate-selection-required`とし、自動選択しない。
 - 選択時は`selectedCandidateId`を一つ指定し、代替Candidateを`rejected`、`deferred`、または`superseded`へ明示的にDispositionする。
 - `selected-for-intake`はbranch作成前の選択、`canonical-pr-open`は専用Draft PRとIntake Recordの存在、`consumed`は通常mergeとmain/publication gate完了を意味する。
-- `blueprint-only`と`generator-blueprint-only`を完成本文として扱わず、利用開始時は履歴を保持して`selected-for-intake`または`canonical-pr-open`へ進める。
-- `statusHistory`の初回登録を削除・書換えず、状態変更のたびに末尾へ追加する。
+- `blueprint-only`と`generator-blueprint-only`を完成本文として扱わず、候補が複数になれば`candidate-selection-required`、利用開始時は`selected-for-intake`または`canonical-pr-open`へ進める。
+- `tests/fixtures/editorial-input/registration-snapshot.json`の`statusHistoryPrefix`はManifest 1.0.0確立時の固定prefixである。削除・書換えず、状態変更はManifestの`statusHistory`末尾にだけ追加する。
 - Candidateの文言、ID、Source version、Statusをcurrent Repositoryより優先しない。
 
 ### Canonical PR Intake Record

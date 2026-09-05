@@ -659,147 +659,403 @@
     {
       "targetId": "appendices-b-c-i",
       "issue": 53,
-      "targetKind": "appendix-group"
+      "targetKind": "appendix-group",
+      "statusHistoryPrefix": [
+        {
+          "status": "generator-blueprint-only",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231033156",
+          "reason": "最終Graph安定後にlive mainから生成するBlueprintとして登録した。"
+        }
+      ]
     },
     {
       "targetId": "appendices-e-f-g",
       "issue": 54,
-      "targetKind": "appendix-group"
+      "targetKind": "appendix-group",
+      "statusHistoryPrefix": [
+        {
+          "status": "generator-blueprint-only",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231033156",
+          "reason": "最終Graph安定後にlive mainから生成するBlueprintとして登録した。"
+        }
+      ]
     },
     {
       "targetId": "appendix-a",
       "issue": 52,
-      "targetKind": "appendix"
+      "targetKind": "appendix",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "appendix-d",
       "issue": 52,
-      "targetKind": "appendix"
+      "targetKind": "appendix",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "appendix-h",
       "issue": 52,
-      "targetKind": "appendix"
+      "targetKind": "appendix",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "appendix-j",
       "issue": 55,
-      "targetKind": "appendix"
+      "targetKind": "appendix",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-04",
       "issue": 29,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63",
+          "reason": "Editorial Inputとして登録した。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-08-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/64",
+          "reason": "PR #64でlegacy Intake Recordを実証した。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-08-11",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5245374024",
+          "reason": "PR #64のmerge・main CI・Pages・公開確認が完了した。"
+        }
+      ]
     },
     {
       "targetId": "chapter-05",
       "issue": 30,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63",
+          "reason": "Editorial Inputとして登録した。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-05",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5550634873",
+          "reason": "Issue #98契約の最初の実運用対象として明示選択した。"
+        }
+      ]
     },
     {
       "targetId": "chapter-06",
       "issue": 31,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-07",
       "issue": 32,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-08",
       "issue": 33,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-09",
       "issue": 34,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652",
+          "reason": "最初のChapter 9候補を登録した。"
+        },
+        {
+          "status": "candidate-selection-required",
+          "effectiveAt": "2026-08-10",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
+          "reason": "Input SHAが異なる2候補を検出。比較記録なしのwinner選択を禁止した。"
+        }
+      ]
     },
     {
       "targetId": "chapter-10",
       "issue": 35,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-12",
       "issue": 36,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-13",
       "issue": 37,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-14",
       "issue": 38,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-15",
       "issue": 39,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-16",
       "issue": 40,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228688398",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-18",
       "issue": 41,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-19",
       "issue": 42,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-20",
       "issue": 43,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-21",
       "issue": 44,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-22",
       "issue": 45,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-23",
       "issue": 46,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-24",
       "issue": 47,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-26",
       "issue": 48,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-27",
       "issue": 49,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-28",
       "issue": 50,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "registered-pending-prerequisites",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
+          "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        }
+      ]
     },
     {
       "targetId": "chapter-29",
       "issue": 51,
-      "targetKind": "chapter"
+      "targetKind": "chapter",
+      "statusHistoryPrefix": [
+        {
+          "status": "blueprint-only",
+          "effectiveAt": "2026-08-09",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913",
+          "reason": "第2〜28章と付録の安定後に使用するBlueprintとして登録した。"
+        }
+      ]
     }
   ]
 }
