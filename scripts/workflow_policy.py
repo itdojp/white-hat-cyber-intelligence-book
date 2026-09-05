@@ -207,13 +207,11 @@ def parse_mapping_line(
             "explicit YAML mapping keys are not supported in workflow policy files",
         )
     if content.startswith("{"):
-        if SENSITIVE_COMPLEX_KEY_RE.search(content):
-            return (
-                None,
-                active,
-                "flow-style mappings containing policy keys are not supported",
-            )
-        return None, active, None
+        return (
+            None,
+            active,
+            "flow-style mappings are not supported in workflow policy files",
+        )
 
     separator = find_mapping_separator(content)
     if separator is None:
@@ -235,7 +233,13 @@ def parse_mapping_line(
         return None, active, f"unsupported YAML mapping key {key_token!r}: {exc}"
     if not key:
         return None, active, "empty YAML mapping key"
-    if value.startswith(("{", "[")) and SENSITIVE_COMPLEX_KEY_RE.search(value):
+    if value.startswith("{"):
+        return (
+            None,
+            active,
+            "flow-style mappings are not supported in workflow policy files",
+        )
+    if value.startswith("[") and SENSITIVE_COMPLEX_KEY_RE.search(value):
         return (
             None,
             active,
@@ -762,7 +766,28 @@ def workflow_run_command_errors(
         errors.append(f"{label}: missing jobs mapping for workflow commands")
     else:
         for job in direct_children(parsed, jobs):
-            for step in direct_job_steps(parsed, job):
+            steps = direct_job_steps(parsed, job)
+            if any(any(entry.key == "run" for entry in step) for step in steps):
+                job_entries = direct_children(parsed, job)
+                runners = [entry for entry in job_entries if entry.key == "runs-on"]
+                if len(runners) != 1:
+                    errors.append(
+                        f"{label}: job {job.key!r} containing run steps must define "
+                        "runs-on exactly once"
+                    )
+                elif decoded_value(runners[0], label, errors) != "ubuntu-24.04":
+                    errors.append(
+                        f"{label}: job {job.key!r} containing run steps must use "
+                        "runs-on 'ubuntu-24.04'"
+                    )
+                for forbidden in ("container", "services"):
+                    if any(entry.key == forbidden for entry in job_entries):
+                        errors.append(
+                            f"{label}: job {job.key!r} containing run steps must not "
+                            f"define {forbidden!r}"
+                        )
+
+            for step in steps:
                 step_runs = [entry for entry in step if entry.key == "run"]
                 if not step_runs:
                     continue
@@ -1127,6 +1152,23 @@ def check_parser_regressions(errors: list[str]) -> None:
             "workflow parser regression failed closed on flow-style run mapping"
         )
 
+    escaped_flow_run = r'''jobs:
+  test:
+    steps:
+      - { "\u0065nv": { BASH_ENV: scripts/mutate.py }, "\u0072un": npm ci --ignore-scripts }
+'''
+    parsed = parse_workflow(
+        escaped_flow_run,
+        "parser regression escaped flow run mapping",
+    )
+    if not any(
+        "flow-style mappings are not supported" in error
+        for error in parsed.errors
+    ):
+        errors.append(
+            "workflow parser regression failed closed on escaped flow mapping keys"
+        )
+
     nested_flow_run = """jobs: { test: { steps: [ { run: npm test } ] } }
 """
     parsed = parse_workflow(
@@ -1163,6 +1205,7 @@ def check_parser_regressions(errors: list[str]) -> None:
   BOOK_FORMATTER_DIR: .work/book-formatter
 jobs:
   test:
+    runs-on: ubuntu-24.04
     steps:
       - run: npm ci --ignore-scripts
 """
@@ -1239,6 +1282,21 @@ jobs:
                 "          NODE_OPTIONS: --require=scripts/mutate-checkout.py",
             ),
             "run step env is outside the finite allowlist",
+        ),
+        "container execution platform": (
+            run_fixture.replace(
+                "    runs-on: ubuntu-24.04\n",
+                "    runs-on: ubuntu-24.04\n"
+                "    container: ghcr.io/example/hostile:latest\n",
+            ),
+            "must not define 'container'",
+        ),
+        "mutable runner platform": (
+            run_fixture.replace(
+                "    runs-on: ubuntu-24.04",
+                "    runs-on: ubuntu-latest",
+            ),
+            "must use runs-on 'ubuntu-24.04'",
         ),
     }
     for name, (fixture, expected_error) in unsupported_run_commands.items():
@@ -1350,6 +1408,7 @@ jobs:
   BOOK_FORMATTER_DIR: .work/book-formatter
 jobs:
   test:
+    runs-on: ubuntu-24.04
     steps:
       - uses: ruby/setup-ruby@{sha}
         with:
