@@ -13,7 +13,7 @@ Authoritative state to verify before acting:
 - Phase 0 Issue: #1
 - operator/admin Issue: #9
 - Phase 1-2 Roadmap: #3; representative chapter Issues #4 through #8
-- pinned book-formatter: 764f644850c21983c96919d0e13706413d59c089
+- pinned book-formatter: 198935ff8f60653c40e513343dc5f02573d9968e
 - canonical-source contract: CANONICAL_SOURCE.md
 - agent contract: AGENTS.md
 - expected Series UX: Profile B and exactly the eight defined modules

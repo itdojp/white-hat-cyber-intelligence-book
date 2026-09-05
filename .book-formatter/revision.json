@@ -1,7 +1,7 @@
 {
   "repository": "itdojp/book-formatter",
-  "commit": "764f644850c21983c96919d0e13706413d59c089",
-  "checkedAt": "2026-08-04",
+  "commit": "198935ff8f60653c40e513343dc5f02573d9968e",
+  "checkedAt": "2026-09-04",
   "schema": {
     "path": "shared/schemas/book-config.schema.json",
     "blobSha": "87dcb44b0d4b543ba43ae3a8ebc27d2f3cfda3cd"
