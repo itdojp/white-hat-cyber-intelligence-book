@@ -206,6 +206,12 @@ def parse_mapping_line(
             active,
             "flow-style mappings are not supported in workflow policy files",
         )
+    if content.startswith("["):
+        return (
+            None,
+            active,
+            "multiline flow-style sequences are not supported in workflow policy files",
+        )
 
     separator = find_mapping_separator(content)
     if separator is None:
@@ -1183,6 +1189,31 @@ def check_parser_regressions(errors: list[str]) -> None:
         ):
             errors.append(
                 "workflow parser regression failed closed on escaped flow "
+                f"sequence {name}"
+            )
+
+    multiline_flow_sequences = {
+        "run": """jobs:
+  hidden:
+    runs-on: self-hosted
+    steps:
+      [ { run: echo bypass } ]
+""",
+        "uses": """jobs:
+  hidden:
+    runs-on: self-hosted
+    steps:
+      [ { uses: evil/action@main } ]
+""",
+    }
+    for name, fixture in multiline_flow_sequences.items():
+        parsed = parse_workflow(fixture, f"parser regression multiline {name} sequence")
+        if not any(
+            "multiline flow-style sequences are not supported" in error
+            for error in parsed.errors
+        ):
+            errors.append(
+                "workflow parser regression failed closed on multiline flow "
                 f"sequence {name}"
             )
 
