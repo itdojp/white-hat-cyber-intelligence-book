@@ -410,48 +410,119 @@ def top_level_env_value_errors(
     return errors
 
 
-def primary_checkout_fetch_depth_errors(
+def npm_test_environment_override_errors(
     parsed: ParsedWorkflow,
     label: str,
+    key: str,
 ) -> list[str]:
-    """Require the repository checkout to expose the PR head and its base parent."""
+    """Reject a job or npm-test step that shadows a protected workflow value."""
     errors: list[str] = []
-    primary_steps: list[tuple[MappingLine, list[MappingLine]]] = []
-    for uses in [entry for entry in parsed.entries if entry.key == "uses"]:
-        action = decoded_value(uses, label, errors)
-        if not action.startswith("actions/checkout@"):
+    jobs = top_level_entry(parsed, "jobs")
+    if jobs is None:
+        return [f"{label}: missing jobs mapping for protected environment"]
+    for job in direct_children(parsed, jobs):
+        steps = direct_job_steps(parsed, job)
+        npm_test_steps = [
+            step
+            for step in steps
+            if any(
+                entry.key == "run"
+                and decoded_value(entry, label, errors).strip() == "npm test"
+                for entry in step
+            )
+        ]
+        if not npm_test_steps:
             continue
-        bounds = step_bounds(parsed, uses)
-        if bounds is None:
-            errors.append(f"{label}:{uses.index + 1}: could not locate checkout step")
-            continue
-        start, end, indent = bounds
-        step_entries = direct_step_entries(parsed, start, end, indent)
-        with_entries = [entry for entry in step_entries if entry.key == "with"]
-        if len(with_entries) != 1 or with_entries[0].value:
-            continue
-        inputs = direct_children(parsed, with_entries[0], end)
-        if not any(entry.key == "repository" for entry in inputs):
-            primary_steps.append((uses, inputs))
+        job_end = block_end(parsed, job)
+        overrides = [
+            entry
+            for entry in parsed.entries
+            if job.index < entry.index < job_end and entry.key == key
+        ]
+        for override in overrides:
+            errors.append(
+                f"{label}:{override.index + 1}: job {job.key!r} running npm test "
+                f"must not override env {key!r}"
+            )
+    return errors
 
-    if len(primary_steps) != 1:
-        errors.append(
-            f"{label}: expected exactly one primary repository checkout; "
-            f"found {len(primary_steps)}"
+
+def npm_test_checkout_errors(parsed: ParsedWorkflow, label: str) -> list[str]:
+    """Bind an exact-head root checkout to each job that executes npm test."""
+    errors: list[str] = []
+    jobs = top_level_entry(parsed, "jobs")
+    if jobs is None:
+        return [f"{label}: missing jobs mapping for npm test checkout"]
+    for job in direct_children(parsed, jobs):
+        steps = direct_job_steps(parsed, job)
+        npm_tests = [
+            entry
+            for step in steps
+            for entry in step
+            if entry.key == "run"
+            and decoded_value(entry, label, errors).strip() == "npm test"
+        ]
+        if not npm_tests:
+            continue
+        root_checkouts: list[
+            tuple[MappingLine, list[MappingLine], list[MappingLine]]
+        ] = []
+        for step in steps:
+            uses_entries = [entry for entry in step if entry.key == "uses"]
+            if len(uses_entries) != 1:
+                continue
+            uses = uses_entries[0]
+            action = decoded_value(uses, label, errors)
+            if not action.startswith("actions/checkout@"):
+                continue
+            with_entries = [entry for entry in step if entry.key == "with"]
+            if len(with_entries) != 1 or with_entries[0].value:
+                continue
+            inputs = direct_children(parsed, with_entries[0])
+            checkout_paths = [
+                decoded_value(entry, label, errors)
+                for entry in inputs
+                if entry.key == "path"
+            ]
+            if checkout_paths != [".work/book-formatter"]:
+                root_checkouts.append((uses, step, inputs))
+
+        if len(root_checkouts) != 1:
+            errors.append(
+                f"{label}: job {job.key!r} running npm test must contain exactly "
+                f"one root repository checkout; found {len(root_checkouts)}"
+            )
+            continue
+        uses, step, inputs = root_checkouts[0]
+        if uses.index >= min(entry.index for entry in npm_tests):
+            errors.append(
+                f"{label}:{uses.index + 1}: primary checkout must precede npm test"
+            )
+        errors.extend(
+            mandatory_execution_errors(
+                step,
+                label,
+                f"job {job.key!r} primary checkout step",
+            )
         )
-        return errors
-    uses, inputs = primary_steps[0]
-    fetch_depths = [entry for entry in inputs if entry.key == "fetch-depth"]
-    if len(fetch_depths) != 1:
-        errors.append(
-            f"{label}:{uses.index + 1}: primary checkout must define "
-            "fetch-depth exactly once"
+        forbidden_inputs = sorted(
+            {entry.key for entry in inputs} & {"repository", "ref", "path"}
         )
-    elif decoded_value(fetch_depths[0], label, errors) != "2":
-        errors.append(
-            f"{label}:{fetch_depths[0].index + 1}: primary checkout "
-            "fetch-depth must equal 2"
-        )
+        for key in forbidden_inputs:
+            errors.append(
+                f"{label}:{uses.index + 1}: primary checkout must not set {key!r}"
+            )
+        fetch_depths = [entry for entry in inputs if entry.key == "fetch-depth"]
+        if len(fetch_depths) != 1:
+            errors.append(
+                f"{label}:{uses.index + 1}: primary checkout must define "
+                "fetch-depth exactly once"
+            )
+        elif decoded_value(fetch_depths[0], label, errors) != "2":
+            errors.append(
+                f"{label}:{fetch_depths[0].index + 1}: primary checkout "
+                "fetch-depth must equal 2"
+            )
     return errors
 
 
@@ -827,6 +898,7 @@ jobs:
         with:
           fetch-depth: 2
           persist-credentials: false
+      - run: npm test
 """
     parsed = parse_workflow(base_guard, "base guard valid")
     if top_level_env_value_errors(
@@ -834,7 +906,7 @@ jobs:
         "base guard valid",
         "EDITORIAL_INPUT_BASE_COMMIT",
         EDITORIAL_INPUT_BASE_EXPRESSION,
-    ) or primary_checkout_fetch_depth_errors(parsed, "base guard valid"):
+    ) or npm_test_checkout_errors(parsed, "base guard valid"):
         errors.append("workflow base guard regression rejected valid configuration")
 
     invalid_base_guards = {
@@ -850,6 +922,49 @@ jobs:
             "          fetch-depth: 2",
             "          # fetch-depth: 2",
         ),
+        "job env override": base_guard.replace(
+            "  test:\n",
+            "  test:\n    env:\n      EDITORIAL_INPUT_BASE_COMMIT: ${{ github.sha }}\n",
+        ),
+        "test step env override": base_guard.replace(
+            "      - run: npm test",
+            "      - run: npm test\n        env:\n          EDITORIAL_INPUT_BASE_COMMIT: ${{ github.sha }}",
+        ),
+        "base ref checkout": base_guard.replace(
+            "          fetch-depth: 2",
+            "          fetch-depth: 2\n          ref: ${{ github.event.pull_request.base.sha }}",
+        ),
+        "checkout after test": base_guard.replace(
+            f"      - uses: actions/checkout@{sha}\n"
+            "        with:\n"
+            "          fetch-depth: 2\n"
+            "          persist-credentials: false\n"
+            "      - run: npm test",
+            "      - run: npm test\n"
+            f"      - uses: actions/checkout@{sha}\n"
+            "        with:\n"
+            "          fetch-depth: 2\n"
+            "          persist-credentials: false",
+        ),
+        "checkout isolated in another job": f"""env:
+  EDITORIAL_INPUT_BASE_COMMIT: ${{{{ github.event.pull_request.base.sha }}}}
+jobs:
+  helper:
+    steps:
+      - uses: actions/checkout@{sha}
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - run: echo helper
+  test:
+    steps:
+      - uses: actions/checkout@{sha}
+        with:
+          repository: ${{{{ github.repository }}}}
+          ref: ${{{{ github.event.pull_request.base.sha }}}}
+          persist-credentials: false
+      - run: npm test
+""",
     }
     for name, fixture in invalid_base_guards.items():
         parsed = parse_workflow(fixture, f"base guard {name}")
@@ -858,7 +973,11 @@ jobs:
             name,
             "EDITORIAL_INPUT_BASE_COMMIT",
             EDITORIAL_INPUT_BASE_EXPRESSION,
-        ) + primary_checkout_fetch_depth_errors(parsed, name)
+        )
+        diagnostics += npm_test_environment_override_errors(
+            parsed, name, "EDITORIAL_INPUT_BASE_COMMIT"
+        )
+        diagnostics += npm_test_checkout_errors(parsed, name)
         if not diagnostics:
             errors.append(
                 "workflow base guard regression failed to reject: " + name
@@ -1156,7 +1275,14 @@ def main() -> int:
             )
         )
         errors.extend(
-            primary_checkout_fetch_depth_errors(parsed_contract, "contract.yml")
+            npm_test_environment_override_errors(
+                parsed_contract,
+                "contract.yml",
+                "EDITORIAL_INPUT_BASE_COMMIT",
+            )
+        )
+        errors.extend(
+            npm_test_checkout_errors(parsed_contract, "contract.yml")
         )
         if "npm ci --ignore-scripts" not in contract:
             errors.append(
@@ -1189,7 +1315,14 @@ def main() -> int:
             )
         )
         errors.extend(
-            primary_checkout_fetch_depth_errors(parsed_book_qa, "book-qa.yml")
+            npm_test_environment_override_errors(
+                parsed_book_qa,
+                "book-qa.yml",
+                "EDITORIAL_INPUT_BASE_COMMIT",
+            )
+        )
+        errors.extend(
+            npm_test_checkout_errors(parsed_book_qa, "book-qa.yml")
         )
 
     pages = texts.get("pages.yml")

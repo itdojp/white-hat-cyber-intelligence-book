@@ -294,8 +294,20 @@ if config:
 
 expected_package_license = '(CC-BY-NC-SA-4.0 AND Apache-2.0)'
 package = load_json(ROOT / 'package.json')
-if package and package.get('license') != expected_package_license:
-    error(f'package.json: license must be {expected_package_license}')
+if package:
+    if package.get('license') != expected_package_license:
+        error(f'package.json: license must be {expected_package_license}')
+    package_scripts = package.get('scripts')
+    if not isinstance(package_scripts, dict):
+        error('package.json: scripts must be an object')
+        package_scripts = {}
+    if package_scripts.get('check:editorial-inputs') != (
+        'python3 scripts/check_editorial_input_manifest.py'
+    ):
+        error('package.json: check:editorial-inputs command mismatch')
+    test_steps = package_scripts.get('test', '').split(' && ')
+    if test_steps.count('npm run check:editorial-inputs') != 1:
+        error('package.json: npm test must run check:editorial-inputs exactly once')
 
 package_lock = load_json(ROOT / 'package-lock.json')
 if package_lock:
