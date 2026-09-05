@@ -23,7 +23,7 @@ import zipfile
 from collections import Counter, defaultdict
 from datetime import date, datetime
 from pathlib import Path, PurePosixPath
-from typing import Any, NoReturn
+from typing import Any, Mapping, NoReturn
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = ROOT / "editorial-input-manifest.json"
@@ -35,6 +35,16 @@ REGRESSION_CORPUS = (
 REGISTRATION_SNAPSHOT = (
     ROOT / "tests" / "fixtures" / "editorial-input" / "registration-snapshot.json"
 )
+
+
+def editorial_input_baseline_commit(environment: Mapping[str, str]) -> str:
+    """Return the exact PR base or fail closed when a PR run omits it."""
+    baseline_commit = environment.get("EDITORIAL_INPUT_BASE_COMMIT", "").strip()
+    event_name = environment.get("GITHUB_EVENT_NAME", "").strip()
+    if event_name == "pull_request" and not baseline_commit:
+        fail("EDITORIAL_INPUT_BASE_COMMIT is required for pull_request validation")
+    return baseline_commit
+
 
 SCHEMA_VERSION = "1.0.0"
 MANIFEST_VERSION = "1.0.0"
@@ -2431,7 +2441,27 @@ def run_manifest_regressions(
             fail(f"append-only checkpoint regression returned unexpected error: {exc}")
     else:
         fail("append-only checkpoint regression accepted a rewritten history entry")
-    return len(cases) + 15
+    if editorial_input_baseline_commit({"GITHUB_EVENT_NAME": "push"}):
+        fail("baseline environment regression invented a base commit for push")
+    exact_baseline = "0" * 40
+    if (
+        editorial_input_baseline_commit(
+            {
+                "GITHUB_EVENT_NAME": "pull_request",
+                "EDITORIAL_INPUT_BASE_COMMIT": exact_baseline,
+            }
+        )
+        != exact_baseline
+    ):
+        fail("baseline environment regression changed the exact PR base commit")
+    try:
+        editorial_input_baseline_commit({"GITHUB_EVENT_NAME": "pull_request"})
+    except ManifestError as exc:
+        if "required for pull_request" not in str(exc):
+            fail(f"baseline environment regression returned unexpected error: {exc}")
+    else:
+        fail("baseline environment regression accepted a PR run without its base")
+    return len(cases) + 18
 
 
 def write_test_zip(
@@ -2645,7 +2675,7 @@ def main() -> int:
         registration_snapshot = load_json_strict(REGISTRATION_SNAPSHOT)
         manifest = validate_manifest(load_json_strict(args.manifest), schema)
         validate_registration_snapshot(manifest, registration_snapshot)
-        baseline_commit = os.environ.get("EDITORIAL_INPUT_BASE_COMMIT", "").strip()
+        baseline_commit = editorial_input_baseline_commit(os.environ)
         if baseline_commit:
             baseline_snapshot = load_json_from_git(
                 baseline_commit, REGISTRATION_SNAPSHOT

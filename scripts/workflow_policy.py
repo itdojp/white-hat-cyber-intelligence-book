@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW_DIR = ROOT / ".github" / "workflows"
 EXPECTED_WORKFLOWS = {"contract.yml", "book-qa.yml", "pages.yml"}
 PINNED_FORMATTER = "198935ff8f60653c40e513343dc5f02573d9968e"
+EDITORIAL_INPUT_BASE_EXPRESSION = "${{ github.event.pull_request.base.sha }}"
 FULL_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 BLOCK_SCALAR_RE = re.compile(r"^[|>](?:[+-]?[1-9]?|[1-9][+-]?)$")
 SENSITIVE_COMPLEX_KEY_RE = re.compile(
@@ -387,6 +388,73 @@ def top_level_entry(parsed: ParsedWorkflow, key: str) -> MappingLine | None:
     return matches[0] if len(matches) == 1 else None
 
 
+def top_level_env_value_errors(
+    parsed: ParsedWorkflow,
+    label: str,
+    key: str,
+    expected: str,
+) -> list[str]:
+    """Require one active top-level environment value, not a text occurrence."""
+    errors: list[str] = []
+    env = top_level_entry(parsed, "env")
+    if env is None or env.value:
+        return [f"{label}: top-level env must be one active block mapping"]
+    matches = [entry for entry in direct_children(parsed, env) if entry.key == key]
+    if len(matches) != 1:
+        return [f"{label}: top-level env must define {key!r} exactly once"]
+    actual = decoded_value(matches[0], label, errors)
+    if actual != expected:
+        errors.append(
+            f"{label}: top-level env {key!r} must equal {expected!r}; got {actual!r}"
+        )
+    return errors
+
+
+def primary_checkout_fetch_depth_errors(
+    parsed: ParsedWorkflow,
+    label: str,
+) -> list[str]:
+    """Require the repository checkout to expose the PR head and its base parent."""
+    errors: list[str] = []
+    primary_steps: list[tuple[MappingLine, list[MappingLine]]] = []
+    for uses in [entry for entry in parsed.entries if entry.key == "uses"]:
+        action = decoded_value(uses, label, errors)
+        if not action.startswith("actions/checkout@"):
+            continue
+        bounds = step_bounds(parsed, uses)
+        if bounds is None:
+            errors.append(f"{label}:{uses.index + 1}: could not locate checkout step")
+            continue
+        start, end, indent = bounds
+        step_entries = direct_step_entries(parsed, start, end, indent)
+        with_entries = [entry for entry in step_entries if entry.key == "with"]
+        if len(with_entries) != 1 or with_entries[0].value:
+            continue
+        inputs = direct_children(parsed, with_entries[0], end)
+        if not any(entry.key == "repository" for entry in inputs):
+            primary_steps.append((uses, inputs))
+
+    if len(primary_steps) != 1:
+        errors.append(
+            f"{label}: expected exactly one primary repository checkout; "
+            f"found {len(primary_steps)}"
+        )
+        return errors
+    uses, inputs = primary_steps[0]
+    fetch_depths = [entry for entry in inputs if entry.key == "fetch-depth"]
+    if len(fetch_depths) != 1:
+        errors.append(
+            f"{label}:{uses.index + 1}: primary checkout must define "
+            "fetch-depth exactly once"
+        )
+    elif decoded_value(fetch_depths[0], label, errors) != "2":
+        errors.append(
+            f"{label}:{fetch_depths[0].index + 1}: primary checkout "
+            "fetch-depth must equal 2"
+        )
+    return errors
+
+
 def nested_entry(
     parsed: ParsedWorkflow,
     parent: MappingLine,
@@ -750,6 +818,52 @@ def check_parser_regressions(errors: list[str]) -> None:
             "workflow parser regression failed closed on flow mapping"
         )
 
+    base_guard = f"""env:
+  EDITORIAL_INPUT_BASE_COMMIT: ${{{{ github.event.pull_request.base.sha }}}}
+jobs:
+  test:
+    steps:
+      - uses: actions/checkout@{sha}
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+"""
+    parsed = parse_workflow(base_guard, "base guard valid")
+    if top_level_env_value_errors(
+        parsed,
+        "base guard valid",
+        "EDITORIAL_INPUT_BASE_COMMIT",
+        EDITORIAL_INPUT_BASE_EXPRESSION,
+    ) or primary_checkout_fetch_depth_errors(parsed, "base guard valid"):
+        errors.append("workflow base guard regression rejected valid configuration")
+
+    invalid_base_guards = {
+        "commented env": base_guard.replace(
+            "  EDITORIAL_INPUT_BASE_COMMIT:",
+            "  # EDITORIAL_INPUT_BASE_COMMIT:",
+        ),
+        "wrong expression": base_guard.replace(
+            "github.event.pull_request.base.sha",
+            "github.sha",
+        ),
+        "commented fetch depth": base_guard.replace(
+            "          fetch-depth: 2",
+            "          # fetch-depth: 2",
+        ),
+    }
+    for name, fixture in invalid_base_guards.items():
+        parsed = parse_workflow(fixture, f"base guard {name}")
+        diagnostics = top_level_env_value_errors(
+            parsed,
+            name,
+            "EDITORIAL_INPUT_BASE_COMMIT",
+            EDITORIAL_INPUT_BASE_EXPRESSION,
+        ) + primary_checkout_fetch_depth_errors(parsed, name)
+        if not diagnostics:
+            errors.append(
+                "workflow base guard regression failed to reject: " + name
+            )
+
     valid_renderer_order = f"""jobs:
   test:
     steps:
@@ -1024,19 +1138,26 @@ def main() -> int:
             )
 
     contract = texts.get("contract.yml")
-    if contract:
+    parsed_contract = parsed_workflows.get("contract.yml")
+    if contract and parsed_contract:
         for required in (
             "npm test",
             "BOOK_FORMATTER_DIR",
             "contents: read",
-            "EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}",
         ):
             if required not in contract:
                 errors.append(f"contract.yml: missing {required!r}")
-        if contract.count("fetch-depth: 2") != 1:
-            errors.append(
-                "contract.yml: primary checkout must expose exactly two revisions"
+        errors.extend(
+            top_level_env_value_errors(
+                parsed_contract,
+                "contract.yml",
+                "EDITORIAL_INPUT_BASE_COMMIT",
+                EDITORIAL_INPUT_BASE_EXPRESSION,
             )
+        )
+        errors.extend(
+            primary_checkout_fetch_depth_errors(parsed_contract, "contract.yml")
+        )
         if "npm ci --ignore-scripts" not in contract:
             errors.append(
                 "contract.yml: repository npm install must ignore "
@@ -1044,9 +1165,9 @@ def main() -> int:
             )
 
     book_qa = texts.get("book-qa.yml")
-    if book_qa:
+    parsed_book_qa = parsed_workflows.get("book-qa.yml")
+    if book_qa and parsed_book_qa:
         for required in (
-            "EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}",
             "npm run sync:docs",
             "check-unicode.js",
             "check-textlint.js",
@@ -1059,10 +1180,17 @@ def main() -> int:
         ):
             if required not in book_qa:
                 errors.append(f"book-qa.yml: missing {required!r}")
-        if book_qa.count("fetch-depth: 2") != 1:
-            errors.append(
-                "book-qa.yml: primary checkout must expose exactly two revisions"
+        errors.extend(
+            top_level_env_value_errors(
+                parsed_book_qa,
+                "book-qa.yml",
+                "EDITORIAL_INPUT_BASE_COMMIT",
+                EDITORIAL_INPUT_BASE_EXPRESSION,
             )
+        )
+        errors.extend(
+            primary_checkout_fetch_depth_errors(parsed_book_qa, "book-qa.yml")
+        )
 
     pages = texts.get("pages.yml")
     parsed_pages = parsed_workflows.get("pages.yml")
