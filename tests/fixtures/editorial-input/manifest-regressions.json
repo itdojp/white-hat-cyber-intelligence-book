@@ -114,6 +114,30 @@
       "family": "Intake Record identity",
       "mutation": "intake-record-package-mismatch",
       "expectedError": "intakeRecord.packageSha256"
+    },
+    {
+      "id": "EIM-NEG-020",
+      "family": "legacy Intake Record scope",
+      "mutation": "future-target-claims-legacy-record",
+      "expectedError": "legacy exception is limited to Chapter 4 / PR #64"
+    },
+    {
+      "id": "EIM-NEG-021",
+      "family": "Intake Record PR identity",
+      "mutation": "intake-record-url-mismatch",
+      "expectedError": "intakeRecord.recordUrl: expected"
+    },
+    {
+      "id": "EIM-NEG-022",
+      "family": "append-only status history",
+      "mutation": "status-history-prefix-deleted",
+      "expectedError": "expected immutable initial status"
+    },
+    {
+      "id": "EIM-NEG-023",
+      "family": "JSON Schema enforcement",
+      "mutation": "schema-invalid-package-filename",
+      "expectedError": "JSON Schema pattern mismatch"
     }
   ]
 }

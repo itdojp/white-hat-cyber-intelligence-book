@@ -93,6 +93,28 @@ HTTPS_GITHUB_RE = re.compile(
 MAX_PACKAGE_BYTES = 64 * 1024 * 1024
 MAX_MEMBER_BYTES = 16 * 1024 * 1024
 MAX_TOTAL_UNCOMPRESSED_BYTES = 64 * 1024 * 1024
+SUPPORTED_SCHEMA_KEYWORDS = {
+    "$ref",
+    "type",
+    "const",
+    "enum",
+    "oneOf",
+    "additionalProperties",
+    "required",
+    "properties",
+    "items",
+    "minItems",
+    "uniqueItems",
+    "minLength",
+    "pattern",
+    "format",
+    "minimum",
+    "maximum",
+    "$schema",
+    "$id",
+    "title",
+    "$defs",
+}
 
 
 class ManifestError(ValueError):
@@ -279,6 +301,191 @@ def validate_schema_contract(schema: Any) -> None:
         )
         if actual != expected:
             fail(f"schema: {name} enum drift: {sorted(actual ^ expected)}")
+    validate_supported_schema_nodes(root, "schema")
+
+
+def validate_supported_schema_nodes(raw_schema: Any, label: str) -> None:
+    node = require_object(raw_schema, label)
+    unsupported = node.keys() - SUPPORTED_SCHEMA_KEYWORDS
+    if unsupported:
+        fail(f"{label}: unsupported JSON Schema keywords: {sorted(unsupported)!r}")
+    if "$ref" in node and len(node) != 1:
+        fail(f"{label}: sibling keywords beside $ref are unsupported")
+    for container_name in ("properties", "$defs"):
+        if container_name not in node:
+            continue
+        container = require_object(node[container_name], f"{label}.{container_name}")
+        for name, child in container.items():
+            validate_supported_schema_nodes(child, f"{label}.{container_name}.{name}")
+    if "items" in node:
+        validate_supported_schema_nodes(node["items"], f"{label}.items")
+    if "oneOf" in node:
+        for index, child in enumerate(
+            require_list(node["oneOf"], f"{label}.oneOf", nonempty=True)
+        ):
+            validate_supported_schema_nodes(child, f"{label}.oneOf[{index}]")
+
+
+def resolve_local_schema_ref(root: dict[str, Any], reference: Any, label: str) -> Any:
+    ref = require_string(reference, f"{label}.$ref")
+    prefix = "#/$defs/"
+    if not ref.startswith(prefix) or "/" in ref.removeprefix(prefix):
+        fail(f"{label}.$ref: only direct local $defs references are supported")
+    name = ref.removeprefix(prefix)
+    definitions = require_object(root.get("$defs"), "schema.$defs")
+    if name not in definitions:
+        fail(f"{label}.$ref: unknown definition: {name}")
+    return definitions[name]
+
+
+def schema_type_matches(value: Any, expected: str) -> bool:
+    if expected == "null":
+        return value is None
+    if expected == "object":
+        return isinstance(value, dict)
+    if expected == "array":
+        return isinstance(value, list)
+    if expected == "string":
+        return isinstance(value, str)
+    if expected == "integer":
+        return isinstance(value, int) and not isinstance(value, bool)
+    if expected == "boolean":
+        return isinstance(value, bool)
+    fail(f"schema.type: unsupported JSON Schema type: {expected!r}")
+
+
+def validate_schema_instance_node(
+    value: Any,
+    raw_schema: Any,
+    root: dict[str, Any],
+    instance_label: str,
+    schema_label: str,
+) -> None:
+    node = require_object(raw_schema, schema_label)
+    unsupported = node.keys() - SUPPORTED_SCHEMA_KEYWORDS
+    if unsupported:
+        fail(
+            f"{schema_label}: unsupported JSON Schema keywords: {sorted(unsupported)!r}"
+        )
+    if "$ref" in node:
+        if len(node) != 1:
+            fail(f"{schema_label}: sibling keywords beside $ref are unsupported")
+        validate_schema_instance_node(
+            value,
+            resolve_local_schema_ref(root, node["$ref"], schema_label),
+            root,
+            instance_label,
+            f"{schema_label}.$ref",
+        )
+        return
+    if "oneOf" in node:
+        alternatives = require_list(
+            node["oneOf"], f"{schema_label}.oneOf", nonempty=True
+        )
+        matches = 0
+        for index, alternative in enumerate(alternatives):
+            try:
+                validate_schema_instance_node(
+                    value,
+                    alternative,
+                    root,
+                    instance_label,
+                    f"{schema_label}.oneOf[{index}]",
+                )
+            except ManifestError:
+                continue
+            matches += 1
+        if matches != 1:
+            fail(f"{instance_label}: JSON Schema oneOf matched {matches} branches")
+        return
+    if "const" in node and value != node["const"]:
+        fail(f"{instance_label}: JSON Schema const mismatch")
+    if "enum" in node:
+        choices = require_list(node["enum"], f"{schema_label}.enum", nonempty=True)
+        if value not in choices:
+            fail(f"{instance_label}: JSON Schema enum mismatch")
+    if "type" in node:
+        raw_types = node["type"]
+        types = raw_types if isinstance(raw_types, list) else [raw_types]
+        if not types or not all(isinstance(item, str) for item in types):
+            fail(f"{schema_label}.type: expected a type or non-empty type array")
+        if not any(schema_type_matches(value, item) for item in types):
+            fail(f"{instance_label}: JSON Schema type mismatch; expected {types!r}")
+    if isinstance(value, dict):
+        required = node.get("required", [])
+        required_keys = require_unique_strings(
+            required, f"{schema_label}.required", nonempty=False
+        )
+        missing = set(required_keys) - value.keys()
+        if missing:
+            fail(f"{instance_label}: JSON Schema missing keys: {sorted(missing)!r}")
+        properties = require_object(
+            node.get("properties", {}), f"{schema_label}.properties"
+        )
+        for key, item in value.items():
+            if key in properties:
+                validate_schema_instance_node(
+                    item,
+                    properties[key],
+                    root,
+                    f"{instance_label}.{key}",
+                    f"{schema_label}.properties.{key}",
+                )
+            elif node.get("additionalProperties") is False:
+                fail(f"{instance_label}: JSON Schema additional property: {key}")
+    if isinstance(value, list):
+        minimum_items = node.get("minItems")
+        if minimum_items is not None and len(value) < minimum_items:
+            fail(f"{instance_label}: JSON Schema minItems violation")
+        if node.get("uniqueItems") is True:
+            serialized = [
+                json.dumps(
+                    item, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+                )
+                for item in value
+            ]
+            if len(serialized) != len(set(serialized)):
+                fail(f"{instance_label}: JSON Schema uniqueItems violation")
+        if "items" in node:
+            for index, item in enumerate(value):
+                validate_schema_instance_node(
+                    item,
+                    node["items"],
+                    root,
+                    f"{instance_label}[{index}]",
+                    f"{schema_label}.items",
+                )
+    if isinstance(value, str):
+        minimum_length = node.get("minLength")
+        if minimum_length is not None and len(value) < minimum_length:
+            fail(f"{instance_label}: JSON Schema minLength violation")
+        if "pattern" in node:
+            pattern = require_string(node["pattern"], f"{schema_label}.pattern")
+            try:
+                matched = re.search(pattern, value) is not None
+            except re.error as exc:
+                raise ManifestError(
+                    f"{schema_label}.pattern: invalid regex: {exc}"
+                ) from exc
+            if not matched:
+                fail(f"{instance_label}: JSON Schema pattern mismatch")
+        format_name = node.get("format")
+        if format_name == "date":
+            require_iso_date(value, instance_label)
+        elif format_name == "date-time":
+            require_utc_timestamp(value, instance_label)
+        elif format_name is not None:
+            fail(f"{schema_label}.format: unsupported format: {format_name!r}")
+    if isinstance(value, int) and not isinstance(value, bool):
+        if "minimum" in node and value < node["minimum"]:
+            fail(f"{instance_label}: JSON Schema minimum violation")
+        if "maximum" in node and value > node["maximum"]:
+            fail(f"{instance_label}: JSON Schema maximum violation")
+
+
+def validate_schema_instance(data: Any, schema: Any) -> None:
+    root = require_object(schema, "schema")
+    validate_schema_instance_node(data, root, root, "manifest", "schema")
 
 
 def validate_source(value: Any) -> None:
@@ -505,7 +712,9 @@ def validate_collision_acknowledgements(
             fail(f"collisionAcknowledgements: package set mismatch for {key!r}")
 
 
-def validate_status_history(value: Any, target_label: str, current_status: str) -> None:
+def validate_status_history(
+    value: Any, target_label: str, current_status: str, expected_initial_status: str
+) -> None:
     history_items = require_list(value, f"{target_label}.statusHistory", nonempty=True)
     previous_date: str | None = None
     previous_status: str | None = None
@@ -536,6 +745,18 @@ def validate_status_history(value: Any, target_label: str, current_status: str) 
             "selected-for-intake",
             "superseded-with-record",
         },
+        "blueprint-only": {
+            "selected-for-intake",
+            "canonical-pr-open",
+            "deferred",
+            "superseded-with-record",
+        },
+        "generator-blueprint-only": {
+            "selected-for-intake",
+            "canonical-pr-open",
+            "deferred",
+            "superseded-with-record",
+        },
     }
     for index, raw in enumerate(history_items):
         label = f"{target_label}.statusHistory[{index}]"
@@ -562,6 +783,11 @@ def validate_status_history(value: Any, target_label: str, current_status: str) 
                 )
         previous_date = effective
         previous_status = status_value
+    if history_items[0]["status"] != expected_initial_status:
+        fail(
+            f"{target_label}.statusHistory: expected immutable initial status "
+            f"{expected_initial_status}"
+        )
     if previous_status != current_status:
         fail(
             f"{target_label}.statusHistory: final status does not match current status"
@@ -603,7 +829,15 @@ def validate_intake_record(
     )
     if version not in {"1.0.0", "legacy-issue-1"}:
         fail(f"{target_label}.intakeRecord.recordVersion: unsupported version")
-    require_issue_url(record["recordUrl"], f"{target_label}.intakeRecord.recordUrl")
+    record_url = require_issue_url(
+        record["recordUrl"], f"{target_label}.intakeRecord.recordUrl"
+    )
+    expected_record_url = (
+        "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/"
+        f"{target['canonicalPr']}"
+    )
+    if record_url != expected_record_url:
+        fail(f"{target_label}.intakeRecord.recordUrl: expected {expected_record_url!r}")
     mirror = {
         "packageId": selected["packageId"],
         "packageSha256": package["sha256"],
@@ -628,10 +862,20 @@ def validate_intake_record(
             fail(
                 f"{target_label}.intakeRecord.publicationProjectionVersion: expected 1.1.0"
             )
-    elif projection is not None:
-        fail(
-            f"{target_label}.intakeRecord.publicationProjectionVersion: legacy record must use null"
-        )
+    else:
+        if (
+            target["targetId"] != "chapter-04"
+            or target["canonicalPr"] != 64
+            or selected["candidateId"] != "EIC-0029-c49f0a11ef9e"
+        ):
+            fail(
+                f"{target_label}.intakeRecord.recordVersion: legacy exception is limited "
+                "to Chapter 4 / PR #64"
+            )
+        if projection is not None:
+            fail(
+                f"{target_label}.intakeRecord.publicationProjectionVersion: legacy record must use null"
+            )
     require_iso_date(
         record["inputReviewedAt"], f"{target_label}.intakeRecord.inputReviewedAt"
     )
@@ -932,7 +1176,18 @@ def validate_targets(
                 or set(dispositions) != {"superseded"}
             ):
                 fail(f"{label}: superseded-with-record must supersede every candidate")
-        validate_status_history(target["statusHistory"], label, status_value)
+        candidate_roles = {
+            files[(item["packageId"], item["inputPath"])]["role"] for item in candidates
+        }
+        if candidate_roles == {"blueprint-input"}:
+            initial_status = "blueprint-only"
+        elif candidate_roles == {"generator-blueprint-input"}:
+            initial_status = "generator-blueprint-only"
+        else:
+            initial_status = "registered-pending-prerequisites"
+        validate_status_history(
+            target["statusHistory"], label, status_value, initial_status
+        )
         if status_value in {"canonical-pr-open", "consumed"}:
             assert selected_candidate is not None
             validate_intake_record(
@@ -987,6 +1242,7 @@ def validate_manifest(data: Any, schema: Any | None = None) -> dict[str, Any]:
     validate_targets(manifest["targets"], packages, files)
     if schema is not None:
         validate_schema_contract(schema)
+        validate_schema_instance(manifest, schema)
     return manifest
 
 
@@ -1523,7 +1779,7 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
         target["statusHistory"].insert(
             1,
             {
-                "status": "blueprint-only",
+                "status": "consumed",
                 "effectiveAt": "2026-09-01",
                 "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
                 "reason": "invalid fixture",
@@ -1533,6 +1789,47 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
         packages[11]["files"][1]["role"] = "candidate-input"
     elif mutation == "intake-record-package-mismatch":
         targets["chapter-04"]["intakeRecord"]["packageSha256"] = "0" * 64
+    elif mutation == "future-target-claims-legacy-record":
+        source = targets["chapter-04"]["intakeRecord"]
+        target = targets["chapter-05"]
+        candidate = target["candidates"][0]
+        package = next(
+            item for item in packages if item["packageId"] == candidate["packageId"]
+        )
+        target["status"] = "canonical-pr-open"
+        target["canonicalPr"] = 999
+        candidate["disposition"] = "rewritten"
+        target["intakeRecord"] = copy.deepcopy(source)
+        target["intakeRecord"].update(
+            {
+                "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/999",
+                "packageId": candidate["packageId"],
+                "packageSha256": package["sha256"],
+                "inputPath": candidate["inputPath"],
+                "inputSha256": candidate["inputSha256"],
+                "targetIssue": target["issue"],
+                "canonicalPr": 999,
+                "currentMainSha": "0" * 40,
+                "publicationProjectionVersion": None,
+            }
+        )
+        target["statusHistory"].append(
+            {
+                "status": "canonical-pr-open",
+                "effectiveAt": "2026-09-06",
+                "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/999",
+                "reason": "invalid legacy fixture",
+            }
+        )
+    elif mutation == "intake-record-url-mismatch":
+        targets["chapter-04"]["intakeRecord"]["recordUrl"] = (
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/64"
+        )
+    elif mutation == "status-history-prefix-deleted":
+        target = targets["chapter-04"]
+        target["statusHistory"] = [target["statusHistory"][-1]]
+    elif mutation == "schema-invalid-package-filename":
+        packages[0]["filename"] = "invalid\\name.zip"
     else:
         fail(f"regression corpus: unsupported mutation: {mutation}")
 
@@ -1645,7 +1942,39 @@ def run_manifest_regressions(
             )
     else:
         fail("registration completeness regression accepted target-kind drift")
-    return len(cases) + 5
+    for initial_status, next_status in (
+        ("blueprint-only", "selected-for-intake"),
+        ("generator-blueprint-only", "canonical-pr-open"),
+    ):
+        validate_status_history(
+            [
+                {
+                    "status": initial_status,
+                    "effectiveAt": "2026-09-05",
+                    "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
+                    "reason": "registered blueprint fixture",
+                },
+                {
+                    "status": next_status,
+                    "effectiveAt": "2026-09-06",
+                    "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/999",
+                    "reason": "canonical intake fixture",
+                },
+            ],
+            f"{initial_status} transition fixture",
+            next_status,
+            initial_status,
+        )
+    unsupported_schema = copy.deepcopy(schema)
+    unsupported_schema["$defs"]["safePath"]["maxLength"] = 4096
+    try:
+        validate_schema_contract(unsupported_schema)
+    except ManifestError as exc:
+        if "unsupported JSON Schema keywords" not in str(exc):
+            fail(f"unsupported-schema regression returned unexpected error: {exc}")
+    else:
+        fail("unsupported-schema regression accepted an unknown validator keyword")
+    return len(cases) + 8
 
 
 def write_test_zip(

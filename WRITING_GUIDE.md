@@ -148,7 +148,7 @@ python3 scripts/check_editorial_input_manifest.py \
   --target <chapter-NN|appendix-id>
 ```
 
-Validatorはduplicate path、path traversal、absolute / hidden / drive-qualified path、symlink、暗号化member、未登録file、hash不一致をfail closedで拒否する。Raw ZIPと`.predraft.md`は`.work/`配下にだけ置き、Gitへ追加しない。登録済みPackageが認可済みWorkspaceに存在しない場合、内容を推測再構成せず、直接採用したと主張しない。Canonical実装はIssue、current contract、再検証済み一次資料から作成できるが、不在事実をIntake Recordへ残す。
+Validatorは追跡済みJSON Schemaの有限Keywordを外部依存なしでManifestへ適用し、未対応Keywordをfail closedで拒否する。さらにduplicate path、path traversal、absolute / hidden / drive-qualified path、symlink、暗号化member、未登録file、hash不一致を拒否する。Raw ZIPと`.predraft.md`は`.work/`配下にだけ置き、Gitへ追加しない。登録済みPackageが認可済みWorkspaceに存在しない場合、内容を推測再構成せず、直接採用したと主張しない。Canonical実装はIssue、current contract、再検証済み一次資料から作成できるが、不在事実をIntake Recordへ残す。
 
 ### Candidate selectionと有限Status
 
@@ -170,7 +170,8 @@ superseded-with-record
 - 同一Targetに複数Candidateがある場合は`candidate-selection-required`とし、自動選択しない。
 - 選択時は`selectedCandidateId`を一つ指定し、代替Candidateを`rejected`、`deferred`、または`superseded`へ明示的にDispositionする。
 - `selected-for-intake`はbranch作成前の選択、`canonical-pr-open`は専用Draft PRとIntake Recordの存在、`consumed`は通常mergeとmain/publication gate完了を意味する。
-- `blueprint-only`と`generator-blueprint-only`を完成本文として扱わない。
+- `blueprint-only`と`generator-blueprint-only`を完成本文として扱わず、利用開始時は履歴を保持して`selected-for-intake`または`canonical-pr-open`へ進める。
+- `statusHistory`の初回登録を削除・書換えず、状態変更のたびに末尾へ追加する。
 - Candidateの文言、ID、Source version、Statusをcurrent Repositoryより優先しない。
 
 ### Canonical PR Intake Record
