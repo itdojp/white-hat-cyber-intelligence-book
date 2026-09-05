@@ -13,6 +13,12 @@ EXPECTED_WORKFLOWS = {"contract.yml", "book-qa.yml", "pages.yml"}
 PINNED_FORMATTER = "198935ff8f60653c40e513343dc5f02573d9968e"
 EDITORIAL_INPUT_BASE_EXPRESSION = "${{ github.event.pull_request.base.sha }}"
 NPM_TEST_COMMAND = "npm test --ignore-scripts"
+NPM_TEST_INVOCATION_RE = re.compile(
+    r"(?<![A-Za-z0-9_.-])npm"
+    r"(?:\s+--?[A-Za-z0-9][^\s;&|]*)*\s+"
+    r"(?:test|t|tst|run(?:-script)?\s+test)(?=$|[\s;&|])",
+    re.IGNORECASE,
+)
 FULL_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 BLOCK_SCALAR_RE = re.compile(r"^[|>](?:[+-]?[1-9]?|[1-9][+-]?)$")
 SENSITIVE_COMPLEX_KEY_RE = re.compile(
@@ -685,6 +691,16 @@ def publication_renderer_setup_errors(
             "workflow running npm test",
         )
     )
+    for entry in [item for item in parsed.entries if item.key == "run"]:
+        command = decoded_value(entry, label, errors).strip()
+        if (
+            NPM_TEST_INVOCATION_RE.search(command)
+            and command != NPM_TEST_COMMAND
+        ):
+            errors.append(
+                f"{label}:{entry.index + 1}: npm test invocation must equal "
+                f"{NPM_TEST_COMMAND!r}; got {command!r}"
+            )
 
     npm_test_count = 0
     for job in direct_children(parsed, jobs):
@@ -1015,6 +1031,11 @@ def check_parser_regressions(errors: list[str]) -> None:
         continue-on-error: false
 """
     invalid_renderer_orders = {
+        "additional lifecycle-enabled test": valid_renderer_order.replace(
+            f"      - run: {NPM_TEST_COMMAND}\n",
+            "      - run: npm test\n"
+            f"      - run: {NPM_TEST_COMMAND}\n",
+        ),
         "lifecycle hooks enabled": valid_renderer_order.replace(
             NPM_TEST_COMMAND,
             "npm test",
