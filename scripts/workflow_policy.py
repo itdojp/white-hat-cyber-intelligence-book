@@ -13,16 +13,23 @@ EXPECTED_WORKFLOWS = {"contract.yml", "book-qa.yml", "pages.yml"}
 PINNED_FORMATTER = "198935ff8f60653c40e513343dc5f02573d9968e"
 EDITORIAL_INPUT_BASE_EXPRESSION = "${{ github.event.pull_request.base.sha }}"
 NPM_TEST_COMMAND = "npm test --ignore-scripts"
-NPM_TEST_INVOCATION_RE = re.compile(
-    r"(?<![A-Za-z0-9_.-])npm"
-    r"(?:\s+--?[A-Za-z0-9][^\s;&|]*)*\s+"
-    r"(?:test|t|tst|run(?:-script)?\s+test)(?=$|[\s;&|])",
+NPM_COMMAND_TOKEN_RE = re.compile(
+    r"(?<![A-Za-z0-9_.-])npm(?=$|[\s;&|])",
     re.IGNORECASE,
+)
+ALLOWED_NPM_WORKFLOW_COMMANDS = frozenset(
+    {
+        "npm ci --ignore-scripts",
+        "npm ci --prefix .work/book-formatter --ignore-scripts",
+        "npm run sync:docs",
+        "npm start -- validate-config --config ../../book-config.json",
+        NPM_TEST_COMMAND,
+    }
 )
 FULL_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 BLOCK_SCALAR_RE = re.compile(r"^[|>](?:[+-]?[1-9]?|[1-9][+-]?)$")
 SENSITIVE_COMPLEX_KEY_RE = re.compile(
-    r"(?:^|[,{?]\s*)(?:['\"](?:uses|with|persist-credentials|enablement|permissions|jobs|build|deploy)['\"]|(?:uses|with|persist-credentials|enablement|permissions|jobs|build|deploy))\s*:",
+    r"(?:^|[,{?]\s*)(?:['\"](?:uses|with|run|persist-credentials|enablement|permissions|jobs|build|deploy)['\"]|(?:uses|with|run|persist-credentials|enablement|permissions|jobs|build|deploy))\s*:",
     re.IGNORECASE,
 )
 
@@ -665,6 +672,30 @@ def environment_override_errors(
     return errors
 
 
+def workflow_run_command_errors(
+    parsed: ParsedWorkflow,
+    label: str,
+) -> list[str]:
+    """Allow only the repository's finite inline npm command inventory."""
+    errors: list[str] = []
+    for entry in [item for item in parsed.entries if item.key == "run"]:
+        if BLOCK_SCALAR_RE.fullmatch(entry.value):
+            errors.append(
+                f"{label}:{entry.index + 1}: block-scalar run commands are unsupported"
+            )
+            continue
+        command = decoded_value(entry, label, errors).strip()
+        if (
+            NPM_COMMAND_TOKEN_RE.search(command)
+            and command not in ALLOWED_NPM_WORKFLOW_COMMANDS
+        ):
+            errors.append(
+                f"{label}:{entry.index + 1}: npm workflow command is outside the "
+                f"finite allowlist: {command!r}"
+            )
+    return errors
+
+
 def publication_renderer_setup_errors(
     parsed: ParsedWorkflow,
     label: str,
@@ -691,17 +722,6 @@ def publication_renderer_setup_errors(
             "workflow running npm test",
         )
     )
-    for entry in [item for item in parsed.entries if item.key == "run"]:
-        command = decoded_value(entry, label, errors).strip()
-        if (
-            NPM_TEST_INVOCATION_RE.search(command)
-            and command != NPM_TEST_COMMAND
-        ):
-            errors.append(
-                f"{label}:{entry.index + 1}: npm test invocation must equal "
-                f"{NPM_TEST_COMMAND!r}; got {command!r}"
-            )
-
     npm_test_count = 0
     for job in direct_children(parsed, jobs):
         steps = direct_job_steps(parsed, job)
@@ -923,6 +943,52 @@ def check_parser_regressions(errors: list[str]) -> None:
         errors.append(
             "workflow parser regression failed closed on flow mapping"
         )
+
+    flow_run = """jobs:
+  test:
+    steps:
+      - { run: npm test }
+"""
+    parsed = parse_workflow(flow_run, "parser regression flow run mapping")
+    if not parsed.errors:
+        errors.append(
+            "workflow parser regression failed closed on flow-style run mapping"
+        )
+
+    unsupported_run_commands = {
+        "block scalar run": """jobs:
+  test:
+    steps:
+      - run: |
+          npm test
+""",
+        "npm test with lifecycle": """jobs:
+  test:
+    steps:
+      - run: npm test
+""",
+        "npm rum alias": """jobs:
+  test:
+    steps:
+      - run: npm rum test
+""",
+        "npm urn alias": """jobs:
+  test:
+    steps:
+      - run: npm urn test
+""",
+        "npm prefixed test": """jobs:
+  test:
+    steps:
+      - run: npm --prefix . test
+""",
+    }
+    for name, fixture in unsupported_run_commands.items():
+        parsed = parse_workflow(fixture, f"run command regression {name}")
+        if not workflow_run_command_errors(parsed, name):
+            errors.append(
+                "workflow run command regression failed to reject: " + name
+            )
 
     base_guard = f"""jobs:
   test:
@@ -1258,13 +1324,18 @@ jobs:
         valid_renderer_order,
         "renderer setup regression valid order",
     )
-    if publication_renderer_setup_errors(parsed, "valid renderer order"):
+    if workflow_run_command_errors(
+        parsed, "valid renderer order"
+    ) or publication_renderer_setup_errors(parsed, "valid renderer order"):
         errors.append(
             "workflow renderer setup regression failed for valid order"
         )
     for name, fixture in invalid_renderer_orders.items():
         parsed = parse_workflow(fixture, f"renderer setup regression {name}")
-        if not publication_renderer_setup_errors(parsed, name):
+        if not (
+            workflow_run_command_errors(parsed, name)
+            or publication_renderer_setup_errors(parsed, name)
+        ):
             errors.append(
                 "workflow renderer setup regression failed to reject: " + name
             )
@@ -1292,6 +1363,7 @@ def main() -> int:
             errors.append(f"{label}: missing Node 24 action guard")
         errors.extend(action_policy_errors(parsed, label))
         errors.extend(checkout_credential_errors(parsed, label))
+        errors.extend(workflow_run_command_errors(parsed, label))
         if name in EXPECTED_WORKFLOWS:
             errors.extend(publication_renderer_setup_errors(parsed, label))
 
