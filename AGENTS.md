@@ -18,7 +18,8 @@ Read these before changing content or automation:
 6. `SOURCE_POLICY.md`
 7. `SAFETY_SCOPE.md`
 8. `CROSS_BOOK_MAP.md`
-9. `.book-formatter/revision.json`
+9. `editorial-input-manifest.json`（Editorial Inputを使う場合）
+10. `.book-formatter/revision.json`
 
 When they conflict, stop and report the conflict instead of silently choosing one.
 
@@ -28,6 +29,7 @@ When they conflict, stop and report the conflict instead of silently choosing on
 - Human-authored appendices: `appendices/`
 - Reader modules: selected root Markdown files
 - Source registry: `references/sources.json`
+- Editorial Input planning registry: `editorial-input-manifest.json`
 - Artifact templates: `templates/`
 - Book structure: `book-config.json`
 - Generated site source: `docs/`

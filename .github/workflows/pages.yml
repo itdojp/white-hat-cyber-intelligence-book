@@ -63,7 +63,7 @@ jobs:
           bundler-cache: true
 
       - name: Run repository contract tests
-        run: npm test
+        run: npm test --ignore-scripts
 
       - name: Generate deterministic site source
         run: npm run sync:docs

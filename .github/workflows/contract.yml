@@ -19,6 +19,7 @@ jobs:
       - name: Checkout book
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          fetch-depth: 2
           persist-credentials: false
 
       - name: Checkout pinned book-formatter
@@ -50,4 +51,6 @@ jobs:
           bundler-cache: true
 
       - name: Validate editorial, safety, source, and generation contracts
-        run: npm test
+        run: npm test --ignore-scripts
+        env:
+          EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
