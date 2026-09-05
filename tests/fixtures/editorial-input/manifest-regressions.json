@@ -150,6 +150,12 @@
       "family": "RFC 3339 full-date",
       "mutation": "schema-invalid-full-date",
       "expectedError": "invalid RFC 3339 full-date"
+    },
+    {
+      "id": "EIM-NEG-026",
+      "family": "initial status ownership",
+      "mutation": "initial-status-skipped",
+      "expectedError": "initial status must be a registration or blueprint state"
     }
   ]
 }

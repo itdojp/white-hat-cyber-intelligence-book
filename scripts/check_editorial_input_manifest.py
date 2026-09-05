@@ -860,6 +860,32 @@ def validate_status_history(value: Any, target_label: str, current_status: str) 
         )
 
 
+def validate_initial_status_for_roles(
+    value: Any, target_label: str, candidate_roles: set[str]
+) -> None:
+    history = require_list(value, f"{target_label}.statusHistory", nonempty=True)
+    first = require_object(history[0], f"{target_label}.statusHistory[0]")
+    initial_status = first.get("status")
+    required_role = {
+        "registered-pending-prerequisites": "candidate-input",
+        "blueprint-only": "blueprint-input",
+        "generator-blueprint-only": "generator-blueprint-input",
+    }.get(initial_status)
+    if required_role is None:
+        fail(
+            f"{target_label}.statusHistory: initial status must be a registration or "
+            "blueprint state"
+        )
+    # Use membership, not equality: later Candidate additions must not redefine
+    # the historical initial state, while the original registered input remains
+    # present through the frozen package inventory.
+    if required_role not in candidate_roles:
+        fail(
+            f"{target_label}.statusHistory: initial status {initial_status!r} "
+            f"requires an original {required_role} candidate"
+        )
+
+
 def validate_intake_record(
     value: Any,
     target_label: str,
@@ -1242,6 +1268,12 @@ def validate_targets(
                 or set(dispositions) != {"superseded"}
             ):
                 fail(f"{label}: superseded-with-record must supersede every candidate")
+        candidate_roles = {
+            files[(item["packageId"], item["inputPath"])]["role"] for item in candidates
+        }
+        validate_initial_status_for_roles(
+            target["statusHistory"], label, candidate_roles
+        )
         validate_status_history(target["statusHistory"], label, status_value)
         if status_value in {"canonical-pr-open", "consumed"}:
             assert selected_candidate is not None
@@ -1905,11 +1937,25 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
             "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/64"
         )
     elif mutation == "status-history-prefix-deleted":
-        target = targets["chapter-04"]
-        target["statusHistory"] = [target["statusHistory"][-1]]
+        target = targets["chapter-05"]
+        target["status"] = "deferred"
+        target["selectedCandidateId"] = None
+        target["candidates"][0]["disposition"] = "deferred"
+        target["statusHistory"] = [
+            target["statusHistory"][0],
+            {
+                "status": "deferred",
+                "effectiveAt": "2026-09-06",
+                "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
+                "reason": "fixture deletes the protected selected-for-intake entry",
+            },
+        ]
     elif mutation == "status-history-prefix-rewritten":
         target = targets["chapter-05"]
         target["statusHistory"][0]["reason"] = "rewritten provenance fixture"
+    elif mutation == "initial-status-skipped":
+        target = targets["chapter-05"]
+        target["statusHistory"] = [target["statusHistory"][-1]]
     elif mutation == "schema-invalid-package-filename":
         packages[0]["filename"] = "invalid\\name.zip"
     elif mutation == "schema-invalid-full-date":
