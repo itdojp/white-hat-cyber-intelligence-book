@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "1.0.0",
+  "cases": [
+    {
+      "id": "EIM-NEG-001",
+      "family": "package identity",
+      "mutation": "duplicate-package-id",
+      "expectedError": "duplicate packageId"
+    },
+    {
+      "id": "EIM-NEG-002",
+      "family": "package identity",
+      "mutation": "duplicate-package-sha-without-alias",
+      "expectedError": "duplicate package SHA requires exactly one canonical owner"
+    },
+    {
+      "id": "EIM-NEG-003",
+      "family": "filename collision",
+      "mutation": "missing-filename-collision-record",
+      "expectedError": "missing collision records"
+    },
+    {
+      "id": "EIM-NEG-004",
+      "family": "Wave collision",
+      "mutation": "missing-wave-collision-record",
+      "expectedError": "missing collision records"
+    },
+    {
+      "id": "EIM-NEG-005",
+      "family": "collision acknowledgement",
+      "mutation": "stale-collision-record",
+      "expectedError": "stale collision records"
+    },
+    {
+      "id": "EIM-NEG-006",
+      "family": "multiple candidates",
+      "mutation": "multi-candidate-registered",
+      "expectedError": "registered target must have one unselected registered candidate"
+    },
+    {
+      "id": "EIM-NEG-007",
+      "family": "filename-only selection",
+      "mutation": "filename-only-selection",
+      "expectedError": "invalid value"
+    },
+    {
+      "id": "EIM-NEG-008",
+      "family": "silent latest-wins",
+      "mutation": "silent-latest-wins",
+      "expectedError": "selected candidate alternative disposition is missing"
+    },
+    {
+      "id": "EIM-NEG-009",
+      "family": "alternative disposition",
+      "mutation": "selected-alternative-missing",
+      "expectedError": "selected candidate alternative disposition is missing"
+    },
+    {
+      "id": "EIM-NEG-010",
+      "family": "canonical PR intake record",
+      "mutation": "canonical-pr-missing-intake-record",
+      "expectedError": "requires canonicalPr and Intake Record"
+    },
+    {
+      "id": "EIM-NEG-011",
+      "family": "package path",
+      "mutation": "unsafe-package-path",
+      "expectedError": "unsafe archive path"
+    },
+    {
+      "id": "EIM-NEG-012",
+      "family": "candidate integrity",
+      "mutation": "candidate-package-file-hash-mismatch",
+      "expectedError": "candidateId: expected"
+    },
+    {
+      "id": "EIM-NEG-013",
+      "family": "target ownership",
+      "mutation": "candidate-package-target-mismatch",
+      "expectedError": "package file does not own target"
+    },
+    {
+      "id": "EIM-NEG-014",
+      "family": "target ownership",
+      "mutation": "unowned-primary-input",
+      "expectedError": "unowned primary input"
+    },
+    {
+      "id": "EIM-NEG-015",
+      "family": "target identity",
+      "mutation": "duplicate-target",
+      "expectedError": "duplicate targetId"
+    },
+    {
+      "id": "EIM-NEG-016",
+      "family": "status history",
+      "mutation": "history-current-status-mismatch",
+      "expectedError": "final status does not match current status"
+    },
+    {
+      "id": "EIM-NEG-017",
+      "family": "status transition",
+      "mutation": "invalid-history-transition",
+      "expectedError": "invalid transition"
+    },
+    {
+      "id": "EIM-NEG-018",
+      "family": "blueprint ownership",
+      "mutation": "blueprint-role-mismatch",
+      "expectedError": "blueprint-only target must reference blueprint-input files"
+    },
+    {
+      "id": "EIM-NEG-019",
+      "family": "Intake Record identity",
+      "mutation": "intake-record-package-mismatch",
+      "expectedError": "intakeRecord.packageSha256"
+    }
+  ]
+}

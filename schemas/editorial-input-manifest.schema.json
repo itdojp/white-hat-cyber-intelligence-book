@@ -1,0 +1,615 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itdojp.github.io/white-hat-cyber-intelligence-book/schemas/editorial-input-manifest.schema.json",
+  "title": "White Hat Cyber Intelligence Editorial Input Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "manifestVersion",
+    "auditedAt",
+    "source",
+    "externalAuditArtifact",
+    "collisionAcknowledgements",
+    "packages",
+    "targets"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "manifestVersion": {
+      "const": "1.0.0"
+    },
+    "auditedAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "registrationIssue",
+        "contractIssue",
+        "registrationIssueSnapshotUpdatedAt",
+        "contractIssueSnapshotUpdatedAt",
+        "scope"
+      ],
+      "properties": {
+        "repository": {
+          "const": "https://github.com/itdojp/white-hat-cyber-intelligence-book"
+        },
+        "registrationIssue": {
+          "const": 63
+        },
+        "contractIssue": {
+          "const": 98
+        },
+        "registrationIssueSnapshotUpdatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "contractIssueSnapshotUpdatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "externalAuditArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "availability",
+        "package",
+        "packageSha256",
+        "manifest",
+        "manifestSha256",
+        "audit",
+        "auditSha256",
+        "goal",
+        "goalSha256",
+        "provenanceUrl",
+        "note"
+      ],
+      "properties": {
+        "availability": {
+          "const": "not-present-in-authorized-workspace"
+        },
+        "package": {
+          "type": "string",
+          "minLength": 1
+        },
+        "packageSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "manifest": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "audit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "auditSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "goal": {
+          "type": "string",
+          "minLength": 1
+        },
+        "goalSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "provenanceUrl": {
+          "type": "string",
+          "pattern": "^https://github\\.com/itdojp/white-hat-cyber-intelligence-book/(issues|pull)/[0-9]+(#issuecomment-[0-9]+)?$"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "collisionAcknowledgements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/collisionAcknowledgement"
+      }
+    },
+    "packages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/package"
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/target"
+      }
+    }
+  },
+  "$defs": {
+    "packageKind": {
+      "enum": [
+        "draft",
+        "mixed",
+        "generator-blueprint"
+      ]
+    },
+    "fileRole": {
+      "enum": [
+        "candidate-input",
+        "source-review",
+        "integration-guide",
+        "blueprint-input",
+        "generator-blueprint-input"
+      ]
+    },
+    "targetKind": {
+      "enum": [
+        "chapter",
+        "appendix",
+        "appendix-group"
+      ]
+    },
+    "targetStatus": {
+      "enum": [
+        "registered-pending-prerequisites",
+        "candidate-selection-required",
+        "selected-for-intake",
+        "rejected-after-comparison",
+        "deferred",
+        "canonical-pr-open",
+        "consumed",
+        "blueprint-only",
+        "generator-blueprint-only",
+        "superseded-with-record"
+      ]
+    },
+    "candidateDisposition": {
+      "enum": [
+        "registered",
+        "pending-comparison",
+        "selected",
+        "adopted",
+        "rewritten",
+        "rejected",
+        "deferred",
+        "blueprint-only",
+        "generator-blueprint-only",
+        "superseded"
+      ]
+    },
+    "collisionKind": {
+      "enum": [
+        "filename",
+        "wave-label"
+      ]
+    },
+    "packageId": {
+      "type": "string",
+      "pattern": "^EIP-[0-9]{4}$"
+    },
+    "candidateId": {
+      "type": "string",
+      "pattern": "^EIC-[0-9]{4}-[0-9a-f]{12}$"
+    },
+    "targetId": {
+      "type": "string",
+      "pattern": "^(chapter-[0-9]{2}|appendix-[a-z]|appendices-[a-z](-[a-z])+)$"
+    },
+    "safePath": {
+      "type": "string",
+      "pattern": "^(?!/)(?!\\.)(?!.*//)(?!.*\\/\\.)(?!.*\\\\)(?!.*:)[^\\u0000-\\u001F\\u007F]+$"
+    },
+    "packageFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "role",
+        "targets"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "role": {
+          "$ref": "#/$defs/fileRole"
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/targetId"
+          }
+        }
+      }
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packageId",
+        "filename",
+        "sha256",
+        "packageKind",
+        "waveLabel",
+        "registeredAt",
+        "registrationUrl",
+        "files"
+      ],
+      "properties": {
+        "packageId": {
+          "$ref": "#/$defs/packageId"
+        },
+        "filename": {
+          "type": "string",
+          "pattern": "^[^/\\\\]+\\.zip$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "packageKind": {
+          "$ref": "#/$defs/packageKind"
+        },
+        "waveLabel": {
+          "type": "string",
+          "pattern": "^(initial|wave-[0-9]+)$"
+        },
+        "registeredAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "registrationUrl": {
+          "type": "string",
+          "pattern": "^https://github\\.com/itdojp/white-hat-cyber-intelligence-book/(issues|pull)/[0-9]+(#issuecomment-[0-9]+)?$"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/packageFile"
+          }
+        },
+        "aliasOf": {
+          "$ref": "#/$defs/packageId"
+        }
+      }
+    },
+    "collisionAcknowledgement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "collisionId",
+        "kind",
+        "value",
+        "packageIds",
+        "evidenceUrl",
+        "reason"
+      ],
+      "properties": {
+        "collisionId": {
+          "type": "string",
+          "pattern": "^EICOLL-[0-9]{4}$"
+        },
+        "kind": {
+          "$ref": "#/$defs/collisionKind"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "packageIds": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/packageId"
+          }
+        },
+        "evidenceUrl": {
+          "type": "string",
+          "pattern": "^https://github\\.com/itdojp/white-hat-cyber-intelligence-book/(issues|pull)/[0-9]+(#issuecomment-[0-9]+)?$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateId",
+        "packageId",
+        "inputPath",
+        "inputSha256",
+        "disposition",
+        "dispositionEvidenceUrl",
+        "dispositionReason"
+      ],
+      "properties": {
+        "candidateId": {
+          "$ref": "#/$defs/candidateId"
+        },
+        "packageId": {
+          "$ref": "#/$defs/packageId"
+        },
+        "inputPath": {
+          "$ref": "#/$defs/safePath"
+        },
+        "inputSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "disposition": {
+          "$ref": "#/$defs/candidateDisposition"
+        },
+        "dispositionEvidenceUrl": {
+          "type": "string",
+          "pattern": "^https://github\\.com/itdojp/white-hat-cyber-intelligence-book/(issues|pull)/[0-9]+(#issuecomment-[0-9]+)?$"
+        },
+        "dispositionReason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "statusHistory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "effectiveAt",
+        "evidenceUrl",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/targetStatus"
+        },
+        "effectiveAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "evidenceUrl": {
+          "type": "string",
+          "pattern": "^https://github\\.com/itdojp/white-hat-cyber-intelligence-book/(issues|pull)/[0-9]+(#issuecomment-[0-9]+)?$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "intakeRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordVersion",
+        "recordUrl",
+        "packageId",
+        "packageSha256",
+        "inputPath",
+        "inputSha256",
+        "targetIssue",
+        "canonicalPr",
+        "currentMainSha",
+        "policyVersion",
+        "publicationProjectionVersion",
+        "inputReviewedAt",
+        "adoptedSections",
+        "rewrittenSections",
+        "rejectedOrDeferredSections",
+        "sourceRevalidation",
+        "canonicalFiles",
+        "knownLimitations",
+        "rawTrackedFiles"
+      ],
+      "properties": {
+        "recordVersion": {
+          "enum": [
+            "1.0.0",
+            "legacy-issue-1"
+          ]
+        },
+        "recordUrl": {
+          "type": "string",
+          "pattern": "^https://github\\.com/itdojp/white-hat-cyber-intelligence-book/(issues|pull)/[0-9]+(#issuecomment-[0-9]+)?$"
+        },
+        "packageId": {
+          "$ref": "#/$defs/packageId"
+        },
+        "packageSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "inputPath": {
+          "$ref": "#/$defs/safePath"
+        },
+        "inputSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "targetIssue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "canonicalPr": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "currentMainSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "policyVersion": {
+          "const": "1.2.0"
+        },
+        "publicationProjectionVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "inputReviewedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "adoptedSections": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "rewrittenSections": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "rejectedOrDeferredSections": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "sourceRevalidation": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "canonicalFiles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "knownLimitations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "rawTrackedFiles": {
+          "const": 0
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetId",
+        "issue",
+        "targetKind",
+        "status",
+        "selectedCandidateId",
+        "canonicalPr",
+        "intakeRecord",
+        "candidates",
+        "statusHistory"
+      ],
+      "properties": {
+        "targetId": {
+          "$ref": "#/$defs/targetId"
+        },
+        "issue": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "targetKind": {
+          "$ref": "#/$defs/targetKind"
+        },
+        "status": {
+          "$ref": "#/$defs/targetStatus"
+        },
+        "selectedCandidateId": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/candidateId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "canonicalPr": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "intakeRecord": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/intakeRecord"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "candidates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/candidate"
+          }
+        },
+        "statusHistory": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/statusHistory"
+          }
+        }
+      }
+    }
+  }
+}

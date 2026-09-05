@@ -133,7 +133,58 @@ Decision Requirement
 - 二次資料だけで重要主張を確定しない。Development資料はStatusを明示し、Stableな規範として扱わない
 - Sourceの変更が本文、図、Template、fixture、判断基準へ及ぼす影響を確認してから`checkedAt`を更新する
 
-## 12. Chapter Definition of Done
+## 12. Editorial Input Intake
+
+Repository外で作成した草稿、Source review note、Blueprintは非正本のEditorial Inputである。登録と状態の機械可読な正本は`editorial-input-manifest.json`、人間向けの決定的索引は`EDITORIAL_INPUT_MANIFEST.md`とする。Issue #63の過去コメントはimmutable provenanceとして参照し、削除や書換えを行わない。
+
+### Package identityと事前検証
+
+Package identityは`packageId + Package SHA-256`である。Filename、Wave label、作成日時、File size、Issue comment順のいずれもidentityまたは選択根拠にしない。ZIPを展開する前に次を実行し、Package SHA-256、Target、内部path、各file SHA-256を検証する。
+
+```bash
+python3 scripts/check_editorial_input_manifest.py \
+  --verify-package .work/editorial-input/<package>.zip \
+  --package-id <EIP-...> \
+  --target <chapter-NN|appendix-id>
+```
+
+Validatorはduplicate path、path traversal、absolute / hidden / drive-qualified path、symlink、暗号化member、未登録file、hash不一致をfail closedで拒否する。Raw ZIPと`.predraft.md`は`.work/`配下にだけ置き、Gitへ追加しない。登録済みPackageが認可済みWorkspaceに存在しない場合、内容を推測再構成せず、直接採用したと主張しない。Canonical実装はIssue、current contract、再検証済み一次資料から作成できるが、不在事実をIntake Recordへ残す。
+
+### Candidate selectionと有限Status
+
+TargetのStatusは次の有限集合だけを使い、`statusHistory`をappendして遷移根拠を残す。
+
+```text
+registered-pending-prerequisites
+candidate-selection-required
+selected-for-intake
+rejected-after-comparison
+deferred
+canonical-pr-open
+consumed
+blueprint-only
+generator-blueprint-only
+superseded-with-record
+```
+
+- 同一Targetに複数Candidateがある場合は`candidate-selection-required`とし、自動選択しない。
+- 選択時は`selectedCandidateId`を一つ指定し、代替Candidateを`rejected`、`deferred`、または`superseded`へ明示的にDispositionする。
+- `selected-for-intake`はbranch作成前の選択、`canonical-pr-open`は専用Draft PRとIntake Recordの存在、`consumed`は通常mergeとmain/publication gate完了を意味する。
+- `blueprint-only`と`generator-blueprint-only`を完成本文として扱わない。
+- Candidateの文言、ID、Source version、Statusをcurrent Repositoryより優先しない。
+
+### Canonical PR Intake Record
+
+`canonical-pr-open`ではManifestの`intakeRecord`とPR本文の「Editorial Input Record」を同時に追加する。最低限、Package ID / SHA-256、Target Issue、Input path / SHA-256、base main SHA、Content Safety Policy version、Publication Projection version、Input確認状況、Adopted / Rewritten / Rejected / Deferred、Source再確認、Canonical files、Known limitations、raw tracked files `0`を記録する。
+
+Canonical PRは草稿を単純コピーせず、current Issue契約、既存正本、安全境界、一次資料へ再構成する。merge後にmain CI、Pages、公開markerを確認してから、別の計画metadata更新で`consumed`へ進める。Manifestと生成索引は次で検証する。
+
+```bash
+npm run check:editorial-inputs
+npm run render:editorial-inputs
+```
+
+## 13. Chapter Definition of Done
 
 各章の執筆IssueとPRは、次を満たして初めて完成とする。
 
@@ -167,7 +218,7 @@ Decision Requirement
 - [ ] P0 / P1が0件、未解決Review Threadが0件であり、P2の採否と理由が記録されている
 - [ ] `docs/`と`_site/`をcommitしていない
 
-## 13. Part単位の執筆運用
+## 14. Part単位の執筆運用
 
 Part単位の着手には`.github/ISSUE_TEMPLATE/part-writing.yml`を使用する。複数章を同じIssueで管理しても、原則として章ごとに独立PRとし、同一Repository内は依存順に直列化する。
 

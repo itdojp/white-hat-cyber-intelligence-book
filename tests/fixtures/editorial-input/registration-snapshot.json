@@ -1,0 +1,330 @@
+{
+  "schemaVersion": "1.0.0",
+  "capturedAt": "2026-09-05",
+  "registrationIssue": 63,
+  "registrationIssueSnapshotUpdatedAt": "2026-08-25T02:03:30Z",
+  "packages": [
+    {
+      "packageId": "EIP-0001",
+      "filename": "white-hat-book-parallel-drafts-2026-08-08.zip",
+      "packageSha256": "caf8c73aa4e84c99f4062ac7cf85ac56794ad2cbb5d8ec5d9403138753eb6388",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63",
+      "primaryInputs": [
+        {
+          "path": "chapter04-assets-boundaries-threat-model.predraft.md",
+          "inputSha256": "c49f0a11ef9e37f1952199d263125aae9df273032e0a996642cfe9899750c358",
+          "targets": [
+            "chapter-04"
+          ]
+        },
+        {
+          "path": "chapter05-attack-behavior.predraft.md",
+          "inputSha256": "11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12",
+          "targets": [
+            "chapter-05"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0002",
+      "filename": "white-hat-book-parallel-drafts-2026-08-08-wave2.zip",
+      "packageSha256": "fffbd2af8a17cbbfa60c09c37c30a682a9c528b44194e0e9f0f3588e2a6a46ca",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155",
+      "primaryInputs": [
+        {
+          "path": "chapter06-observable-systems.predraft.md",
+          "inputSha256": "2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d",
+          "targets": [
+            "chapter-06"
+          ]
+        },
+        {
+          "path": "chapter23-intelligence-requirements.predraft.md",
+          "inputSha256": "29d20db7f44a073d8aa3b8d1c18db109f479297da79cec787edc5e8b4e5b9493",
+          "targets": [
+            "chapter-23"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0003",
+      "filename": "white-hat-book-parallel-drafts-2026-08-08-wave3.zip",
+      "packageSha256": "d986ee9a9c71cf210420bb921f078a395133e2e5e0b9050960ad63554c22582a",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
+      "primaryInputs": [
+        {
+          "path": "chapter07-vulnerability-prioritization.predraft.md",
+          "inputSha256": "6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb",
+          "targets": [
+            "chapter-07"
+          ]
+        },
+        {
+          "path": "chapter24-osint-provenance-sources.predraft.md",
+          "inputSha256": "b1b83a6735ac33f66afa27d1ac2ce1f260d70fc904eca9b6b5c2fefb36ed59bd",
+          "targets": [
+            "chapter-24"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0004",
+      "filename": "white-hat-book-parallel-drafts-2026-08-08-wave4.zip",
+      "packageSha256": "956a321088abed3058e59c58ceeda3d5fd57a9d12a6715240185d0d7c445d86f",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
+      "primaryInputs": [
+        {
+          "path": "chapter08-safe-lab-evidence.predraft.md",
+          "inputSha256": "eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b",
+          "targets": [
+            "chapter-08"
+          ]
+        },
+        {
+          "path": "chapter26-cti-distribution.predraft.md",
+          "inputSha256": "38a432a5daf5477a3b986f8c19307d89a9565edf2f0d3a25ea9815126bb5bf32",
+          "targets": [
+            "chapter-26"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0005",
+      "filename": "white-hat-book-parallel-drafts-2026-08-09-wave5.zip",
+      "packageSha256": "c4fd20d4c44d769c22bbab886535ca3105b3a3a5ed7bdb6cea71619e6b7279a0",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652",
+      "primaryInputs": [
+        {
+          "path": "chapter09-engagement-roe.predraft.md",
+          "inputSha256": "00de5e803e04d13ae80b9960489a2d7d90d6564c88324d7f32aed8c28c96ea91",
+          "targets": [
+            "chapter-09"
+          ]
+        },
+        {
+          "path": "chapter10-recon-osint-boundary.predraft.md",
+          "inputSha256": "23f9af567b80d64c0d191b0f7905ddd8350ce81606d24c72626949fa30739002",
+          "targets": [
+            "chapter-10"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0006",
+      "filename": "white-hat-book-parallel-drafts-2026-08-09-wave5.zip",
+      "packageSha256": "1a2ccaa3dc3453dfc91c28a482bb8e319b5a2db6023d2d64f8cce2133619efb3",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228688398",
+      "primaryInputs": [
+        {
+          "path": "chapter09-engagement-roe.predraft.md",
+          "inputSha256": "dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579",
+          "targets": [
+            "chapter-09"
+          ]
+        },
+        {
+          "path": "chapter16-telemetry-evidence-readiness.predraft.md",
+          "inputSha256": "38fbe94b39aac0ad6e59fcaa0c2cd9bfffc23b4eb01ca4dbbfd1cfb470a00c32",
+          "targets": [
+            "chapter-16"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0007",
+      "filename": "white-hat-book-parallel-drafts-2026-08-09-wave6.zip",
+      "packageSha256": "2ac28571912725ed838d4895779e3921b8138b52a66f2d5938c5776e46f3ff69",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
+      "primaryInputs": [
+        {
+          "path": "chapter27-ai-agent-security.predraft.md",
+          "inputSha256": "32e8846cf56d741ba7fc28ca36df288132192e48d8f142dc8c32d433da375fed",
+          "targets": [
+            "chapter-27"
+          ]
+        },
+        {
+          "path": "chapter28-ai-assisted-analysis-assurance.predraft.md",
+          "inputSha256": "313c092a3659c566f85061efeb23a103fa2a7d3fd68845b76de72a7e6f29016a",
+          "targets": [
+            "chapter-28"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0008",
+      "filename": "white-hat-book-parallel-drafts-2026-08-09-wave8.zip",
+      "packageSha256": "386e7148f504c9fa58a0b095bffcc6aeeaaf2be901e0d3b917e5e8db6c604b2c",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
+      "primaryInputs": [
+        {
+          "path": "chapter12-enterprise-identity.predraft.md",
+          "inputSha256": "bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd",
+          "targets": [
+            "chapter-12"
+          ]
+        },
+        {
+          "path": "chapter13-platform-supply-chain.predraft.md",
+          "inputSha256": "16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec",
+          "targets": [
+            "chapter-13"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0009",
+      "filename": "white-hat-book-parallel-drafts-2026-08-09-wave9.zip",
+      "packageSha256": "bef9879d4b230f63d5f1f8d037611bbab097328defc054cb2b801fbf8deeb1ad",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
+      "primaryInputs": [
+        {
+          "path": "chapter14-minimal-impact-validation.predraft.md",
+          "inputSha256": "3e687b3de61f4c6a0b20365b04f483064edf5ac07c2ff4cc6ffbe0cbd89bf58f",
+          "targets": [
+            "chapter-14"
+          ]
+        },
+        {
+          "path": "chapter15-findings-retest-risk.predraft.md",
+          "inputSha256": "c168fc29af42cc50a38d23c581172bc4953125775f71867d60c36d5a726b7b3c",
+          "targets": [
+            "chapter-15"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0010",
+      "filename": "white-hat-book-parallel-drafts-2026-08-09-wave10.zip",
+      "packageSha256": "34a748e0d3373ad842aa512f6510c2ac17242d42588b82e19f377678d255c381",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
+      "primaryInputs": [
+        {
+          "path": "chapter18-threat-hunting.predraft.md",
+          "inputSha256": "5a08af6d1ae3f94b622ddec1f36f133b763d5b6eaac03f1ef08b415d0b540bbd",
+          "targets": [
+            "chapter-18"
+          ]
+        },
+        {
+          "path": "chapter19-incident-response.predraft.md",
+          "inputSha256": "3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68",
+          "targets": [
+            "chapter-19"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0011",
+      "filename": "white-hat-book-parallel-drafts-2026-08-09-wave11.zip",
+      "packageSha256": "cb9fee8ca0a1ff1b8e2ce6d45f5d0d1cc102303eacaddfec394deca098e83461",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
+      "primaryInputs": [
+        {
+          "path": "chapter20-dfir-timeline-causality.predraft.md",
+          "inputSha256": "58dc95fff36417b259bab6c965d2bfe2289b3d59fa5d4e4f57a2b49806c81078",
+          "targets": [
+            "chapter-20"
+          ]
+        },
+        {
+          "path": "chapter21-purple-team-control-validation.predraft.md",
+          "inputSha256": "a729d22fb1898e62d5ddf0d7bc2ebd1e4794ed82a49d77ff65ddaaf1aff0dbff",
+          "targets": [
+            "chapter-21"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0012",
+      "filename": "white-hat-book-parallel-drafts-2026-08-09-wave12.zip",
+      "packageSha256": "6f5da12b33216dbc50473e9fd9d403213807d7f0219c50a71e5292386e82ea7b",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913",
+      "primaryInputs": [
+        {
+          "path": "chapter22-measurement-improvement.predraft.md",
+          "inputSha256": "78813e20d84e495b2aada2173b50b80a3efe947d9689dd90718e2a617a3bf15c",
+          "targets": [
+            "chapter-22"
+          ]
+        },
+        {
+          "path": "chapter29-final-portfolio-blueprint.md",
+          "inputSha256": "a90f9092493f64bcfbb3a36f269e83e686177203f276234b29cfd365e4444e04",
+          "targets": [
+            "chapter-29"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0013",
+      "filename": "white-hat-book-parallel-drafts-2026-08-09-wave13.zip",
+      "packageSha256": "16032793c917c17bd9478fb3f4e0a89e2afc89cf82b27400328dbfa74c9465d9",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
+      "primaryInputs": [
+        {
+          "path": "appendix-a-safety-legal-disclosure.predraft.md",
+          "inputSha256": "d6932c1a47741992071cd05d866afd26980ec64e6e35c3ebda09d53c2eede854",
+          "targets": [
+            "appendix-a"
+          ]
+        },
+        {
+          "path": "appendix-d-troubleshooting-stop-flow.predraft.md",
+          "inputSha256": "a1d1ce13dd4827d438182ed1ad94b20f01c25c4d243b42e847d1ed9e2a2147da",
+          "targets": [
+            "appendix-d"
+          ]
+        },
+        {
+          "path": "appendix-h-lab-operations.predraft.md",
+          "inputSha256": "390579c705e1187c9765b6544f9628a7bd4b0542b7cc3da70ff5dc3172b8ecca",
+          "targets": [
+            "appendix-h"
+          ]
+        },
+        {
+          "path": "appendix-j-cross-book-learning-routes.predraft.md",
+          "inputSha256": "50177ad8c7a7737203883384f38a60b5e209d6e920132f4056ba47139c7bd302",
+          "targets": [
+            "appendix-j"
+          ]
+        }
+      ]
+    },
+    {
+      "packageId": "EIP-0014",
+      "filename": "white-hat-book-parallel-drafts-2026-08-09-wave14.zip",
+      "packageSha256": "f6b11d439088d8e8571d7e8630b33a866b566a97815480ef7df074c45faa79a4",
+      "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231033156",
+      "primaryInputs": [
+        {
+          "path": "appendices-b-c-i-generation-blueprint.md",
+          "inputSha256": "6a52b22b061342c8f0c4fc58ec36822ea8c8958d76c691bcff5cd452c7b5268a",
+          "targets": [
+            "appendices-b-c-i"
+          ]
+        },
+        {
+          "path": "appendices-e-f-g-generation-blueprint.md",
+          "inputSha256": "2a34e9e8d137b59aac91692d5d824b0c4f65b1d77ef1bd8119032c37af5c63e1",
+          "targets": [
+            "appendices-e-f-g"
+          ]
+        }
+      ]
+    }
+  ]
+}

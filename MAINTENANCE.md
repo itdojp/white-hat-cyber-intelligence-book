@@ -9,6 +9,7 @@ This guide defines recurring maintenance for the manuscript, source registry, sh
 | Class | Typical trigger | Required action |
 |---|---|---|
 | Source freshness | `nextReviewAt`, new standard, law amendment, framework release | Recheck canonical source, update affected chapters, regenerate baseline |
+| Editorial Input | new Package, candidate selection, canonical PR, post-merge gate | Update Manifest state and evidence; regenerate deterministic summary |
 | Publishing components | new audited `book-formatter` revision | Review upstream diff, update blob manifest, rerun deterministic generation and visual checks |
 | Dependencies | Dependabot alert, Ruby or Node update, action release | Update lock or immutable action SHA, run full QA and audit |
 | Content defect | reader report, review finding, failed exercise | Reproduce safely, correct canonical source, add regression check |
@@ -36,6 +37,24 @@ For each source whose review date or trigger has been reached:
 8. obtain source-quality and technical review
 
 A reachable URL does not prove that the recorded claim remains correct.
+
+## Editorial Input intake
+
+Raw ZIPと`.predraft.md`はRepository外に維持する。Intake開始前に、filenameではなくManifestの`packageId`、Package SHA-256、Target IDを明示して検証する。
+
+```bash
+python3 scripts/check_editorial_input_manifest.py
+python3 scripts/check_editorial_input_manifest.py \
+  --verify-package .work/editorial-input/<package>.zip \
+  --package-id EIP-0001 \
+  --target chapter-05
+```
+
+- 新規Package登録、Candidate選択、PR開始、merge後の各時点で`statusHistory`をappendする。
+- 複数候補は比較前に`candidate-selection-required`とし、配列順、日時、Wave、File sizeでwinnerを決めない。
+- `canonical-pr-open`にはmachine-readable Intake RecordとPR本文のIntake Recordが必要である。
+- `consumed`への遷移は通常merge、exact-main CI、Pages、公開確認後に行う。
+- Manifest更新後は`npm run render:editorial-inputs`を実行し、生成索引を同じPRへ含める。
 
 ## book-formatter update
 

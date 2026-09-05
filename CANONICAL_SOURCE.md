@@ -13,10 +13,14 @@
 - 演習定義・合成データ: 将来の`lab/`
 - 機械可読Schema: `schemas/`
 - 機械可読な書籍構造: `book-config.json`
+- Editorial InputのPackage / Target / Candidate / Disposition: `editorial-input-manifest.json`
+- Editorial Input ManifestのSchema: `schemas/editorial-input-manifest.schema.json`
 - 公開ページ追加Registry: `site-pages.json`
 - 共通出版部品の固定情報: `.book-formatter/revision.json`
 
 `docs/`はGitHub Pages向けの一時生成物であり、直接編集もGit管理もしない。CIとローカルbuildは、正本から毎回`docs/`を再生成する。
+
+`EDITORIAL_INPUT_MANIFEST.md`は`editorial-input-manifest.json`から生成する人間向け索引であり、直接編集しない。外部のZIP、`.predraft.md`、Codex Goal Packageは正本ではなく、Repositoryへcommitしない。
 
 ## 生成コマンド
 

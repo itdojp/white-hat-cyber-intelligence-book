@@ -19,6 +19,8 @@
 
 章の大幅変更は、`WRITING_GUIDE.md`の標準構造と`CROSS_BOOK_MAP.md`の境界に従います。既存専門書で詳述済みの内容をコピーせず、必要な要約と安定した参照を置いてください。
 
+非正本のEditorial Inputを参照する場合は`editorial-input-manifest.json`でPackage、Target、Candidate、Dispositionを確認し、`WRITING_GUIDE.md`のIntake契約に従ってください。Raw ZIPと`.predraft.md`はcommitしません。
+
 ## 出典
 
 `SOURCE_POLICY.md`に従い、一次資料を優先します。新しい主要出典は`references/sources.json`へ追加してください。
