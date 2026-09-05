@@ -388,34 +388,13 @@ def top_level_entry(parsed: ParsedWorkflow, key: str) -> MappingLine | None:
     return matches[0] if len(matches) == 1 else None
 
 
-def top_level_env_value_errors(
+def npm_test_environment_errors(
     parsed: ParsedWorkflow,
     label: str,
     key: str,
     expected: str,
 ) -> list[str]:
-    """Require one active top-level environment value, not a text occurrence."""
-    errors: list[str] = []
-    env = top_level_entry(parsed, "env")
-    if env is None or env.value:
-        return [f"{label}: top-level env must be one active block mapping"]
-    matches = [entry for entry in direct_children(parsed, env) if entry.key == key]
-    if len(matches) != 1:
-        return [f"{label}: top-level env must define {key!r} exactly once"]
-    actual = decoded_value(matches[0], label, errors)
-    if actual != expected:
-        errors.append(
-            f"{label}: top-level env {key!r} must equal {expected!r}; got {actual!r}"
-        )
-    return errors
-
-
-def npm_test_environment_override_errors(
-    parsed: ParsedWorkflow,
-    label: str,
-    key: str,
-) -> list[str]:
-    """Reject a job or npm-test step that shadows a protected workflow value."""
+    """Pin a protected value at the highest-precedence npm-test step scope."""
     errors: list[str] = []
     jobs = top_level_entry(parsed, "jobs")
     if jobs is None:
@@ -433,16 +412,51 @@ def npm_test_environment_override_errors(
         ]
         if not npm_test_steps:
             continue
+        accepted_entries: set[int] = set()
+        for step in npm_test_steps:
+            env_entries = [entry for entry in step if entry.key == "env"]
+            if len(env_entries) != 1 or env_entries[0].value:
+                errors.append(
+                    f"{label}: job {job.key!r} npm test step must contain one "
+                    "active env block mapping"
+                )
+                continue
+            matches = [
+                entry
+                for entry in direct_children(parsed, env_entries[0])
+                if entry.key == key
+            ]
+            if len(matches) != 1:
+                errors.append(
+                    f"{label}: job {job.key!r} npm test step must define "
+                    f"env {key!r} exactly once"
+                )
+                continue
+            accepted_entries.add(matches[0].index)
+            actual = decoded_value(matches[0], label, errors)
+            if actual != expected:
+                errors.append(
+                    f"{label}:{matches[0].index + 1}: npm test env {key!r} "
+                    f"must equal {expected!r}; got {actual!r}"
+                )
+
         job_end = block_end(parsed, job)
-        overrides = [
+        conflicting_entries = [
             entry
             for entry in parsed.entries
-            if job.index < entry.index < job_end and entry.key == key
+            if job.index < entry.index < job_end
+            and (
+                (
+                    entry.key == key
+                    and entry.index not in accepted_entries
+                )
+                or entry.key in {"GITHUB_EVENT_NAME", "GITHUB_SHA"}
+            )
         ]
-        for override in overrides:
+        for conflict in conflicting_entries:
             errors.append(
-                f"{label}:{override.index + 1}: job {job.key!r} running npm test "
-                f"must not override env {key!r}"
+                f"{label}:{conflict.index + 1}: job {job.key!r} running npm test "
+                f"must not redefine protected context key {conflict.key!r}"
             )
     return errors
 
@@ -482,7 +496,7 @@ def npm_test_checkout_errors(parsed: ParsedWorkflow, label: str) -> list[str]:
             checkout_paths = [
                 decoded_value(entry, label, errors)
                 for entry in inputs
-                if entry.key == "path"
+                if entry.key.casefold() == "path"
             ]
             if checkout_paths != [".work/book-formatter"]:
                 root_checkouts.append((uses, step, inputs))
@@ -506,13 +520,17 @@ def npm_test_checkout_errors(parsed: ParsedWorkflow, label: str) -> list[str]:
             )
         )
         forbidden_inputs = sorted(
-            {entry.key for entry in inputs} & {"repository", "ref", "path"}
+            entry.key
+            for entry in inputs
+            if entry.key.casefold() in {"repository", "ref", "path"}
         )
         for key in forbidden_inputs:
             errors.append(
                 f"{label}:{uses.index + 1}: primary checkout must not set {key!r}"
             )
-        fetch_depths = [entry for entry in inputs if entry.key == "fetch-depth"]
+        fetch_depths = [
+            entry for entry in inputs if entry.key.casefold() == "fetch-depth"
+        ]
         if len(fetch_depths) != 1:
             errors.append(
                 f"{label}:{uses.index + 1}: primary checkout must define "
@@ -889,9 +907,7 @@ def check_parser_regressions(errors: list[str]) -> None:
             "workflow parser regression failed closed on flow mapping"
         )
 
-    base_guard = f"""env:
-  EDITORIAL_INPUT_BASE_COMMIT: ${{{{ github.event.pull_request.base.sha }}}}
-jobs:
+    base_guard = f"""jobs:
   test:
     steps:
       - uses: actions/checkout@{sha}
@@ -899,9 +915,11 @@ jobs:
           fetch-depth: 2
           persist-credentials: false
       - run: npm test
+        env:
+          EDITORIAL_INPUT_BASE_COMMIT: ${{{{ github.event.pull_request.base.sha }}}}
 """
     parsed = parse_workflow(base_guard, "base guard valid")
-    if top_level_env_value_errors(
+    if npm_test_environment_errors(
         parsed,
         "base guard valid",
         "EDITORIAL_INPUT_BASE_COMMIT",
@@ -911,8 +929,8 @@ jobs:
 
     invalid_base_guards = {
         "commented env": base_guard.replace(
-            "  EDITORIAL_INPUT_BASE_COMMIT:",
-            "  # EDITORIAL_INPUT_BASE_COMMIT:",
+            "          EDITORIAL_INPUT_BASE_COMMIT:",
+            "          # EDITORIAL_INPUT_BASE_COMMIT:",
         ),
         "wrong expression": base_guard.replace(
             "github.event.pull_request.base.sha",
@@ -926,13 +944,18 @@ jobs:
             "  test:\n",
             "  test:\n    env:\n      EDITORIAL_INPUT_BASE_COMMIT: ${{ github.sha }}\n",
         ),
-        "test step env override": base_guard.replace(
-            "      - run: npm test",
-            "      - run: npm test\n        env:\n          EDITORIAL_INPUT_BASE_COMMIT: ${{ github.sha }}",
+        "duplicate test step env": base_guard.replace(
+            "          EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}",
+            "          EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}\n"
+            "          EDITORIAL_INPUT_BASE_COMMIT: ${{ github.sha }}",
         ),
         "base ref checkout": base_guard.replace(
             "          fetch-depth: 2",
             "          fetch-depth: 2\n          ref: ${{ github.event.pull_request.base.sha }}",
+        ),
+        "uppercase base ref checkout": base_guard.replace(
+            "          fetch-depth: 2",
+            "          fetch-depth: 2\n          REF: ${{ github.event.pull_request.base.sha }}",
         ),
         "checkout after test": base_guard.replace(
             f"      - uses: actions/checkout@{sha}\n"
@@ -946,9 +969,7 @@ jobs:
             "          fetch-depth: 2\n"
             "          persist-credentials: false",
         ),
-        "checkout isolated in another job": f"""env:
-  EDITORIAL_INPUT_BASE_COMMIT: ${{{{ github.event.pull_request.base.sha }}}}
-jobs:
+        "checkout isolated in another job": f"""jobs:
   helper:
     steps:
       - uses: actions/checkout@{sha}
@@ -964,18 +985,17 @@ jobs:
           ref: ${{{{ github.event.pull_request.base.sha }}}}
           persist-credentials: false
       - run: npm test
+        env:
+          EDITORIAL_INPUT_BASE_COMMIT: ${{{{ github.event.pull_request.base.sha }}}}
 """,
     }
     for name, fixture in invalid_base_guards.items():
         parsed = parse_workflow(fixture, f"base guard {name}")
-        diagnostics = top_level_env_value_errors(
+        diagnostics = npm_test_environment_errors(
             parsed,
             name,
             "EDITORIAL_INPUT_BASE_COMMIT",
             EDITORIAL_INPUT_BASE_EXPRESSION,
-        )
-        diagnostics += npm_test_environment_override_errors(
-            parsed, name, "EDITORIAL_INPUT_BASE_COMMIT"
         )
         diagnostics += npm_test_checkout_errors(parsed, name)
         if not diagnostics:
@@ -1267,18 +1287,11 @@ def main() -> int:
             if required not in contract:
                 errors.append(f"contract.yml: missing {required!r}")
         errors.extend(
-            top_level_env_value_errors(
+            npm_test_environment_errors(
                 parsed_contract,
                 "contract.yml",
                 "EDITORIAL_INPUT_BASE_COMMIT",
                 EDITORIAL_INPUT_BASE_EXPRESSION,
-            )
-        )
-        errors.extend(
-            npm_test_environment_override_errors(
-                parsed_contract,
-                "contract.yml",
-                "EDITORIAL_INPUT_BASE_COMMIT",
             )
         )
         errors.extend(
@@ -1307,18 +1320,11 @@ def main() -> int:
             if required not in book_qa:
                 errors.append(f"book-qa.yml: missing {required!r}")
         errors.extend(
-            top_level_env_value_errors(
+            npm_test_environment_errors(
                 parsed_book_qa,
                 "book-qa.yml",
                 "EDITORIAL_INPUT_BASE_COMMIT",
                 EDITORIAL_INPUT_BASE_EXPRESSION,
-            )
-        )
-        errors.extend(
-            npm_test_environment_override_errors(
-                parsed_book_qa,
-                "book-qa.yml",
-                "EDITORIAL_INPUT_BASE_COMMIT",
             )
         )
         errors.extend(

@@ -37,12 +37,36 @@ REGISTRATION_SNAPSHOT = (
 )
 
 
-def editorial_input_baseline_commit(environment: Mapping[str, str]) -> str:
-    """Return the exact PR base or fail closed when a PR run omits it."""
+def editorial_input_baseline_commit(
+    environment: Mapping[str, str],
+    *,
+    current_head: str | None = None,
+) -> str:
+    """Return the PR base and prove validation runs at the event's exact head."""
     baseline_commit = environment.get("EDITORIAL_INPUT_BASE_COMMIT", "").strip()
     event_name = environment.get("GITHUB_EVENT_NAME", "").strip()
     if event_name == "pull_request" and not baseline_commit:
         fail("EDITORIAL_INPUT_BASE_COMMIT is required for pull_request validation")
+    if event_name == "pull_request":
+        expected_head = require_pattern(
+            environment.get("GITHUB_SHA", ""), "GITHUB_SHA", GIT_SHA_RE
+        )
+        if current_head is None:
+            result = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                fail("GITHUB_SHA: cannot determine checked-out HEAD")
+            current_head = result.stdout.strip()
+        if current_head != expected_head:
+            fail(
+                "GITHUB_SHA: validator is not running at the exact event head; "
+                f"expected {expected_head}, got {current_head}"
+            )
     return baseline_commit
 
 
@@ -2449,7 +2473,9 @@ def run_manifest_regressions(
             {
                 "GITHUB_EVENT_NAME": "pull_request",
                 "EDITORIAL_INPUT_BASE_COMMIT": exact_baseline,
-            }
+                "GITHUB_SHA": exact_baseline,
+            },
+            current_head=exact_baseline,
         )
         != exact_baseline
     ):
@@ -2461,7 +2487,21 @@ def run_manifest_regressions(
             fail(f"baseline environment regression returned unexpected error: {exc}")
     else:
         fail("baseline environment regression accepted a PR run without its base")
-    return len(cases) + 18
+    try:
+        editorial_input_baseline_commit(
+            {
+                "GITHUB_EVENT_NAME": "pull_request",
+                "EDITORIAL_INPUT_BASE_COMMIT": exact_baseline,
+                "GITHUB_SHA": exact_baseline,
+            },
+            current_head="1" * 40,
+        )
+    except ManifestError as exc:
+        if "not running at the exact event head" not in str(exc):
+            fail(f"exact-head environment regression returned unexpected error: {exc}")
+    else:
+        fail("exact-head environment regression accepted a different checkout")
+    return len(cases) + 19
 
 
 def write_test_zip(

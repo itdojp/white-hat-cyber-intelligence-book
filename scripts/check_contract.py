@@ -305,7 +305,23 @@ if package:
         'python3 scripts/check_editorial_input_manifest.py'
     ):
         error('package.json: check:editorial-inputs command mismatch')
-    test_steps = package_scripts.get('test', '').split(' && ')
+    forbidden_lifecycle_scripts = {
+        'pretest',
+        'posttest',
+        'precheck:editorial-inputs',
+        'postcheck:editorial-inputs',
+    }
+    for script_name in sorted(forbidden_lifecycle_scripts & package_scripts.keys()):
+        error(f'package.json: forbidden lifecycle script {script_name}')
+    test_script = package_scripts.get('test')
+    if not isinstance(test_script, str) or not re.fullmatch(
+        r'npm run check:[a-z0-9-]+(?: && npm run check:[a-z0-9-]+)*',
+        test_script,
+    ):
+        error('package.json: npm test must be a strict fail-fast check chain')
+        test_steps = []
+    else:
+        test_steps = test_script.split(' && ')
     if test_steps.count('npm run check:editorial-inputs') != 1:
         error('package.json: npm test must run check:editorial-inputs exactly once')
 

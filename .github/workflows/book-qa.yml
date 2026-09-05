@@ -12,7 +12,6 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
   BOOK_FORMATTER_DIR: .work/book-formatter
-  EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
 
 jobs:
   qa:
@@ -60,6 +59,8 @@ jobs:
 
       - name: Run repository contract tests
         run: npm test
+        env:
+          EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
 
       - name: Generate deterministic site source
         run: npm run sync:docs
