@@ -1504,6 +1504,7 @@ def registration_projection(manifest: dict[str, Any]) -> dict[str, Any]:
         output.append(
             {
                 "packageId": package["packageId"],
+                "aliasOf": package.get("aliasOf"),
                 "filename": package["filename"],
                 "packageSha256": package["sha256"],
                 "packageKind": package["packageKind"],
@@ -1567,6 +1568,7 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
             label,
             {
                 "packageId",
+                "aliasOf",
                 "filename",
                 "packageSha256",
                 "packageKind",
@@ -1579,6 +1581,11 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
         package_id = require_pattern(
             package["packageId"], f"{label}.packageId", PACKAGE_ID_RE
         )
+        alias_of = package["aliasOf"]
+        if alias_of is not None:
+            alias_of = require_pattern(alias_of, f"{label}.aliasOf", PACKAGE_ID_RE)
+            if alias_of == package_id:
+                fail(f"{label}.aliasOf: package cannot alias itself")
         filename = require_string(package["filename"], f"{label}.filename")
         package_sha = require_pattern(
             package["packageSha256"], f"{label}.packageSha256", SHA256_RE
@@ -1623,6 +1630,7 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
         normalized.append(
             {
                 "packageId": package_id,
+                "aliasOf": alias_of,
                 "filename": filename,
                 "packageSha256": package_sha,
                 "packageKind": package_kind,
@@ -1706,6 +1714,30 @@ def validate_registration_snapshot_append_only(
     baseline_packages = require_list(
         baseline.get("packages"), "baseline registration snapshot.packages"
     )
+    baseline_package_objects = [
+        require_object(item, "baseline registration snapshot package")
+        for item in baseline_packages
+    ]
+    alias_field_presence = {
+        "aliasOf" in package for package in baseline_package_objects
+    }
+    if len(alias_field_presence) > 1:
+        fail("registration snapshot: mixed legacy/current aliasOf checkpoints")
+    legacy_alias_checkpoint = alias_field_presence == {False}
+    if legacy_alias_checkpoint:
+        package_shas = [
+            require_pattern(
+                package.get("packageSha256"),
+                "baseline registration snapshot package.packageSha256",
+                SHA256_RE,
+            )
+            for package in baseline_package_objects
+        ]
+        if len(set(package_shas)) != len(package_shas):
+            fail(
+                "registration snapshot: legacy checkpoint cannot recover alias "
+                "ownership for duplicate Package SHA"
+            )
     current_packages = require_list(
         current.get("packages"), "current registration snapshot.packages"
     )
@@ -1721,8 +1753,10 @@ def validate_registration_snapshot_append_only(
     }
     if len(current_packages_by_id) != len(current_packages):
         fail("registration snapshot: duplicate current Package checkpoint")
-    for raw in baseline_packages:
-        package = require_object(raw, "baseline registration snapshot package")
+    for raw in baseline_package_objects:
+        package = copy.deepcopy(raw)
+        if legacy_alias_checkpoint:
+            package["aliasOf"] = None
         package_id = require_pattern(
             package.get("packageId"),
             "baseline registration snapshot package.packageId",
@@ -2478,6 +2512,61 @@ def run_manifest_regressions(
             fail(f"append-only checkpoint regression returned unexpected error: {exc}")
     else:
         fail("append-only checkpoint regression accepted a rewritten history entry")
+    legacy_alias_checkpoint = copy.deepcopy(registration_snapshot)
+    for package in legacy_alias_checkpoint["packages"]:
+        del package["aliasOf"]
+    validate_registration_snapshot_append_only(
+        legacy_alias_checkpoint, registration_snapshot
+    )
+    ambiguous_legacy_alias_checkpoint = copy.deepcopy(legacy_alias_checkpoint)
+    ambiguous_legacy_alias_checkpoint["packages"][1]["packageSha256"] = (
+        ambiguous_legacy_alias_checkpoint["packages"][0]["packageSha256"]
+    )
+    try:
+        validate_registration_snapshot_append_only(
+            ambiguous_legacy_alias_checkpoint, registration_snapshot
+        )
+    except ManifestError as exc:
+        if "legacy checkpoint cannot recover alias ownership" not in str(exc):
+            fail(f"legacy alias checkpoint regression returned unexpected error: {exc}")
+    else:
+        fail("legacy alias checkpoint regression guessed ambiguous alias ownership")
+    alias_checkpoint = copy.deepcopy(registration_snapshot)
+    canonical_package = alias_checkpoint["packages"][0]
+    alias_package = copy.deepcopy(canonical_package)
+    registered_package_ids = {
+        package["packageId"] for package in alias_checkpoint["packages"]
+    }
+    alias_package_id = next(
+        (
+            f"EIP-{sequence:04d}"
+            for sequence in range(1, 10_000)
+            if f"EIP-{sequence:04d}" not in registered_package_ids
+        ),
+        None,
+    )
+    if alias_package_id is None:
+        fail("alias checkpoint regression requires an unused synthetic Package ID")
+    alias_package["packageId"] = alias_package_id
+    alias_package["aliasOf"] = canonical_package["packageId"]
+    alias_checkpoint["packages"].append(alias_package)
+    validate_registration_snapshot_append_only(
+        registration_snapshot, alias_checkpoint
+    )
+    swapped_alias_checkpoint = copy.deepcopy(alias_checkpoint)
+    swapped_canonical = swapped_alias_checkpoint["packages"][0]
+    swapped_alias = swapped_alias_checkpoint["packages"][-1]
+    swapped_canonical["aliasOf"] = swapped_alias["packageId"]
+    swapped_alias["aliasOf"] = None
+    try:
+        validate_registration_snapshot_append_only(
+            alias_checkpoint, swapped_alias_checkpoint
+        )
+    except ManifestError as exc:
+        if "historical Package checkpoint changed" not in str(exc):
+            fail(f"alias checkpoint regression returned unexpected error: {exc}")
+    else:
+        fail("alias checkpoint regression accepted rewritten canonical ownership")
     if editorial_input_baseline_commit({"GITHUB_EVENT_NAME": "push"}):
         fail("baseline environment regression invented a base commit for push")
     exact_baseline = "0" * 40
@@ -2514,7 +2603,7 @@ def run_manifest_regressions(
             fail(f"exact-head environment regression returned unexpected error: {exc}")
     else:
         fail("exact-head environment regression accepted a different checkout")
-    return len(cases) + 19
+    return len(cases) + 23
 
 
 def write_test_zip(

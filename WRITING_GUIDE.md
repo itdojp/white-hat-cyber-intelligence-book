@@ -172,7 +172,7 @@ superseded-with-record
 - `selected-for-intake`はbranch作成前の選択、`canonical-pr-open`は専用Draft PRとIntake Recordの存在、`consumed`は通常mergeとmain/publication gate完了を意味する。
 - `blueprint-only`と`generator-blueprint-only`を完成本文として扱わず、候補が複数になれば`candidate-selection-required`、利用開始時は`selected-for-intake`または`canonical-pr-open`へ進める。
 - `statusHistory`の先頭は、Targetを最初に所有したCandidate Packageの登録日・登録URL・入力roleに一致させる。後続Candidateを追加しても初期状態を書き換えない。
-- `tests/fixtures/editorial-input/registration-snapshot.json`の`statusHistoryPrefix`は、そのrevisionで受理する全履歴のcheckpointである。状態変更はManifestとcheckpointの両方の末尾に同じentryを追加する。PR CIはbase commitのcheckpointを取得し、既存Package・Target・履歴entryの削除・書換えを拒否する。
+- `tests/fixtures/editorial-input/registration-snapshot.json`は、各Packageの`aliasOf`をcanonical ownerでは`null`、aliasではPackage IDとして明示し、`statusHistoryPrefix`にそのrevisionで受理する全履歴を固定する。状態変更はManifestとcheckpointの両方の末尾に同じentryを追加する。PR CIはbase commitのcheckpointを取得し、既存Package・alias ownership・Target・履歴entryの削除・書換えを拒否する。`aliasOf`導入前のcheckpointはPackage SHAが全件一意な場合だけ欠落値を`null`へ正規化し、重複SHAがある場合は所有者を推測せずfail closedとする。
 - Candidateの文言、ID、Source version、Statusをcurrent Repositoryより優先しない。
 
 ### Canonical PR Intake Record

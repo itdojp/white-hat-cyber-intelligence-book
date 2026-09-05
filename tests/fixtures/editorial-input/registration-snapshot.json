@@ -6,6 +6,7 @@
   "packages": [
     {
       "packageId": "EIP-0001",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-08.zip",
       "packageSha256": "caf8c73aa4e84c99f4062ac7cf85ac56794ad2cbb5d8ec5d9403138753eb6388",
       "packageKind": "draft",
@@ -51,6 +52,7 @@
     },
     {
       "packageId": "EIP-0002",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-08-wave2.zip",
       "packageSha256": "fffbd2af8a17cbbfa60c09c37c30a682a9c528b44194e0e9f0f3588e2a6a46ca",
       "packageKind": "draft",
@@ -96,6 +98,7 @@
     },
     {
       "packageId": "EIP-0003",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-08-wave3.zip",
       "packageSha256": "d986ee9a9c71cf210420bb921f078a395133e2e5e0b9050960ad63554c22582a",
       "packageKind": "draft",
@@ -141,6 +144,7 @@
     },
     {
       "packageId": "EIP-0004",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-08-wave4.zip",
       "packageSha256": "956a321088abed3058e59c58ceeda3d5fd57a9d12a6715240185d0d7c445d86f",
       "packageKind": "draft",
@@ -186,6 +190,7 @@
     },
     {
       "packageId": "EIP-0005",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave5.zip",
       "packageSha256": "c4fd20d4c44d769c22bbab886535ca3105b3a3a5ed7bdb6cea71619e6b7279a0",
       "packageKind": "draft",
@@ -231,6 +236,7 @@
     },
     {
       "packageId": "EIP-0006",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave5.zip",
       "packageSha256": "1a2ccaa3dc3453dfc91c28a482bb8e319b5a2db6023d2d64f8cce2133619efb3",
       "packageKind": "draft",
@@ -276,6 +282,7 @@
     },
     {
       "packageId": "EIP-0007",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave6.zip",
       "packageSha256": "2ac28571912725ed838d4895779e3921b8138b52a66f2d5938c5776e46f3ff69",
       "packageKind": "draft",
@@ -321,6 +328,7 @@
     },
     {
       "packageId": "EIP-0008",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave8.zip",
       "packageSha256": "386e7148f504c9fa58a0b095bffcc6aeeaaf2be901e0d3b917e5e8db6c604b2c",
       "packageKind": "draft",
@@ -366,6 +374,7 @@
     },
     {
       "packageId": "EIP-0009",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave9.zip",
       "packageSha256": "bef9879d4b230f63d5f1f8d037611bbab097328defc054cb2b801fbf8deeb1ad",
       "packageKind": "draft",
@@ -411,6 +420,7 @@
     },
     {
       "packageId": "EIP-0010",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave10.zip",
       "packageSha256": "34a748e0d3373ad842aa512f6510c2ac17242d42588b82e19f377678d255c381",
       "packageKind": "draft",
@@ -456,6 +466,7 @@
     },
     {
       "packageId": "EIP-0011",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave11.zip",
       "packageSha256": "cb9fee8ca0a1ff1b8e2ce6d45f5d0d1cc102303eacaddfec394deca098e83461",
       "packageKind": "draft",
@@ -501,6 +512,7 @@
     },
     {
       "packageId": "EIP-0012",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave12.zip",
       "packageSha256": "6f5da12b33216dbc50473e9fd9d403213807d7f0219c50a71e5292386e82ea7b",
       "packageKind": "mixed",
@@ -546,6 +558,7 @@
     },
     {
       "packageId": "EIP-0013",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave13.zip",
       "packageSha256": "16032793c917c17bd9478fb3f4e0a89e2afc89cf82b27400328dbfa74c9465d9",
       "packageKind": "draft",
@@ -611,6 +624,7 @@
     },
     {
       "packageId": "EIP-0014",
+      "aliasOf": null,
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave14.zip",
       "packageSha256": "f6b11d439088d8e8571d7e8630b33a866b566a97815480ef7df074c45faa79a4",
       "packageKind": "generator-blueprint",
