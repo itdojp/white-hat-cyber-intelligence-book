@@ -56,12 +56,6 @@ RUN_ENVIRONMENTS = {
 }
 FULL_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 BLOCK_SCALAR_RE = re.compile(r"^[|>](?:[+-]?[1-9]?|[1-9][+-]?)$")
-SENSITIVE_COMPLEX_KEY_RE = re.compile(
-    r"(?:^|[,{?]\s*)(?:['\"](?:uses|with|run|env|shell|working-directory|defaults|persist-credentials|enablement|permissions|jobs|build|deploy)['\"]|(?:uses|with|run|env|shell|working-directory|defaults|persist-credentials|enablement|permissions|jobs|build|deploy))\s*:",
-    re.IGNORECASE,
-)
-
-
 @dataclass(frozen=True)
 class ActiveLine:
     index: int
@@ -239,11 +233,11 @@ def parse_mapping_line(
             active,
             "flow-style mappings are not supported in workflow policy files",
         )
-    if value.startswith("[") and SENSITIVE_COMPLEX_KEY_RE.search(value):
+    if value.startswith("[") and not (key == "branches" and value == "[main]"):
         return (
             None,
             active,
-            "flow-style values containing policy keys are not supported",
+            "flow-style sequences are unsupported except for branches: [main]",
         )
     if key == "<<" or value.startswith("*"):
         return (
@@ -1168,6 +1162,29 @@ def check_parser_regressions(errors: list[str]) -> None:
         errors.append(
             "workflow parser regression failed closed on escaped flow mapping keys"
         )
+
+    escaped_flow_sequences = {
+        "run": r'''jobs:
+  hidden:
+    runs-on: self-hosted
+    steps: [ { "\u0072un": echo bypass } ]
+''',
+        "uses": r'''jobs:
+  hidden:
+    runs-on: self-hosted
+    steps: [ { "\u0075ses": evil/action@main } ]
+''',
+    }
+    for name, fixture in escaped_flow_sequences.items():
+        parsed = parse_workflow(fixture, f"parser regression escaped {name} sequence")
+        if not any(
+            "flow-style sequences are unsupported" in error
+            for error in parsed.errors
+        ):
+            errors.append(
+                "workflow parser regression failed closed on escaped flow "
+                f"sequence {name}"
+            )
 
     nested_flow_run = """jobs: { test: { steps: [ { run: npm test } ] } }
 """
