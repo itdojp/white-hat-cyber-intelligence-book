@@ -50,7 +50,7 @@ python3 scripts/check_editorial_input_manifest.py \
   --target chapter-05
 ```
 
-- 新規Package登録、Candidate選択、PR開始、merge後の各時点で`statusHistory`をappendする。Manifest 1.0.0の固定`statusHistoryPrefix`は`tests/fixtures/editorial-input/registration-snapshot.json`に保持し、既存entryを削除・書換えない。
+- 新規Package登録、Candidate選択、PR開始、merge後の各時点でManifestの`statusHistory`と`tests/fixtures/editorial-input/registration-snapshot.json`の`statusHistoryPrefix`へ同じentryをappendする。PR CIはbase commitのcheckpointと比較し、既存Package・Target・履歴entryの削除・書換えを拒否する。
 - 複数候補は比較前に`candidate-selection-required`とし、配列順、日時、Wave、File sizeでwinnerを決めない。
 - `canonical-pr-open`にはmachine-readable Intake RecordとPR本文のIntake Recordが必要である。
 - `consumed`への遷移は通常merge、exact-main CI、Pages、公開確認後に行う。

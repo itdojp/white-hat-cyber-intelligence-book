@@ -12,6 +12,7 @@ import argparse
 import copy
 import hashlib
 import json
+import os
 import re
 import stat
 import subprocess
@@ -81,6 +82,10 @@ SELECTED_DISPOSITIONS = {"selected", "adopted", "rewritten"}
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 FULL_DATE_RE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
+UTC_TIMESTAMP_RE = re.compile(
+    r"[0-9]{4}-[0-9]{2}-[0-9]{2}T"
+    r"(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\.[0-9]+)?Z\Z"
+)
 PACKAGE_ID_RE = re.compile(r"EIP-[0-9]{4}\Z")
 TARGET_ID_RE = re.compile(
     r"(?:chapter-[0-9]{2}|appendix-[a-z]|appendices-[a-z](?:-[a-z])+)\Z"
@@ -158,6 +163,51 @@ def load_json_strict(path: Path) -> Any:
         raise ManifestError(f"{path}: invalid UTF-8 JSON: {exc}") from exc
 
 
+def load_json_from_git(ref: str, path: Path) -> Any | None:
+    """Load a tracked JSON file from an exact commit, or return None if absent."""
+
+    require_pattern(ref, "EDITORIAL_INPUT_BASE_COMMIT", GIT_SHA_RE)
+    relative = path.relative_to(ROOT).as_posix()
+    commit = subprocess.run(
+        ["git", "cat-file", "-e", f"{ref}^{{commit}}"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if commit.returncode != 0:
+        fail(f"EDITORIAL_INPUT_BASE_COMMIT: commit object unavailable: {ref}")
+    tracked = subprocess.run(
+        ["git", "cat-file", "-e", f"{ref}:{relative}"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if tracked.returncode != 0:
+        return None
+    result = subprocess.run(
+        ["git", "show", f"{ref}:{relative}"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+    )
+    if result.returncode != 0:
+        fail(f"EDITORIAL_INPUT_BASE_COMMIT: cannot read {relative} at {ref}")
+    try:
+        return json.loads(
+            result.stdout.decode("utf-8"),
+            object_pairs_hook=_reject_duplicate_keys,
+            parse_constant=_reject_constant,
+        )
+    except ManifestError:
+        raise
+    except (UnicodeError, json.JSONDecodeError) as exc:
+        raise ManifestError(
+            f"EDITORIAL_INPUT_BASE_COMMIT: invalid UTF-8 JSON at {ref}:{relative}: {exc}"
+        ) from exc
+
+
 def require_object(value: Any, label: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         fail(f"{label}: expected object")
@@ -219,12 +269,14 @@ def require_iso_date(value: Any, label: str) -> str:
 
 def require_utc_timestamp(value: Any, label: str) -> str:
     text = require_string(value, label)
-    if not text.endswith("Z"):
-        fail(f"{label}: expected UTC timestamp ending in Z")
+    if not UTC_TIMESTAMP_RE.fullmatch(text):
+        fail(f"{label}: invalid RFC 3339 UTC timestamp: {text!r}")
     try:
         datetime.fromisoformat(text.removesuffix("Z") + "+00:00")
     except ValueError as exc:
-        raise ManifestError(f"{label}: invalid UTC timestamp: {text!r}") from exc
+        raise ManifestError(
+            f"{label}: invalid RFC 3339 UTC timestamp: {text!r}"
+        ) from exc
     return text
 
 
@@ -1206,6 +1258,17 @@ def validate_targets(
                 fail(
                     f"{label}: candidate-selection-required needs at least two pending comparisons"
                 )
+            allowed_comparison_dispositions = {
+                "pending-comparison",
+                *TERMINAL_ALTERNATIVE_DISPOSITIONS,
+            }
+            if any(
+                item not in allowed_comparison_dispositions for item in dispositions
+            ):
+                fail(
+                    f"{label}: candidate-selection-required forbids selected-like "
+                    "or unclassified dispositions"
+                )
         elif status_value == "selected-for-intake":
             if (
                 selected_candidate is None
@@ -1568,11 +1631,8 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
         current_target = manifest_targets.get(target_id)
         if current_target is not None:
             current_history = current_target["statusHistory"]
-            if (
-                len(current_history) < len(prefix)
-                or current_history[: len(prefix)] != prefix
-            ):
-                fail(f"{label}: statusHistory prefix mismatch")
+            if current_history != prefix:
+                fail(f"{label}: statusHistory checkpoint mismatch")
         normalized_targets.append(
             {"targetId": target_id, "issue": issue, "targetKind": target_kind}
         )
@@ -1583,6 +1643,102 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
     expected = registration_projection(manifest)
     if {"packages": normalized, "targets": normalized_targets} != expected:
         fail("registration snapshot: registered package/target/input inventory drift")
+
+
+def validate_registration_snapshot_append_only(
+    baseline_value: Any, current_value: Any
+) -> None:
+    """Require every previously accepted Package and status entry to remain exact."""
+
+    baseline = require_object(baseline_value, "baseline registration snapshot")
+    current = require_object(current_value, "current registration snapshot")
+    for field in ("schemaVersion", "registrationIssue"):
+        if baseline.get(field) != current.get(field):
+            fail(f"registration snapshot: historical {field} changed")
+
+    baseline_packages = require_list(
+        baseline.get("packages"), "baseline registration snapshot.packages"
+    )
+    current_packages = require_list(
+        current.get("packages"), "current registration snapshot.packages"
+    )
+    current_packages_by_id = {
+        require_pattern(
+            require_object(item, "current registration snapshot package").get(
+                "packageId"
+            ),
+            "current registration snapshot package.packageId",
+            PACKAGE_ID_RE,
+        ): item
+        for item in current_packages
+    }
+    if len(current_packages_by_id) != len(current_packages):
+        fail("registration snapshot: duplicate current Package checkpoint")
+    for raw in baseline_packages:
+        package = require_object(raw, "baseline registration snapshot package")
+        package_id = require_pattern(
+            package.get("packageId"),
+            "baseline registration snapshot package.packageId",
+            PACKAGE_ID_RE,
+        )
+        if current_packages_by_id.get(package_id) != package:
+            fail(
+                f"registration snapshot: historical Package checkpoint changed: {package_id}"
+            )
+
+    baseline_targets = require_list(
+        baseline.get("targets"), "baseline registration snapshot.targets"
+    )
+    current_targets = require_list(
+        current.get("targets"), "current registration snapshot.targets"
+    )
+    current_targets_by_id = {
+        require_pattern(
+            require_object(item, "current registration snapshot target").get(
+                "targetId"
+            ),
+            "current registration snapshot target.targetId",
+            TARGET_ID_RE,
+        ): item
+        for item in current_targets
+    }
+    if len(current_targets_by_id) != len(current_targets):
+        fail("registration snapshot: duplicate current Target checkpoint")
+    for raw in baseline_targets:
+        target = require_object(raw, "baseline registration snapshot target")
+        target_id = require_pattern(
+            target.get("targetId"),
+            "baseline registration snapshot target.targetId",
+            TARGET_ID_RE,
+        )
+        current_target = current_targets_by_id.get(target_id)
+        if current_target is None:
+            fail(
+                f"registration snapshot: historical Target checkpoint removed: {target_id}"
+            )
+        for field in ("issue", "targetKind"):
+            if current_target.get(field) != target.get(field):
+                fail(
+                    f"registration snapshot: historical Target {field} changed: {target_id}"
+                )
+        baseline_history = require_list(
+            target.get("statusHistoryPrefix"),
+            f"baseline registration snapshot target {target_id}.statusHistoryPrefix",
+            nonempty=True,
+        )
+        current_history = require_list(
+            current_target.get("statusHistoryPrefix"),
+            f"current registration snapshot target {target_id}.statusHistoryPrefix",
+            nonempty=True,
+        )
+        if (
+            len(current_history) < len(baseline_history)
+            or current_history[: len(baseline_history)] != baseline_history
+        ):
+            fail(
+                "registration snapshot: historical statusHistory entry changed: "
+                f"{target_id}"
+            )
 
 
 def markdown_escape(value: Any) -> str:
@@ -1887,6 +2043,24 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
         target = targets["chapter-09"]
         target["status"] = "registered-pending-prerequisites"
         target["statusHistory"][-1]["status"] = target["status"]
+    elif mutation == "comparison-selected-like-candidate":
+        target = targets["chapter-09"]
+        package = next(item for item in packages if item["packageId"] == "EIP-0012")
+        package_file = next(
+            item for item in package["files"] if item["role"] == "blueprint-input"
+        )
+        package_file["targets"].append("chapter-09")
+        target["candidates"].append(
+            {
+                "candidateId": f"EIC-0034-{package_file['sha256'][:12]}",
+                "packageId": package["packageId"],
+                "inputPath": package_file["path"],
+                "inputSha256": package_file["sha256"],
+                "disposition": "selected",
+                "dispositionEvidenceUrl": package["registrationUrl"],
+                "dispositionReason": "contradictory selected comparison fixture",
+            }
+        )
     elif mutation in {
         "filename-only-selection",
         "silent-latest-wins",
@@ -1999,6 +2173,19 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
     elif mutation == "status-history-prefix-rewritten":
         target = targets["chapter-05"]
         target["statusHistory"][0]["reason"] = "rewritten provenance fixture"
+    elif mutation == "status-history-checkpoint-unpersisted":
+        target = targets["chapter-05"]
+        target["status"] = "deferred"
+        target["selectedCandidateId"] = None
+        target["candidates"][0]["disposition"] = "deferred"
+        target["statusHistory"].append(
+            {
+                "status": "deferred",
+                "effectiveAt": "2026-09-06",
+                "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
+                "reason": "unpersisted lifecycle checkpoint regression fixture",
+            }
+        )
     elif mutation == "initial-status-skipped":
         target = targets["chapter-05"]
         target["statusHistory"] = [target["statusHistory"][-1]]
@@ -2039,6 +2226,8 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
         packages[0]["filename"] = "invalid\\name.zip"
     elif mutation == "schema-invalid-full-date":
         manifest["auditedAt"] = "20260905"
+    elif mutation == "schema-invalid-date-time":
+        manifest["source"]["contractIssueSnapshotUpdatedAt"] = "2026-09-05Z"
     else:
         fail(f"regression corpus: unsupported mutation: {mutation}")
 
@@ -2207,7 +2396,42 @@ def run_manifest_regressions(
             fail(f"invalid-oneOf-schema regression returned unexpected error: {exc}")
     else:
         fail("invalid-oneOf-schema regression accepted an unsupported branch type")
-    return len(cases) + 13
+    appended_checkpoint = copy.deepcopy(registration_snapshot)
+    appended_target = next(
+        item
+        for item in appended_checkpoint["targets"]
+        if item["targetId"] == "chapter-05"
+    )
+    appended_target["statusHistoryPrefix"].append(
+        {
+            "status": "canonical-pr-open",
+            "effectiveAt": "2026-09-06",
+            "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/999",
+            "reason": "synthetic append-only checkpoint",
+        }
+    )
+    validate_registration_snapshot_append_only(
+        registration_snapshot, appended_checkpoint
+    )
+    rewritten_checkpoint = copy.deepcopy(appended_checkpoint)
+    rewritten_target = next(
+        item
+        for item in rewritten_checkpoint["targets"]
+        if item["targetId"] == "chapter-05"
+    )
+    rewritten_target["statusHistoryPrefix"][-1]["reason"] = (
+        "rewritten synthetic checkpoint"
+    )
+    try:
+        validate_registration_snapshot_append_only(
+            appended_checkpoint, rewritten_checkpoint
+        )
+    except ManifestError as exc:
+        if "historical statusHistory entry changed" not in str(exc):
+            fail(f"append-only checkpoint regression returned unexpected error: {exc}")
+    else:
+        fail("append-only checkpoint regression accepted a rewritten history entry")
+    return len(cases) + 15
 
 
 def write_test_zip(
@@ -2421,6 +2645,15 @@ def main() -> int:
         registration_snapshot = load_json_strict(REGISTRATION_SNAPSHOT)
         manifest = validate_manifest(load_json_strict(args.manifest), schema)
         validate_registration_snapshot(manifest, registration_snapshot)
+        baseline_commit = os.environ.get("EDITORIAL_INPUT_BASE_COMMIT", "").strip()
+        if baseline_commit:
+            baseline_snapshot = load_json_from_git(
+                baseline_commit, REGISTRATION_SNAPSHOT
+            )
+            if baseline_snapshot is not None:
+                validate_registration_snapshot_append_only(
+                    baseline_snapshot, registration_snapshot
+                )
         expected_summary = render_summary(manifest)
         if args.write_summary:
             args.summary.write_text(expected_summary, encoding="utf-8")

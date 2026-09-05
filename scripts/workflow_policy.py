@@ -726,7 +726,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         if not diagnostics:
             errors.append(f"workflow parser regression failed to reject: {name}")
 
-    mutable = f"""jobs:
+    mutable = """jobs:
   test:
     steps:
       - \"uses\": actions/checkout@main
@@ -1025,9 +1025,18 @@ def main() -> int:
 
     contract = texts.get("contract.yml")
     if contract:
-        for required in ("npm test", "BOOK_FORMATTER_DIR", "contents: read"):
+        for required in (
+            "npm test",
+            "BOOK_FORMATTER_DIR",
+            "contents: read",
+            "EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}",
+        ):
             if required not in contract:
                 errors.append(f"contract.yml: missing {required!r}")
+        if contract.count("fetch-depth: 2") != 1:
+            errors.append(
+                "contract.yml: primary checkout must expose exactly two revisions"
+            )
         if "npm ci --ignore-scripts" not in contract:
             errors.append(
                 "contract.yml: repository npm install must ignore "
@@ -1037,6 +1046,7 @@ def main() -> int:
     book_qa = texts.get("book-qa.yml")
     if book_qa:
         for required in (
+            "EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}",
             "npm run sync:docs",
             "check-unicode.js",
             "check-textlint.js",
@@ -1049,6 +1059,10 @@ def main() -> int:
         ):
             if required not in book_qa:
                 errors.append(f"book-qa.yml: missing {required!r}")
+        if book_qa.count("fetch-depth: 2") != 1:
+            errors.append(
+                "book-qa.yml: primary checkout must expose exactly two revisions"
+            )
 
     pages = texts.get("pages.yml")
     parsed_pages = parsed_workflows.get("pages.yml")

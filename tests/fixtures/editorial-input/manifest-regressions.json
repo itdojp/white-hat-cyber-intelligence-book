@@ -131,7 +131,7 @@
       "id": "EIM-NEG-022",
       "family": "append-only status history",
       "mutation": "status-history-prefix-deleted",
-      "expectedError": "statusHistory prefix mismatch"
+      "expectedError": "statusHistory checkpoint mismatch"
     },
     {
       "id": "EIM-NEG-023",
@@ -143,7 +143,7 @@
       "id": "EIM-NEG-024",
       "family": "append-only status history",
       "mutation": "status-history-prefix-rewritten",
-      "expectedError": "statusHistory prefix mismatch"
+      "expectedError": "statusHistory checkpoint mismatch"
     },
     {
       "id": "EIM-NEG-025",
@@ -180,6 +180,24 @@
       "family": "Package registration sequence",
       "mutation": "package-registration-sequence-gap",
       "expectedError": "packageId registration sequence must be contiguous from EIP-0001"
+    },
+    {
+      "id": "EIM-NEG-031",
+      "family": "append-only status checkpoint",
+      "mutation": "status-history-checkpoint-unpersisted",
+      "expectedError": "statusHistory checkpoint mismatch"
+    },
+    {
+      "id": "EIM-NEG-032",
+      "family": "candidate selection disposition",
+      "mutation": "comparison-selected-like-candidate",
+      "expectedError": "candidate-selection-required forbids selected-like or unclassified dispositions"
+    },
+    {
+      "id": "EIM-NEG-033",
+      "family": "RFC 3339 UTC timestamp",
+      "mutation": "schema-invalid-date-time",
+      "expectedError": "invalid RFC 3339 UTC timestamp"
     }
   ]
 }
