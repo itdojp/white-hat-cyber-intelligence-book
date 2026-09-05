@@ -7,7 +7,7 @@
     "registrationIssue": 63,
     "contractIssue": 98,
     "registrationIssueSnapshotUpdatedAt": "2026-08-25T02:03:30Z",
-    "contractIssueSnapshotUpdatedAt": "2026-08-25T02:08:18Z",
+    "contractIssueSnapshotUpdatedAt": "2026-09-05T08:37:42Z",
     "scope": "Issue #63に登録された非正本draft/blueprint Package。Codex Goal Packageは実装指示でありcandidate sourceではないため対象外。"
   },
   "externalAuditArtifact": {
@@ -962,7 +962,7 @@
           "inputPath": "chapter05-attack-behavior.predraft.md",
           "inputSha256": "11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12",
           "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5550634873",
           "dispositionReason": "登録候補は1件。Packageが利用可能ならhash検証し、利用不能なら直接採用を主張せずIssue #30と現行一次資料から再構成する。"
         }
       ],
@@ -976,7 +976,7 @@
         {
           "status": "selected-for-intake",
           "effectiveAt": "2026-09-05",
-          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5550634873",
           "reason": "Issue #98契約の最初の実運用対象として明示選択した。"
         }
       ]

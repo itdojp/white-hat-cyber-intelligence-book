@@ -221,10 +221,17 @@ def require_safe_relative_path(value: Any, label: str) -> str:
     text = require_string(value, label)
     if "\\" in text or text.startswith("/") or "//" in text:
         fail(f"{label}: unsafe archive path: {text!r}")
-    pure = PurePosixPath(text)
-    if not pure.parts or any(part in {"", ".", ".."} for part in pure.parts):
+    # PurePosixPath normalizes away ``.`` components.  Inspect the raw path
+    # first so two distinct ZIP names cannot collapse to one extraction path.
+    raw_parts = text.split("/")
+    if any(part in {"", ".", ".."} for part in raw_parts):
         fail(f"{label}: unsafe archive path: {text!r}")
-    if ":" in pure.parts[0] or any(part.startswith(".") for part in pure.parts):
+    pure = PurePosixPath(text)
+    if not pure.parts:
+        fail(f"{label}: unsafe archive path: {text!r}")
+    if any(":" in part for part in raw_parts) or any(
+        part.startswith(".") for part in raw_parts
+    ):
         fail(f"{label}: hidden or drive-qualified archive path: {text!r}")
     return text
 
@@ -983,30 +990,45 @@ def validate_manifest(data: Any, schema: Any | None = None) -> dict[str, Any]:
     return manifest
 
 
-def registration_projection(manifest: dict[str, Any]) -> list[dict[str, Any]]:
+def registration_projection(manifest: dict[str, Any]) -> dict[str, Any]:
     output: list[dict[str, Any]] = []
     for package in sorted(manifest["packages"], key=lambda item: item["packageId"]):
-        inputs = [
+        files = [
             {
                 "path": item["path"],
-                "inputSha256": item["sha256"],
+                "sha256": item["sha256"],
+                "role": item["role"],
                 "targets": sorted(item["targets"]),
             }
             for item in package["files"]
-            if item["role"] in PRIMARY_INPUT_ROLES
         ]
         output.append(
             {
                 "packageId": package["packageId"],
                 "filename": package["filename"],
                 "packageSha256": package["sha256"],
+                "packageKind": package["packageKind"],
+                "waveLabel": package["waveLabel"],
+                "registeredAt": package["registeredAt"],
                 "registrationUrl": package["registrationUrl"],
-                "primaryInputs": sorted(
-                    inputs, key=lambda item: (item["path"], item["inputSha256"])
+                "files": sorted(
+                    files,
+                    key=lambda item: (item["path"], item["sha256"], item["role"]),
                 ),
             }
         )
-    return output
+    targets = sorted(
+        (
+            {
+                "targetId": target["targetId"],
+                "issue": target["issue"],
+                "targetKind": target["targetKind"],
+            }
+            for target in manifest["targets"]
+        ),
+        key=lambda item: item["targetId"],
+    )
+    return {"packages": output, "targets": targets}
 
 
 def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None:
@@ -1020,6 +1042,7 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
             "registrationIssue",
             "registrationIssueSnapshotUpdatedAt",
             "packages",
+            "targets",
         },
     )
     if snapshot["schemaVersion"] != "1.0.0":
@@ -1047,8 +1070,11 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
                 "packageId",
                 "filename",
                 "packageSha256",
+                "packageKind",
+                "waveLabel",
+                "registeredAt",
                 "registrationUrl",
-                "primaryInputs",
+                "files",
             },
         )
         package_id = require_pattern(
@@ -1058,43 +1084,91 @@ def validate_registration_snapshot(manifest: dict[str, Any], value: Any) -> None
         package_sha = require_pattern(
             package["packageSha256"], f"{label}.packageSha256", SHA256_RE
         )
+        package_kind = require_string(package["packageKind"], f"{label}.packageKind")
+        if package_kind not in PACKAGE_KINDS:
+            fail(f"{label}.packageKind: unsupported value")
+        wave_label = require_pattern(
+            package["waveLabel"], f"{label}.waveLabel", WAVE_LABEL_RE
+        )
+        registered_at = require_iso_date(
+            package["registeredAt"], f"{label}.registeredAt"
+        )
         registration_url = require_issue_url(
             package["registrationUrl"], f"{label}.registrationUrl"
         )
-        inputs: list[dict[str, Any]] = []
-        for input_index, raw_input in enumerate(
-            require_list(
-                package["primaryInputs"], f"{label}.primaryInputs", nonempty=True
-            )
+        files: list[dict[str, Any]] = []
+        for file_index, raw_file in enumerate(
+            require_list(package["files"], f"{label}.files", nonempty=True)
         ):
-            input_label = f"{label}.primaryInputs[{input_index}]"
-            item = require_object(raw_input, input_label)
-            require_exact_keys(item, input_label, {"path", "inputSha256", "targets"})
-            path = require_safe_relative_path(item["path"], f"{input_label}.path")
-            input_sha = require_pattern(
-                item["inputSha256"], f"{input_label}.inputSha256", SHA256_RE
+            file_label = f"{label}.files[{file_index}]"
+            item = require_object(raw_file, file_label)
+            require_exact_keys(item, file_label, {"path", "sha256", "role", "targets"})
+            path = require_safe_relative_path(item["path"], f"{file_label}.path")
+            file_sha = require_pattern(
+                item["sha256"], f"{file_label}.sha256", SHA256_RE
             )
-            targets = require_unique_strings(item["targets"], f"{input_label}.targets")
+            role = require_string(item["role"], f"{file_label}.role")
+            if role not in FILE_ROLES:
+                fail(f"{file_label}.role: unsupported value")
+            targets = require_unique_strings(item["targets"], f"{file_label}.targets")
             for target_id in targets:
-                require_pattern(target_id, f"{input_label}.targets", TARGET_ID_RE)
-            inputs.append(
-                {"path": path, "inputSha256": input_sha, "targets": sorted(targets)}
+                require_pattern(target_id, f"{file_label}.targets", TARGET_ID_RE)
+            files.append(
+                {
+                    "path": path,
+                    "sha256": file_sha,
+                    "role": role,
+                    "targets": sorted(targets),
+                }
             )
         normalized.append(
             {
                 "packageId": package_id,
                 "filename": filename,
                 "packageSha256": package_sha,
+                "packageKind": package_kind,
+                "waveLabel": wave_label,
+                "registeredAt": registered_at,
                 "registrationUrl": registration_url,
-                "primaryInputs": sorted(
-                    inputs, key=lambda item: (item["path"], item["inputSha256"])
+                "files": sorted(
+                    files,
+                    key=lambda item: (item["path"], item["sha256"], item["role"]),
                 ),
             }
         )
     if normalized != sorted(normalized, key=lambda item: item["packageId"]):
         fail("registration snapshot: packages must use deterministic packageId order")
+    normalized_targets: list[dict[str, Any]] = []
+    for index, raw in enumerate(
+        require_list(
+            snapshot["targets"], "registration snapshot.targets", nonempty=True
+        )
+    ):
+        label = f"registration snapshot.targets[{index}]"
+        target = require_object(raw, label)
+        require_exact_keys(target, label, {"targetId", "issue", "targetKind"})
+        target_id = require_pattern(
+            target["targetId"], f"{label}.targetId", TARGET_ID_RE
+        )
+        issue = target["issue"]
+        if (
+            not isinstance(issue, int)
+            or isinstance(issue, bool)
+            or not 1 <= issue <= 9999
+        ):
+            fail(f"{label}.issue: expected positive integer")
+        target_kind = require_string(target["targetKind"], f"{label}.targetKind")
+        if target_kind not in TARGET_KINDS:
+            fail(f"{label}.targetKind: unsupported value")
+        normalized_targets.append(
+            {"targetId": target_id, "issue": issue, "targetKind": target_kind}
+        )
+    if normalized_targets != sorted(
+        normalized_targets, key=lambda item: item["targetId"]
+    ):
+        fail("registration snapshot: targets must use deterministic targetId order")
     expected = registration_projection(manifest)
-    if normalized != expected:
+    if {"packages": normalized, "targets": normalized_targets} != expected:
         fail("registration snapshot: registered package/target/input inventory drift")
 
 
@@ -1357,6 +1431,16 @@ def verify_selected_package(
         fail(f"unknown target: {target_id}")
     if not any(item["packageId"] == package_id for item in target["candidates"]):
         fail(f"target {target_id} does not register package {package_id}")
+    selected_id = target["selectedCandidateId"]
+    if selected_id is not None:
+        selected = next(
+            item for item in target["candidates"] if item["candidateId"] == selected_id
+        )
+        if package_id != selected["packageId"]:
+            fail(
+                f"target {target_id} selected candidate requires packageId "
+                f"{selected['packageId']}; got {package_id}"
+            )
     verify_package_archive(package, package_path, target_id)
 
 
@@ -1527,7 +1611,41 @@ def run_manifest_regressions(
             )
     else:
         fail("registration completeness regression accepted a silently removed Package")
-    return len(cases) + 3
+    support_drift = copy.deepcopy(manifest)
+    support_file = next(
+        item
+        for package in support_drift["packages"]
+        for item in package["files"]
+        if item["role"] == "source-review"
+    )
+    support_file["sha256"] = "0" * 64
+    try:
+        validate_manifest(support_drift, schema)
+        validate_registration_snapshot(support_drift, registration_snapshot)
+    except ManifestError as exc:
+        if "registered package/target/input inventory drift" not in str(exc):
+            fail(
+                f"support-file completeness regression returned unexpected error: {exc}"
+            )
+    else:
+        fail("registration completeness regression accepted support-file hash drift")
+    target_drift = copy.deepcopy(manifest)
+    next(
+        target
+        for target in target_drift["targets"]
+        if target["targetId"] == "appendices-b-c-i"
+    )["targetKind"] = "chapter"
+    try:
+        validate_manifest(target_drift, schema)
+        validate_registration_snapshot(target_drift, registration_snapshot)
+    except ManifestError as exc:
+        if "registered package/target/input inventory drift" not in str(exc):
+            fail(
+                f"target-index completeness regression returned unexpected error: {exc}"
+            )
+    else:
+        fail("registration completeness regression accepted target-kind drift")
+    return len(cases) + 5
 
 
 def write_test_zip(
@@ -1624,6 +1742,34 @@ def run_package_regressions() -> int:
         duplicate_package["sha256"] = sha256_path(duplicate_path)
         expect_error("duplicate", "duplicate path", duplicate_package, duplicate_path)
 
+        normalized_duplicate_path = work_root / "normalized-duplicate.zip"
+        write_test_zip(
+            normalized_duplicate_path,
+            [("dir/chapter.md", content), ("dir/./chapter.md", b"replacement")],
+        )
+        normalized_duplicate_package = copy.deepcopy(package)
+        normalized_duplicate_package["sha256"] = sha256_path(normalized_duplicate_path)
+        normalized_duplicate_package["files"] = [
+            {
+                "path": "dir/chapter.md",
+                "sha256": hashlib.sha256(content).hexdigest(),
+                "role": "candidate-input",
+                "targets": ["chapter-99"],
+            },
+            {
+                "path": "dir/./chapter.md",
+                "sha256": hashlib.sha256(b"replacement").hexdigest(),
+                "role": "candidate-input",
+                "targets": ["chapter-99"],
+            },
+        ]
+        expect_error(
+            "normalized-duplicate",
+            "unsafe archive path",
+            normalized_duplicate_package,
+            normalized_duplicate_path,
+        )
+
         symlink_path = work_root / "symlink.zip"
         link_info = zipfile.ZipInfo("chapter.predraft.md")
         link_info.create_system = 3
@@ -1632,6 +1778,62 @@ def run_package_regressions() -> int:
         symlink_package = copy.deepcopy(package)
         symlink_package["sha256"] = sha256_path(symlink_path)
         expect_error("symlink", "symbolic link", symlink_package, symlink_path)
+
+        alternate_path = work_root / "alternate.zip"
+        alternate_content = b"alternate editorial input\n"
+        write_test_zip(alternate_path, [("chapter.predraft.md", alternate_content)])
+        alternate_package = {
+            "packageId": "EIP-9998",
+            "sha256": sha256_path(alternate_path),
+            "files": [
+                {
+                    "path": "chapter.predraft.md",
+                    "sha256": hashlib.sha256(alternate_content).hexdigest(),
+                    "role": "candidate-input",
+                    "targets": ["chapter-99"],
+                }
+            ],
+        }
+        selected_manifest = {
+            "packages": [package, alternate_package],
+            "targets": [
+                {
+                    "targetId": "chapter-99",
+                    "selectedCandidateId": "EIC-0099-selected",
+                    "candidates": [
+                        {
+                            "candidateId": "EIC-0099-selected",
+                            "packageId": "EIP-9999",
+                        },
+                        {
+                            "candidateId": "EIC-0099-alternate",
+                            "packageId": "EIP-9998",
+                        },
+                    ],
+                }
+            ],
+        }
+        verify_selected_package(selected_manifest, valid_path, "EIP-9999", "chapter-99")
+        cases += 1
+        try:
+            verify_selected_package(
+                selected_manifest, alternate_path, "EIP-9998", "chapter-99"
+            )
+        except ManifestError as exc:
+            if "selected candidate requires packageId EIP-9999" not in str(exc):
+                fail(f"selected-package regression returned unexpected error: {exc}")
+        else:
+            fail(
+                "selected-package regression accepted an alternative candidate Package"
+            )
+        cases += 1
+
+        comparison_manifest = copy.deepcopy(selected_manifest)
+        comparison_manifest["targets"][0]["selectedCandidateId"] = None
+        verify_selected_package(
+            comparison_manifest, alternate_path, "EIP-9998", "chapter-99"
+        )
+        cases += 1
         return cases
 
 

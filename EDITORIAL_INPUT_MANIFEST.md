@@ -52,7 +52,7 @@
 | Target | Issue | Status | Selected candidate | Canonical PR | Evidence |
 |---|---:|---|---|---:|---|
 | `chapter-04` | #29 | `consumed` | `EIC-0029-c49f0a11ef9e` | #64 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5245374024) |
-| `chapter-05` | #30 | `selected-for-intake` | `EIC-0030-11e256480c15` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98) |
+| `chapter-05` | #30 | `selected-for-intake` | `EIC-0030-11e256480c15` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5550634873) |
 | `chapter-06` | #31 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155) |
 | `chapter-07` | #32 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644) |
 | `chapter-08` | #33 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529) |

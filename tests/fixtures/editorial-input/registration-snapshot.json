@@ -8,19 +8,42 @@
       "packageId": "EIP-0001",
       "filename": "white-hat-book-parallel-drafts-2026-08-08.zip",
       "packageSha256": "caf8c73aa4e84c99f4062ac7cf85ac56794ad2cbb5d8ec5d9403138753eb6388",
+      "packageKind": "draft",
+      "waveLabel": "initial",
+      "registeredAt": "2026-08-08",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter04-assets-boundaries-threat-model.predraft.md",
-          "inputSha256": "c49f0a11ef9e37f1952199d263125aae9df273032e0a996642cfe9899750c358",
+          "sha256": "c49f0a11ef9e37f1952199d263125aae9df273032e0a996642cfe9899750c358",
+          "role": "candidate-input",
           "targets": [
             "chapter-04"
           ]
         },
         {
           "path": "chapter05-attack-behavior.predraft.md",
-          "inputSha256": "11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12",
+          "sha256": "11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12",
+          "role": "candidate-input",
           "targets": [
+            "chapter-05"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide.md",
+          "sha256": "18397fbbacce8ef45c986c8ddf3ec73853cb0aed55624fc14c524035cbc301a3",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-04",
+            "chapter-05"
+          ]
+        },
+        {
+          "path": "source-review-notes.md",
+          "sha256": "69342e0bfb2381aaf0876267af4471968f9abaf358110ab1ef5961b9268d2668",
+          "role": "source-review",
+          "targets": [
+            "chapter-04",
             "chapter-05"
           ]
         }
@@ -30,19 +53,42 @@
       "packageId": "EIP-0002",
       "filename": "white-hat-book-parallel-drafts-2026-08-08-wave2.zip",
       "packageSha256": "fffbd2af8a17cbbfa60c09c37c30a682a9c528b44194e0e9f0f3588e2a6a46ca",
+      "packageKind": "draft",
+      "waveLabel": "wave-2",
+      "registeredAt": "2026-08-08",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter06-observable-systems.predraft.md",
-          "inputSha256": "2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d",
+          "sha256": "2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d",
+          "role": "candidate-input",
           "targets": [
             "chapter-06"
           ]
         },
         {
           "path": "chapter23-intelligence-requirements.predraft.md",
-          "inputSha256": "29d20db7f44a073d8aa3b8d1c18db109f479297da79cec787edc5e8b4e5b9493",
+          "sha256": "29d20db7f44a073d8aa3b8d1c18db109f479297da79cec787edc5e8b4e5b9493",
+          "role": "candidate-input",
           "targets": [
+            "chapter-23"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave2.md",
+          "sha256": "492cf9d8844a9a577e6c9a5e39ae1a3043a41ffb57613a59e7047470b4162d83",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-06",
+            "chapter-23"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch06-ch23.md",
+          "sha256": "4219a91991469959cf60e1ba90e0c7b8158620ac8ba336c7fedd86237a5daf69",
+          "role": "source-review",
+          "targets": [
+            "chapter-06",
             "chapter-23"
           ]
         }
@@ -52,19 +98,42 @@
       "packageId": "EIP-0003",
       "filename": "white-hat-book-parallel-drafts-2026-08-08-wave3.zip",
       "packageSha256": "d986ee9a9c71cf210420bb921f078a395133e2e5e0b9050960ad63554c22582a",
+      "packageKind": "draft",
+      "waveLabel": "wave-3",
+      "registeredAt": "2026-08-08",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter07-vulnerability-prioritization.predraft.md",
-          "inputSha256": "6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb",
+          "sha256": "6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb",
+          "role": "candidate-input",
           "targets": [
             "chapter-07"
           ]
         },
         {
           "path": "chapter24-osint-provenance-sources.predraft.md",
-          "inputSha256": "b1b83a6735ac33f66afa27d1ac2ce1f260d70fc904eca9b6b5c2fefb36ed59bd",
+          "sha256": "b1b83a6735ac33f66afa27d1ac2ce1f260d70fc904eca9b6b5c2fefb36ed59bd",
+          "role": "candidate-input",
           "targets": [
+            "chapter-24"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave3.md",
+          "sha256": "c0a0fe9b6d680721fcd4c0be903415052933b2702d9466c041dec18a70a5553d",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-07",
+            "chapter-24"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch07-ch24.md",
+          "sha256": "6367d19c50f2f0a97c26998ed1025e7aeebf9ce3b97460f3f8c768a3003ff793",
+          "role": "source-review",
+          "targets": [
+            "chapter-07",
             "chapter-24"
           ]
         }
@@ -74,19 +143,42 @@
       "packageId": "EIP-0004",
       "filename": "white-hat-book-parallel-drafts-2026-08-08-wave4.zip",
       "packageSha256": "956a321088abed3058e59c58ceeda3d5fd57a9d12a6715240185d0d7c445d86f",
+      "packageKind": "draft",
+      "waveLabel": "wave-4",
+      "registeredAt": "2026-08-08",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter08-safe-lab-evidence.predraft.md",
-          "inputSha256": "eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b",
+          "sha256": "eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b",
+          "role": "candidate-input",
           "targets": [
             "chapter-08"
           ]
         },
         {
           "path": "chapter26-cti-distribution.predraft.md",
-          "inputSha256": "38a432a5daf5477a3b986f8c19307d89a9565edf2f0d3a25ea9815126bb5bf32",
+          "sha256": "38a432a5daf5477a3b986f8c19307d89a9565edf2f0d3a25ea9815126bb5bf32",
+          "role": "candidate-input",
           "targets": [
+            "chapter-26"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave4.md",
+          "sha256": "dda7ab1d1b74039e9bb1283259b2d90f608c81047917c7cd4df8979b9364f90b",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-08",
+            "chapter-26"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch08-ch26.md",
+          "sha256": "995a24030df650782a41fdf977048ceaa864f0bb48ab0d27faae2fc01e7c4b74",
+          "role": "source-review",
+          "targets": [
+            "chapter-08",
             "chapter-26"
           ]
         }
@@ -96,19 +188,42 @@
       "packageId": "EIP-0005",
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave5.zip",
       "packageSha256": "c4fd20d4c44d769c22bbab886535ca3105b3a3a5ed7bdb6cea71619e6b7279a0",
+      "packageKind": "draft",
+      "waveLabel": "wave-5",
+      "registeredAt": "2026-08-09",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter09-engagement-roe.predraft.md",
-          "inputSha256": "00de5e803e04d13ae80b9960489a2d7d90d6564c88324d7f32aed8c28c96ea91",
+          "sha256": "00de5e803e04d13ae80b9960489a2d7d90d6564c88324d7f32aed8c28c96ea91",
+          "role": "candidate-input",
           "targets": [
             "chapter-09"
           ]
         },
         {
           "path": "chapter10-recon-osint-boundary.predraft.md",
-          "inputSha256": "23f9af567b80d64c0d191b0f7905ddd8350ce81606d24c72626949fa30739002",
+          "sha256": "23f9af567b80d64c0d191b0f7905ddd8350ce81606d24c72626949fa30739002",
+          "role": "candidate-input",
           "targets": [
+            "chapter-10"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave5.md",
+          "sha256": "137c211a0bfb481876af0b13d96e8369325a715a708693e471f5fd9dd522d075",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-09",
+            "chapter-10"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch09-ch10.md",
+          "sha256": "ac1988947e7c3a654b2f4778043d735808b7332e588f9712b376909c5975fed2",
+          "role": "source-review",
+          "targets": [
+            "chapter-09",
             "chapter-10"
           ]
         }
@@ -118,19 +233,42 @@
       "packageId": "EIP-0006",
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave5.zip",
       "packageSha256": "1a2ccaa3dc3453dfc91c28a482bb8e319b5a2db6023d2d64f8cce2133619efb3",
+      "packageKind": "draft",
+      "waveLabel": "wave-5",
+      "registeredAt": "2026-08-09",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228688398",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter09-engagement-roe.predraft.md",
-          "inputSha256": "dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579",
+          "sha256": "dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579",
+          "role": "candidate-input",
           "targets": [
             "chapter-09"
           ]
         },
         {
           "path": "chapter16-telemetry-evidence-readiness.predraft.md",
-          "inputSha256": "38fbe94b39aac0ad6e59fcaa0c2cd9bfffc23b4eb01ca4dbbfd1cfb470a00c32",
+          "sha256": "38fbe94b39aac0ad6e59fcaa0c2cd9bfffc23b4eb01ca4dbbfd1cfb470a00c32",
+          "role": "candidate-input",
           "targets": [
+            "chapter-16"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave5.md",
+          "sha256": "a62809255588272efb3aeb567b944eec2a9e56bcf62f926972fa295fefd6193f",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-09",
+            "chapter-16"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch09-ch16.md",
+          "sha256": "e5f7b5b0fd9ea68ca8e61f5f3fa1738fda3c830c68bc05364877cf83447b68c8",
+          "role": "source-review",
+          "targets": [
+            "chapter-09",
             "chapter-16"
           ]
         }
@@ -140,19 +278,42 @@
       "packageId": "EIP-0007",
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave6.zip",
       "packageSha256": "2ac28571912725ed838d4895779e3921b8138b52a66f2d5938c5776e46f3ff69",
+      "packageKind": "draft",
+      "waveLabel": "wave-6",
+      "registeredAt": "2026-08-09",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter27-ai-agent-security.predraft.md",
-          "inputSha256": "32e8846cf56d741ba7fc28ca36df288132192e48d8f142dc8c32d433da375fed",
+          "sha256": "32e8846cf56d741ba7fc28ca36df288132192e48d8f142dc8c32d433da375fed",
+          "role": "candidate-input",
           "targets": [
             "chapter-27"
           ]
         },
         {
           "path": "chapter28-ai-assisted-analysis-assurance.predraft.md",
-          "inputSha256": "313c092a3659c566f85061efeb23a103fa2a7d3fd68845b76de72a7e6f29016a",
+          "sha256": "313c092a3659c566f85061efeb23a103fa2a7d3fd68845b76de72a7e6f29016a",
+          "role": "candidate-input",
           "targets": [
+            "chapter-28"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave6.md",
+          "sha256": "c61e2b6eefdb30a917a3ef356048aa4dcecf60680be60a60cda0fb51188df6ba",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-27",
+            "chapter-28"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch27-ch28.md",
+          "sha256": "ddf1663d72934a6344a6788ff7c6b8fc19eed00dfb694836cf375ff19cac5fd8",
+          "role": "source-review",
+          "targets": [
+            "chapter-27",
             "chapter-28"
           ]
         }
@@ -162,19 +323,42 @@
       "packageId": "EIP-0008",
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave8.zip",
       "packageSha256": "386e7148f504c9fa58a0b095bffcc6aeeaaf2be901e0d3b917e5e8db6c604b2c",
+      "packageKind": "draft",
+      "waveLabel": "wave-8",
+      "registeredAt": "2026-08-09",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter12-enterprise-identity.predraft.md",
-          "inputSha256": "bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd",
+          "sha256": "bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd",
+          "role": "candidate-input",
           "targets": [
             "chapter-12"
           ]
         },
         {
           "path": "chapter13-platform-supply-chain.predraft.md",
-          "inputSha256": "16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec",
+          "sha256": "16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec",
+          "role": "candidate-input",
           "targets": [
+            "chapter-13"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave8.md",
+          "sha256": "5ca04cf6787208b3b052c86a0ef55f918c5a9e3152ce2b42489bafe9f0fd3c70",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-12",
+            "chapter-13"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch12-ch13.md",
+          "sha256": "124fa5caafd5acd85e4665328a379f6d403b136cb1d8d40ff3b6b11bee649d27",
+          "role": "source-review",
+          "targets": [
+            "chapter-12",
             "chapter-13"
           ]
         }
@@ -184,19 +368,42 @@
       "packageId": "EIP-0009",
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave9.zip",
       "packageSha256": "bef9879d4b230f63d5f1f8d037611bbab097328defc054cb2b801fbf8deeb1ad",
+      "packageKind": "draft",
+      "waveLabel": "wave-9",
+      "registeredAt": "2026-08-09",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter14-minimal-impact-validation.predraft.md",
-          "inputSha256": "3e687b3de61f4c6a0b20365b04f483064edf5ac07c2ff4cc6ffbe0cbd89bf58f",
+          "sha256": "3e687b3de61f4c6a0b20365b04f483064edf5ac07c2ff4cc6ffbe0cbd89bf58f",
+          "role": "candidate-input",
           "targets": [
             "chapter-14"
           ]
         },
         {
           "path": "chapter15-findings-retest-risk.predraft.md",
-          "inputSha256": "c168fc29af42cc50a38d23c581172bc4953125775f71867d60c36d5a726b7b3c",
+          "sha256": "c168fc29af42cc50a38d23c581172bc4953125775f71867d60c36d5a726b7b3c",
+          "role": "candidate-input",
           "targets": [
+            "chapter-15"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave9.md",
+          "sha256": "d7c0bc4720cd168ccf1acc02af08359de69391a22663812a3bb2ce539f70eb79",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-14",
+            "chapter-15"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch14-ch15.md",
+          "sha256": "ad0913cfdc3398cacf56c1c2a260184457679d5dba323a582031a4629a5a3676",
+          "role": "source-review",
+          "targets": [
+            "chapter-14",
             "chapter-15"
           ]
         }
@@ -206,19 +413,42 @@
       "packageId": "EIP-0010",
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave10.zip",
       "packageSha256": "34a748e0d3373ad842aa512f6510c2ac17242d42588b82e19f377678d255c381",
+      "packageKind": "draft",
+      "waveLabel": "wave-10",
+      "registeredAt": "2026-08-09",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter18-threat-hunting.predraft.md",
-          "inputSha256": "5a08af6d1ae3f94b622ddec1f36f133b763d5b6eaac03f1ef08b415d0b540bbd",
+          "sha256": "5a08af6d1ae3f94b622ddec1f36f133b763d5b6eaac03f1ef08b415d0b540bbd",
+          "role": "candidate-input",
           "targets": [
             "chapter-18"
           ]
         },
         {
           "path": "chapter19-incident-response.predraft.md",
-          "inputSha256": "3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68",
+          "sha256": "3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68",
+          "role": "candidate-input",
           "targets": [
+            "chapter-19"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave10.md",
+          "sha256": "fceefbb1bb2cafed37c6c71f123583117967a5f6ba51dee16a6ae12a25aed04b",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-18",
+            "chapter-19"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch18-ch19.md",
+          "sha256": "3a40f24a76347b8ead8685e5280b162e0741fdeda4d975d7d878c465dd5e3da8",
+          "role": "source-review",
+          "targets": [
+            "chapter-18",
             "chapter-19"
           ]
         }
@@ -228,19 +458,42 @@
       "packageId": "EIP-0011",
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave11.zip",
       "packageSha256": "cb9fee8ca0a1ff1b8e2ce6d45f5d0d1cc102303eacaddfec394deca098e83461",
+      "packageKind": "draft",
+      "waveLabel": "wave-11",
+      "registeredAt": "2026-08-09",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter20-dfir-timeline-causality.predraft.md",
-          "inputSha256": "58dc95fff36417b259bab6c965d2bfe2289b3d59fa5d4e4f57a2b49806c81078",
+          "sha256": "58dc95fff36417b259bab6c965d2bfe2289b3d59fa5d4e4f57a2b49806c81078",
+          "role": "candidate-input",
           "targets": [
             "chapter-20"
           ]
         },
         {
           "path": "chapter21-purple-team-control-validation.predraft.md",
-          "inputSha256": "a729d22fb1898e62d5ddf0d7bc2ebd1e4794ed82a49d77ff65ddaaf1aff0dbff",
+          "sha256": "a729d22fb1898e62d5ddf0d7bc2ebd1e4794ed82a49d77ff65ddaaf1aff0dbff",
+          "role": "candidate-input",
           "targets": [
+            "chapter-21"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave11.md",
+          "sha256": "bcd9f9e9a4f15a535f70f31f9e03430b22830b9d87df06c496d756393393dabf",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-20",
+            "chapter-21"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch20-ch21.md",
+          "sha256": "d9551a2e510887858ae8f60073acf1d63021e34b18f3cc74009f347b52ea96e4",
+          "role": "source-review",
+          "targets": [
+            "chapter-20",
             "chapter-21"
           ]
         }
@@ -250,19 +503,42 @@
       "packageId": "EIP-0012",
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave12.zip",
       "packageSha256": "6f5da12b33216dbc50473e9fd9d403213807d7f0219c50a71e5292386e82ea7b",
+      "packageKind": "mixed",
+      "waveLabel": "wave-12",
+      "registeredAt": "2026-08-09",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913",
-      "primaryInputs": [
+      "files": [
         {
           "path": "chapter22-measurement-improvement.predraft.md",
-          "inputSha256": "78813e20d84e495b2aada2173b50b80a3efe947d9689dd90718e2a617a3bf15c",
+          "sha256": "78813e20d84e495b2aada2173b50b80a3efe947d9689dd90718e2a617a3bf15c",
+          "role": "candidate-input",
           "targets": [
             "chapter-22"
           ]
         },
         {
           "path": "chapter29-final-portfolio-blueprint.md",
-          "inputSha256": "a90f9092493f64bcfbb3a36f269e83e686177203f276234b29cfd365e4444e04",
+          "sha256": "a90f9092493f64bcfbb3a36f269e83e686177203f276234b29cfd365e4444e04",
+          "role": "blueprint-input",
           "targets": [
+            "chapter-29"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave12.md",
+          "sha256": "1a5ff37a805661e61b4e7f2c7fe9da32b822073aa51fbb326634b007ee047866",
+          "role": "integration-guide",
+          "targets": [
+            "chapter-22",
+            "chapter-29"
+          ]
+        },
+        {
+          "path": "source-review-notes-ch22-ch29.md",
+          "sha256": "a470da36c26b07737f2dbd4051c46de92de4da1807fb7537b7b38c763ddee5c7",
+          "role": "source-review",
+          "targets": [
+            "chapter-22",
             "chapter-29"
           ]
         }
@@ -272,33 +548,62 @@
       "packageId": "EIP-0013",
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave13.zip",
       "packageSha256": "16032793c917c17bd9478fb3f4e0a89e2afc89cf82b27400328dbfa74c9465d9",
+      "packageKind": "draft",
+      "waveLabel": "wave-13",
+      "registeredAt": "2026-08-09",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
-      "primaryInputs": [
+      "files": [
         {
           "path": "appendix-a-safety-legal-disclosure.predraft.md",
-          "inputSha256": "d6932c1a47741992071cd05d866afd26980ec64e6e35c3ebda09d53c2eede854",
+          "sha256": "d6932c1a47741992071cd05d866afd26980ec64e6e35c3ebda09d53c2eede854",
+          "role": "candidate-input",
           "targets": [
             "appendix-a"
           ]
         },
         {
           "path": "appendix-d-troubleshooting-stop-flow.predraft.md",
-          "inputSha256": "a1d1ce13dd4827d438182ed1ad94b20f01c25c4d243b42e847d1ed9e2a2147da",
+          "sha256": "a1d1ce13dd4827d438182ed1ad94b20f01c25c4d243b42e847d1ed9e2a2147da",
+          "role": "candidate-input",
           "targets": [
             "appendix-d"
           ]
         },
         {
           "path": "appendix-h-lab-operations.predraft.md",
-          "inputSha256": "390579c705e1187c9765b6544f9628a7bd4b0542b7cc3da70ff5dc3172b8ecca",
+          "sha256": "390579c705e1187c9765b6544f9628a7bd4b0542b7cc3da70ff5dc3172b8ecca",
+          "role": "candidate-input",
           "targets": [
             "appendix-h"
           ]
         },
         {
           "path": "appendix-j-cross-book-learning-routes.predraft.md",
-          "inputSha256": "50177ad8c7a7737203883384f38a60b5e209d6e920132f4056ba47139c7bd302",
+          "sha256": "50177ad8c7a7737203883384f38a60b5e209d6e920132f4056ba47139c7bd302",
+          "role": "candidate-input",
           "targets": [
+            "appendix-j"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave13.md",
+          "sha256": "4ebe294e068b0a19cf1e56eb9c785238b4a669e0d23cbc766cc0eec0ac2598c7",
+          "role": "integration-guide",
+          "targets": [
+            "appendix-a",
+            "appendix-d",
+            "appendix-h",
+            "appendix-j"
+          ]
+        },
+        {
+          "path": "source-review-notes-appendices-a-d-h-j.md",
+          "sha256": "e116560daa973af96b885bdbbab9bbea4a6b3ea9499231e2fe3ef3ed4e844690",
+          "role": "source-review",
+          "targets": [
+            "appendix-a",
+            "appendix-d",
+            "appendix-h",
             "appendix-j"
           ]
         }
@@ -308,23 +613,193 @@
       "packageId": "EIP-0014",
       "filename": "white-hat-book-parallel-drafts-2026-08-09-wave14.zip",
       "packageSha256": "f6b11d439088d8e8571d7e8630b33a866b566a97815480ef7df074c45faa79a4",
+      "packageKind": "generator-blueprint",
+      "waveLabel": "wave-14",
+      "registeredAt": "2026-08-09",
       "registrationUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231033156",
-      "primaryInputs": [
+      "files": [
         {
           "path": "appendices-b-c-i-generation-blueprint.md",
-          "inputSha256": "6a52b22b061342c8f0c4fc58ec36822ea8c8958d76c691bcff5cd452c7b5268a",
+          "sha256": "6a52b22b061342c8f0c4fc58ec36822ea8c8958d76c691bcff5cd452c7b5268a",
+          "role": "generator-blueprint-input",
           "targets": [
             "appendices-b-c-i"
           ]
         },
         {
           "path": "appendices-e-f-g-generation-blueprint.md",
-          "inputSha256": "2a34e9e8d137b59aac91692d5d824b0c4f65b1d77ef1bd8119032c37af5c63e1",
+          "sha256": "2a34e9e8d137b59aac91692d5d824b0c4f65b1d77ef1bd8119032c37af5c63e1",
+          "role": "generator-blueprint-input",
           "targets": [
+            "appendices-e-f-g"
+          ]
+        },
+        {
+          "path": "cross-appendix-audit-contract-blueprint.md",
+          "sha256": "7fa5192a4b0df395c04cb7ad36843bea558047682c74c1c16ad64fa866136d55",
+          "role": "source-review",
+          "targets": [
+            "appendices-b-c-i",
+            "appendices-e-f-g"
+          ]
+        },
+        {
+          "path": "parallel-draft-integration-guide-wave14.md",
+          "sha256": "05237fe0b70e0f9e001ac3a03a5a080baffce4bc2edf4d774690f2f17cd02ea6",
+          "role": "integration-guide",
+          "targets": [
+            "appendices-b-c-i",
             "appendices-e-f-g"
           ]
         }
       ]
+    }
+  ],
+  "targets": [
+    {
+      "targetId": "appendices-b-c-i",
+      "issue": 53,
+      "targetKind": "appendix-group"
+    },
+    {
+      "targetId": "appendices-e-f-g",
+      "issue": 54,
+      "targetKind": "appendix-group"
+    },
+    {
+      "targetId": "appendix-a",
+      "issue": 52,
+      "targetKind": "appendix"
+    },
+    {
+      "targetId": "appendix-d",
+      "issue": 52,
+      "targetKind": "appendix"
+    },
+    {
+      "targetId": "appendix-h",
+      "issue": 52,
+      "targetKind": "appendix"
+    },
+    {
+      "targetId": "appendix-j",
+      "issue": 55,
+      "targetKind": "appendix"
+    },
+    {
+      "targetId": "chapter-04",
+      "issue": 29,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-05",
+      "issue": 30,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-06",
+      "issue": 31,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-07",
+      "issue": 32,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-08",
+      "issue": 33,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-09",
+      "issue": 34,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-10",
+      "issue": 35,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-12",
+      "issue": 36,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-13",
+      "issue": 37,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-14",
+      "issue": 38,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-15",
+      "issue": 39,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-16",
+      "issue": 40,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-18",
+      "issue": 41,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-19",
+      "issue": 42,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-20",
+      "issue": 43,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-21",
+      "issue": 44,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-22",
+      "issue": 45,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-23",
+      "issue": 46,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-24",
+      "issue": 47,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-26",
+      "issue": 48,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-27",
+      "issue": 49,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-28",
+      "issue": 50,
+      "targetKind": "chapter"
+    },
+    {
+      "targetId": "chapter-29",
+      "issue": 51,
+      "targetKind": "chapter"
     }
   ]
 }
