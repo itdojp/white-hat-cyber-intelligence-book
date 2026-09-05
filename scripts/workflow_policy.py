@@ -13,17 +13,23 @@ EXPECTED_WORKFLOWS = {"contract.yml", "book-qa.yml", "pages.yml"}
 PINNED_FORMATTER = "198935ff8f60653c40e513343dc5f02573d9968e"
 EDITORIAL_INPUT_BASE_EXPRESSION = "${{ github.event.pull_request.base.sha }}"
 NPM_TEST_COMMAND = "npm test --ignore-scripts"
-NPM_COMMAND_TOKEN_RE = re.compile(
-    r"(?<![A-Za-z0-9_.-])npm(?=$|[\s;&|])",
-    re.IGNORECASE,
-)
-ALLOWED_NPM_WORKFLOW_COMMANDS = frozenset(
+ALLOWED_WORKFLOW_RUN_COMMANDS = frozenset(
     {
+        "bundle exec jekyll build --source docs --config docs/_config.yml "
+        "--destination _site --trace",
+        "node .work/book-formatter/scripts/check-layout-risk.js docs "
+        '--fail-on error --output "${{ runner.temp }}/layout-risk-report.json"',
+        "node .work/book-formatter/scripts/check-links.js docs",
+        "node .work/book-formatter/scripts/check-markdown-structure.js docs "
+        '--fail-on error --output "${{ runner.temp }}/markdown-structure-report.json"',
+        "node .work/book-formatter/scripts/check-textlint.js docs --fail-on error",
+        "node .work/book-formatter/scripts/check-unicode.js docs --fail-on error",
         "npm ci --ignore-scripts",
         "npm ci --prefix .work/book-formatter --ignore-scripts",
         "npm run sync:docs",
         "npm start -- validate-config --config ../../book-config.json",
         NPM_TEST_COMMAND,
+        "python3 scripts/check_built_site.py --source docs --site _site",
     }
 )
 FULL_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
@@ -201,6 +207,12 @@ def parse_mapping_line(
         return None, active, f"unsupported YAML mapping key {key_token!r}: {exc}"
     if not key:
         return None, active, "empty YAML mapping key"
+    if value.startswith(("{", "[")) and SENSITIVE_COMPLEX_KEY_RE.search(value):
+        return (
+            None,
+            active,
+            "flow-style values containing policy keys are not supported",
+        )
     if key == "<<" or value.startswith("*"):
         return (
             None,
@@ -676,7 +688,7 @@ def workflow_run_command_errors(
     parsed: ParsedWorkflow,
     label: str,
 ) -> list[str]:
-    """Allow only the repository's finite inline npm command inventory."""
+    """Allow only the repository's finite inline workflow command inventory."""
     errors: list[str] = []
     for entry in [item for item in parsed.entries if item.key == "run"]:
         if BLOCK_SCALAR_RE.fullmatch(entry.value):
@@ -685,12 +697,9 @@ def workflow_run_command_errors(
             )
             continue
         command = decoded_value(entry, label, errors).strip()
-        if (
-            NPM_COMMAND_TOKEN_RE.search(command)
-            and command not in ALLOWED_NPM_WORKFLOW_COMMANDS
-        ):
+        if command not in ALLOWED_WORKFLOW_RUN_COMMANDS:
             errors.append(
-                f"{label}:{entry.index + 1}: npm workflow command is outside the "
+                f"{label}:{entry.index + 1}: workflow command is outside the "
                 f"finite allowlist: {command!r}"
             )
     return errors
@@ -955,6 +964,17 @@ def check_parser_regressions(errors: list[str]) -> None:
             "workflow parser regression failed closed on flow-style run mapping"
         )
 
+    nested_flow_run = """jobs: { test: { steps: [ { run: npm test } ] } }
+"""
+    parsed = parse_workflow(
+        nested_flow_run,
+        "parser regression nested flow run mapping",
+    )
+    if not parsed.errors:
+        errors.append(
+            "workflow parser regression failed closed on nested flow-style run mapping"
+        )
+
     unsupported_run_commands = {
         "block scalar run": """jobs:
   test:
@@ -981,6 +1001,11 @@ def check_parser_regressions(errors: list[str]) -> None:
   test:
     steps:
       - run: npm --prefix . test
+""",
+        "arbitrary shell command": """jobs:
+  test:
+    steps:
+      - run: python3 mutate-checkout.py
 """,
     }
     for name, fixture in unsupported_run_commands.items():
