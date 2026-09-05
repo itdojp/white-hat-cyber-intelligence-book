@@ -139,7 +139,7 @@ Repository外で作成した草稿、Source review note、Blueprintは非正本�
 
 ### Package identityと事前検証
 
-Package identityは`packageId + Package SHA-256`である。Filename、Wave label、作成日時、File size、Issue comment順のいずれもidentityまたは選択根拠にしない。ZIPを展開する前に次を実行し、Package SHA-256、Target、内部path、各file SHA-256を検証する。
+Package identityは`packageId + Package SHA-256`である。`EIP-NNNN`の数値部はappend-onlyなPackage登録順であり、再採番・再利用しない。ただし、Filename、Wave label、作成日時、File size、Package登録順、Issue comment順のいずれもCandidateのidentityまたは選択根拠にしない。ZIPを展開する前に次を実行し、Package SHA-256、Target、内部path、各file SHA-256を検証する。
 
 ```bash
 python3 scripts/check_editorial_input_manifest.py \
@@ -171,6 +171,7 @@ superseded-with-record
 - 選択時は`selectedCandidateId`を一つ指定し、代替Candidateを`rejected`、`deferred`、または`superseded`へ明示的にDispositionする。
 - `selected-for-intake`はbranch作成前の選択、`canonical-pr-open`は専用Draft PRとIntake Recordの存在、`consumed`は通常mergeとmain/publication gate完了を意味する。
 - `blueprint-only`と`generator-blueprint-only`を完成本文として扱わず、候補が複数になれば`candidate-selection-required`、利用開始時は`selected-for-intake`または`canonical-pr-open`へ進める。
+- `statusHistory`の先頭は、Targetを最初に所有したCandidate Packageの登録日・登録URL・入力roleに一致させる。後続Candidateを追加しても初期状態を書き換えない。
 - `tests/fixtures/editorial-input/registration-snapshot.json`の`statusHistoryPrefix`はManifest 1.0.0確立時の固定prefixである。削除・書換えず、状態変更はManifestの`statusHistory`末尾にだけ追加する。
 - Candidateの文言、ID、Source version、Statusをcurrent Repositoryより優先しない。
 

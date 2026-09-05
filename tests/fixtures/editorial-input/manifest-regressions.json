@@ -156,6 +156,30 @@
       "family": "initial status ownership",
       "mutation": "initial-status-skipped",
       "expectedError": "initial status must be a registration or blueprint state"
+    },
+    {
+      "id": "EIM-NEG-027",
+      "family": "initial status type",
+      "mutation": "initial-status-not-string",
+      "expectedError": "statusHistory[0].status: expected string"
+    },
+    {
+      "id": "EIM-NEG-028",
+      "family": "initial Candidate registration",
+      "mutation": "initial-status-later-candidate-role",
+      "expectedError": "requires the first registered Candidate to be blueprint-input"
+    },
+    {
+      "id": "EIM-NEG-029",
+      "family": "initial Candidate provenance",
+      "mutation": "initial-status-provenance-mismatch",
+      "expectedError": "initial entry must match the first registered Candidate Package provenance"
+    },
+    {
+      "id": "EIM-NEG-030",
+      "family": "Package registration sequence",
+      "mutation": "package-registration-sequence-gap",
+      "expectedError": "packageId registration sequence must be contiguous from EIP-0001"
     }
   ]
 }

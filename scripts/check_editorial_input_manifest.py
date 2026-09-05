@@ -704,6 +704,13 @@ def validate_packages(
                 fail(
                     f"packages: duplicate SHA alias must reference {canonical_id}: {item['packageId']}"
                 )
+    sequences = sorted(
+        package_registration_sequence(package_id) for package_id in by_id
+    )
+    if sequences != list(range(1, len(sequences) + 1)):
+        fail(
+            "packages: packageId registration sequence must be contiguous from EIP-0001"
+        )
     for package in packages:
         alias = package.get("aliasOf")
         if alias:
@@ -835,7 +842,7 @@ def validate_status_history(value: Any, target_label: str, current_status: str) 
         require_exact_keys(
             item, label, {"status", "effectiveAt", "evidenceUrl", "reason"}
         )
-        status_value = item["status"]
+        status_value = require_string(item["status"], f"{label}.status")
         if status_value not in TARGET_STATUSES:
             fail(f"{label}.status: unsupported value")
         effective = require_iso_date(item["effectiveAt"], f"{label}.effectiveAt")
@@ -860,12 +867,23 @@ def validate_status_history(value: Any, target_label: str, current_status: str) 
         )
 
 
-def validate_initial_status_for_roles(
-    value: Any, target_label: str, candidate_roles: set[str]
+def package_registration_sequence(package_id: str) -> int:
+    """Return the append-only registration sequence encoded by an EIP ID."""
+
+    return int(package_id.removeprefix("EIP-"))
+
+
+def validate_initial_status_for_candidates(
+    value: Any,
+    target_label: str,
+    candidates: list[dict[str, Any]],
+    packages: dict[str, dict[str, Any]],
+    files: dict[tuple[str, str], dict[str, Any]],
 ) -> None:
     history = require_list(value, f"{target_label}.statusHistory", nonempty=True)
-    first = require_object(history[0], f"{target_label}.statusHistory[0]")
-    initial_status = first.get("status")
+    first_label = f"{target_label}.statusHistory[0]"
+    first = require_object(history[0], first_label)
+    initial_status = require_string(first.get("status"), f"{first_label}.status")
     required_role = {
         "registered-pending-prerequisites": "candidate-input",
         "blueprint-only": "blueprint-input",
@@ -876,13 +894,44 @@ def validate_initial_status_for_roles(
             f"{target_label}.statusHistory: initial status must be a registration or "
             "blueprint state"
         )
-    # Use membership, not equality: later Candidate additions must not redefine
-    # the historical initial state, while the original registered input remains
-    # present through the frozen package inventory.
-    if required_role not in candidate_roles:
+    # Package IDs are the append-only registration ledger sequence. Candidate
+    # array order, filename, Wave label, and dates never decide which input was
+    # registered first. If several inputs from the first Package own one Target,
+    # the matching role may be any of those same-registration inputs.
+    first_sequence = min(
+        package_registration_sequence(item["packageId"]) for item in candidates
+    )
+    first_candidates = [
+        item
+        for item in candidates
+        if package_registration_sequence(item["packageId"]) == first_sequence
+    ]
+    first_packages = {item["packageId"] for item in first_candidates}
+    if len(first_packages) != 1:
+        fail(f"{target_label}.statusHistory: ambiguous first Package registration")
+    first_package = packages[first_packages.pop()]
+    first_roles = {
+        files[(item["packageId"], item["inputPath"])]["role"]
+        for item in first_candidates
+    }
+    if required_role not in first_roles:
         fail(
             f"{target_label}.statusHistory: initial status {initial_status!r} "
-            f"requires an original {required_role} candidate"
+            f"requires the first registered Candidate to be {required_role}"
+        )
+    effective_at = require_iso_date(
+        first.get("effectiveAt"), f"{first_label}.effectiveAt"
+    )
+    evidence_url = require_issue_url(
+        first.get("evidenceUrl"), f"{first_label}.evidenceUrl"
+    )
+    if (
+        effective_at != first_package["registeredAt"]
+        or evidence_url != first_package["registrationUrl"]
+    ):
+        fail(
+            f"{target_label}.statusHistory: initial entry must match the first "
+            "registered Candidate Package provenance"
         )
 
 
@@ -1268,11 +1317,8 @@ def validate_targets(
                 or set(dispositions) != {"superseded"}
             ):
                 fail(f"{label}: superseded-with-record must supersede every candidate")
-        candidate_roles = {
-            files[(item["packageId"], item["inputPath"])]["role"] for item in candidates
-        }
-        validate_initial_status_for_roles(
-            target["statusHistory"], label, candidate_roles
+        validate_initial_status_for_candidates(
+            target["statusHistory"], label, candidates, packages, files
         )
         validate_status_history(target["statusHistory"], label, status_value)
         if status_value in {"canonical-pr-open", "consumed"}:
@@ -1956,6 +2002,39 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
     elif mutation == "initial-status-skipped":
         target = targets["chapter-05"]
         target["statusHistory"] = [target["statusHistory"][-1]]
+    elif mutation == "initial-status-not-string":
+        targets["chapter-05"]["statusHistory"][0]["status"] = []
+    elif mutation == "initial-status-later-candidate-role":
+        target = targets["chapter-05"]
+        package = next(item for item in packages if item["packageId"] == "EIP-0012")
+        package_file = next(
+            item for item in package["files"] if item["role"] == "blueprint-input"
+        )
+        package_file["targets"].append("chapter-05")
+        target["candidates"].append(
+            {
+                "candidateId": f"EIC-0030-{package_file['sha256'][:12]}",
+                "packageId": package["packageId"],
+                "inputPath": package_file["path"],
+                "inputSha256": package_file["sha256"],
+                "disposition": "rejected",
+                "dispositionEvidenceUrl": package["registrationUrl"],
+                "dispositionReason": "later heterogeneous Candidate regression fixture",
+            }
+        )
+        target["statusHistory"][0].update(
+            {
+                "status": "blueprint-only",
+                "effectiveAt": package["registeredAt"],
+                "evidenceUrl": package["registrationUrl"],
+            }
+        )
+    elif mutation == "initial-status-provenance-mismatch":
+        targets["chapter-05"]["statusHistory"][0]["evidenceUrl"] = (
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913"
+        )
+    elif mutation == "package-registration-sequence-gap":
+        packages[-1]["packageId"] = "EIP-9999"
     elif mutation == "schema-invalid-package-filename":
         packages[0]["filename"] = "invalid\\name.zip"
     elif mutation == "schema-invalid-full-date":
