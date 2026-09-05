@@ -51,6 +51,7 @@ def editorial_input_baseline_commit(
         expected_head = require_pattern(
             environment.get("GITHUB_SHA", ""), "GITHUB_SHA", GIT_SHA_RE
         )
+        inspect_worktree = current_head is None
         if current_head is None:
             result = subprocess.run(
                 ["git", "rev-parse", "HEAD"],
@@ -67,6 +68,18 @@ def editorial_input_baseline_commit(
                 "GITHUB_SHA: validator is not running at the exact event head; "
                 f"expected {expected_head}, got {current_head}"
             )
+        if inspect_worktree:
+            tracked_diff = subprocess.run(
+                ["git", "diff", "--quiet", "HEAD", "--"],
+                cwd=ROOT,
+                check=False,
+            )
+            if tracked_diff.returncode not in {0, 1}:
+                fail("GITHUB_SHA: cannot verify tracked working-tree state")
+            if tracked_diff.returncode == 1:
+                fail(
+                    "GITHUB_SHA: tracked working tree differs from the exact event head"
+                )
     return baseline_commit
 
 

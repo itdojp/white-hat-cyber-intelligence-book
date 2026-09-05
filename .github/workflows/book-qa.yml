@@ -58,7 +58,7 @@ jobs:
           bundler-cache: true
 
       - name: Run repository contract tests
-        run: npm test
+        run: npm test --ignore-scripts
         env:
           EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
 

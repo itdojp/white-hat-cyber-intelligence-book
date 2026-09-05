@@ -12,6 +12,7 @@ WORKFLOW_DIR = ROOT / ".github" / "workflows"
 EXPECTED_WORKFLOWS = {"contract.yml", "book-qa.yml", "pages.yml"}
 PINNED_FORMATTER = "198935ff8f60653c40e513343dc5f02573d9968e"
 EDITORIAL_INPUT_BASE_EXPRESSION = "${{ github.event.pull_request.base.sha }}"
+NPM_TEST_COMMAND = "npm test --ignore-scripts"
 FULL_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 BLOCK_SCALAR_RE = re.compile(r"^[|>](?:[+-]?[1-9]?|[1-9][+-]?)$")
 SENSITIVE_COMPLEX_KEY_RE = re.compile(
@@ -406,7 +407,7 @@ def npm_test_environment_errors(
             for step in steps
             if any(
                 entry.key == "run"
-                and decoded_value(entry, label, errors).strip() == "npm test"
+                and decoded_value(entry, label, errors).strip() == NPM_TEST_COMMAND
                 for entry in step
             )
         ]
@@ -474,7 +475,7 @@ def npm_test_checkout_errors(parsed: ParsedWorkflow, label: str) -> list[str]:
             for step in steps
             for entry in step
             if entry.key == "run"
-            and decoded_value(entry, label, errors).strip() == "npm test"
+            and decoded_value(entry, label, errors).strip() == NPM_TEST_COMMAND
         ]
         if not npm_tests:
             continue
@@ -693,7 +694,7 @@ def publication_renderer_setup_errors(
             for step in steps
             for entry in step
             if entry.key == "run"
-            and decoded_value(entry, label, errors).strip() == "npm test"
+            and decoded_value(entry, label, errors).strip() == NPM_TEST_COMMAND
         ]
         if not npm_tests:
             continue
@@ -809,7 +810,7 @@ def publication_renderer_setup_errors(
 
     if npm_test_count != 1:
         errors.append(
-            f"{label}: expected exactly one active 'run: npm test'; "
+            f"{label}: expected exactly one active 'run: {NPM_TEST_COMMAND}'; "
             f"found {npm_test_count}"
         )
     return errors
@@ -914,7 +915,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           fetch-depth: 2
           persist-credentials: false
-      - run: npm test
+      - run: npm test --ignore-scripts
         env:
           EDITORIAL_INPUT_BASE_COMMIT: ${{{{ github.event.pull_request.base.sha }}}}
 """
@@ -962,8 +963,8 @@ def check_parser_regressions(errors: list[str]) -> None:
             "        with:\n"
             "          fetch-depth: 2\n"
             "          persist-credentials: false\n"
-            "      - run: npm test",
-            "      - run: npm test\n"
+            "      - run: npm test --ignore-scripts",
+            "      - run: npm test --ignore-scripts\n"
             f"      - uses: actions/checkout@{sha}\n"
             "        with:\n"
             "          fetch-depth: 2\n"
@@ -984,7 +985,7 @@ def check_parser_regressions(errors: list[str]) -> None:
           repository: ${{{{ github.repository }}}}
           ref: ${{{{ github.event.pull_request.base.sha }}}}
           persist-credentials: false
-      - run: npm test
+      - run: npm test --ignore-scripts
         env:
           EDITORIAL_INPUT_BASE_COMMIT: ${{{{ github.event.pull_request.base.sha }}}}
 """,
@@ -1010,20 +1011,24 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         continue-on-error: false
 """
     invalid_renderer_orders = {
+        "lifecycle hooks enabled": valid_renderer_order.replace(
+            NPM_TEST_COMMAND,
+            "npm test",
+        ),
         "commented test": """jobs:
   test:
     steps:
-      # - run: npm test
+      # - run: npm test --ignore-scripts
       - run: echo test
 """,
         "missing setup": """jobs:
   test:
     steps:
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "setup in another job": f"""jobs:
   prepare:
@@ -1034,7 +1039,7 @@ def check_parser_regressions(errors: list[str]) -> None:
           bundler-cache: true
   test:
     steps:
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "multiple active tests": f"""jobs:
   test:
@@ -1043,8 +1048,8 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
-      - run: npm test
+      - run: npm test --ignore-scripts
+      - run: npm test --ignore-scripts
 """,
         "matrix metadata masquerading as steps": f"""jobs:
   test:
@@ -1052,7 +1057,7 @@ def check_parser_regressions(errors: list[str]) -> None:
       matrix:
         include:
           - uses: ruby/setup-ruby@{sha}
-            run: npm test
+            run: npm test --ignore-scripts
             with:
               ruby-version: '3.3'
               bundler-cache: true
@@ -1067,7 +1072,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "conditional setup": f"""jobs:
   test:
@@ -1077,7 +1082,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "conditional test": f"""jobs:
   test:
@@ -1086,7 +1091,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         if: false
 """,
         "non-blocking test": f"""jobs:
@@ -1096,7 +1101,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         continue-on-error: true
 """,
         "custom test shell": f"""jobs:
@@ -1106,7 +1111,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         shell: bash -c 'source "$1" || true' -- {{0}}
 """,
         "alternate test directory": f"""jobs:
@@ -1116,7 +1121,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         working-directory: fixtures/passing-package
 """,
         "job run defaults": f"""jobs:
@@ -1129,7 +1134,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "workflow run defaults": f"""defaults:
   run:
@@ -1141,7 +1146,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "dependent test job": f"""jobs:
   prepare:
@@ -1154,7 +1159,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "matrix test job": f"""jobs:
   test:
@@ -1166,7 +1171,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "workflow npm script-shell override": f"""env:
   npm_config_script_shell: /bin/true
@@ -1177,7 +1182,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "job npm script-shell override": f"""jobs:
   test:
@@ -1188,7 +1193,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "test npm script-shell override": f"""jobs:
   test:
@@ -1197,14 +1202,14 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         env:
           npm_config_script_shell: /bin/true
 """,
         "late setup": f"""jobs:
   test:
     steps:
-      - run: npm test
+      - run: npm test --ignore-scripts
       - uses: ruby/setup-ruby@{sha}
         with:
           ruby-version: '3.3'
@@ -1216,7 +1221,7 @@ jobs:
       - uses: ruby/setup-ruby@{sha}
         with:
           ruby-version: '3.3'
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "wrong ruby series": f"""jobs:
   test:
@@ -1225,7 +1230,7 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
     }
     parsed = parse_workflow(
@@ -1280,7 +1285,7 @@ def main() -> int:
     parsed_contract = parsed_workflows.get("contract.yml")
     if contract and parsed_contract:
         for required in (
-            "npm test",
+            NPM_TEST_COMMAND,
             "BOOK_FORMATTER_DIR",
             "contents: read",
         ):

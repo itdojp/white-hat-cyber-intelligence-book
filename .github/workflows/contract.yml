@@ -51,6 +51,6 @@ jobs:
           bundler-cache: true
 
       - name: Validate editorial, safety, source, and generation contracts
-        run: npm test
+        run: npm test --ignore-scripts
         env:
           EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}

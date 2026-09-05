@@ -305,13 +305,12 @@ if package:
         'python3 scripts/check_editorial_input_manifest.py'
     ):
         error('package.json: check:editorial-inputs command mismatch')
-    forbidden_lifecycle_scripts = {
-        'pretest',
-        'posttest',
-        'precheck:editorial-inputs',
-        'postcheck:editorial-inputs',
-    }
-    for script_name in sorted(forbidden_lifecycle_scripts & package_scripts.keys()):
+    forbidden_lifecycle_scripts = sorted(
+        script_name
+        for script_name in package_scripts
+        if re.fullmatch(r'(?:pre|post)(?:test|check:[a-z0-9-]+)', script_name)
+    )
+    for script_name in forbidden_lifecycle_scripts:
         error(f'package.json: forbidden lifecycle script {script_name}')
     test_script = package_scripts.get('test')
     if not isinstance(test_script, str) or not re.fullmatch(
