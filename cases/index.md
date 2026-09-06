@@ -14,6 +14,7 @@
 | 第2章 | [OAuth連携評価前のAuthorization判断](./ch02-authorization-decision-example.md) | Authorization Checklist | Authority、Scope、Safety、Disclosure、RoE Handoffの接続 |
 | 第3章 | [Capability Evidence Matrix](./ch03-capability-evidence-example.md) | Capability Evidence Matrix | Task、Evidence、Review、Gap、Reassessmentの接続 |
 | 第4章 | [資産・信頼境界・脅威モデル](./ch04-threat-model-example.md) | Threat Model | Asset、Flow、Boundary、Threat、Control、Evidence、Reassessmentの接続 |
+| 第5章 | [ATT&CK Behavior Map](./ch05-attack-behavior-example.md) | ATT&CK Behavior Map | 根拠、版、Data、Evidence threshold、Gapの接続 |
 | 第11章 | [マルチテナント受注Export APIとWebhook登録の評価](./ch11-web-api-assessment-example.md) | Web/API Assessment Hypothesis Pack | 仮説、Evidence、Finding、Detectionの接続 |
 | 第17章 | [未承認管理者同意変更のDetection Validation](./ch17-detection-validation-example.md) | Detection Validation Record | Telemetry、Replay、Triage、Handoffの接続 |
 | 第25章 | [共同報告に埋もれた技術クラスタの判断](./ch25-structured-analysis-attribution-example.md) | Analytic Judgment Record | 競合仮説、不確実性、Attribution Ladder、circular reporting |

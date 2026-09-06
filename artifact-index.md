@@ -16,6 +16,7 @@
 | ART-12 | Analytic Judgment Record | 25, 29 | `templates/analytic-judgment-record.md` |
 | ART-13 | Authorization Checklist | 2, 9 | `templates/authorization-checklist.md` |
 | ART-14 | Capability Evidence Matrix | 3, 29 | `templates/capability-evidence-matrix.md` |
+| ART-15 | ATT&CK Behavior Map | 5 | `templates/attack-behavior-map.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -36,3 +37,5 @@
 `ART-03`は、Decision RequirementからBusiness Outcome、具体的なAsset typeに記録するBusiness Asset role、Flow、Trust Boundary、Exposure、Threat Hypothesis、非OperationalなAttack Path、Control assurance、Gap、Evidence Requirement、Action、Reassessmentまでを共通IDで接続する。Network SegmentをTrust Boundaryの定義とせず、Controlの存在とValidationを分離する。第4章の合成記入例は`cases/ch04-threat-model-example.md`を参照する。
 
 成果物IDは章間・演習・評価ルーブリックで共通利用する。
+
+`ART-15`はThreat Hypothesis、ATT&CK Object / version、Mapping basis、Data、Evidence、Status、Gap、Decision contribution、Reassessmentを接続する。Mappingと観測・検証を分離し、[第5章合成Case](cases/ch05-attack-behavior-example.md)を参照する。

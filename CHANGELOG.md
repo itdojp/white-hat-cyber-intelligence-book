@@ -6,6 +6,7 @@
 
 ### Added
 
+- 第5章、ART-15、完全合成Behavior Map、ATT&CK v19.2固定metadataと共有Publication Projectionを使う章契約を追加。
 - PublicリポジトリとPhase 0 Runbookを作成
 - 最小READMEで`main`を初期化し、以後をPull Request運用へ移行
 - 書籍企画、詳細目次、既存書籍との境界、安全方針、ラボ設計を正本化

@@ -10,6 +10,7 @@
 
 | File | Related chapter | Purpose |
 |---|---|---|
+| [ch05-attack-behavior.json](./ch05-attack-behavior.json) | 第5章 | 合成Behavior MapのStatus / Evidence / Testを有限に検証する |
 | [ch11-web-api-assessment-dataset.json](./ch11-web-api-assessment-dataset.json) | 第11章 | Web/API評価の仮説、Evidence、Finding、Detection引き渡しを決定的に検証する |
 | [ch17-detection-engineering-fixture.json](./ch17-detection-engineering-fixture.json) | 第17章 | Positive、Negative、Benign-near-miss、Telemetry gapのReplay契約を検証する |
 | [ch25-structured-analysis-attribution-dataset.json](./ch25-structured-analysis-attribution-dataset.json) | 第25章 | Evidence、Source Note、lineage、circular reporting、deception candidate、judgment、decision、reassessmentを一括で検証する |

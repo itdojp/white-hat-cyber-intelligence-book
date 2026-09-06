@@ -1,0 +1,2682 @@
+{
+  "schemaVersion": "1.0.0",
+  "owner": "Chapter 5 Layer A; no generic syntax fixtures or parsing",
+  "documents": {
+    "manuscript/05-attack-behavior.md": {
+      "headings": [
+        [
+          1,
+          "第5章 攻撃者の行動をATT&CKで記述する"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "本章の責任境界"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケース"
+        ],
+        [
+          2,
+          "1. ThreatからBehaviorへ変換する"
+        ],
+        [
+          2,
+          "2. ATT&CKオブジェクトを混同しない"
+        ],
+        [
+          2,
+          "3. Detection Strategyを自組織のDataへ接続する"
+        ],
+        [
+          2,
+          "4. Mapping basisとStatusの証拠閾値"
+        ],
+        [
+          2,
+          "5. 良いMappingと過剰Mappingを比較する"
+        ],
+        [
+          2,
+          "6. Coverageは分母と証拠を分ける"
+        ],
+        [
+          2,
+          "7. 版固定とMigration記録"
+        ],
+        [
+          2,
+          "8. 四つの視点とHandoff"
+        ],
+        [
+          2,
+          "9. 安全な演習"
+        ],
+        [
+          2,
+          "10. 作成する成果物"
+        ],
+        [
+          2,
+          "11. 評価基準"
+        ],
+        [
+          2,
+          "12. よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "MITRE ATT&CK®は行動の共通語彙として参照する。Techniqueを付ける作業と、自組織でその行動を観測・検証する作業は別である。Tacticは目的、Techniqueは行動の方法、Sub-techniqueはより具体的な分類を表す。Tacticの列を必ず順番に通る侵入工程として読まない。SRC-ATTACK-FAQ-001"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "本章の責任境界 OWN: 行動のMapping basis、版、Evidence threshold、Gap、Decisionへの接続を定義する。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "本章の責任境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "本章の責任境界 BRIDGE: 第4章のThreat Modelを入力とし、第6章のSignal Flow、第16〜18章の観測・検知・Hunting、第21章のControl Validation、第26章のCTI配布へ渡す。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "本章の責任境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "本章の責任境界 DELEGATE: 個別Techniqueの実行方法や製品固有Ruleの実装は扱わない。認証・認可の詳細は実践認証認可設計、評価技法の深掘りはペネトレーションテスト学習ガイドへ委譲する。戻る際は操作手順ではなく、前提、観測点、検証範囲をBehavior Mapへ記録する。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "本章の責任境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 ATT&CKのオブジェクトを区別できる。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 Coverageの限界を説明できる。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 ATT&CK Behavior Mapを作成できる。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ここには二つの飛躍がある。過大権限という設計上の条件から具体的な行動の発生へ進む飛躍と、カタログ上の対応付けからDetectionの有効性へ進む飛躍である。さらに、類似するGroup名を添えても、そのGroupが関与した証拠にはならない。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "導入ケース"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "例えば「広いscopeが残る」は前提条件であって、行動の記述ではない。「SaaSの連携アプリを介したアクセス関係が、正規の承認や利用者の状態と整合せず残る可能性」は、観測する対象と比較条件を含むBehavior仮説になる。ここからT1671を検討できるが、仮説文を書いただけでは発生を主張できない。T1671の公開説明が扱う対象はCloud Application Integrationであり、カタログ上のTacticはPersistenceである。SRC-ATTACK-T1671-001"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "1. ThreatからBehaviorへ変換する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "オブジェクト 本章で問うこと 単独では分からないこと Tactic どの戦術的目的を仮説に置くか その目的を持つ主体が実在するか"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "2. ATT&CKオブジェクトを混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "オブジェクト 本章で問うこと 単独では分からないこと Technique どの行動の方法に対応するか 自組織で実行されたか"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "2. ATT&CKオブジェクトを混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "オブジェクト 本章で問うこと 単独では分からないこと Sub-technique 分類をさらに具体化できるか 根拠のない詳細を補ってよいか"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "2. ATT&CKオブジェクトを混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "オブジェクト 本章で問うこと 単独では分からないこと Group 公開報告で追跡される活動集合は何か 現在の事案の実行主体か"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "2. ATT&CKオブジェクトを混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "オブジェクト 本章で問うこと 単独では分からないこと Software 行動と関連付けられたソフトウェアは何か その製品名だけで悪意があるか"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "2. ATT&CKオブジェクトを混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "オブジェクト 本章で問うこと 単独では分からないこと Campaign ある期間・対象・目的を持つ活動群は何か 類似する事案が同一Campaignか"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "2. ATT&CKオブジェクトを混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "オブジェクト 本章で問うこと 単独では分からないこと Procedure example 公開報告の具体例はどの対応付けを支えるか 本書の演習として実行してよいか"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "2. ATT&CKオブジェクトを混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "オブジェクト 本章で問うこと 単独では分からないこと Mitigation 行動の成立性を下げる対策候補は何か 自組織で実装・検証済みか"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "2. ATT&CKオブジェクトを混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Tactic、Technique、Sub-technique、Procedureの区別は公式FAQに従う。Group / Software / CampaignはカタログのCTIオブジェクトとして扱い、組織内のEvidenceと結合せずに帰属判断へ転用しない。SRC-ATTACK-FAQ-001 SRC-ATTACK-001"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "2. ATT&CKオブジェクトを混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Analytic Data Component 本書側で具体化するData要件 AN1487 DC0066 / DC0069 App・同意・権限変更の時刻、対象、変更主体、承認記録への参照"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "3. Detection Strategyを自組織のDataへ接続する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Analytic Data Component 本書側で具体化するData要件 AN1488 DC0069 / DC0038 連携変更、承認状態、連携に関連する活動を突合するための識別子"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "3. Detection Strategyを自組織のDataへ接続する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Data Sourcesはv18でdeprecatedとなり、歴史的な参照として残されている。本章では移行説明以外に旧分類を新しい検知設計の正本として使わない。Data Sourcesのdeprecatedと、現在利用するData Componentの有効性を一括して判定しない。SRC-ATTACK-DS-001"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "3. Detection Strategyを自組織のDataへ接続する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 受入条件 許容しない飛躍 Proposed 行動候補と調べる理由がある Objectを選定済みとする"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "4. Mapping basisとStatusの証拠閾値"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 受入条件 許容しない飛躍 Mapped Object、前提、Mapping basis、代替説明が対応する 観測済み・検知有効とする"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "4. Mapping basisとStatusの証拠閾値"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 受入条件 許容しない飛躍 Observed 同じ行のObservable behaviorに対応するEvidence IDと観測範囲がある 合成観測を実侵害や主体の証明とする"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "4. Mapping basisとStatusの証拠閾値"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 受入条件 許容しない飛躍 Validated 同じ行に結び付くTest ID、Expected / Actual、Result、Evidence、条件・版がありPassである 教材テストを実製品のDetection有効性へ拡張する"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "4. Mapping basisとStatusの証拠閾値"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 受入条件 許容しない飛躍 Not applicable 対象環境に適用しない理由がある データ不足を対象外にする"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "4. Mapping basisとStatusの証拠閾値"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 受入条件 許容しない飛躍 Unknown 判断に必要な情報が足りず、Gap / Owner / 再評価条件がある 不存在または安全を主張する"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "4. Mapping basisとStatusの証拠閾値"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Mapping basisはHypothesized / Source-reported / Observed / Reproducedから選ぶ。自組織を観測していない公開報告はSource-reportedであり、自組織のObservedではない。原典が同じ報告を複数読んでも独立Evidenceは増えない。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "4. Mapping basisとStatusの証拠閾値"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Observedの対象は必ず限定する。本章の合成Consent変更をObservedと記録しても、「合成記録上で変更があった」という命題だけである。悪意、Persistenceの達成、過去侵害は別の命題として未確認に残す。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "4. Mapping basisとStatusの証拠閾値"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ValidatedのResultはPass / Fail / Inconclusive / Not collectedで記録する。Pass以外、必要Evidenceの欠落、対象行・版・期待結果の不一致があればValidatedを受理しない。既存のControl assuranceや親CaseのGapは、別の検証条件を持つため自動更新しない。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "4. Mapping basisとStatusの証拠閾値"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "5. 良いMappingと過剰Mappingを比較する 比較 記入例 判定と修正 良いMapping 連携アプリの承認と活動の不整合を仮説化し、T1671、前提、必要Dataを記録する Mapped。現在の発生を主張せず不足Evidenceを渡す"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "5. 良いMappingと過剰Mappingを比較する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "5. 良いMappingと過剰Mappingを比較する 比較 記入例 判定と修正 過剰Mapping OAuthという名称から多数のTechniqueをまとめて付ける 不受理。行動、対象、根拠を一行ずつ対応させる"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "5. 良いMappingと過剰Mappingを比較する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "5. 良いMappingと過剰Mappingを比較する 比較 記入例 判定と修正 根拠なしMapping Groupとの類似だけで、合成Caseの実行主体を確定する 不受理。AttributionのEvidenceと代替仮説がない"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "5. 良いMappingと過剰Mappingを比較する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "5. 良いMappingと過剰Mappingを比較する 比較 記入例 判定と修正 正常系near-miss 承認済みの連携変更が、申請と時刻・対象の両方で一致する 変更の観測は残る。悪意とする根拠は弱まる"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "5. 良いMappingと過剰Mappingを比較する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "5. 良いMappingと過剰Mappingを比較する 比較 記入例 判定と修正 情報不足 変更記録はあるが承認参照とTenantが欠ける Unknown。未承認だったと補完しない"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "5. 良いMappingと過剰Mappingを比較する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Catalog coverage: 自分たちが選定した行動候補のうち、根拠付きMappingがある範囲"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "6. Coverageは分母と証拠を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Observable coverage: 同じ行動候補のうち、必要なEvent・Field・期間を実際に扱える範囲"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "6. Coverageは分母と証拠を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Validated coverage: 明示したTest条件と版で、期待Evidenceを確認できた範囲"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "6. Coverageは分母と証拠を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "集計には、対象Asset、Behaviorの選び方、ATT&CK版、対象期間、除外理由、Unknown数を添える。分母の違う比率は直接比較しない。同じTechniqueへ三行を対応付けても、三つの異なるTechniqueを覆ったことにはならない。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "6. Coverageは分母と証拠を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "教材の少数行がPassでも、カタログ全体、自組織の侵入経路全体、製品Coverage、Control effectivenessを保証しない。MITREの利用条件でも、カタログの分類を覆うだけで完全な防御Coverageが保証されるわけではないと説明している。SRC-ATTACK-001"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "6. Coverageは分母と証拠を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Telemetry不足は侵害不存在ではない。Response coverageを論じるなら、検知後に誰が、いつ、どの許可で対処できるかも別に検証する。Mapping率だけを経営向けの安全性指標に置き換えない。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "6. Coverageは分母と証拠を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "IDが同じでも意味や関係が変わり得る。Objectが無効になれば、過去のEvidenceを削除せず、当時の版を保存したうえで新規利用を再審査する。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "7. 版固定とMigration記録"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "8. 四つの視点とHandoff 視点 本章で作る情報 次の担当者への受入条件 攻撃者行動の理解 目的、前提、対象、Observable behavior 手順ではなく条件付きの行動命題である"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "8. 四つの視点とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "8. 四つの視点とHandoff 視点 本章で作る情報 次の担当者への受入条件 防御 Required data、Control、検知方針候補 Dataの有無とControl assuranceを分離する"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "8. 四つの視点とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "8. 四つの視点とHandoff 視点 本章で作る情報 次の担当者への受入条件 分析 Mapping basis、Evidence、代替説明、確信度 合成・公開報告・自組織観測を混同しない"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "8. 四つの視点とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "8. 四つの視点とHandoff 視点 本章で作る情報 次の担当者への受入条件 意思決定 支持できる結論、Gap、Owner、期限 比率ではなく継続・差戻し・再評価条件を示す"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "8. 四つの視点とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "前提・許可・範囲: 自分の作業用コピーで、配布された完全合成JSONとMarkdownを読む。第4章のAUTH-CASE-2026-001を実環境の操作許可へ転用しない。新しいTenant、Data収集、Rule実行の許可は付与しない。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "9. 安全な演習"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "期待Evidence: ID、Mapping basis、Status、根拠、代替説明、Data gap、Decision contribution、Reassessmentを持つ記入済みMap。正解はTechnique数では評価しない。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "9. 安全な演習"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "停止条件: 実Log、実Credential、個人情報、Scope外の対象、出典不明の入力が混入した場合は追加作業を止め、隔離して教材管理者へ確認する。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "9. 安全な演習"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Cleanup: 作業コピーと自分の出力だけを整理し、正本の配布ファイルを変更していないことを確認する。原典や親CaseのEvidenceを削除しない。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "9. 安全な演習"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ART-15はART-03の仮説を置換せず、ART-05のDetection Validationを先取りしない。"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "10. 作成する成果物"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "11. 評価基準 観点 Meets 差戻し Objectと版 ID・Type・版・有効性・関係を原典へ追跡できる 名称だけ、架空Sub-technique、旧版をcurrent扱い"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "11. 評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "11. 評価基準 観点 Meets 差戻し 根拠と状態 同じ命題のEvidenceとStatusが一致する MappedをObserved / Validatedへ読み替える"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "11. 評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "11. 評価基準 観点 Meets 差戻し 観測可能性 Field、期間、欠落、Ownerがある Logの存在だけで検知可能とする"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "11. 評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "11. 評価基準 観点 Meets 差戻し 分析 代替説明、Unknown、許容結論を残す 類似から侵害や主体を確定する"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "11. 評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "11. 評価基準 観点 Meets 差戻し 安全な引渡し Scope、停止、期限、再評価を記録する 次章への移行を操作許可とする"
+          ],
+          "headings": [
+            "第5章 攻撃者の行動をATT&CKで記述する",
+            "11. 評価基準"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "本章はS0〜S1の読解課題で完結する。実Target、実Log、実Credentialは使用しない。連携設定の変更、Token取得、侵害再現、外部への能動通信は行わない。"
+              ],
+              "headings": [
+                "第5章 攻撃者の行動をATT&CKで記述する",
+                "この章の位置付け"
+              ]
+            },
+            "reason": "列挙された実Target/Log/Credential使用とToken取得等の明示的禁止。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "影響: 作業コピーの編集だけであり、外部通信や実環境の変更はない。"
+              ],
+              "headings": [
+                "第5章 攻撃者の行動をATT&CKで記述する",
+                "9. 安全な演習"
+              ]
+            },
+            "reason": "作業コピーの編集だけで、外部通信・実環境変更がないという否定の影響宣言。"
+          }
+        ],
+        "host": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "T1671には、本章が固定した版でSub-techniqueがない。細かく見せる目的で小数付きIDを作らず、Sub-technique欄は「なし」とする。ATT&CK catalogの19.2、T1671 objectの1.0、教材fixtureの1.0.0は別の版である。SRC-ATTACK-T1671-001"
+              ],
+              "headings": [
+                "第5章 攻撃者の行動をATT&CKで記述する",
+                "2. ATT&CKオブジェクトを混同しない"
+              ]
+            },
+            "reason": "ATT&CK catalog/Object/教材の数値版の区別。接続先ではない。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "7. 版固定とMigration記録 本章は2026-09-06に確認したATT&CK catalog v19.2を使用する。Updatesページの開始日は2026-08-06、GitHub releaseの公開時刻は2026-08-05T22:57:35Zである。Version HistoryにはApril 28の表示が残るため、それをv19.2固有の公開日と読み替えない。SRC-ATTACK-001"
+              ],
+              "headings": [
+                "第5章 攻撃者の行動をATT&CKで記述する",
+                "7. 版固定とMigration記録"
+              ]
+            },
+            "reason": "固定版と公表日差異の出典説明。数値版は接続先ではない。"
+          }
+        ],
+        "destination": [
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://itdojp.github.io/practical-auth-book/"
+              ],
+              "headings": [
+                "第5章 攻撃者の行動をATT&CKで記述する",
+                "本章の責任境界"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "本章の責任境界 DELEGATE: 個別Techniqueの実行方法や製品固有Ruleの実装は扱わない。認証・認可の詳細は実践認証認可設計、評価技法の深掘りはペネトレーションテスト学習ガイドへ委譲する。戻る際は操作手順ではなく、前提、観測点、検証範囲をBehavior Mapへ記録する。"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://itdojp.github.io/pentest-learning-book/"
+              ],
+              "headings": [
+                "第5章 攻撃者の行動をATT&CKで記述する",
+                "本章の責任境界"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "本章の責任境界 DELEGATE: 個別Techniqueの実行方法や製品固有Ruleの実装は扱わない。認証・認可の詳細は実践認証認可設計、評価技法の深掘りはペネトレーションテスト学習ガイドへ委譲する。戻る際は操作手順ではなく、前提、観測点、検証範囲をBehavior Mapへ記録する。"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          }
+        ]
+      }
+    },
+    "templates/attack-behavior-map.md": {
+      "headings": [
+        [
+          1,
+          "ATT&CK Behavior Map"
+        ],
+        [
+          2,
+          "目的"
+        ],
+        [
+          2,
+          "使用条件"
+        ],
+        [
+          2,
+          "Document Control"
+        ],
+        [
+          2,
+          "行動とMapping"
+        ],
+        [
+          2,
+          "Dataと既存Control"
+        ],
+        [
+          2,
+          "StatusとEvidence threshold"
+        ],
+        [
+          2,
+          "Validation Record"
+        ],
+        [
+          2,
+          "DecisionとReassessment"
+        ],
+        [
+          2,
+          "ReviewとCleanup"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "使用条件 読解課題は完全合成Dataだけで行う。実Target、実Log、実Credentialを使用しない。外部通信、Token取得、設定変更、侵害再現は行わない。Authority / Scopeが不明な場合は停止する。"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "使用条件"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document Control Field Value Artifact ID ART-15"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document Control Field Value Map ID BMAP-YYYY-NNN"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document Control Field Value Parent Case ID / Relation Case IDとrefines / supersedes / independentを記録"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document Control Field Value Parent Threat Model / Decision Requirement 親の命題と判断期限を変更せず参照"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document Control Field Value Authorization Record / Scope 許可されたDataとMethodの範囲"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document Control Field Value Owner / Reviewer / Review date 担当する役割と再評価期限"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document Control Field Value Catalog / Object / fixture version 三つの版を区別して記録"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document Control Field Value Source / hash / checkedAt 原典、固定commit、取得確認日、hash"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document Control Field Value Non-goals 主体帰属、実行許可、完全Coverageの証明ではない"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 rowId / threatId 行と親命題を一意に指定"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "行動とMapping"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 assetIds / boundaryIds / flowIds 前提、対象、観測点へ追跡"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "行動とMapping"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 catalogVersion Enterprise / Mobile / ICSとcatalog版を明示"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "行動とMapping"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 techniqueId / tacticId / subtechniqueId 有効なObject、Type、name、Object version、modified、permalinkを別途確認"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "行動とMapping"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 mappingBasis Hypothesized / Source-reported / Observed / Reproduced"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "行動とMapping"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 preconditions 確認済みと未確認の成立条件"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "行動とMapping"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 observableBehavior 誰の、何に対する、どの変化を読むか。操作手順にしない"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "行動とMapping"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 analyticIds / dataComponentIds 原典の関係と、自組織の採否・理由"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "行動とMapping"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 alternativeMapping 正常な代替説明、別候補、保留理由"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "行動とMapping"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 limitation この行から主張できないこと"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "行動とMapping"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Dataと既存Control Field 記入内容 telemetryId Event class、Field、取得点、時刻、期間、欠落、Owner"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Dataと既存Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Dataと既存Control Field 記入内容 availability Available / Partial / Not collected / Synthetic only"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Dataと既存Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Dataと既存Control Field 記入内容 detectionId 本書側のRule識別子と版。MITREのDET番号と区別"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Dataと既存Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Dataと既存Control Field 記入内容 Existing prevention / detection / response Control ID、assurance state、根拠、未検証条件"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Dataと既存Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Dataと既存Control Field 記入内容 gapId / Owner / Review date 情報不足を誰がいつ再評価するか"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Dataと既存Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Dataと既存Control Field 記入内容 Evidence ID 命題、取得条件、参照先、時刻、完全性、限界"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Dataと既存Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "StatusとEvidence threshold Status 必須条件 Proposed 行動候補と調査理由"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "StatusとEvidence threshold"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "StatusとEvidence threshold Status 必須条件 Mapped Object、版、前提、Mapping basis、代替説明"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "StatusとEvidence threshold"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "StatusとEvidence threshold Status 必須条件 Observed 同じ行のObservable behaviorに対応するEvidence IDと観測範囲"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "StatusとEvidence threshold"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "StatusとEvidence threshold Status 必須条件 Validated 同じ行のTest ID、条件・版、Expected / Actual、Result、EvidenceがそろいPass"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "StatusとEvidence threshold"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "StatusとEvidence threshold Status 必須条件 Not applicable 情報不足ではない適用対象外の理由"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "StatusとEvidence threshold"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "StatusとEvidence threshold Status 必須条件 Unknown 不足情報、Gap、Owner、再評価条件"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "StatusとEvidence threshold"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Test ResultはPass / Fail / Inconclusive / Not collectedから選ぶ。Pass以外や未収集ではValidatedへ進めない。合成Dataを用いたTestのPassを実製品や別のControlへ拡張しない。"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "StatusとEvidence threshold"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Validation Record Field 記入内容 Test ID / rowId Testと検証対象命題を結合"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Validation Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Validation Record Field 記入内容 Scope / Preconditions 許可、入力、環境、対象外"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Validation Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Validation Record Field 記入内容 Rule version / fixture version 再現対象の版"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Validation Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Validation Record Field 記入内容 Expected / Actual 正常系、異常候補、情報不足の各結果"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Validation Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Validation Record Field 記入内容 Result / Evidence ID Resultと結果を示す参照先"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Validation Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Validation Record Field 記入内容 Reviewer / Limitations 判定責任と適用できない範囲"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Validation Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章の空Templateは実行指示ではない。実環境のRule testやData取得には別の承認が必要である。"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "Validation Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "DecisionとReassessment Field 記入内容 decisionContribution 支持できる結論、留保する結論"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "DecisionとReassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "DecisionとReassessment Field 記入内容 Coverage denominator 対象、期間、版、除外理由、Unknown数"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "DecisionとReassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "DecisionとReassessment Field 記入内容 Handoff ID / consumer 次章と受け取る成果物"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "DecisionとReassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "DecisionとReassessment Field 記入内容 Acceptance / Reject 必須入力と差戻し条件"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "DecisionとReassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "DecisionとReassessment Field 記入内容 reassessmentTrigger Source、Field、Scope、承認、版、期限の変更"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "DecisionとReassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "DecisionとReassessment Field 記入内容 Migration record 旧新Object、差分、影響行、採否、Owner"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "DecisionとReassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Mapping数を安全性や帰属確信度へ変換しない。親CaseのControl / Gapを変更する場合は、その親のEvidence thresholdを別途満たす。"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "DecisionとReassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "ReviewとCleanup Cleanup: 自分の作業コピーだけを整理し、正本と親Evidenceを保持"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "ReviewとCleanup"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWNはBehavior Map、BRIDGEはThreat Model / Detection Validation、DELEGATEは製品実装である。第5章と合成記入例を参照する。"
+          ],
+          "headings": [
+            "ATT&CK Behavior Map",
+            "ReviewとCleanup"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "使用条件 読解課題は完全合成Dataだけで行う。実Target、実Log、実Credentialを使用しない。外部通信、Token取得、設定変更、侵害再現は行わない。Authority / Scopeが不明な場合は停止する。"
+              ],
+              "headings": [
+                "ATT&CK Behavior Map",
+                "使用条件"
+              ]
+            },
+            "reason": "実データ使用・外部通信・Token取得・設定変更等の明示的禁止と停止条件。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "本章の空Templateは実行指示ではない。実環境のRule testやData取得には別の承認が必要である。"
+              ],
+              "headings": [
+                "ATT&CK Behavior Map",
+                "Validation Record"
+              ]
+            },
+            "reason": "空Templateは実行指示ではなく、実環境操作には別の承認が必要という境界。"
+          }
+        ],
+        "host": [],
+        "destination": []
+      }
+    },
+    "cases/ch05-attack-behavior-example.md": {
+      "headings": [
+        [
+          1,
+          "第5章 合成記入例：ATT&CK Behavior Map"
+        ],
+        [
+          2,
+          "この記入例の扱い"
+        ],
+        [
+          2,
+          "Document Control"
+        ],
+        [
+          2,
+          "継承と条件"
+        ],
+        [
+          2,
+          "既存Controlの参照"
+        ],
+        [
+          2,
+          "BM-2026-001"
+        ],
+        [
+          2,
+          "BM-2026-002"
+        ],
+        [
+          2,
+          "BM-2026-003"
+        ],
+        [
+          2,
+          "BM-2026-004"
+        ],
+        [
+          2,
+          "BM-2026-005"
+        ],
+        [
+          2,
+          "BM-2026-006"
+        ],
+        [
+          2,
+          "BM-2026-007"
+        ],
+        [
+          2,
+          "EvidenceとTest"
+        ],
+        [
+          2,
+          "DataとGap"
+        ],
+        [
+          2,
+          "DecisionとHandoff"
+        ],
+        [
+          2,
+          "安全と評価"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この記入例の扱い 完全合成の読解教材である。実Target、実Log、実Credentialは使用しない。外部通信、設定変更、Token取得は行わない。 入力は合成Dataset、空欄の書式はART-15 Templateである。JSONが機械可読の正本であり、以下の表は同じ値を表示する。"
+          ],
+          "headings": [
+            "第5章 合成記入例：ATT&CK Behavior Map",
+            "この記入例の扱い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "EvidenceとTest EVD-BM-002はSYNTH-EVENT-BM-001にある合成同意変更を示すだけである。TH-2026-002のRule欠落が解決したとは解釈しない。 EVD-BM-004 / TEST-BM-004 / DET-BM-004はsynthetic-field-classificationに限定した教材結果である。承認状態がunapprovedならneeds-review、approvedならbenign-change、欠落ならinsufficient-dataと分類する。予測した3件の結果と実際の分類結果が一致することを章contractで再計算する。 needs-reviewは悪意確定ではなく、benign-changeもシステム全体の侵害不存在ではない。Rule versionは1.0.0。DET0539を実製品に実装・試験した結果ではない。"
+          ],
+          "headings": [
+            "第5章 合成記入例：ATT&CK Behavior Map",
+            "EvidenceとTest"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "DataとGap TEL-BM-001〜007は行ごとに定義する。必須FieldはeventClass、tenant、application、approvalである。TEL-BM-002 / TEL-BM-004は合成Dataだけがあり、他はNot collectedである。親Caseの90日Coverage、retention、API resource / operation Field、App lifecycle結果は未検証のままとする。 GAP-BM-001〜007は各行の限界を保持する本章の情報ギャップであり、第4章GAP-2026-001〜004を閉じる記録ではない。OwnerはSYNTH-SOC-REVIEWER、Review dateは2026-09-20、必要Field・承認記録・Scope・ATT&CK Objectの変更を再評価Triggerとする。"
+          ],
+          "headings": [
+            "第5章 合成記入例：ATT&CK Behavior Map",
+            "DataとGap"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "DecisionとHandoff 判断はT1671の条件付き候補を維持し、観測不足は留保することである。Catalog coverageの分母はこの7行、Objectの種類はT1671のみであり、製品Coverage率として使わない。Mapped / Observed / Validatedは異なる軸の証拠閾値を持ち、同じTechniqueへ対応する行を重複集計しない。 HO-BM-006は第6・16章へField、観測点、欠落とOwnerを渡す。HO-BM-017は第17・18・21章へ条件付き候補と有限教材結果を渡す。HO-BM-026は第26章へ出典・版・代替説明・共有範囲を渡す。受入条件と差戻し条件は合成Datasetに固定する。 OWNはBehavior Map、BRIDGEは親Threat Modelと後続Detection、DELEGATEは製品実装である。実用Ruleや侵害手順を本章の成果物へ追加しない。"
+          ],
+          "headings": [
+            "第5章 合成記入例：ATT&CK Behavior Map",
+            "DecisionとHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "安全と評価 Scopeはread-only-synthetic-data。実Log、実Credential、個人情報、出典不明Data、Scope外の対象を認めたら停止し、追加取得せず教材管理者へ確認する。Cleanupは自分の作業コピーだけを整理する。原典や親CaseのEvidenceを削除しない。 評価はIDの追跡、Statusの証拠閾値、代替説明、Gap、Handoff、安全境界で行う。この記入例のPassはRepositoryの独立Review承認や実務のAuthorizationを意味しない。"
+          ],
+          "headings": [
+            "第5章 合成記入例：ATT&CK Behavior Map",
+            "安全と評価"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "既存Controlの参照 親Controlの予防・検知・安全境界に関する状態を参照し、本章のStatusで更新しない。対応する単一Controlを特定しないBM-2026-003はcontrolIdsを「なし」とする。新たな対応・Response Controlが検証されたという意味ではない。"
+          ],
+          "headings": [
+            "第5章 合成記入例：ATT&CK Behavior Map",
+            "既存Controlの参照"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Office Suite向けAN1487を選ぶのは、この派生教材で仮置きしたモデルに限る。親Caseの製品・環境がOffice Suiteだと確定したわけではない。AN1488への切替えはSaaSという名称だけで決めず、前提・Data・正常系の差を再Reviewする。"
+          ],
+          "headings": [
+            "第5章 合成記入例：ATT&CK Behavior Map",
+            "継承と条件"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [],
+        "host": [],
+        "destination": []
+      }
+    },
+    "references/ch05-source-review-2026-09-06.md": {
+      "headings": [
+        [
+          1,
+          "第5章 Source Review Note — 2026-09-06"
+        ],
+        [
+          2,
+          "対象と採否"
+        ],
+        [
+          2,
+          "Releaseと取得証跡"
+        ],
+        [
+          2,
+          "採用Object"
+        ],
+        [
+          2,
+          "原典の用途と限界"
+        ],
+        [
+          2,
+          "最小fixtureと再現方法"
+        ],
+        [
+          2,
+          "Editorial Input Record"
+        ],
+        [
+          2,
+          "利用条件"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "2026-09-06にMITREの公式Version History、Updates、FAQ、Detection Strategies、Data Sources、T1671、DET0539と固定Enterprise STIX bundleを確認した。本文へ採用するのは行動分類、版、関係、限界だけであり、Procedure exampleや実行手順を転載しない。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "対象と採否"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Releaseと取得証跡 Bundle SHA-256: f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Releaseと取得証跡"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Releaseと取得証跡 Next review: 2026-12-06。Catalog release、対象Object・関係・有効性、Data model変更で期限前でも再確認する。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Releaseと取得証跡"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Version Historyの日付をminor releaseの公開日とみなさない。Updatesの表示日とGitHubのUTC時刻は別フィールドで保持し、表示日のタイムゾーンを推測しない。WebsiteのVersion Permalinkはv19単位であり、minor releaseは固定commitとbundle digestを正とする。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Releaseと取得証跡"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "採用Object ID Type Object version modified (UTC) 状態 T1671 attack-pattern 1.0 2025-04-15T19:59:05.283Z active、Sub-techniqueなし"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "採用Object"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "採用Object ID Type Object version modified (UTC) 状態 TA0003 x-mitre-tactic 1.0 2025-04-25T14:45:33.492Z active、Persistence"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "採用Object"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "採用Object ID Type Object version modified (UTC) 状態 DET0539 x-mitre-detection-strategy 1.0 2026-05-12T16:34:50.684Z active"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "採用Object"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "採用Object ID Type Object version modified (UTC) 状態 AN1487 x-mitre-analytic 1.0 2025-10-21T15:10:28.402Z active、Office Suite"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "採用Object"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "採用Object ID Type Object version modified (UTC) 状態 AN1488 x-mitre-analytic 1.0 2025-10-21T15:10:28.402Z active、SaaS"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "採用Object"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "採用Object ID Type Object version modified (UTC) 状態 DC0066 x-mitre-data-component 2.0 2025-11-12T22:03:39.105Z active"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "採用Object"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "採用Object ID Type Object version modified (UTC) 状態 DC0069 x-mitre-data-component 2.0 2025-11-12T22:03:39.105Z active"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "採用Object"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "採用Object ID Type Object version modified (UTC) 状態 DC0038 x-mitre-data-component 3.0 2026-05-12T15:12:00.776Z active"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "採用Object"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "activeは固定bundle内でrevoked / x_mitre_deprecatedがtrueではないことを意味する。任意のrevokedプロパティがないObjectはfalseとして扱い、抽出fixtureに元のプロパティ有無を別途残す。全ObjectのSTIX ID、正規化したObject hash、domains、必要な参照関係もfixtureへ保存する。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "採用Object"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "AnalyticはDET0539ページ内のanchorを使う。推測した独立Analytic routeは使用しない。DET0539からT1671へのdetects関係、DET0539のanalytic refs、AN1487のDC0066 / DC0069、AN1488のDC0069 / DC0038を固定bundleで確認した。T1671のplatformはOffice Suite / SaaS、TacticはPersistenceである。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "採用Object"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "前提は上記SHA-256に一致する公式bundleである。hash不一致、Object欠落、抽出結果不一致では停止する。期待結果は8 Objectの一致であり、ATT&CK全体の完全性ではない。検証後は自分で取得した作業用bundleだけを整理し、追跡済みfixtureを手修正しない。CIではlive bundleを取得せず、fixtureの固定digestと章固有の関係・Status契約を検証する。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "最小fixtureと再現方法"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Package SHA-256: caf8c73aa4e84c99f4062ac7cf85ac56794ad2cbb5d8ec5d9403138753eb6388"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Input SHA-256: 11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Input確認状況: not-present-in-authorized-workspace"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Adopted: raw predraftからの直接採用なし。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Rejected: 草稿の未確認内容を読んだ、hash確認した、採用したという主張。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Deferred: 実環境のDetection Rule、Control Validation、Chapter 6以降の実装。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Raw tracked files: 0"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Package不在を推測再構成で埋めない。canonical-pr-openのPR IDとIntake Recordは機械可読Manifestと専用Draft PRに記録し、通常merge・main/publication後の別更新までconsumedにしない。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "利用条件 MITRE由来のmetadataの出所、固定commit、変更範囲とライセンスはThird-Party Noticesへ記録する。MITREによる本教材の推奨・承認を意味しない。合成Event、Map、判定条件は本書独自の教材であり、MITREの検証結果ではない。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "利用条件"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [],
+        "host": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "対象と採否 Issue #30、Editorial Input契約 #63 / #98を対象とする。Canonical baseは518ea8579439a2c29cfc0e4fbea4086995ada1c0、Content Safety Policyは1.2.0、Publication Projectionは1.1.0である。"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "対象と採否"
+              ]
+            },
+            "reason": "Policy/Projectionの固定数値版。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "Releaseと取得証跡 Version History: currentはv19.2。開始日の表示はApril 28, 2026のまま。"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "Releaseと取得証跡"
+              ]
+            },
+            "reason": "Version Historyの表示された数値版。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "原典の用途と限界 SRC-ATTACK-001: v19.2の版とrelease経緯。分類の網羅と防御有効性を同一視しない。"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "原典の用途と限界"
+              ]
+            },
+            "reason": "RegistryのSource用途を限定する数値版。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "第17章のSource参照はDetectionとDataの区別、第25章のv19.1に関する歴史的な文章はBehavior mappingを帰属証拠としない限定命題である。今回の再確認でもこの意味は変わらない。Catalogのcurrent metadataを更新しても、代表章の当時の分析記録や本文をv19.2で再執筆したと主張しない。Registry-wideの一括監査日は更新しない。"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "原典の用途と限界"
+              ]
+            },
+            "reason": "代表章の歴史的版と今回の版を区別する説明。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "最小fixtureと再現方法 tests/fixtures/attack/ch05-v19.2.jsonは8 Objectと1つのdetects relationの有限metadataであり、完全なSTIX bundleではない。Procedure descriptions、全Group / Software / Campaign、関連しないLog source一覧は含めない。Raw bundleはGitやPagesへ含めない。"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "最小fixtureと再現方法"
+              ]
+            },
+            "reason": "追跡済み有限metadata fixtureの相対パス。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "codeblock",
+                null,
+                "python3 scripts/extract_chapter05_attack_snapshot.py \\ .work/source-input/enterprise-attack.json --check"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "最小fixtureと再現方法"
+              ]
+            },
+            "reason": "固定hash照合済み入力を読むだけの抽出比較コマンドと相対パス。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "Editorial Input Record Package: white-hat-book-parallel-drafts-2026-08-08.zip"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "Editorial Input Record"
+              ]
+            },
+            "reason": "実在未確認の入力Package名をManifest登録事実として表示。取得・接続指示ではない。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "Editorial Input Record Input: chapter05-attack-behavior.predraft.md"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "Editorial Input Record"
+              ]
+            },
+            "reason": "実在未確認のpredraft名をManifest登録事実として表示。"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "Editorial Input Record Rewritten: Issue #30の構成・学習目的をcurrent contractとv19.2一次資料から新規に作成。"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "Editorial Input Record"
+              ]
+            },
+            "reason": "Issue/一次資料から新規執筆した対象の数値版。"
+          }
+        ],
+        "destination": [
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/resources/versions/"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "Releaseと取得証跡"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "Releaseと取得証跡 Version History: currentはv19.2。開始日の表示はApril 28, 2026のまま。"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/resources/updates/"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "Releaseと取得証跡"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "Releaseと取得証跡 Updates: August 2026 update、開始日2026-08-06。"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://github.com/mitre/cti/releases/tag/ATT%26CK-v19.2"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "Releaseと取得証跡"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "Releaseと取得証跡 MITRE/CTI release: published_at=2026-08-05T22:57:35Z。"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://raw.githubusercontent.com/mitre/cti/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "Releaseと取得証跡"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "Releaseと取得証跡 固定Enterprise bundle。"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/versions/v19/techniques/T1671/"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "採用Object"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "T1671 Version Permalink"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/versions/v19/detectionstrategies/DET0539/"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "採用Object"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "DET0539 Version Permalink"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/versions/v19/detectionstrategies/DET0539/#AN1487"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "採用Object"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "AN1487"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/versions/v19/detectionstrategies/DET0539/#AN1488"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "採用Object"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "AN1488"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/resources/faq/"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "原典の用途と限界"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "原典の用途と限界 SRC-ATTACK-FAQ-001: 公式FAQのTactic、Technique、Sub-technique、Procedureの区別。FAQの更新頻度説明は今回のAgile releaseの根拠に使わない。"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/detectionstrategies/"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "原典の用途と限界"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "原典の用途と限界 SRC-ATTACK-DET-001: Detection Strategiesの高位検知方針とAnalyticの関係。自組織のData保有や検知率を保証しない。"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/datasources/"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "原典の用途と限界"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "原典の用途と限界 SRC-ATTACK-DS-001: Data Sourcesのv18 deprecation。歴史的な移行説明だけに使用し、現在のDCオブジェクトと混同しない。"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/main/THIRD_PARTY_NOTICES.md"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-09-06",
+                "利用条件"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "p",
+                null,
+                "利用条件 MITRE由来のmetadataの出所、固定commit、変更範囲とライセンスはThird-Party Noticesへ記録する。MITREによる本教材の推奨・承認を意味しない。合成Event、Map、判定条件は本書独自の教材であり、MITREの検証結果ではない。"
+              ]
+            },
+            "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
+          }
+        ]
+      }
+    }
+  },
+  "parentBindings": [
+    {
+      "rowId": "BM-2026-001",
+      "threatId": "TH-2026-001",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-005"
+      ],
+      "boundaryIds": [
+        "TB-2026-001",
+        "TB-2026-003"
+      ],
+      "flowIds": [
+        "FLOW-2026-002",
+        "FLOW-2026-004"
+      ],
+      "techniqueId": "T1671",
+      "tacticId": "TA0003",
+      "status": "Mapped",
+      "mappingBasis": "Hypothesized",
+      "controlIds": [
+        "CTRL-2026-005",
+        "CTRL-2026-006"
+      ]
+    },
+    {
+      "rowId": "BM-2026-002",
+      "threatId": "TH-2026-002",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-005"
+      ],
+      "boundaryIds": [
+        "TB-2026-001",
+        "TB-2026-003"
+      ],
+      "flowIds": [
+        "FLOW-2026-002",
+        "FLOW-2026-004"
+      ],
+      "techniqueId": "T1671",
+      "tacticId": "TA0003",
+      "status": "Observed",
+      "mappingBasis": "Observed",
+      "controlIds": [
+        "CTRL-2026-007",
+        "CTRL-2026-008"
+      ]
+    },
+    {
+      "rowId": "BM-2026-003",
+      "threatId": "TH-2026-003",
+      "assetIds": [
+        "ASSET-2026-001",
+        "ASSET-2026-003"
+      ],
+      "boundaryIds": [
+        "TB-2026-002",
+        "TB-2026-003"
+      ],
+      "flowIds": [
+        "FLOW-2026-004"
+      ],
+      "techniqueId": null,
+      "tacticId": null,
+      "status": "Unknown",
+      "mappingBasis": "Hypothesized",
+      "controlIds": []
+    },
+    {
+      "rowId": "BM-2026-004",
+      "threatId": "TH-2026-002",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-005"
+      ],
+      "boundaryIds": [
+        "TB-2026-001",
+        "TB-2026-003"
+      ],
+      "flowIds": [
+        "FLOW-2026-002",
+        "FLOW-2026-004"
+      ],
+      "techniqueId": "T1671",
+      "tacticId": "TA0003",
+      "status": "Validated",
+      "mappingBasis": "Reproduced",
+      "controlIds": [
+        "CTRL-2026-007",
+        "CTRL-2026-008"
+      ]
+    },
+    {
+      "rowId": "BM-2026-005",
+      "threatId": "TH-2026-004",
+      "assetIds": [
+        "ASSET-2026-005",
+        "ASSET-2026-006",
+        "ASSET-2026-007"
+      ],
+      "boundaryIds": [
+        "TB-2026-004",
+        "TB-2026-008"
+      ],
+      "flowIds": [
+        "FLOW-2026-003",
+        "FLOW-2026-006"
+      ],
+      "techniqueId": null,
+      "tacticId": null,
+      "status": "Unknown",
+      "mappingBasis": "Hypothesized",
+      "controlIds": [
+        "CTRL-2026-005",
+        "CTRL-2026-006"
+      ]
+    },
+    {
+      "rowId": "BM-2026-006",
+      "threatId": "TH-2026-005",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-003",
+        "ASSET-2026-004"
+      ],
+      "boundaryIds": [
+        "TB-2026-003",
+        "TB-2026-007"
+      ],
+      "flowIds": [
+        "FLOW-2026-004",
+        "FLOW-2026-005"
+      ],
+      "techniqueId": null,
+      "tacticId": null,
+      "status": "Proposed",
+      "mappingBasis": "Hypothesized",
+      "controlIds": [
+        "CTRL-2026-007",
+        "CTRL-2026-008"
+      ]
+    },
+    {
+      "rowId": "BM-2026-007",
+      "threatId": "TH-2026-006",
+      "assetIds": [
+        "ASSET-2026-001",
+        "ASSET-2026-003",
+        "ASSET-2026-006"
+      ],
+      "boundaryIds": [
+        "TB-2026-002",
+        "TB-2026-003",
+        "TB-2026-007",
+        "TB-2026-008"
+      ],
+      "flowIds": [
+        "FLOW-2026-003",
+        "FLOW-2026-004",
+        "FLOW-2026-005"
+      ],
+      "techniqueId": null,
+      "tacticId": null,
+      "status": "Unknown",
+      "mappingBasis": "Hypothesized",
+      "controlIds": [
+        "CTRL-2026-009"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "source": "manuscript/05-attack-behavior.md",
+      "destination": "chapters/chapter-05/index.md",
+      "section": "chapters",
+      "order": 48,
+      "title": "第5章 攻撃者の行動をATT&CKで記述する"
+    },
+    {
+      "source": "templates/attack-behavior-map.md",
+      "destination": "templates/attack-behavior-map/index.md",
+      "section": "additional",
+      "order": 243,
+      "title": "ATT&CK Behavior Map"
+    },
+    {
+      "source": "cases/ch05-attack-behavior-example.md",
+      "destination": "cases/chapter-05-attack-behavior/index.md",
+      "section": "additional",
+      "order": 244,
+      "title": "第5章 合成記入例：ATT&CK Behavior Map"
+    },
+    {
+      "source": "references/ch05-source-review-2026-09-06.md",
+      "destination": "references/chapter-05-source-review/index.md",
+      "section": "additional",
+      "order": 245,
+      "title": "第5章 Source Review Note：ATT&CK"
+    }
+  ],
+  "staticArtifacts": [
+    {
+      "source": "cases/fixtures/ch05-attack-behavior.json",
+      "destination": "downloads/ch05-attack-behavior.json"
+    }
+  ],
+  "parentControls": [
+    {
+      "controlId": "CTRL-2026-005",
+      "role": "業務要件とscopeのReview",
+      "assurance": "Documented",
+      "parentEvidenceIds": [
+        "EVD-2026-002"
+      ],
+      "limitation": "人手差分に依存し、実施有効性の証明ではない"
+    },
+    {
+      "controlId": "CTRL-2026-006",
+      "role": "Workload identityの分離と管理",
+      "assurance": "Documented",
+      "parentEvidenceIds": [
+        "EVD-2026-001"
+      ],
+      "limitation": "親EvidenceはApp registration scope Snapshotだけ。bindingと管理手順の実施結果は未収集"
+    },
+    {
+      "controlId": "CTRL-2026-007",
+      "role": "Admin consent / App lifecycleのAudit coverage",
+      "assurance": "Documented",
+      "parentEvidenceIds": [
+        "EVD-2026-003"
+      ],
+      "limitation": "親EvidenceはAdmin consentだけ。App lifecycleと複合ControlのRule testは未収集"
+    },
+    {
+      "controlId": "CTRL-2026-008",
+      "role": "Labのno outbound / Stop / Cleanup",
+      "assurance": "Documented",
+      "parentEvidenceIds": [
+        "EVD-AUTH-2026-001",
+        "SYNTH-REV-TM-SAFE-001"
+      ],
+      "limitation": "設計Reviewだけ。default-deny、preflight、Cleanupの実施結果は未収集"
+    },
+    {
+      "controlId": "CTRL-2026-009",
+      "role": "summary-only Field normalizationの説明",
+      "assurance": "Unknown",
+      "parentEvidenceIds": [
+        "NEG-2026-001"
+      ],
+      "limitation": "Vendor内部補正の完全性は直接確認できない"
+    }
+  ]
+}

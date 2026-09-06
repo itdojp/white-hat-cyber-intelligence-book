@@ -37,12 +37,13 @@
 3. [第2章 法、倫理、許可、責任ある開示](manuscript/02-law-ethics-authorization.md)
 4. [第3章 能力を分解し、証拠で学習する](manuscript/03-capability-evidence.md)
 5. [第4章 資産、信頼境界、攻撃面、脅威モデル](manuscript/04-assets-boundaries-threat-model.md)
-6. [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
-7. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
-8. [第25章 構造化分析、不確実性、アトリビューション](manuscript/25-structured-analysis-attribution.md)
-9. [Quick Start](quickstart.md)
-10. [Concept Map](concept-map.md)
-11. [詳細目次](TOC.md)
+6. [第5章 攻撃者の行動をATT&CKで記述する](manuscript/05-attack-behavior.md)
+7. [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
+8. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
+9. [第25章 構造化分析、不確実性、アトリビューション](manuscript/25-structured-analysis-attribution.md)
+10. [Quick Start](quickstart.md)
+11. [Concept Map](concept-map.md)
+12. [詳細目次](TOC.md)
 
 ## 公開中の成果物
 
@@ -54,6 +55,8 @@
 - [第3章 合成記入例：Capability Evidence Matrix](cases/ch03-capability-evidence-example.md)
 - [Threat Modelテンプレート](templates/threat-model.md)
 - [第4章 合成記入例：資産・信頼境界・脅威モデル](cases/ch04-threat-model-example.md)
+- [ATT&CK Behavior Mapテンプレート](templates/attack-behavior-map.md)
+- [第5章 合成記入例：ATT&CK Behavior Map](cases/ch05-attack-behavior-example.md)
 - [Web/API Assessment Hypothesis Packテンプレート](templates/web-api-assessment-hypothesis-pack.md)
 - [第11章 合成記入例：マルチテナント受注Export APIとWebhook登録の評価](cases/ch11-web-api-assessment-example.md)
 - [第11章 読み取り専用の合成Request / Response Dataset](cases/fixtures/ch11-web-api-assessment-dataset.json)

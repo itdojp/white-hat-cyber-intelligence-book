@@ -5,16 +5,17 @@
     {
       "id": "SRC-ATTACK-001",
       "publisher": "MITRE",
-      "title": "MITRE ATT&CK Version History and April 2026 Updates",
+      "title": "MITRE ATT&CK Version History and August 2026 Updates",
       "kind": "framework",
       "status": "current",
-      "version": "19.1",
+      "version": "19.2",
       "url": "https://attack.mitre.org/resources/versions/",
-      "publishedAt": "2026-04-28",
-      "checkedAt": "2026-08-03",
-      "nextReviewAt": "2026-11-03",
+      "publishedAt": "2026-08-06",
+      "checkedAt": "2026-09-06",
+      "nextReviewAt": "2026-12-06",
       "reviewTriggers": [
-        "ATT&CK major or minor release"
+        "ATT&CK major or minor release",
+        "Used Object version, modified, revoked/deprecated or relationship change"
       ],
       "chapters": [
         0,
@@ -26,7 +27,7 @@
         25,
         26
       ],
-      "notes": "Current version page identifies ATT&CK v19.1 as current from 2026-04-28. Chapter 17 relies on ATT&CK framing that detection mapping is not coverage proof; Chapter 25 uses it only as behavior-mapping vocabulary and not as attribution proof."
+      "notes": "Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration."
     },
     {
       "id": "SRC-ATTACK-DS-001",
@@ -37,15 +38,17 @@
       "version": "Deprecated in ATT&CK v18",
       "url": "https://attack.mitre.org/datasources/",
       "publishedAt": null,
-      "checkedAt": "2026-08-03",
-      "nextReviewAt": "2026-11-03",
+      "checkedAt": "2026-09-06",
+      "nextReviewAt": "2026-12-06",
       "reviewTriggers": [
-        "ATT&CK data source taxonomy change or deprecation status change"
+        "ATT&CK data source taxonomy change or deprecation status change",
+        "Used Object version, modified, revoked/deprecated or relationship change"
       ],
       "chapters": [
+        5,
         17
       ],
-      "notes": "Official page states data sources were deprecated in the ATT&CK v18 release in October 2025 and no new data sources will be added. The exact publication day is not recorded on the page, so publishedAt remains null."
+      "notes": "Official page states data sources were deprecated in the ATT&CK v18 release in October 2025 and no new data sources will be added. The exact publication day is not recorded on the page, so publishedAt remains null. Rechecked for Chapter 5 on 2026-09-06; used only for historical migration explanation. Current Data Component objects are evaluated separately."
     },
     {
       "id": "SRC-ATTACK-DET-001",
@@ -56,15 +59,17 @@
       "version": null,
       "url": "https://attack.mitre.org/detectionstrategies/",
       "publishedAt": null,
-      "checkedAt": "2026-08-03",
-      "nextReviewAt": "2026-11-03",
+      "checkedAt": "2026-09-06",
+      "nextReviewAt": "2026-12-06",
       "reviewTriggers": [
-        "ATT&CK detection strategy additions or model changes"
+        "ATT&CK detection strategy additions or model changes",
+        "Used Object version, modified, revoked/deprecated or relationship change"
       ],
       "chapters": [
+        5,
         17
       ],
-      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt."
+      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt. Rechecked for Chapter 5 on 2026-09-06; DET0539 and analytic/data-component references are pinned separately in SRC-ATTACK-T1671-001. No product detection validation is implied."
     },
     {
       "id": "SRC-SIGMA-001",
@@ -572,6 +577,45 @@
         25
       ],
       "notes": "Pinned operational snapshot used only by the Chapter 25 synthetic-publication safety gate; sha256:1a5b42ef79e837556bce63981f79591808237cb42f9fafb1c110783ddf0fcb95."
+    },
+    {
+      "id": "SRC-ATTACK-FAQ-001",
+      "publisher": "MITRE",
+      "title": "MITRE ATT&CK Frequently Asked Questions",
+      "kind": "framework-reference",
+      "status": "current",
+      "version": null,
+      "url": "https://attack.mitre.org/resources/faq/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-06",
+      "nextReviewAt": "2026-12-06",
+      "reviewTriggers": [
+        "Object semantics or FAQ change"
+      ],
+      "chapters": [
+        5
+      ],
+      "notes": "Used for Tactic, Technique, Sub-technique and Procedure distinctions and unordered tactics. No independent version or publication date; both remain null. Update cadence is taken from current Updates, not the older biannual FAQ description."
+    },
+    {
+      "id": "SRC-ATTACK-T1671-001",
+      "publisher": "MITRE",
+      "title": "ATT&CK v19.2 Enterprise STIX: T1671 and detection metadata subset",
+      "kind": "framework-reference",
+      "status": "snapshot",
+      "version": "19.2",
+      "url": "https://github.com/mitre/cti/blob/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json",
+      "publishedAt": "2026-08-06",
+      "checkedAt": "2026-09-06",
+      "nextReviewAt": "2026-12-06",
+      "reviewTriggers": [
+        "T1671, TA0003, DET0539, AN1487, AN1488, DC0066, DC0069 or DC0038 metadata/relationship change",
+        "ATT&CK release or data-model change"
+      ],
+      "chapters": [
+        5
+      ],
+      "notes": "Enterprise bundle SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Published date is the Updates start date; release timestamp is 2026-08-05T22:57:35Z. Finite metadata extraction includes active flags, original STIX IDs, object hashes and relationship provenance; excludes procedure descriptions. Website version URLs use v19, while exact commit fixes minor release. MITRE license notice is in THIRD_PARTY_NOTICES.md. These source relations do not demonstrate observed compromise or detection effectiveness."
     }
   ]
 }
