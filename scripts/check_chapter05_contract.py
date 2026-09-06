@@ -215,6 +215,16 @@ def stix_publication_date_errors(source: dict) -> list[str]:
     return []
 
 
+def framework_publication_date_errors(source: dict) -> list[str]:
+    # CH05-SRC-PUB-002: a live Version History page is not the dated STIX release.
+    if (
+        source.get("url") != "https://attack.mitre.org/resources/versions/"
+        or source.get("publishedAt", "missing") is not None
+    ):
+        return ["live Version History publication date must remain unknown (null)"]
+    return []
+
+
 def repository_errors(contract: dict) -> list[str]:
     errors = []
     package = load_json_strict(ROOT / "package.json")
@@ -236,6 +246,7 @@ def repository_errors(contract: dict) -> list[str]:
         ):
             errors.append(f"{sid}: scoped source audit")
     errors.extend(stix_publication_date_errors(sources["SRC-ATTACK-T1671-001"]))
+    errors.extend(framework_publication_date_errors(sources["SRC-ATTACK-001"]))
     if sources["SRC-ATTACK-001"].get("version") != "19.2":
         errors.append("ATT&CK current catalog version")
     registry = load_json_strict(ROOT / "site-pages.json")

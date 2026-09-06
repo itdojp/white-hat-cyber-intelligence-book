@@ -231,6 +231,22 @@ def run_regressions(
             (not stix_publication_date_errors({"publishedAt": date})) is valid,
             f"CH05-SRC-PUB-001 release versus update {date}",
         )
+    from scripts.check_chapter05_contract import framework_publication_date_errors
+
+    for date, valid in (
+        (None, True),
+        ("2026-08-05", False),
+        ("2026-08-06", False),
+        ("2026-04-28", False),
+    ):
+        record = {
+            "url": "https://attack.mitre.org/resources/versions/",
+            "publishedAt": date,
+        }
+        check(
+            (not framework_publication_date_errors(record)) is valid,
+            f"CH05-SRC-PUB-002 live page versus release/update {date}",
+        )
     from scripts.extract_chapter05_attack_snapshot import extract
 
     try:

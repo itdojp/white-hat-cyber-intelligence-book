@@ -2026,6 +2026,18 @@
             "第5章 Source Review Note — 2026-09-06",
             "利用条件"
           ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-ATTACK-001のurlは随時更新されるVersion Historyであり、このページそのものの公表日時は確定できない。RegistryのpublishedAtはnullとし、関連するrelease公開時刻とUpdates開始日は別の情報として保存する。"
+          ],
+          "headings": [
+            "第5章 Source Review Note — 2026-09-06",
+            "原典の用途と限界"
+          ]
         }
       ],
       "exceptions": {

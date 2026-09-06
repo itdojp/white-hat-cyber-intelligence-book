@@ -51,6 +51,8 @@ AnalyticはDET0539ページ内のanchorを使う。推測した独立Analytic ro
 
 第17章のSource参照はDetectionとDataの区別、第25章のv19.1に関する歴史的な文章はBehavior mappingを帰属証拠としない限定命題である。今回の再確認でもこの意味は変わらない。Catalogのcurrent metadataを更新しても、代表章の当時の分析記録や本文をv19.2で再執筆したと主張しない。Registry-wideの一括監査日は更新しない。
 
+SRC-ATTACK-001のurlは随時更新されるVersion Historyであり、このページそのものの公表日時は確定できない。RegistryのpublishedAtはnullとし、関連するrelease公開時刻とUpdates開始日は別の情報として保存する。
+
 ## 最小fixtureと再現方法
 
 `tests/fixtures/attack/ch05-v19.2.json`は8 Objectと1つのdetects relationの有限metadataであり、完全なSTIX bundleではない。Procedure descriptions、全Group / Software / Campaign、関連しないLog source一覧は含めない。Raw bundleはGitやPagesへ含めない。
