@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "manifestVersion": "1.0.0",
-  "auditedAt": "2026-09-05",
+  "auditedAt": "2026-09-06",
   "source": {
     "repository": "https://github.com/itdojp/white-hat-cyber-intelligence-book",
     "registrationIssue": 63,
@@ -951,10 +951,53 @@
       "targetId": "chapter-05",
       "issue": 30,
       "targetKind": "chapter",
-      "status": "selected-for-intake",
+      "status": "canonical-pr-open",
       "selectedCandidateId": "EIC-0030-11e256480c15",
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "canonicalPr": 113,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/113",
+        "packageId": "EIP-0001",
+        "packageSha256": "caf8c73aa4e84c99f4062ac7cf85ac56794ad2cbb5d8ec5d9403138753eb6388",
+        "inputPath": "chapter05-attack-behavior.predraft.md",
+        "inputSha256": "11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12",
+        "targetIssue": 30,
+        "canonicalPr": 113,
+        "currentMainSha": "518ea8579439a2c29cfc0e4fbea4086995ada1c0",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-06",
+        "adoptedSections": [
+          "Raw predraftからの直接採用なし。登録metadataだけを照合した。"
+        ],
+        "rewrittenSections": [
+          "Issue #30の構成・学習目標を、current contractとMITRE一次資料から新規作成。",
+          "ART-15、7行の完全合成Case、同一行Evidence/Test閾値、Source note、共有ProjectionのLayer A consumer。"
+        ],
+        "rejectedOrDeferredSections": [
+          "未確認raw predraftを読了・hash検証・採用したという主張は拒否。",
+          "実製品Rule、T1671実施、親Control検証、Chapter 6以降は対象外。"
+        ],
+        "sourceRevalidation": [
+          "2026-09-06確認: ATT&CK v19.2 / Updates開始日2026-08-06 / release公開時刻2026-08-05T22:57:35Z。Version HistoryのApril 28表示との差を保持。",
+          "MITRE/CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; Enterprise bundle SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259。",
+          "T1671 / TA0003 / DET0539 / AN1487 / AN1488 / DC0066 / DC0069 / DC0038とactive flags・関係を有限fixtureへ抽出。",
+          "最小fixture SHA-256 960d0b76b018bdefae3958beaaf3cc2a30d73c034467cbe0941289ded4f4d44a。MITRE attribution/licenseを保存。"
+        ],
+        "canonicalFiles": [
+          "manuscript/05-attack-behavior.md",
+          "templates/attack-behavior-map.md",
+          "cases/ch05-attack-behavior-example.md",
+          "cases/fixtures/ch05-attack-behavior.json",
+          "references/ch05-source-review-2026-09-06.md"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日であり、Package本文を読んだ日ではない。",
+          "3件のsynthetic-field-classificationは実製品のDetection effectiveness、T1671再現、親Control検証、侵害有無や主体帰属の証明ではない。",
+          "Draft PRの作成はmerge・main CI・Pages公開の完了を意味しない。consumedはそれらの確認後に別更新する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0030-11e256480c15",
@@ -978,6 +1021,12 @@
           "effectiveAt": "2026-09-05",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5550634873",
           "reason": "Issue #98契約の最初の実運用対象として明示選択した。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-06",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/113",
+          "reason": "PR #113でcurrent sourceに基づく第5章正本とIntake Recordを作成。raw Packageは不在で直接採用なし。通常mergeとmain公開は未完了。"
         }
       ]
     },

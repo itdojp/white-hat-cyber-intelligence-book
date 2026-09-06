@@ -3,7 +3,7 @@
 このファイルは`editorial-input-manifest.json`から決定的に生成します。機械可読Manifestを更新し、`npm run render:editorial-inputs`を実行してください。このファイルを手編集しないでください。
 
 - Manifest version: `1.0.0`
-- Audit date: `2026-09-05`
+- Audit date: `2026-09-06`
 - Packages / targets / candidates: `14 / 29 / 30`
 - Provenance: [Issue #63](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63) / [Issue #98](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98)
 - External audit artifact: `not-present-in-authorized-workspace`。内容やhash一致を推測しません。
@@ -16,10 +16,10 @@
 |---|---:|
 | `blueprint-only` | 1 |
 | `candidate-selection-required` | 1 |
+| `canonical-pr-open` | 1 |
 | `consumed` | 1 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 23 |
-| `selected-for-intake` | 1 |
 
 ## Acknowledged collisions
 
@@ -52,7 +52,7 @@
 | Target | Issue | Status | Selected candidate | Canonical PR | Evidence |
 |---|---:|---|---|---:|---|
 | `chapter-04` | #29 | `consumed` | `EIC-0029-c49f0a11ef9e` | #64 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5245374024) |
-| `chapter-05` | #30 | `selected-for-intake` | `EIC-0030-11e256480c15` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5550634873) |
+| `chapter-05` | #30 | `canonical-pr-open` | `EIC-0030-11e256480c15` | #113 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/113) |
 | `chapter-06` | #31 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155) |
 | `chapter-07` | #32 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644) |
 | `chapter-08` | #33 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529) |
