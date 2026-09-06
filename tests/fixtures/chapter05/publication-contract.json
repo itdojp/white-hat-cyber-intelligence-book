@@ -1641,7 +1641,7 @@
             "reader_visible_text",
             "p",
             null,
-            "DataとGap TEL-BM-001〜007は行ごとに定義する。必須FieldはeventClass、tenant、application、approvalである。TEL-BM-002 / TEL-BM-004は合成Dataだけがあり、他はNot collectedである。親Caseの90日Coverage、retention、API resource / operation Field、App lifecycle結果は未検証のままとする。 GAP-BM-001〜007は各行の限界を保持する本章の情報ギャップであり、第4章GAP-2026-001〜004を閉じる記録ではない。OwnerはSYNTH-SOC-REVIEWER、Review dateは2026-09-20、必要Field・承認記録・Scope・ATT&CK Objectの変更を再評価Triggerとする。"
+            "DataとGap TEL-BM-001〜007は行ごとに定義する。教材の必須Fieldはsynthetic、eventClass、tenant、application、approvalである。syntheticはtrueであることを確認する教材識別用の必須マーカーであり、製品のEvent schemaのFieldではない。TEL-BM-002 / TEL-BM-004は合成Dataだけがあり、他はNot collectedである。親Caseの90日Coverage、retention、API resource / operation Field、App lifecycle結果は未検証のままとする。 GAP-BM-001〜007は各行の限界を保持する本章の情報ギャップであり、第4章GAP-2026-001〜004を閉じる記録ではない。OwnerはSYNTH-SOC-REVIEWER、Review dateは2026-09-20、必要Field・承認記録・Scope・ATT&CK Objectの変更を再評価Triggerとする。"
           ],
           "headings": [
             "第5章 合成記入例：ATT&CK Behavior Map",

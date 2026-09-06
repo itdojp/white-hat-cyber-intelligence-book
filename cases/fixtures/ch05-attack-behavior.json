@@ -350,6 +350,7 @@
       "telemetryId": "TEL-BM-001",
       "rowId": "BM-2026-001",
       "requiredFields": [
+        "synthetic",
         "eventClass",
         "tenant",
         "application",
@@ -364,6 +365,7 @@
       "telemetryId": "TEL-BM-002",
       "rowId": "BM-2026-002",
       "requiredFields": [
+        "synthetic",
         "eventClass",
         "tenant",
         "application",
@@ -378,6 +380,7 @@
       "telemetryId": "TEL-BM-003",
       "rowId": "BM-2026-003",
       "requiredFields": [
+        "synthetic",
         "eventClass",
         "tenant",
         "application",
@@ -392,6 +395,7 @@
       "telemetryId": "TEL-BM-004",
       "rowId": "BM-2026-004",
       "requiredFields": [
+        "synthetic",
         "eventClass",
         "tenant",
         "application",
@@ -406,6 +410,7 @@
       "telemetryId": "TEL-BM-005",
       "rowId": "BM-2026-005",
       "requiredFields": [
+        "synthetic",
         "eventClass",
         "tenant",
         "application",
@@ -420,6 +425,7 @@
       "telemetryId": "TEL-BM-006",
       "rowId": "BM-2026-006",
       "requiredFields": [
+        "synthetic",
         "eventClass",
         "tenant",
         "application",
@@ -434,6 +440,7 @@
       "telemetryId": "TEL-BM-007",
       "rowId": "BM-2026-007",
       "requiredFields": [
+        "synthetic",
         "eventClass",
         "tenant",
         "application",

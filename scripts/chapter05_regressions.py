@@ -5,7 +5,11 @@ from __future__ import annotations
 from copy import deepcopy
 from dataclasses import replace
 
-from scripts.chapter05_semantics import classify_synthetic_event, validate_case
+from scripts.chapter05_semantics import (
+    REQUIRED_FIELDS,
+    classify_synthetic_event,
+    validate_case,
+)
 from scripts.source_audit import meets_audit_baseline
 
 
@@ -96,6 +100,19 @@ def run_regressions(
         ("period", "90 days covered"),
     ):
         mutation("telemetry", 3, field, value, "telemetry ownership")
+    mutation(
+        "telemetry",
+        3,
+        "requiredFields",
+        ["eventClass", "tenant", "application", "approval"],
+        "telemetry ownership",
+    )
+    for event in case["events"]:
+        limited = {field: event[field] for field in REQUIRED_FIELDS}
+        check(
+            classify_synthetic_event(limited) == classify_synthetic_event(event),
+            f"complete declared replay fields {event['id']}",
+        )
     mutation("events", 0, "approval", "approved", "same-row replay")
     mutation("events", 0, "synthetic", False, "synthetic event scope")
     mutation("events", 0, "tenant", "live.example", "synthetic event scope")
@@ -207,6 +224,13 @@ def run_regressions(
                 f"{path} section drift",
             )
 
+    from scripts.check_chapter05_contract import stix_publication_date_errors
+
+    for date, valid in (("2026-08-05", True), ("2026-08-06", False), (None, False)):
+        check(
+            (not stix_publication_date_errors({"publishedAt": date})) is valid,
+            f"CH05-SRC-PUB-001 release versus update {date}",
+        )
     from scripts.extract_chapter05_attack_snapshot import extract
 
     try:

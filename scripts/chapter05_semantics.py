@@ -80,7 +80,7 @@ IDS = {
     "tests": "testId",
     "handoffs": "id",
 }
-REQUIRED_FIELDS = ["eventClass", "tenant", "application", "approval"]
+REQUIRED_FIELDS = ["synthetic", "eventClass", "tenant", "application", "approval"]
 STATUSES = {"Proposed", "Mapped", "Observed", "Validated", "Not applicable", "Unknown"}
 BASES = {"Hypothesized", "Source-reported", "Observed", "Reproduced"}
 

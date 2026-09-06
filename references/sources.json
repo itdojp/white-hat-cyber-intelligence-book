@@ -605,7 +605,7 @@
       "status": "snapshot",
       "version": "19.2",
       "url": "https://github.com/mitre/cti/blob/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json",
-      "publishedAt": "2026-08-06",
+      "publishedAt": "2026-08-05",
       "checkedAt": "2026-09-06",
       "nextReviewAt": "2026-12-06",
       "reviewTriggers": [
@@ -615,7 +615,7 @@
       "chapters": [
         5
       ],
-      "notes": "Enterprise bundle SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Published date is the Updates start date; release timestamp is 2026-08-05T22:57:35Z. Finite metadata extraction includes active flags, original STIX IDs, object hashes and relationship provenance; excludes procedure descriptions. Website version URLs use v19, while exact commit fixes minor release. MITRE license notice is in THIRD_PARTY_NOTICES.md. These source relations do not demonstrate observed compromise or detection effectiveness."
+      "notes": "Enterprise bundle SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Published date is the UTC calendar date of GitHub release timestamp 2026-08-05T22:57:35Z. The Updates start date is separately 2026-08-06; it is not the STIX release publication date. Finite metadata extraction includes active flags, original STIX IDs, object hashes and relationship provenance; excludes procedure descriptions. Website version URLs use v19, while exact commit fixes minor release. MITRE license notice is in THIRD_PARTY_NOTICES.md. These source relations do not demonstrate observed compromise or detection effectiveness."
     }
   ]
 }

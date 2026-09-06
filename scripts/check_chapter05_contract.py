@@ -206,6 +206,15 @@ def json_safety(value: object, location: str = CASE_PATH) -> list[str]:
     return []
 
 
+def stix_publication_date_errors(source: dict) -> list[str]:
+    # CH05-SRC-PUB-001: the pinned source is a STIX release, not the Updates page.
+    if source.get("publishedAt") != "2026-08-05":
+        return [
+            "pinned STIX publication date must be the release UTC date, not update start date"
+        ]
+    return []
+
+
 def repository_errors(contract: dict) -> list[str]:
     errors = []
     package = load_json_strict(ROOT / "package.json")
@@ -226,6 +235,7 @@ def repository_errors(contract: dict) -> list[str]:
             or 5 not in source.get("chapters", [])
         ):
             errors.append(f"{sid}: scoped source audit")
+    errors.extend(stix_publication_date_errors(sources["SRC-ATTACK-T1671-001"]))
     if sources["SRC-ATTACK-001"].get("version") != "19.2":
         errors.append("ATT&CK current catalog version")
     registry = load_json_strict(ROOT / "site-pages.json")
