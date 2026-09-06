@@ -34,6 +34,7 @@
 | 既存書籍との境界 | `CROSS_BOOK_MAP.md` |
 | 執筆規約 | `WRITING_GUIDE.md` |
 | 出典・鮮度 | `SOURCE_POLICY.md`, `references/` |
+| Editorial Input計画 | `editorial-input-manifest.json`, `EDITORIAL_INPUT_MANIFEST.md` |
 | 安全な公開範囲 | `SAFETY_SCOPE.md` |
 | 演習環境 | `LAB_ARCHITECTURE.md` |
 | 章本文 | `manuscript/` |
@@ -78,6 +79,8 @@ BOOK_FORMATTER_DIR=../book-formatter npm run check:book-qa
 | コマンド | 内容 |
 |---|---|
 | `npm test` | 編集・安全・出典・部品固定・生成決定性を検証 |
+| `npm run check:editorial-inputs` | Package identity、Candidate disposition、Intake Record、raw input非追跡を検証 |
+| `npm run render:editorial-inputs` | 機械可読Manifestから人間向け索引を再生成 |
 | `npm run check:book-qa` | 固定formatterでCI相当の静的検査、Jekyll build、built-site smokeを再現（`BOOK_FORMATTER_DIR`必須） |
 | `npm run sync:docs` | 正本から`docs/`を再生成 |
 | `npm run check:docs-sync` | 2回生成の一致と正本非変更を検証 |

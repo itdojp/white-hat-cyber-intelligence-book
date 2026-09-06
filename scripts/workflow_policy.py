@@ -11,14 +11,51 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW_DIR = ROOT / ".github" / "workflows"
 EXPECTED_WORKFLOWS = {"contract.yml", "book-qa.yml", "pages.yml"}
 PINNED_FORMATTER = "198935ff8f60653c40e513343dc5f02573d9968e"
+EDITORIAL_INPUT_BASE_EXPRESSION = "${{ github.event.pull_request.base.sha }}"
+NPM_TEST_COMMAND = "npm test --ignore-scripts"
+FORMATTER_VALIDATE_COMMAND = (
+    "npm start -- validate-config --config ../../book-config.json"
+)
+JEKYLL_BUILD_COMMAND = (
+    "bundle exec jekyll build --source docs --config docs/_config.yml "
+    "--destination _site --trace"
+)
+ALLOWED_WORKFLOW_RUN_COMMANDS = frozenset(
+    {
+        JEKYLL_BUILD_COMMAND,
+        "node .work/book-formatter/scripts/check-layout-risk.js docs "
+        '--fail-on error --output "${{ runner.temp }}/layout-risk-report.json"',
+        "node .work/book-formatter/scripts/check-links.js docs",
+        "node .work/book-formatter/scripts/check-markdown-structure.js docs "
+        '--fail-on error --output "${{ runner.temp }}/markdown-structure-report.json"',
+        "node .work/book-formatter/scripts/check-textlint.js docs --fail-on error",
+        "node .work/book-formatter/scripts/check-unicode.js docs --fail-on error",
+        "npm ci --ignore-scripts",
+        "npm ci --prefix .work/book-formatter --ignore-scripts",
+        "npm run sync:docs",
+        FORMATTER_VALIDATE_COMMAND,
+        NPM_TEST_COMMAND,
+        "python3 scripts/check_built_site.py --source docs --site _site",
+    }
+)
+WORKFLOW_ENVIRONMENT = {
+    "BOOK_FORMATTER_DIR": ".work/book-formatter",
+    "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24": "true",
+}
+RUN_WORKING_DIRECTORIES = {
+    FORMATTER_VALIDATE_COMMAND: ".work/book-formatter",
+}
+RUN_ENVIRONMENTS = {
+    JEKYLL_BUILD_COMMAND: {
+        "JEKYLL_ENV": "production",
+        "PAGES_REPO_NWO": "itdojp/white-hat-cyber-intelligence-book",
+    },
+    NPM_TEST_COMMAND: {
+        "EDITORIAL_INPUT_BASE_COMMIT": EDITORIAL_INPUT_BASE_EXPRESSION,
+    },
+}
 FULL_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 BLOCK_SCALAR_RE = re.compile(r"^[|>](?:[+-]?[1-9]?|[1-9][+-]?)$")
-SENSITIVE_COMPLEX_KEY_RE = re.compile(
-    r"(?:^|[,{?]\s*)(?:['\"](?:uses|with|persist-credentials|enablement|permissions|jobs|build|deploy)['\"]|(?:uses|with|persist-credentials|enablement|permissions|jobs|build|deploy))\s*:",
-    re.IGNORECASE,
-)
-
-
 @dataclass(frozen=True)
 class ActiveLine:
     index: int
@@ -164,28 +201,50 @@ def parse_mapping_line(
             "explicit YAML mapping keys are not supported in workflow policy files",
         )
     if content.startswith("{"):
-        if SENSITIVE_COMPLEX_KEY_RE.search(content):
-            return (
-                None,
-                active,
-                "flow-style mappings containing policy keys are not supported",
-            )
-        return None, active, None
+        return (
+            None,
+            active,
+            "flow-style mappings are not supported in workflow policy files",
+        )
+    if content.startswith("["):
+        return (
+            None,
+            active,
+            "multiline flow-style sequences are not supported in workflow policy files",
+        )
 
     separator = find_mapping_separator(content)
     if separator is None:
-        return None, active, None
+        return None, active, "plain-scalar continuation lines are unsupported"
 
     key_token = content[:separator].strip()
     value = content[separator + 1 :].strip()
     if not key_token:
         return None, active, "empty YAML mapping key"
+    if key_token.startswith(("&", "!")) or value.startswith(("&", "!")):
+        return (
+            None,
+            active,
+            "YAML anchors, tags, and node properties are unsupported",
+        )
     try:
         key = parse_scalar(key_token)
     except (ValueError, json.JSONDecodeError) as exc:
         return None, active, f"unsupported YAML mapping key {key_token!r}: {exc}"
     if not key:
         return None, active, "empty YAML mapping key"
+    if value.startswith("{"):
+        return (
+            None,
+            active,
+            "flow-style mappings are not supported in workflow policy files",
+        )
+    if value.startswith("[") and not (key == "branches" and value == "[main]"):
+        return (
+            None,
+            active,
+            "flow-style sequences are unsupported except for branches: [main]",
+        )
     if key == "<<" or value.startswith("*"):
         return (
             None,
@@ -387,6 +446,162 @@ def top_level_entry(parsed: ParsedWorkflow, key: str) -> MappingLine | None:
     return matches[0] if len(matches) == 1 else None
 
 
+def npm_test_environment_errors(
+    parsed: ParsedWorkflow,
+    label: str,
+    key: str,
+    expected: str,
+) -> list[str]:
+    """Pin a protected value at the highest-precedence npm-test step scope."""
+    errors: list[str] = []
+    jobs = top_level_entry(parsed, "jobs")
+    if jobs is None:
+        return [f"{label}: missing jobs mapping for protected environment"]
+    for job in direct_children(parsed, jobs):
+        steps = direct_job_steps(parsed, job)
+        npm_test_steps = [
+            step
+            for step in steps
+            if any(
+                entry.key == "run"
+                and decoded_value(entry, label, errors).strip() == NPM_TEST_COMMAND
+                for entry in step
+            )
+        ]
+        if not npm_test_steps:
+            continue
+        accepted_entries: set[int] = set()
+        for step in npm_test_steps:
+            env_entries = [entry for entry in step if entry.key == "env"]
+            if len(env_entries) != 1 or env_entries[0].value:
+                errors.append(
+                    f"{label}: job {job.key!r} npm test step must contain one "
+                    "active env block mapping"
+                )
+                continue
+            matches = [
+                entry
+                for entry in direct_children(parsed, env_entries[0])
+                if entry.key == key
+            ]
+            if len(matches) != 1:
+                errors.append(
+                    f"{label}: job {job.key!r} npm test step must define "
+                    f"env {key!r} exactly once"
+                )
+                continue
+            accepted_entries.add(matches[0].index)
+            actual = decoded_value(matches[0], label, errors)
+            if actual != expected:
+                errors.append(
+                    f"{label}:{matches[0].index + 1}: npm test env {key!r} "
+                    f"must equal {expected!r}; got {actual!r}"
+                )
+
+        job_end = block_end(parsed, job)
+        conflicting_entries = [
+            entry
+            for entry in parsed.entries
+            if job.index < entry.index < job_end
+            and (
+                (
+                    entry.key == key
+                    and entry.index not in accepted_entries
+                )
+                or entry.key in {"GITHUB_EVENT_NAME", "GITHUB_SHA"}
+            )
+        ]
+        for conflict in conflicting_entries:
+            errors.append(
+                f"{label}:{conflict.index + 1}: job {job.key!r} running npm test "
+                f"must not redefine protected context key {conflict.key!r}"
+            )
+    return errors
+
+
+def npm_test_checkout_errors(parsed: ParsedWorkflow, label: str) -> list[str]:
+    """Bind an exact-head root checkout to each job that executes npm test."""
+    errors: list[str] = []
+    jobs = top_level_entry(parsed, "jobs")
+    if jobs is None:
+        return [f"{label}: missing jobs mapping for npm test checkout"]
+    for job in direct_children(parsed, jobs):
+        steps = direct_job_steps(parsed, job)
+        npm_tests = [
+            entry
+            for step in steps
+            for entry in step
+            if entry.key == "run"
+            and decoded_value(entry, label, errors).strip() == NPM_TEST_COMMAND
+        ]
+        if not npm_tests:
+            continue
+        root_checkouts: list[
+            tuple[MappingLine, list[MappingLine], list[MappingLine]]
+        ] = []
+        for step in steps:
+            uses_entries = [entry for entry in step if entry.key == "uses"]
+            if len(uses_entries) != 1:
+                continue
+            uses = uses_entries[0]
+            action = decoded_value(uses, label, errors)
+            if not action.startswith("actions/checkout@"):
+                continue
+            with_entries = [entry for entry in step if entry.key == "with"]
+            if len(with_entries) != 1 or with_entries[0].value:
+                continue
+            inputs = direct_children(parsed, with_entries[0])
+            checkout_paths = [
+                decoded_value(entry, label, errors)
+                for entry in inputs
+                if entry.key.casefold() == "path"
+            ]
+            if checkout_paths != [".work/book-formatter"]:
+                root_checkouts.append((uses, step, inputs))
+
+        if len(root_checkouts) != 1:
+            errors.append(
+                f"{label}: job {job.key!r} running npm test must contain exactly "
+                f"one root repository checkout; found {len(root_checkouts)}"
+            )
+            continue
+        uses, step, inputs = root_checkouts[0]
+        if uses.index >= min(entry.index for entry in npm_tests):
+            errors.append(
+                f"{label}:{uses.index + 1}: primary checkout must precede npm test"
+            )
+        errors.extend(
+            mandatory_execution_errors(
+                step,
+                label,
+                f"job {job.key!r} primary checkout step",
+            )
+        )
+        forbidden_inputs = sorted(
+            entry.key
+            for entry in inputs
+            if entry.key.casefold() in {"repository", "ref", "path"}
+        )
+        for key in forbidden_inputs:
+            errors.append(
+                f"{label}:{uses.index + 1}: primary checkout must not set {key!r}"
+            )
+        fetch_depths = [
+            entry for entry in inputs if entry.key.casefold() == "fetch-depth"
+        ]
+        if len(fetch_depths) != 1:
+            errors.append(
+                f"{label}:{uses.index + 1}: primary checkout must define "
+                "fetch-depth exactly once"
+            )
+        elif decoded_value(fetch_depths[0], label, errors) != "2":
+            errors.append(
+                f"{label}:{fetch_depths[0].index + 1}: primary checkout "
+                "fetch-depth must equal 2"
+            )
+    return errors
+
+
 def nested_entry(
     parsed: ParsedWorkflow,
     parent: MappingLine,
@@ -501,6 +716,183 @@ def environment_override_errors(
     return errors
 
 
+def workflow_run_command_errors(
+    parsed: ParsedWorkflow,
+    label: str,
+) -> list[str]:
+    """Require the finite command, environment, shell, and directory inventory."""
+    errors: list[str] = []
+    run_entries = [item for item in parsed.entries if item.key == "run"]
+    for entry in run_entries:
+        if BLOCK_SCALAR_RE.fullmatch(entry.value):
+            errors.append(
+                f"{label}:{entry.index + 1}: block-scalar run commands are unsupported"
+            )
+            continue
+        command = decoded_value(entry, label, errors).strip()
+        if command not in ALLOWED_WORKFLOW_RUN_COMMANDS:
+            errors.append(
+                f"{label}:{entry.index + 1}: workflow command is outside the "
+                f"finite allowlist: {command!r}"
+            )
+
+    accepted_run_indexes: set[int] = set()
+    accepted_env_indexes: set[int] = set()
+    accepted_directory_indexes: set[int] = set()
+
+    top_envs = [
+        entry
+        for entry in parsed.entries
+        if not entry.sequence and entry.indent == 0 and entry.key == "env"
+    ]
+    if len(top_envs) != 1 or top_envs[0].value:
+        errors.append(f"{label}: workflow env must be one active block mapping")
+    else:
+        top_env = top_envs[0]
+        accepted_env_indexes.add(top_env.index)
+        children = direct_children(parsed, top_env)
+        keys = [entry.key for entry in children]
+        values = {
+            entry.key: decoded_value(entry, label, errors)
+            for entry in children
+        }
+        if len(keys) != len(set(keys)) or values != WORKFLOW_ENVIRONMENT:
+            errors.append(
+                f"{label}: workflow env must equal {WORKFLOW_ENVIRONMENT!r}"
+            )
+
+    jobs = top_level_entry(parsed, "jobs")
+    if jobs is None:
+        errors.append(f"{label}: missing jobs mapping for workflow commands")
+    else:
+        for job in direct_children(parsed, jobs):
+            steps = direct_job_steps(parsed, job)
+            if any(any(entry.key == "run" for entry in step) for step in steps):
+                job_entries = direct_children(parsed, job)
+                runners = [entry for entry in job_entries if entry.key == "runs-on"]
+                if len(runners) != 1:
+                    errors.append(
+                        f"{label}: job {job.key!r} containing run steps must define "
+                        "runs-on exactly once"
+                    )
+                elif decoded_value(runners[0], label, errors) != "ubuntu-24.04":
+                    errors.append(
+                        f"{label}: job {job.key!r} containing run steps must use "
+                        "runs-on 'ubuntu-24.04'"
+                    )
+                for forbidden in ("container", "services"):
+                    if any(entry.key == forbidden for entry in job_entries):
+                        errors.append(
+                            f"{label}: job {job.key!r} containing run steps must not "
+                            f"define {forbidden!r}"
+                        )
+
+            for step in steps:
+                step_runs = [entry for entry in step if entry.key == "run"]
+                if not step_runs:
+                    continue
+                if len(step_runs) != 1:
+                    errors.append(
+                        f"{label}: job {job.key!r} run step must define run exactly once"
+                    )
+                    continue
+                run_entry = step_runs[0]
+                accepted_run_indexes.add(run_entry.index)
+                command = decoded_value(run_entry, label, errors).strip()
+                errors.extend(
+                    mandatory_execution_errors(
+                        step,
+                        label,
+                        f"job {job.key!r} run step",
+                    )
+                )
+                if any(entry.key == "uses" for entry in step):
+                    errors.append(
+                        f"{label}: job {job.key!r} step must not combine run and uses"
+                    )
+                if any(entry.key == "shell" for entry in step):
+                    errors.append(
+                        f"{label}: job {job.key!r} run step must not override shell"
+                    )
+
+                directories = [
+                    entry for entry in step if entry.key == "working-directory"
+                ]
+                expected_directory = RUN_WORKING_DIRECTORIES.get(command)
+                if expected_directory is None:
+                    if directories:
+                        errors.append(
+                            f"{label}: job {job.key!r} run step must not set "
+                            "working-directory"
+                        )
+                elif len(directories) != 1:
+                    errors.append(
+                        f"{label}: job {job.key!r} formatter validation step must "
+                        "define working-directory exactly once"
+                    )
+                else:
+                    accepted_directory_indexes.add(directories[0].index)
+                    actual_directory = decoded_value(directories[0], label, errors)
+                    if actual_directory != expected_directory:
+                        errors.append(
+                            f"{label}: job {job.key!r} formatter validation "
+                            f"working-directory must equal {expected_directory!r}"
+                        )
+
+                env_entries = [entry for entry in step if entry.key == "env"]
+                expected_env = RUN_ENVIRONMENTS.get(command)
+                env_optional = command == NPM_TEST_COMMAND
+                if not env_entries and (expected_env is None or env_optional):
+                    continue
+                if len(env_entries) != 1 or env_entries[0].value:
+                    errors.append(
+                        f"{label}: job {job.key!r} run step env must be one "
+                        "active block mapping"
+                    )
+                    continue
+                env_entry = env_entries[0]
+                accepted_env_indexes.add(env_entry.index)
+                children = direct_children(parsed, env_entry)
+                keys = [entry.key for entry in children]
+                values = {
+                    entry.key: decoded_value(entry, label, errors)
+                    for entry in children
+                }
+                if (
+                    expected_env is None
+                    or len(keys) != len(set(keys))
+                    or values != expected_env
+                ):
+                    errors.append(
+                        f"{label}: job {job.key!r} run step env is outside the "
+                        "finite allowlist"
+                    )
+
+    for entry in run_entries:
+        if entry.index not in accepted_run_indexes:
+            errors.append(
+                f"{label}:{entry.index + 1}: run must be a direct job step"
+            )
+    for entry in parsed.entries:
+        if entry.key == "env" and entry.index not in accepted_env_indexes:
+            errors.append(
+                f"{label}:{entry.index + 1}: env is outside an allowed scope"
+            )
+        if entry.key == "shell":
+            errors.append(f"{label}:{entry.index + 1}: custom shell is unsupported")
+        if (
+            entry.key == "working-directory"
+            and entry.index not in accepted_directory_indexes
+        ):
+            errors.append(
+                f"{label}:{entry.index + 1}: working-directory is outside the "
+                "finite allowlist"
+            )
+        if entry.key == "defaults":
+            errors.append(f"{label}:{entry.index + 1}: run defaults are unsupported")
+    return errors
+
+
 def publication_renderer_setup_errors(
     parsed: ParsedWorkflow,
     label: str,
@@ -527,7 +919,6 @@ def publication_renderer_setup_errors(
             "workflow running npm test",
         )
     )
-
     npm_test_count = 0
     for job in direct_children(parsed, jobs):
         steps = direct_job_steps(parsed, job)
@@ -536,7 +927,7 @@ def publication_renderer_setup_errors(
             for step in steps
             for entry in step
             if entry.key == "run"
-            and decoded_value(entry, label, errors).strip() == "npm test"
+            and decoded_value(entry, label, errors).strip() == NPM_TEST_COMMAND
         ]
         if not npm_tests:
             continue
@@ -652,7 +1043,7 @@ def publication_renderer_setup_errors(
 
     if npm_test_count != 1:
         errors.append(
-            f"{label}: expected exactly one active 'run: npm test'; "
+            f"{label}: expected exactly one active 'run: {NPM_TEST_COMMAND}'; "
             f"found {npm_test_count}"
         )
     return errors
@@ -726,7 +1117,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         if not diagnostics:
             errors.append(f"workflow parser regression failed to reject: {name}")
 
-    mutable = f"""jobs:
+    mutable = """jobs:
   test:
     steps:
       - \"uses\": actions/checkout@main
@@ -750,27 +1141,350 @@ def check_parser_regressions(errors: list[str]) -> None:
             "workflow parser regression failed closed on flow mapping"
         )
 
-    valid_renderer_order = f"""jobs:
+    flow_run = """jobs:
   test:
+    steps:
+      - { run: npm test }
+"""
+    parsed = parse_workflow(flow_run, "parser regression flow run mapping")
+    if not parsed.errors:
+        errors.append(
+            "workflow parser regression failed closed on flow-style run mapping"
+        )
+
+    escaped_flow_run = r'''jobs:
+  test:
+    steps:
+      - { "\u0065nv": { BASH_ENV: scripts/mutate.py }, "\u0072un": npm ci --ignore-scripts }
+'''
+    parsed = parse_workflow(
+        escaped_flow_run,
+        "parser regression escaped flow run mapping",
+    )
+    if not any(
+        "flow-style mappings are not supported" in error
+        for error in parsed.errors
+    ):
+        errors.append(
+            "workflow parser regression failed closed on escaped flow mapping keys"
+        )
+
+    escaped_flow_sequences = {
+        "run": r'''jobs:
+  hidden:
+    runs-on: self-hosted
+    steps: [ { "\u0072un": echo bypass } ]
+''',
+        "uses": r'''jobs:
+  hidden:
+    runs-on: self-hosted
+    steps: [ { "\u0075ses": evil/action@main } ]
+''',
+    }
+    for name, fixture in escaped_flow_sequences.items():
+        parsed = parse_workflow(fixture, f"parser regression escaped {name} sequence")
+        if not any(
+            "flow-style sequences are unsupported" in error
+            for error in parsed.errors
+        ):
+            errors.append(
+                "workflow parser regression failed closed on escaped flow "
+                f"sequence {name}"
+            )
+
+    multiline_flow_sequences = {
+        "run": """jobs:
+  hidden:
+    runs-on: self-hosted
+    steps:
+      [ { run: echo bypass } ]
+""",
+        "uses": """jobs:
+  hidden:
+    runs-on: self-hosted
+    steps:
+      [ { uses: evil/action@main } ]
+""",
+    }
+    for name, fixture in multiline_flow_sequences.items():
+        parsed = parse_workflow(fixture, f"parser regression multiline {name} sequence")
+        if not any(
+            "multiline flow-style sequences are not supported" in error
+            for error in parsed.errors
+        ):
+            errors.append(
+                "workflow parser regression failed closed on multiline flow "
+                f"sequence {name}"
+            )
+
+    nested_flow_run = """jobs: { test: { steps: [ { run: npm test } ] } }
+"""
+    parsed = parse_workflow(
+        nested_flow_run,
+        "parser regression nested flow run mapping",
+    )
+    if not parsed.errors:
+        errors.append(
+            "workflow parser regression failed closed on nested flow-style run mapping"
+        )
+
+    node_property_cases = {
+        "anchored flow job": """jobs:
+  attacker: &job { runs-on: ubuntu-24.04, steps: [ { run: npm test } ] }
+""",
+        "anchored run key": """jobs:
+  test:
+    steps:
+      - &command run: npm test
+""",
+        "tagged flow job": """jobs:
+  attacker: !!map { runs-on: ubuntu-24.04, steps: [ { run: npm test } ] }
+""",
+    }
+    for name, fixture in node_property_cases.items():
+        parsed = parse_workflow(fixture, f"node property regression {name}")
+        if not any("node properties are unsupported" in error for error in parsed.errors):
+            errors.append(
+                "workflow parser regression failed closed on node property: " + name
+            )
+
+    run_fixture = """env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  BOOK_FORMATTER_DIR: .work/book-formatter
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: npm ci --ignore-scripts
+"""
+    unsupported_run_commands = {
+        "block scalar run": (
+            run_fixture.replace(
+                "run: npm ci --ignore-scripts",
+                "run: |\n          npm test",
+            ),
+            "block-scalar run commands are unsupported",
+        ),
+        "plain scalar continuation": (
+            run_fixture.replace(
+                "run: npm ci --ignore-scripts",
+                "run: npm ci --ignore-scripts\n          && python3 mutate-checkout.py",
+            ),
+            "plain-scalar continuation lines are unsupported",
+        ),
+        "npm test with lifecycle": (
+            run_fixture.replace("npm ci --ignore-scripts", "npm test"),
+            "workflow command is outside the finite allowlist",
+        ),
+        "npm rum alias": (
+            run_fixture.replace("npm ci --ignore-scripts", "npm rum test"),
+            "workflow command is outside the finite allowlist",
+        ),
+        "npm urn alias": (
+            run_fixture.replace("npm ci --ignore-scripts", "npm urn test"),
+            "workflow command is outside the finite allowlist",
+        ),
+        "npm prefixed test": (
+            run_fixture.replace(
+                "npm ci --ignore-scripts",
+                "npm --prefix . test",
+            ),
+            "workflow command is outside the finite allowlist",
+        ),
+        "arbitrary shell command": (
+            run_fixture.replace(
+                "npm ci --ignore-scripts",
+                "python3 mutate-checkout.py",
+            ),
+            "workflow command is outside the finite allowlist",
+        ),
+        "custom shell": (
+            run_fixture.replace(
+                "      - run: npm ci --ignore-scripts",
+                "      - run: npm ci --ignore-scripts\n"
+                "        shell: python3 mutate-checkout.py {0}",
+            ),
+            "custom shell is unsupported",
+        ),
+        "working directory override": (
+            run_fixture.replace(
+                "      - run: npm ci --ignore-scripts",
+                "      - run: npm ci --ignore-scripts\n"
+                "        working-directory: fixtures",
+            ),
+            "working-directory is outside the finite allowlist",
+        ),
+        "workflow BASH_ENV": (
+            run_fixture.replace(
+                "  BOOK_FORMATTER_DIR: .work/book-formatter",
+                "  BOOK_FORMATTER_DIR: .work/book-formatter\n"
+                "  BASH_ENV: scripts/mutate-checkout.py",
+            ),
+            "workflow env must equal",
+        ),
+        "run NODE_OPTIONS": (
+            run_fixture.replace(
+                "      - run: npm ci --ignore-scripts",
+                "      - run: npm ci --ignore-scripts\n"
+                "        env:\n"
+                "          NODE_OPTIONS: --require=scripts/mutate-checkout.py",
+            ),
+            "run step env is outside the finite allowlist",
+        ),
+        "container execution platform": (
+            run_fixture.replace(
+                "    runs-on: ubuntu-24.04\n",
+                "    runs-on: ubuntu-24.04\n"
+                "    container: ghcr.io/example/hostile:latest\n",
+            ),
+            "must not define 'container'",
+        ),
+        "mutable runner platform": (
+            run_fixture.replace(
+                "    runs-on: ubuntu-24.04",
+                "    runs-on: ubuntu-latest",
+            ),
+            "must use runs-on 'ubuntu-24.04'",
+        ),
+    }
+    for name, (fixture, expected_error) in unsupported_run_commands.items():
+        parsed = parse_workflow(fixture, f"run command regression {name}")
+        diagnostics = parsed.errors + workflow_run_command_errors(parsed, name)
+        if not any(expected_error in diagnostic for diagnostic in diagnostics):
+            errors.append(
+                "workflow run command regression returned no exact diagnostic: " + name
+            )
+
+    base_guard = f"""jobs:
+  test:
+    steps:
+      - uses: actions/checkout@{sha}
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - run: npm test --ignore-scripts
+        env:
+          EDITORIAL_INPUT_BASE_COMMIT: ${{{{ github.event.pull_request.base.sha }}}}
+"""
+    parsed = parse_workflow(base_guard, "base guard valid")
+    if npm_test_environment_errors(
+        parsed,
+        "base guard valid",
+        "EDITORIAL_INPUT_BASE_COMMIT",
+        EDITORIAL_INPUT_BASE_EXPRESSION,
+    ) or npm_test_checkout_errors(parsed, "base guard valid"):
+        errors.append("workflow base guard regression rejected valid configuration")
+
+    invalid_base_guards = {
+        "commented env": base_guard.replace(
+            "          EDITORIAL_INPUT_BASE_COMMIT:",
+            "          # EDITORIAL_INPUT_BASE_COMMIT:",
+        ),
+        "wrong expression": base_guard.replace(
+            "github.event.pull_request.base.sha",
+            "github.sha",
+        ),
+        "commented fetch depth": base_guard.replace(
+            "          fetch-depth: 2",
+            "          # fetch-depth: 2",
+        ),
+        "job env override": base_guard.replace(
+            "  test:\n",
+            "  test:\n    env:\n      EDITORIAL_INPUT_BASE_COMMIT: ${{ github.sha }}\n",
+        ),
+        "duplicate test step env": base_guard.replace(
+            "          EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}",
+            "          EDITORIAL_INPUT_BASE_COMMIT: ${{ github.event.pull_request.base.sha }}\n"
+            "          EDITORIAL_INPUT_BASE_COMMIT: ${{ github.sha }}",
+        ),
+        "base ref checkout": base_guard.replace(
+            "          fetch-depth: 2",
+            "          fetch-depth: 2\n          ref: ${{ github.event.pull_request.base.sha }}",
+        ),
+        "uppercase base ref checkout": base_guard.replace(
+            "          fetch-depth: 2",
+            "          fetch-depth: 2\n          REF: ${{ github.event.pull_request.base.sha }}",
+        ),
+        "checkout after test": base_guard.replace(
+            f"      - uses: actions/checkout@{sha}\n"
+            "        with:\n"
+            "          fetch-depth: 2\n"
+            "          persist-credentials: false\n"
+            "      - run: npm test --ignore-scripts",
+            "      - run: npm test --ignore-scripts\n"
+            f"      - uses: actions/checkout@{sha}\n"
+            "        with:\n"
+            "          fetch-depth: 2\n"
+            "          persist-credentials: false",
+        ),
+        "checkout isolated in another job": f"""jobs:
+  helper:
+    steps:
+      - uses: actions/checkout@{sha}
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - run: echo helper
+  test:
+    steps:
+      - uses: actions/checkout@{sha}
+        with:
+          repository: ${{{{ github.repository }}}}
+          ref: ${{{{ github.event.pull_request.base.sha }}}}
+          persist-credentials: false
+      - run: npm test --ignore-scripts
+        env:
+          EDITORIAL_INPUT_BASE_COMMIT: ${{{{ github.event.pull_request.base.sha }}}}
+""",
+    }
+    for name, fixture in invalid_base_guards.items():
+        parsed = parse_workflow(fixture, f"base guard {name}")
+        diagnostics = npm_test_environment_errors(
+            parsed,
+            name,
+            "EDITORIAL_INPUT_BASE_COMMIT",
+            EDITORIAL_INPUT_BASE_EXPRESSION,
+        )
+        diagnostics += npm_test_checkout_errors(parsed, name)
+        if not diagnostics:
+            errors.append(
+                "workflow base guard regression failed to reject: " + name
+            )
+
+    valid_renderer_order = f"""env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  BOOK_FORMATTER_DIR: .work/book-formatter
+jobs:
+  test:
+    runs-on: ubuntu-24.04
     steps:
       - uses: ruby/setup-ruby@{sha}
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         continue-on-error: false
 """
     invalid_renderer_orders = {
+        "additional lifecycle-enabled test": valid_renderer_order.replace(
+            f"      - run: {NPM_TEST_COMMAND}\n",
+            "      - run: npm test\n"
+            f"      - run: {NPM_TEST_COMMAND}\n",
+        ),
+        "lifecycle hooks enabled": valid_renderer_order.replace(
+            NPM_TEST_COMMAND,
+            "npm test",
+        ),
         "commented test": """jobs:
   test:
     steps:
-      # - run: npm test
+      # - run: npm test --ignore-scripts
       - run: echo test
 """,
         "missing setup": """jobs:
   test:
     steps:
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "setup in another job": f"""jobs:
   prepare:
@@ -781,7 +1495,7 @@ def check_parser_regressions(errors: list[str]) -> None:
           bundler-cache: true
   test:
     steps:
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "multiple active tests": f"""jobs:
   test:
@@ -790,8 +1504,8 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
-      - run: npm test
+      - run: npm test --ignore-scripts
+      - run: npm test --ignore-scripts
 """,
         "matrix metadata masquerading as steps": f"""jobs:
   test:
@@ -799,7 +1513,7 @@ def check_parser_regressions(errors: list[str]) -> None:
       matrix:
         include:
           - uses: ruby/setup-ruby@{sha}
-            run: npm test
+            run: npm test --ignore-scripts
             with:
               ruby-version: '3.3'
               bundler-cache: true
@@ -814,7 +1528,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "conditional setup": f"""jobs:
   test:
@@ -824,7 +1538,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "conditional test": f"""jobs:
   test:
@@ -833,7 +1547,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         if: false
 """,
         "non-blocking test": f"""jobs:
@@ -843,7 +1557,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         continue-on-error: true
 """,
         "custom test shell": f"""jobs:
@@ -853,7 +1567,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         shell: bash -c 'source "$1" || true' -- {{0}}
 """,
         "alternate test directory": f"""jobs:
@@ -863,7 +1577,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         working-directory: fixtures/passing-package
 """,
         "job run defaults": f"""jobs:
@@ -876,7 +1590,7 @@ def check_parser_regressions(errors: list[str]) -> None:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "workflow run defaults": f"""defaults:
   run:
@@ -888,7 +1602,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "dependent test job": f"""jobs:
   prepare:
@@ -901,7 +1615,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "matrix test job": f"""jobs:
   test:
@@ -913,7 +1627,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "workflow npm script-shell override": f"""env:
   npm_config_script_shell: /bin/true
@@ -924,7 +1638,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "job npm script-shell override": f"""jobs:
   test:
@@ -935,7 +1649,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "test npm script-shell override": f"""jobs:
   test:
@@ -944,14 +1658,14 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
         env:
           npm_config_script_shell: /bin/true
 """,
         "late setup": f"""jobs:
   test:
     steps:
-      - run: npm test
+      - run: npm test --ignore-scripts
       - uses: ruby/setup-ruby@{sha}
         with:
           ruby-version: '3.3'
@@ -963,7 +1677,7 @@ jobs:
       - uses: ruby/setup-ruby@{sha}
         with:
           ruby-version: '3.3'
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
         "wrong ruby series": f"""jobs:
   test:
@@ -972,20 +1686,25 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
-      - run: npm test
+      - run: npm test --ignore-scripts
 """,
     }
     parsed = parse_workflow(
         valid_renderer_order,
         "renderer setup regression valid order",
     )
-    if publication_renderer_setup_errors(parsed, "valid renderer order"):
+    if workflow_run_command_errors(
+        parsed, "valid renderer order"
+    ) or publication_renderer_setup_errors(parsed, "valid renderer order"):
         errors.append(
             "workflow renderer setup regression failed for valid order"
         )
     for name, fixture in invalid_renderer_orders.items():
         parsed = parse_workflow(fixture, f"renderer setup regression {name}")
-        if not publication_renderer_setup_errors(parsed, name):
+        if not (
+            workflow_run_command_errors(parsed, name)
+            or publication_renderer_setup_errors(parsed, name)
+        ):
             errors.append(
                 "workflow renderer setup regression failed to reject: " + name
             )
@@ -1013,6 +1732,7 @@ def main() -> int:
             errors.append(f"{label}: missing Node 24 action guard")
         errors.extend(action_policy_errors(parsed, label))
         errors.extend(checkout_credential_errors(parsed, label))
+        errors.extend(workflow_run_command_errors(parsed, label))
         if name in EXPECTED_WORKFLOWS:
             errors.extend(publication_renderer_setup_errors(parsed, label))
 
@@ -1024,10 +1744,26 @@ def main() -> int:
             )
 
     contract = texts.get("contract.yml")
-    if contract:
-        for required in ("npm test", "BOOK_FORMATTER_DIR", "contents: read"):
+    parsed_contract = parsed_workflows.get("contract.yml")
+    if contract and parsed_contract:
+        for required in (
+            NPM_TEST_COMMAND,
+            "BOOK_FORMATTER_DIR",
+            "contents: read",
+        ):
             if required not in contract:
                 errors.append(f"contract.yml: missing {required!r}")
+        errors.extend(
+            npm_test_environment_errors(
+                parsed_contract,
+                "contract.yml",
+                "EDITORIAL_INPUT_BASE_COMMIT",
+                EDITORIAL_INPUT_BASE_EXPRESSION,
+            )
+        )
+        errors.extend(
+            npm_test_checkout_errors(parsed_contract, "contract.yml")
+        )
         if "npm ci --ignore-scripts" not in contract:
             errors.append(
                 "contract.yml: repository npm install must ignore "
@@ -1035,7 +1771,8 @@ def main() -> int:
             )
 
     book_qa = texts.get("book-qa.yml")
-    if book_qa:
+    parsed_book_qa = parsed_workflows.get("book-qa.yml")
+    if book_qa and parsed_book_qa:
         for required in (
             "npm run sync:docs",
             "check-unicode.js",
@@ -1049,6 +1786,17 @@ def main() -> int:
         ):
             if required not in book_qa:
                 errors.append(f"book-qa.yml: missing {required!r}")
+        errors.extend(
+            npm_test_environment_errors(
+                parsed_book_qa,
+                "book-qa.yml",
+                "EDITORIAL_INPUT_BASE_COMMIT",
+                EDITORIAL_INPUT_BASE_EXPRESSION,
+            )
+        )
+        errors.extend(
+            npm_test_checkout_errors(parsed_book_qa, "book-qa.yml")
+        )
 
     pages = texts.get("pages.yml")
     parsed_pages = parsed_workflows.get("pages.yml")

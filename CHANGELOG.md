@@ -24,6 +24,7 @@
 - `Book Contract`、`Book QA`、GitHub Pages deployment workflowを追加
 - Jekyll built-site smoke testとPreview artifactを追加
 - 第4章「資産、信頼境界、攻撃面、脅威モデル」、ART-03 Threat Model、合成Case、fail-closed Chapter contractを追加
+- Editorial InputのPackage identity、Target別Candidate / Disposition、決定的Summary、ZIP安全検証を持つManifest契約を追加
 
 ### Changed
 
