@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "capturedAt": "2026-09-06",
+  "capturedAt": "2026-09-08",
   "registrationIssue": 63,
   "registrationIssueSnapshotUpdatedAt": "2026-08-25T02:03:30Z",
   "packages": [
@@ -795,6 +795,12 @@
           "effectiveAt": "2026-09-06",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/113",
           "reason": "PR #113でcurrent sourceに基づく第5章正本とIntake Recordを作成。raw Packageは不在で直接採用なし。通常mergeとmain公開は未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5577993812",
+          "reason": "PR #113通常merge: cf0cc53257393b41ebd321173440b961fe8232a3。review済みheadとmerge tree一致。exact-main Book Contract 34178009130 / Book QA 34178009152 / Deploy Pages 34178009124、deployment 6319180022がsuccess。第5章・ART-15・Case・Source Note・Datasetの公開HTTP200とmarker、JSON正本とのbyte一致を確認。raw不在・直接採用なしのIntake Recordを保持。"
         }
       ]
     },
