@@ -74,3 +74,39 @@ A pull request that adds another third-party work must record:
 - attribution, source-offer, or redistribution requirements
 
 Material with unknown or incompatible redistribution terms must not be copied into the repository or publication artifact.
+
+## MITRE ATT&CK metadata subset
+
+- Source: https://github.com/mitre/cti/tree/8543c5b05bd9bbcace9fc37f30bba96b675b6f33
+- Catalog: v19.2; verified 2026-09-06.
+- Copyright holder: The MITRE Corporation.
+- Placement: `tests/fixtures/attack/ch05-v19.2.json`; metadata names and relationships are discussed in Chapter 5 and its Source Review Note.
+- Modification: deterministically selected metadata from 8 objects and 1 relationship; no procedure descriptions, executable material or full bundle.
+- Integrity: full Enterprise bundle SHA-256 `f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259`.
+- These excerpts remain under MITRE’s terms, not the book’s content license. MITRE does not endorse this book.
+- Applicable ATT&CK portion of the pinned `LICENSE.txt` follows without modification:
+
+```text
+ATT&CK®
+===========================
+License
+-------
+The MITRE Corporation (MITRE) hereby grants you a non-exclusive, royalty-free license to use ATT&CK® for research,
+development, and commercial purposes. Any copy you make for such purposes is authorized provided that you reproduce
+MITRE's copyright designation and this license in any such copy.
+
+"© 2026 The MITRE Corporation. This work is reproduced and distributed with the permission of The MITRE Corporation."
+
+Disclaimers
+-----------
+MITRE does not claim ATT&CK enumerates all possibilities for the types of actions and behaviors documented as part
+of its adversary model and framework of techniques. Using the information contained within ATT&CK to address or
+cover full categories of techniques will not guarantee full defensive coverage as there may be undisclosed techniques
+or variations on existing techniques not documented by ATT&CK.
+
+ALL DOCUMENTS AND THE INFORMATION CONTAINED THEREIN ARE PROVIDED ON AN "AS IS" BASIS AND THE CONTRIBUTOR, THE
+ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY), THE MITRE CORPORATION, ITS BOARD OF TRUSTEES, OFFICERS,
+AGENTS, AND EMPLOYEES, DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE
+USE OF THE INFORMATION THEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS
+FOR A PARTICULAR PURPOSE.
+```

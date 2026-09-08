@@ -1,0 +1,587 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "artifactId": "ART-15",
+  "mapId": "BMAP-2026-001",
+  "parentCaseId": "CASE-2026-001",
+  "relation": "refines",
+  "parentThreatModelId": "TM-2026-001",
+  "decisionRequirementId": "DR-2026-001",
+  "authorizationRecordId": "AUTH-CASE-2026-001",
+  "scope": "read-only-synthetic-data",
+  "catalogVersion": "19.2",
+  "sourceSnapshotSha256": "960d0b76b018bdefae3958beaaf3cc2a30d73c034467cbe0941289ded4f4d44a",
+  "parentState": "Chapter 4 source snapshot retained; no parent hypothesis, control, gap or decision is updated.",
+  "rows": [
+    {
+      "rowId": "BM-2026-001",
+      "threatId": "TH-2026-001",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-005"
+      ],
+      "boundaryIds": [
+        "TB-2026-001",
+        "TB-2026-003"
+      ],
+      "flowIds": [
+        "FLOW-2026-002",
+        "FLOW-2026-004"
+      ],
+      "catalogVersion": "19.2",
+      "techniqueId": "T1671",
+      "tacticId": "TA0003",
+      "subtechniqueId": null,
+      "mappingBasis": "Hypothesized",
+      "preconditions": "承認状態と連携変更の対応、現在の設定は未確認を含む",
+      "observableBehavior": "SaaS連携の承認と活動の関係が正規の利用条件と整合せず残るという仮説",
+      "analyticIds": [
+        "AN1487"
+      ],
+      "dataComponentIds": [
+        "DC0066",
+        "DC0069"
+      ],
+      "telemetryId": "TEL-BM-001",
+      "detectionId": null,
+      "evidenceIds": [],
+      "status": "Mapped",
+      "validationTestId": null,
+      "limitation": "過大scopeだけでは行動の発生を示さない。historical scopeはcurrent scopeではない",
+      "alternativeMapping": "正常な承認変更、または観測Data不足による見かけの不整合",
+      "decisionContribution": "T1671の候補対応を保持し、現在の前提を確認するまで結論を進めない",
+      "gapId": "GAP-BM-001",
+      "owner": "SYNTH-SOC-REVIEWER",
+      "reviewDate": "2026-09-20",
+      "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
+      "controlIds": [
+        "CTRL-2026-005",
+        "CTRL-2026-006"
+      ]
+    },
+    {
+      "rowId": "BM-2026-002",
+      "threatId": "TH-2026-002",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-005"
+      ],
+      "boundaryIds": [
+        "TB-2026-001",
+        "TB-2026-003"
+      ],
+      "flowIds": [
+        "FLOW-2026-002",
+        "FLOW-2026-004"
+      ],
+      "catalogVersion": "19.2",
+      "techniqueId": "T1671",
+      "tacticId": "TA0003",
+      "subtechniqueId": null,
+      "mappingBasis": "Observed",
+      "preconditions": "承認状態と連携変更の対応、現在の設定は未確認を含む",
+      "observableBehavior": "合成記録で同意変更が記録された",
+      "analyticIds": [
+        "AN1487"
+      ],
+      "dataComponentIds": [
+        "DC0066",
+        "DC0069"
+      ],
+      "telemetryId": "TEL-BM-002",
+      "detectionId": null,
+      "evidenceIds": [
+        "EVD-BM-002"
+      ],
+      "status": "Observed",
+      "validationTestId": null,
+      "limitation": "合成変更の観測だけで悪意、早期検知、有効なControlを主張しない",
+      "alternativeMapping": "正常な承認変更、または観測Data不足による見かけの不整合",
+      "decisionContribution": "TH-2026-002のEventとRuleの問題を分離して引き渡す",
+      "gapId": "GAP-BM-002",
+      "owner": "SYNTH-SOC-REVIEWER",
+      "reviewDate": "2026-09-20",
+      "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
+      "controlIds": [
+        "CTRL-2026-007",
+        "CTRL-2026-008"
+      ]
+    },
+    {
+      "rowId": "BM-2026-003",
+      "threatId": "TH-2026-003",
+      "assetIds": [
+        "ASSET-2026-001",
+        "ASSET-2026-003"
+      ],
+      "boundaryIds": [
+        "TB-2026-002",
+        "TB-2026-003"
+      ],
+      "flowIds": [
+        "FLOW-2026-004"
+      ],
+      "catalogVersion": "19.2",
+      "techniqueId": null,
+      "tacticId": null,
+      "subtechniqueId": null,
+      "mappingBasis": "Hypothesized",
+      "preconditions": "承認状態と連携変更の対応、現在の設定は未確認を含む",
+      "observableBehavior": "既往の不正利用を判断するための観測範囲が不足している",
+      "analyticIds": [],
+      "dataComponentIds": [],
+      "telemetryId": "TEL-BM-003",
+      "detectionId": null,
+      "evidenceIds": [],
+      "status": "Unknown",
+      "validationTestId": null,
+      "limitation": "Telemetry欠落は不正利用の不存在を意味しない",
+      "alternativeMapping": "正常な承認変更、または観測Data不足による見かけの不整合",
+      "decisionContribution": "発生有無はUnknownとして維持し、TH-2026-006と統合しない",
+      "gapId": "GAP-BM-003",
+      "owner": "SYNTH-SOC-REVIEWER",
+      "reviewDate": "2026-09-20",
+      "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
+      "controlIds": []
+    },
+    {
+      "rowId": "BM-2026-004",
+      "threatId": "TH-2026-002",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-005"
+      ],
+      "boundaryIds": [
+        "TB-2026-001",
+        "TB-2026-003"
+      ],
+      "flowIds": [
+        "FLOW-2026-002",
+        "FLOW-2026-004"
+      ],
+      "catalogVersion": "19.2",
+      "techniqueId": "T1671",
+      "tacticId": "TA0003",
+      "subtechniqueId": null,
+      "mappingBasis": "Reproduced",
+      "preconditions": "承認状態と連携変更の対応、現在の設定は未確認を含む",
+      "observableBehavior": "3件の合成Consent記録を承認状態で分類した",
+      "analyticIds": [
+        "AN1487"
+      ],
+      "dataComponentIds": [
+        "DC0066",
+        "DC0069"
+      ],
+      "telemetryId": "TEL-BM-004",
+      "detectionId": "DET-BM-004",
+      "evidenceIds": [
+        "EVD-BM-004"
+      ],
+      "status": "Validated",
+      "validationTestId": "TEST-BM-004",
+      "limitation": "synthetic-field-classificationだけのPass。T1671の再現、DET0539の製品有効性、親Controlの検証ではない",
+      "alternativeMapping": "正常な承認変更、または観測Data不足による見かけの不整合",
+      "decisionContribution": "教材内の判定手続きを確認した。CTRL-2026-007と親Gapは変更しない",
+      "gapId": "GAP-BM-004",
+      "owner": "SYNTH-SOC-REVIEWER",
+      "reviewDate": "2026-09-20",
+      "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
+      "controlIds": [
+        "CTRL-2026-007",
+        "CTRL-2026-008"
+      ]
+    },
+    {
+      "rowId": "BM-2026-005",
+      "threatId": "TH-2026-004",
+      "assetIds": [
+        "ASSET-2026-005",
+        "ASSET-2026-006",
+        "ASSET-2026-007"
+      ],
+      "boundaryIds": [
+        "TB-2026-004",
+        "TB-2026-008"
+      ],
+      "flowIds": [
+        "FLOW-2026-003",
+        "FLOW-2026-006"
+      ],
+      "catalogVersion": "19.2",
+      "techniqueId": null,
+      "tacticId": null,
+      "subtechniqueId": null,
+      "mappingBasis": "Hypothesized",
+      "preconditions": "承認状態と連携変更の対応、現在の設定は未確認を含む",
+      "observableBehavior": "post-remediationのscopeとWorkload identity bindingの現状を読めない",
+      "analyticIds": [],
+      "dataComponentIds": [],
+      "telemetryId": "TEL-BM-005",
+      "detectionId": null,
+      "evidenceIds": [],
+      "status": "Unknown",
+      "validationTestId": null,
+      "limitation": "第1章の改修Passedからcurrent Snapshotの内容を推定しない",
+      "alternativeMapping": "正常な承認変更、または観測Data不足による見かけの不整合",
+      "decisionContribution": "summary-only refinementの判断を留保する",
+      "gapId": "GAP-BM-005",
+      "owner": "SYNTH-SOC-REVIEWER",
+      "reviewDate": "2026-09-20",
+      "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
+      "controlIds": [
+        "CTRL-2026-005",
+        "CTRL-2026-006"
+      ]
+    },
+    {
+      "rowId": "BM-2026-006",
+      "threatId": "TH-2026-005",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-003",
+        "ASSET-2026-004"
+      ],
+      "boundaryIds": [
+        "TB-2026-003",
+        "TB-2026-007"
+      ],
+      "flowIds": [
+        "FLOW-2026-004",
+        "FLOW-2026-005"
+      ],
+      "catalogVersion": "19.2",
+      "techniqueId": null,
+      "tacticId": null,
+      "subtechniqueId": null,
+      "mappingBasis": "Hypothesized",
+      "preconditions": "承認状態と連携変更の対応、現在の設定は未確認を含む",
+      "observableBehavior": "App identity lifecycle変更とdecision summaryの対応を観測対象として提案する",
+      "analyticIds": [],
+      "dataComponentIds": [],
+      "telemetryId": "TEL-BM-006",
+      "detectionId": null,
+      "evidenceIds": [],
+      "status": "Proposed",
+      "validationTestId": null,
+      "limitation": "Defenderの観測不足それ自体はAdversary Techniqueではない",
+      "alternativeMapping": "正常な承認変更、または観測Data不足による見かけの不整合",
+      "decisionContribution": "行動条件が具体化するまでTechniqueを割り当てない",
+      "gapId": "GAP-BM-006",
+      "owner": "SYNTH-SOC-REVIEWER",
+      "reviewDate": "2026-09-20",
+      "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
+      "controlIds": [
+        "CTRL-2026-007",
+        "CTRL-2026-008"
+      ]
+    },
+    {
+      "rowId": "BM-2026-007",
+      "threatId": "TH-2026-006",
+      "assetIds": [
+        "ASSET-2026-001",
+        "ASSET-2026-003",
+        "ASSET-2026-006"
+      ],
+      "boundaryIds": [
+        "TB-2026-002",
+        "TB-2026-003",
+        "TB-2026-007",
+        "TB-2026-008"
+      ],
+      "flowIds": [
+        "FLOW-2026-003",
+        "FLOW-2026-004",
+        "FLOW-2026-005"
+      ],
+      "catalogVersion": "19.2",
+      "techniqueId": null,
+      "tacticId": null,
+      "subtechniqueId": null,
+      "mappingBasis": "Hypothesized",
+      "preconditions": "承認状態と連携変更の対応、現在の設定は未確認を含む",
+      "observableBehavior": "historicalな機会条件とsummary-only境界の影響範囲を限定できない",
+      "analyticIds": [],
+      "dataComponentIds": [],
+      "telemetryId": "TEL-BM-007",
+      "detectionId": null,
+      "evidenceIds": [],
+      "status": "Unknown",
+      "validationTestId": null,
+      "limitation": "機会条件の不確実性は発生の証拠ではない",
+      "alternativeMapping": "正常な承認変更、または観測Data不足による見かけの不整合",
+      "decisionContribution": "TH-2026-003の発生有無とは別の情報ギャップとして渡す",
+      "gapId": "GAP-BM-007",
+      "owner": "SYNTH-SOC-REVIEWER",
+      "reviewDate": "2026-09-20",
+      "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
+      "controlIds": [
+        "CTRL-2026-009"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "evidenceId": "EVD-BM-002",
+      "rowId": "BM-2026-002",
+      "kind": "synthetic-observation",
+      "scope": "synthetic-consent-change-only",
+      "recordIds": [
+        "SYNTH-EVENT-BM-001"
+      ],
+      "limitation": "合成変更の記録であり、悪意、実侵害、主体の証拠ではない"
+    },
+    {
+      "evidenceId": "EVD-BM-004",
+      "rowId": "BM-2026-004",
+      "kind": "synthetic-test-result",
+      "scope": "synthetic-field-classification",
+      "recordIds": [
+        "SYNTH-EVENT-BM-001",
+        "SYNTH-EVENT-BM-002",
+        "SYNTH-EVENT-BM-003"
+      ],
+      "limitation": "3件の有限教材だけ。製品や親CaseのRule test結果ではない"
+    }
+  ],
+  "telemetry": [
+    {
+      "telemetryId": "TEL-BM-001",
+      "rowId": "BM-2026-001",
+      "requiredFields": [
+        "synthetic",
+        "eventClass",
+        "tenant",
+        "application",
+        "approval"
+      ],
+      "availability": "Not collected",
+      "period": "3-record teaching set only; no historical retention claim",
+      "missing": "実環境と親Caseの90日Coverageは未検証",
+      "owner": "SYNTH-SOC-REVIEWER"
+    },
+    {
+      "telemetryId": "TEL-BM-002",
+      "rowId": "BM-2026-002",
+      "requiredFields": [
+        "synthetic",
+        "eventClass",
+        "tenant",
+        "application",
+        "approval"
+      ],
+      "availability": "Synthetic only",
+      "period": "3-record teaching set only; no historical retention claim",
+      "missing": "実環境と親Caseの90日Coverageは未検証",
+      "owner": "SYNTH-SOC-REVIEWER"
+    },
+    {
+      "telemetryId": "TEL-BM-003",
+      "rowId": "BM-2026-003",
+      "requiredFields": [
+        "synthetic",
+        "eventClass",
+        "tenant",
+        "application",
+        "approval"
+      ],
+      "availability": "Not collected",
+      "period": "3-record teaching set only; no historical retention claim",
+      "missing": "実環境と親Caseの90日Coverageは未検証",
+      "owner": "SYNTH-SOC-REVIEWER"
+    },
+    {
+      "telemetryId": "TEL-BM-004",
+      "rowId": "BM-2026-004",
+      "requiredFields": [
+        "synthetic",
+        "eventClass",
+        "tenant",
+        "application",
+        "approval"
+      ],
+      "availability": "Synthetic only",
+      "period": "3-record teaching set only; no historical retention claim",
+      "missing": "実環境と親Caseの90日Coverageは未検証",
+      "owner": "SYNTH-SOC-REVIEWER"
+    },
+    {
+      "telemetryId": "TEL-BM-005",
+      "rowId": "BM-2026-005",
+      "requiredFields": [
+        "synthetic",
+        "eventClass",
+        "tenant",
+        "application",
+        "approval"
+      ],
+      "availability": "Not collected",
+      "period": "3-record teaching set only; no historical retention claim",
+      "missing": "実環境と親Caseの90日Coverageは未検証",
+      "owner": "SYNTH-SOC-REVIEWER"
+    },
+    {
+      "telemetryId": "TEL-BM-006",
+      "rowId": "BM-2026-006",
+      "requiredFields": [
+        "synthetic",
+        "eventClass",
+        "tenant",
+        "application",
+        "approval"
+      ],
+      "availability": "Not collected",
+      "period": "3-record teaching set only; no historical retention claim",
+      "missing": "実環境と親Caseの90日Coverageは未検証",
+      "owner": "SYNTH-SOC-REVIEWER"
+    },
+    {
+      "telemetryId": "TEL-BM-007",
+      "rowId": "BM-2026-007",
+      "requiredFields": [
+        "synthetic",
+        "eventClass",
+        "tenant",
+        "application",
+        "approval"
+      ],
+      "availability": "Not collected",
+      "period": "3-record teaching set only; no historical retention claim",
+      "missing": "実環境と親Caseの90日Coverageは未検証",
+      "owner": "SYNTH-SOC-REVIEWER"
+    }
+  ],
+  "events": [
+    {
+      "id": "SYNTH-EVENT-BM-001",
+      "synthetic": true,
+      "eventClass": "consent-change",
+      "tenant": "tenant-a.example",
+      "application": "billing-bridge.example",
+      "approval": "unapproved"
+    },
+    {
+      "id": "SYNTH-EVENT-BM-002",
+      "synthetic": true,
+      "eventClass": "consent-change",
+      "tenant": "tenant-a.example",
+      "application": "billing-bridge.example",
+      "approval": "approved"
+    },
+    {
+      "id": "SYNTH-EVENT-BM-003",
+      "synthetic": true,
+      "eventClass": "consent-change",
+      "tenant": "tenant-a.example",
+      "application": "billing-bridge.example",
+      "approval": null
+    }
+  ],
+  "tests": [
+    {
+      "testId": "TEST-BM-004",
+      "rowId": "BM-2026-004",
+      "scope": "synthetic-field-classification",
+      "ruleVersion": "1.0.0",
+      "detectionId": "DET-BM-004",
+      "evidenceId": "EVD-BM-004",
+      "expected": [
+        "needs-review",
+        "benign-change",
+        "insufficient-data"
+      ],
+      "actual": [
+        "needs-review",
+        "benign-change",
+        "insufficient-data"
+      ],
+      "result": "Pass",
+      "limitations": "承認との突合だけを確認する。侵害、主体、Control effectivenessの証明ではない"
+    }
+  ],
+  "handoffs": [
+    {
+      "id": "HO-BM-006",
+      "chapters": [
+        6,
+        16
+      ],
+      "input": "全行のAsset、Boundary、Telemetry、Gap",
+      "acceptance": "対象Event、必須Field、期間、欠落、Ownerがある",
+      "reject": "ログを増やすだけでField contractがない",
+      "owner": "SYNTH-PLATFORM-OWNER"
+    },
+    {
+      "id": "HO-BM-017",
+      "chapters": [
+        17,
+        18,
+        21
+      ],
+      "input": "BM-2026-001 / BM-2026-002 / BM-2026-004の候補と限定Evidence",
+      "acceptance": "RuleとTestの版、正常系、情報不足、Scopeを区別する",
+      "reject": "教材のPassを製品や親Controlへ転用する",
+      "owner": "SYNTH-SOC-REVIEWER"
+    },
+    {
+      "id": "HO-BM-026",
+      "chapters": [
+        26
+      ],
+      "input": "版、Mapping basis、Observation scope、代替説明、限界",
+      "acceptance": "共有相手が出典と許容結論を復元できる",
+      "reject": "Group類似だけで主体を断定する",
+      "owner": "SYNTH-CTI-REVIEWER"
+    }
+  ],
+  "controls": [
+    {
+      "controlId": "CTRL-2026-005",
+      "role": "業務要件とscopeのReview",
+      "assurance": "Documented",
+      "parentEvidenceIds": [
+        "EVD-2026-002"
+      ],
+      "limitation": "人手差分に依存し、実施有効性の証明ではない"
+    },
+    {
+      "controlId": "CTRL-2026-006",
+      "role": "Workload identityの分離と管理",
+      "assurance": "Documented",
+      "parentEvidenceIds": [
+        "EVD-2026-001"
+      ],
+      "limitation": "親EvidenceはApp registration scope Snapshotだけ。bindingと管理手順の実施結果は未収集"
+    },
+    {
+      "controlId": "CTRL-2026-007",
+      "role": "Admin consent / App lifecycleのAudit coverage",
+      "assurance": "Documented",
+      "parentEvidenceIds": [
+        "EVD-2026-003"
+      ],
+      "limitation": "親EvidenceはAdmin consentだけ。App lifecycleと複合ControlのRule testは未収集"
+    },
+    {
+      "controlId": "CTRL-2026-008",
+      "role": "Labのno outbound / Stop / Cleanup",
+      "assurance": "Documented",
+      "parentEvidenceIds": [
+        "EVD-AUTH-2026-001",
+        "SYNTH-REV-TM-SAFE-001"
+      ],
+      "limitation": "設計Reviewだけ。default-deny、preflight、Cleanupの実施結果は未収集"
+    },
+    {
+      "controlId": "CTRL-2026-009",
+      "role": "summary-only Field normalizationの説明",
+      "assurance": "Unknown",
+      "parentEvidenceIds": [
+        "NEG-2026-001"
+      ],
+      "limitation": "Vendor内部補正の完全性は直接確認できない"
+    }
+  ],
+  "teachingModel": "Office Suite teaching model only; parent product/environment remains unconfirmed."
+}

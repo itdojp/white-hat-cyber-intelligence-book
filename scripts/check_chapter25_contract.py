@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.sync_book_site import SitePageRegistryError, parse_registry_data  # noqa: E402
+from scripts.source_audit import meets_audit_baseline  # noqa: E402
 
 IANA_TLD_SNAPSHOT = ROOT / "references/iana-tlds-alpha-by-domain.txt"
 IANA_TLD_SNAPSHOT_VERSION = "2026080300"
@@ -5677,7 +5678,12 @@ def main() -> int:
         error("references/sources.json: SRC-BERKELEY-001 publishedAt must remain null when the exact date is uncertain")
     for source_id, checked_at in CHAPTER25_SOURCE_CHECKED_AT.items():
         source = source_items.get(source_id, {})
-        if source.get("checkedAt") != checked_at:
+        if source_id == "SRC-ATTACK-001":
+            # Keep the historical Chapter 25 audit while allowing a separately
+            # documented current-catalog review for a later chapter.
+            if not meets_audit_baseline(source.get("checkedAt"), checked_at):
+                error(f"references/sources.json: {source_id} predates the Chapter 25 audit baseline")
+        elif source.get("checkedAt") != checked_at:
             error(f"references/sources.json: {source_id} checkedAt must be {checked_at} for its Chapter 25 Source Note")
         if 25 not in source.get("chapters", []):
             error(f"references/sources.json: {source_id} must map to chapter 25 when cited")

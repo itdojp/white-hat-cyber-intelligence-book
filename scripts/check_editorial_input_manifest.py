@@ -2094,6 +2094,21 @@ def verify_selected_package(
     verify_package_archive(package, package_path, target_id)
 
 
+def prepare_intake_regression(target: dict[str, Any]) -> None:
+    """Freeze only the test setup before intake, regardless of live lifecycle.
+
+    Never called by validation or mutation of the canonical manifest. A later
+    real canonical-pr-open/consumed transition must not mask the intended defect
+    with an incidental duplicate-status error in a synthetic regression.
+    """
+    for index, entry in enumerate(target["statusHistory"]):
+        if entry["status"] == "canonical-pr-open":
+            target["statusHistory"] = target["statusHistory"][:index]
+            break
+    target["canonicalPr"] = None
+    target["intakeRecord"] = None
+
+
 def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
     packages = manifest["packages"]
     targets = {item["targetId"]: item for item in manifest["targets"]}
@@ -2164,6 +2179,7 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
             target["candidates"][0]["disposition"] = "selected"
     elif mutation == "canonical-pr-missing-intake-record":
         target = targets["chapter-05"]
+        prepare_intake_regression(target)
         target["status"] = "canonical-pr-open"
         target["canonicalPr"] = 999
         target["statusHistory"].append(
@@ -2204,6 +2220,7 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
     elif mutation == "future-target-claims-legacy-record":
         source = targets["chapter-04"]["intakeRecord"]
         target = targets["chapter-05"]
+        prepare_intake_regression(target)
         candidate = target["candidates"][0]
         package = next(
             item for item in packages if item["packageId"] == candidate["packageId"]
@@ -2239,6 +2256,8 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
         )
     elif mutation == "status-history-prefix-deleted":
         target = targets["chapter-05"]
+        target["canonicalPr"] = None
+        target["intakeRecord"] = None
         target["status"] = "deferred"
         target["selectedCandidateId"] = None
         target["candidates"][0]["disposition"] = "deferred"
@@ -2256,6 +2275,8 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
         target["statusHistory"][0]["reason"] = "rewritten provenance fixture"
     elif mutation == "status-history-checkpoint-unpersisted":
         target = targets["chapter-05"]
+        target["canonicalPr"] = None
+        target["intakeRecord"] = None
         target["status"] = "deferred"
         target["selectedCandidateId"] = None
         target["candidates"][0]["disposition"] = "deferred"
@@ -2344,6 +2365,18 @@ def run_manifest_regressions(
                 fail(f"regression {case_id}: expected {expected!r}, got {str(exc)!r}")
         else:
             fail(f"regression {case_id}: mutation was accepted")
+    # The synthetic mutation setup must remain usable after the first live
+    # Chapter 5 intake and later consumption. Production validation is unchanged.
+    for suffix in ([], ["canonical-pr-open"], ["canonical-pr-open", "consumed"]):
+        prefix = [{"status": "registered-pending-prerequisites"}, {"status": "selected-for-intake"}]
+        probe = {
+            "statusHistory": copy.deepcopy(prefix) + [{"status": value} for value in suffix],
+            "canonicalPr": 999,
+            "intakeRecord": {"sentinel": "test only"},
+        }
+        prepare_intake_regression(probe)
+        if probe != {"statusHistory": prefix, "canonicalPr": None, "intakeRecord": None}:
+            fail("intake mutation setup depends on current Chapter 5 lifecycle")
     # Renderer output cannot depend on JSON array order.
     reordered = copy.deepcopy(manifest)
     reordered["packages"].reverse()
@@ -2603,7 +2636,7 @@ def run_manifest_regressions(
             fail(f"exact-head environment regression returned unexpected error: {exc}")
     else:
         fail("exact-head environment regression accepted a different checkout")
-    return len(cases) + 23
+    return len(cases) + 26
 
 
 def write_test_zip(

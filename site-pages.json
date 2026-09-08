@@ -172,6 +172,34 @@
       "section": "chapters",
       "order": 210,
       "title": "第25章 構造化分析、不確実性、アトリビューション"
+    },
+    {
+      "source": "manuscript/05-attack-behavior.md",
+      "destination": "chapters/chapter-05/index.md",
+      "section": "chapters",
+      "order": 48,
+      "title": "第5章 攻撃者の行動をATT&CKで記述する"
+    },
+    {
+      "source": "templates/attack-behavior-map.md",
+      "destination": "templates/attack-behavior-map/index.md",
+      "section": "additional",
+      "order": 243,
+      "title": "ATT&CK Behavior Map"
+    },
+    {
+      "source": "cases/ch05-attack-behavior-example.md",
+      "destination": "cases/chapter-05-attack-behavior/index.md",
+      "section": "additional",
+      "order": 244,
+      "title": "第5章 合成記入例：ATT&CK Behavior Map"
+    },
+    {
+      "source": "references/ch05-source-review-2026-09-06.md",
+      "destination": "references/chapter-05-source-review/index.md",
+      "section": "additional",
+      "order": 245,
+      "title": "第5章 Source Review Note：ATT&CK"
     }
   ],
   "directoryRoutes": {
@@ -189,6 +217,10 @@
     {
       "source": "cases/fixtures/ch25-structured-analysis-attribution-dataset.json",
       "destination": "downloads/ch25-structured-analysis-attribution-dataset.json"
+    },
+    {
+      "source": "cases/fixtures/ch05-attack-behavior.json",
+      "destination": "downloads/ch05-attack-behavior.json"
     }
   ]
 }

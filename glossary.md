@@ -45,3 +45,16 @@
 | Control Plane | Identity、Policy、Configuration、Deployment等を通じてSystemの振る舞いを変更できる管理面 |
 | Work Role | NICE Frameworkにおける仕事のGrouping。Job titleまたは個人を意味しない |
 | 確信度 | 分析判断を支える証拠品質、整合性、情報ギャップ、代替仮説の強さに対する評価 |
+
+## 第5章の用語
+
+| 用語 | 本書での意味 |
+|---|---|
+| ATT&CK Behavior Map | ART-15。条件付きBehavior、根拠、版、Data、Evidence、GapをDecisionへ渡す記録 |
+| Mapping basis | Hypothesized / Source-reported / Observed / Reproducedの根拠分類。自組織観測と公開報告を区別する |
+| Catalog coverage | 選定した行動候補に対する対応付けの範囲。Detection有効性ではない |
+| Observable coverage | 指定Event・Field・期間について観測できる範囲 |
+| Validated coverage | 指定した条件・版・Testで期待Evidenceを確認した範囲 |
+| Detection Strategy | 特定Techniqueに対する高位の検知方針。プラットフォーム向けAnalyticを束ねる |
+
+定義の出典、Statusの有限契約、限界は[第5章](manuscript/05-attack-behavior.md)を参照する。

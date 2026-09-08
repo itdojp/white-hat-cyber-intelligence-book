@@ -18,6 +18,7 @@ from scripts.sync_book_site import (  # noqa: E402
     parse_registry_data,
 )
 import scripts.sync_site_source as base  # noqa: E402
+from scripts.source_audit import meets_audit_baseline  # noqa: E402
 
 ERRORS: list[str] = []
 AUDITED_ARTIFACT_REVISION = "66a338f2de15248e3a9291286fd26a68b11a6e0a"
@@ -857,7 +858,12 @@ def main() -> int:
             continue
         if 17 not in source.get("chapters", []):
             error(f"references/sources.json: {source_id} must map to chapter 17")
-        if source.get("checkedAt") != "2026-08-03":
+        if source_id in {"SRC-ATTACK-DS-001", "SRC-ATTACK-DET-001"}:
+            # SOURCE_POLICY permits a later per-source audit. Retain this
+            # chapter's minimum audit date, not a permanent global date lock.
+            if not meets_audit_baseline(source.get("checkedAt"), "2026-08-03"):
+                error(f"references/sources.json: {source_id} predates the Chapter 17 audit baseline")
+        elif source.get("checkedAt") != "2026-08-03":
             error(f"references/sources.json: {source_id} checkedAt must be 2026-08-03")
 
     package = load_json("package.json")

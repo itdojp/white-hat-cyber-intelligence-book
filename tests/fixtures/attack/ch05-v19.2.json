@@ -1,0 +1,193 @@
+{
+  "bundleSha256": "f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259",
+  "bundleUrl": "https://raw.githubusercontent.com/mitre/cti/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json",
+  "catalogVersion": "19.2",
+  "checkedAt": "2026-09-06",
+  "domain": "enterprise-attack",
+  "licenseUrl": "https://github.com/mitre/cti/blob/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/LICENSE.txt",
+  "notice": "Copyright 2026 The MITRE Corporation. See THIRD_PARTY_NOTICES.md. Metadata subset; not a complete STIX bundle.",
+  "objectHashEncoding": "UTF-8 JSON, ensure_ascii=False, indent=2, sort_keys=True, trailing LF",
+  "objects": [
+    {
+      "dataComponentIds": [
+        "DC0066",
+        "DC0069"
+      ],
+      "deprecated": false,
+      "domains": [
+        "enterprise-attack"
+      ],
+      "externalId": "AN1487",
+      "modified": "2025-10-21T15:10:28.402Z",
+      "mutableFields": [
+        "ApplicationScopeThreshold",
+        "PrivilegedUserList"
+      ],
+      "name": "Analytic 1487",
+      "objectSha256": "f057868036f39aa4e59edc6a2a0db82568ce8d968c6c985e01cb9fe3ba515eb7",
+      "platforms": [
+        "Office Suite"
+      ],
+      "revoked": false,
+      "revokedPropertyPresent": false,
+      "stixId": "x-mitre-analytic--6feb9746-7b2c-4f6f-92c9-bfdb14eddddc",
+      "type": "x-mitre-analytic",
+      "url": "https://attack.mitre.org/detectionstrategies/DET0539#AN1487",
+      "version": "1.0"
+    },
+    {
+      "dataComponentIds": [
+        "DC0038",
+        "DC0069"
+      ],
+      "deprecated": false,
+      "domains": [
+        "enterprise-attack"
+      ],
+      "externalId": "AN1488",
+      "modified": "2025-10-21T15:10:28.402Z",
+      "mutableFields": [
+        "AppWhitelist",
+        "ConsentDelegationPolicy"
+      ],
+      "name": "Analytic 1488",
+      "objectSha256": "1a0e783e34e8c78a14f1268fff06b935d30d76c3767713af81402a250acd4af4",
+      "platforms": [
+        "SaaS"
+      ],
+      "revoked": false,
+      "revokedPropertyPresent": false,
+      "stixId": "x-mitre-analytic--036a6a5d-bd87-45c7-bd68-43df76167786",
+      "type": "x-mitre-analytic",
+      "url": "https://attack.mitre.org/detectionstrategies/DET0539#AN1488",
+      "version": "1.0"
+    },
+    {
+      "deprecated": false,
+      "domains": [
+        "enterprise-attack",
+        "ics-attack",
+        "mobile-attack"
+      ],
+      "externalId": "DC0038",
+      "modified": "2026-05-12T15:12:00.776Z",
+      "name": "Application Log Content",
+      "objectSha256": "c780ffd66e3681c344c231cc16ccaa44bbab9d453aa34bf6c87bab363626d8c9",
+      "revoked": false,
+      "revokedPropertyPresent": true,
+      "stixId": "x-mitre-data-component--9c2fa0ae-7abc-485a-97f6-699e3b6cf9fa",
+      "type": "x-mitre-data-component",
+      "url": "https://attack.mitre.org/datacomponents/DC0038",
+      "version": "3.0"
+    },
+    {
+      "deprecated": false,
+      "domains": [
+        "enterprise-attack"
+      ],
+      "externalId": "DC0066",
+      "modified": "2025-11-12T22:03:39.105Z",
+      "name": "Active Directory Object Modification",
+      "objectSha256": "f37277d7feec373d9e3166fe01e2463e4bf442818c351b5fe1c75de991284005",
+      "revoked": false,
+      "revokedPropertyPresent": true,
+      "stixId": "x-mitre-data-component--5b8b466b-2c81-4fe7-946f-d677a74ae3db",
+      "type": "x-mitre-data-component",
+      "url": "https://attack.mitre.org/datacomponents/DC0066",
+      "version": "2.0"
+    },
+    {
+      "deprecated": false,
+      "domains": [
+        "enterprise-attack"
+      ],
+      "externalId": "DC0069",
+      "modified": "2025-11-12T22:03:39.105Z",
+      "name": "Cloud Service Modification",
+      "objectSha256": "ec653d6808c5ac39c1729739c4eb0f48f131519b50ae0e7404edddc82370df26",
+      "revoked": false,
+      "revokedPropertyPresent": true,
+      "stixId": "x-mitre-data-component--e52d89f9-1710-4708-88a5-cbef77c4cd5e",
+      "type": "x-mitre-data-component",
+      "url": "https://attack.mitre.org/datacomponents/DC0069",
+      "version": "2.0"
+    },
+    {
+      "analyticIds": [
+        "AN1487",
+        "AN1488"
+      ],
+      "deprecated": false,
+      "domains": [
+        "enterprise-attack"
+      ],
+      "externalId": "DET0539",
+      "modified": "2026-05-12T16:34:50.684Z",
+      "name": "Detection Strategy for Cloud Application Integration",
+      "objectSha256": "fc71104534dadb1fcc1a5182ec7d51de423c4df0d4198ca38092a603a5721947",
+      "revoked": false,
+      "revokedPropertyPresent": true,
+      "stixId": "x-mitre-detection-strategy--8bc479cf-727b-40d1-92d2-5755766d8544",
+      "type": "x-mitre-detection-strategy",
+      "url": "https://attack.mitre.org/detectionstrategies/DET0539",
+      "version": "1.0"
+    },
+    {
+      "deprecated": false,
+      "domains": [
+        "enterprise-attack"
+      ],
+      "externalId": "T1671",
+      "isSubtechnique": false,
+      "modified": "2025-04-15T19:59:05.283Z",
+      "name": "Cloud Application Integration",
+      "objectSha256": "689a16044a6ffe64ab15b1ec36a3cca85d6f67cc886a3e2d5d16b0c7bd4c8e96",
+      "platforms": [
+        "Office Suite",
+        "SaaS"
+      ],
+      "revoked": false,
+      "revokedPropertyPresent": true,
+      "stixId": "attack-pattern--c31aebd6-c9b5-420f-ba2a-5853bbf897fa",
+      "tactics": [
+        "persistence"
+      ],
+      "type": "attack-pattern",
+      "url": "https://attack.mitre.org/techniques/T1671",
+      "version": "1.0"
+    },
+    {
+      "deprecated": false,
+      "domains": [
+        "enterprise-attack"
+      ],
+      "externalId": "TA0003",
+      "modified": "2025-04-25T14:45:33.492Z",
+      "name": "Persistence",
+      "objectSha256": "2da8143044ac47d34c613500deda19ad653587fbcc29dfd7b99405a27c6d45ba",
+      "revoked": false,
+      "revokedPropertyPresent": false,
+      "shortname": "persistence",
+      "stixId": "x-mitre-tactic--5bc1d813-693e-4823-9961-abf9af4b0e92",
+      "type": "x-mitre-tactic",
+      "url": "https://attack.mitre.org/tactics/TA0003",
+      "version": "1.0"
+    }
+  ],
+  "relationships": [
+    {
+      "deprecated": false,
+      "modified": "2025-10-21T15:10:28.402Z",
+      "objectSha256": "07b63054d9964d4d006289296d322157c0b2283fd8c30c42729f20beaa7d0651",
+      "revoked": false,
+      "source": "DET0539",
+      "stixId": "relationship--7fd5057e-fa4f-45ee-99cc-ca792cd8412f",
+      "target": "T1671",
+      "type": "detects"
+    }
+  ],
+  "releasePublishedAt": "2026-08-05T22:57:35Z",
+  "schemaVersion": "1.0.0",
+  "updateStartDate": "2026-08-06",
+  "upstreamCommit": "8543c5b05bd9bbcace9fc37f30bba96b675b6f33"
+}

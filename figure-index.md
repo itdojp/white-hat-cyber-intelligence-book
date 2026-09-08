@@ -23,6 +23,10 @@
 | T-04-02 | 似て見える用語の違い | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
 | T-04-03 | Control assurance states | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
 | T-04-04 | Knowledge stateとHypothesis statusの分離 | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| F-05-01 | Behavior Mapの追跡構造 | `manuscript/05-attack-behavior.md` | Implemented |
+| T-05-01 | オブジェクトと判断上の役割 | `manuscript/05-attack-behavior.md` | Implemented |
+| T-05-02 | 本章で使うDetectionの参照関係 | `manuscript/05-attack-behavior.md` | Implemented |
+| T-05-03 | Statusと受入条件 | `manuscript/05-attack-behavior.md` | Implemented |
 | F-11-01 | DecisionからDetectionまでの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | F-11-02 | Request・Evidence・Telemetry・Decisionの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | T-11-01 | ChecklistとHypothesis Packの違い | `manuscript/11-web-api-hypothesis.md` | Implemented |
