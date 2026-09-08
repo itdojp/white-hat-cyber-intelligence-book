@@ -994,7 +994,7 @@
         "knownLimitations": [
           "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日であり、Package本文を読んだ日ではない。",
           "3件のsynthetic-field-classificationは実製品のDetection effectiveness、T1671再現、親Control検証、侵害有無や主体帰属の証明ではない。",
-          "Draft PRの作成はmerge・main CI・Pages公開の完了を意味しない。consumedはそれらの確認後に別更新する。"
+          "PR #113作成時（2026-09-06）の制約: Draft PRの作成はmerge・main CI・Pages公開の完了を意味しない。consumedはそれらの確認後に別更新する。 現在は2026-09-08の公開確認済みであり、その別更新を本metadata変更で記録した。現時点の状態・証跡はtarget.statusとstatusHistoryの最新entryを参照する。"
         ],
         "rawTrackedFiles": 0
       },
