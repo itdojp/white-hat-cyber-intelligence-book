@@ -3,7 +3,7 @@
 このファイルは`editorial-input-manifest.json`から決定的に生成します。機械可読Manifestを更新し、`npm run render:editorial-inputs`を実行してください。このファイルを手編集しないでください。
 
 - Manifest version: `1.0.0`
-- Audit date: `2026-09-08`
+- Audit date: `2026-09-12`
 - Packages / targets / candidates: `14 / 29 / 30`
 - Provenance: [Issue #63](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63) / [Issue #98](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98)
 - External audit artifact: `not-present-in-authorized-workspace`。内容やhash一致を推測しません。
@@ -16,8 +16,7 @@
 |---|---:|
 | `blueprint-only` | 1 |
 | `candidate-selection-required` | 1 |
-| `canonical-pr-open` | 1 |
-| `consumed` | 2 |
+| `consumed` | 3 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 22 |
 
@@ -53,7 +52,7 @@
 |---|---:|---|---|---:|---|
 | `chapter-04` | #29 | `consumed` | `EIC-0029-c49f0a11ef9e` | #64 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5245374024) |
 | `chapter-05` | #30 | `consumed` | `EIC-0030-11e256480c15` | #113 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5577993812) |
-| `chapter-06` | #31 | `canonical-pr-open` | `EIC-0031-2c4e8b2b8508` | #117 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/117) |
+| `chapter-06` | #31 | `consumed` | `EIC-0031-2c4e8b2b8508` | #117 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5645016826) |
 | `chapter-07` | #32 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644) |
 | `chapter-08` | #33 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529) |
 | `chapter-09` | #34 | `candidate-selection-required` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98) |
@@ -99,7 +98,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0031-2c4e8b2b8508` | `EIP-0002` | `chapter06-observable-systems.predraft.md` | `2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d` | `selected` | 前提の通常merge・公開確認後にIssue #31の唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。 |
+| `EIC-0031-2c4e8b2b8508` | `EIP-0002` | `chapter06-observable-systems.predraft.md` | `2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d` | `rewritten` | PR #117でIssue #31とcurrent contract・再検証済み一次資料から第6章正本を新規作成し、通常mergeとexact-main CI・Pages・公開markerを確認した。登録metadataとの照合であり、EIP-0002/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。 |
 
 ### `chapter-07` / Issue #32
 
