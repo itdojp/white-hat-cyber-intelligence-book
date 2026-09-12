@@ -1,5 +1,9 @@
 """Closed ART-17 semantic/selection tests; generic publication grammar is Layer B."""
 
+from contextlib import redirect_stdout
+from io import StringIO
+from unittest.mock import patch
+
 from copy import deepcopy
 from dataclasses import replace
 import hashlib
@@ -236,6 +240,63 @@ def run_regressions(
         and "Chapter 7 contract passed:" in locale_probe.stdout,
         "CH07-IO-001 explicit UTF-8 reads",
     )
+    # Integration regression: newer scoped Source audits must not invalidate
+    # Chapter11, while old/malformed dates and changed source meaning still fail.
+    from scripts import check_chapter11_contract as ch11
+
+    original_loader = ch11.load_json
+    for value, expected in [
+        ("2026-08-03", True),
+        ("2026-09-12", True),
+        ("2027-01-01", True),
+        ("2026-08-02", False),
+        ("20260912", False),
+        (True, False),
+        (None, False),
+    ]:
+
+        def source_override(path):
+            result = original_loader(path)
+            if path == "references/sources.json":
+                next(x for x in result["sources"] if x["id"] == "SRC-OWASP-TOP10-001")[
+                    "checkedAt"
+                ] = value
+            return result
+
+        saved_errors = ch11.ERRORS
+        try:
+            ch11.ERRORS = []
+            with (
+                patch.object(ch11, "load_json", side_effect=source_override),
+                redirect_stdout(StringIO()),
+            ):
+                outcome = ch11.main()
+            check(
+                (outcome == 0) == expected,
+                "CH07-SRC-001 Chapter11 audit date " + repr(value),
+            )
+        finally:
+            ch11.ERRORS = saved_errors
+
+    def changed_version(path):
+        result = original_loader(path)
+        if path == "references/sources.json":
+            next(x for x in result["sources"] if x["id"] == "SRC-OWASP-TOP10-001")[
+                "version"
+            ] = "2021"
+        return result
+
+    saved_errors = ch11.ERRORS
+    try:
+        ch11.ERRORS = []
+        with (
+            patch.object(ch11, "load_json", side_effect=changed_version),
+            redirect_stdout(StringIO()),
+        ):
+            outcome = ch11.main()
+        check(outcome != 0, "CH07-SRC-002 Chapter11 semantic version retained")
+    finally:
+        ch11.ERRORS = saved_errors
     projected = project_documents(source)
     for doc in projected.documents:
         spec = contract["documents"][doc.document_id]
