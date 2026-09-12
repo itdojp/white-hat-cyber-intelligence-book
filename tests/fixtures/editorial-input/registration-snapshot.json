@@ -820,6 +820,12 @@
           "effectiveAt": "2026-09-12",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5644514226",
           "reason": "前提の通常merge・公開確認後にIssue #31の唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/117",
+          "reason": "専用Draft PR #117とIntake Recordを作成。raw不在で直接採用なし。通常merge・main/publicationは未完了。"
         }
       ]
     },

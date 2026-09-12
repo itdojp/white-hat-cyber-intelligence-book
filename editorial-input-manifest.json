@@ -1040,10 +1040,51 @@
       "targetId": "chapter-06",
       "issue": 31,
       "targetKind": "chapter",
-      "status": "selected-for-intake",
+      "status": "canonical-pr-open",
       "selectedCandidateId": "EIC-0031-2c4e8b2b8508",
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "canonicalPr": 117,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/117",
+        "packageId": "EIP-0002",
+        "packageSha256": "fffbd2af8a17cbbfa60c09c37c30a682a9c528b44194e0e9f0f3588e2a6a46ca",
+        "inputPath": "chapter06-observable-systems.predraft.md",
+        "inputSha256": "2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d",
+        "targetIssue": 31,
+        "canonicalPr": 117,
+        "currentMainSha": "c83bf8a8cc02aa206c67ba178de665acc8bf9237",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-12",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。登録metadataだけを照合した。"
+        ],
+        "rewrittenSections": [
+          "Issue #31とcurrent contract・再確認済み一次資料から第6章、ART16、完全合成Signal Flow、有限Layer A checkerを新規作成した。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw不在のため本文読了・実体hash検証・直接採用は主張しない。",
+          "旧草稿の追加Status、親Caseの観測結果の昇格、実製品操作、Chapter7以降は対象外。"
+        ],
+        "sourceRevalidation": [
+          "2026-09-12 NIST SP800-207/207A/92 Final、92r1 Initial Public Draftを公式出版記録・本文・Log Management projectで確認。古い暗号と製品推奨は不採用。",
+          "RFC6749のRole/Client説明だけを採用。更新元RFC9700を確認し、古いGrant/Security recommendationは転用しない。",
+          "MITRE公式direct HTTPとreleaseでv19.2を確認。第5章の固定metadataと親Asset/Boundary/Behaviorの意味を保持する。"
+        ],
+        "canonicalFiles": [
+          "manuscript/06-observable-systems.md",
+          "templates/signal-flow-diagram.md",
+          "cases/ch06-signal-flow-example.md",
+          "cases/fixtures/ch06-signal-flow.json",
+          "references/ch06-source-review-2026-09-12.md"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日であり、rawを読んだ日ではない。",
+          "受領票とTestは独立した完全合成の教育用記録であり、実製品や親Caseの観測・Control有効性ではない。",
+          "PR #117作成時（2026-09-12）は通常merge・main/publication未完了。consumedはそれらの確認後に別metadata更新する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0031-2c4e8b2b8508",
@@ -1067,6 +1108,12 @@
           "effectiveAt": "2026-09-12",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5644514226",
           "reason": "前提の通常merge・公開確認後にIssue #31の唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/117",
+          "reason": "専用Draft PR #117とIntake Recordを作成。raw不在で直接採用なし。通常merge・main/publicationは未完了。"
         }
       ]
     },
