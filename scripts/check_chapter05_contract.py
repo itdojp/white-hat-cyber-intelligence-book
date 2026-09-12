@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.source_audit import meets_audit_baseline  # noqa: E402
 from scripts.chapter05_semantics import SNAPSHOT_SHA256, validate_case  # noqa: E402
 from scripts.check_editorial_input_manifest import ManifestError, load_json_strict  # noqa: E402
 from scripts.content_safety_policy import (  # noqa: E402
@@ -240,8 +241,8 @@ def repository_errors(contract: dict) -> list[str]:
     for sid in SOURCE_IDS:
         source = sources.get(sid, {})
         if (
-            source.get("checkedAt") != "2026-09-06"
-            or source.get("nextReviewAt") != "2026-12-06"
+            not meets_audit_baseline(source.get("checkedAt"), "2026-09-06")
+            or not meets_audit_baseline(source.get("nextReviewAt"), "2026-12-06")
             or 5 not in source.get("chapters", [])
         ):
             errors.append(f"{sid}: scoped source audit")

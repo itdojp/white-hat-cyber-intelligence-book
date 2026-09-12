@@ -1,0 +1,1408 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "artifactId": "ART-16",
+  "mapId": "SFM-2026-001",
+  "parentCaseId": "CASE-2026-001",
+  "relation": "refines",
+  "parentThreatModelId": "TM-2026-001",
+  "parentBehaviorMapId": "BMAP-2026-001",
+  "decisionRequirementId": "DR-2026-001",
+  "authorizationRecordId": "AUTH-CASE-2026-001",
+  "scope": "read-only-synthetic-data",
+  "parentState": "Independent synthetic teaching supplement; no parent observation, control, gap or decision is changed.",
+  "flows": [
+    {
+      "flowId": "SF-2026-001",
+      "parentBehaviorId": "BM-2026-002",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-005"
+      ],
+      "boundaryIds": [
+        "TB-2026-001",
+        "TB-2026-003"
+      ],
+      "parentFlowIds": [
+        "FLOW-2026-002",
+        "FLOW-2026-004"
+      ],
+      "parentTelemetryId": "TEL-BM-002",
+      "parentGapId": "GAP-BM-002",
+      "actorId": "SYNTH-ACTOR-SF-001",
+      "identityClass": "Human",
+      "credentialClass": "interactive-authentication",
+      "protocolClass": "HTTPS / OAuth role model only",
+      "plane": "Control",
+      "operationPurpose": "管理者同意変更の合成記録",
+      "authenticationResult": "Confirmed in synthetic model",
+      "authorizationResult": "Allow in synthetic model",
+      "effect": "Consent state change",
+      "producerId": "SYNTH-PRODUCER-001",
+      "eventId": "SYNTH-EVENT-SF-001",
+      "eventClass": "consent-change",
+      "collectorId": "SYNTH-COLLECTOR-001",
+      "queryEndpoint": "evidence-query.example",
+      "consumerId": "SYNTH-CONSUMER-001",
+      "telemetryId": "TEL-SF-001",
+      "detectionId": null,
+      "coverage": "Produced",
+      "eventTime": "2026-09-01T00:00:00+00:00",
+      "assessmentTime": "2026-09-12T00:00:00+00:00",
+      "retentionStart": "2026-08-31T00:00:00+00:00",
+      "retentionEnd": "2026-10-01T00:00:00+00:00",
+      "clockSource": "SYNTH-CLOCK-UTC",
+      "clockUncertaintySeconds": 2,
+      "correlationKeys": [
+        "tenant",
+        "application",
+        "requestId",
+        "eventId"
+      ],
+      "requiredFields": [
+        "synthetic",
+        "eventId",
+        "actorId",
+        "identityClass",
+        "eventTime",
+        "tenant",
+        "application",
+        "requestId",
+        "authorizationResult"
+      ],
+      "nodes": [
+        {
+          "id": "N-SF-001-01",
+          "role": "actor"
+        },
+        {
+          "id": "N-SF-001-02",
+          "role": "identity"
+        },
+        {
+          "id": "N-SF-001-03",
+          "role": "request"
+        },
+        {
+          "id": "N-SF-001-04",
+          "role": "gateway"
+        },
+        {
+          "id": "N-SF-001-05",
+          "role": "authorization"
+        },
+        {
+          "id": "N-SF-001-06",
+          "role": "effect"
+        },
+        {
+          "id": "N-SF-001-07",
+          "role": "producer"
+        },
+        {
+          "id": "N-SF-001-08",
+          "role": "collector"
+        },
+        {
+          "id": "N-SF-001-09",
+          "role": "normalizer"
+        },
+        {
+          "id": "N-SF-001-10",
+          "role": "retention"
+        },
+        {
+          "id": "N-SF-001-11",
+          "role": "query"
+        },
+        {
+          "id": "N-SF-001-12",
+          "role": "consumer"
+        }
+      ],
+      "edges": [
+        {
+          "id": "E-SF-001-01",
+          "from": "N-SF-001-01",
+          "to": "N-SF-001-02"
+        },
+        {
+          "id": "E-SF-001-02",
+          "from": "N-SF-001-02",
+          "to": "N-SF-001-03"
+        },
+        {
+          "id": "E-SF-001-03",
+          "from": "N-SF-001-03",
+          "to": "N-SF-001-04"
+        },
+        {
+          "id": "E-SF-001-04",
+          "from": "N-SF-001-04",
+          "to": "N-SF-001-05"
+        },
+        {
+          "id": "E-SF-001-05",
+          "from": "N-SF-001-05",
+          "to": "N-SF-001-06"
+        },
+        {
+          "id": "E-SF-001-06",
+          "from": "N-SF-001-06",
+          "to": "N-SF-001-07"
+        },
+        {
+          "id": "E-SF-001-07",
+          "from": "N-SF-001-07",
+          "to": "N-SF-001-08"
+        },
+        {
+          "id": "E-SF-001-08",
+          "from": "N-SF-001-08",
+          "to": "N-SF-001-09"
+        },
+        {
+          "id": "E-SF-001-09",
+          "from": "N-SF-001-09",
+          "to": "N-SF-001-10"
+        },
+        {
+          "id": "E-SF-001-10",
+          "from": "N-SF-001-10",
+          "to": "N-SF-001-11"
+        },
+        {
+          "id": "E-SF-001-11",
+          "from": "N-SF-001-11",
+          "to": "N-SF-001-12"
+        }
+      ],
+      "receipts": [
+        {
+          "id": "EVD-SF-001-01",
+          "synthetic": true,
+          "flowId": "SF-2026-001",
+          "eventId": "SYNTH-EVENT-SF-001",
+          "stage": "Produced",
+          "recordedAt": "2026-09-01T00:00:01+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        }
+      ],
+      "test": null,
+      "gapId": "GAP-SF-001",
+      "gap": "収集経路の受領票がない",
+      "allowedConclusion": "同一Flowの合成受領記録が示す段階だけ。Eventや侵害の不存在は判断しない。",
+      "alternative": "正常な変更、Collection不備、保持期限切れ、権限不足という別説明を比較する。",
+      "confidence": "中",
+      "owner": "SYNTH-SOC-REVIEWER",
+      "reviewDate": "2026-09-20",
+      "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
+      "queryStart": "2026-08-31T23:59:58+00:00",
+      "queryEnd": "2026-09-01T00:00:03+00:00"
+    },
+    {
+      "flowId": "SF-2026-002",
+      "parentBehaviorId": "BM-2026-006",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-003",
+        "ASSET-2026-004"
+      ],
+      "boundaryIds": [
+        "TB-2026-003",
+        "TB-2026-007"
+      ],
+      "parentFlowIds": [
+        "FLOW-2026-004",
+        "FLOW-2026-005"
+      ],
+      "parentTelemetryId": "TEL-BM-006",
+      "parentGapId": "GAP-BM-006",
+      "actorId": "SYNTH-ACTOR-SF-002",
+      "identityClass": "Service",
+      "credentialClass": "service-authentication",
+      "protocolClass": "HTTPS / OAuth role model only",
+      "plane": "Control",
+      "operationPurpose": "Audit exportの合成受領記録",
+      "authenticationResult": "Confirmed in synthetic model",
+      "authorizationResult": "Allow in synthetic model",
+      "effect": "Export state change",
+      "producerId": "SYNTH-PRODUCER-002",
+      "eventId": "SYNTH-EVENT-SF-002",
+      "eventClass": "audit-export",
+      "collectorId": "SYNTH-COLLECTOR-002",
+      "queryEndpoint": "evidence-query.example",
+      "consumerId": "SYNTH-CONSUMER-002",
+      "telemetryId": "TEL-SF-002",
+      "detectionId": null,
+      "coverage": "Collected",
+      "eventTime": "2026-09-01T00:00:00+00:00",
+      "assessmentTime": "2026-09-12T00:00:00+00:00",
+      "retentionStart": "2026-08-31T00:00:00+00:00",
+      "retentionEnd": "2026-09-05T00:00:00+00:00",
+      "clockSource": "SYNTH-CLOCK-UTC",
+      "clockUncertaintySeconds": 2,
+      "correlationKeys": [
+        "tenant",
+        "application",
+        "requestId",
+        "eventId"
+      ],
+      "requiredFields": [
+        "synthetic",
+        "eventId",
+        "actorId",
+        "identityClass",
+        "eventTime",
+        "tenant",
+        "application",
+        "requestId",
+        "authorizationResult"
+      ],
+      "nodes": [
+        {
+          "id": "N-SF-002-01",
+          "role": "actor"
+        },
+        {
+          "id": "N-SF-002-02",
+          "role": "identity"
+        },
+        {
+          "id": "N-SF-002-03",
+          "role": "request"
+        },
+        {
+          "id": "N-SF-002-04",
+          "role": "gateway"
+        },
+        {
+          "id": "N-SF-002-05",
+          "role": "authorization"
+        },
+        {
+          "id": "N-SF-002-06",
+          "role": "effect"
+        },
+        {
+          "id": "N-SF-002-07",
+          "role": "producer"
+        },
+        {
+          "id": "N-SF-002-08",
+          "role": "collector"
+        },
+        {
+          "id": "N-SF-002-09",
+          "role": "normalizer"
+        },
+        {
+          "id": "N-SF-002-10",
+          "role": "retention"
+        },
+        {
+          "id": "N-SF-002-11",
+          "role": "query"
+        },
+        {
+          "id": "N-SF-002-12",
+          "role": "consumer"
+        }
+      ],
+      "edges": [
+        {
+          "id": "E-SF-002-01",
+          "from": "N-SF-002-01",
+          "to": "N-SF-002-02"
+        },
+        {
+          "id": "E-SF-002-02",
+          "from": "N-SF-002-02",
+          "to": "N-SF-002-03"
+        },
+        {
+          "id": "E-SF-002-03",
+          "from": "N-SF-002-03",
+          "to": "N-SF-002-04"
+        },
+        {
+          "id": "E-SF-002-04",
+          "from": "N-SF-002-04",
+          "to": "N-SF-002-05"
+        },
+        {
+          "id": "E-SF-002-05",
+          "from": "N-SF-002-05",
+          "to": "N-SF-002-06"
+        },
+        {
+          "id": "E-SF-002-06",
+          "from": "N-SF-002-06",
+          "to": "N-SF-002-07"
+        },
+        {
+          "id": "E-SF-002-07",
+          "from": "N-SF-002-07",
+          "to": "N-SF-002-08"
+        },
+        {
+          "id": "E-SF-002-08",
+          "from": "N-SF-002-08",
+          "to": "N-SF-002-09"
+        },
+        {
+          "id": "E-SF-002-09",
+          "from": "N-SF-002-09",
+          "to": "N-SF-002-10"
+        },
+        {
+          "id": "E-SF-002-10",
+          "from": "N-SF-002-10",
+          "to": "N-SF-002-11"
+        },
+        {
+          "id": "E-SF-002-11",
+          "from": "N-SF-002-11",
+          "to": "N-SF-002-12"
+        }
+      ],
+      "receipts": [
+        {
+          "id": "EVD-SF-002-01",
+          "synthetic": true,
+          "flowId": "SF-2026-002",
+          "eventId": "SYNTH-EVENT-SF-002",
+          "stage": "Produced",
+          "recordedAt": "2026-09-01T00:00:01+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        },
+        {
+          "id": "EVD-SF-002-02",
+          "synthetic": true,
+          "flowId": "SF-2026-002",
+          "eventId": "SYNTH-EVENT-SF-002",
+          "stage": "Collected",
+          "recordedAt": "2026-09-01T00:00:02+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        }
+      ],
+      "test": null,
+      "gapId": "GAP-SF-002",
+      "gap": "以前収集した記録が保持期限切れ",
+      "allowedConclusion": "同一Flowの合成受領記録が示す段階だけ。Eventや侵害の不存在は判断しない。",
+      "alternative": "正常な変更、Collection不備、保持期限切れ、権限不足という別説明を比較する。",
+      "confidence": "中",
+      "owner": "SYNTH-PLATFORM-OWNER",
+      "reviewDate": "2026-09-20",
+      "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
+      "queryStart": "2026-08-31T23:59:58+00:00",
+      "queryEnd": "2026-09-01T00:00:03+00:00"
+    },
+    {
+      "flowId": "SF-2026-003",
+      "parentBehaviorId": "BM-2026-003",
+      "assetIds": [
+        "ASSET-2026-001",
+        "ASSET-2026-003"
+      ],
+      "boundaryIds": [
+        "TB-2026-002",
+        "TB-2026-003"
+      ],
+      "parentFlowIds": [
+        "FLOW-2026-004"
+      ],
+      "parentTelemetryId": "TEL-BM-003",
+      "parentGapId": "GAP-BM-003",
+      "actorId": "SYNTH-ACTOR-SF-003",
+      "identityClass": "Workload",
+      "credentialClass": "workload-authentication",
+      "protocolClass": "HTTPS / OAuth role model only",
+      "plane": "Data",
+      "operationPurpose": "Customer Data APIの合成利用記録",
+      "authenticationResult": "Confirmed in synthetic model",
+      "authorizationResult": "Allow in synthetic model",
+      "effect": "Data access summary",
+      "producerId": "SYNTH-PRODUCER-003",
+      "eventId": "SYNTH-EVENT-SF-003",
+      "eventClass": "api-access",
+      "collectorId": "SYNTH-COLLECTOR-003",
+      "queryEndpoint": "evidence-query.example",
+      "consumerId": "SYNTH-CONSUMER-003",
+      "telemetryId": "TEL-SF-003",
+      "detectionId": null,
+      "coverage": "Retained",
+      "eventTime": "2026-09-01T00:00:00+00:00",
+      "assessmentTime": "2026-09-12T00:00:00+00:00",
+      "retentionStart": "2026-08-31T00:00:00+00:00",
+      "retentionEnd": "2026-10-01T00:00:00+00:00",
+      "clockSource": "SYNTH-CLOCK-UTC",
+      "clockUncertaintySeconds": 2,
+      "correlationKeys": [
+        "tenant",
+        "application",
+        "requestId",
+        "eventId"
+      ],
+      "requiredFields": [
+        "synthetic",
+        "eventId",
+        "actorId",
+        "identityClass",
+        "eventTime",
+        "tenant",
+        "application",
+        "requestId",
+        "authorizationResult"
+      ],
+      "nodes": [
+        {
+          "id": "N-SF-003-01",
+          "role": "actor"
+        },
+        {
+          "id": "N-SF-003-02",
+          "role": "identity"
+        },
+        {
+          "id": "N-SF-003-03",
+          "role": "request"
+        },
+        {
+          "id": "N-SF-003-04",
+          "role": "gateway"
+        },
+        {
+          "id": "N-SF-003-05",
+          "role": "authorization"
+        },
+        {
+          "id": "N-SF-003-06",
+          "role": "effect"
+        },
+        {
+          "id": "N-SF-003-07",
+          "role": "producer"
+        },
+        {
+          "id": "N-SF-003-08",
+          "role": "collector"
+        },
+        {
+          "id": "N-SF-003-09",
+          "role": "normalizer"
+        },
+        {
+          "id": "N-SF-003-10",
+          "role": "retention"
+        },
+        {
+          "id": "N-SF-003-11",
+          "role": "query"
+        },
+        {
+          "id": "N-SF-003-12",
+          "role": "consumer"
+        }
+      ],
+      "edges": [
+        {
+          "id": "E-SF-003-01",
+          "from": "N-SF-003-01",
+          "to": "N-SF-003-02"
+        },
+        {
+          "id": "E-SF-003-02",
+          "from": "N-SF-003-02",
+          "to": "N-SF-003-03"
+        },
+        {
+          "id": "E-SF-003-03",
+          "from": "N-SF-003-03",
+          "to": "N-SF-003-04"
+        },
+        {
+          "id": "E-SF-003-04",
+          "from": "N-SF-003-04",
+          "to": "N-SF-003-05"
+        },
+        {
+          "id": "E-SF-003-05",
+          "from": "N-SF-003-05",
+          "to": "N-SF-003-06"
+        },
+        {
+          "id": "E-SF-003-06",
+          "from": "N-SF-003-06",
+          "to": "N-SF-003-07"
+        },
+        {
+          "id": "E-SF-003-07",
+          "from": "N-SF-003-07",
+          "to": "N-SF-003-08"
+        },
+        {
+          "id": "E-SF-003-08",
+          "from": "N-SF-003-08",
+          "to": "N-SF-003-09"
+        },
+        {
+          "id": "E-SF-003-09",
+          "from": "N-SF-003-09",
+          "to": "N-SF-003-10"
+        },
+        {
+          "id": "E-SF-003-10",
+          "from": "N-SF-003-10",
+          "to": "N-SF-003-11"
+        },
+        {
+          "id": "E-SF-003-11",
+          "from": "N-SF-003-11",
+          "to": "N-SF-003-12"
+        }
+      ],
+      "receipts": [
+        {
+          "id": "EVD-SF-003-01",
+          "synthetic": true,
+          "flowId": "SF-2026-003",
+          "eventId": "SYNTH-EVENT-SF-003",
+          "stage": "Produced",
+          "recordedAt": "2026-09-01T00:00:01+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        },
+        {
+          "id": "EVD-SF-003-02",
+          "synthetic": true,
+          "flowId": "SF-2026-003",
+          "eventId": "SYNTH-EVENT-SF-003",
+          "stage": "Collected",
+          "recordedAt": "2026-09-01T00:00:02+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        },
+        {
+          "id": "EVD-SF-003-03",
+          "synthetic": true,
+          "flowId": "SF-2026-003",
+          "eventId": "SYNTH-EVENT-SF-003",
+          "stage": "Retained",
+          "recordedAt": "2026-09-12T00:00:00+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        }
+      ],
+      "test": null,
+      "gapId": "GAP-SF-003",
+      "gap": "保存しているが検索権限を確認していない",
+      "allowedConclusion": "同一Flowの合成受領記録が示す段階だけ。Eventや侵害の不存在は判断しない。",
+      "alternative": "正常な変更、Collection不備、保持期限切れ、権限不足という別説明を比較する。",
+      "confidence": "中",
+      "owner": "SYNTH-PLATFORM-OWNER",
+      "reviewDate": "2026-09-20",
+      "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
+      "queryStart": "2026-08-31T23:59:58+00:00",
+      "queryEnd": "2026-09-01T00:00:03+00:00"
+    },
+    {
+      "flowId": "SF-2026-004",
+      "parentBehaviorId": "BM-2026-002",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-005"
+      ],
+      "boundaryIds": [
+        "TB-2026-001",
+        "TB-2026-003"
+      ],
+      "parentFlowIds": [
+        "FLOW-2026-002",
+        "FLOW-2026-004"
+      ],
+      "parentTelemetryId": "TEL-BM-002",
+      "parentGapId": "GAP-BM-002",
+      "actorId": "SYNTH-ACTOR-SF-004",
+      "identityClass": "Human",
+      "credentialClass": "interactive-authentication",
+      "protocolClass": "HTTPS / OAuth role model only",
+      "plane": "Control",
+      "operationPurpose": "正常な同意変更の合成検索記録",
+      "authenticationResult": "Confirmed in synthetic model",
+      "authorizationResult": "Allow in synthetic model",
+      "effect": "Consent state change",
+      "producerId": "SYNTH-PRODUCER-004",
+      "eventId": "SYNTH-EVENT-SF-004",
+      "eventClass": "consent-change",
+      "collectorId": "SYNTH-COLLECTOR-004",
+      "queryEndpoint": "evidence-query.example",
+      "consumerId": "SYNTH-CONSUMER-004",
+      "telemetryId": "TEL-SF-004",
+      "detectionId": null,
+      "coverage": "Queryable",
+      "eventTime": "2026-09-01T00:00:00+00:00",
+      "assessmentTime": "2026-09-12T00:00:00+00:00",
+      "retentionStart": "2026-08-31T00:00:00+00:00",
+      "retentionEnd": "2026-10-01T00:00:00+00:00",
+      "clockSource": "SYNTH-CLOCK-UTC",
+      "clockUncertaintySeconds": 2,
+      "correlationKeys": [
+        "tenant",
+        "application",
+        "requestId",
+        "eventId"
+      ],
+      "requiredFields": [
+        "synthetic",
+        "eventId",
+        "actorId",
+        "identityClass",
+        "eventTime",
+        "tenant",
+        "application",
+        "requestId",
+        "authorizationResult"
+      ],
+      "nodes": [
+        {
+          "id": "N-SF-004-01",
+          "role": "actor"
+        },
+        {
+          "id": "N-SF-004-02",
+          "role": "identity"
+        },
+        {
+          "id": "N-SF-004-03",
+          "role": "request"
+        },
+        {
+          "id": "N-SF-004-04",
+          "role": "gateway"
+        },
+        {
+          "id": "N-SF-004-05",
+          "role": "authorization"
+        },
+        {
+          "id": "N-SF-004-06",
+          "role": "effect"
+        },
+        {
+          "id": "N-SF-004-07",
+          "role": "producer"
+        },
+        {
+          "id": "N-SF-004-08",
+          "role": "collector"
+        },
+        {
+          "id": "N-SF-004-09",
+          "role": "normalizer"
+        },
+        {
+          "id": "N-SF-004-10",
+          "role": "retention"
+        },
+        {
+          "id": "N-SF-004-11",
+          "role": "query"
+        },
+        {
+          "id": "N-SF-004-12",
+          "role": "consumer"
+        }
+      ],
+      "edges": [
+        {
+          "id": "E-SF-004-01",
+          "from": "N-SF-004-01",
+          "to": "N-SF-004-02"
+        },
+        {
+          "id": "E-SF-004-02",
+          "from": "N-SF-004-02",
+          "to": "N-SF-004-03"
+        },
+        {
+          "id": "E-SF-004-03",
+          "from": "N-SF-004-03",
+          "to": "N-SF-004-04"
+        },
+        {
+          "id": "E-SF-004-04",
+          "from": "N-SF-004-04",
+          "to": "N-SF-004-05"
+        },
+        {
+          "id": "E-SF-004-05",
+          "from": "N-SF-004-05",
+          "to": "N-SF-004-06"
+        },
+        {
+          "id": "E-SF-004-06",
+          "from": "N-SF-004-06",
+          "to": "N-SF-004-07"
+        },
+        {
+          "id": "E-SF-004-07",
+          "from": "N-SF-004-07",
+          "to": "N-SF-004-08"
+        },
+        {
+          "id": "E-SF-004-08",
+          "from": "N-SF-004-08",
+          "to": "N-SF-004-09"
+        },
+        {
+          "id": "E-SF-004-09",
+          "from": "N-SF-004-09",
+          "to": "N-SF-004-10"
+        },
+        {
+          "id": "E-SF-004-10",
+          "from": "N-SF-004-10",
+          "to": "N-SF-004-11"
+        },
+        {
+          "id": "E-SF-004-11",
+          "from": "N-SF-004-11",
+          "to": "N-SF-004-12"
+        }
+      ],
+      "receipts": [
+        {
+          "id": "EVD-SF-004-01",
+          "synthetic": true,
+          "flowId": "SF-2026-004",
+          "eventId": "SYNTH-EVENT-SF-004",
+          "stage": "Produced",
+          "recordedAt": "2026-09-01T00:00:01+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        },
+        {
+          "id": "EVD-SF-004-02",
+          "synthetic": true,
+          "flowId": "SF-2026-004",
+          "eventId": "SYNTH-EVENT-SF-004",
+          "stage": "Collected",
+          "recordedAt": "2026-09-01T00:00:02+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        },
+        {
+          "id": "EVD-SF-004-03",
+          "synthetic": true,
+          "flowId": "SF-2026-004",
+          "eventId": "SYNTH-EVENT-SF-004",
+          "stage": "Retained",
+          "recordedAt": "2026-09-12T00:00:00+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        },
+        {
+          "id": "EVD-SF-004-04",
+          "synthetic": true,
+          "flowId": "SF-2026-004",
+          "eventId": "SYNTH-EVENT-SF-004",
+          "stage": "Queryable",
+          "recordedAt": "2026-09-12T00:00:00+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        }
+      ],
+      "test": null,
+      "gapId": "GAP-SF-004",
+      "gap": "判定条件のTestは未実施",
+      "allowedConclusion": "同一Flowの合成受領記録が示す段階だけ。Eventや侵害の不存在は判断しない。",
+      "alternative": "正常な変更、Collection不備、保持期限切れ、権限不足という別説明を比較する。",
+      "confidence": "中",
+      "owner": "SYNTH-SOC-REVIEWER",
+      "reviewDate": "2026-09-20",
+      "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
+      "queryStart": "2026-08-31T23:59:58+00:00",
+      "queryEnd": "2026-09-01T00:00:03+00:00"
+    },
+    {
+      "flowId": "SF-2026-005",
+      "parentBehaviorId": "BM-2026-004",
+      "assetIds": [
+        "ASSET-2026-002",
+        "ASSET-2026-005"
+      ],
+      "boundaryIds": [
+        "TB-2026-001",
+        "TB-2026-003"
+      ],
+      "parentFlowIds": [
+        "FLOW-2026-002",
+        "FLOW-2026-004"
+      ],
+      "parentTelemetryId": "TEL-BM-004",
+      "parentGapId": "GAP-BM-004",
+      "actorId": "SYNTH-ACTOR-SF-005",
+      "identityClass": "Human",
+      "credentialClass": "interactive-authentication",
+      "protocolClass": "HTTPS / OAuth role model only",
+      "plane": "Control",
+      "operationPurpose": "同意Eventの合成経路検査",
+      "authenticationResult": "Confirmed in synthetic model",
+      "authorizationResult": "Allow in synthetic model",
+      "effect": "Consent state change",
+      "producerId": "SYNTH-PRODUCER-005",
+      "eventId": "SYNTH-EVENT-SF-005",
+      "eventClass": "consent-change",
+      "collectorId": "SYNTH-COLLECTOR-005",
+      "queryEndpoint": "evidence-query.example",
+      "consumerId": "SYNTH-CONSUMER-005",
+      "telemetryId": "TEL-SF-005",
+      "detectionId": "DET-SF-005",
+      "coverage": "Validated",
+      "eventTime": "2026-09-01T00:00:00+00:00",
+      "assessmentTime": "2026-09-12T00:00:00+00:00",
+      "retentionStart": "2026-08-31T00:00:00+00:00",
+      "retentionEnd": "2026-10-01T00:00:00+00:00",
+      "clockSource": "SYNTH-CLOCK-UTC",
+      "clockUncertaintySeconds": 2,
+      "correlationKeys": [
+        "tenant",
+        "application",
+        "requestId",
+        "eventId"
+      ],
+      "requiredFields": [
+        "synthetic",
+        "eventId",
+        "actorId",
+        "identityClass",
+        "eventTime",
+        "tenant",
+        "application",
+        "requestId",
+        "authorizationResult"
+      ],
+      "nodes": [
+        {
+          "id": "N-SF-005-01",
+          "role": "actor"
+        },
+        {
+          "id": "N-SF-005-02",
+          "role": "identity"
+        },
+        {
+          "id": "N-SF-005-03",
+          "role": "request"
+        },
+        {
+          "id": "N-SF-005-04",
+          "role": "gateway"
+        },
+        {
+          "id": "N-SF-005-05",
+          "role": "authorization"
+        },
+        {
+          "id": "N-SF-005-06",
+          "role": "effect"
+        },
+        {
+          "id": "N-SF-005-07",
+          "role": "producer"
+        },
+        {
+          "id": "N-SF-005-08",
+          "role": "collector"
+        },
+        {
+          "id": "N-SF-005-09",
+          "role": "normalizer"
+        },
+        {
+          "id": "N-SF-005-10",
+          "role": "retention"
+        },
+        {
+          "id": "N-SF-005-11",
+          "role": "query"
+        },
+        {
+          "id": "N-SF-005-12",
+          "role": "consumer"
+        }
+      ],
+      "edges": [
+        {
+          "id": "E-SF-005-01",
+          "from": "N-SF-005-01",
+          "to": "N-SF-005-02"
+        },
+        {
+          "id": "E-SF-005-02",
+          "from": "N-SF-005-02",
+          "to": "N-SF-005-03"
+        },
+        {
+          "id": "E-SF-005-03",
+          "from": "N-SF-005-03",
+          "to": "N-SF-005-04"
+        },
+        {
+          "id": "E-SF-005-04",
+          "from": "N-SF-005-04",
+          "to": "N-SF-005-05"
+        },
+        {
+          "id": "E-SF-005-05",
+          "from": "N-SF-005-05",
+          "to": "N-SF-005-06"
+        },
+        {
+          "id": "E-SF-005-06",
+          "from": "N-SF-005-06",
+          "to": "N-SF-005-07"
+        },
+        {
+          "id": "E-SF-005-07",
+          "from": "N-SF-005-07",
+          "to": "N-SF-005-08"
+        },
+        {
+          "id": "E-SF-005-08",
+          "from": "N-SF-005-08",
+          "to": "N-SF-005-09"
+        },
+        {
+          "id": "E-SF-005-09",
+          "from": "N-SF-005-09",
+          "to": "N-SF-005-10"
+        },
+        {
+          "id": "E-SF-005-10",
+          "from": "N-SF-005-10",
+          "to": "N-SF-005-11"
+        },
+        {
+          "id": "E-SF-005-11",
+          "from": "N-SF-005-11",
+          "to": "N-SF-005-12"
+        }
+      ],
+      "receipts": [
+        {
+          "id": "EVD-SF-005-01",
+          "synthetic": true,
+          "flowId": "SF-2026-005",
+          "eventId": "SYNTH-EVENT-SF-005",
+          "stage": "Produced",
+          "recordedAt": "2026-09-01T00:00:01+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        },
+        {
+          "id": "EVD-SF-005-02",
+          "synthetic": true,
+          "flowId": "SF-2026-005",
+          "eventId": "SYNTH-EVENT-SF-005",
+          "stage": "Collected",
+          "recordedAt": "2026-09-01T00:00:02+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        },
+        {
+          "id": "EVD-SF-005-03",
+          "synthetic": true,
+          "flowId": "SF-2026-005",
+          "eventId": "SYNTH-EVENT-SF-005",
+          "stage": "Retained",
+          "recordedAt": "2026-09-12T00:00:00+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        },
+        {
+          "id": "EVD-SF-005-04",
+          "synthetic": true,
+          "flowId": "SF-2026-005",
+          "eventId": "SYNTH-EVENT-SF-005",
+          "stage": "Queryable",
+          "recordedAt": "2026-09-12T00:00:00+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        },
+        {
+          "id": "EVD-SF-005-05",
+          "synthetic": true,
+          "flowId": "SF-2026-005",
+          "eventId": "SYNTH-EVENT-SF-005",
+          "stage": "Validated",
+          "recordedAt": "2026-09-12T00:00:00+00:00",
+          "fieldNames": [
+            "synthetic",
+            "eventId",
+            "actorId",
+            "identityClass",
+            "eventTime",
+            "tenant",
+            "application",
+            "requestId",
+            "authorizationResult"
+          ],
+          "normalizationVersion": "1.0.0"
+        }
+      ],
+      "test": {
+        "id": "TEST-SF-005",
+        "flowId": "SF-2026-005",
+        "scope": "synthetic-flow-receipt-chain",
+        "version": "1.0.0",
+        "expected": [
+          "Produced",
+          "Collected",
+          "Retained",
+          "Queryable"
+        ],
+        "actual": [
+          "Produced",
+          "Collected",
+          "Retained",
+          "Queryable"
+        ],
+        "result": "Pass"
+      },
+      "gapId": "GAP-SF-005",
+      "gap": "教材の同一Flow突合だけ。親Controlや実製品の検証ではない",
+      "allowedConclusion": "同一Flowの合成受領記録が示す段階だけ。Eventや侵害の不存在は判断しない。",
+      "alternative": "正常な変更、Collection不備、保持期限切れ、権限不足という別説明を比較する。",
+      "confidence": "中",
+      "owner": "SYNTH-SOC-REVIEWER",
+      "reviewDate": "2026-09-20",
+      "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
+      "queryStart": "2026-08-31T23:59:58+00:00",
+      "queryEnd": "2026-09-01T00:00:03+00:00"
+    },
+    {
+      "flowId": "SF-2026-006",
+      "parentBehaviorId": "BM-2026-005",
+      "assetIds": [
+        "ASSET-2026-005",
+        "ASSET-2026-006",
+        "ASSET-2026-007"
+      ],
+      "boundaryIds": [
+        "TB-2026-004",
+        "TB-2026-008"
+      ],
+      "parentFlowIds": [
+        "FLOW-2026-003",
+        "FLOW-2026-006"
+      ],
+      "parentTelemetryId": "TEL-BM-005",
+      "parentGapId": "GAP-BM-005",
+      "actorId": "SYNTH-ACTOR-SF-006",
+      "identityClass": "Workload",
+      "credentialClass": "workload-authentication",
+      "protocolClass": "HTTPS / OAuth role model only",
+      "plane": "Data",
+      "operationPurpose": "現在のWorkload bindingの確認要求",
+      "authenticationResult": "Unknown",
+      "authorizationResult": "Unknown",
+      "effect": "Binding state unknown",
+      "producerId": "SYNTH-PRODUCER-006",
+      "eventId": "SYNTH-EVENT-SF-006",
+      "eventClass": "workload-binding",
+      "collectorId": "SYNTH-COLLECTOR-006",
+      "queryEndpoint": "evidence-query.example",
+      "consumerId": "SYNTH-CONSUMER-006",
+      "telemetryId": "TEL-SF-006",
+      "detectionId": null,
+      "coverage": "Unknown",
+      "eventTime": "2026-09-01T00:00:00+00:00",
+      "assessmentTime": "2026-09-12T00:00:00+00:00",
+      "retentionStart": "2026-08-31T00:00:00+00:00",
+      "retentionEnd": "2026-10-01T00:00:00+00:00",
+      "clockSource": "SYNTH-CLOCK-UTC",
+      "clockUncertaintySeconds": 2,
+      "correlationKeys": [
+        "tenant",
+        "application",
+        "requestId",
+        "eventId"
+      ],
+      "requiredFields": [
+        "synthetic",
+        "eventId",
+        "actorId",
+        "identityClass",
+        "eventTime",
+        "tenant",
+        "application",
+        "requestId",
+        "authorizationResult"
+      ],
+      "nodes": [
+        {
+          "id": "N-SF-006-01",
+          "role": "actor"
+        },
+        {
+          "id": "N-SF-006-02",
+          "role": "identity"
+        },
+        {
+          "id": "N-SF-006-03",
+          "role": "request"
+        },
+        {
+          "id": "N-SF-006-04",
+          "role": "gateway"
+        },
+        {
+          "id": "N-SF-006-05",
+          "role": "authorization"
+        },
+        {
+          "id": "N-SF-006-06",
+          "role": "effect"
+        },
+        {
+          "id": "N-SF-006-07",
+          "role": "producer"
+        },
+        {
+          "id": "N-SF-006-08",
+          "role": "collector"
+        },
+        {
+          "id": "N-SF-006-09",
+          "role": "normalizer"
+        },
+        {
+          "id": "N-SF-006-10",
+          "role": "retention"
+        },
+        {
+          "id": "N-SF-006-11",
+          "role": "query"
+        },
+        {
+          "id": "N-SF-006-12",
+          "role": "consumer"
+        }
+      ],
+      "edges": [
+        {
+          "id": "E-SF-006-01",
+          "from": "N-SF-006-01",
+          "to": "N-SF-006-02"
+        },
+        {
+          "id": "E-SF-006-02",
+          "from": "N-SF-006-02",
+          "to": "N-SF-006-03"
+        },
+        {
+          "id": "E-SF-006-03",
+          "from": "N-SF-006-03",
+          "to": "N-SF-006-04"
+        },
+        {
+          "id": "E-SF-006-04",
+          "from": "N-SF-006-04",
+          "to": "N-SF-006-05"
+        },
+        {
+          "id": "E-SF-006-05",
+          "from": "N-SF-006-05",
+          "to": "N-SF-006-06"
+        },
+        {
+          "id": "E-SF-006-06",
+          "from": "N-SF-006-06",
+          "to": "N-SF-006-07"
+        },
+        {
+          "id": "E-SF-006-07",
+          "from": "N-SF-006-07",
+          "to": "N-SF-006-08"
+        },
+        {
+          "id": "E-SF-006-08",
+          "from": "N-SF-006-08",
+          "to": "N-SF-006-09"
+        },
+        {
+          "id": "E-SF-006-09",
+          "from": "N-SF-006-09",
+          "to": "N-SF-006-10"
+        },
+        {
+          "id": "E-SF-006-10",
+          "from": "N-SF-006-10",
+          "to": "N-SF-006-11"
+        },
+        {
+          "id": "E-SF-006-11",
+          "from": "N-SF-006-11",
+          "to": "N-SF-006-12"
+        }
+      ],
+      "receipts": [],
+      "test": null,
+      "gapId": "GAP-SF-006",
+      "gap": "現在のbindingと生成記録を確定できない",
+      "allowedConclusion": "同一Flowの合成受領記録が示す段階だけ。Eventや侵害の不存在は判断しない。",
+      "alternative": "正常な変更、Collection不備、保持期限切れ、権限不足という別説明を比較する。",
+      "confidence": "中",
+      "owner": "SYNTH-PLATFORM-OWNER",
+      "reviewDate": "2026-09-20",
+      "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
+      "queryStart": "2026-08-31T23:59:58+00:00",
+      "queryEnd": "2026-09-01T00:00:03+00:00"
+    }
+  ]
+}

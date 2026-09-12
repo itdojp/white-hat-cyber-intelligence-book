@@ -25,3 +25,7 @@
 - 実Credential、個人情報、第三者Dataを持ち込まない。
 - Negative Findingは不存在証明として扱わない。
 - 合成Case内のReview表は記入例であり、実際の章Gate、法的承認、Repository merge承認ではない。
+
+## 第6章の教育用補足
+
+[Signal Flow合成記入例](ch06-signal-flow-example.md) / ART-16 / SFM-2026-001はCASE-2026-001をrefinesする。第4章Asset/Boundaryと第5章Behaviorを参照するが、親のObservation・Control・Gap・Decisionを更新しない。

@@ -6,6 +6,8 @@
 
 ### Added
 
+- 第6章、ART-16、完全合成Signal Flowと同一Flowの観測段階・時刻・保持・Gap検査を追加。NIST / OAuthの採用範囲を限定し、親Caseの観測結果は更新しない。
+
 - 第5章、ART-15、完全合成Behavior Map、ATT&CK v19.2固定metadataと共有Publication Projectionを使う章契約を追加。
 - PublicリポジトリとPhase 0 Runbookを作成
 - 最小READMEで`main`を初期化し、以後をPull Request運用へ移行

@@ -21,3 +21,7 @@
 - fixtureの主張は、MarkdownのCaseと同じく判断構造の例示を目的とする。
 - 各JSON fixtureを機械可読の正本とし、Markdown Caseは読者向けrenderingとして同じIDを表示する。`scripts/check_chapter11_contract.py`、`scripts/check_chapter17_contract.py`、`scripts/check_chapter25_contract.py`で、各章のID集合、主要参照関係、意味属性を検証する。
 - 章別safety gateが機械保証する範囲は契約ごとに異なる。予約Domain、文書用IP、既知Secret / token形式、電話番号様文字列、構造化担当者の`SYNTH-`接頭辞などを検査するが、一般的な人名・住所PII検出器ではないため、自由記述は独立Reviewを併用する。
+
+## 第6章 Signal Flow
+
+[完全合成Dataset](ch06-signal-flow.json)はART-16の六Flow、Node / Edge、同一Flowの受領記録、保持期限・時刻誤差とGapを記録する非実行JSONである。`scripts/check_chapter06_contract.py`で閉じた構造、参照、表示、共有Policyを検査する。実Token値・実Log・外部接続は含めない。
