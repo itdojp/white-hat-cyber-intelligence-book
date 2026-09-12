@@ -157,6 +157,25 @@ def run_regressions(
             bool(validate_case(data, parent, behaviors, s, snapshot_digest)),
             "source value association " + group,
         )
+    for group, field, value in [
+        ("epss", "modelVersion", "v6"),
+        ("epss", "modelIdentifier", "v2027.01.01"),
+        ("epss", "scoreDate", "2026-09-12"),
+        ("kev", "catalogVersion", "2026.09.12"),
+        ("kev", "dateReleased", "2026-09-12T00:00:00Z"),
+    ]:
+        changed = deepcopy(snapshot)
+        changed[group][field] = value
+        check(
+            bool(validate_case(data, parent, behaviors, changed, snapshot_digest)),
+            "CH07-SNAPSHOT-013 source metadata/case association " + field,
+        )
+    changed = deepcopy(snapshot)
+    changed["snapshotId"] = "SRC-SNAP-UNRELATED"
+    check(
+        bool(validate_case(data, parent, behaviors, changed, snapshot_digest)),
+        "CH07-SNAPSHOT-014 snapshot ID binding",
+    )
     # Coherent positives: explanatory prose and a bounded future deadline may
     # evolve; the checker is not merely a whole-JSON hash or priority algorithm.
     d = deepcopy(data)
@@ -314,6 +333,108 @@ def run_regressions(
             any("navigation" in e for e in ch07.repository_errors(contract)),
             "CH07-NAV-001 Chapter7 before Chapter11",
         )
+    # PR120 / 3996091116: no CVE is not evidence of legal non-applicability.
+    for i in (2, 5):
+        d = deepcopy(data)
+        d["records"][i]["requiredActionApplicability"] = (
+            "Not applicable: no CVE identifier"
+        )
+        check(
+            any("applicability requiredActionApplicability" in e for e in validate(d)),
+            f"CH07-LEGAL-001 no-CVE Item{i + 1}",
+        )
+    check(
+        all(r["requiredActionApplicability"] == "Unverified" for r in data["records"]),
+        "CH07-LEGAL-002 all six legal scopes unverified",
+    )
+
+    # PR120 / 3996091119: refreshing a digest must not bypass policy on a
+    # separately published JSON surface. Every string value, and keys, is owned.
+    check(
+        not ch07.snapshot_safety(snapshot),
+        "CH07-SNAPSHOT-001 canonical provenance positive",
+    )
+    for path, value, is_key in ch07.snapshot_strings(snapshot):
+        if is_key:
+            continue
+        altered = deepcopy(snapshot)
+        target = altered
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = "deploy phishing infrastructure"
+        check(
+            any("operation.c2_or_phishing" in e for e in ch07.snapshot_safety(altered)),
+            "CH07-SNAPSHOT-002 shared action scanner " + repr(path),
+        )
+    for value, unsafe in [
+        ("deploy phishing infrastructure", True),
+        ("production.example.com", True),
+        ("Do not deploy phishing infrastructure.", False),
+        ("lab.example", False),
+    ]:
+        altered = deepcopy(snapshot)
+        altered["reviewProbe"] = value
+        check(
+            bool(ch07.snapshot_safety(altered)) == unsafe,
+            "CH07-SNAPSHOT-003 refreshed metadata " + value,
+        )
+    for path, owner, text in ch07.SNAPSHOT_PROVENANCE:
+        altered = deepcopy(snapshot)
+        altered[path[0]]["sourceId"] = "SRC-UNRELATED"
+        check(
+            bool(ch07.snapshot_safety(altered)),
+            "CH07-SNAPSHOT-004 wrong Source owner " + owner,
+        )
+        altered = deepcopy(snapshot)
+        altered["duplicate"] = text
+        check(
+            any("network.host_or_address" in e for e in ch07.snapshot_safety(altered)),
+            "CH07-SNAPSHOT-005 duplicate provenance " + owner,
+        )
+        altered = deepcopy(snapshot)
+        del altered[path[0]][path[1]]
+        altered["/".join(path)] = text
+        check(
+            any("network.host_or_address" in e for e in ch07.snapshot_safety(altered)),
+            "CH07-SNAPSHOT-006 slash-key path spoof " + owner,
+        )
+        altered = deepcopy(snapshot)
+        altered[path[0]][path[1]] = text + ".production.example.com"
+        check(
+            bool(ch07.snapshot_safety(altered)),
+            "CH07-SNAPSHOT-007 expanded URL " + owner,
+        )
+    for name in ch07.SNAPSHOT_FILE_KEYS:
+        altered = deepcopy(snapshot)
+        altered["shadow"] = {name: "source"}
+        check(
+            bool(ch07.snapshot_safety(altered)),
+            "CH07-SNAPSHOT-008 duplicate/moved filename " + name,
+        )
+        altered = deepcopy(snapshot)
+        altered["cvss"]["calculatorFiles"][name] = "0" * 64
+        check(
+            bool(ch07.snapshot_safety(altered)),
+            "CH07-SNAPSHOT-009 filename/hash ownership " + name,
+        )
+    altered = deepcopy(snapshot)
+    altered["production.example.com"] = "metadata"
+    check(
+        any("network.host_or_address" in e for e in ch07.snapshot_safety(altered)),
+        "CH07-SNAPSHOT-010 metadata keys scanned",
+    )
+    altered = deepcopy(snapshot)
+    altered["sourceDataKind"] = "synthetic-execution-target"
+    check(
+        bool(ch07.snapshot_safety(altered)),
+        "CH07-SNAPSHOT-011 wrong provenance surface kind",
+    )
+    altered = deepcopy(snapshot)
+    altered["cvss"]["calculatorCommit"] = "0" * 40
+    check(
+        bool(ch07.snapshot_safety(altered)),
+        "CH07-SNAPSHOT-012 wrong filename commit owner",
+    )
     projected = project_documents(source)
     for doc in projected.documents:
         spec = contract["documents"][doc.document_id]

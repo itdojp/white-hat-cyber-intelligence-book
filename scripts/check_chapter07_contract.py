@@ -209,6 +209,104 @@ def json_safety(value, location=CASE_PATH):
     return []
 
 
+# Exactly two audited provenance values, not a host/domain allowlist. A new
+# snapshot date or endpoint requires explicit source review of the exact field.
+SNAPSHOT_PROVENANCE = (
+    (
+        ("epss", "csvUrl"),
+        "SRC-EPSS-001",
+        "https://epss.empiricalsecurity.com/epss_scores-2026-09-11.csv.gz",
+    ),
+    (
+        ("legalBoundary", "announcementUrl"),
+        "SRC-CISA-VRM-001",
+        "https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a",
+    ),
+)
+
+
+# Five exact pinned mathematical file-name keys are provenance, not hosts.
+SNAPSHOT_FILE_KEYS = {
+    "metrics.js": "99ee2643587071bf744cd090c4bb2db58d523ed0276efd809871b00a12985a4c",
+    "cvss_lookup.js": "d533fe625d95e15b7b488a4bf93dab5f7df16b7e38b0c8ee01281d7b31a8165e",
+    "max_composed.js": "be707cc82c17993a04a84e47b1a8aaa1d0d212b56852254659ce77fd7d959f63",
+    "max_severity.js": "f838ecb41bfd5114456e7fa7df8a8449ca2735c176867886fa34bd011dee0b24",
+    "cvss_score.js": "453ce6767b5c3939b51d1f21315f2649e47b5abeca674be287e94b524472a1bc",
+}
+
+
+def snapshot_strings(value, path=()):
+    """Plain JSON strings, including keys; tuple paths cannot alias slash keys."""
+    if isinstance(value, dict):
+        for k, v in value.items():
+            yield path + (k,), k, True
+            yield from snapshot_strings(v, path + (k,))
+    elif isinstance(value, list):
+        for i, v in enumerate(value):
+            yield from snapshot_strings(v, path + (i,))
+    elif isinstance(value, str):
+        yield path, value, False
+
+
+def snapshot_safety(data):
+    """Scan the published Source JSON even when an editor refreshes its digest.
+
+    The two Source URL values have exact path/Source-ID/cardinality exceptions to
+    the host policy; the five pinned mathematical filename keys are likewise
+    owner/hash/path/cardinality-bound. No action exemption or syntax parser.
+    """
+    if not isinstance(data, dict):
+        return ["Source snapshot root must be an object"]
+    fields = list(snapshot_strings(data))
+    counts = Counter((text, is_key) for _, text, is_key in fields)
+    exceptions = set()
+    errors = []
+    for path, owner, text in SNAPSHOT_PROVENANCE:
+        group = data.get(path[0])
+        if (
+            isinstance(group, dict)
+            and group.get("sourceId") == owner
+            and group.get(path[1]) == text
+            and counts[(text, False)] == 1
+            and data.get("sourceDataKind")
+            == "public-source-extract-not-synthetic-observation"
+        ):
+            exceptions.add((path, text, False))
+        else:
+            errors.append(
+                "Source snapshot exact provenance owner/cardinality: " + str(path)
+            )
+    cvss = data.get("cvss")
+    for name, digest in SNAPSHOT_FILE_KEYS.items():
+        path = ("cvss", "calculatorFiles", name)
+        if (
+            isinstance(cvss, dict)
+            and cvss.get("sourceId") == "SRC-CVSS-001"
+            and cvss.get("calculatorCommit")
+            == "c5b0d409ae9f57c44264c6ce5f27d89298e1d32a"
+            and isinstance(cvss.get("calculatorFiles"), dict)
+            and cvss["calculatorFiles"].get(name) == digest
+            and counts[(name, True)] == 1
+        ):
+            exceptions.add((path, name, True))
+        else:
+            errors.append("Source snapshot exact file-key provenance: " + name)
+    for path, text, is_key in fields:
+        location = (
+            SNAPSHOT_PATH
+            + ":"
+            + json.dumps(path, ensure_ascii=False)
+            + (":key" if is_key else "")
+        )
+        if any(c in text for c in "<>&`\\"):
+            errors.append(location + ": Source snapshot plain-text data only")
+        findings = scan_action_text(text, location=location)
+        if (path, text, is_key) not in exceptions:
+            findings += scan_host_policy(text, location=location)
+        errors.extend(f"{location}: {f.category}" for f in findings)
+    return errors
+
+
 def repository_errors(contract):
     errors = []
     for path, digest in contract["parentDigests"].items():
@@ -285,6 +383,7 @@ def main():
         errors = (
             validate_case(data, parent, behaviors, snapshot, snapshot_digest)
             + json_safety(data)
+            + snapshot_safety(snapshot)
             + repository_errors(contract)
         )
         source = {p: (ROOT / p).read_text(encoding="utf-8") for p in DOCUMENTS}

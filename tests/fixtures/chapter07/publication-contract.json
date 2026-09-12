@@ -614,6 +614,19 @@
             "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
             "参考文献・Source Note ID"
           ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "CVE識別子のない項目でEPSS / KEV照会欄を非該当とすることは、法的義務の適用除外を意味しない。六件すべてのrequiredActionApplicabilityをUnverifiedで保持し、Governance Ownerによる原文・適用範囲の確認へ渡す。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界",
+            "KEV：掲載、適用、処置期限を分離する"
+          ]
         }
       ],
       "exceptions": {
@@ -816,6 +829,18 @@
           "headings": [
             "Vulnerability Prioritization Record",
             "Rubricと記入例"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "CVEの有無から法的義務の適用除外を推定しない。原文と対象範囲が未確認なら、全記録でrequiredActionApplicabilityをUnverifiedに維持する。"
+          ],
+          "headings": [
+            "Vulnerability Prioritization Record",
+            "Decisionと再評価"
           ]
         }
       ],
@@ -1199,7 +1224,7 @@
             "reader_visible_text",
             "p",
             null,
-            "差し戻しと再評価 公開指標だけの順位、非導入への修正指示、未掲載を安全とする結論、Unknownの低リスク化、Evidenceの流用、期限を欠く一時措置は差し戻す。CVE付き記録の義務適用はUnverifiedであり、Governance Ownerによる原文・対象範囲の確認なしに実作業や適用除外へ進めない。"
+            "差し戻しと再評価 公開指標だけの順位、非導入への修正指示、未掲載を安全とする結論、Unknownの低リスク化、Evidenceの流用、期限を欠く一時措置は差し戻す。CVEの有無にかかわらず全記録の義務適用はUnverifiedであり、Governance Ownerによる原文・対象範囲の確認なしに実作業や適用除外へ進めない。"
           ],
           "headings": [
             "第7章 Vulnerability Prioritization Record 完全合成記入例",
@@ -1315,6 +1340,18 @@
           "headings": [
             "第7章 Source Review Note — 2026-09-12",
             "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "requiredActionApplicabilityはCVEの有無にかかわらず全教材記録でUnverifiedのまま、担当をSYNTH-GOVERNANCE-REVIEWERに分離する。Catalog due dateは組織のDeadlineではない。教材の非実行分析が完了しても、現実の義務免除・猶予・Risk acceptanceや操作許可は成立しない。実作業へ移すには原文と適用範囲の確認を含む第2章のGateが必要である。"
+          ],
+          "headings": [
+            "第7章 Source Review Note — 2026-09-12",
+            "Authorityと取得限界"
           ]
         }
       ],

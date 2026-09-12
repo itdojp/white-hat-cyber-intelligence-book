@@ -36,7 +36,7 @@ CWEの公式4.20 XML ZIPのSHA-256は`3976f599e5e5200219a3108bb896d06e2a88fbb293
 
 CISAのCatalog正規WebページとBOD 26-04本文は403で取得できなかった。公式MirrorのREADMEと、CISA発行のGovDelivery告知は取得した。第三者の転載は法的根拠として採用しない。詳細な適用対象、例外、旧命令の置換関係、数値期限は未検証のため本章の命題へ採用していない。
 
-`requiredActionApplicability`はCVE付きの教材記録では`Unverified`のまま、担当を`SYNTH-GOVERNANCE-REVIEWER`に分離する。Catalog due dateは組織のDeadlineではない。教材の非実行分析が完了しても、現実の義務免除・猶予・Risk acceptanceや操作許可は成立しない。実作業へ移すには原文と適用範囲の確認を含む第2章のGateが必要である。
+`requiredActionApplicability`はCVEの有無にかかわらず全教材記録で`Unverified`のまま、担当を`SYNTH-GOVERNANCE-REVIEWER`に分離する。Catalog due dateは組織のDeadlineではない。教材の非実行分析が完了しても、現実の義務免除・猶予・Risk acceptanceや操作許可は成立しない。実作業へ移すには原文と適用範囲の確認を含む第2章のGateが必要である。
 
 ## Source変更の影響と再確認
 

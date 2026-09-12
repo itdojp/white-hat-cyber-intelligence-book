@@ -239,6 +239,7 @@ def validate_case(data, parent_signals, parent_behaviors, snapshot, snapshot_dig
             errors.append("ART17 " + message)
 
     need(data["sourceSnapshotSha256"] == snapshot_digest, "source snapshot digest")
+    need(data["sourceSnapshotId"] == snapshot["snapshotId"], "source snapshot identity")
     flows = {f["flowId"]: f for f in parent_signals["flows"]}
     behaviors = {r["rowId"]: r for r in parent_behaviors["rows"]}
     evidence = {e["id"]: e for e in data["evidence"]}
@@ -318,17 +319,16 @@ def validate_case(data, parent_signals, parent_behaviors, snapshot, snapshot_dig
                 need(False, "CVE source selection")
                 continue
             expected = {
-                "epssModelVersion": "v5",
-                "epssModelIdentifier": "v2026.06.15",
-                "epssSnapshotDate": "2026-09-11",
+                "epssModelVersion": snapshot["epss"]["modelVersion"],
+                "epssModelIdentifier": snapshot["epss"]["modelIdentifier"],
+                "epssSnapshotDate": snapshot["epss"]["scoreDate"],
                 "epssScore": s["score"],
                 "epssPercentile": s["percentile"],
                 "epssMeaning": "30-day CVE exploitation signal, not organization compromise probability",
                 "kevStatus": "Listed" if k["listed"] else "Not listed in snapshot",
-                "kevCatalogVersion": "2026.09.11",
-                "kevSnapshotDate": "2026-09-11",
+                "kevCatalogVersion": snapshot["kev"]["catalogVersion"],
+                "kevSnapshotDate": snapshot["kev"]["dateReleased"][:10],
                 "kevCatalogDueDate": k["catalogDueDate"],
-                "requiredActionApplicability": "Unverified",
                 "cweId": None,
             }
         else:
@@ -348,9 +348,10 @@ def validate_case(data, parent_signals, parent_behaviors, snapshot, snapshot_dig
             expected.update(
                 epssMeaning="Not applicable: no CVE identifier",
                 kevStatus="Not applicable",
-                requiredActionApplicability="Not applicable: no CVE identifier",
                 cweId="CWE-639",
             )
+        # Missing CVE prevents a keyed EPSS/KEV lookup, not legal applicability.
+        expected["requiredActionApplicability"] = "Unverified"
         for k, v in expected.items():
             need(
                 type(r[k]) is type(v) and r[k] == v,
