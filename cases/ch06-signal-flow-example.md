@@ -76,6 +76,11 @@ Nodeのroleは各Flowの同名Field群を意味する。actorはactorId、identi
 | reassessment | 対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。 |
 | queryStart | 2026-08-31T23:59:58+00:00 |
 | queryEnd | 2026-09-01T00:00:03+00:00 |
+| identityId | N-SF-001-02 |
+| requestId | N-SF-001-03 |
+| decisionPointId | N-SF-001-05 |
+| stateChangeId | N-SF-001-06 |
+| dataAccessId | なし |
 
 ### Nodes
 
@@ -176,6 +181,11 @@ Testは未実施。別Flowや親CaseのPassを借用しない。
 | reassessment | 対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。 |
 | queryStart | 2026-08-31T23:59:58+00:00 |
 | queryEnd | 2026-09-01T00:00:03+00:00 |
+| identityId | N-SF-002-02 |
+| requestId | N-SF-002-03 |
+| decisionPointId | N-SF-002-05 |
+| stateChangeId | N-SF-002-06 |
+| dataAccessId | なし |
 
 ### Nodes
 
@@ -289,6 +299,11 @@ Testは未実施。別Flowや親CaseのPassを借用しない。
 | reassessment | 対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。 |
 | queryStart | 2026-08-31T23:59:58+00:00 |
 | queryEnd | 2026-09-01T00:00:03+00:00 |
+| identityId | N-SF-003-02 |
+| requestId | N-SF-003-03 |
+| decisionPointId | N-SF-003-05 |
+| stateChangeId | なし |
+| dataAccessId | N-SF-003-06 |
 
 ### Nodes
 
@@ -415,6 +430,11 @@ Testは未実施。別Flowや親CaseのPassを借用しない。
 | reassessment | 対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。 |
 | queryStart | 2026-08-31T23:59:58+00:00 |
 | queryEnd | 2026-09-01T00:00:03+00:00 |
+| identityId | N-SF-004-02 |
+| requestId | N-SF-004-03 |
+| decisionPointId | N-SF-004-05 |
+| stateChangeId | N-SF-004-06 |
+| dataAccessId | なし |
 
 ### Nodes
 
@@ -554,6 +574,11 @@ Testは未実施。別Flowや親CaseのPassを借用しない。
 | reassessment | 対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。 |
 | queryStart | 2026-08-31T23:59:58+00:00 |
 | queryEnd | 2026-09-01T00:00:03+00:00 |
+| identityId | N-SF-005-02 |
+| requestId | N-SF-005-03 |
+| decisionPointId | N-SF-005-05 |
+| stateChangeId | N-SF-005-06 |
+| dataAccessId | なし |
 
 ### Nodes
 
@@ -714,6 +739,11 @@ Testは未実施。別Flowや親CaseのPassを借用しない。
 | reassessment | 対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。 |
 | queryStart | 2026-08-31T23:59:58+00:00 |
 | queryEnd | 2026-09-01T00:00:03+00:00 |
+| identityId | N-SF-006-02 |
+| requestId | N-SF-006-03 |
+| decisionPointId | N-SF-006-05 |
+| stateChangeId | N-SF-006-06 |
+| dataAccessId | なし |
 
 ### Nodes
 

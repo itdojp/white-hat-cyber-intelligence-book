@@ -48,7 +48,7 @@ IDENTITY = {
     "scope": "read-only-synthetic-data",
     "parentState": "Independent synthetic teaching supplement; no parent observation, control, gap or decision is changed.",
 }
-FLOW_TEXT = """flowId parentBehaviorId parentTelemetryId parentGapId actorId identityClass
+FLOW_TEXT = """identityId requestId decisionPointId flowId parentBehaviorId parentTelemetryId parentGapId actorId identityClass
 credentialClass protocolClass plane operationPurpose authenticationResult authorizationResult
 effect producerId eventId eventClass collectorId queryEndpoint consumerId telemetryId coverage
 eventTime assessmentTime retentionStart retentionEnd queryStart queryEnd clockSource gapId gap allowedConclusion
@@ -57,7 +57,16 @@ FLOW_LIST = "assetIds boundaryIds parentFlowIds correlationKeys requiredFields".
 FLOW_KEYS = set(
     FLOW_TEXT
     + FLOW_LIST
-    + ["detectionId", "clockUncertaintySeconds", "nodes", "edges", "receipts", "test"]
+    + [
+        "detectionId",
+        "stateChangeId",
+        "dataAccessId",
+        "clockUncertaintySeconds",
+        "nodes",
+        "edges",
+        "receipts",
+        "test",
+    ]
 )
 RECEIPT_KEYS = set(
     "id synthetic flowId eventId stage recordedAt fieldNames normalizationVersion".split()
@@ -110,7 +119,10 @@ def shape_errors(data: object) -> list[str]:
             or not 0 <= f["clockUncertaintySeconds"] <= 3600
         ):
             return ["ART16 clock uncertainty shape"]
-        if f["detectionId"] is not None and not isinstance(f["detectionId"], str):
+        if any(
+            f[k] is not None and not isinstance(f[k], str)
+            for k in ("detectionId", "stateChangeId", "dataAccessId")
+        ):
             return ["ART16 detection shape"]
         for collection, keys in (
             ("nodes", {"id", "role"}),
@@ -188,6 +200,30 @@ def validate_case(data: object, parent: dict) -> list[str]:
                 f[child_key] == p[parent_key],
                 prefix + "parent association " + child_key,
             )
+        for field, suffix in (
+            ("identityId", "02"),
+            ("requestId", "03"),
+            ("decisionPointId", "05"),
+        ):
+            need(
+                f[field] == f"N-SF-{index:03}-{suffix}",
+                prefix + "explicit node binding " + field,
+            )
+        effect_id = f"N-SF-{index:03}-06"
+        need(
+            f["stateChangeId"] == (None if index == 3 else effect_id)
+            and f["dataAccessId"] == (effect_id if index == 3 else None),
+            prefix + "effect ID/type binding",
+        )
+        need(
+            f["effect"]
+            == {
+                2: "Export state change",
+                3: "Data access summary",
+                6: "Binding state unknown",
+            }.get(index, "Consent state change"),
+            prefix + "effect class, not inferred success",
+        )
         ident = ACTORS[index - 1]
         need(
             f["identityClass"] == ident

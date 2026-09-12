@@ -56,6 +56,9 @@ def run_regressions(data, parent, contract, source):
             if status != data["flows"][i]["coverage"]:
                 mutation(i, ["coverage"], status)
         for field in (
+            "identityId",
+            "requestId",
+            "decisionPointId",
             "parentBehaviorId",
             "parentTelemetryId",
             "parentGapId",
@@ -135,6 +138,10 @@ def run_regressions(data, parent, contract, source):
                 "2026-09-01T00:00:03+00:00",
                 "current receipt",
             )
+    for i in range(6):
+        mutation(i, ["stateChangeId"], "N-SF-999-06", "effect ID/type")
+        mutation(i, ["dataAccessId"], "N-SF-999-06", "effect ID/type")
+        mutation(i, ["effect"], "No event", "effect class")
     for field, val in [
         ("id", "TEST-SF-004"),
         ("flowId", "SF-2026-004"),

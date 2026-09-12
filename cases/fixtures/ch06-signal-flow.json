@@ -209,7 +209,12 @@
       "reviewDate": "2026-09-20",
       "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
       "queryStart": "2026-08-31T23:59:58+00:00",
-      "queryEnd": "2026-09-01T00:00:03+00:00"
+      "queryEnd": "2026-09-01T00:00:03+00:00",
+      "identityId": "N-SF-001-02",
+      "requestId": "N-SF-001-03",
+      "decisionPointId": "N-SF-001-05",
+      "stateChangeId": "N-SF-001-06",
+      "dataAccessId": null
     },
     {
       "flowId": "SF-2026-002",
@@ -429,7 +434,12 @@
       "reviewDate": "2026-09-20",
       "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
       "queryStart": "2026-08-31T23:59:58+00:00",
-      "queryEnd": "2026-09-01T00:00:03+00:00"
+      "queryEnd": "2026-09-01T00:00:03+00:00",
+      "identityId": "N-SF-002-02",
+      "requestId": "N-SF-002-03",
+      "decisionPointId": "N-SF-002-05",
+      "stateChangeId": "N-SF-002-06",
+      "dataAccessId": null
     },
     {
       "flowId": "SF-2026-003",
@@ -667,7 +677,12 @@
       "reviewDate": "2026-09-20",
       "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
       "queryStart": "2026-08-31T23:59:58+00:00",
-      "queryEnd": "2026-09-01T00:00:03+00:00"
+      "queryEnd": "2026-09-01T00:00:03+00:00",
+      "identityId": "N-SF-003-02",
+      "requestId": "N-SF-003-03",
+      "decisionPointId": "N-SF-003-05",
+      "stateChangeId": null,
+      "dataAccessId": "N-SF-003-06"
     },
     {
       "flowId": "SF-2026-004",
@@ -926,7 +941,12 @@
       "reviewDate": "2026-09-20",
       "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
       "queryStart": "2026-08-31T23:59:58+00:00",
-      "queryEnd": "2026-09-01T00:00:03+00:00"
+      "queryEnd": "2026-09-01T00:00:03+00:00",
+      "identityId": "N-SF-004-02",
+      "requestId": "N-SF-004-03",
+      "decisionPointId": "N-SF-004-05",
+      "stateChangeId": "N-SF-004-06",
+      "dataAccessId": null
     },
     {
       "flowId": "SF-2026-005",
@@ -1223,7 +1243,12 @@
       "reviewDate": "2026-09-20",
       "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
       "queryStart": "2026-08-31T23:59:58+00:00",
-      "queryEnd": "2026-09-01T00:00:03+00:00"
+      "queryEnd": "2026-09-01T00:00:03+00:00",
+      "identityId": "N-SF-005-02",
+      "requestId": "N-SF-005-03",
+      "decisionPointId": "N-SF-005-05",
+      "stateChangeId": "N-SF-005-06",
+      "dataAccessId": null
     },
     {
       "flowId": "SF-2026-006",
@@ -1402,7 +1427,12 @@
       "reviewDate": "2026-09-20",
       "reassessment": "対象期間、Field、Identity binding、変換版または受領記録の変更時に再評価する。",
       "queryStart": "2026-08-31T23:59:58+00:00",
-      "queryEnd": "2026-09-01T00:00:03+00:00"
+      "queryEnd": "2026-09-01T00:00:03+00:00",
+      "identityId": "N-SF-006-02",
+      "requestId": "N-SF-006-03",
+      "decisionPointId": "N-SF-006-05",
+      "stateChangeId": "N-SF-006-06",
+      "dataAccessId": null
     }
   ]
 }
