@@ -16,9 +16,10 @@
 |---|---:|
 | `blueprint-only` | 1 |
 | `candidate-selection-required` | 1 |
+| `canonical-pr-open` | 1 |
 | `consumed` | 2 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 23 |
+| `registered-pending-prerequisites` | 22 |
 
 ## Acknowledged collisions
 
@@ -52,7 +53,7 @@
 |---|---:|---|---|---:|---|
 | `chapter-04` | #29 | `consumed` | `EIC-0029-c49f0a11ef9e` | #64 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5245374024) |
 | `chapter-05` | #30 | `consumed` | `EIC-0030-11e256480c15` | #113 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5577993812) |
-| `chapter-06` | #31 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155) |
+| `chapter-06` | #31 | `canonical-pr-open` | `EIC-0031-2c4e8b2b8508` | #117 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/117) |
 | `chapter-07` | #32 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644) |
 | `chapter-08` | #33 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529) |
 | `chapter-09` | #34 | `candidate-selection-required` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98) |
@@ -98,7 +99,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0031-2c4e8b2b8508` | `EIP-0002` | `chapter06-observable-systems.predraft.md` | `2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0031-2c4e8b2b8508` | `EIP-0002` | `chapter06-observable-systems.predraft.md` | `2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d` | `selected` | 前提の通常merge・公開確認後にIssue #31の唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。 |
 
 ### `chapter-07` / Issue #32
 

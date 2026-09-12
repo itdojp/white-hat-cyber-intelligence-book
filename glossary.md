@@ -58,3 +58,14 @@
 | Detection Strategy | 特定Techniqueに対する高位の検知方針。プラットフォーム向けAnalyticを束ねる |
 
 定義の出典、Statusの有限契約、限界は[第5章](manuscript/05-attack-behavior.md)を参照する。
+
+## 第6章の用語
+
+| 用語 | 本書での意味 |
+|---|---|
+| Signal Flow | 操作、認可、状態変化、Event、収集、Evidenceを判断へ結ぶ追跡構造 |
+| Event lifecycle | 生成、収集、保持、検索、検証を別の根拠で確認する観測経路 |
+| Clock uncertainty | 表示時刻から真の時刻がずれ得る範囲。UTC表記への統一では解消しない |
+| Queryable | 指定時点・期間・必須Fieldで検索した根拠があること。検知有効性ではない |
+
+六Statusの有限契約と限界は[第6章](manuscript/06-observable-systems.md)を参照する。

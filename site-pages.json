@@ -200,6 +200,34 @@
       "section": "additional",
       "order": 245,
       "title": "第5章 Source Review Note：ATT&CK"
+    },
+    {
+      "source": "manuscript/06-observable-systems.md",
+      "destination": "chapters/chapter-06/index.md",
+      "section": "chapters",
+      "order": 49,
+      "title": "第6章 通信・Identity・Cloudを観測可能なシステムとして読む"
+    },
+    {
+      "source": "templates/signal-flow-diagram.md",
+      "destination": "templates/signal-flow-diagram/index.md",
+      "section": "additional",
+      "order": 246,
+      "title": "Signal Flow Diagram"
+    },
+    {
+      "source": "cases/ch06-signal-flow-example.md",
+      "destination": "cases/chapter-06-signal-flow/index.md",
+      "section": "additional",
+      "order": 247,
+      "title": "第6章 完全合成記入例：Signal Flow Diagram"
+    },
+    {
+      "source": "references/ch06-source-review-2026-09-12.md",
+      "destination": "references/chapter-06-source-review/index.md",
+      "section": "additional",
+      "order": 248,
+      "title": "第6章 Source Review Note：Signal Flow"
     }
   ],
   "directoryRoutes": {
@@ -221,6 +249,10 @@
     {
       "source": "cases/fixtures/ch05-attack-behavior.json",
       "destination": "downloads/ch05-attack-behavior.json"
+    },
+    {
+      "source": "cases/fixtures/ch06-signal-flow.json",
+      "destination": "downloads/ch06-signal-flow.json"
     }
   ]
 }

@@ -26,15 +26,17 @@
 
 ```bash
 npm ci
+bundle install
 npm run check:docs-sync
 npm run sync:docs
-bundle install
 npm run build
 ```
 
 - `npm run check:docs-sync`: `scripts/sync_book_site.py`を使用して一時ディレクトリへ2回生成し、全生成ファイルのSHA-256一致と全追跡ファイルの非変更を確認する
-- `npm run sync:docs`: 許可された生成先`docs/`だけを削除し、正本と`site-pages.json`から再生成する
+- `npm run sync:docs`: 固定rendererを使用する第6章の公開前安全検査に成功した場合だけ、許可された生成先`docs/`を削除し、正本と`site-pages.json`から再生成する
 - `npm run build`: `docs/`を生成し、Jekyllで`_site/`へbuildする
+
+`sync:docs`の公開前検査も`Gemfile.lock`のJekyll/Kramdownを使用するため、初回は`bundle install`を先に実行する。依存が未導入の場合は生成を開始せずに失敗する。`check:docs-sync`は一時生成物の決定性検査であり、公開前安全検査の代替ではない。
 
 固定済み`book-formatter` checkoutを使う場合は、`BOOK_FORMATTER_DIR`へpathを指定する。
 

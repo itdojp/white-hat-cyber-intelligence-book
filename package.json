@@ -31,12 +31,13 @@
     "check:sources": "python3 scripts/render_reference_baseline.py --check",
     "copy:notices": "python3 scripts/copy_public_notices.py",
     "check:notices": "python3 scripts/copy_public_notices.py --check",
-    "sync:docs": "python3 scripts/sync_book_site.py --output docs && npm run copy:notices",
+    "sync:docs": "python3 scripts/check_chapter06_contract.py --no-regressions && python3 scripts/sync_book_site.py --output docs && npm run copy:notices",
     "check:docs-sync": "python3 scripts/sync_book_site.py --check",
     "build": "npm run sync:docs && bundle exec jekyll build --source docs --config docs/_config.yml --destination _site",
     "serve": "npm run sync:docs && bundle exec jekyll serve --source docs --config docs/_config.yml --destination _site --livereload",
-    "test": "npm run check:contract && npm run check:editorial-inputs && npm run check:content-safety-policy && npm run check:publication-projection && npm run check:chapter1 && npm run check:chapter02 && npm run check:chapter03 && npm run check:chapter04 && npm run check:chapter05 && npm run check:chapter11 && npm run check:chapter17 && npm run check:chapter17-replay && npm run check:chapter25 && npm run check:representative-gate && npm run check:site-pages-security && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync",
-    "check:chapter05": "python3 scripts/check_chapter05_contract.py"
+    "test": "npm run check:contract && npm run check:editorial-inputs && npm run check:content-safety-policy && npm run check:publication-projection && npm run check:chapter1 && npm run check:chapter02 && npm run check:chapter03 && npm run check:chapter04 && npm run check:chapter05 && npm run check:chapter06 && npm run check:chapter11 && npm run check:chapter17 && npm run check:chapter17-replay && npm run check:chapter25 && npm run check:representative-gate && npm run check:site-pages-security && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync",
+    "check:chapter05": "python3 scripts/check_chapter05_contract.py",
+    "check:chapter06": "python3 scripts/check_chapter06_contract.py"
   },
   "repository": {
     "type": "git",
