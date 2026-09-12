@@ -118,7 +118,7 @@ Evidence exportを確認できなければ、証拠を失う破棄へ進まな�
 
 ### Purpose / Prerequisite / Authority / Scope
 
-目的は、開始条件、停止、Evidenceの同一性、Cleanupの判定を配布Dataから再計算することである。S0の設計とS1の合成Data解析だけを行う。Python 3.11以上、取得済みの本Repository、書換えられていない付属JSON・Schema・親Caseを前提とする。この照合にNode、Ruby、コンテナ製品の起動、ネットワーク取得は不要である。
+目的は、開始条件、停止、Evidenceの同一性、Cleanupの判定を配布Dataから再計算することである。S0の設計とS1の合成Data解析だけを行う。LinuxまたはWSL2のLinux環境上のPython 3.11以上、取得済みの本Repository、書換えられていない付属JSON・Schema・親Caseを前提とする。この照合にNode、Ruby、コンテナ製品の起動、ネットワーク取得は不要である。
 
 Authorityは配布された合成教材の読み取りに限定する。実対象への接続、走査、認証試行は行わない。実Credential・実Token・実Cookie・個人情報を入力しない。演習のScopeはread-only-synthetic-dataであり、実務へ転用するときは別の許可確認へ戻る。
 

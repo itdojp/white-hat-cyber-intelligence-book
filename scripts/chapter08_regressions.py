@@ -416,6 +416,21 @@ def run_regressions(data, raw, schemas, parents, contract, source, projection):
         alias = base / "alias"
         alias.symlink_to(base, target_is_directory=True)
         check(rejects(lambda: read_artifact(alias, PATHS[1])), "CH08-PATH root symlink")
+    # Unsupported OS primitives must fail closed with a useful diagnostic,
+    # not an unhandled AttributeError or a weaker fallback file reader.
+    for flag in ("O_NOFOLLOW", "O_NONBLOCK"):
+        with patch.dict(os.__dict__):
+            delattr(os, flag)
+            try:
+                read_artifact(root, PATHS[1])
+            except ValueError as exc:
+                check("requires Linux/WSL2" in str(exc), "CH08-IO-006 missing " + flag)
+            else:
+                check(False, "CH08-IO-006 missing " + flag)
+    check(
+        "LinuxまたはWSL2のLinux環境上のPython 3.11以上" in source[documents[0]],
+        "CH08-IO-007 supported environment prerequisite",
+    )
     # Explicit encoding under ASCII process locale; production replay is read-only.
     before = {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in PATHS}
     env = {

@@ -225,6 +225,13 @@ def read_artifact(root: Path, relative: str):
     This guards a stable authoring worktree, not a concurrently hostile filesystem.
     No caller-controlled general file access or symlink traversal is supported.
     """
+    if any(
+        type(getattr(os, flag, None)) is not int
+        for flag in ("O_NOFOLLOW", "O_NONBLOCK")
+    ):
+        raise ValueError(
+            "ART18 replay requires Linux/WSL2 no-follow and nonblocking file primitives"
+        )
     if relative not in PATHS or root.is_symlink():
         raise ValueError("ART18 artifact path outside finite inventory")
     root = root.resolve(strict=True)

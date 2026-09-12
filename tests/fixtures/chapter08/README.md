@@ -36,7 +36,8 @@ contract unless `--no-regressions` is selected for pre-publication validation.
   no JSON action exception. Changed path/owner/value or nested/key spoof fails.
 - `CH08-PATH`, `CH08-IO`, `CH08-REPLAY`: finite paths, leaf/ancestor/root symlinks,
   malformed/oversize/non-regular files, nonblocking FIFO rejection, explicit
-  UTF-8 under ASCII locale, deterministic stdout, no canonical byte mutation.
+  UTF-8 under ASCII locale, explicit Linux/WSL2 prerequisites, missing file
+  primitives fail closed without fallback, deterministic stdout, no canonical byte mutation.
 - `CH08-SELECT`, `CH08-PUBLIC`, `CH08-EXEMPT`, `CH08-PARITY`, `CH08-SOURCE`:
   every typed field reaches shared Policy; preamble/tail/section drift fails;
   exact provenance text/heading/owner/cardinality cannot expand; every Case

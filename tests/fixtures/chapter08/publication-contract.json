@@ -355,7 +355,7 @@
             "reader_visible_text",
             "p",
             null,
-            "Purpose / Prerequisite / Authority / Scope 目的は、開始条件、停止、Evidenceの同一性、Cleanupの判定を配布Dataから再計算することである。S0の設計とS1の合成Data解析だけを行う。Python 3.11以上、取得済みの本Repository、書換えられていない付属JSON・Schema・親Caseを前提とする。この照合にNode、Ruby、コンテナ製品の起動、ネットワーク取得は不要である。"
+            "Purpose / Prerequisite / Authority / Scope 目的は、開始条件、停止、Evidenceの同一性、Cleanupの判定を配布Dataから再計算することである。S0の設計とS1の合成Data解析だけを行う。LinuxまたはWSL2のLinux環境上のPython 3.11以上、取得済みの本Repository、書換えられていない付属JSON・Schema・親Caseを前提とする。この照合にNode、Ruby、コンテナ製品の起動、ネットワーク取得は不要である。"
           ],
           "headings": [
             "第8章 安全で再現可能なラボと証拠管理",
@@ -621,7 +621,7 @@
             "reader_visible_text",
             "p",
             null,
-            "Purpose / Prerequisite / Authority / Scope 目的は、開始条件、停止、Evidenceの同一性、Cleanupの判定を配布Dataから再計算することである。S0の設計とS1の合成Data解析だけを行う。Python 3.11以上、取得済みの本Repository、書換えられていない付属JSON・Schema・親Caseを前提とする。この照合にNode、Ruby、コンテナ製品の起動、ネットワーク取得は不要である。"
+            "Purpose / Prerequisite / Authority / Scope 目的は、開始条件、停止、Evidenceの同一性、Cleanupの判定を配布Dataから再計算することである。S0の設計とS1の合成Data解析だけを行う。LinuxまたはWSL2のLinux環境上のPython 3.11以上、取得済みの本Repository、書換えられていない付属JSON・Schema・親Caseを前提とする。この照合にNode、Ruby、コンテナ製品の起動、ネットワーク取得は不要である。"
           ],
           "headings": [
             "第8章 安全で再現可能なラボと証拠管理",
