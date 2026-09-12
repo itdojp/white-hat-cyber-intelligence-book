@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW_DIR = ROOT / ".github" / "workflows"
 EXPECTED_WORKFLOWS = {"contract.yml", "book-qa.yml", "pages.yml"}
-PINNED_FORMATTER = "198935ff8f60653c40e513343dc5f02573d9968e"
+PINNED_FORMATTER = "cf3f75ee9b1e200e4b6cece23501cb9c83170ec7"
 EDITORIAL_INPUT_BASE_EXPRESSION = "${{ github.event.pull_request.base.sha }}"
 NPM_TEST_COMMAND = "npm test --ignore-scripts"
 FORMATTER_VALIDATE_COMMAND = (

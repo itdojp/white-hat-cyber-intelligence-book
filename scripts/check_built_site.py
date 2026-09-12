@@ -15,7 +15,7 @@ NOTICE_MARKERS = (
     "Copyright (c) ITDO Inc.",
     "Permission is hereby granted, free of charge",
     "THE SOFTWARE IS PROVIDED \"AS IS\"",
-    "198935ff8f60653c40e513343dc5f02573d9968e",
+    "cf3f75ee9b1e200e4b6cece23501cb9c83170ec7",
 )
 REQUIRED_ASSETS = (
     "assets/css/main.css",
