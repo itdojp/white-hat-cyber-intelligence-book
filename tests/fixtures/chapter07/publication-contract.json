@@ -1850,6 +1850,13 @@
       "## 第7章の用語",
       "| Required action applicability |",
       "| Reachability |"
+    ],
+    "CHANGELOG.md": [
+      "[第7章](manuscript/07-vulnerability-prioritization.md)",
+      "ART-17 Vulnerability Prioritization Record",
+      "SRC-EPSS-001をv4 model lineからv5",
+      "モデル境界",
+      "Source Review Note"
     ]
   }
 }
