@@ -3,7 +3,7 @@
 このファイルは`editorial-input-manifest.json`から決定的に生成します。機械可読Manifestを更新し、`npm run render:editorial-inputs`を実行してください。このファイルを手編集しないでください。
 
 - Manifest version: `1.0.0`
-- Audit date: `2026-09-08`
+- Audit date: `2026-09-12`
 - Packages / targets / candidates: `14 / 29 / 30`
 - Provenance: [Issue #63](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63) / [Issue #98](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98)
 - External audit artifact: `not-present-in-authorized-workspace`。内容やhash一致を推測しません。
