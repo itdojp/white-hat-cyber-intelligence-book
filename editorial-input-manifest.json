@@ -1127,19 +1127,62 @@
       "targetId": "chapter-07",
       "issue": 32,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "canonical-pr-open",
+      "selectedCandidateId": "EIC-0032-6caf4e3d9174",
+      "canonicalPr": 120,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/120",
+        "packageId": "EIP-0003",
+        "packageSha256": "d986ee9a9c71cf210420bb921f078a395133e2e5e0b9050960ad63554c22582a",
+        "inputPath": "chapter07-vulnerability-prioritization.predraft.md",
+        "inputSha256": "6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb",
+        "targetIssue": 32,
+        "canonicalPr": 120,
+        "currentMainSha": "665ca8e3c1846778f6657e38ca15facf638a028b",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-12",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。登録metadataだけを照合した。"
+        ],
+        "rewrittenSections": [
+          "Issue #32とcurrent contract・親Case・再確認した一次資料から第7章、ART17、六件の合成優先順位判断、有限Layer A契約を新規作成した。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw不在のため本文読了・実体hash検証・直接採用は主張しない。",
+          "実対象への操作、公開Signalの組織侵害確率への置換、未検証の義務適用除外、任意CVSS計算器、Chapter8以降は対象外。"
+        ],
+        "sourceRevalidation": [
+          "2026-09-12 FIRST CVSS4.0 / Specification・User Guide1.2、固定公式calculatorで著者合成Vector二組を確認。実CVEの公表評価ではない。",
+          "FIRST EPSS v5/model v2026.06.15の2026-09-11 CSV/API値、CISA公式Mirrorの固定全件Catalog2026.09.11、MITRE CWE4.20 XML Version/Date/CWE639を照合。",
+          "OWASP2025のAwareness限定とNIST CVE定義を確認。CISA発行告知は発行と目的だけを採用し、取得不能のDirective原文の詳細適用・例外・置換・数値期限を推測しない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/07-vulnerability-prioritization.md",
+          "templates/vulnerability-prioritization-record.md",
+          "cases/ch07-vulnerability-prioritization-example.md",
+          "cases/fixtures/ch07-vulnerability-prioritization.json",
+          "cases/fixtures/ch07-source-snapshot.json",
+          "references/ch07-source-review-2026-09-12.md"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日であり、rawを読んだ日ではない。",
+          "導入・到達性・統制・判断・Evidenceは完全合成、EPSS/KEVは固定公開Source入力。親の状態を昇格させず、実環境評価や適合証明をしない。",
+          "BOD26-04原文は403で未検証。告知から詳細な法的適用を導かずUnverifiedを保持する。実務への転用には原文とAuthorityの確認が必要。",
+          "PR #120作成時（2026-09-12）は通常merge・main/publication未完了。consumedはそれらの確認後に別metadata更新する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0032-6caf4e3d9174",
           "packageId": "EIP-0003",
           "inputPath": "chapter07-vulnerability-prioritization.predraft.md",
           "inputSha256": "6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5645402838",
+          "dispositionReason": "第4〜6章とconsumed metadataの通常merge・公開確認後、唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
         }
       ],
       "statusHistory": [
@@ -1148,6 +1191,18 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5645402838",
+          "reason": "前提main 665ca8e3c1846778f6657e38ca15facf638a028bのCI・Pages・公開確認後、branch作成前に唯一の候補を明示選択。rawは不在で直接採用なし。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/120",
+          "reason": "専用Draft PR #120とIntake Recordを作成。raw不在で直接採用なし。通常merge・main/publicationは未完了。"
         }
       ]
     },
