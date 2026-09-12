@@ -228,6 +228,34 @@
       "section": "additional",
       "order": 248,
       "title": "第6章 Source Review Note：Signal Flow"
+    },
+    {
+      "source": "manuscript/07-vulnerability-prioritization.md",
+      "destination": "chapters/chapter-07/index.md",
+      "section": "chapters",
+      "order": 51,
+      "title": "第7章 脆弱性、露出、悪用可能性、事業影響を分ける"
+    },
+    {
+      "source": "templates/vulnerability-prioritization-record.md",
+      "destination": "templates/vulnerability-prioritization-record/index.md",
+      "section": "additional",
+      "order": 251,
+      "title": "Vulnerability Prioritization Record"
+    },
+    {
+      "source": "cases/ch07-vulnerability-prioritization-example.md",
+      "destination": "cases/chapter-07-vulnerability-prioritization/index.md",
+      "section": "additional",
+      "order": 252,
+      "title": "第7章 完全合成記入例：Vulnerability Prioritization Record"
+    },
+    {
+      "source": "references/ch07-source-review-2026-09-12.md",
+      "destination": "references/chapter-07-source-review/index.md",
+      "section": "additional",
+      "order": 253,
+      "title": "第7章 Source Review Note：Vulnerability Prioritization"
     }
   ],
   "directoryRoutes": {
@@ -253,6 +281,14 @@
     {
       "source": "cases/fixtures/ch06-signal-flow.json",
       "destination": "downloads/ch06-signal-flow.json"
+    },
+    {
+      "source": "cases/fixtures/ch07-vulnerability-prioritization.json",
+      "destination": "downloads/ch07-vulnerability-prioritization.json"
+    },
+    {
+      "source": "cases/fixtures/ch07-source-snapshot.json",
+      "destination": "downloads/ch07-source-snapshot.json"
     }
   ]
 }

@@ -17,11 +17,11 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-OWASP-TM-001 | OWASP Foundation | [OWASP Threat Modeling Project](https://owasp.org/www-project-threat-modeling/) | maintained-project-guidance | 2026-08-08 | 2026-11-08 | 4 |
 | SRC-IR-001 | NIST | [Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | SP 800-61 Rev.3 / final | 2026-08-03 | 2027-08-03 | 1, 17, 19, 20, 22 |
 | SRC-BERKELEY-001 | OHCHR / UC Berkeley | [Berkeley Protocol on Digital Open Source Investigations](https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source) | 2022 edition / published | 2026-07-25 | 2027-07-25 | 8, 24, 25 |
-| SRC-OWASP-TOP10-001 | OWASP | [OWASP Top 10:2025](https://owasp.org/Top10/) | 2025 / released | 2026-08-03 | 2026-10-25 | 7, 11 |
+| SRC-OWASP-TOP10-001 | OWASP | [OWASP Top 10:2025](https://owasp.org/Top10/) | 2025 / released | 2026-09-12 | 2026-12-12 | 7, 11 |
 | SRC-WSTG-001 | OWASP | [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | 4.2; 5.0 under development / stable | 2026-08-03 | 2026-10-25 | 9, 11, 14, 15 |
 | SRC-API-001 | OWASP | [OWASP API Security Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/) | 2023 / released | 2026-08-03 | 2027-01-25 | 11 |
-| SRC-EPSS-001 | FIRST | [Exploit Prediction Scoring System](https://www.first.org/epss/) | v4 model line / current | 2026-07-25 | 2026-10-25 | 7 |
-| SRC-KEV-001 | CISA | [Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | continuously-updated | 2026-07-25 | 2026-10-25 | 7, 22 |
+| SRC-EPSS-001 | FIRST | [Exploit Prediction Scoring System](https://www.first.org/epss/) | v5 (model identifier v2026.06.15) / current | 2026-09-12 | 2026-12-12 | 7 |
+| SRC-KEV-001 | CISA | [Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | continuously-updated | 2026-09-12 | 2026-12-12 | 7, 22 |
 | SRC-STIX-001 | OASIS | [STIX Version 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html) | 2.1 / OASIS Standard | 2026-07-25 | 2028-07-25 | 26 |
 | SRC-TAXII-001 | OASIS | [TAXII Version 2.1](https://docs.oasis-open.org/cti/taxii/v2.1/os/taxii-v2.1-os.html) | 2.1 / OASIS Standard | 2026-07-25 | 2028-07-25 | 26 |
 | SRC-ICD203-001 | ODNI | [ICD 203 Analytic Standards / Objectivity](https://www.dni.gov/files/documents/ICD/ICD-203.pdf) | signed 2015-01-02; technical amendment effective 2022-01-21 / official | 2026-08-03 | 2027-08-03 | 1, 23, 24, 25, 26 |
@@ -41,6 +41,10 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-NIST-LOG-001 | NIST | [Guide to Computer Security Log Management](https://csrc.nist.gov/pubs/sp/800/92/final) | SP 800-92 / final | 2026-09-12 | 2026-12-12 | 6 |
 | SRC-NIST-LOG-DRAFT-001 | NIST | [Cybersecurity Log Management Planning Guide](https://csrc.nist.gov/pubs/sp/800/92/r1/ipd) | SP 800-92 Rev.1 IPD / initial-public-draft | 2026-09-12 | 2026-12-12 | 6 |
 | SRC-IETF-OAUTH-CORE-001 | IETF / RFC Editor | [The OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749.html) | RFC 6749 / proposed-standard | 2026-09-12 | 2026-12-12 | 6 |
+| SRC-CVE-001 | NIST | [Common Vulnerabilities and Exposures glossary](https://csrc.nist.gov/glossary/term/common_vulnerabilities_and_exposures) | live-reference | 2026-09-12 | 2026-12-12 | 7 |
+| SRC-CWE-001 | MITRE | [Common Weakness Enumeration Archive](https://cwe.mitre.org/data/archive.html) | 4.20 / released | 2026-09-12 | 2026-12-12 | 7 |
+| SRC-CVSS-001 | FIRST | [CVSS v4.0 Specification and User Guide](https://www.first.org/cvss/v4.0/specification-document) | 4.0 / Specification 1.2 / User Guide 1.2 / released | 2026-09-12 | 2026-12-12 | 7 |
+| SRC-CISA-VRM-001 | CISA | [CISA Announces BOD 26-04: official issuance bulletin](https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a) | BOD 26-04 issuance announcement only / published | 2026-09-12 | 2026-12-12 | 7 |
 
 ## 運用
 

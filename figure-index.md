@@ -30,6 +30,9 @@
 | F-06-01 | Signal Flowと観測経路 | `manuscript/06-observable-systems.md` | Implemented |
 | T-06-01 | Human / Workload / Serviceの比較 | `manuscript/06-observable-systems.md` | Implemented |
 | T-06-02 | Coverage statusの意味 | `manuscript/06-observable-systems.md` | Implemented |
+| F-07-01 | 優先順位判断の接続 | `manuscript/07-vulnerability-prioritization.md` | Implemented |
+| T-07-01 | 異なる問いへ答える入力 | `manuscript/07-vulnerability-prioritization.md` | Implemented |
+| T-07-02 | 環境条件と判断の分離 | `manuscript/07-vulnerability-prioritization.md` | Implemented |
 | F-11-01 | DecisionからDetectionまでの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | F-11-02 | Request・Evidence・Telemetry・Decisionの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | T-11-01 | ChecklistとHypothesis Packの違い | `manuscript/11-web-api-hypothesis.md` | Implemented |

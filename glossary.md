@@ -69,3 +69,17 @@
 | Queryable | 指定時点・期間・必須Fieldで検索した根拠があること。検知有効性ではない |
 
 六Statusの有限契約と限界は[第6章](manuscript/06-observable-systems.md)を参照する。
+
+## 第7章の用語
+
+| 用語 | 本書での意味 |
+|---|---|
+| Technical severity | 脆弱性の技術的な性質と重大度。事業上の修正順位とは別 |
+| Deployment / Affected | 導入有無と、版・条件が影響範囲に該当するかの別々の判断 |
+| Reachability | 指定したPath・前提条件における到達性。露出面だけでは確定しない |
+| Probability signal | 定義された対象・期間に関する推定入力。EPSSを個別組織の侵害確率に置き換えない |
+| Compensating control | リスクを抑える代替統制。存在、検証範囲、有効期限を分離する |
+| Required action applicability | 公開要請・義務が当該環境に適用されるかの確認状態。Catalog掲載とは別 |
+| Residual risk | 処置後または判断待ちに残るリスク。Ownerと再評価条件を伴う |
+
+指標の一次資料、固定Snapshot、有限教材と実務への転用限界は[第7章](manuscript/07-vulnerability-prioritization.md)を参照する。

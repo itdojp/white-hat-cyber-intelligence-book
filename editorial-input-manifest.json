@@ -1127,8 +1127,8 @@
       "targetId": "chapter-07",
       "issue": 32,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
+      "status": "selected-for-intake",
+      "selectedCandidateId": "EIC-0032-6caf4e3d9174",
       "canonicalPr": null,
       "intakeRecord": null,
       "candidates": [
@@ -1137,9 +1137,9 @@
           "packageId": "EIP-0003",
           "inputPath": "chapter07-vulnerability-prioritization.predraft.md",
           "inputSha256": "6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5645402838",
+          "dispositionReason": "第4〜6章とconsumed metadataの通常merge・公開確認後、唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
         }
       ],
       "statusHistory": [
@@ -1148,6 +1148,12 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5645402838",
+          "reason": "前提main 665ca8e3c1846778f6657e38ca15facf638a028bのCI・Pages・公開確認後、branch作成前に唯一の候補を明示選択。rawは不在で直接採用なし。"
         }
       ]
     },

@@ -18,7 +18,8 @@
 | `candidate-selection-required` | 1 |
 | `consumed` | 3 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 22 |
+| `registered-pending-prerequisites` | 21 |
+| `selected-for-intake` | 1 |
 
 ## Acknowledged collisions
 
@@ -53,7 +54,7 @@
 | `chapter-04` | #29 | `consumed` | `EIC-0029-c49f0a11ef9e` | #64 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5245374024) |
 | `chapter-05` | #30 | `consumed` | `EIC-0030-11e256480c15` | #113 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5577993812) |
 | `chapter-06` | #31 | `consumed` | `EIC-0031-2c4e8b2b8508` | #117 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5645016826) |
-| `chapter-07` | #32 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644) |
+| `chapter-07` | #32 | `selected-for-intake` | `EIC-0032-6caf4e3d9174` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5645402838) |
 | `chapter-08` | #33 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529) |
 | `chapter-09` | #34 | `candidate-selection-required` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98) |
 | `chapter-10` | #35 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652) |
@@ -104,7 +105,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0032-6caf4e3d9174` | `EIP-0003` | `chapter07-vulnerability-prioritization.predraft.md` | `6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0032-6caf4e3d9174` | `EIP-0003` | `chapter07-vulnerability-prioritization.predraft.md` | `6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb` | `selected` | 第4〜6章とconsumed metadataの通常merge・公開確認後、唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。 |
 
 ### `chapter-08` / Issue #33
 
