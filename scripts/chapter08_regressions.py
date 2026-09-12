@@ -12,6 +12,7 @@ import hashlib
 from io import StringIO
 import json
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -20,6 +21,9 @@ from unittest.mock import patch
 
 from scripts.chapter08_semantics import (
     PATHS,
+    SCHEMA_PATHS,
+    PARENT_PATHS,
+    READ_PATHS,
     STATES,
     RUN_IDS,
     IDENTITY,
@@ -431,6 +435,38 @@ def run_regressions(data, raw, schemas, parents, contract, source, projection):
         "LinuxまたはWSL2のLinux環境上のPython 3.11以上" in source[documents[0]],
         "CH08-IO-007 supported environment prerequisite",
     )
+    # Schemas and parent inputs cross the same path/descriptor guard, not a
+    # second path-based loader that could follow a static external symlink.
+    from scripts.replay_chapter08_lab import load_bundle
+
+    with tempfile.TemporaryDirectory(dir=scratch) as tmp:
+        base = Path(tmp)
+        book = base / "book"
+        book.mkdir()
+        for relative in READ_PATHS:
+            target = book / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(root / relative, target)
+        loaded, loaded_raw, loaded_schemas, loaded_parents = load_bundle(book)
+        check(
+            not validate_bundle(*loaded, loaded_raw, loaded_schemas, loaded_parents),
+            "CH08-IO-008 eight regular canonical inputs",
+        )
+        for i, relative in enumerate((*SCHEMA_PATHS, *PARENT_PATHS)):
+            target = book / relative
+            original = target.read_bytes()
+            outside = base / f"outside-{i}.json"
+            outside.write_bytes(original)
+            try:
+                target.unlink()
+                target.symlink_to(outside)
+                check(
+                    rejects(lambda: load_bundle(book)),
+                    "CH08-IO-008 dependency symlink " + relative,
+                )
+            finally:
+                target.unlink()
+                target.write_bytes(original)
     # Explicit encoding under ASCII process locale; production replay is read-only.
     before = {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in PATHS}
     env = {

@@ -34,7 +34,8 @@ contract unless `--no-regressions` is selected for pre-publication validation.
 - `CH08-BYTES`, `CH08-RECIPE`, `CH08-JSON`: actual hash and generator equality,
   every JSON key/value through Policy, exact filename-only host exception and
   no JSON action exception. Changed path/owner/value or nested/key spoof fails.
-- `CH08-PATH`, `CH08-IO`, `CH08-REPLAY`: finite paths, leaf/ancestor/root symlinks,
+- `CH08-PATH`, `CH08-IO`, `CH08-REPLAY`: eight finite data/schema/parent input
+  paths through one descriptor guard, leaf/ancestor/root/dependency symlinks,
   malformed/oversize/non-regular files, nonblocking FIFO rejection, explicit
   UTF-8 under ASCII locale, explicit Linux/WSL2 prerequisites, missing file
   primitives fail closed without fallback, deterministic stdout, no canonical byte mutation.

@@ -105,6 +105,16 @@ PATHS = (
     "cases/fixtures/ch08-control-receipts.json",
     "cases/fixtures/ch08-evidence-manifest.json",
 )
+SCHEMA_PATHS = tuple(
+    "schemas/ch08-" + name + ".schema.json"
+    for name in ("lab-plan", "control-receipts", "evidence-manifest")
+)
+PARENT_PATHS = (
+    "cases/fixtures/ch06-signal-flow.json",
+    "cases/fixtures/ch07-vulnerability-prioritization.json",
+)
+READ_PATHS = (*PATHS, *SCHEMA_PATHS, *PARENT_PATHS)
+
 EVIDENCE_IDENTITY = {
     "schemaVersion": "1.0.0",
     "synthetic": True,
@@ -220,7 +230,7 @@ def strict_bytes(raw):
 
 
 def read_artifact(root: Path, relative: str):
-    """Read only the three fixed, regular canonical files, before interpreting data.
+    """Read only the eight fixed data/schema/parent files, before interpreting data.
 
     This guards a stable authoring worktree, not a concurrently hostile filesystem.
     No caller-controlled general file access or symlink traversal is supported.
@@ -232,7 +242,7 @@ def read_artifact(root: Path, relative: str):
         raise ValueError(
             "ART18 replay requires Linux/WSL2 no-follow and nonblocking file primitives"
         )
-    if relative not in PATHS or root.is_symlink():
+    if relative not in READ_PATHS or root.is_symlink():
         raise ValueError("ART18 artifact path outside finite inventory")
     root = root.resolve(strict=True)
     current = root

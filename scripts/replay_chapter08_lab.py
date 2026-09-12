@@ -13,29 +13,22 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from scripts.chapter08_semantics import (  # noqa: E402
     PATHS,
+    SCHEMA_PATHS,
+    PARENT_PATHS,
     MODEL_VERSION,
     read_artifact,
     validate_bundle,
     encoded,
     generate_receipts,
 )
-from scripts.check_editorial_input_manifest import load_json_strict, ManifestError  # noqa: E402
-
-SCHEMA_PATHS = tuple(
-    "schemas/ch08-" + name + ".schema.json"
-    for name in ("lab-plan", "control-receipts", "evidence-manifest")
-)
-PARENT_PATHS = (
-    "cases/fixtures/ch06-signal-flow.json",
-    "cases/fixtures/ch07-vulnerability-prioritization.json",
-)
+from scripts.check_editorial_input_manifest import ManifestError  # noqa: E402
 
 
 def load_bundle(root=ROOT):
     artifacts = [read_artifact(root, p) for p in PATHS]
     data = [item[1] for item in artifacts]
-    schemas = [load_json_strict(root / p) for p in SCHEMA_PATHS]
-    parents = [load_json_strict(root / p) for p in PARENT_PATHS]
+    schemas = [read_artifact(root, p)[1] for p in SCHEMA_PATHS]
+    parents = [read_artifact(root, p)[1] for p in PARENT_PATHS]
     return data, artifacts[1][0], schemas, parents
 
 

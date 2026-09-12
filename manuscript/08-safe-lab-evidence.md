@@ -159,7 +159,7 @@ set -o pipefail
 python3 -B scripts/replay_chapter08_lab.py --emit-receipts | cmp - cases/fixtures/ch08-control-receipts.json
 ```
 
-一致ならcmpは何も表示せず終了する。これは合成レシピの再現性であり、実RuntimeのEvent再現ではない。コマンドの一部でも失敗したら比較成功と報告しない。受理するファイルは三つの固定Pathだけで、任意Path、Path traversal、Symlink、非通常ファイル、上限超過は拒否する。この保護は静的な教材作業Treeを対象とし、同時に改変する攻撃者に対するFilesystem sandboxではない。
+一致ならcmpは何も表示せず終了する。これは合成レシピの再現性であり、実RuntimeのEvent再現ではない。コマンドの一部でも失敗したら比較成功と報告しない。教材三ファイルに加え、検証用のSchema三ファイルと親Case二ファイルも固定Pathで読む。すべて同じ読取り保護を通し、任意Path、Path traversal、Symlink、非通常ファイル、上限超過は拒否する。この保護は静的な教材作業Treeを対象とし、同時に改変する攻撃者に対するFilesystem sandboxではない。
 
 ### 分析課題と反証
 
