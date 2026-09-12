@@ -33,6 +33,11 @@
 | F-07-01 | 優先順位判断の接続 | `manuscript/07-vulnerability-prioritization.md` | Implemented |
 | T-07-01 | 異なる問いへ答える入力 | `manuscript/07-vulnerability-prioritization.md` | Implemented |
 | T-07-02 | 環境条件と判断の分離 | `manuscript/07-vulnerability-prioritization.md` | Implemented |
+| F-08-01 | Lab SafetyとEvidenceの追跡順 | `manuscript/08-safe-lab-evidence.md` | Implemented |
+| T-08-01 | 抽象設計の境界 | `manuscript/08-safe-lab-evidence.md` | Implemented |
+| T-08-02 | 八状態と入口条件 | `manuscript/08-safe-lab-evidence.md` | Implemented |
+| T-08-03 | 三つのRunの判定と終了状態 | `manuscript/08-safe-lab-evidence.md` | Implemented |
+| T-08-04 | ART-18のRubric | `manuscript/08-safe-lab-evidence.md` | Implemented |
 | F-11-01 | DecisionからDetectionまでの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | F-11-02 | Request・Evidence・Telemetry・Decisionの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | T-11-01 | ChecklistとHypothesis Packの違い | `manuscript/11-web-api-hypothesis.md` | Implemented |

@@ -876,6 +876,12 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5649213929",
+          "reason": "第4〜7章とconsumed metadataの通常merge・公開確認後、唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
         }
       ]
     },

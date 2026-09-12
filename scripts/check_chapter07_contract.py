@@ -321,6 +321,7 @@ def repository_errors(contract):
     if not package["sync:docs"].startswith(
         "python3 scripts/check_chapter06_contract.py --no-regressions && "
         "python3 scripts/check_chapter07_contract.py --no-regressions && "
+        "python3 scripts/check_chapter08_contract.py --no-regressions && "
         "python3 scripts/sync_book_site.py "
     ):
         errors.append("Chapter7 publication preflight")

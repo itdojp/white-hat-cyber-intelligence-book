@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ART-18 closed control-receipts teaching contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "fixtureId",
+    "generatorVersion",
+    "seed",
+    "producerId",
+    "timeBasis",
+    "receipts",
+    "signals"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true
+    },
+    "fixtureId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generatorVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "type": "integer",
+      "const": 208
+    },
+    "producerId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timeBasis": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "receiptId",
+          "runId",
+          "synthetic",
+          "stage",
+          "check",
+          "result",
+          "observedAt",
+          "producerId",
+          "basis"
+        ],
+        "properties": {
+          "receiptId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "runId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "synthetic": {
+            "type": "boolean",
+            "const": true
+          },
+          "stage": {
+            "type": "string",
+            "minLength": 1
+          },
+          "check": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "Pass",
+              "Fail",
+              "Unknown"
+            ]
+          },
+          "observedAt": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date-time"
+          },
+          "producerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "basis": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 72,
+      "uniqueItems": true
+    },
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "eventId",
+          "runId",
+          "synthetic",
+          "eventClass",
+          "actorId",
+          "exampleHost",
+          "credentialMaterial",
+          "recordedAt",
+          "meaning"
+        ],
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "runId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "synthetic": {
+            "type": "boolean",
+            "const": true
+          },
+          "eventClass": {
+            "type": "string",
+            "minLength": 1
+          },
+          "actorId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exampleHost": {
+            "type": "string",
+            "minLength": 1
+          },
+          "credentialMaterial": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recordedAt": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date-time"
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 9,
+      "uniqueItems": true
+    }
+  }
+}

@@ -1,0 +1,514 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ART-18 closed lab-plan teaching contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "artifactId",
+    "planSetId",
+    "parentCaseId",
+    "relation",
+    "decisionRequirementId",
+    "authorizationRecordId",
+    "parentThreatModelId",
+    "parentSignalMapId",
+    "parentPrioritySetId",
+    "scope",
+    "modelVersion",
+    "executionMode",
+    "runtimeExecuted",
+    "parentState",
+    "legalBoundary",
+    "states",
+    "architecture",
+    "runs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true
+    },
+    "artifactId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "planSetId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parentCaseId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "relation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decisionRequirementId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorizationRecordId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parentThreatModelId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parentSignalMapId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parentPrioritySetId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "modelVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "executionMode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtimeExecuted": {
+      "type": "boolean",
+      "const": false
+    },
+    "parentState": {
+      "type": "string",
+      "minLength": 1
+    },
+    "legalBoundary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "architecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platformModel",
+        "runtimeVersion",
+        "imageDigest",
+        "rootless",
+        "privileged",
+        "capabilities",
+        "hostNetwork",
+        "egressPolicy",
+        "allowedEndpointClass",
+        "networkId",
+        "exampleHost",
+        "exampleAddress",
+        "exposure",
+        "inputMode",
+        "outputMode",
+        "mountScope",
+        "credentialMaterial",
+        "classification",
+        "limits"
+      ],
+      "properties": {
+        "platformModel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtimeVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "imageDigest": {
+          "type": "null"
+        },
+        "rootless": {
+          "type": "boolean",
+          "const": true
+        },
+        "privileged": {
+          "type": "boolean",
+          "const": false
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "hostNetwork": {
+          "type": "boolean",
+          "const": false
+        },
+        "egressPolicy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "allowedEndpointClass": {
+          "type": "string",
+          "minLength": 1
+        },
+        "networkId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "exampleHost": {
+          "type": "string",
+          "minLength": 1
+        },
+        "exampleAddress": {
+          "type": "string",
+          "minLength": 1
+        },
+        "exposure": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputMode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outputMode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mountScope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "credentialMaterial": {
+          "type": "string",
+          "minLength": 1
+        },
+        "classification": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limits": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "runId",
+          "synthetic",
+          "planId",
+          "labId",
+          "objective",
+          "scope",
+          "signalFlowId",
+          "priorityRecordId",
+          "assetIds",
+          "boundaryIds",
+          "parentCoverage",
+          "parentGapId",
+          "startsAt",
+          "endsAt",
+          "receiptIds",
+          "signalIds",
+          "evidenceArtifactId",
+          "stopId",
+          "cleanupId",
+          "reassessmentId",
+          "owner",
+          "reviewer",
+          "expectedEvidence",
+          "prohibitedEvidence",
+          "stopCondition",
+          "rollback",
+          "evidenceRetention",
+          "gap",
+          "confidence",
+          "alternative",
+          "reassessmentTrigger",
+          "nextReviewDate",
+          "expected",
+          "roeReference",
+          "emergencyContact",
+          "executionStepId"
+        ],
+        "properties": {
+          "runId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "synthetic": {
+            "type": "boolean",
+            "const": true
+          },
+          "planId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "labId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "objective": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "signalFlowId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "priorityRecordId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assetIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "boundaryIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "parentCoverage": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parentGapId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "startsAt": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date-time"
+          },
+          "receiptIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "signalIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "evidenceArtifactId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "stopId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cleanupId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessmentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expectedEvidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "prohibitedEvidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "stopCondition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rollback": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidenceRetention": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gap": {
+            "type": "string",
+            "minLength": 1
+          },
+          "confidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "alternative": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessmentTrigger": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nextReviewDate": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date"
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "verdict",
+              "statusHistory",
+              "finalStatus",
+              "completedNormally",
+              "cleanupVerified",
+              "executionAuthorized",
+              "failureReceiptIds",
+              "unknownReceiptIds",
+              "skippedStages"
+            ],
+            "properties": {
+              "verdict": {
+                "type": "string",
+                "enum": [
+                  "Safe",
+                  "Unsafe",
+                  "Inconclusive"
+                ]
+              },
+              "statusHistory": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Planned",
+                    "Preflight passed",
+                    "Ready",
+                    "Running",
+                    "Stopped",
+                    "Destroyed",
+                    "Cleanup verified",
+                    "Failed closed"
+                  ]
+                },
+                "minItems": 0
+              },
+              "finalStatus": {
+                "type": "string",
+                "enum": [
+                  "Planned",
+                  "Preflight passed",
+                  "Ready",
+                  "Running",
+                  "Stopped",
+                  "Destroyed",
+                  "Cleanup verified",
+                  "Failed closed"
+                ]
+              },
+              "completedNormally": {
+                "type": "boolean"
+              },
+              "cleanupVerified": {
+                "type": "boolean"
+              },
+              "executionAuthorized": {
+                "type": "boolean",
+                "const": false
+              },
+              "failureReceiptIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 0,
+                "uniqueItems": true
+              },
+              "unknownReceiptIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 0,
+                "uniqueItems": true
+              },
+              "skippedStages": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 0,
+                "uniqueItems": true
+              }
+            }
+          },
+          "roeReference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "emergencyContact": {
+            "type": "string",
+            "minLength": 1
+          },
+          "executionStepId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 3,
+      "uniqueItems": true
+    }
+  }
+}

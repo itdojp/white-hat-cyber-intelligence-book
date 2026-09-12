@@ -18,6 +18,8 @@
 | Decision Requirement | 誰が、何を、いつまでに、どの程度の不確実性で判断するかを定義した問い |
 | Data Asset | 目的、Owner、分類、保持、共有条件を持ち、Business Outcomeまたは判断を支えるDataの集合 |
 | Evidence | 問いとの関係、取得条件、完全性、限界を説明できる観測記録 |
+| Evidence Manifest | EvidenceのID、実ByteのHash、生成元、Time zone、変換履歴、保持、限界を記録する目録。真実性や法的証拠能力の認定ではない |
+| Lab Safety State | ART-18の八状態による合成モデルの履歴。Safe / Unsafe / Inconclusiveの判定や実行許可とは別の軸 |
 | Evidence Requirement | 判断、Threat Hypothesis、ControlまたはGapを評価するために、最小十分条件と過剰収集禁止境界を定めたEvidenceへの問い |
 | Entry Point | Exposureのうち、Request、Identity、DataまたはControl FlowがSystemへ入る具体的な接点 |
 | Exposure | Asset、FlowまたはBoundaryが一定条件で作用を受け得る状態。VulnerabilityまたはFindingの存在を自動的に意味しない |

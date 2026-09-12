@@ -33,3 +33,7 @@
 ## 第7章の教育用補足
 
 [脆弱性優先順位の六件の合成記入例](ch07-vulnerability-prioritization-example.md) / ART-17 / VPR-2026-001はCASE-2026-001をrefinesする。導入・統制・判断は合成、EPSS / KEVは固定した公開Source入力である。親のCoverage・Control・Gap・期限を更新しない。
+
+## 第8章の教育用補足
+
+[Lab SafetyとEvidenceの完全合成記入例](ch08-lab-evidence-example.md) / ART-18 / LABPLAN-2026-001はCASE-2026-001をrefinesする。実Runtimeは実行せず、八状態と三判定、停止、六種Cleanup、実ByteのHashと保持を照合する。親のCoverage・Gap・Authorityは更新しない。
