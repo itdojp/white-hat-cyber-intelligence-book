@@ -25,3 +25,7 @@
 ## 第6章 Signal Flow
 
 [完全合成Dataset](ch06-signal-flow.json)はART-16の六Flow、Node / Edge、同一Flowの受領記録、保持期限・時刻誤差とGapを記録する非実行JSONである。`scripts/check_chapter06_contract.py`で閉じた構造、参照、表示、共有Policyを検査する。実Token値・実Log・外部接続は含めない。
+
+## 第7章：優先順位の非実行分析
+
+[六件の合成判断JSON](ch07-vulnerability-prioritization.json)と[固定公開Source snapshot](ch07-source-snapshot.json)は[記入例](../ch07-vulnerability-prioritization-example.md)に対応する。導入・到達・統制Evidence・判断は完全合成であり、EPSS / KEV値だけは固定一次資料からの抽出である。実対象への操作は行わない。

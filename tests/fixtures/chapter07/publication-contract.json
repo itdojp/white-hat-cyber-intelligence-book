@@ -1,0 +1,1862 @@
+{
+  "schemaVersion": "1.0.0",
+  "owner": "Chapter7 Layer A only",
+  "documents": {
+    "manuscript/07-vulnerability-prioritization.md": {
+      "headings": [
+        [
+          1,
+          "第7章 脆弱性、露出、悪用可能性、事業影響を分ける"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケース：Score順の修正計画を差し戻す"
+        ],
+        [
+          2,
+          "全体像：判断材料を一列に潰さない"
+        ],
+        [
+          2,
+          "指標の役割と限界"
+        ],
+        [
+          2,
+          "到達性、業務依存、統制をつなぐ"
+        ],
+        [
+          2,
+          "処置と期限を選ぶ"
+        ],
+        [
+          2,
+          "安全な分析課題"
+        ],
+        [
+          2,
+          "作成する成果物"
+        ],
+        [
+          2,
+          "評価基準"
+        ],
+        [
+          2,
+          "よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この章の位置付け 第4章は資産と信頼境界、第5章は攻撃者の行動、第6章は操作から証拠までの経路を整理した。本章では、それらを「どの問題に、誰が、いつまでに、何をするか」という優先順位の判断へ変換する。高いScoreを上から処理する作業ではなく、判断材料の欠落も含めて説明できる記録を作る。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 各指標の役割を区別できる。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "前提知識 第4章の資産・非OperationalなAttack Path、第5章の行動と観測の区別、第6章の観測不能点を前提とする。Authority、Scope、停止条件は第2章から引き継ぐ。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "導入ケース：Score順の修正計画を差し戻す 完全合成の請求書連携OAuthアプリについて、担当者が「公開Scoreの降順で修正する」という計画を出した。上位には非導入Componentがあり、下位には小さな承認状態の不整合から月末判断へ影響する設計上の弱点がある。別の項目は隔離されているが、隔離の有効期限が近い。さらに、観測不足で既往影響を判断できない項目もある。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "導入ケース：Score順の修正計画を差し戻す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "全体像：判断材料を一列に潰さない F-07-01：優先順位判断の接続。 上から入力を確認し、横断するEvidence不足を残したまま処置と再評価へ進む。矢印は自動採点式ではなく、根拠の参照順である。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "全体像：判断材料を一列に潰さない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "指標の役割と限界 T-07-01：異なる問いへ答える入力。 比較するのは優劣ではなく、何を説明し、何を説明しないかである。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "入力 主な問い 必ず残す文脈 単独では言えないこと CVE / CWE どの脆弱性、どの種類の弱点か 識別子、Component、設計条件 自環境に存在し、影響すること"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "入力 主な問い 必ず残す文脈 単独では言えないこと CVSS 技術的な性質とSeverityは何か 版、Vector、Nomenclature、評価者 修正順位、組織全体の損失"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "入力 主な問い 必ず残す文脈 単独では言えないこと EPSS 公開CVEの悪用に関する確率Signalは何か Model、Score、Percentile、日付 自組織の侵害確率"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "入力 主な問い 必ず残す文脈 単独では言えないこと KEV 固定Catalogに掲載されているか Catalog版、取得元、時点、適用確認 未掲載なら未悪用であること"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "入力 主な問い 必ず残す文脈 単独では言えないこと Asset / Control 何が業務へつながり、何が遮るか 依存、Path、検証範囲、期限 将来も同じ条件であること"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "CVEは既知の脆弱性を識別・参照するための共通名であり、CWEは脆弱性につながり得るソフトウェア・ハードウェアの弱点の種類を整理する。識別子の存在と、個別環境への適用は別の確認である。設計上のAuthorization weaknessにCVEがなければ、架空のCVE番号を割り当てず、教材のCandidate IDと該当するCWEで管理する。［SRC-CVE-001、SRC-CWE-001］"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWASP Top 10は認識を共有するawareness資料として扱う。カテゴリーへの該当数を、診断の完全性や修正順位の尺度にはしない。Scanner件数にも同じ問題がある。同じ根本原因の重複や対象範囲の違いを整理しなければ、件数を比較しても意思決定には使えない。後半は本書の分析上の注意である。［SRC-OWASP-TOP10-001］"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "CVSS：標準版と評価条件を保持する CVSS v4.0にはBase、Threat、Environmental、Supplementalの四つのMetric groupがある。Baseは脆弱性の技術的性質、Threatは時間とともに変わる脅威の条件、Environmentalは利用環境の条件を反映する。Supplementalは補足的な文脈を伝え、計算Scoreそのものを変えない。［SRC-CVSS-001］"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界",
+            "CVSS：標準版と評価条件を保持する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "CVSS-B、CVSS-BT、CVSS-BE、CVSS-BTEのどれを使ったかをVectorと対で残す。数値だけを転記せず、評価者、入力根拠、未評価条件も記録する。標準版4.0とSpecification / User Guideの文書改訂版は別の属性である。［SRC-CVSS-001］"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界",
+            "CVSS：標準版と評価条件を保持する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "教材のVectorは著者が作った比較用の仮定であり、実CVEに対するvendor公表評価ではない。技術的影響を狭く置いた評価でも、承認業務の依存関係によって処置の優先度は上がり得る。逆に、非導入Componentに高い技術的Severityがあっても、その環境へPatchを配布する理由にはならない。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界",
+            "CVSS：標準版と評価条件を保持する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "EPSS：確率の対象とModel境界を保持する EPSSは、公開CVEが今後30日間に実環境で悪用される確率を推定するSignalである。ScoreとPercentileは同じ量ではない。PercentileはScore分布内の相対的位置を表し、個別環境が侵害される確率には置き換えられない。導入、到達条件、統制、業務損失は別に評価する。［SRC-EPSS-001］"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界",
+            "EPSS：確率の対象とModel境界を保持する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Model更新をまたぐScore差は、脅威の変化だけでなく推定方法の変更を含み得る。APIの版とModelの版も区別する。Model識別子と日付を固定し、同じCVEでも異なる時点の値を混ぜない。具体的な版と取得値はSource Review Noteに分離する。［SRC-EPSS-001］"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界",
+            "EPSS：確率の対象とModel境界を保持する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "KEV：掲載、適用、処置期限を分離する KEVは既知の悪用脆弱性を扱うCatalogである。本章ではCISA公式mirrorの固定commitを使用し、正本との同期遅延も記録する。未掲載とは、指定した完全Catalogで一致しなかったという照合結果であり、世界中で未悪用であるとの証明ではない。［SRC-KEV-001］"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界",
+            "KEV：掲載、適用、処置期限を分離する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "CISAのBOD 26-04発表は、連邦機関向けの対応において資産の露出やKEVなどを用いる目的を説明している。発表文だけで詳細な法的適用や例外を確定しない。本章の監査では指令詳細の正本を取得できておらず、具体的な義務期限や旧指令の置換関係は採用しない。［SRC-CISA-VRM-001］"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界",
+            "KEV：掲載、適用、処置期限を分離する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "CatalogのdueDate、組織の処置期限、Controlの有効期限、次回Review日は別欄に置く。教材のrequired-action applicabilityは未確認として所有者へ送る。これは義務の免除ではない。実環境への適用前には、現行原文、法令、契約、対象資産、権限を確認するGateへ戻り、未確認のまま実行へ進まない。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界",
+            "KEV：掲載、適用、処置期限を分離する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "到達性、業務依存、統制をつなぐ T-07-02：処置の前に分ける状態。 状態は比較用の有限語彙であり、一般の製品診断結果を自動変換する規格ではない。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "到達性、業務依存、統制をつなぐ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "処置と期限を選ぶ 処置は本書の合成Caseに対する分析判断であり、次の選択肢を比較する。PriorityとTreatmentは一対一の普遍的な対応表ではない。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "処置と期限を選ぶ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Purpose・前提・Authority / Scope 目的は、完全合成記入例と非実行JSONの六つのRecordについて、Score以外の根拠を説明することである。第2・4〜6章と本章を読了し、配布教材のコピーだけを使う。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "安全な分析課題",
+            "Purpose・前提・Authority / Scope"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Authority / Scopeはread-only-synthetic-dataに限定する。実在組織の脆弱性一覧、実Credential、実Logを追加しない。外部Scan、認証試行、Exploitの実行は禁止する。公開CVEと指標は出典付きの入力であり、実在組織の未修正状態や実行許可を表さない。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "安全な分析課題",
+            "Purpose・前提・Authority / Scope"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と期待Evidence Componentの導入・該当条件と公開指標を別欄で読む。CVEがない弱点にEPSSを補完しない。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "安全な分析課題",
+            "手順と期待Evidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と期待Evidence recordIdからAsset、Attack Path、Behavior、Signal Flow、親Gapをたどり、親の状態を変えていないことを確認する。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "安全な分析課題",
+            "手順と期待Evidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と期待Evidence 各Recordの処置理由、代替説明、未確認点を読み、Scoreだけを根拠にした誤った順位と比較する。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "安全な分析課題",
+            "手順と期待Evidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と期待Evidence owner、dueDate、Controlの失効日、nextReviewDateを照合する。Catalogの期限とは混ぜない。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "安全な分析課題",
+            "手順と期待Evidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と期待Evidence 反証条件を一つ選び、条件が変わったら必要となるEvidenceと判断の変更を、自分の回答欄へ記録する。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "安全な分析課題",
+            "手順と期待Evidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "期待Evidenceは、根拠の参照Chain、判断の差分、情報ギャップ、期限付きの再評価条件である。実環境への通信や修正の成功記録は要求しない。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "安全な分析課題",
+            "手順と期待Evidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Impact・Stop・Cleanup Impactは教材の読み取りと自分の回答への記入だけである。実Dataの疑い、出典とSnapshotの不一致、親IDの不整合、Authorityの不明点を発見したらStopし、推測で補完せず教材管理者へ報告する。Cleanupは自分で作った演習コピーの整理に限定し、親Caseや元のEvidenceを変更・削除しない。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "安全な分析課題",
+            "Impact・Stop・Cleanup"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "作成する成果物 ART-17 Templateへ、識別・技術条件、外部Signal、業務文脈、Evidence、処置を分けて記録する。六つの比較用PriorityはInventory review / Planned remediation / Urgent treatment / Evidence firstである。これは本書の教材語彙であり、外部の標準や一律のSLAではない。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "作成する成果物"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "評価基準 評価観点 不十分な回答 到達した回答 入力の分離 Score順、件数順だけ 導入・条件・業務依存・Evidenceを別々に参照"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "評価基準 評価観点 不十分な回答 到達した回答 追跡性 親Caseと似た名前を付ける Asset / Path / Behavior / Flow / Gapへ直接IDで接続"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "評価基準 評価観点 不十分な回答 到達した回答 出典 Modelや日付を省く Vector、Model、Snapshot、取得hash、未確認範囲を保持"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "評価基準 評価観点 不十分な回答 到達した回答 不確実性 Unknownを小さい値に変える InconclusiveとGapを残し、必要Evidenceと期限を提示"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "評価基準 評価観点 不十分な回答 到達した回答 処置 「優先して対応」で終える 選択肢、Owner、期限、残余リスク、反証条件を提示"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "評価基準 評価観点 不十分な回答 到達した回答 安全境界 公開情報なら実行してよい 教材の判断と実環境のAuthority Gateを分離"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "悪い例は「KEV未掲載なので安全」「Scoreが低いので最後」「Scanner未検出なので非導入」と断定する回答である。良い例は、指定Snapshotでの未掲載、合成Inventoryの非導入確認、業務依存に対する分析判断を区別する回答である。反証例として、Component導入や隔離失効、Inventory漏れ、観測範囲の変更が分かったときに、以前の順位を撤回できるかを確認する。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 高いEPSSは自社の侵害確率である。 確率の対象と環境条件が異なる。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "章のまとめ Severity、公開Signal、環境条件、業務影響は別の入力である。識別子と数値の列を、根拠、代替説明、情報ギャップ、所有者、期限を持つ処置記録へ変換する。判断を変える条件を明示することで、次の担当者が追試と再評価を行える。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "章のまとめ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "次に学ぶこと 第8章では、安全なラボとEvidence管理の条件を具体化する。第15章へはFindingとTreatment candidate、第22章へはBacklogの依存関係とClosure conditionを渡す。本章で立てた処置案は、それらの工程で必要な許可と検証を得るまで非実行の判断記録である。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "次に学ぶこと"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-CVE-001: NIST CSRC Glossary — CVEの共通識別・参照の役割。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "CVE識別子のない項目でEPSS / KEV照会欄を非該当とすることは、法的義務の適用除外を意味しない。六件すべてのrequiredActionApplicabilityをUnverifiedで保持し、Governance Ownerによる原文・適用範囲の確認へ渡す。"
+          ],
+          "headings": [
+            "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+            "指標の役割と限界",
+            "KEV：掲載、適用、処置期限を分離する"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "Authority / Scopeはread-only-synthetic-dataに限定する。実在組織の脆弱性一覧、実Credential、実Logを追加しない。外部Scan、認証試行、Exploitの実行は禁止する。公開CVEと指標は出典付きの入力であり、実在組織の未修正状態や実行許可を表さない。"
+              ],
+              "headings": [
+                "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+                "安全な分析課題",
+                "Purpose・前提・Authority / Scope"
+              ]
+            },
+            "reason": "explicit non-executing scope and enumerated prohibition; not permission"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "評価基準 評価観点 不十分な回答 到達した回答 安全境界 公開情報なら実行してよい 教材の判断と実環境のAuthority Gateを分離"
+              ],
+              "headings": [
+                "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+                "評価基準"
+              ]
+            },
+            "reason": "bad-answer column paired with safe Authority boundary; not instruction"
+          }
+        ],
+        "host": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "CVSS：標準版と評価条件を保持する CVSS v4.0にはBase、Threat、Environmental、Supplementalの四つのMetric groupがある。Baseは脆弱性の技術的性質、Threatは時間とともに変わる脅威の条件、Environmentalは利用環境の条件を反映する。Supplementalは補足的な文脈を伝え、計算Scoreそのものを変えない。［SRC-CVSS-001］"
+              ],
+              "headings": [
+                "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+                "指標の役割と限界",
+                "CVSS：標準版と評価条件を保持する"
+              ]
+            },
+            "reason": "CVSS standard version metadata, not a host"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "CVSS-B、CVSS-BT、CVSS-BE、CVSS-BTEのどれを使ったかをVectorと対で残す。数値だけを転記せず、評価者、入力根拠、未評価条件も記録する。標準版4.0とSpecification / User Guideの文書改訂版は別の属性である。［SRC-CVSS-001］"
+              ],
+              "headings": [
+                "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+                "指標の役割と限界",
+                "CVSS：標準版と評価条件を保持する"
+              ]
+            },
+            "reason": "CVSS standard/document version distinction, not a host"
+          }
+        ],
+        "destination": [
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://itdojp.github.io/pentest-learning-book/"
+              ],
+              "headings": [
+                "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+                "この章の位置付け"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "DELEGATE: Scanner製品の操作、個別脆弱性の確認手順、Patch配布のRunbook、統計モデルの実装。実装詳細はペネトレーションテスト学習とインフラセキュリティへ委譲する。委譲先からは対象範囲、必要条件、変更影響、復旧条件、検証Evidenceを持ち帰り、本章の処置欄へ接続する。"
+              ]
+            },
+            "reason": "exact cross-book delegation destination"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://itdojp.github.io/it-infra-security-guide-book/"
+              ],
+              "headings": [
+                "第7章 脆弱性、露出、悪用可能性、事業影響を分ける",
+                "この章の位置付け"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "DELEGATE: Scanner製品の操作、個別脆弱性の確認手順、Patch配布のRunbook、統計モデルの実装。実装詳細はペネトレーションテスト学習とインフラセキュリティへ委譲する。委譲先からは対象範囲、必要条件、変更影響、復旧条件、検証Evidenceを持ち帰り、本章の処置欄へ接続する。"
+              ]
+            },
+            "reason": "exact cross-book delegation destination"
+          }
+        ]
+      }
+    },
+    "templates/vulnerability-prioritization-record.md": {
+      "headings": [
+        [
+          1,
+          "Vulnerability Prioritization Record"
+        ],
+        [
+          2,
+          "Document Control"
+        ],
+        [
+          2,
+          "指標と環境の記入"
+        ],
+        [
+          2,
+          "Decisionと再評価"
+        ],
+        [
+          2,
+          "Safety / Stop / Cleanup"
+        ],
+        [
+          2,
+          "Rubricと記入例"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Document Control Artifact IDはART-17。脆弱性の識別、技術的重大度、公開の悪用Signal、環境への適用、事業上の判断を別欄に記録する。数値を合算するRisk calculatorでも、実作業の許可書でもない。"
+          ],
+          "headings": [
+            "Vulnerability Prioritization Record",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "指標と環境の記入 Field group 必須項目と読み方 Candidate / Component 候補ID、Component、Version、影響範囲、確認根拠。教材のVersionは合成値"
+          ],
+          "headings": [
+            "Vulnerability Prioritization Record",
+            "指標と環境の記入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Decisionと再評価 Field group 必須項目と受入条件 Evidence / Gap 同一Itemに結び付くEvidence、確認済み事項、残るGap、次に必要な情報"
+          ],
+          "headings": [
+            "Vulnerability Prioritization Record",
+            "Decisionと再評価"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Safety / Stop / Cleanup 提供された完全合成の導入・到達・統制記録と、固定公開Source値を読み比べるだけの課題である。実対象への走査、接続、認証試行、実Credentialの記入は行わない。実Dataの疑い、Authority不明、Source版や親IDの不一致があれば停止する。自分の演習コピーだけを整理し、正本や親Caseは変更しない。"
+          ],
+          "headings": [
+            "Vulnerability Prioritization Record",
+            "Safety / Stop / Cleanup"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Rubricと記入例 第7章のRubricと六件の合成記入例を使用する。公開指標の事実、合成の入力仮定、分析判断、推奨を分離し、Owner・期限・残余リスク・再評価まで追跡できれば提出可能である。Unknownが残ること自体は不合格でなく、Unknownを根拠なく安全へ置換することを不合格とする。"
+          ],
+          "headings": [
+            "Vulnerability Prioritization Record",
+            "Rubricと記入例"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "CVEの有無から法的義務の適用除外を推定しない。原文と対象範囲が未確認なら、全記録でrequiredActionApplicabilityをUnverifiedに維持する。"
+          ],
+          "headings": [
+            "Vulnerability Prioritization Record",
+            "Decisionと再評価"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "Safety / Stop / Cleanup 提供された完全合成の導入・到達・統制記録と、固定公開Source値を読み比べるだけの課題である。実対象への走査、接続、認証試行、実Credentialの記入は行わない。実Dataの疑い、Authority不明、Source版や親IDの不一致があれば停止する。自分の演習コピーだけを整理し、正本や親Caseは変更しない。"
+              ],
+              "headings": [
+                "Vulnerability Prioritization Record",
+                "Safety / Stop / Cleanup"
+              ]
+            },
+            "reason": "explicit prohibition and stop/cleanup within read-only synthetic scope"
+          }
+        ],
+        "host": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "CVSS v4.0のBase / Threat / Environmental / Supplementalを混同しない。CVSS-B / CVSS-BT / CVSS-BE / CVSS-BTEは算入したMetric groupを示す。Supplementalは補助情報でありScoreを変更しない。本章の二つのVectorは著者による合成評価で、実CVEの公表Scoreではない。"
+              ],
+              "headings": [
+                "Vulnerability Prioritization Record",
+                "指標と環境の記入"
+              ]
+            },
+            "reason": "CVSS version and finite author-rating provenance, not a host"
+          }
+        ],
+        "destination": []
+      }
+    },
+    "cases/ch07-vulnerability-prioritization-example.md": {
+      "headings": [
+        [
+          1,
+          "第7章 Vulnerability Prioritization Record 完全合成記入例"
+        ],
+        [
+          2,
+          "読み方と安全境界"
+        ],
+        [
+          2,
+          "Document Control"
+        ],
+        [
+          2,
+          "六つの優先順位判断"
+        ],
+        [
+          2,
+          "合成Evidenceの来歴"
+        ],
+        [
+          2,
+          "差し戻しと再評価"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "読み方と安全境界 ART-17 / VPR-2026-001はCASE-2026-001をrefinesする非実行の教材記録である。導入・到達・統制・意思決定・Evidenceは完全合成で、EPSS / KEVの公開値だけは固定した一次資料の抽出値である。実CVEの製品版、実運用の評価、実際の侵害を再現するものではない。"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "読み方と安全境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document Control Field Value schemaVersion 1.0.0"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "Document Control",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "六つの優先順位判断 1は非導入、2は期限付き合成隔離、3は技術Scoreより業務文脈を重視、4は露出と到達を分離、5は到達不明、6はTelemetry Gapで影響を確定できない場合である。順位はこの教材の判断であり普遍的な閾値ではない。"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "六つの優先順位判断"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "VPR-ITEM-001 Field Value recordId VPR-ITEM-001"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "六つの優先順位判断",
+            "VPR-ITEM-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "VPR-ITEM-002 Field Value recordId VPR-ITEM-002"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "六つの優先順位判断",
+            "VPR-ITEM-002"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "VPR-ITEM-003 Field Value recordId VPR-ITEM-003"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "六つの優先順位判断",
+            "VPR-ITEM-003"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "VPR-ITEM-004 Field Value recordId VPR-ITEM-004"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "六つの優先順位判断",
+            "VPR-ITEM-004"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "VPR-ITEM-005 Field Value recordId VPR-ITEM-005"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "六つの優先順位判断",
+            "VPR-ITEM-005"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "VPR-ITEM-006 Field Value recordId VPR-ITEM-006"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "六つの優先順位判断",
+            "VPR-ITEM-006"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "合成Evidenceの来歴 七つの受領票のclaimsは同一Itemの入力仮定にだけ結び付く。CONTROL受領票のValidatedは指定Pathと有効期限に限定し、親Coverageを昇格させない。"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-001-CONTEXT Field Value id EVD-VPR-001-CONTEXT"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-001-CONTEXT"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-001-CONTEXT claims Field Value componentId SYNTH-COMPONENT-001"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-001-CONTEXT claims"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-002-CONTEXT Field Value id EVD-VPR-002-CONTEXT"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-002-CONTEXT"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-002-CONTEXT claims Field Value componentId SYNTH-COMPONENT-002"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-002-CONTEXT claims"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-002-CONTROL Field Value id EVD-VPR-002-CONTROL"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-002-CONTROL"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-002-CONTROL claims Field Value controlId SYNTH-CTRL-VPR-002"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-002-CONTROL claims"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-003-CONTEXT Field Value id EVD-VPR-003-CONTEXT"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-003-CONTEXT"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-003-CONTEXT claims Field Value componentId SYNTH-COMPONENT-003"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-003-CONTEXT claims"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-004-CONTEXT Field Value id EVD-VPR-004-CONTEXT"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-004-CONTEXT"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-004-CONTEXT claims Field Value componentId SYNTH-COMPONENT-004"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-004-CONTEXT claims"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-005-CONTEXT Field Value id EVD-VPR-005-CONTEXT"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-005-CONTEXT"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-005-CONTEXT claims Field Value componentId SYNTH-COMPONENT-005"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-005-CONTEXT claims"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-006-CONTEXT Field Value id EVD-VPR-006-CONTEXT"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-006-CONTEXT"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "EVD-VPR-006-CONTEXT claims Field Value componentId SYNTH-COMPONENT-006"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "合成Evidenceの来歴",
+            "EVD-VPR-006-CONTEXT claims"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "差し戻しと再評価 公開指標だけの順位、非導入への修正指示、未掲載を安全とする結論、Unknownの低リスク化、Evidenceの流用、期限を欠く一時措置は差し戻す。CVEの有無にかかわらず全記録の義務適用はUnverifiedであり、Governance Ownerによる原文・対象範囲の確認なしに実作業や適用除外へ進めない。"
+          ],
+          "headings": [
+            "第7章 Vulnerability Prioritization Record 完全合成記入例",
+            "差し戻しと再評価"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [],
+        "host": [],
+        "destination": []
+      }
+    },
+    "references/ch07-source-review-2026-09-12.md": {
+      "headings": [
+        [
+          1,
+          "第7章 Source Review Note — 2026-09-12"
+        ],
+        [
+          2,
+          "対象と採否"
+        ],
+        [
+          2,
+          "一次資料と適用範囲"
+        ],
+        [
+          2,
+          "固定Snapshotと再現範囲"
+        ],
+        [
+          2,
+          "Authorityと取得限界"
+        ],
+        [
+          2,
+          "Source変更の影響と再確認"
+        ],
+        [
+          2,
+          "Editorial Input Record"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "対象と採否 Issue #32 / ART-17を対象とする。base mainは665ca8e3c1846778f6657e38ca15facf638a028b、Content Safety Policyは1.2.0、Publication Projectionは1.1.0。確認日は2026-09-12である。下表の採用範囲を超える運用・法的結論は導かない。"
+          ],
+          "headings": [
+            "第7章 Source Review Note — 2026-09-12",
+            "対象と採否"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-CVE-001 NIST CSRC CVE glossary、版・公表日不明 脆弱性の共通識別の役割。CVE.orgのSPA shellを本文読了の証拠にはしない"
+          ],
+          "headings": [
+            "第7章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "固定Snapshotと再現範囲 最小抽出値と来歴はSource snapshot、利用値はCase JSONに記録する。全文Catalog、外部Calculator、raw predraftは同梱しない。公開Signal値は一次資料からの固定入力であり、導入・到達性・統制Evidence・意思決定だけが完全合成である。"
+          ],
+          "headings": [
+            "第7章 Source Review Note — 2026-09-12",
+            "固定Snapshotと再現範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Authorityと取得限界 CISAのCatalog正規WebページとBOD 26-04本文は403で取得できなかった。公式MirrorのREADMEと、CISA発行のGovDelivery告知は取得した。第三者の転載は法的根拠として採用しない。詳細な適用対象、例外、旧命令の置換関係、数値期限は未検証のため本章の命題へ採用していない。"
+          ],
+          "headings": [
+            "第7章 Source Review Note — 2026-09-12",
+            "Authorityと取得限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Source変更の影響と再確認 EPSSの旧v4からv5への変更は第7章の説明とSnapshotに適用する。KEVは利用時確認を引き続き必要とし、OWASPは第11章のAwarenessという限定を変えない。Registry全体のcheckedAtや他章の歴史的な記述を一括更新しない。"
+          ],
+          "headings": [
+            "第7章 Source Review Note — 2026-09-12",
+            "Source変更の影響と再確認"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Package ID: EIP-0003"
+          ],
+          "headings": [
+            "第7章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "requiredActionApplicabilityはCVEの有無にかかわらず全教材記録でUnverifiedのまま、担当をSYNTH-GOVERNANCE-REVIEWERに分離する。Catalog due dateは組織のDeadlineではない。教材の非実行分析が完了しても、現実の義務免除・猶予・Risk acceptanceや操作許可は成立しない。実作業へ移すには原文と適用範囲の確認を含む第2章のGateが必要である。"
+          ],
+          "headings": [
+            "第7章 Source Review Note — 2026-09-12",
+            "Authorityと取得限界"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [],
+        "host": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-CVE-001 NIST CSRC CVE glossary、版・公表日不明 脆弱性の共通識別の役割。CVE.orgのSPA shellを本文読了の証拠にはしない"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ]
+            },
+            "reason": "CVE source retrieval limitation, not a target"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-CVSS-001 FIRST CVSS v4.0 specification / User Guide、両Document Version 1.2 Metric group、Vector、Nomenclature。標準4.0と説明文書1.2を区別"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ]
+            },
+            "reason": "CVSS document version metadata, not a host"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "CVEの定義はNISTの一次資料本文をブラウザ経由で確認した。直接HTTP取得は403であり、本文を取得できなかったCVE.orgのSPAとは区別する。Live glossaryの版・公表日は分からないためnullとする。"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ]
+            },
+            "reason": "CVE source retrieval limitation, not a target"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "EPSSは2026-09-11の公式CSV gzipと、同日の二つのCVEを取得したAPIをDecimalで照合した。CSVのmodel_versionはv2026.06.15、score_dateは2026-09-11T12:00:21Zである。gzip SHA-256は36e793fea920d9f0af62516c9ceed759b77f2da4f43421d3a02375d3c31a8cba。CVE-2021-44228は0.99999 / 1.0、CVE-2024-3094は0.85974 / 0.99716（Score / Percentile）。過去Snapshotであり利用時の現在値ではない。API v1はModel v5と別の版である。"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "固定Snapshotと再現範囲"
+              ]
+            },
+            "reason": "audited dated EPSS snapshot numbers, not hosts"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "CVSSの二つの合成VectorはFIRST Calculatorのcommit c5b0d409ae9f57c44264c6ce5f27d89298e1d32aを固定し、数学計算用のコードだけを検査してオフラインで評価した。結果はCVSS-Bの9.3と2.1。実CVEのベンダー評価ではない。Runtime依存を追加せず、章契約はこの二組の一致だけを検証し、任意Vectorの計算器を実装しない。"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "固定Snapshotと再現範囲"
+              ]
+            },
+            "reason": "audited finite synthetic CVSS numbers, not hosts"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "CWEの公式4.20 XML ZIPのSHA-256は3976f599e5e5200219a3108bb896d06e2a88fbb293369e1883cb423a5e9d7d50。Root Version / DateとCWE-639の名称を照合した。Web footerやcache用の数字から公開日を推測しない。"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "固定Snapshotと再現範囲"
+              ]
+            },
+            "reason": "CWE version and archive hash metadata, not a host"
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "Editorial Input Record Input path: chapter07-vulnerability-prioritization.predraft.md"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "Editorial Input Record"
+              ]
+            },
+            "reason": "registered predraft basename provenance, not a host"
+          }
+        ],
+        "destination": [
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://csrc.nist.gov/glossary/term/common_vulnerabilities_and_exposures"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-CVE-001 NIST CSRC CVE glossary、版・公表日不明 脆弱性の共通識別の役割。CVE.orgのSPA shellを本文読了の証拠にはしない"
+              ]
+            },
+            "reason": "official Source URL"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://cwe.mitre.org/data/archive.html"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-CWE-001 MITRE CWE archive、4.20、XML Date 2026-04-30 弱点分類とCWE-639。日付はXMLのRoot属性による"
+              ]
+            },
+            "reason": "official Source URL"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://www.first.org/cvss/v4.0/specification-document"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-CVSS-001 FIRST CVSS v4.0 specification / User Guide、両Document Version 1.2 Metric group、Vector、Nomenclature。標準4.0と説明文書1.2を区別"
+              ]
+            },
+            "reason": "official Source URL"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://www.first.org/cvss/v4.0/user-guide"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-CVSS-001 FIRST CVSS v4.0 specification / User Guide、両Document Version 1.2 Metric group、Vector、Nomenclature。標準4.0と説明文書1.2を区別"
+              ]
+            },
+            "reason": "official Source URL"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://www.first.org/epss/"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-EPSS-001 FIRST EPSS / Data、Model v5 30日間の悪用確率Signal、Percentile、日次値とModel境界"
+              ]
+            },
+            "reason": "official Source URL"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://www.first.org/epss/data"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-EPSS-001 FIRST EPSS / Data、Model v5 30日間の悪用確率Signal、Percentile、日次値とModel境界"
+              ]
+            },
+            "reason": "official Source URL"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://github.com/cisagov/kev-data"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-KEV-001 CISA KEV official mirror、Catalog 2026.09.11 固定Catalogの掲載有無。Mirrorの同期遅延と取得限界を維持"
+              ]
+            },
+            "reason": "official Source URL"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-CISA-VRM-001 CISA発行告知、2026-06-10 BOD 26-04発行とリスクベースの優先付けという目的だけ。告知は命令本文の代替でない"
+              ]
+            },
+            "reason": "official CISA-issued announcement URL, not directive verification"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://top10.owasp.org/2025/"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-OWASP-TOP10-001 OWASP Top 10:2025、2025 Awarenessと対象漏れを考える補助。網羅的検査や個別優先順位の保証には使わない"
+              ]
+            },
+            "reason": "official Source URL"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://www.first.org/newsroom/releases/202606-036"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "固定Snapshotと再現範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "p",
+                null,
+                "FIRST Dataページによるv5運用開始は2026-06-15。関連告知の公開日2026-07-15と同一視しない。Live EPSSページ自体の公表日は分からないためRegistryではnullとし、Model移行日はnotesに記録する。"
+              ]
+            },
+            "reason": "official source announcement URL"
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://github.com/FIRSTdotorg/cvss-v4-calculator"
+              ],
+              "headings": [
+                "第7章 Source Review Note — 2026-09-12",
+                "固定Snapshotと再現範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "p",
+                null,
+                "CVSSの二つの合成VectorはFIRST Calculatorのcommit c5b0d409ae9f57c44264c6ce5f27d89298e1d32aを固定し、数学計算用のコードだけを検査してオフラインで評価した。結果はCVSS-Bの9.3と2.1。実CVEのベンダー評価ではない。Runtime依存を追加せず、章契約はこの二組の一致だけを検証し、任意Vectorの計算器を実装しない。"
+              ]
+            },
+            "reason": "official calculator provenance URL, not runtime script"
+          }
+        ]
+      }
+    }
+  },
+  "sourceSnapshotSha256": "38ee030f2c6af8707d25d16ad480c50b23710a10cb6b8a914d5d19040869b21d",
+  "parentDigests": {
+    "cases/ch01-integrated-security-case-example.md": "c72c0d149321a24f2b6901db381c069cff86a8536b5578eba285b9d17eb329b2",
+    "cases/ch02-authorization-decision-example.md": "74d1aa7a802525ee5f465ccbdc1404e26a974ed60e264b65978612bef8026f4a",
+    "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
+    "cases/ch05-attack-behavior-example.md": "9bc5004441f6a7911106da6cba263297bf115814d7c644c80f776c7f0e7098ac",
+    "cases/ch06-signal-flow-example.md": "a062ba22f4f0e1eb28a08342b0173a02473e995062410986b51d1a6a4af7cf0a",
+    "cases/fixtures/ch06-signal-flow.json": "73000db0a442d9be338a0e9834fe589ee387ee05ab280a9cc5f0e6fe0f0da6fb",
+    "cases/fixtures/ch05-attack-behavior.json": "1f51fa66fe82d72f28b73ed548bc669cf58f5ab30dd8674cad9ad0d5b315e781"
+  },
+  "pages": [
+    {
+      "source": "manuscript/07-vulnerability-prioritization.md",
+      "destination": "chapters/chapter-07/index.md",
+      "section": "chapters",
+      "order": 50,
+      "title": "第7章 脆弱性、露出、悪用可能性、事業影響を分ける"
+    },
+    {
+      "source": "templates/vulnerability-prioritization-record.md",
+      "destination": "templates/vulnerability-prioritization-record/index.md",
+      "section": "additional",
+      "order": 251,
+      "title": "Vulnerability Prioritization Record"
+    },
+    {
+      "source": "cases/ch07-vulnerability-prioritization-example.md",
+      "destination": "cases/chapter-07-vulnerability-prioritization/index.md",
+      "section": "additional",
+      "order": 252,
+      "title": "第7章 完全合成記入例：Vulnerability Prioritization Record"
+    },
+    {
+      "source": "references/ch07-source-review-2026-09-12.md",
+      "destination": "references/chapter-07-source-review/index.md",
+      "section": "additional",
+      "order": 253,
+      "title": "第7章 Source Review Note：Vulnerability Prioritization"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch07-vulnerability-prioritization.json",
+      "destination": "downloads/ch07-vulnerability-prioritization.json"
+    },
+    {
+      "source": "cases/fixtures/ch07-source-snapshot.json",
+      "destination": "downloads/ch07-source-snapshot.json"
+    }
+  ],
+  "sourceIdentity": {
+    "SRC-OWASP-TOP10-001": {
+      "id": "SRC-OWASP-TOP10-001",
+      "publisher": "OWASP",
+      "title": "OWASP Top 10:2025",
+      "kind": "awareness",
+      "status": "released",
+      "version": "2025",
+      "url": "https://owasp.org/Top10/",
+      "publishedAt": null,
+      "notes": "Official project page identifies this as the 2025 release; an exact release day is not recorded here. Chapter 7 scoped recheck of the 2025 official edition on 2026-09-12 preserves Chapter 11 awareness-only use; not a complete assessment or a per-environment priority score."
+    },
+    "SRC-EPSS-001": {
+      "id": "SRC-EPSS-001",
+      "publisher": "FIRST",
+      "title": "Exploit Prediction Scoring System",
+      "kind": "continuous-data",
+      "status": "current",
+      "version": "v5 (model identifier v2026.06.15)",
+      "url": "https://www.first.org/epss/",
+      "publishedAt": null,
+      "notes": "Daily continuous data, not organization compromise probability. FIRST Data confirms v5 operational from 2026-06-15, distinct from the related July 15 release announcement publication. The live project page publication date is unknown, so publishedAt is null; the old v4 model start was not this page publication date. Chapter 7 uses a frozen 2026-09-11 CSV/API subset, not current values in stable explanatory prose. API v1 is not the model version. Reassess at model boundaries and each operational use."
+    },
+    "SRC-KEV-001": {
+      "id": "SRC-KEV-001",
+      "publisher": "CISA",
+      "title": "Known Exploited Vulnerabilities Catalog",
+      "kind": "continuous-data",
+      "status": "continuously-updated",
+      "version": null,
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "publishedAt": null,
+      "notes": "Individual entries require use-time checking; unlisted is not unexploited. Chapter 7 pinned official cisagov/kev-data commit acdcfd43102c098c377568b417a42c0e00cc63a5, Catalog 2026.09.11, 1709 entries. Canonical web page returned 403; official mirror README documents synchronization lag. Live catalog publication date and fixed version are not established, so publishedAt/version remain null; dated snapshot is separate. No inference of organization deadlines or legal exemption. Original BOD 26-04 text was inaccessible; the separate SRC-CISA-VRM-001 announcement supports issuance/purpose only."
+    },
+    "SRC-CVE-001": {
+      "id": "SRC-CVE-001",
+      "publisher": "NIST",
+      "title": "Common Vulnerabilities and Exposures glossary",
+      "kind": "glossary",
+      "status": "live-reference",
+      "version": null,
+      "url": "https://csrc.nist.gov/glossary/term/common_vulnerabilities_and_exposures",
+      "publishedAt": null,
+      "notes": "Definition read through primary-source browser retrieval; direct HTTP returned 403. CVE.org returned only a SPA shell, not evidence of reading its content. Version and publication date of this live glossary are unknown; both remain null. Identifier role only, not a severity or priority model."
+    },
+    "SRC-CWE-001": {
+      "id": "SRC-CWE-001",
+      "publisher": "MITRE",
+      "title": "Common Weakness Enumeration Archive",
+      "kind": "taxonomy",
+      "status": "released",
+      "version": "4.20",
+      "url": "https://cwe.mitre.org/data/archive.html",
+      "publishedAt": "2026-04-30",
+      "notes": "Official cwec_v4.20.xml.zip root Version=4.20 and Date=2026-04-30 verified. Date comes from the XML release, not a footer/cache string. Chapter 7 selects CWE-639 Authorization Bypass Through User-Controlled Key; taxonomy is not a list of CVEs or a prioritization rule."
+    },
+    "SRC-CVSS-001": {
+      "id": "SRC-CVSS-001",
+      "publisher": "FIRST",
+      "title": "CVSS v4.0 Specification and User Guide",
+      "kind": "specification",
+      "status": "released",
+      "version": "4.0 / Specification 1.2 / User Guide 1.2",
+      "url": "https://www.first.org/cvss/v4.0/specification-document",
+      "publishedAt": null,
+      "notes": "Standard 4.0 and document versions 1.2 directly verified. Exact publication day for the current document revision is unknown and is not inferred from the standard launch date. Base/Threat/Environmental/Supplemental and nomenclature only. Finite author-synthetic vectors checked with FIRSTdotorg/cvss-v4-calculator commit c5b0d409ae9f57c44264c6ce5f27d89298e1d32a; not vendor/CVE scores or a runtime calculator."
+    },
+    "SRC-CISA-VRM-001": {
+      "id": "SRC-CISA-VRM-001",
+      "publisher": "CISA",
+      "title": "CISA Announces BOD 26-04: official issuance bulletin",
+      "kind": "official-announcement",
+      "status": "published",
+      "version": "BOD 26-04 issuance announcement only",
+      "url": "https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a",
+      "publishedAt": "2026-06-10",
+      "notes": "CISA-issued GovDelivery bulletin confirms issuance, federal-agency focus and risk-based prioritization purpose. Original directive text returned 403. Detailed applicability, exemptions, supersession and numeric deadlines are NOT adopted or verified by this announcement. Chapter 7 marks required-action applicability Unverified and requires separate authority/governance review before any operational action; no legal waiver."
+    }
+  },
+  "indices": {
+    "artifact-index.md": [
+      "| ART-17 | Vulnerability Prioritization Record | 7 | `templates/vulnerability-prioritization-record.md` |"
+    ],
+    "cases/index.md": [
+      "ch07-vulnerability-prioritization-example.md",
+      "VPR-2026-001"
+    ],
+    "cases/fixtures/index.md": [
+      "ch07-vulnerability-prioritization.json",
+      "ch07-source-snapshot.json"
+    ],
+    "figure-index.md": [
+      "| F-07-01 |",
+      "| T-07-01 |",
+      "| T-07-02 |"
+    ],
+    "glossary.md": [
+      "## 第7章の用語",
+      "| Required action applicability |",
+      "| Reachability |"
+    ],
+    "CHANGELOG.md": [
+      "[第7章](manuscript/07-vulnerability-prioritization.md)",
+      "ART-17 Vulnerability Prioritization Record",
+      "SRC-EPSS-001をv4 model lineからv5",
+      "モデル境界",
+      "Source Review Note"
+    ]
+  }
+}

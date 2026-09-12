@@ -11,6 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.source_audit import meets_audit_baseline  # noqa: E402
+
 from scripts.sync_book_site import (  # noqa: E402
     SitePageRegistryError,
     parse_registry_data,
@@ -451,8 +453,10 @@ def main() -> int:
             continue
         if 11 not in source.get("chapters", []):
             error(f"references/sources.json: {source_id} must map to chapter 11")
-        if source.get("checkedAt") != "2026-08-03":
-            error(f"references/sources.json: {source_id} must be rechecked on 2026-08-03")
+        if not meets_audit_baseline(source.get("checkedAt"), "2026-08-03"):
+            error(
+                f"references/sources.json: {source_id} must retain the 2026-08-03 audit baseline"
+            )
     wstg = sources_by_id.get("SRC-WSTG-001", {})
     if wstg.get("version") != "4.2; 5.0 under development" or wstg.get("status") != "stable":
         error("references/sources.json: WSTG stable/development distinction changed")
@@ -472,7 +476,7 @@ def main() -> int:
             "manuscript/11-web-api-hypothesis.md",
             "chapters/chapter-11/index.md",
             "chapters",
-            50,
+            51,
         ),
         (
             "templates/web-api-assessment-hypothesis-pack.md",

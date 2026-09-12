@@ -251,8 +251,8 @@
       "version": "2025",
       "url": "https://owasp.org/Top10/",
       "publishedAt": null,
-      "checkedAt": "2026-08-03",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
       "reviewTriggers": [
         "new OWASP Top 10 release or correction"
       ],
@@ -260,7 +260,7 @@
         7,
         11
       ],
-      "notes": "Official project page identifies this as the 2025 release; an exact release day is not recorded here."
+      "notes": "Official project page identifies this as the 2025 release; an exact release day is not recorded here. Chapter 7 scoped recheck of the 2025 official edition on 2026-09-12 preserves Chapter 11 awareness-only use; not a complete assessment or a per-environment priority score."
     },
     {
       "id": "SRC-WSTG-001",
@@ -309,18 +309,18 @@
       "title": "Exploit Prediction Scoring System",
       "kind": "continuous-data",
       "status": "current",
-      "version": "v4 model line",
+      "version": "v5 (model identifier v2026.06.15)",
       "url": "https://www.first.org/epss/",
-      "publishedAt": "2025-03-17",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "publishedAt": null,
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
       "reviewTriggers": [
         "EPSS model version change"
       ],
       "chapters": [
         7
       ],
-      "notes": "Scores are daily and must not be copied into stable prose. FIRST documents EPSS v4 as starting 2025-03-17."
+      "notes": "Daily continuous data, not organization compromise probability. FIRST Data confirms v5 operational from 2026-06-15, distinct from the related July 15 release announcement publication. The live project page publication date is unknown, so publishedAt is null; the old v4 model start was not this page publication date. Chapter 7 uses a frozen 2026-09-11 CSV/API subset, not current values in stable explanatory prose. API v1 is not the model version. Reassess at model boundaries and each operational use."
     },
     {
       "id": "SRC-KEV-001",
@@ -331,8 +331,8 @@
       "version": null,
       "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
       "publishedAt": null,
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
       "reviewTriggers": [
         "schema change or use in a specific assessment"
       ],
@@ -340,7 +340,7 @@
         7,
         22
       ],
-      "notes": "Use as an input to prioritization; individual entries require use-time checking."
+      "notes": "Individual entries require use-time checking; unlisted is not unexploited. Chapter 7 pinned official cisagov/kev-data commit acdcfd43102c098c377568b417a42c0e00cc63a5, Catalog 2026.09.11, 1709 entries. Canonical web page returned 403; official mirror README documents synchronization lag. Live catalog publication date and fixed version are not established, so publishedAt/version remain null; dated snapshot is separate. No inference of organization deadlines or legal exemption. Original BOD 26-04 text was inaccessible; the separate SRC-CISA-VRM-001 announcement supports issuance/purpose only."
     },
     {
       "id": "SRC-STIX-001",
@@ -713,6 +713,86 @@
         6
       ],
       "notes": "Published October 2012; exact publication day is unknown (null), because RFC metadata specifies the month only. Monitor RFC Editor metadata and errata, do not infer a day. Roles in 1.1 and client acting on its own behalf in 1.3.4 only. Updated by RFC 9700 (BCP 240, January 2025), checked separately; old grants/security recommendations and request examples are not adopted."
+    },
+    {
+      "id": "SRC-CVE-001",
+      "publisher": "NIST",
+      "title": "Common Vulnerabilities and Exposures glossary",
+      "kind": "glossary",
+      "status": "live-reference",
+      "version": null,
+      "url": "https://csrc.nist.gov/glossary/term/common_vulnerabilities_and_exposures",
+      "publishedAt": null,
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
+      "reviewTriggers": [
+        "Source version/status or adopted meaning changes",
+        "Before operational use or legal interpretation"
+      ],
+      "chapters": [
+        7
+      ],
+      "notes": "Definition read through primary-source browser retrieval; direct HTTP returned 403. CVE.org returned only a SPA shell, not evidence of reading its content. Version and publication date of this live glossary are unknown; both remain null. Identifier role only, not a severity or priority model."
+    },
+    {
+      "id": "SRC-CWE-001",
+      "publisher": "MITRE",
+      "title": "Common Weakness Enumeration Archive",
+      "kind": "taxonomy",
+      "status": "released",
+      "version": "4.20",
+      "url": "https://cwe.mitre.org/data/archive.html",
+      "publishedAt": "2026-04-30",
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
+      "reviewTriggers": [
+        "Source version/status or adopted meaning changes",
+        "Before operational use or legal interpretation"
+      ],
+      "chapters": [
+        7
+      ],
+      "notes": "Official cwec_v4.20.xml.zip root Version=4.20 and Date=2026-04-30 verified. Date comes from the XML release, not a footer/cache string. Chapter 7 selects CWE-639 Authorization Bypass Through User-Controlled Key; taxonomy is not a list of CVEs or a prioritization rule."
+    },
+    {
+      "id": "SRC-CVSS-001",
+      "publisher": "FIRST",
+      "title": "CVSS v4.0 Specification and User Guide",
+      "kind": "specification",
+      "status": "released",
+      "version": "4.0 / Specification 1.2 / User Guide 1.2",
+      "url": "https://www.first.org/cvss/v4.0/specification-document",
+      "publishedAt": null,
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
+      "reviewTriggers": [
+        "Source version/status or adopted meaning changes",
+        "Before operational use or legal interpretation"
+      ],
+      "chapters": [
+        7
+      ],
+      "notes": "Standard 4.0 and document versions 1.2 directly verified. Exact publication day for the current document revision is unknown and is not inferred from the standard launch date. Base/Threat/Environmental/Supplemental and nomenclature only. Finite author-synthetic vectors checked with FIRSTdotorg/cvss-v4-calculator commit c5b0d409ae9f57c44264c6ce5f27d89298e1d32a; not vendor/CVE scores or a runtime calculator."
+    },
+    {
+      "id": "SRC-CISA-VRM-001",
+      "publisher": "CISA",
+      "title": "CISA Announces BOD 26-04: official issuance bulletin",
+      "kind": "official-announcement",
+      "status": "published",
+      "version": "BOD 26-04 issuance announcement only",
+      "url": "https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a",
+      "publishedAt": "2026-06-10",
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
+      "reviewTriggers": [
+        "Source version/status or adopted meaning changes",
+        "Before operational use or legal interpretation"
+      ],
+      "chapters": [
+        7
+      ],
+      "notes": "CISA-issued GovDelivery bulletin confirms issuance, federal-agency focus and risk-based prioritization purpose. Original directive text returned 403. Detailed applicability, exemptions, supersession and numeric deadlines are NOT adopted or verified by this announcement. Chapter 7 marks required-action applicability Unverified and requires separate authority/governance review before any operational action; no legal waiver."
     }
   ]
 }

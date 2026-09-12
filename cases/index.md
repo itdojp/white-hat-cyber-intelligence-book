@@ -29,3 +29,7 @@
 ## 第6章の教育用補足
 
 [Signal Flow合成記入例](ch06-signal-flow-example.md) / ART-16 / SFM-2026-001はCASE-2026-001をrefinesする。第4章Asset/Boundaryと第5章Behaviorを参照するが、親のObservation・Control・Gap・Decisionを更新しない。
+
+## 第7章の教育用補足
+
+[脆弱性優先順位の六件の合成記入例](ch07-vulnerability-prioritization-example.md) / ART-17 / VPR-2026-001はCASE-2026-001をrefinesする。導入・統制・判断は合成、EPSS / KEVは固定した公開Source入力である。親のCoverage・Control・Gap・期限を更新しない。

@@ -6,6 +6,8 @@
 
 ### Added
 
+- [第7章](manuscript/07-vulnerability-prioritization.md)、ART-17 Vulnerability Prioritization Record、六件の合成判断と公開Source Snapshotを追加。導入・到達性・統制・判断は合成、EPSS / KEVは固定公開入力として分離し、CVEの有無にかかわらず未検証の義務適用はUnverifiedに保持する。
+
 - 第6章、ART-16、完全合成Signal Flowと同一Flowの観測段階・時刻・保持・Gap検査を追加。NIST / OAuthの採用範囲を限定し、親Caseの観測結果は更新しない。
 
 - 第5章、ART-15、完全合成Behavior Map、ATT&CK v19.2固定metadataと共有Publication Projectionを使う章契約を追加。
@@ -30,6 +32,9 @@
 - Editorial InputのPackage identity、Target別Candidate / Disposition、決定的Summary、ZIP安全検証を持つManifest契約を追加
 
 ### Changed
+
+- SRC-EPSS-001をv4 model lineからv5（Model identifier: v2026.06.15）へ意味変更として更新。読者はモデル境界をまたぐScore差を脅威変化だけと解釈せず、Modelと取得時点を対にして扱う。v5運用開始は2026-06-15であり、EPSSを個別組織の侵害確率へ置き換えない。第7章の値は2026-09-11のSnapshotへ限定し、安定本文の現行値としない。
+- 第7章のCVSS標準4.0 / 文書1.2、CWE4.20、CVE定義、KEVとCISA告知の採用範囲を[Source Review Note](references/ch07-source-review-2026-09-12.md)に記録。CVSSの教材値は著者の合成評価で、実CVEの公表評価ではない。未取得Directive原文から詳細適用・例外・数値期限を推測せず、第11章のOWASP Awareness用途と既存の親Caseは変更しない。
 
 - Source Note IDと各章の対応をCIで相互検証するように変更
 - `package.json`とlockfileのLicense metadataを本文・コードの適用範囲に合わせて更新
