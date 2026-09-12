@@ -10,7 +10,7 @@ REVISION_PATH = ROOT / ".book-formatter" / "revision.json"
 
 EXPECTED = {
     "repository": "itdojp/book-formatter",
-    "commit": "198935ff8f60653c40e513343dc5f02573d9968e",
+    "commit": "cf3f75ee9b1e200e4b6cece23501cb9c83170ec7",
     "shared_version": "3.2.3",
     "shared_version_blob": "091f638c357cfe9fce0db9aa0202e229c71569e5",
     "schema_blob": "87dcb44b0d4b543ba43ae3a8ebc27d2f3cfda3cd",
