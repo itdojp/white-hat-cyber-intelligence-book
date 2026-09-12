@@ -2109,6 +2109,28 @@ def prepare_intake_regression(target: dict[str, Any]) -> None:
     target["intakeRecord"] = None
 
 
+def prepare_checkpoint_regression(
+    manifest: dict[str, Any], snapshot: dict[str, Any]
+) -> None:
+    """Prepare matching test-only inputs before appending an unpersisted status.
+
+    Reset both copies, not only the manifest: otherwise the setup itself would
+    already fail the checkpoint comparison and mask a broken mutation.
+    """
+    target = next(item for item in manifest["targets"] if item["targetId"] == "chapter-05")
+    prepare_intake_regression(target)
+    target["status"] = target["statusHistory"][-1]["status"]
+    selected = next(
+        item for item in target["candidates"]
+        if item["candidateId"] == target["selectedCandidateId"]
+    )
+    selected["disposition"] = "selected"
+    checkpoint = next(
+        item for item in snapshot["targets"] if item["targetId"] == target["targetId"]
+    )
+    checkpoint["statusHistoryPrefix"] = copy.deepcopy(target["statusHistory"])
+
+
 def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
     packages = manifest["packages"]
     targets = {item["targetId"]: item for item in manifest["targets"]}
@@ -2354,12 +2376,19 @@ def run_manifest_regressions(
         require_string(case["family"], f"{label}.family")
         expected = require_string(case["expectedError"], f"{label}.expectedError")
         mutated = copy.deepcopy(manifest)
-        apply_regression_mutation(
-            mutated, require_string(case["mutation"], f"{label}.mutation")
-        )
+        mutation = require_string(case["mutation"], f"{label}.mutation")
+        case_snapshot = registration_snapshot
+        if mutation == "status-history-checkpoint-unpersisted":
+            case_snapshot = copy.deepcopy(registration_snapshot)
+            prepare_checkpoint_regression(mutated, case_snapshot)
+            # Positive control: only the subsequent deferred append may cause
+            # EIM-NEG-031's existing checkpoint mismatch, not live consumption.
+            validate_manifest(mutated, schema)
+            validate_registration_snapshot(mutated, case_snapshot)
+        apply_regression_mutation(mutated, mutation)
         try:
             validate_manifest(mutated, schema)
-            validate_registration_snapshot(mutated, registration_snapshot)
+            validate_registration_snapshot(mutated, case_snapshot)
         except ManifestError as exc:
             if expected not in str(exc):
                 fail(f"regression {case_id}: expected {expected!r}, got {str(exc)!r}")
