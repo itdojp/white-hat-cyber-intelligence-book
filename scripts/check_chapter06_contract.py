@@ -251,7 +251,7 @@ def repository_errors(contract):
             if s.get(k) != v:
                 errors.append("Chapter6 Source identity/status " + sid)
     for path, markers in contract["indices"].items():
-        text = (ROOT / path).read_text()
+        text = (ROOT / path).read_text(encoding="utf-8")
         if any(m not in text for m in markers):
             errors.append("Chapter6 index " + path)
     return errors
@@ -274,7 +274,7 @@ def main():
             + json_safety(data)
             + repository_errors(contract)
         )
-        source = {p: (ROOT / p).read_text() for p in DOCUMENTS}
+        source = {p: (ROOT / p).read_text(encoding="utf-8") for p in DOCUMENTS}
         projection = project_documents(source)
         if [d.document_id for d in projection.documents] != list(DOCUMENTS):
             raise ValueError("projected document inventory/order")

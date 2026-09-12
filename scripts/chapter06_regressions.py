@@ -2,6 +2,9 @@
 
 from copy import deepcopy
 from dataclasses import replace
+import os
+import subprocess
+import sys
 
 from scripts.chapter06_semantics import STAGES, validate_case
 from scripts.source_audit import meets_audit_baseline
@@ -9,6 +12,7 @@ from scripts.source_audit import meets_audit_baseline
 
 def run_regressions(data, parent, contract, source):
     from scripts.check_chapter06_contract import (
+        ROOT,
         DOCUMENTS,
         CASE_PATH,
         scan_document,
@@ -41,6 +45,32 @@ def run_regressions(data, parent, contract, source):
 
     check(not validate_case(data, parent), "canonical semantic positive")
     check(not json_safety(data), "canonical JSON safety")
+    check(
+        "npm ci\nbundle install\nnpm run check:docs-sync\nnpm run sync:docs\nnpm run build"
+        in (ROOT / "CANONICAL_SOURCE.md").read_text(encoding="utf-8"),
+        "CH06-BUILD-001 locked renderer installed before publication preflight",
+    )
+    # Exercise both index and manuscript reads without Python's UTF-8 mode or
+    # C-locale coercion. --no-regressions prevents recursive subprocess tests.
+    locale_probe = subprocess.run(
+        [sys.executable, "scripts/check_chapter06_contract.py", "--no-regressions"],
+        cwd=ROOT,
+        env={
+            **os.environ,
+            "LC_ALL": "C",
+            "PYTHONUTF8": "0",
+            "PYTHONCOERCECLOCALE": "0",
+        },
+        capture_output=True,
+        encoding="utf-8",
+        timeout=60,
+        check=False,
+    )
+    check(
+        locale_probe.returncode == 0
+        and "Chapter 6 contract passed:" in locale_probe.stdout,
+        "CH06-IO-001 UTF-8 reads under C locale",
+    )
     for key in data:
         d = deepcopy(data)
         del d[key]
