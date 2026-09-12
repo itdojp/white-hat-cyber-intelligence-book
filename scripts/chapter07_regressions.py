@@ -297,6 +297,23 @@ def run_regressions(
         check(outcome != 0, "CH07-SRC-002 Chapter11 semantic version retained")
     finally:
         ch11.ERRORS = saved_errors
+    from scripts import check_chapter07_contract as ch07
+
+    original_strict = ch07.load_json_strict
+
+    def wrong_navigation(path):
+        result = original_strict(path)
+        if path == ROOT / "site-pages.json":
+            next(p for p in result["pages"] if p["source"] == DOCUMENTS[0])["order"] = (
+                52
+            )
+        return result
+
+    with patch.object(ch07, "load_json_strict", side_effect=wrong_navigation):
+        check(
+            any("navigation" in e for e in ch07.repository_errors(contract)),
+            "CH07-NAV-001 Chapter7 before Chapter11",
+        )
     projected = project_documents(source)
     for doc in projected.documents:
         spec = contract["documents"][doc.document_id]

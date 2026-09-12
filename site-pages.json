@@ -30,7 +30,7 @@
       "source": "manuscript/11-web-api-hypothesis.md",
       "destination": "chapters/chapter-11/index.md",
       "section": "chapters",
-      "order": 50,
+      "order": 51,
       "title": "第11章 Web・APIを仮説駆動で評価する"
     },
     {
@@ -233,7 +233,7 @@
       "source": "manuscript/07-vulnerability-prioritization.md",
       "destination": "chapters/chapter-07/index.md",
       "section": "chapters",
-      "order": 51,
+      "order": 50,
       "title": "第7章 脆弱性、露出、悪用可能性、事業影響を分ける"
     },
     {

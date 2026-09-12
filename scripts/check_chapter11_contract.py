@@ -476,7 +476,7 @@ def main() -> int:
             "manuscript/11-web-api-hypothesis.md",
             "chapters/chapter-11/index.md",
             "chapters",
-            50,
+            51,
         ),
         (
             "templates/web-api-assessment-hypothesis-pack.md",

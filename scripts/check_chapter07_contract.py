@@ -227,6 +227,17 @@ def repository_errors(contract):
     ):
         errors.append("Chapter7 publication preflight")
     registry = load_json_strict(ROOT / "site-pages.json")
+    chapter_order = [
+        p["source"]
+        for p in sorted(registry["pages"], key=lambda p: p["order"])
+        if p["section"] == "chapters"
+    ]
+    if (
+        not chapter_order.index("manuscript/06-observable-systems.md")
+        < chapter_order.index(DOCUMENTS[0])
+        < chapter_order.index("manuscript/11-web-api-hypothesis.md")
+    ):
+        errors.append("Chapter7 navigation must follow Chapter6 and precede Chapter11")
     for k in ("pages", "staticFiles"):
         for item in contract[k]:
             if registry[k].count(item) != 1:
