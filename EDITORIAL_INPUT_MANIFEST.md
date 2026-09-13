@@ -16,9 +16,10 @@
 |---|---:|
 | `blueprint-only` | 1 |
 | `candidate-selection-required` | 1 |
+| `canonical-pr-open` | 1 |
 | `consumed` | 4 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 21 |
+| `registered-pending-prerequisites` | 20 |
 
 ## Acknowledged collisions
 
@@ -54,7 +55,7 @@
 | `chapter-05` | #30 | `consumed` | `EIC-0030-11e256480c15` | #113 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5577993812) |
 | `chapter-06` | #31 | `consumed` | `EIC-0031-2c4e8b2b8508` | #117 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5645016826) |
 | `chapter-07` | #32 | `consumed` | `EIC-0032-6caf4e3d9174` | #120 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5648933706) |
-| `chapter-08` | #33 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529) |
+| `chapter-08` | #33 | `canonical-pr-open` | `EIC-0033-eee4bacd1c7b` | #123 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/123) |
 | `chapter-09` | #34 | `candidate-selection-required` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98) |
 | `chapter-10` | #35 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652) |
 | `chapter-12` | #36 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
@@ -110,7 +111,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0033-eee4bacd1c7b` | `EIP-0004` | `chapter08-safe-lab-evidence.predraft.md` | `eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0033-eee4bacd1c7b` | `EIP-0004` | `chapter08-safe-lab-evidence.predraft.md` | `eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b` | `selected` | 第4〜7章とconsumed metadataの通常merge・公開確認後、唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。 |
 
 ### `chapter-09` / Issue #34
 

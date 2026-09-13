@@ -6,6 +6,8 @@
 
 ### Added
 
+- [第8章](manuscript/08-safe-lab-evidence.md)、ART-18 Lab Safety and Evidence Plan、三Runの合成Plan・Control receipts・Evidence manifest・閉じたSchemaと読み取り専用Replayを追加。Runningを含む八状態と三判定を分け、失敗後のCleanup成功を正常完了へ置き換えない。実Runtimeは実行せず、親の状態・Authorityを更新しない。
+
 - [第7章](manuscript/07-vulnerability-prioritization.md)、ART-17 Vulnerability Prioritization Record、六件の合成判断と公開Source Snapshotを追加。導入・到達性・統制・判断は合成、EPSS / KEVは固定公開入力として分離し、CVEの有無にかかわらず未検証の義務適用はUnverifiedに保持する。
 
 - 第6章、ART-16、完全合成Signal Flowと同一Flowの観測段階・時刻・保持・Gap検査を追加。NIST / OAuthの採用範囲を限定し、親Caseの観測結果は更新しない。
@@ -32,6 +34,8 @@
 - Editorial InputのPackage identity、Target別Candidate / Disposition、決定的Summary、ZIP安全検証を持つManifest契約を追加
 
 ### Changed
+
+- 第8章向けにNIST SP 800-86 / 800-190の限定原則を追加し、Berkeley Protocol 2022 editionの取得・取扱い記録を再確認。Hashの同一性と真実性・法的証拠能力を区別し、日不明の公開日はnullを維持する。第25章の版と意味は不変、Registry一括監査日も据置き。詳細は[第8章Source Review Note](references/ch08-source-review-2026-09-13.md)に記録。
 
 - SRC-EPSS-001をv4 model lineからv5（Model identifier: v2026.06.15）へ意味変更として更新。読者はモデル境界をまたぐScore差を脅威変化だけと解釈せず、Modelと取得時点を対にして扱う。v5運用開始は2026-06-15であり、EPSSを個別組織の侵害確率へ置き換えない。第7章の値は2026-09-11のSnapshotへ限定し、安定本文の現行値としない。
 - 第7章のCVSS標準4.0 / 文書1.2、CWE4.20、CVE定義、KEVとCISA告知の採用範囲を[Source Review Note](references/ch07-source-review-2026-09-12.md)に記録。CVSSの教材値は著者の合成評価で、実CVEの公表評価ではない。未取得Directive原文から詳細適用・例外・数値期限を推測せず、第11章のOWASP Awareness用途と既存の親Caseは変更しない。

@@ -16,7 +16,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-NIST-RISK-001 | NIST | [Guide for Conducting Risk Assessments](https://csrc.nist.gov/pubs/sp/800/30/r1/final) | SP 800-30 Rev.1 / final | 2026-08-08 | 2026-11-08 | 4 |
 | SRC-OWASP-TM-001 | OWASP Foundation | [OWASP Threat Modeling Project](https://owasp.org/www-project-threat-modeling/) | maintained-project-guidance | 2026-08-08 | 2026-11-08 | 4 |
 | SRC-IR-001 | NIST | [Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | SP 800-61 Rev.3 / final | 2026-08-03 | 2027-08-03 | 1, 17, 19, 20, 22 |
-| SRC-BERKELEY-001 | OHCHR / UC Berkeley | [Berkeley Protocol on Digital Open Source Investigations](https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source) | 2022 edition / published | 2026-07-25 | 2027-07-25 | 8, 24, 25 |
+| SRC-BERKELEY-001 | OHCHR / UC Berkeley | [Berkeley Protocol on Digital Open Source Investigations](https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source) | 2022 edition / published | 2026-09-13 | 2027-09-13 | 8, 24, 25 |
 | SRC-OWASP-TOP10-001 | OWASP | [OWASP Top 10:2025](https://owasp.org/Top10/) | 2025 / released | 2026-09-12 | 2026-12-12 | 7, 11 |
 | SRC-WSTG-001 | OWASP | [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | 4.2; 5.0 under development / stable | 2026-08-03 | 2026-10-25 | 9, 11, 14, 15 |
 | SRC-API-001 | OWASP | [OWASP API Security Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/) | 2023 / released | 2026-08-03 | 2027-01-25 | 11 |
@@ -45,6 +45,8 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-CWE-001 | MITRE | [Common Weakness Enumeration Archive](https://cwe.mitre.org/data/archive.html) | 4.20 / released | 2026-09-12 | 2026-12-12 | 7 |
 | SRC-CVSS-001 | FIRST | [CVSS v4.0 Specification and User Guide](https://www.first.org/cvss/v4.0/specification-document) | 4.0 / Specification 1.2 / User Guide 1.2 / released | 2026-09-12 | 2026-12-12 | 7 |
 | SRC-CISA-VRM-001 | CISA | [CISA Announces BOD 26-04: official issuance bulletin](https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a) | BOD 26-04 issuance announcement only / published | 2026-09-12 | 2026-12-12 | 7 |
+| SRC-NIST-DFIR-001 | NIST | [Guide to Integrating Forensic Techniques into Incident Response](https://csrc.nist.gov/pubs/sp/800/86/final) | SP 800-86, Final, August 2006 / final | 2026-09-13 | 2027-09-13 | 8 |
+| SRC-NIST-CONTAINER-001 | NIST | [Application Container Security Guide](https://csrc.nist.gov/pubs/sp/800/190/final) | SP 800-190, Final, September 2017 / final | 2026-09-13 | 2027-09-13 | 8 |
 
 ## 運用
 

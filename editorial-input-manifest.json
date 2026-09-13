@@ -1216,19 +1216,66 @@
       "targetId": "chapter-08",
       "issue": 33,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "canonical-pr-open",
+      "selectedCandidateId": "EIC-0033-eee4bacd1c7b",
+      "canonicalPr": 123,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/123",
+        "packageId": "EIP-0004",
+        "packageSha256": "956a321088abed3058e59c58ceeda3d5fd57a9d12a6715240185d0d7c445d86f",
+        "inputPath": "chapter08-safe-lab-evidence.predraft.md",
+        "inputSha256": "eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b",
+        "targetIssue": 33,
+        "canonicalPr": 123,
+        "currentMainSha": "d6b4dce5ed7bc697034dda36a139562e1802aac3",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-13",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。登録metadataとOperatorの八状態決定を照合した。"
+        ],
+        "rewrittenSections": [
+          "Issue #33、current contract・親Case・再確認した一次資料から第8章、ART-18、三Runの合成Plan・Evidence manifest・72 control checks・9 events・有限Layer A契約を新規作成した。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw不在のため本文読了・実体hash検証・直接採用は主張しない。",
+          "実Runtimeの構築・外部操作・実Credential・実測成功の断定は非目標。製品固有Assurance、専門DFIR取得手順、法的手続、第9章以降は委譲または後続Issue。"
+        ],
+        "sourceRevalidation": [
+          "2026-09-13 NIST SP800-86 Final/August2006 §§3/3.1.2を限定参照。取得計画・完全性・取扱いを採用し、旧Hashや製品操作を現在の推奨としない。",
+          "NIST SP800-190 Final/September2017 §§3.5.2/4.4.2/4.4.3/4.5.5の境界原則を限定採用。現行WSL2・Podman挙動や実測隔離は保証しない。",
+          "Berkeley Protocol公式共同発行者PDFの2022版・VI.C155(g/h)・VI.D167–169を確認。日不明publishedAt=nullと第25章の意味を維持し、原本・作業コピー・取扱いの記録へ限定。"
+        ],
+        "canonicalFiles": [
+          "manuscript/08-safe-lab-evidence.md",
+          "templates/lab-safety-evidence-plan.md",
+          "cases/ch08-lab-evidence-example.md",
+          "references/ch08-source-review-2026-09-13.md",
+          "cases/fixtures/ch08-lab-plan.json",
+          "cases/fixtures/ch08-control-receipts.json",
+          "cases/fixtures/ch08-evidence-manifest.json",
+          "schemas/ch08-lab-plan.schema.json",
+          "schemas/ch08-control-receipts.schema.json",
+          "schemas/ch08-evidence-manifest.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日であり、raw読了日ではない。",
+          "実Runtimeは実行しない。すべてのreceipt/Eventは固定レシピの合成仮定で、実Hostの隔離・停止・削除・残存は未測定。親のCoverage・Gap・Authorityは更新しない。",
+          "直接NIST PDF/OHCHR landing取得に403があり、一次PDFのブラウザ取得テキストで該当箇所を確認。全文のローカル取得やPDF Hash監査、法的証拠能力を主張しない。",
+          "PR #123作成時（2026-09-13）は通常merge・main/publication未完了。consumedはそれらの確認後に別metadata更新する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0033-eee4bacd1c7b",
           "packageId": "EIP-0004",
           "inputPath": "chapter08-safe-lab-evidence.predraft.md",
           "inputSha256": "eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5649213929",
+          "dispositionReason": "第4〜7章とconsumed metadataの通常merge・公開確認後、唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
         }
       ],
       "statusHistory": [
@@ -1237,6 +1284,18 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5649213929",
+          "reason": "第4〜7章とconsumed metadataの通常merge・公開確認後、唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/123",
+          "reason": "専用Draft PR #123とIntake Recordを作成。Runningを含む八状態を採用。raw不在で直接採用なし。通常merge・main/publicationは未完了。"
         }
       ]
     },

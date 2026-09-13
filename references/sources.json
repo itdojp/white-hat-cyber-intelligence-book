@@ -230,17 +230,18 @@
       "version": "2022 edition",
       "url": "https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source",
       "publishedAt": null,
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2027-07-25",
+      "checkedAt": "2026-09-13",
+      "nextReviewAt": "2027-09-13",
       "reviewTriggers": [
-        "new edition"
+        "new edition",
+        "Official URL relocation or adopted evidence-handling scope change"
       ],
       "chapters": [
         8,
         24,
         25
       ],
-      "notes": "Official publication identifies the 2022 edition; an exact publication day is not recorded here."
+      "notes": "Official publication identifies the 2022 edition; an exact publication day is not recorded here. Chapter 8 scoped recheck on 2026-09-13 uses the official co-publisher 2022 PDF, VI.C 155(g/h) and VI.D 167–169, for time/hash/context, handling history and original/working-copy distinction only. OHCHR landing direct retrieval returned HTTP 403. Exact edition publication day remains unknown; neither the separate 2020 announcement nor the PDF path is substituted. Chapter 25 edition and source-evaluation meaning remain unchanged. No legal admissibility, complete chain-of-custody certification, copied tables, or full cross-chapter audit is claimed."
     },
     {
       "id": "SRC-OWASP-TOP10-001",
@@ -793,6 +794,44 @@
         7
       ],
       "notes": "CISA-issued GovDelivery bulletin confirms issuance, federal-agency focus and risk-based prioritization purpose. Original directive text returned 403. Detailed applicability, exemptions, supersession and numeric deadlines are NOT adopted or verified by this announcement. Chapter 7 marks required-action applicability Unverified and requires separate authority/governance review before any operational action; no legal waiver."
+    },
+    {
+      "id": "SRC-NIST-DFIR-001",
+      "publisher": "NIST",
+      "title": "Guide to Integrating Forensic Techniques into Incident Response",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-86, Final, August 2006",
+      "url": "https://csrc.nist.gov/pubs/sp/800/86/final",
+      "publishedAt": null,
+      "checkedAt": "2026-09-13",
+      "nextReviewAt": "2027-09-13",
+      "reviewTriggers": [
+        "Revision, withdrawal, official URL relocation or adopted scope change"
+      ],
+      "chapters": [
+        8
+      ],
+      "notes": "CSRC Date Published is August 2006; its distinct History date is 09/01/06. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3 and 3.1.2: collection/examination/analysis/reporting, acquisition planning, integrity and handling records. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed."
+    },
+    {
+      "id": "SRC-NIST-CONTAINER-001",
+      "publisher": "NIST",
+      "title": "Application Container Security Guide",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-190, Final, September 2017",
+      "url": "https://csrc.nist.gov/pubs/sp/800/190/final",
+      "publishedAt": null,
+      "checkedAt": "2026-09-13",
+      "nextReviewAt": "2027-09-13",
+      "reviewTriggers": [
+        "Revision, withdrawal, official URL relocation or adopted scope change"
+      ],
+      "chapters": [
+        8
+      ],
+      "notes": "CSRC Date Published is September 2017; its distinct History date is 09/25/17. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3.5.2, 4.4.2, 4.4.3 and 4.5.5: shared-kernel residual risk, network/runtime/host boundaries. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed."
     }
   ]
 }

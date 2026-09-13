@@ -5678,9 +5678,9 @@ def main() -> int:
         error("references/sources.json: SRC-BERKELEY-001 publishedAt must remain null when the exact date is uncertain")
     for source_id, checked_at in CHAPTER25_SOURCE_CHECKED_AT.items():
         source = source_items.get(source_id, {})
-        if source_id == "SRC-ATTACK-001":
+        if source_id in ("SRC-ATTACK-001", "SRC-BERKELEY-001"):
             # Keep the historical Chapter 25 audit while allowing a separately
-            # documented current-catalog review for a later chapter.
+            # documented, scoped source review for a later chapter.
             if not meets_audit_baseline(source.get("checkedAt"), checked_at):
                 error(f"references/sources.json: {source_id} predates the Chapter 25 audit baseline")
         elif source.get("checkedAt") != checked_at:

@@ -29,3 +29,7 @@
 ## 第7章：優先順位の非実行分析
 
 [六件の合成判断JSON](ch07-vulnerability-prioritization.json)と[固定公開Source snapshot](ch07-source-snapshot.json)は[記入例](../ch07-vulnerability-prioritization-example.md)に対応する。導入・到達・統制Evidence・判断は完全合成であり、EPSS / KEV値だけは固定一次資料からの抽出である。実対象への操作は行わない。
+
+## 第8章：Lab Safetyのオフライン照合
+
+[Plan](ch08-lab-plan.json)、[Control receipts](ch08-control-receipts.json)、[Evidence manifest](ch08-evidence-manifest.json)は[完全合成記入例](../ch08-lab-evidence-example.md)に対応する。三Run・72チェック・9合成Eventの固定レシピで、実Runtimeや通信・削除を実行しない。八状態とSafe / Unsafe / Inconclusive、実ByteのHash、停止・残存確認の区別を検査する。

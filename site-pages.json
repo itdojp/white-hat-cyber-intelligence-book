@@ -30,7 +30,7 @@
       "source": "manuscript/11-web-api-hypothesis.md",
       "destination": "chapters/chapter-11/index.md",
       "section": "chapters",
-      "order": 51,
+      "order": 52,
       "title": "第11章 Web・APIを仮説駆動で評価する"
     },
     {
@@ -256,6 +256,34 @@
       "section": "additional",
       "order": 253,
       "title": "第7章 Source Review Note：Vulnerability Prioritization"
+    },
+    {
+      "source": "manuscript/08-safe-lab-evidence.md",
+      "destination": "chapters/chapter-08/index.md",
+      "section": "chapters",
+      "order": 51,
+      "title": "第8章 安全で再現可能なラボと証拠管理"
+    },
+    {
+      "source": "templates/lab-safety-evidence-plan.md",
+      "destination": "templates/lab-safety-evidence-plan/index.md",
+      "section": "additional",
+      "order": 254,
+      "title": "Lab Safety and Evidence Plan"
+    },
+    {
+      "source": "cases/ch08-lab-evidence-example.md",
+      "destination": "cases/chapter-08-lab-evidence/index.md",
+      "section": "additional",
+      "order": 255,
+      "title": "第8章 完全合成記入例：Lab Safety and Evidence Plan"
+    },
+    {
+      "source": "references/ch08-source-review-2026-09-13.md",
+      "destination": "references/chapter-08-source-review/index.md",
+      "section": "additional",
+      "order": 256,
+      "title": "第8章 Source Review Note：Lab SafetyとEvidence"
     }
   ],
   "directoryRoutes": {
@@ -289,6 +317,18 @@
     {
       "source": "cases/fixtures/ch07-source-snapshot.json",
       "destination": "downloads/ch07-source-snapshot.json"
+    },
+    {
+      "source": "cases/fixtures/ch08-lab-plan.json",
+      "destination": "downloads/ch08-lab-plan.json"
+    },
+    {
+      "source": "cases/fixtures/ch08-control-receipts.json",
+      "destination": "downloads/ch08-control-receipts.json"
+    },
+    {
+      "source": "cases/fixtures/ch08-evidence-manifest.json",
+      "destination": "downloads/ch08-evidence-manifest.json"
     }
   ]
 }

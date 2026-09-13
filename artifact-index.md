@@ -19,6 +19,7 @@
 | ART-15 | ATT&CK Behavior Map | 5 | `templates/attack-behavior-map.md` |
 | ART-16 | Signal Flow Diagram | 6 | `templates/signal-flow-diagram.md` |
 | ART-17 | Vulnerability Prioritization Record | 7 | `templates/vulnerability-prioritization-record.md` |
+| ART-18 | Lab Safety and Evidence Plan | 8 | `templates/lab-safety-evidence-plan.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -45,3 +46,5 @@
 `ART-16`は操作から認可、状態変化、生成・収集・保持・検索・検証を同一FlowのEvidenceへ結び付ける。[第6章完全合成Case](cases/ch06-signal-flow-example.md)は親CASE-2026-001をrefinesし、親の観測・Controlを更新しない。
 
 `ART-17`は公開指標、導入・影響・到達条件、統制、事業影響、Owner・期限・残余リスクを分離する。[第7章合成Case](cases/ch07-vulnerability-prioritization-example.md)では親の状態を変更せず、判断の再評価条件まで記録する。
+
+`ART-18`は許可・境界、八状態、合成receipt、EvidenceのByte/由来/保持、停止、六種Cleanup、再評価を接続する。[第8章合成Case](cases/ch08-lab-evidence-example.md)は非実行モデルであり、親の状態や実作業の許可を更新しない。

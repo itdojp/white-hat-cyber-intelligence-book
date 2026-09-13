@@ -1,0 +1,1365 @@
+{
+  "schemaVersion": "1.0.0",
+  "owner": "Chapter8 Layer A only; no syntax or safety grammar",
+  "documents": {
+    "manuscript/08-safe-lab-evidence.md": {
+      "headings": [
+        [
+          1,
+          "第8章 安全で再現可能なラボと証拠管理"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケース：終了コードだけで完了にしない"
+        ],
+        [
+          2,
+          "全体像：許可から再評価までを一本につなぐ"
+        ],
+        [
+          2,
+          "基本概念：境界と再現性を別々に確認する"
+        ],
+        [
+          2,
+          "証拠manifest：同一性と意味を分ける"
+        ],
+        [
+          2,
+          "攻撃者・防御者・分析者・意思決定者の接続"
+        ],
+        [
+          2,
+          "安全な演習：三つのRunを読み取り専用で照合する"
+        ],
+        [
+          2,
+          "作成する成果物"
+        ],
+        [
+          2,
+          "評価基準"
+        ],
+        [
+          2,
+          "よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "第8章 安全で再現可能なラボと証拠管理"
+          ],
+          "headings": []
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この章の位置付け 第7章で確認の優先順位を決めても、そのまま実環境の検証を始めてよいわけではない。本章では、許可された範囲をラボの境界へ落とし込み、開始条件、観測、停止、証拠の保持、残存確認を一つの計画にする。「動いた」と「安全に終了した」を分けるための章である。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "OWN: Lab Safety and Evidence Plan、証拠manifest、有限状態、停止判断、再現性と残存確認の接続。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "BRIDGE: 第2章のAuthority、第4章のAsset / Boundary、第6章のSignal Flow、第7章の確認優先順位、第20章の証拠処理。持ち帰るのは対象ID、許可範囲、必要な観測、残るGapである。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "DELEGATE: OS・コンテナ製品の構築、実環境の分離設定、専門的なDFIR取得手順。実装詳細はインフラセキュリティとペネトレーションテスト学習へ委譲する。委譲先を読まなくても、付属の非実行モデルで本章の判断は完結する。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 安全なラボ境界を設計できる。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 証拠manifestを作成できる。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 Lab Safety and Evidence Planを作成できる。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "前提知識 第2章のAuthority / Scope / Stop、第4章の信頼境界、第6章の観測とGap、第7章の確認待ちの判断を前提とする。JSONのキーと値、ファイルのハッシュを比較する意味を知っていればよい。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "導入ケース：終了コードだけで完了にしない 完全合成の請求書連携OAuthアプリについて、担当者が「解析は終了した。ラボも終了したはずだ」と報告した。しかし、外向き通信の境界に不整合を示すreceiptがあり、別のRunではCredentialの残存確認がUnknownだった。解析結果が得られたことを理由に、どちらも完了へ進めてよいだろうか。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "導入ケース：終了コードだけで完了にしない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "全体像：許可から再評価までを一本につなぐ F-08-01：Lab SafetyとEvidenceの追跡順。 上から入力を照合し、FailまたはUnknownを見つけたら新規シナリオ操作へ戻らない。矢印は実行コマンドではなく、記録の参照関係である。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "全体像：許可から再評価までを一本につなぐ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "Authority / Scope → Asset / Boundary → Lab Plan / Run ID → Preflight → Ready → Running → Stop → Evidence export → Destroy → Cleanup verification → Reassessment Fixture / Producer / Time → Evidence ID / Path / SHA-256 / Lineage"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "全体像：許可から再評価までを一本につなぐ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "境界は設定名ではなく確認項目にする 本章の構成モデルは、WSL2とrootless Podmanに相当する抽象設計である。実装版はnot-executed、Image digestはnullとする。版を固定せずに実行してよいという意味ではなく、そもそもコンテナを実行しないためである。実装へ進む場合は別のAuthority Gateで製品版、Image digest、Hostの条件、確認Evidenceをレビューする。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "基本概念：境界と再現性を別々に確認する",
+            "境界は設定名ではなく確認項目にする"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "境界 計画する制約 本教材の限界 権限 rootless、非特権、追加Capabilitiesなし Host上の権限は未測定"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "基本概念：境界と再現性を別々に確認する",
+            "境界は設定名ではなく確認項目にする"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "八つの状態と三つの判定を混同しない 状態はPlanned / Preflight passed / Ready / Running / Stopped / Destroyed / Cleanup verified / Failed closedの八つに固定する。判定はSafe / Unsafe / Inconclusiveの三つであり、状態とは別の軸である。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "基本概念：境界と再現性を別々に確認する",
+            "八つの状態と三つの判定を混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Unsafeの後で残存確認を通過すると、最終状態はCleanup verifiedでも判定はUnsafeのままである。正常完了を示すcompletedNormallyはfalseを保持する。Cleanupで再びUnknownが出ればFailed closedを再記録する。履歴内の同じ状態名を勝手に除去しない。すべてのRunでexecutionAuthorizedはfalseであり、Safeも実作業の許可ではない。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "基本概念：境界と再現性を別々に確認する",
+            "八つの状態と三つの判定を混同しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "再現性はバイト列と前提の組で記録する 同じ結果を得るには、Fixture ID、Model version、生成主体、固定時刻、入力順、文字コード、改行、Transform historyを固定する。付属モデル1.0.0は乱数も現在時刻も使わず、seed 208は一つの生成レシピの識別ラベルである。任意seedの生成器や一般のラボ評価器ではない。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "基本概念：境界と再現性を別々に確認する",
+            "再現性はバイト列と前提の組で記録する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "証拠manifest：同一性と意味を分ける NIST SP 800-86は収集、検査、分析、報告を分け、取得計画、データの完全性確認、取扱いの記録を扱う。本章では、その区別を教材のEvidence ID、生成元、時刻、Hash、保持責任、変換履歴へ接続する。2006年の文書から古い製品操作やHash方式の推奨を引き継がない。［SRC-NIST-DFIR-001］"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "証拠manifest：同一性と意味を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SHA-256が一致することは、指定されたバイト列と一致したことを示す。内容が真実であること、生成主体が信頼できること、取扱いの履歴が完全であること、法的証拠能力があることを単独では示さない。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "証拠manifest：同一性と意味を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Evidenceの保持とCleanupの対象を分ける 本教材のEVD-LAB08-001は、版管理される合成receiptファイルである。保持する教材正本と、実装モデル上で破棄する一時資源を区別する。CleanupのFileがPassでも、教材正本を削除したとは解釈しない。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "証拠manifest：同一性と意味を分ける",
+            "Evidenceの保持とCleanupの対象を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Evidence exportを確認できなければ、証拠を失う破棄へ進まない。Destroyedだけで完了にせず、Container、Network、Volume、File、Credential、Portの各receiptを個別に照合する。Credential確認がUnknownなら、他の五項目がPassでもCleanup verifiedにしない。停止後の処理もAuthorityと事前計画の内側に限定する。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "証拠manifest：同一性と意味を分ける",
+            "Evidenceの保持とCleanupの対象を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "攻撃者・防御者・分析者・意思決定者の接続 攻撃者視点は「どの境界を越える条件が残るか」という仮説に留める。実Targetへ操作を追加して確認しない。防御者はNetwork、権限、Data、Resourceの制約と停止を設計する。分析者は同一RunのEvidenceとGapを分離する。意思決定者は未確認条件を隠さず、再開を許可できる根拠と責任者を求める。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "攻撃者・防御者・分析者・意思決定者の接続"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "親のSF-2026-001のCoverageはProducedであり、本章の合成PassによってCollectedやValidatedへ上げない。VPR-ITEM-005の確認待ちも解消しない。確信度は低とする。根拠は供給された合成Dataだけで、実Runtimeの隔離と残存は未測定だからである。代替説明は、実装版、Host条件、時計、収集経路がモデルと異なる可能性である。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "攻撃者・防御者・分析者・意思決定者の接続"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Purpose / Prerequisite / Authority / Scope 目的は、開始条件、停止、Evidenceの同一性、Cleanupの判定を配布Dataから再計算することである。S0の設計とS1の合成Data解析だけを行う。LinuxまたはWSL2のLinux環境上のPython 3.11以上、取得済みの本Repository、書換えられていない付属JSON・Schema・親Caseを前提とする。この照合にNode、Ruby、コンテナ製品の起動、ネットワーク取得は不要である。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "Purpose / Prerequisite / Authority / Scope"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Authorityは配布された合成教材の読み取りに限定する。実対象への接続、走査、認証試行は行わない。実Credential・実Token・実Cookie・個人情報を入力しない。演習のScopeはread-only-synthetic-dataであり、実務へ転用するときは別の許可確認へ戻る。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "Purpose / Prerequisite / Authority / Scope"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence / Impact / Stop / Cleanup 期待Evidenceは三Runの判定・履歴と、EVD-LAB08-001のSHA-256一致である。実行は固定ファイルの読取りと標準出力だけで、コンテナ、待受Port、Network、Mount、Credentialを作成しない。下記ではPythonのBytecode cacheも抑止する。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "Expected evidence / Impact / Stop / Cleanup"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "実Dataの疑い、Scope不明、欠損、ID不一致、Hash不一致、未知の状態、予期しないエラーがあれば停止する。エラーを無視したり、結果をPassに書換えたりしない。付属原本と差分を照合し、教材責任者へ確認する。異常Runを正常完了に置き換えない。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "Expected evidence / Impact / Stop / Cleanup"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "このコマンド自体に削除対象の資源はない。自分で保存した報告コピーだけを所属先の取扱い規則に従って整理し、版管理された教材・親Caseは保持する。モデル内の六種Cleanup判定は、実Hostを走査または削除した証拠ではない。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "Expected evidence / Impact / Stop / Cleanup"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "読み取り専用Replay Repositoryのルートで実行する。出力するのはJSON報告であり、ファイルは書き換えない。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "読み取り専用Replay"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 -B scripts/replay_chapter08_lab.py --json"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "読み取り専用Replay"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "固定レシピと同じバイト列になるか 前項と同じ前提・停止条件で、固定レシピの生成結果を標準出力へ出す。BashとPOSIXのcmpが使える環境では、次の非書込み比較で元ファイルとの一致を確認できる。cmpがない場合はReplay報告のHash照合までとし、追加ツール取得を本演習の必須条件にしない。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "固定レシピと同じバイト列になるか"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "set -o pipefail python3 -B scripts/replay_chapter08_lab.py --emit-receipts | cmp - cases/fixtures/ch08-control-receipts.json"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "固定レシピと同じバイト列になるか"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "分析課題と反証 完全合成記入例のPlanからAuthority、Boundary、Fixture、Evidence、Stop、Cleanup、Reassessmentをたどる。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "分析課題と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "作成する成果物 ART-18 Templateに、目的、許可参照、Scope、Asset / Boundary、Lab / Run ID、版と条件、Preflight、期待・禁止Evidence、Stop、Evidence manifest、Cleanup、Owner / Reviewer、Gap、確信度、代替説明、再評価Triggerと日付を記入する。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "作成する成果物"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "評価基準 T-08-04：ART-18のRubric。 各項目を0〜2点で確認する。合計点が高くても必須安全条件の欠落を相殺しない。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 「rootlessならHostは安全」ではない。HostとNetworkを含む境界の確認が必要である。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "章のまとめ 安全なラボ設計は、境界を宣言するだけでなく、開始できない条件、停止後のEvidence保持、六種の残存確認、再評価までを結ぶ。八状態の履歴と三判定を分けると、異常後にCleanupだけ完了した場合も隠さず記録できる。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "章のまとめ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "次に学ぶこと 次の第9章では攻撃評価のライフサイクルへ進む。本章からはAuthority、停止条件、必要Evidence、Cleanupと再評価のGateを持ち込む。具体的評価の前に、親Caseと安全・公開範囲へ戻って対象を確認する。証拠処理の専門的な展開は第20章へ接続する。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "次に学ぶこと"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-NIST-CONTAINER-001: NIST SP 800-190、Final、September 2017。共有Kernel、Network、Runtime、Hostの境界原則。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/it-infra-security-guide-book/"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "この章の位置付け"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "DELEGATE: OS・コンテナ製品の構築、実環境の分離設定、専門的なDFIR取得手順。実装詳細はインフラセキュリティとペネトレーションテスト学習へ委譲する。委譲先を読まなくても、付属の非実行モデルで本章の判断は完結する。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/pentest-learning-book/"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "この章の位置付け"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "DELEGATE: OS・コンテナ製品の構築、実環境の分離設定、専門的なDFIR取得手順。実装詳細はインフラセキュリティとペネトレーションテスト学習へ委譲する。委譲先を読まなくても、付属の非実行モデルで本章の判断は完結する。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "外向き通信、Runtime設定、Host側の分離を別々に確認するという考え方はSP 800-190 §§4.4–4.5を参照する。本章の項目数やPass判定は著者の有限教材契約であり、同文書の認証基準ではない。［SRC-NIST-CONTAINER-001］"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "基本概念：境界と再現性を別々に確認する",
+            "境界は設定名ではなく確認項目にする"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "再現性はバイト列と前提の組で記録する 同じ結果を得るには、Fixture ID、Model version、生成主体、固定時刻、入力順、文字コード、改行、Transform historyを固定する。付属モデル1.0.0は乱数も現在時刻も使わず、seed 208は一つの生成レシピの識別ラベルである。任意seedの生成器や一般のラボ評価器ではない。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "基本概念：境界と再現性を別々に確認する",
+            "再現性はバイト列と前提の組で記録する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Purpose / Prerequisite / Authority / Scope 目的は、開始条件、停止、Evidenceの同一性、Cleanupの判定を配布Dataから再計算することである。S0の設計とS1の合成Data解析だけを行う。LinuxまたはWSL2のLinux環境上のPython 3.11以上、取得済みの本Repository、書換えられていない付属JSON・Schema・親Caseを前提とする。この照合にNode、Ruby、コンテナ製品の起動、ネットワーク取得は不要である。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "Purpose / Prerequisite / Authority / Scope"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 -B scripts/replay_chapter08_lab.py --json"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "読み取り専用Replay"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "set -o pipefail python3 -B scripts/replay_chapter08_lab.py --emit-receipts | cmp - cases/fixtures/ch08-control-receipts.json"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "固定レシピと同じバイト列になるか"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "分析課題と反証 InconclusiveのcredentialがUnknownのまま、Cleanup verifiedと報告する案を差し戻す。追加で必要なEvidenceとOwnerを記入する。"
+          ],
+          "headings": [
+            "第8章 安全で再現可能なラボと証拠管理",
+            "安全な演習：三つのRunを読み取り専用で照合する",
+            "分析課題と反証"
+          ]
+        }
+      ]
+    },
+    "templates/lab-safety-evidence-plan.md": {
+      "headings": [
+        [
+          1,
+          "Lab Safety and Evidence Plan"
+        ],
+        [
+          2,
+          "Document Control"
+        ],
+        [
+          2,
+          "Lab境界と開始条件"
+        ],
+        [
+          2,
+          "八状態と三判定"
+        ],
+        [
+          2,
+          "Evidence manifest"
+        ],
+        [
+          2,
+          "Stop / Cleanup / Reassessment"
+        ],
+        [
+          2,
+          "Rubricと完全記入例"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "Lab Safety and Evidence Plan"
+          ],
+          "headings": []
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Document Control Artifact IDはART-18。目的、開始条件、停止、Evidence保持、Cleanup、再評価を一つの計画として記録する。一般Templateは設計のための書式であり、付属の機械契約はレビュー済み三Runの合成モデル1.0.0だけを受理する。"
+          ],
+          "headings": [
+            "Lab Safety and Evidence Plan",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Lab境界と開始条件 Field group 記入する内容 Implementation / Version OS・Runtime・Image digest・設定版。非実行モデルはnot-executedとnullの理由"
+          ],
+          "headings": [
+            "Lab Safety and Evidence Plan",
+            "Lab境界と開始条件"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Lab境界と開始条件 Field group 記入する内容 Privilege / Host rootless、非特権、追加Capabilitiesなし。host networkと広範なHost mountは禁止"
+          ],
+          "headings": [
+            "Lab Safety and Evidence Plan",
+            "Lab境界と開始条件"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "八状態と三判定 状態はPlanned / Preflight passed / Ready / Running / Stopped / Destroyed / Cleanup verified / Failed closedの八つ。各receiptの結果はPass / Fail / Unknown、Run判定はSafe / Unsafe / Inconclusiveとする。実行許可と混同しない。"
+          ],
+          "headings": [
+            "Lab Safety and Evidence Plan",
+            "八状態と三判定"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Cleanup verifiedでも以前のFailはUnsafeとして保持し、completedNormallyはfalseとする。全RunのexecutionAuthorizedはfalseである。Safeも実作業の許可ではない。"
+          ],
+          "headings": [
+            "Lab Safety and Evidence Plan",
+            "八状態と三判定"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Evidence manifest Field group 記入する内容 Identity / Locator Manifest ID、Evidence Artifact ID、実際に読む相対Path、Fixture ID、対象Run IDs"
+          ],
+          "headings": [
+            "Lab Safety and Evidence Plan",
+            "Evidence manifest"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "実Credential・実Token・実Cookie・個人情報は収集しない。付属Evidenceは完全合成である。Hashだけを更新して出所・Run・表示の不整合を隠さない。"
+          ],
+          "headings": [
+            "Lab Safety and Evidence Plan",
+            "Evidence manifest"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Stop / Cleanup / Reassessment Field group 記入する内容 Step / Stop 合成Replay Step ID、Stop ID、条件、停止確認receipt、緊急連絡Role。予期しない外部影響・実Data・許可不明なら停止"
+          ],
+          "headings": [
+            "Lab Safety and Evidence Plan",
+            "Stop / Cleanup / Reassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Rubricと完全記入例 第8章のRubricと完全合成記入例を対にする。Unknownを残しても、必要なEvidence・責任者・再評価まで記録できれば提出できる。根拠のない安全宣言や、親のCoverageの昇格は差戻しとする。"
+          ],
+          "headings": [
+            "Lab Safety and Evidence Plan",
+            "Rubricと完全記入例"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Document Control Artifact IDはART-18。目的、開始条件、停止、Evidence保持、Cleanup、再評価を一つの計画として記録する。一般Templateは設計のための書式であり、付属の機械契約はレビュー済み三Runの合成モデル1.0.0だけを受理する。"
+          ],
+          "headings": [
+            "Lab Safety and Evidence Plan",
+            "Document Control"
+          ]
+        }
+      ],
+      "analyticProvenance": []
+    },
+    "cases/ch08-lab-evidence-example.md": {
+      "headings": [
+        [
+          1,
+          "第8章 Lab Safety and Evidence Plan 完全合成記入例"
+        ],
+        [
+          2,
+          "読み方と安全境界"
+        ],
+        [
+          2,
+          "三Runの判断"
+        ],
+        [
+          2,
+          "完全記入データ"
+        ],
+        [
+          2,
+          "Evidenceと再評価の結論"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "第8章 Lab Safety and Evidence Plan 完全合成記入例"
+          ],
+          "headings": []
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "読み方と安全境界 ART-18 / LABPLAN-2026-001はCASE-2026-001をrefinesする完全合成の教材である。実Runtimeは実行しない。Control receiptsとOAuth/API/TelemetryのEventは供給された仮定であり、Hostを観測した結果ではない。全RunのexecutionAuthorizedはfalseで、実作業の許可を発行しない。"
+          ],
+          "headings": [
+            "第8章 Lab Safety and Evidence Plan 完全合成記入例",
+            "読み方と安全境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "三Runの判断 SafeはすべてPass、UnsafeはRuntimeのegressがFail、InconclusiveはRuntimeのcollectionとCleanupのcredentialがUnknownである。Unsafeは六種のCleanupを通過してもUnsafeのままで、正常完了はfalseである。InconclusiveはFailed closedで終わり、正常完了もCleanup verifiedもfalseである。"
+          ],
+          "headings": [
+            "第8章 Lab Safety and Evidence Plan 完全合成記入例",
+            "三Runの判断"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Evidenceと再評価の結論 EVD-LAB08-001は、実際の供給ファイルのSHA-256と照合する。Transformは合成生成一回であり、元の実Logや実Credentialがあるという意味ではない。Hash一致は指定Byteとの同一性であり、真実性、法的証拠能力、完全なChain of custody、実Runtimeの成功の証明ではない。"
+          ],
+          "headings": [
+            "第8章 Lab Safety and Evidence Plan 完全合成記入例",
+            "Evidenceと再評価の結論"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Evidence Manifest Field Value artifactPath cases/fixtures/ch08-control-receipts.json"
+          ],
+          "headings": [
+            "第8章 Lab Safety and Evidence Plan 完全合成記入例",
+            "完全記入データ",
+            "Evidence Manifest"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "AuthorityはAUTH-CASE-2026-001の教材参照、Scopeはread-only-synthetic-dataである。実対象への接続、走査、認証試行、実Credential・実Token・実Cookie・個人情報の入力は行わない。不明なData、ID・Hashの不一致、予期しないエラーでは停止する。Cleanupは自分で保存した報告コピーの整理だけで、親Caseや版管理されたEvidenceは保持する。"
+          ],
+          "headings": [
+            "第8章 Lab Safety and Evidence Plan 完全合成記入例",
+            "読み方と安全境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "RUN-LAB08-SAFE Field Value alternative 供給された合成receiptが実環境で成立するとは限らない。"
+          ],
+          "headings": [
+            "第8章 Lab Safety and Evidence Plan 完全合成記入例",
+            "完全記入データ",
+            "RUN-LAB08-SAFE"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "RUN-LAB08-UNSAFE Field Value alternative 供給された合成receiptが実環境で成立するとは限らない。"
+          ],
+          "headings": [
+            "第8章 Lab Safety and Evidence Plan 完全合成記入例",
+            "完全記入データ",
+            "RUN-LAB08-UNSAFE"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "RUN-LAB08-INCONCLUSIVE Field Value alternative 供給された合成receiptが実環境で成立するとは限らない。"
+          ],
+          "headings": [
+            "第8章 Lab Safety and Evidence Plan 完全合成記入例",
+            "完全記入データ",
+            "RUN-LAB08-INCONCLUSIVE"
+          ]
+        }
+      ]
+    },
+    "references/ch08-source-review-2026-09-13.md": {
+      "headings": [
+        [
+          1,
+          "第8章 Source Review Note：Lab SafetyとEvidence"
+        ],
+        [
+          2,
+          "確認範囲と採用方針"
+        ],
+        [
+          2,
+          "SRC-NIST-DFIR-001"
+        ],
+        [
+          2,
+          "SRC-NIST-CONTAINER-001"
+        ],
+        [
+          2,
+          "SRC-BERKELEY-001"
+        ],
+        [
+          2,
+          "非採用と再確認"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "第8章 Source Review Note：Lab SafetyとEvidence"
+          ],
+          "headings": []
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認範囲と採用方針 確認日2026-09-13。対象は第8章、ART-18、合成記入例の原則と限界である。原典の該当箇所を読み、著者の有限モデルと外部の規範を分離した。全文監査、実Runtimeの動作確認、法的証拠能力の確認は行っていない。"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "確認範囲と採用方針"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-DFIR-001 発行主体: NIST。"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-NIST-DFIR-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-CONTAINER-001 発行主体: NIST。"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-NIST-CONTAINER-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-BERKELEY-001 発行主体: OHCHR / Human Rights Center, UC Berkeley School of Law。"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-BERKELEY-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "非採用と再確認 NISTIR 8176の出版情報とLinux Application ContainerのAssuranceを扱う位置付けは確認したが、詳細な要件を本章の判定基準として採用しない。本章のSource集合へ追加せず、実Runtime実装の別レビューへ委譲する。"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "非採用と再確認"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/86/final"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-NIST-DFIR-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-DFIR-001 一次資料: 公式出版ページ、公式PDF。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-86.pdf"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-NIST-DFIR-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-DFIR-001 一次資料: 公式出版ページ、公式PDF。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/190/final"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-NIST-CONTAINER-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-CONTAINER-001 一次資料: 公式出版ページ、公式PDF。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-190.pdf"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-NIST-CONTAINER-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-CONTAINER-001 一次資料: 公式出版ページ、公式PDF。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-CONTAINER-001 採用箇所: §3.5.2の共有Kernel、§4.4.2のNetwork、§4.4.3のRuntime設定、§4.5.5の限定Mount。境界と残余リスクを複数層で扱う原則に限定した。"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-NIST-CONTAINER-001"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-BERKELEY-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-BERKELEY-001 一次資料: OHCHR出版ページ、公式共同発行者のPDF。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://humanrights.berkeley.edu/wp-content/uploads/2024/02/Berkeley-Protocol.pdf"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-BERKELEY-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-BERKELEY-001 一次資料: OHCHR出版ページ、公式共同発行者のPDF。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-BERKELEY-001 確認箇所: 表紙・Copyrightと、§VI.Cの155(g/h)（本文59）、§VI.Dの167–169（本文61）。取得時刻、Hash、文脈、取扱いの時系列、原本と作業コピーの区別を限定的に参照した。"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "SRC-BERKELEY-001"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章は実環境のWSL2・Podman構築を実行しない。版固定された製品操作を提供する章ではなく、それらに相当する抽象モデルの合成receiptをオフライン照合する。八状態、三判定、72チェック、seed 208、SHA-256の選択は本書独自の教材契約である。"
+          ],
+          "headings": [
+            "第8章 Source Review Note：Lab SafetyとEvidence",
+            "確認範囲と採用方針"
+          ]
+        }
+      ]
+    }
+  },
+  "provenanceRationale": {
+    "host": "Exact official Source URLs and DELEGATE book links are citations, not exercise targets. Exact section/version/Python numbers are bibliographic prerequisites, not IDN hosts. Two complete read-only CLI fields and the manifest filename row are local canonical provenance, not domains. No suffix/domain-wide exception.",
+    "analytic": "Six exact whole fields: one reject-Unknown analysis task, one explicit Case prohibition, three same-run alternative-assumption rows, and one explicit no-runtime Source paragraph. Table-owner RUN prefixes and analytic/prohibition wording trigger shared Policy; none instructs a prohibited action. Exact heading/owner/text/cardinality only; changed instruction, field, location or duplication fails.",
+    "json": "Only exact manifest artifactPath has a host false-positive exception. No JSON action exception. File inventory, Evidence ID, fixed synthetic recipe and actual bytes bind it separately."
+  },
+  "pages": [
+    {
+      "source": "manuscript/08-safe-lab-evidence.md",
+      "destination": "chapters/chapter-08/index.md",
+      "section": "chapters",
+      "order": 51,
+      "title": "第8章 安全で再現可能なラボと証拠管理"
+    },
+    {
+      "source": "templates/lab-safety-evidence-plan.md",
+      "destination": "templates/lab-safety-evidence-plan/index.md",
+      "section": "additional",
+      "order": 254,
+      "title": "Lab Safety and Evidence Plan"
+    },
+    {
+      "source": "cases/ch08-lab-evidence-example.md",
+      "destination": "cases/chapter-08-lab-evidence/index.md",
+      "section": "additional",
+      "order": 255,
+      "title": "第8章 完全合成記入例：Lab Safety and Evidence Plan"
+    },
+    {
+      "source": "references/ch08-source-review-2026-09-13.md",
+      "destination": "references/chapter-08-source-review/index.md",
+      "section": "additional",
+      "order": 256,
+      "title": "第8章 Source Review Note：Lab SafetyとEvidence"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch08-lab-plan.json",
+      "destination": "downloads/ch08-lab-plan.json"
+    },
+    {
+      "source": "cases/fixtures/ch08-control-receipts.json",
+      "destination": "downloads/ch08-control-receipts.json"
+    },
+    {
+      "source": "cases/fixtures/ch08-evidence-manifest.json",
+      "destination": "downloads/ch08-evidence-manifest.json"
+    }
+  ],
+  "parentDigests": {
+    "cases/ch01-integrated-security-case-example.md": "c72c0d149321a24f2b6901db381c069cff86a8536b5578eba285b9d17eb329b2",
+    "cases/ch02-authorization-decision-example.md": "74d1aa7a802525ee5f465ccbdc1404e26a974ed60e264b65978612bef8026f4a",
+    "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
+    "cases/ch05-attack-behavior-example.md": "9bc5004441f6a7911106da6cba263297bf115814d7c644c80f776c7f0e7098ac",
+    "cases/ch06-signal-flow-example.md": "a062ba22f4f0e1eb28a08342b0173a02473e995062410986b51d1a6a4af7cf0a",
+    "cases/fixtures/ch06-signal-flow.json": "73000db0a442d9be338a0e9834fe589ee387ee05ab280a9cc5f0e6fe0f0da6fb",
+    "cases/fixtures/ch05-attack-behavior.json": "1f51fa66fe82d72f28b73ed548bc669cf58f5ab30dd8674cad9ad0d5b315e781",
+    "cases/fixtures/ch07-vulnerability-prioritization.json": "37e6fac74e3b30560704a2db13ba2abfb8fd025c1dcbae6f6fbe5f213b6f3d32",
+    "cases/ch07-vulnerability-prioritization-example.md": "868840e8ee6fdb66b2645f0a954d11107d286b1c63c81a7cdb4be072d5061c3f",
+    "cases/fixtures/ch07-source-snapshot.json": "38ee030f2c6af8707d25d16ad480c50b23710a10cb6b8a914d5d19040869b21d",
+    "LAB_ARCHITECTURE.md": "b77374961863cb63b052d1a0647e3f68c6bc11ffd101ee469d104076a027f88a",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
+    ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814",
+    "scripts/check_editorial_input_manifest.py": "1b26dec42b7584f29cdd617d61ae13be4c3c3b97653c21773a374471da01881f"
+  },
+  "sourceIdentity": {
+    "SRC-BERKELEY-001": {
+      "publisher": "OHCHR / UC Berkeley",
+      "title": "Berkeley Protocol on Digital Open Source Investigations",
+      "kind": "protocol",
+      "status": "published",
+      "version": "2022 edition",
+      "url": "https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source",
+      "publishedAt": null,
+      "notes": "Official publication identifies the 2022 edition; an exact publication day is not recorded here. Chapter 8 scoped recheck on 2026-09-13 uses the official co-publisher 2022 PDF, VI.C 155(g/h) and VI.D 167–169, for time/hash/context, handling history and original/working-copy distinction only. OHCHR landing direct retrieval returned HTTP 403. Exact edition publication day remains unknown; neither the separate 2020 announcement nor the PDF path is substituted. Chapter 25 edition and source-evaluation meaning remain unchanged. No legal admissibility, complete chain-of-custody certification, copied tables, or full cross-chapter audit is claimed."
+    },
+    "SRC-NIST-DFIR-001": {
+      "publisher": "NIST",
+      "title": "Guide to Integrating Forensic Techniques into Incident Response",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-86, Final, August 2006",
+      "url": "https://csrc.nist.gov/pubs/sp/800/86/final",
+      "publishedAt": null,
+      "notes": "CSRC Date Published is August 2006; its distinct History date is 09/01/06. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3 and 3.1.2: collection/examination/analysis/reporting, acquisition planning, integrity and handling records. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed."
+    },
+    "SRC-NIST-CONTAINER-001": {
+      "publisher": "NIST",
+      "title": "Application Container Security Guide",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-190, Final, September 2017",
+      "url": "https://csrc.nist.gov/pubs/sp/800/190/final",
+      "publishedAt": null,
+      "notes": "CSRC Date Published is September 2017; its distinct History date is 09/25/17. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3.5.2, 4.4.2, 4.4.3 and 4.5.5: shared-kernel residual risk, network/runtime/host boundaries. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed."
+    }
+  },
+  "indices": {
+    "artifact-index.md": [
+      "| ART-18 | Lab Safety and Evidence Plan | 8 | `templates/lab-safety-evidence-plan.md` |"
+    ],
+    "figure-index.md": [
+      "F-08-01",
+      "T-08-01",
+      "T-08-02",
+      "T-08-03",
+      "T-08-04"
+    ],
+    "glossary.md": [
+      "Evidence Manifest",
+      "Lab Safety State"
+    ],
+    "cases/index.md": [
+      "ch08-lab-evidence-example.md",
+      "LABPLAN-2026-001"
+    ],
+    "cases/fixtures/index.md": [
+      "ch08-lab-plan.json",
+      "ch08-control-receipts.json",
+      "ch08-evidence-manifest.json"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "固定rendererを使用する第6章・第7章・第8章の公開前安全検査",
+      "初回は`bundle install`を先に実行する"
+    ],
+    "CHANGELOG.md": [
+      "[第8章](manuscript/08-safe-lab-evidence.md)",
+      "ART-18 Lab Safety and Evidence Plan",
+      "Berkeley Protocol 2022 edition"
+    ]
+  }
+}
