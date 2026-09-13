@@ -919,6 +919,12 @@
           "effectiveAt": "2026-09-13",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
           "reason": "両候補の登録概要をcurrent Issue・親契約・一次Sourceと比較。Authority/RoE/Procedureとtechnical/decision completionの分離が現在の制約に対応するBを設計来歴として選択。raw両方不在、本文優劣・読了・hash検証・直接採用は主張しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/127",
+          "reason": "専用Draft PR #127と実URLのIntake Recordを作成。raw不在で直接採用なし。完全合成RoEはDraft/Do not proceed。通常merge/main/publicationは未完了。"
         }
       ]
     },
