@@ -913,6 +913,12 @@
           "effectiveAt": "2026-08-10",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
           "reason": "Input SHAが異なる2候補を検出。比較記録なしのwinner選択を禁止した。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
+          "reason": "両候補の登録概要をcurrent Issue・親契約・一次Sourceと比較。Authority/RoE/Procedureとtechnical/decision completionの分離が現在の制約に対応するBを設計来歴として選択。raw両方不在、本文優劣・読了・hash検証・直接採用は主張しない。"
         }
       ]
     },

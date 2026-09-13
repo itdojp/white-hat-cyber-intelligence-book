@@ -86,3 +86,7 @@
 ## ライセンス
 
 本文、図表、演習課題、テンプレートは、特記がない限りCC BY-NC-SA 4.0です。商用利用には別途契約が必要です。自作コードの扱いは[LICENSE.md](LICENSE.md)を参照してください。
+
+## 第9章の成果物
+
+[第9章 Engagement DesignとRules of Engagement](manuscript/09-engagement-roe.md) / [ART-02](templates/rules-of-engagement.md) / [完全合成Case](cases/ch09-engagement-roe-example.md) / [計画JSON](cases/fixtures/ch09-engagement-roe.json)。親の許可期限を保持したDraftで、作業を始めない判断と再承認を学ぶ。

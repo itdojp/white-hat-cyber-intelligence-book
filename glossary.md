@@ -85,3 +85,15 @@
 | Residual risk | 処置後または判断待ちに残るリスク。Ownerと再評価条件を伴う |
 
 指標の一次資料、固定Snapshot、有限教材と実務への転用限界は[第7章](manuscript/07-vulnerability-prioritization.md)を参照する。
+
+## 第9章の用語
+
+| 用語 | 本書での意味 |
+|---|---|
+| RoE | 確認済みの許可をScope・Method・Time・Data・Stop等の実施条件へ具体化する記録。権限の発生源ではない |
+| Excluded by default | 未記載の対象・作用は許可せず、追加時に再審査する原則 |
+| Technical completion | 対象件数、予算、停止、Cleanup等の作業記録がそろった状態 |
+| Decision completion | 必要EvidenceまたはGap、代替説明、責任者の受入と再評価がそろった状態 |
+| Restart authority | 停止原因の解消と残存リスクを確認し、同じ版の再開を判断する責任。Cleanupとは別 |
+
+[第9章](manuscript/09-engagement-roe.md)の有限教材は実署名・通知・隔離・法的承認を検証しない。

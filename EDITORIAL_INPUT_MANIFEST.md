@@ -15,10 +15,10 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
-| `candidate-selection-required` | 1 |
 | `consumed` | 5 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 20 |
+| `selected-for-intake` | 1 |
 
 ## Acknowledged collisions
 
@@ -55,7 +55,7 @@
 | `chapter-06` | #31 | `consumed` | `EIC-0031-2c4e8b2b8508` | #117 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5645016826) |
 | `chapter-07` | #32 | `consumed` | `EIC-0032-6caf4e3d9174` | #120 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5648933706) |
 | `chapter-08` | #33 | `consumed` | `EIC-0033-eee4bacd1c7b` | #123 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5650941182) |
-| `chapter-09` | #34 | `candidate-selection-required` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98) |
+| `chapter-09` | #34 | `selected-for-intake` | `EIC-0034-dd0c5e0b83f3` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262) |
 | `chapter-10` | #35 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652) |
 | `chapter-12` | #36 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
 | `chapter-13` | #37 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
@@ -116,8 +116,8 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0034-00de5e803e04` | `EIP-0005` | `chapter09-engagement-roe.predraft.md` | `00de5e803e04d13ae80b9960489a2d7d90d6564c88324d7f32aed8c28c96ea91` | `pending-comparison` | Issue #34、Chapter 2/4/8契約、current Policyと一次資料に対する比較が未実施。 |
-| `EIC-0034-dd0c5e0b83f3` | `EIP-0006` | `chapter09-engagement-roe.predraft.md` | `dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579` | `pending-comparison` | Issue #34、Chapter 2/4/8契約、current Policyと一次資料に対する比較が未実施。 |
+| `EIC-0034-00de5e803e04` | `EIP-0005` | `chapter09-engagement-roe.predraft.md` | `00de5e803e04d13ae80b9960489a2d7d90d6564c88324d7f32aed8c28c96ea91` | `deferred` | 未選択代替として原文比較を将来Intakeへ保留。品質不良とは判定していない。同梱第10章の状態は不変。raw不在、直接採用なし。 |
+| `EIC-0034-dd0c5e0b83f3` | `EIP-0006` | `chapter09-engagement-roe.predraft.md` | `dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579` | `selected` | 候補Bを登録設計の来歴として明示選択。current contractと実取得した一次資料から新規構成し、raw直接採用なし。 |
 
 ### `chapter-10` / Issue #35
 

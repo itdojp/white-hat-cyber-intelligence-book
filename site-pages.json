@@ -30,7 +30,7 @@
       "source": "manuscript/11-web-api-hypothesis.md",
       "destination": "chapters/chapter-11/index.md",
       "section": "chapters",
-      "order": 52,
+      "order": 54,
       "title": "第11章 Web・APIを仮説駆動で評価する"
     },
     {
@@ -284,6 +284,27 @@
       "section": "additional",
       "order": 256,
       "title": "第8章 Source Review Note：Lab SafetyとEvidence"
+    },
+    {
+      "source": "manuscript/09-engagement-roe.md",
+      "destination": "chapters/chapter-09/index.md",
+      "section": "chapters",
+      "order": 52,
+      "title": "第9章 Engagement DesignとRules of Engagement"
+    },
+    {
+      "source": "cases/ch09-engagement-roe-example.md",
+      "destination": "cases/chapter-09-engagement-roe/index.md",
+      "section": "additional",
+      "order": 257,
+      "title": "第9章 完全合成記入例：Rules of Engagement"
+    },
+    {
+      "source": "references/ch09-source-review-2026-09-13.md",
+      "destination": "references/chapter-09-source-review/index.md",
+      "section": "additional",
+      "order": 258,
+      "title": "第9章 Source Review Note：EngagementとRoE"
     }
   ],
   "directoryRoutes": {
@@ -329,6 +350,14 @@
     {
       "source": "cases/fixtures/ch08-evidence-manifest.json",
       "destination": "downloads/ch08-evidence-manifest.json"
+    },
+    {
+      "source": "cases/fixtures/ch09-engagement-roe.json",
+      "destination": "downloads/ch09-engagement-roe.json"
+    },
+    {
+      "source": "schemas/ch09-engagement-roe.schema.json",
+      "destination": "downloads/ch09-engagement-roe.schema.json"
     }
   ]
 }

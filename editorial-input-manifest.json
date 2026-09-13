@@ -1309,8 +1309,8 @@
       "targetId": "chapter-09",
       "issue": 34,
       "targetKind": "chapter",
-      "status": "candidate-selection-required",
-      "selectedCandidateId": null,
+      "status": "selected-for-intake",
+      "selectedCandidateId": "EIC-0034-dd0c5e0b83f3",
       "canonicalPr": null,
       "intakeRecord": null,
       "candidates": [
@@ -1319,18 +1319,18 @@
           "packageId": "EIP-0005",
           "inputPath": "chapter09-engagement-roe.predraft.md",
           "inputSha256": "00de5e803e04d13ae80b9960489a2d7d90d6564c88324d7f32aed8c28c96ea91",
-          "disposition": "pending-comparison",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
-          "dispositionReason": "Issue #34、Chapter 2/4/8契約、current Policyと一次資料に対する比較が未実施。"
+          "disposition": "deferred",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
+          "dispositionReason": "未選択代替として原文比較を将来Intakeへ保留。品質不良とは判定していない。同梱第10章の状態は不変。raw不在、直接採用なし。"
         },
         {
           "candidateId": "EIC-0034-dd0c5e0b83f3",
           "packageId": "EIP-0006",
           "inputPath": "chapter09-engagement-roe.predraft.md",
           "inputSha256": "dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579",
-          "disposition": "pending-comparison",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
-          "dispositionReason": "Issue #34、Chapter 2/4/8契約、current Policyと一次資料に対する比較が未実施。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
+          "dispositionReason": "候補Bを登録設計の来歴として明示選択。current contractと実取得した一次資料から新規構成し、raw直接採用なし。"
         }
       ],
       "statusHistory": [
@@ -1345,6 +1345,12 @@
           "effectiveAt": "2026-08-10",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
           "reason": "Input SHAが異なる2候補を検出。比較記録なしのwinner選択を禁止した。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
+          "reason": "両候補の登録概要をcurrent Issue・親契約・一次Sourceと比較。Authority/RoE/Procedureとtechnical/decision completionの分離が現在の制約に対応するBを設計来歴として選択。raw両方不在、本文優劣・読了・hash検証・直接採用は主張しない。"
         }
       ]
     },

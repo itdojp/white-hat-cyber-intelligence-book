@@ -38,6 +38,13 @@
 | T-08-02 | 八状態と入口条件 | `manuscript/08-safe-lab-evidence.md` | Implemented |
 | T-08-03 | 三つのRunの判定と終了状態 | `manuscript/08-safe-lab-evidence.md` | Implemented |
 | T-08-04 | ART-18のRubric | `manuscript/08-safe-lab-evidence.md` | Implemented |
+| T-09-01 | 三つの記録の役割 | `manuscript/09-engagement-roe.md` | Implemented |
+| T-09-02 | Scopeと不明時の判断 | `manuscript/09-engagement-roe.md` | Implemented |
+| T-09-03 | 教育用の作用量予算 | `manuscript/09-engagement-roe.md` | Implemented |
+| T-09-04 | 八つのRoE状態 | `manuscript/09-engagement-roe.md` | Implemented |
+| T-09-05 | Assessment・Retest・Control ValidationへのHandoff | `manuscript/09-engagement-roe.md` | Implemented |
+| T-09-06 | ART-02のRubric | `manuscript/09-engagement-roe.md` | Implemented |
+| F-09-01 | Stopから再審査への接続 | `manuscript/09-engagement-roe.md` | Implemented |
 | F-11-01 | DecisionからDetectionまでの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | F-11-02 | Request・Evidence・Telemetry・Decisionの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | T-11-01 | ChecklistとHypothesis Packの違い | `manuscript/11-web-api-hypothesis.md` | Implemented |

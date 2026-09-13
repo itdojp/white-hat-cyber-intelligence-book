@@ -37,3 +37,7 @@
 ## 第8章の教育用補足
 
 [Lab SafetyとEvidenceの完全合成記入例](ch08-lab-evidence-example.md) / ART-18 / LABPLAN-2026-001はCASE-2026-001をrefinesする。実Runtimeは実行せず、八状態と三判定、停止、六種Cleanup、実ByteのHashと保持を照合する。親のCoverage・Gap・Authorityは更新しない。
+
+## 第9章の教育用補足
+
+[RoEの完全合成記入例](ch09-engagement-roe-example.md) / ART-02 / ROE-2026-009はCASE-2026-001をrefinesする。三つの供給Objectだけを読む非実行計画で、親Authorizationの期限経過を保持しDraft / Do not proceedとする。第11章の独立Caseへ権限やEvidenceを転用しない。
