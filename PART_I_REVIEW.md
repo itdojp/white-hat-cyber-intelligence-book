@@ -100,7 +100,7 @@ CISA指令詳細の原文を取得できなかった制約は解消扱いにし�
 環境導入は[AGENTS.md](AGENTS.md)と[正本・build契約](CANONICAL_SOURCE.md)に従う。固定formatterは`.book-formatter/revision.json`のcommitと一致させる。依存導入後のRepositoryルートで、既存の検査を使う。
 
 ```bash
-npm test
+BOOK_FORMATTER_DIR=../book-formatter npm test
 BOOK_FORMATTER_DIR=../book-formatter npm run check:book-qa
 python3 -B scripts/replay_chapter08_lab.py --json
 ```
