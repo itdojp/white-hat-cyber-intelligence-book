@@ -310,6 +310,33 @@ def run_regressions(data, schema, contract, source, projection):
                     f"CH09-EX-{di}-{family}-{ei}-duplicate",
                     bool(scan_document(duplicate, spec)),
                 )
+    # Chapter-specific exercise order, using actual shared renderer output.
+    # Keep source literals here only to mutate the one finite local exercise.
+    path = DOCUMENTS[0]
+    start = source[path].index("### ローカル検査\n\n") + len("### ローカル検査\n\n")
+    end = source[path].index("### 成果物とRubric", start)
+    blocks = source[path][start:end].strip().split("\n\n")
+    check("CH09-BUILD-ORDER-inventory", len(blocks) == 4)
+    if len(blocks) == 4:
+        orders = {
+            "historical": [0, 3, 1, 2],
+            "prerequisites-late": [1, 2, 3, 0],
+            "evidence-stop-late": [0, 2, 3, 1],
+            "impact-cleanup-late": [0, 1, 3, 2],
+        }
+        for label, order in orders.items():
+            text = (
+                source[path][:start]
+                + "\n\n".join(blocks[i] for i in order)
+                + "\n\n"
+                + source[path][end:]
+            )
+            doc = project_documents({path: text}).documents[0]
+            check(
+                "CH09-BUILD-ORDER-" + label,
+                "Chapter9 exercise explanations before command"
+                in document_errors(doc, contract["documents"][path], data),
+            )
     # Direct source mutations prove preamble/body/tail really reach Layer B/C.
     for di, path in enumerate(DOCUMENTS, 1):
         for where in ("preamble", "body", "tail"):

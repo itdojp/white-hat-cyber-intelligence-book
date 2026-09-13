@@ -574,6 +574,45 @@
             "第9章 Engagement DesignとRules of Engagement",
             "参考文献・Source Note ID"
           ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ローカル検査 任意の補助として、Linux/WSL2、Python 3、固定済みRuby/Bundler依存とRepositoryを準備します。初回は正本・build手順に従って依存を導入してから実行してください。検査自体は実Targetへの通信、承認発行、コンテナ操作、削除を行いません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "期待Evidenceは、4文書・ART-02・有限負例・Policy1.2.0・Projection1.1.0の整合性検査結果です。共有rendererを使用するため依存不足時は失敗します。Schema/JSON、親/Source、文書選択、Safetyの不一致があれば公開前検査も失敗し、生成を開始しません。入力不一致や実Data発見時は原因を調べるまで止め、検査を無効化しないでください。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "影響はRepositoryの読み取りと補助検査用の一時データに限定されます。検査は教材正本を削除しません。演習で別途作った合成メモは保管方針に従って整理し、正本・親のEvidence・承認記録と混同しないでください。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
         }
       ],
       "hostProvenance": [
@@ -725,6 +764,73 @@
           "headings": [
             "第9章 Engagement DesignとRules of Engagement",
             "9.6 DataとEvidenceの取扱いを先に決める"
+          ]
+        }
+      ],
+      "exerciseInstructionOrder": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "目的と入力 完全合成記入例と機械可読計画を読み、記録は整合していても作業を開始できない理由を説明してください。対象はこの供給教材だけです。実Credential・実Tenant・第三者システムで置き換えません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "目的と入力"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ローカル検査 任意の補助として、Linux/WSL2、Python 3、固定済みRuby/Bundler依存とRepositoryを準備します。初回は正本・build手順に従って依存を導入してから実行してください。検査自体は実Targetへの通信、承認発行、コンテナ操作、削除を行いません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "期待Evidenceは、4文書・ART-02・有限負例・Policy1.2.0・Projection1.1.0の整合性検査結果です。共有rendererを使用するため依存不足時は失敗します。Schema/JSON、親/Source、文書選択、Safetyの不一致があれば公開前検査も失敗し、生成を開始しません。入力不一致や実Data発見時は原因を調べるまで止め、検査を無効化しないでください。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "影響はRepositoryの読み取りと補助検査用の一時データに限定されます。検査は教材正本を削除しません。演習で別途作った合成メモは保管方針に従って整理し、正本・親のEvidence・承認記録と混同しないでください。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter09_contract.py"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
           ]
         }
       ]

@@ -142,6 +142,16 @@ def document_errors(document, spec, data):
         if actual != expected:
             errors.append("ART02 complete JSON/projected Case parity")
     if document.document_id == DOCUMENTS[0]:
+        # The chapter's local exercise must explain its purpose, prerequisites,
+        # expected evidence, stop conditions and cleanup before its command.
+        # Ordering uses Layer B fields, not a chapter-specific Markdown parser.
+        pairs = list(relations(document))
+        positions = [
+            [i for i, (_, relation) in enumerate(pairs) if relation == expected]
+            for expected in spec["exerciseInstructionOrder"]
+        ]
+        if any(len(p) != 1 for p in positions) or positions != sorted(positions):
+            errors.append("Chapter9 exercise explanations before command")
         body, refs = set(), set()
         for f, r in relations(document):
             if is_policy_scan_field(f):

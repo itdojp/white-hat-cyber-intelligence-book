@@ -189,13 +189,13 @@ Scope、Method、Data、Time、Budget、Owner、版、停止条件、Retestの�
 
 任意の補助として、Linux/WSL2、Python 3、固定済みRuby/Bundler依存とRepositoryを準備します。初回は[正本・build手順](../CANONICAL_SOURCE.md)に従って依存を導入してから実行してください。検査自体は実Targetへの通信、承認発行、コンテナ操作、削除を行いません。
 
-```bash
-python3 scripts/check_chapter09_contract.py
-```
-
 期待Evidenceは、4文書・ART-02・有限負例・Policy1.2.0・Projection1.1.0の整合性検査結果です。共有rendererを使用するため依存不足時は失敗します。Schema/JSON、親/Source、文書選択、Safetyの不一致があれば公開前検査も失敗し、生成を開始しません。入力不一致や実Data発見時は原因を調べるまで止め、検査を無効化しないでください。
 
 影響はRepositoryの読み取りと補助検査用の一時データに限定されます。検査は教材正本を削除しません。演習で別途作った合成メモは保管方針に従って整理し、正本・親のEvidence・承認記録と混同しないでください。
+
+```bash
+python3 scripts/check_chapter09_contract.py
+```
 
 ### 成果物とRubric
 

@@ -36,6 +36,7 @@ Install the repository's locked Ruby/Bundler renderer dependencies before these 
 | CH09-EX | Changing or duplicating each provenance exemption loses it; ordinary unsafe text is scanned |
 | CH09-SURFACE | Actual preamble/body/tail mutations in all four documents reach shared projection/scanning; unexpected sections fail |
 | CH09-PARITY | Every Case table row corresponds to a JSON leaf, including null and empty arrays |
+| CH09-BUILD-ORDER | Purpose/prerequisites/Evidence/stop/impact/cleanup precede the local command; historical and individually late explanations fail through exact renderer fields |
 | CH09-IO | Finite path inventory, bounded regular files, no-follow/nonblocking prerequisites |
 | CH09-SOURCE-DATE | Retained audit baseline accepts scoped newer canonical dates, rejects stale/noncanonical/type-confused dates |
 
@@ -60,3 +61,7 @@ The exact fields must occur once at the reviewed section and label. Changed unsa
 - The Chapter 7 navigation negative derives its invalid position from Chapter 11 instead of a stale literal 52. Its production ordering invariant is unchanged.
 - Navigation puts Chapter 9 between Chapters 8 and 11; Chapter 11's exact order constant moves from 52 to 54, leaving 53 for the later Chapter 10. No Chapter 11 prose, semantic contract, fixture or authority changes.
 - Shared Policy/Projection, formatter pin, dependency locks, parent canonical content and CROSS_BOOK_MAP are unchanged. Broad law/ethics/RoE remains BRIDGE; Chapter 9 owns only the book-specific artifact/decision/handoff layer under the existing §4/5/7 boundary. The theme-granularity follow-up remains Issue #55.
+
+## Review regression traceability
+
+- `PRRT_kwDOTi9cus6h3_y0` / [discussion3999336064](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/127#discussion_r3999336064): `CH09-BUILD-ORDER-historical` reproduces the reviewed command-before-Evidence/stop/cleanup order. Three individually late prerequisite/explanation variants also fail. `exerciseInstructionOrder` binds all five existing reader fields to Chapter 9's finite exercise and checks their order/cardinality; no Markdown parser or shared renderer change. The canonical change only moves the unchanged command block below its explanations.
