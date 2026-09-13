@@ -323,8 +323,14 @@ def run_regressions(
     def wrong_navigation(path):
         result = original_strict(path)
         if path == ROOT / "site-pages.json":
+            # Follow the actual Chapter 11 anchor as chapters are inserted.
+            # A fixed 52 stopped being an invalid order after Chapter 9 landed.
+            after_ch11 = next(
+                p["order"] for p in result["pages"]
+                if p["source"] == "manuscript/11-web-api-hypothesis.md"
+            ) + 1
             next(p for p in result["pages"] if p["source"] == DOCUMENTS[0])["order"] = (
-                52
+                after_ch11
             )
         return result
 
