@@ -90,7 +90,10 @@ def scan_document(document, spec, require_exceptions=False):
     if require_exceptions:
         for r in sorted(host | analytic):
             if counts[r] != 1:
-                errors.append(document.document_id + ": exact provenance cardinality")
+                errors.append(
+                    f"{document.document_id}: exact provenance cardinality: "
+                    f"expected 1, observed {counts[r]}; entry={r}"
+                )
     for field, relation in pairs:
         found = []
         identity = key(relation)

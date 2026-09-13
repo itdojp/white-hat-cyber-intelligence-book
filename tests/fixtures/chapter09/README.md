@@ -37,6 +37,7 @@ Install the repository's locked Ruby/Bundler renderer dependencies before these 
 | CH09-SURFACE | Actual preamble/body/tail mutations in all four documents reach shared projection/scanning; unexpected sections fail |
 | CH09-PARITY | Every Case table row corresponds to a JSON leaf, including null and empty arrays |
 | CH09-BUILD-ORDER | Purpose/prerequisites/Evidence/stop/impact/cleanup precede the local command; historical and individually late explanations fail through exact renderer fields |
+| CH09-DIAG | Missing/duplicated host and analytic provenance diagnostics identify the exact expected relation and observed count; acceptance/scanning behavior is unchanged |
 | CH09-IO | Finite path inventory, bounded regular files, no-follow/nonblocking prerequisites |
 | CH09-SOURCE-DATE | Retained audit baseline accepts scoped newer canonical dates, rejects stale/noncanonical/type-confused dates |
 
@@ -65,3 +66,4 @@ The exact fields must occur once at the reviewed section and label. Changed unsa
 ## Review regression traceability
 
 - `PRRT_kwDOTi9cus6h3_y0` / [discussion3999336064](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/127#discussion_r3999336064): `CH09-BUILD-ORDER-historical` reproduces the reviewed command-before-Evidence/stop/cleanup order. Three individually late prerequisite/explanation variants also fail. `exerciseInstructionOrder` binds all five existing reader fields to Chapter 9's finite exercise and checks their order/cardinality; no Markdown parser or shared renderer change. The canonical change only moves the unchanged command block below its explanations.
+- `PRRT_kwDOTi9cus6h4Gx7` / [discussion3999377576](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/127#discussion_r3999377576): `CH09-DIAG-{hostProvenance,analyticProvenance}-{missing,duplicate}` verifies actionable expected-entry/expected-count/observed-count diagnostics. Only the diagnostic text changes; the existing cardinality, projection and policy decisions are retained.

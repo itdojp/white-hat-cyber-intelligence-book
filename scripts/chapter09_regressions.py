@@ -26,6 +26,7 @@ from scripts.check_chapter09_contract import (
     document_errors,
     scan_document,
     canonical_errors,
+    key,
 )
 from scripts.publication_projection import project_documents, is_policy_scan_field
 from scripts.check_editorial_input_manifest import ManifestError
@@ -310,6 +311,21 @@ def run_regressions(data, schema, contract, source, projection):
                     f"CH09-EX-{di}-{family}-{ei}-duplicate",
                     bool(scan_document(duplicate, spec)),
                 )
+                if di == 1 and ei == 1:
+                    missing = replace(
+                        doc, fields=doc.fields[:index] + doc.fields[index + 1 :]
+                    )
+                    for label, probe, count in (
+                        ("missing", missing, 0), ("duplicate", duplicate, 2)
+                    ):
+                        expected = (
+                            f"{doc.document_id}: exact provenance cardinality: "
+                            f"expected 1, observed {count}; entry={key(relation)}"
+                        )
+                        check(
+                            f"CH09-DIAG-{family}-{label}",
+                            expected in scan_document(probe, spec, True),
+                        )
     # Chapter-specific exercise order, using actual shared renderer output.
     # Keep source literals here only to mutate the one finite local exercise.
     path = DOCUMENTS[0]
