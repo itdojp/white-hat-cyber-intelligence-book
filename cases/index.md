@@ -41,3 +41,7 @@
 ## 第9章の教育用補足
 
 [RoEの完全合成記入例](ch09-engagement-roe-example.md) / ART-02 / ROE-2026-009はCASE-2026-001をrefinesする。三つの供給Objectだけを読む非実行計画で、親Authorizationの期限経過を保持しDraft / Do not proceedとする。第11章の独立Caseへ権限やEvidenceを転用しない。
+
+## 第10章の教育用補足
+
+[Attack Surface Registerの完全合成記入例](ch10-attack-surface-example.md) / ART-19 / ASR-2026-010はCASE-2026-001をrefinesする。九Source・六候補を限定して比較し、所有確認と実行許可を分ける。親RoEのDraft/失効/三Objectを保持し、全候補はrecord-only / 未承認である。

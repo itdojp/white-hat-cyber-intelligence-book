@@ -37,3 +37,11 @@
 ## 第9章：RoEの非実行計画
 
 [ART-02 JSON](ch09-engagement-roe.json)と[閉じたSchema](../../schemas/ch09-engagement-roe.schema.json)は[完全合成記入例](../ch09-engagement-roe-example.md)の全Fieldに対応する。供給三Object、有限八状態、Scope/Method/Data/Stop、期限と版、CompletionとReauthorizationを検査する。記録整合性の成功と実行許可は別で、executionAuthorizedは常にfalseである。
+
+## 第10章 Attack Surface Register
+
+- [Register](ch10-attack-surface.json): ART-19の要求、親ID、取得区分、Source、候補、Evidence/Gap/承認不足/Handoff。
+- [Source bundle](ch10-source-bundle.json): 九つの作成者による合成要約。実収集・実観測はない。
+- [Schema](../../schemas/ch10-attack-surface.schema.json): 二JSONをregister / bundleとして束ねた論理入力の閉じた構造。
+
+[完全記入Case](../ch10-attack-surface-example.md)に全Fieldを掲載する。Hash対象は対応するcontent文字列のUTF-8 byteだけで、JSON全体やSourceの真正性・許可とは別。第10章公開前検査を通過しない入力はsite生成前に拒否する。

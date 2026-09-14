@@ -944,6 +944,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-14",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5660341358",
+          "reason": "Issue35/current contract/再確認した一次資料に従い登録候補を設計来歴として選択。rawは認可workspaceに不在、読了・実体hash照合・直接採用は主張しない。三Collection classes/五Verification statesへ新規構成し、同梱Chapter9の処分は伝播しない。"
         }
       ]
     },

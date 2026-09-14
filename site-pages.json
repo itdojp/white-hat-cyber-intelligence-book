@@ -305,6 +305,34 @@
       "section": "additional",
       "order": 258,
       "title": "第9章 Source Review Note：EngagementとRoE"
+    },
+    {
+      "source": "manuscript/10-recon-osint-boundary.md",
+      "destination": "chapters/chapter-10/index.md",
+      "section": "chapters",
+      "order": 53,
+      "title": "第10章 ReconnaissanceとOSINTの境界"
+    },
+    {
+      "source": "templates/attack-surface-register.md",
+      "destination": "templates/attack-surface-register/index.md",
+      "section": "additional",
+      "order": 259,
+      "title": "Attack Surface Register"
+    },
+    {
+      "source": "cases/ch10-attack-surface-example.md",
+      "destination": "cases/chapter-10-attack-surface/index.md",
+      "section": "additional",
+      "order": 261,
+      "title": "第10章 完全合成記入例：Attack Surface Register"
+    },
+    {
+      "source": "references/ch10-source-review-2026-09-14.md",
+      "destination": "references/chapter-10-source-review/index.md",
+      "section": "additional",
+      "order": 262,
+      "title": "第10章 Source Review Note：ReconとOSINTの境界"
     }
   ],
   "directoryRoutes": {
@@ -358,6 +386,18 @@
     {
       "source": "schemas/ch09-engagement-roe.schema.json",
       "destination": "downloads/ch09-engagement-roe.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch10-attack-surface.json",
+      "destination": "downloads/ch10-attack-surface.json"
+    },
+    {
+      "source": "cases/fixtures/ch10-source-bundle.json",
+      "destination": "downloads/ch10-source-bundle.json"
+    },
+    {
+      "source": "schemas/ch10-attack-surface.schema.json",
+      "destination": "downloads/ch10-attack-surface.schema.json"
     }
   ]
 }

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "bundleId": "BUNDLE-ASR10-001",
+  "synthetic": true,
+  "acquisitionOccurred": false,
+  "sources": [
+    {
+      "sourceId": "OSRC-ASR10-001",
+      "content": "Authored inventory: billing-bridge.example; parent ASSET-2026-001; declared owner SYNTH-BUSINESS-SYSTEMS; status listed."
+    },
+    {
+      "sourceId": "OSRC-ASR10-002",
+      "content": "Authored CT metadata: precertificate for preview.billing-bridge.example; issuer intent only; final certificate issuance unknown."
+    },
+    {
+      "sourceId": "OSRC-ASR10-003",
+      "content": "Authored archived DNS: RR owner retired.billing-bridge.example; CNAME legacy.supplier.example; observed 2025-01-10; current resolution unknown; inventory says retired."
+    },
+    {
+      "sourceId": "OSRC-ASR10-004",
+      "content": "Authored public code summary: code.other-org.example/billing-bridge; owner SYNTH-OTHER-ORG; same name only; no relation to CASE-2026-001."
+    },
+    {
+      "sourceId": "OSRC-ASR10-005",
+      "content": "Authored SaaS export summary: workspace shadow-workspace.example; owner not recorded; inventory membership unknown; no account or personal fields."
+    },
+    {
+      "sourceId": "OSRC-ASR10-006",
+      "content": "Authored package metadata: registry.packages.example/billing-helper; dependency supplier-sdk.example; publisher ownership not verified."
+    },
+    {
+      "sourceId": "OSRC-ASR10-007",
+      "content": "Authored response summary: package label billing-helper at packages-view.example; no real request or observation occurred."
+    },
+    {
+      "sourceId": "OSRC-ASR10-008",
+      "content": "Authored owner statement: SYNTH-BUSINESS-SYSTEMS declares billing-bridge.example corresponds to ASSET-2026-001; limited to this supplied teaching record."
+    },
+    {
+      "sourceId": "OSRC-ASR10-009",
+      "content": "Authored CT mirror summary: same precertificate as OSRC-ASR10-002; derived copy, not an independent origin."
+    }
+  ]
+}

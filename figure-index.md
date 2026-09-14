@@ -45,6 +45,12 @@
 | T-09-05 | Assessment・Retest・Control ValidationへのHandoff | `manuscript/09-engagement-roe.md` | Implemented |
 | T-09-06 | ART-02のRubric | `manuscript/09-engagement-roe.md` | Implemented |
 | F-09-01 | Stopから再審査への接続 | `manuscript/09-engagement-roe.md` | Implemented |
+| F-10-01 | 候補発見から承認不足の記録まで | `manuscript/10-recon-osint-boundary.md` | Implemented |
+| T-10-01 | Collection classと本演習の制限 | `manuscript/10-recon-osint-boundary.md` | Implemented |
+| T-10-02 | Sourceと残るGap | `manuscript/10-recon-osint-boundary.md` | Implemented |
+| T-10-03 | 五つのVerification state | `manuscript/10-recon-osint-boundary.md` | Implemented |
+| T-10-04 | 誤判断と修正 | `manuscript/10-recon-osint-boundary.md` | Implemented |
+| T-10-05 | ART-19 Rubric | `manuscript/10-recon-osint-boundary.md` | Implemented |
 | F-11-01 | DecisionからDetectionまでの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | F-11-02 | Request・Evidence・Telemetry・Decisionの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | T-11-01 | ChecklistとHypothesis Packの違い | `manuscript/11-web-api-hypothesis.md` | Implemented |

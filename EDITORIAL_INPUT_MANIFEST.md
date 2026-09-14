@@ -17,7 +17,8 @@
 | `blueprint-only` | 1 |
 | `consumed` | 6 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 20 |
+| `registered-pending-prerequisites` | 19 |
+| `selected-for-intake` | 1 |
 
 ## Acknowledged collisions
 
@@ -55,7 +56,7 @@
 | `chapter-07` | #32 | `consumed` | `EIC-0032-6caf4e3d9174` | #120 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5648933706) |
 | `chapter-08` | #33 | `consumed` | `EIC-0033-eee4bacd1c7b` | #123 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5650941182) |
 | `chapter-09` | #34 | `consumed` | `EIC-0034-dd0c5e0b83f3` | #127 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5659602660) |
-| `chapter-10` | #35 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652) |
+| `chapter-10` | #35 | `selected-for-intake` | `EIC-0035-23f9af567b80` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5660341358) |
 | `chapter-12` | #36 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
 | `chapter-13` | #37 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
 | `chapter-14` | #38 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
@@ -122,7 +123,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0035-23f9af567b80` | `EIP-0005` | `chapter10-recon-osint-boundary.predraft.md` | `23f9af567b80d64c0d191b0f7905ddd8350ce81606d24c72626949fa30739002` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0035-23f9af567b80` | `EIP-0005` | `chapter10-recon-osint-boundary.predraft.md` | `23f9af567b80d64c0d191b0f7905ddd8350ce81606d24c72626949fa30739002` | `selected` | Issue35/current contract/再確認した一次資料に従い登録候補を設計来歴として選択。rawは認可workspaceに不在、読了・実体hash照合・直接採用は主張しない。三Collection classes/五Verification statesへ新規構成し、同梱Chapter9の処分は伝播しない。 |
 
 ### `chapter-12` / Issue #36
 

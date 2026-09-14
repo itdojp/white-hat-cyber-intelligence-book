@@ -97,3 +97,15 @@
 | Restart authority | 停止原因の解消と残存リスクを確認し、同じ版の再開を判断する責任。Cleanupとは別 |
 
 [第9章](manuscript/09-engagement-roe.md)の有限教材は実署名・通知・隔離・法的承認を検証しない。
+
+## 第10章の用語
+
+| 用語 | 本書での意味 |
+|---|---|
+| Attack Surface Register | Sourceから候補・所有Confidence・次Actionの不足条件まで追跡する判断記録。脆弱性一覧ではない |
+| Collection class | Passive / Active / Authenticatedの三つ。Source classと実際の学習操作を別に記録 |
+| Provenance | 原典、派生、取得方法、時点、変換、Hash対象、取扱いと限界の記録 |
+| Owner confirmed | 対象IDと所有者の根拠を限定して照合した検証状態。実行許可ではない |
+| Unverified | 所有未確認を示す属性。五Verification statesとは別 |
+
+[第10章](manuscript/10-recon-osint-boundary.md)は完全合成・offlineで、Source真正性・法的承認・実稼働を保証しない。
