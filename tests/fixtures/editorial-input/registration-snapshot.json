@@ -925,6 +925,12 @@
           "effectiveAt": "2026-09-13",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/127",
           "reason": "専用Draft PR #127と実URLのIntake Recordを作成。raw不在で直接採用なし。完全合成RoEはDraft/Do not proceed。通常merge/main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-14",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5659602660",
+          "reason": "PR #127通常merge: ad4957f827157e54fb53d3acc75ed08edbf59d7c。review済みheadとmerge tree一致。exact-main Book Contract 34810111029 / Book QA 34810111114 / Deploy Pages 34810110931、deployment 6431203533がsuccess。第9章・ART-02・Case・Source Note・計画JSON/Schema・代表章を含む公開20surfaceのHTTP200とreview済み出力とのbyte一致、対象五JSONと正本の一致を確認。両raw不在・直接採用なし、B選択/A DeferredのIntake Recordを保持。"
         }
       ]
     },
