@@ -1,5 +1,6 @@
 """Finite ART-19 counterexamples. Generic syntax remains Layer B-owned."""
 
+import ast
 from copy import deepcopy
 from dataclasses import replace
 import hashlib
@@ -67,6 +68,33 @@ def run_regressions(data, bundle, schema, contract, source, projection):
         at(root, path[:-1])[path[-1]] = value
         check(ident, bool(validate(d, b)))
 
+    # PR130 / discussion_r4003440638: explicit UTF-8 for this finite tooling
+    # inventory, including regression-only temporary JSON. No locale defaults.
+    for module in (
+        "chapter10_semantics.py",
+        "check_chapter10_contract.py",
+        "chapter10_regressions.py",
+    ):
+        tree = ast.parse((ROOT / "scripts" / module).read_bytes().decode("utf-8"))
+        calls = [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr in ("read_text", "write_text")
+        ]
+        check(
+            "CH10-UTF8-" + module,
+            all(
+                any(
+                    kw.arg == "encoding"
+                    and isinstance(kw.value, ast.Constant)
+                    and kw.value.value == "utf-8"
+                    for kw in call.keywords
+                )
+                for call in calls
+            ),
+        )
     check("CH10-POS-canonical", not validate())
     check(
         "CH10-POS-five-states",
@@ -545,7 +573,7 @@ def run_regressions(data, bundle, schema, contract, source, projection):
             p.write_bytes((ROOT / relative).read_bytes())
         check("CH10-REPO-positive", not repository_errors(contract, root))
         path = root / "package.json"
-        baseline = json.loads(path.read_text())
+        baseline = json.loads(path.read_text(encoding="utf-8"))
         for label, replacement in (
             ("missing", ""),
             (
@@ -556,9 +584,9 @@ def run_regressions(data, bundle, schema, contract, source, projection):
         ):
             p = deepcopy(baseline)
             p["scripts"]["sync:docs"] = replacement
-            path.write_text(json.dumps(p))
+            path.write_text(json.dumps(p), encoding="utf-8")
             check(
                 "CH10-REPO-preflight-" + label, bool(repository_errors(contract, root))
             )
-        path.write_text(json.dumps(baseline))
+        path.write_text(json.dumps(baseline), encoding="utf-8")
     return len(ids), errors

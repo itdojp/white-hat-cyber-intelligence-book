@@ -26,10 +26,13 @@
 | CH10-SOURCE | Every required Source ID must match the existing repository token vocabulary independently in body and references; lowercase-suffix source mutations, uppercase/digit/underscore/prefix field mutations and exact-ID punctuation counterparts |
 | CH10-PARITY | Every scalar/empty-array row from both JSON files is checked against shared projected Case fields |
 | CH10-IO / REPO | Fixed regular paths, symlink/ancestor/platform/size/special-file refusal; root script/route/source/index obligations; publication preflight must precede generation |
+| CH10-UTF8 | Explicit UTF-8 on every Path text read/write in the three Chapter10 tooling modules, including regression-only temporary JSON |
 
 The root command runs every finite regression and is repeated under PYTHONHASHSEED 0/1/7/42 in release verification. Direct publication-before-delete negative probes are additionally run through the actual root `sync:docs` command in an owned clean worktree. Regression counts do not represent independent human reviews or general grammar coverage.
 
 PR130 review thread `PRRT_kwDOTi9cus6iB-DN` / discussion `4003243071` maps to `CH10-SOURCE-3-both-rendered-suffix` (historical `SRC-CT-001x`) and the complete `CH10-SOURCE` family. The production consumer reuses `SOURCE_ID_RE` from the existing import-safe representative gate; it does not call that gate's legacy rendering helpers, redefine the ID grammar or parse Markdown. The six fixed Source IDs are compared as extracted identities, not substring occurrences. The punctuation counterparts isolate Source ownership; they do not waive the separately required exact semantic/provenance fields.
+
+PR130 review thread `PRRT_kwDOTi9cus6iCdzI` / discussion `4003440638` maps to `CH10-UTF8-chapter10_regressions.py` and the other two module guards. The three temporary-JSON IO calls now specify UTF-8; an external probe executes those actual expressions in source order with an owned non-ASCII JSON fixture under `LC_ALL=C`, `PYTHONUTF8=0`, `PYTHONCOERCECLOCALE=0`. This is a test-tooling portability fix, not a change to the production contract or canonical data, and does not claim a whole-suite locale audit.
 
 ## Exact, non-expandable provenance
 
