@@ -26,6 +26,7 @@ from scripts.chapter10_semantics import (  # noqa: E402
     case_groups,
 )
 from scripts.check_editorial_input_manifest import ManifestError, load_json_strict  # noqa: E402
+from scripts.check_representative_gate import SOURCE_ID_RE  # noqa: E402
 from scripts.content_safety_policy import (  # noqa: E402
     POLICY_VERSION,
     scan_action_text,
@@ -161,13 +162,11 @@ def document_errors(document, spec, data, bundle):
         body, refs = set(), set()
         for f, r in pairs:
             if is_policy_scan_field(f):
-                for sid in SOURCE_IDS:
-                    if sid in f.text:
-                        (
-                            refs
-                            if "参考文献・Source Note ID" in r["headings"]
-                            else body
-                        ).add(sid)
+                # Reuse the repository's Source-ID token vocabulary, not
+                # substring membership or a chapter-specific syntax parser.
+                (refs if "参考文献・Source Note ID" in r["headings"] else body).update(
+                    SOURCE_ID_RE.findall(f.text)
+                )
         if body != set(SOURCE_IDS) or refs != set(SOURCE_IDS):
             errors.append("Chapter10 body/reference Source ownership")
     return errors

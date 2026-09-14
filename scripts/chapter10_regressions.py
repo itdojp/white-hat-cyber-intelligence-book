@@ -21,6 +21,7 @@ from scripts.chapter10_semantics import (
 )
 from scripts.check_chapter10_contract import (
     ROOT,
+    SOURCE_IDS,
     relations,
     key,
     scan_document,
@@ -355,6 +356,73 @@ def run_regressions(data, bundle, schema, contract, source, projection):
     ).documents[0]
     check("CH10-SURFACE-unsupported", bool(doc.diagnostics))
     text = source[path]
+    # PR130 / discussion_r4003243071: Source identities belong to Layer A.
+    # The existing shared renderer supplies fields; no Markdown parsing here.
+    ownership_error = "Chapter10 body/reference Source ownership"
+    chapter = projection.documents[0]
+    before, reference = text.split("\n## 参考文献・Source Note ID\n", 1)
+    for si, sid in enumerate(SOURCE_IDS, 1):
+        for scope in ("body", "references", "both"):
+            probe = (
+                (before.replace(sid, sid + "x") if scope != "references" else before)
+                + "\n## 参考文献・Source Note ID\n"
+                + (reference.replace(sid, sid + "x") if scope != "body" else reference)
+            )
+            doc = project_documents({path: probe}).documents[0]
+            check(
+                f"CH10-SOURCE-{si}-{scope}-rendered-suffix",
+                ownership_error
+                in document_errors(doc, contract["documents"][path], data, bundle),
+            )
+            for suffix, replacement in (
+                ("upper", sid + "X"),
+                ("digit", sid + "2"),
+                ("underscore", sid + "_x"),
+                ("prefix", "X" + sid),
+            ):
+                fields = []
+                for field, relation in relations(chapter):
+                    in_refs = "参考文献・Source Note ID" in relation["headings"]
+                    selected = scope == "both" or (scope == "references") == in_refs
+                    if selected:
+                        field = replace(
+                            field,
+                            text=field.text.replace(sid, replacement),
+                            normalized_text=field.normalized_text.replace(
+                                sid, replacement
+                            ),
+                        )
+                    fields.append(field)
+                check(
+                    f"CH10-SOURCE-{si}-{scope}-{suffix}",
+                    ownership_error
+                    in document_errors(
+                        replace(chapter, fields=tuple(fields)),
+                        contract["documents"][path],
+                        data,
+                        bundle,
+                    ),
+                )
+        # Exact IDs remain recognized next to punctuation, independently of
+        # the separate frozen semantic-field/provenance assertions.
+        fields = tuple(
+            replace(
+                f,
+                text=f.text.replace(sid, "(" + sid + ")"),
+                normalized_text=f.normalized_text.replace(sid, "(" + sid + ")"),
+            )
+            for f in chapter.fields
+        )
+        check(
+            f"CH10-SOURCE-{si}-exact-punctuation",
+            ownership_error
+            not in document_errors(
+                replace(chapter, fields=fields),
+                contract["documents"][path],
+                data,
+                bundle,
+            ),
+        )
     start = text.index("**Purpose:**")
     end = text.index("\n1. Caseを見る前に", start)
     blocks = text[start:end].strip().split("\n\n")

@@ -23,10 +23,13 @@
 | CH10-JSON / TIME / SCHEMA | Duplicate keys, NaN/Infinity, malformed UTF-8/JSON/time, unsupported schema vocabulary |
 | CH10-DOC / EX / DIAG | Canonical zero findings; finite semantic field presence; exception mutation/movement/duplication/removal and exact actionable cardinality diagnostics |
 | CH10-SURFACE / ORDER | Direct unsafe preamble/body/tail; unexpected chapter section; one shared unsupported marker; every exercise explanation precedes the command |
+| CH10-SOURCE | Every required Source ID must match the existing repository token vocabulary independently in body and references; lowercase-suffix source mutations, uppercase/digit/underscore/prefix field mutations and exact-ID punctuation counterparts |
 | CH10-PARITY | Every scalar/empty-array row from both JSON files is checked against shared projected Case fields |
 | CH10-IO / REPO | Fixed regular paths, symlink/ancestor/platform/size/special-file refusal; root script/route/source/index obligations; publication preflight must precede generation |
 
 The root command runs every finite regression and is repeated under PYTHONHASHSEED 0/1/7/42 in release verification. Direct publication-before-delete negative probes are additionally run through the actual root `sync:docs` command in an owned clean worktree. Regression counts do not represent independent human reviews or general grammar coverage.
+
+PR130 review thread `PRRT_kwDOTi9cus6iB-DN` / discussion `4003243071` maps to `CH10-SOURCE-3-both-rendered-suffix` (historical `SRC-CT-001x`) and the complete `CH10-SOURCE` family. The production consumer reuses `SOURCE_ID_RE` from the existing import-safe representative gate; it does not call that gate's legacy rendering helpers, redefine the ID grammar or parse Markdown. The six fixed Source IDs are compared as extracted identities, not substring occurrences. The punctuation counterparts isolate Source ownership; they do not waive the separately required exact semantic/provenance fields.
 
 ## Exact, non-expandable provenance
 
