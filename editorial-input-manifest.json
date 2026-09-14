@@ -1309,28 +1309,73 @@
       "targetId": "chapter-09",
       "issue": 34,
       "targetKind": "chapter",
-      "status": "candidate-selection-required",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "canonical-pr-open",
+      "selectedCandidateId": "EIC-0034-dd0c5e0b83f3",
+      "canonicalPr": 127,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/127",
+        "packageId": "EIP-0006",
+        "packageSha256": "1a2ccaa3dc3453dfc91c28a482bb8e319b5a2db6023d2d64f8cce2133619efb3",
+        "inputPath": "chapter09-engagement-roe.predraft.md",
+        "inputSha256": "dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579",
+        "targetIssue": 34,
+        "canonicalPr": 127,
+        "currentMainSha": "adf88935891b99ce781bbaaeba4b51e48fb1fc7d",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-13",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。両候補の登録概要を比較し、Bを設計来歴として選択した。"
+        ],
+        "rewrittenSections": [
+          "current Issue34、Chapter2/4/8親契約、再確認した一次Sourceから第9章・ART02・完全合成Case・JSON/Schema・有限Layer A contractを新規構成。Authorization evidence/RoE/ProcedureとTechnical/Decision completionを分離した。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw読了・実体hash照合・直接adoptionは不採用。A原文の比較は将来IntakeへDeferredで、品質不良とは判定しない。",
+          "実Target/実Credential/外部通信/Runtime/実署名検証/削除は非目標。個別法的助言・契約全文・製品/攻撃手順は委譲。第10章以降はHandoff定義だけ、本文は各Issue。"
+        ],
+        "sourceRevalidation": [
+          "NIST SP800-115 Final/September2008の公式ページ/PDFを取得し、§6.5–6.6/Appendix Bの計画・制約・Data・連絡・停止/再開・報告へ限定。新規SRC-NIST-TEST-001。",
+          "WSTG stable4.2/5.0developmentを公式project/versionedIntroductionで再確認。Chapter11の語彙へのBridgeに限定。",
+          "e-Gov公式law-data v2と現行表示APIで2025-06-01施行/CurrentEnforcedを確認。版維持、個別法的適用は不明のまま。",
+          "IPA公式2024版61頁PDFとページ更新2026-04-06を再確認。役割/情報取扱い/調整に限定し、許可や免責の代替にしない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/09-engagement-roe.md",
+          "templates/rules-of-engagement.md",
+          "cases/ch09-engagement-roe-example.md",
+          "references/ch09-source-review-2026-09-13.md",
+          "cases/fixtures/ch09-engagement-roe.json",
+          "schemas/ch09-engagement-roe.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報と採否の監査日であり、raw読了日ではない。",
+          "AUTH-CASE-2026-001の8月19日期限と元の8月6日Test windowを保持。正本はDraft/Do not proceedで、CIから実施許可を発行しない。親の状態やChapter11独立Caseは変更しない。",
+          "完全合成の仮定モデルで、実署名・権限・法的判断・通知・隔離・削除・PII完全検出を保証しない。",
+          "CROSS_BOOK_MAPの広いRoEテーマはBRIDGE。本章OWNは本書固有の成果物/判断/Handoffに限定し、粒度整理は既存Issue55。",
+          "PR #127作成時は通常mergeとmain/publication未完了。consumedはその確認後の別metadata更新でのみ記録する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0034-00de5e803e04",
           "packageId": "EIP-0005",
           "inputPath": "chapter09-engagement-roe.predraft.md",
           "inputSha256": "00de5e803e04d13ae80b9960489a2d7d90d6564c88324d7f32aed8c28c96ea91",
-          "disposition": "pending-comparison",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
-          "dispositionReason": "Issue #34、Chapter 2/4/8契約、current Policyと一次資料に対する比較が未実施。"
+          "disposition": "deferred",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
+          "dispositionReason": "未選択代替として原文比較を将来Intakeへ保留。品質不良とは判定していない。同梱第10章の状態は不変。raw不在、直接採用なし。"
         },
         {
           "candidateId": "EIC-0034-dd0c5e0b83f3",
           "packageId": "EIP-0006",
           "inputPath": "chapter09-engagement-roe.predraft.md",
           "inputSha256": "dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579",
-          "disposition": "pending-comparison",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
-          "dispositionReason": "Issue #34、Chapter 2/4/8契約、current Policyと一次資料に対する比較が未実施。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
+          "dispositionReason": "候補Bを登録設計の来歴として明示選択。current contractと実取得した一次資料から新規構成し、raw直接採用なし。"
         }
       ],
       "statusHistory": [
@@ -1345,6 +1390,18 @@
           "effectiveAt": "2026-08-10",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
           "reason": "Input SHAが異なる2候補を検出。比較記録なしのwinner選択を禁止した。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
+          "reason": "両候補の登録概要をcurrent Issue・親契約・一次Sourceと比較。Authority/RoE/Procedureとtechnical/decision completionの分離が現在の制約に対応するBを設計来歴として選択。raw両方不在、本文優劣・読了・hash検証・直接採用は主張しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/127",
+          "reason": "専用Draft PR #127と実URLのIntake Recordを作成。raw不在で直接採用なし。完全合成RoEはDraft/Do not proceed。通常merge/main/publicationは未完了。"
         }
       ]
     },

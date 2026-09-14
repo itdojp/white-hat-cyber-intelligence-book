@@ -2131,6 +2131,24 @@ def prepare_checkpoint_regression(
     checkpoint["statusHistoryPrefix"] = copy.deepcopy(target["statusHistory"])
 
 
+def prepare_comparison_regression(manifest: dict[str, Any], snapshot: dict[str, Any]) -> None:
+    """Restore a valid test-only comparison baseline after Chapter 9 intake.
+
+    Reset both history copies; otherwise live selection/consumption can mask
+    the intended negative. No production lifecycle or checkpoint is relaxed.
+    """
+    target = next(t for t in manifest["targets"] if t["targetId"] == "chapter-09")
+    index = next(i for i, h in enumerate(target["statusHistory"])
+                 if h["status"] == "candidate-selection-required")
+    target["statusHistory"] = target["statusHistory"][:index + 1]
+    target.update(status="candidate-selection-required", selectedCandidateId=None,
+                  canonicalPr=None, intakeRecord=None)
+    for candidate in target["candidates"]:
+        candidate["disposition"] = "pending-comparison"
+    checkpoint = next(t for t in snapshot["targets"] if t["targetId"] == "chapter-09")
+    checkpoint["statusHistoryPrefix"] = copy.deepcopy(target["statusHistory"])
+
+
 def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
     packages = manifest["packages"]
     targets = {item["targetId"]: item for item in manifest["targets"]}
@@ -2378,6 +2396,12 @@ def run_manifest_regressions(
         mutated = copy.deepcopy(manifest)
         mutation = require_string(case["mutation"], f"{label}.mutation")
         case_snapshot = registration_snapshot
+        if mutation in {"multi-candidate-registered", "comparison-selected-like-candidate",
+                        "filename-only-selection", "silent-latest-wins", "selected-alternative-missing"}:
+            case_snapshot = copy.deepcopy(registration_snapshot)
+            prepare_comparison_regression(mutated, case_snapshot)
+            validate_manifest(mutated, schema)
+            validate_registration_snapshot(mutated, case_snapshot)
         if mutation == "status-history-checkpoint-unpersisted":
             case_snapshot = copy.deepcopy(registration_snapshot)
             prepare_checkpoint_regression(mutated, case_snapshot)

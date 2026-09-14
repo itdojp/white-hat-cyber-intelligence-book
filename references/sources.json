@@ -272,8 +272,8 @@
       "version": "4.2; 5.0 under development",
       "url": "https://owasp.org/www-project-web-security-testing-guide/",
       "publishedAt": "2020-12-03",
-      "checkedAt": "2026-08-03",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-09-13",
+      "nextReviewAt": "2026-12-13",
       "reviewTriggers": [
         "WSTG stable or 5.0 release"
       ],
@@ -283,7 +283,7 @@
         14,
         15
       ],
-      "notes": "Versioned links should be used in published chapters."
+      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption."
     },
     {
       "id": "SRC-API-001",
@@ -531,8 +531,8 @@
       "version": "current display effective 2025-06-01",
       "url": "https://laws.e-gov.go.jp/law/411AC0000000128",
       "publishedAt": null,
-      "checkedAt": "2026-08-05",
-      "nextReviewAt": "2026-11-05",
+      "checkedAt": "2026-09-13",
+      "nextReviewAt": "2026-12-13",
       "reviewTriggers": [
         "law amendment or legal chapter release"
       ],
@@ -540,7 +540,7 @@
         2,
         9
       ],
-      "notes": "The e-Gov current display was rechecked on 2026-08-05 and showed the law effective from 2025-06-01. Always confirm current text before publication; this book is not legal advice."
+      "notes": "The e-Gov current display was rechecked on 2026-08-05 and showed the law effective from 2025-06-01. Always confirm current text before publication; this book is not legal advice. Chapter 9 scoped re-audit 2026-09-13: official law-data v2 and revision display confirm CurrentEnforced revision 411AC0000000128_20250601_504AC0000000068, effective 2025-06-01; Articles 2 and 3 read. The HTML shell alone is not text evidence. No individual legal applicability or renewed Authorization is asserted."
     },
     {
       "id": "SRC-IPA-VDP-001",
@@ -551,16 +551,17 @@
       "version": "2024 edition",
       "url": "https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html",
       "publishedAt": null,
-      "checkedAt": "2026-08-05",
-      "nextReviewAt": "2026-11-05",
+      "checkedAt": "2026-09-13",
+      "nextReviewAt": "2026-12-13",
       "reviewTriggers": [
         "guideline revision or disclosure chapter release"
       ],
       "chapters": [
         2,
+        9,
         15
       ],
-      "notes": "The official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05, and the official page showed last update 2026-04-06. The current page and linked guideline must be rechecked at publication time."
+      "notes": "The official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05, and the official page showed last update 2026-04-06. The current page and linked guideline must be rechecked at publication time. Chapter 9 scoped re-audit 2026-09-13: official page and 61-page PDF retain 2024 edition, page last update 2026-04-06; role, handling and coordination sections reviewed. PDF SHA256 98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458. Reporting/coordination guidance is not assessment or publication permission."
     },
     {
       "id": "SRC-IANA-TLD-001",
@@ -832,6 +833,26 @@
         8
       ],
       "notes": "CSRC Date Published is September 2017; its distinct History date is 09/25/17. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3.5.2, 4.4.2, 4.4.3 and 4.5.5: shared-kernel residual risk, network/runtime/host boundaries. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed."
+    },
+    {
+      "id": "SRC-NIST-TEST-001",
+      "publisher": "NIST",
+      "title": "Technical Guide to Information Security Testing and Assessment",
+      "kind": "technical-guide",
+      "status": "final",
+      "version": "SP 800-115, September 2008",
+      "url": "https://csrc.nist.gov/pubs/sp/800/115/final",
+      "publishedAt": null,
+      "checkedAt": "2026-09-13",
+      "nextReviewAt": "2027-09-13",
+      "reviewTriggers": [
+        "NIST revision, withdrawal or supersession",
+        "Adopted planning scope or legal/authority boundary changes"
+      ],
+      "chapters": [
+        9
+      ],
+      "notes": "Chapter 9 checked official landing and 80-page PDF on 2026-09-13. Adopted sections 6.5-6.6 and Appendix B: planning, scope, constraints, contacts, data, stop/restart, reporting and approval. Not a modern product procedure, blanket authorization or adoption of old offensive/covert examples. Date Published is September 2008; Document History 09/30/08 is a separate attribute. Exact publication day is unknown, so publishedAt is null; do not infer it from history. PDF SHA256 58e5ed41e5c8ca34ce14fd80b70f118f2c6d613d1647bc307edca30bcc45f063. The finite eight states and numeric limits are book-authored teaching assumptions, not NIST requirements."
     }
   ]
 }

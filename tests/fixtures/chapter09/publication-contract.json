@@ -1,0 +1,1743 @@
+{
+  "schemaVersion": "1.0.0",
+  "documents": {
+    "manuscript/09-engagement-roe.md": {
+      "headings": [
+        [
+          1,
+          "第9章 Engagement DesignとRules of Engagement"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "9.1 Authorization、RoE、Procedureを分ける"
+        ],
+        [
+          2,
+          "9.2 Decision Requirementと継承時点を固定する"
+        ],
+        [
+          2,
+          "9.3 Scopeは対象外と既定拒否を含める"
+        ],
+        [
+          2,
+          "9.4 Methodはツール名ではなく作用で限定する"
+        ],
+        [
+          2,
+          "9.5 Timeと作用量を予算として定義する"
+        ],
+        [
+          2,
+          "9.6 DataとEvidenceの取扱いを先に決める"
+        ],
+        [
+          2,
+          "9.7 Stop、連絡、Recovery、Restartを分離する"
+        ],
+        [
+          2,
+          "9.8 有限Statusと承認の意味"
+        ],
+        [
+          2,
+          "9.9 Technical completionとDecision completion"
+        ],
+        [
+          2,
+          "9.10 Change、Retest、Handoff"
+        ],
+        [
+          2,
+          "安全な分析課題"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この章の位置付け 「実施してよい」という判断だけでは、担当者が何をどこまで行い、いつ止めるかは一意に決まりません。逆に、詳細な作業計画があっても、その対象に対する許可が存在するとは限りません。本章はDecision RequirementとAuthorization evidenceを、範囲・作用・時間・Data・停止・復旧・Evidence・完了条件を持つ Rules of Engagement（RoE） へ接続します。RoEは権限の発生源ではなく、確認済み権限より狭い実施条件です。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "OWN / BRIDGE / DELEGATE OWN: 本書固有のART-02で、Decision Requirementから許可根拠、Scope、Method、Stop、Evidence、Reauthorizationへ至る直接IDと判断責任を説明します。成果物の記入、停止判断、後続章へのHandoffを本章だけで完結させます。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "この章の位置付け",
+            "OWN / BRIDGE / DELEGATE"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "OWN / BRIDGE / DELEGATE BRIDGE: 法・倫理・許可・RoEという広いテーマの扱いはCROSS_BOOK_MAPのBRIDGEを維持します。既存書籍へ進む前にも必要な入出力・判断・Evidence・責任を、本書固有の文脈に限定して残します。第2・4・8章からの継承と、第10〜15・21章への接続が対象です。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "この章の位置付け",
+            "OWN / BRIDGE / DELEGATE"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "OWN / BRIDGE / DELEGATE DELEGATE: 個別事案の法的助言、契約書全文、業界固有規制、製品固有操作、脆弱性別の詳細手順は詳述しません。Pentest学習書へ方法論の詳細を委譲します。委譲先の説明を読んでも、個別のAuthorization確認は省略できません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "この章の位置付け",
+            "OWN / BRIDGE / DELEGATE"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Sponsorは目的や予算を持つ役割、Authority ownerは許可根拠を確認する役割、System ownerとData ownerは対象とDataの責任を持つ役割です。同一人物が兼務する場合も、役割ごとの承認範囲を残します。署名の画像がある、Gitのレビューが通った、CIが成功したという事実だけでは、これらの権限を確認したことにはなりません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.1 Authorization、RoE、Procedureを分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章の親AUTH-CASE-2026-001の記録は、歴史的にはProceed with conditionsですが、有効期限は 2026-08-19T18:00:00+09:00 です。合成Caseの作成基準時点2026-09-13には期限を過ぎています。第8章のSafeやCleanup verified、EvidenceのHash一致は、この期限を延長しません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.2 Decision Requirementと継承時点を固定する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ROE-2026-009は項目を完全に記入した Draft / Do not proceed とします。空欄を隠した未完成例ではなく、実施を妨げるGAP-ROE09-001、責任者、次の再評価を記録した計画例です。新しいAuthorizationと判断期限が必要な場合は別の根拠とIDを用意し、親記録を改変せずに接続し直します。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.2 Decision Requirementと継承時点を固定する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "親DR-2026-001の期限2026-07-22T09:00:00+09:00、REA-2026-001の2026-08-21、第4章TM-2026-001のNeeds Evidenceは保持します。本章の再評価予定は別のREA-ROE09-001です。Openの継続禁止条件を、後続計画が存在するだけでSatisfiedへ変更しません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.2 Decision Requirementと継承時点を固定する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "9.3 Scopeは対象外と既定拒否を含める ScopeはDomainの一覧だけではありません。対象Asset、Identity、Environment、Data、Operation、時間、依存先を分け、正確な識別子で列挙します。未記載の対象は許可ではなく 既定拒否 です。Wildcardや「関連するすべて」のような表現を残すと、対象の追加時にScopeが無審査で広がります。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.3 Scopeは対象外と既定拒否を含める"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章は同梱JSON内のOBJ-ROE09-CONFIG、OBJ-ROE09-EVENT、OBJ-ROE09-POLICYだけを対象にします。それぞれ合成OAuth設定、作成者が記述したEvent、方針Snapshotです。Eventの文章は実測Logではありません。EnvironmentとReader identityも教材用の識別子であり、接続先やログインAccountではありません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.3 Scopeは対象外と既定拒否を含める"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章の許可候補は供給JSONの読み取り、合成Fieldの比較、上限内の要約の作成だけです。Conditionalは空集合です。実作業としての承認は未充足であり、この候補一覧が実施許可を発行するわけではありません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.4 Methodはツール名ではなく作用で限定する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "合成計画の提案Windowは2026-09-14T00:00:00Z〜00:30:00Zです。これは失効した親許可の外側にあるため、そのまま実施できません。数値がそろっていることと許可の有効性は別の検査です。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.5 Timeと作用量を予算として定義する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "これらはNIST等が指定した安全値でも、実行環境に適用済みの制限でもありません。本書が比較課題のために定義した数値です。上限超過時は新規作業を止め、Gapを記録します。処理完了を理由に上限を後から増やしません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.5 Timeと作用量を予算として定義する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章のEVD-ROE09-001は作成者が記入した計画記録です。RoE IDと版、Scope/Method、合成Object、時刻とCustodian、Sourceと限界、Stopと処置を必要Fieldとします。教材正本のHashはbyteの照合用であり、実測の真正性、法的証拠能力、実行成功を保証しません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.6 DataとEvidenceの取扱いを先に決める"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "停止した作業を再開するには、原因と残存リスクを確認し、版に結び付いた再開承認が必要です。Cleanup完了と作業再開の許可を同じ判定にしません。連絡先や復旧可能性が不明なら、新規作業はDo not proceedのままです。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.7 Stop、連絡、Recovery、Restartを分離する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 意味 新規作業の扱い Draft 条件を記入し、Gapを整理中 開始しない"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.8 有限Statusと承認の意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 意味 新規作業の扱い Under review 役割別に範囲と条件を審査中 開始しない"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.8 有限Statusと承認の意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 意味 新規作業の扱い Approved 同じ版について必要な確認がそろった記録 有効期間・Window等の再確認が別途必要"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.8 有限Statusと承認の意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 意味 新規作業の扱い Active 条件を満たして実施中という記録 条件が失われたら停止。教材は実施しない"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.8 有限Statusと承認の意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 意味 新規作業の扱い Paused 停止理由と処置を確認中 再開承認まで開始しない"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.8 有限Statusと承認の意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 意味 新規作業の扱い Revoked 権限が取り消された 開始しない"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.8 有限Statusと承認の意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 意味 新規作業の扱い Expired 許可またはRoEが期限を過ぎた 開始しない"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.8 有限Statusと承認の意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 意味 新規作業の扱い Completed 当該版の作業を閉じた Retestを旧記録の再開として扱わない"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.8 有限Statusと承認の意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "機械検査は、ID、有限Scope、Data、Stop、期間、版、合成署名参照などの宣言の整合性だけを検査します。実際の署名・本人性・権限・通知・隔離は検証しません。テスト中の仮定例が条件充足となっても、executionAuthorized=falseは変わりません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.8 有限Statusと承認の意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Technical completion: 対象記録の処理数、予算・停止の記録、Cleanupの参照がそろっているか。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.9 Technical completionとDecision completion"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Decision completion: 必要な問いに答えたか、答えられないならGapを記録したか。代替説明・Confidence・受入責任者・再評価があるか。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.9 Technical completionとDecision completion"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Evidence不足はInconclusiveとし、成功・安全・不存在を意味する表現へ変換しません。親のNeeds EvidenceやCoverageを、この章の計画検査Passで更新しません。現CaseはtechnicalStatus=not-executed、decisionStatus=not-assessedです。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.9 Technical completionとDecision completion"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "9.10 Change、Retest、Handoff Scope、Method、Data、Time、Budget、Owner、版、停止条件、Retestの変更はCR-ROE09-001とREA-ROE09-001の再審査対象です。旧版の署名参照を新しい版へ使い回しません。実施後の再検査も、修正対象・範囲・手法・有効期間を確認し、RET-ROE09-001へ別の承認を関連付けます。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.10 Change、Retest、Handoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Handoff 渡すもの 返すものと停止条件 第10〜14章 Assessment RoEのID/版、Scope、Method、Stop、許可根拠 Hypothesis→Validation→EvidenceまたはGap。未承認なら開始不可"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.10 Change、Retest、Handoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Handoff 渡すもの 返すものと停止条件 第15章 Finding / Retest 変更対象、Retest、ReauthorizationのID 修正前後のEvidenceと残存Gap。旧RoEを再利用しない"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.10 Change、Retest、Handoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Handoff 渡すもの 返すものと停止条件 第21章 Control Validation 同じ粒度のScope、Method、Stop、許可確認 Controlの検証結果または未確認理由。Lab Safeから許可を推定しない"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.10 Change、Retest、Handoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第11章の独立Caseは、HypothesisとEvidenceを結ぶ形式の例として参照します。WSTGのversion指定した要求・評価・報告の語彙をBridgeに用いますが、WSTGの項目数や完了率を許可・安全・Decision充足の代替にしません。SRC-WSTG-001"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.10 Change、Retest、Handoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "目的と入力 完全合成記入例と機械可読計画を読み、記録は整合していても作業を開始できない理由を説明してください。対象はこの供給教材だけです。実Credential・実Tenant・第三者システムで置き換えません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "目的と入力"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter09_contract.py"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "成果物とRubric 成果物はART-02、判断DEC-ROE09-001に向けたGap、Reauthorization、Handoffです。次の5観点を各0〜2点で評価します。0点は欠落または矛盾、1点は記入のみ、2点は根拠と直接IDによる説明までできる状態です。合計点が高くても、Authority・Scope・Data・Stopの不明を相殺しません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "成果物とRubric"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-NIST-TEST-001 NIST SP 800-115, Technical Guide to Information Security Testing and Assessment, Final / September 2008。§6.5–6.6とAppendix Bの計画・制約・連絡・Data・報告の観点に限定。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-JP-LAW-001 e-Gov法令検索、不正アクセス行為の禁止等に関する法律。2025-06-01施行の現行表示を2026-09-13確認。個別の法的適用は判断しない。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-IPA-VDP-001 IPA、情報セキュリティ早期警戒パートナーシップガイドライン、2024年版。情報取扱い・届出/調整の役割に限定。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-WSTG-001 OWASP Web Security Testing Guide、stable v4.2。5.0開発版と区別し、第11章との評価語彙の接続に限定。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID 第9章 Source Review Note"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID Source Registry"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ローカル検査 任意の補助として、Linux/WSL2、Python 3、固定済みRuby/Bundler依存とRepositoryを準備します。初回は正本・build手順に従って依存を導入してから実行してください。検査自体は実Targetへの通信、承認発行、コンテナ操作、削除を行いません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "期待Evidenceは、4文書・ART-02・有限負例・Policy1.2.0・Projection1.1.0の整合性検査結果です。共有rendererを使用するため依存不足時は失敗します。Schema/JSON、親/Source、文書選択、Safetyの不一致があれば公開前検査も失敗し、生成を開始しません。入力不一致や実Data発見時は原因を調べるまで止め、検査を無効化しないでください。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "影響はRepositoryの読み取りと補助検査用の一時データに限定されます。検査は教材正本を削除しません。演習で別途作った合成メモは保管方針に従って整理し、正本・親のEvidence・承認記録と混同しないでください。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/pentest-learning-book/"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "この章の位置付け",
+            "OWN / BRIDGE / DELEGATE"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "OWN / BRIDGE / DELEGATE DELEGATE: 個別事案の法的助言、契約書全文、業界固有規制、製品固有操作、脆弱性別の詳細手順は詳述しません。Pentest学習書へ方法論の詳細を委譲します。委譲先の説明を読んでも、個別のAuthorization確認は省略できません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/main/CANONICAL_SOURCE.md"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ローカル検査 任意の補助として、Linux/WSL2、Python 3、固定済みRuby/Bundler依存とRepositoryを準備します。初回は正本・build手順に従って依存を導入してから実行してください。検査自体は実Targetへの通信、承認発行、コンテナ操作、削除を行いません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter09_contract.py"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "期待Evidenceは、4文書・ART-02・有限負例・Policy1.2.0・Projection1.1.0の整合性検査結果です。共有rendererを使用するため依存不足時は失敗します。Schema/JSON、親/Source、文書選択、Safetyの不一致があれば公開前検査も失敗し、生成を開始しません。入力不一致や実Data発見時は原因を調べるまで止め、検査を無効化しないでください。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-NIST-TEST-001 NIST SP 800-115, Technical Guide to Information Security Testing and Assessment, Final / September 2008。§6.5–6.6とAppendix Bの計画・制約・連絡・Data・報告の観点に限定。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-WSTG-001 OWASP Web Security Testing Guide、stable v4.2。5.0開発版と区別し、第11章との評価語彙の接続に限定。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第2章のAuthorization Checklist、第4章のThreat Model、第8章のLab Safety and Evidence Planを入力とし、既存のART-02 Rules of Engagementを完成させます。本章で行うのは供給された合成記録の読解と計画整合性の検査です。実システムへの操作や実行許可の発行は行いません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "記録 答える問い 記録があっても証明しないこと Authorization evidence 許可者、対象、期間、制約を確認できるか あらゆる手法や第三者Dataの利用が許可されること"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.1 Authorization、RoE、Procedureを分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "実TargetへのScanや認証試行は行いません。実Credential・Token・Cookieの取得や再利用、第三者への通信、DoS、Persistence、Evasion、Log deletion、破壊的変更を許可しません。旧Guidanceに掲載された手法でも、本書の標準許可項目へ自動的に取り込みません。SRC-NIST-TEST-001"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.4 Methodはツール名ではなく作用で限定する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "9.6 DataとEvidenceの取扱いを先に決める Evidence planには、種類、最小Field、保存先、Custodian、保持期間の起点、廃棄対象、廃棄責任者を記入します。Credentialの参照IDと値を分け、不要な機微情報を証拠のつもりで複製しないことが重要です。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.6 DataとEvidenceの取扱いを先に決める"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "仮想の作業コピーは終了から24時間を上限に保持する計画とし、正本・承認記録・公刊教材とは区別します。本検査はファイルを削除せず、保存先の権限制御や削除を実測しません。実DataやSecretを見つけた場合は追加表示・転送・取得を止め、参照IDと発見時点だけで責任者へ連絡します。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "9.6 DataとEvidenceの取扱いを先に決める"
+          ]
+        }
+      ],
+      "exerciseInstructionOrder": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "目的と入力 完全合成記入例と機械可読計画を読み、記録は整合していても作業を開始できない理由を説明してください。対象はこの供給教材だけです。実Credential・実Tenant・第三者システムで置き換えません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "目的と入力"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ローカル検査 任意の補助として、Linux/WSL2、Python 3、固定済みRuby/Bundler依存とRepositoryを準備します。初回は正本・build手順に従って依存を導入してから実行してください。検査自体は実Targetへの通信、承認発行、コンテナ操作、削除を行いません。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "期待Evidenceは、4文書・ART-02・有限負例・Policy1.2.0・Projection1.1.0の整合性検査結果です。共有rendererを使用するため依存不足時は失敗します。Schema/JSON、親/Source、文書選択、Safetyの不一致があれば公開前検査も失敗し、生成を開始しません。入力不一致や実Data発見時は原因を調べるまで止め、検査を無効化しないでください。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "影響はRepositoryの読み取りと補助検査用の一時データに限定されます。検査は教材正本を削除しません。演習で別途作った合成メモは保管方針に従って整理し、正本・親のEvidence・承認記録と混同しないでください。"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter09_contract.py"
+          ],
+          "headings": [
+            "第9章 Engagement DesignとRules of Engagement",
+            "安全な分析課題",
+            "ローカル検査"
+          ]
+        }
+      ]
+    },
+    "templates/rules-of-engagement.md": {
+      "headings": [
+        [
+          1,
+          "Rules of Engagement"
+        ],
+        [
+          2,
+          "1. Document ControlとDecision"
+        ],
+        [
+          2,
+          "2. Authorization evidenceと役割"
+        ],
+        [
+          2,
+          "3. ScopeとDependency"
+        ],
+        [
+          2,
+          "4. Permitted、Conditional、Prohibited methods"
+        ],
+        [
+          2,
+          "5. Window、Rate、Volume、Resource budget"
+        ],
+        [
+          2,
+          "6. Data、Evidence、Retention"
+        ],
+        [
+          2,
+          "7. StopとEmergency contact"
+        ],
+        [
+          2,
+          "8. Recovery、Cleanup、Restart"
+        ],
+        [
+          2,
+          "9. Completion、Success、Inconclusive"
+        ],
+        [
+          2,
+          "10. Change、Reauthorization、Retest"
+        ],
+        [
+          2,
+          "11. HandoffとReturn"
+        ],
+        [
+          2,
+          "12. Approval checklist"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Rules of Engagement ART-02は、確認済みAuthorizationを実施条件へ具体化する記録です。空欄、Unknown、矛盾、期限経過を包括許可へ読み替えません。本書の記入例は完全合成・非実行の計画であり、署名や実施許可を発行しません。"
+          ],
+          "headings": [
+            "Rules of Engagement"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Source、Tool、CI、LabのPassをAuthorizationの代替にしません。根拠の真正性や法的適用を機械検査で承認したとは扱いません。期限経過、取消し、役割不明ならDo not proceedです。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "2. Authorization evidenceと役割"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "3. ScopeとDependency Field 記入内容 Out of scope 明示的対象外。未記載は既定拒否"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "3. ScopeとDependency"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "4. Permitted、Conditional、Prohibited methods Field 記入内容 Prohibited 対象外への作用と禁止事項を明記。Permittedと重複させない"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "4. Permitted、Conditional、Prohibited methods"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "5. Window、Rate、Volume、Resource budget 開始・終了・Timezoneを指定し、Authorization期間内に収めます。Request数、対象件数、Evidence量、Concurrency、Retry、Durationなどは単位と計測方法を記入します。上限超過時の停止先を決め、後付けで予算を増やしません。数値を記入しても実装済み制限や実測保証にはなりません。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "5. Window、Rate、Volume、Resource budget"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "実Credential・Token・Cookie・PIIを標準Evidenceとして取得しません。Hash一致はbyteの確認であって、真正性・法的証拠能力・実行成功の保証ではありません。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "6. Data、Evidence、Retention"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "7. StopとEmergency contact Authority不明、Scope drift、予期しないData、通信、量超過、Evidence欠落、連絡不能、Cleanup未確認を停止候補として検討します。Stop ID、Primary/Backup、応答待ち時間、時刻記録、Escalation先を記入します。UnknownをPassへ置き換えません。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "7. StopとEmergency contact"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "8. Recovery、Cleanup、Restart Recovery owner、影響確認、保存すべき参照、復旧順序、Cleanup対象と除外対象、残存確認、Evidence IDを記入します。Cleanup完了と再開承認を分離します。停止原因の解消確認と同じRoE版に結び付いたRestart authorityの承認がなければ、自動再開しません。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "8. Recovery、Cleanup、Restart"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "9. Completion、Success、Inconclusive Technical completionには対象件数・予算・停止・Cleanupの記録を、Decision completionには必要Evidence・Gap・代替説明・Confidence・受入責任者・再評価を記入します。作業完了を判断完了に読み替えず、Evidence不足はInconclusiveとして残します。何も観測しなかったことだけで不存在とは結論しません。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "9. Completion、Success、Inconclusive"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "10. Change、Reauthorization、Retest Change request ID、変更前後の版、Scope/Method/Data/Time/Budget/Owner/Stopの変更、Reauthorization ID、確認者、承認参照を記入します。Retestには対象・修正内容・方法・期間・新しいEvidenceの条件を付けます。旧版の承認を新しい版や別Caseへ自動継承しません。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "10. Change、Reauthorization、Retest"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "11. HandoffとReturn 後続AssessmentへRoE ID/版、Scope、Method、Stop、許可根拠を渡し、Hypothesis→Validation→EvidenceまたはGapを返してもらいます。RetestとControl Validationも独立の範囲・期間・承認を確認します。必要な入力が欠ければ開始せず、承認者への差戻しを記録します。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "11. HandoffとReturn"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "12. Approval checklist 不明・失効・取消し・矛盾があればDo not proceedを記録する。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "12. Approval checklist"
+          ]
+        }
+      ],
+      "hostProvenance": [],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "標準教材では実TargetへのScan・認証試行を行いません。実Credentialの取得・再利用、第三者への通信、DoS、Persistence、Evasion、Log deletion、破壊的変更を許可しません。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "4. Permitted、Conditional、Prohibited methods"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "6. Data、Evidence、Retention Field 記入内容 Data ID / Classification 許可Data、所有者、禁止Data、Credentialの参照と値の分離"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "6. Data、Evidence、Retention"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "実Credential・Token・Cookie・PIIを標準Evidenceとして取得しません。Hash一致はbyteの確認であって、真正性・法的証拠能力・実行成功の保証ではありません。"
+          ],
+          "headings": [
+            "Rules of Engagement",
+            "6. Data、Evidence、Retention"
+          ]
+        }
+      ]
+    },
+    "cases/ch09-engagement-roe-example.md": {
+      "headings": [
+        [
+          1,
+          "第9章 完全合成記入例：Rules of Engagement"
+        ],
+        [
+          2,
+          "読み方とDecision Context"
+        ],
+        [
+          2,
+          "model"
+        ],
+        [
+          2,
+          "record"
+        ],
+        [
+          2,
+          "parents"
+        ],
+        [
+          2,
+          "decision"
+        ],
+        [
+          2,
+          "scope"
+        ],
+        [
+          2,
+          "objects"
+        ],
+        [
+          2,
+          "methods"
+        ],
+        [
+          2,
+          "window"
+        ],
+        [
+          2,
+          "limits"
+        ],
+        [
+          2,
+          "data"
+        ],
+        [
+          2,
+          "stop"
+        ],
+        [
+          2,
+          "approval"
+        ],
+        [
+          2,
+          "evidence"
+        ],
+        [
+          2,
+          "completion"
+        ],
+        [
+          2,
+          "change"
+        ],
+        [
+          2,
+          "handoffs"
+        ],
+        [
+          2,
+          "boundary"
+        ],
+        [
+          2,
+          "判断と代替説明"
+        ],
+        [
+          2,
+          "負例と受入"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "読み方とDecision Context この記録は供給された三つの合成Objectを読むための計画例です。実Tenant・実Credential・実Log・実在担当者・実署名は含みません。ART-02 / ROE-2026-009 v1はCASE-2026-001をrefinesし、過去のROE-2026-001を置換しません。"
+          ],
+          "headings": [
+            "第9章 完全合成記入例：Rules of Engagement",
+            "読み方とDecision Context"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "基準時点は2026-09-13T09:00:00Zです。親AUTH-CASE-2026-001は2026-08-19T09:00:00Z（日本時間18:00）に期限を過ぎているため、現状態は Draft / Do not proceed です。書面参照、承認版、署名欄のnullまたは空配列は未確認を明示する値であり、承認済みという意味ではありません。機械検査の成功は実施許可でも権限の真正性確認でもありません。"
+          ],
+          "headings": [
+            "第9章 完全合成記入例：Rules of Engagement",
+            "読み方とDecision Context"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWNは本書固有の計画・判断・Evidence・Handoffの直接IDです。BRIDGEは第2・4・8章の入力と後続Assessmentの形式、DELEGATEはPentest専門書等の方法論詳細と個別担当者の法的/契約判断です。一般的なRoEテーマの責任分担はCROSS_BOOK_MAPのままです。"
+          ],
+          "headings": [
+            "第9章 完全合成記入例：Rules of Engagement",
+            "読み方とDecision Context"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "以下の表は計画JSONの全Fieldを、各groupのField / Valueとして表示します。配列の番号は1から、nullは未確定、[]は空集合です。閉じたSchemaと章固有検査が型・ID・条件を照合します。これは帳票データであり、実行手順を自動起動する設定ファイルではありません。"
+          ],
+          "headings": [
+            "第9章 完全合成記入例：Rules of Engagement",
+            "読み方とDecision Context"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "判断と代替説明 確認済みの事実は、教材JSONの記録、親の期限、未承認欄、提案Windowが期限外であることです。分析判断は、現在の記録のままでは開始条件が整わないというDo not proceedです。信頼度はこの限定判断について高、実環境の権限・通知・隔離・削除の成立については未評価です。"
+          ],
+          "headings": [
+            "第9章 完全合成記入例：Rules of Engagement",
+            "判断と代替説明"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "代替説明として、新しい許可が別途存在する可能性はあります。しかし参照と責任者の確認がないため、それを仮定して実施可能とはしません。必要な追加Evidenceは新しい判断要求・期限、正確なScope/Method/期間に結び付いたAuthorization、同じ版の役割別承認、連絡・Recoveryの確認です。"
+          ],
+          "headings": [
+            "第9章 完全合成記入例：Rules of Engagement",
+            "判断と代替説明"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "条件が整った新記録を作る場合も、親の歴史的期限やOutcomeを修正して整合させません。新しいIDとRelationを審査し、別の教材版として記録します。現在の第4章Needs Evidence、第8章の非実行Lab、第11章の独立Caseは不変です。"
+          ],
+          "headings": [
+            "第9章 完全合成記入例：Rules of Engagement",
+            "判断と代替説明"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "負例と受入 Authority IDを消したApproved、Wildcard対象、対象外との重複、所有者Unknown、Permittedへの禁止作用追加、Data分類Unknown、連絡先・Recovery・Cleanup欠落は拒否します。Expired / Revoked / Paused / Completedは開始条件を満たしません。別版の署名、範囲外Window、停止原因未解消の再開、未承認Retestも差戻します。"
+          ],
+          "headings": [
+            "第9章 完全合成記入例：Rules of Engagement",
+            "負例と受入"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/pentest-learning-book/"
+          ],
+          "headings": [
+            "第9章 完全合成記入例：Rules of Engagement",
+            "読み方とDecision Context"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWNは本書固有の計画・判断・Evidence・Handoffの直接IDです。BRIDGEは第2・4・8章の入力と後続Assessmentの形式、DELEGATEはPentest専門書等の方法論詳細と個別担当者の法的/契約判断です。一般的なRoEテーマの責任分担はCROSS_BOOK_MAPのままです。"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "判断と代替説明 確認済みの事実は、教材JSONの記録、親の期限、未承認欄、提案Windowが期限外であることです。分析判断は、現在の記録のままでは開始条件が整わないというDo not proceedです。信頼度はこの限定判断について高、実環境の権限・通知・隔離・削除の成立については未評価です。"
+          ],
+          "headings": [
+            "第9章 完全合成記入例：Rules of Engagement",
+            "判断と代替説明"
+          ]
+        }
+      ]
+    },
+    "references/ch09-source-review-2026-09-13.md": {
+      "headings": [
+        [
+          1,
+          "第9章 Source Review Note：EngagementとRoE"
+        ],
+        [
+          2,
+          "監査範囲"
+        ],
+        [
+          2,
+          "SRC-NIST-TEST-001"
+        ],
+        [
+          2,
+          "SRC-WSTG-001"
+        ],
+        [
+          2,
+          "SRC-JP-LAW-001"
+        ],
+        [
+          2,
+          "SRC-IPA-VDP-001"
+        ],
+        [
+          2,
+          "編集判断と残る限界"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章の8状態、直接ID、数値上限、完全合成Object、非実行の計画検査は本書の教育設計です。NIST・OWASP・法令・IPAがこのモデルを定めた、承認した、または実証したとは主張しません。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "監査範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-TEST-001 NIST SP 800-115公式ページと公式PDFを取得しました。Final / September 2008、Document Historyは09/30/08です。発行月の表示と履歴日の属性は異なるため、日まで特定したpublishedAtは設定しません。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-NIST-TEST-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "非採用: 古い攻撃Techniqueや監視抑止の例を標準許可へ取り込みません。現在のCloud/Identity製品レシピ、包括的なModern testing standard、法的承認として扱いません。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-NIST-TEST-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "次回: 2027-09-13、または改訂・撤回・置換・Source用途変更を検知した時点。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-NIST-TEST-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "要求、評価、Evidence、報告の語彙を第11章へ接続する補助に限定します。全項目を実施することやTool使用をRoEの許可と同一視しません。version指定を維持し、mutableなstable/latestだけに根拠を置きません。古い一般的な推奨を新しい安全基準として移植しません。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-WSTG-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "旧APIの取得失敗は法文の確認証拠に含めません。次回は2026-12-13、または改正・施行・管轄・契約/利用条件・適用範囲の変更時です。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-JP-LAW-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-IPA-VDP-001 IPA公式ページと2024年版PDFを取得しました。版は2024年版、ページ更新日は2026-04-06です。版の更新案内2024-06-18と現在のページ更新日を混同しません。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-IPA-VDP-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "非採用: このGuidelineを個別の検査許可、公表の許可、特定の法的免責と見なしません。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-IPA-VDP-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "編集判断と残る限界 第2章の期限経過したAUTH-CASE-2026-001を新しいSource確認日で更新しません。第4章のNeeds Evidence、第8章の非実行Lab、第11章の独立Caseを維持します。Sourceの確認、計画の完全性、実施承認、実測Evidence、法的判断は別の主張です。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "編集判断と残る限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "登録済みEditorial Inputは2候補を比較してBを設計来歴として選択しましたが、両raw Packageはworkspaceにありません。本文読了・実体hash照合・rawからの直接採用は主張せず、Issueと現行契約、上記の実取得した一次資料から新規作成しました。未選択候補は品質不良と断定せず、原文比較を保留しています。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "編集判断と残る限界"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/115/final"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-NIST-TEST-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-TEST-001 NIST SP 800-115公式ページと公式PDFを取得しました。Final / September 2008、Document Historyは09/30/08です。発行月の表示と履歴日の属性は異なるため、日まで特定したpublishedAtは設定しません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-115.pdf"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-NIST-TEST-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-TEST-001 NIST SP 800-115公式ページと公式PDFを取得しました。Final / September 2008、Document Historyは09/30/08です。発行月の表示と履歴日の属性は異なるため、日まで特定したpublishedAtは設定しません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001 OWASP WSTG projectとversion 4.2 Introductionを確認しました。公式公開先へのredirect後も内容を取得しています。stableは4.2、5.0は開発中です。4.2のRelease表示は2020-12-03です。"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-WSTG-001"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://owasp.org/www-project-web-security-testing-guide/"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-WSTG-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001 OWASP WSTG projectとversion 4.2 Introductionを確認しました。公式公開先へのredirect後も内容を取得しています。stableは4.2、5.0は開発中です。4.2のRelease表示は2020-12-03です。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://owasp.org/www-project-web-security-testing-guide/v42/2-Introduction/"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-WSTG-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001 OWASP WSTG projectとversion 4.2 Introductionを確認しました。公式公開先へのredirect後も内容を取得しています。stableは4.2、5.0は開発中です。4.2のRelease表示は2020-12-03です。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://laws.e-gov.go.jp/law/411AC0000000128"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-JP-LAW-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-JP-LAW-001 e-Gov不正アクセス行為の禁止等に関する法律を確認しました。ページ本体はJavaScript shellのため、それだけで法文を確認したとは扱いません。公式のlaw-data v2と公開画面の改正表示APIも取得し、現行表示と第2条の定義・第3条の禁止規定を読みました。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://laws.e-gov.go.jp/api/2/law_data/411AC0000000128"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-JP-LAW-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-JP-LAW-001 e-Gov不正アクセス行為の禁止等に関する法律を確認しました。ページ本体はJavaScript shellのため、それだけで法文を確認したとは扱いません。公式のlaw-data v2と公開画面の改正表示APIも取得し、現行表示と第2条の定義・第3条の禁止規定を読みました。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-IPA-VDP-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-IPA-VDP-001 IPA公式ページと2024年版PDFを取得しました。版は2024年版、ページ更新日は2026-04-06です。版の更新案内2024-06-18と現在のページ更新日を混同しません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.ipa.go.jp/security/guide/vuln/ug65p90000019by0-att/partnership_guideline.pdf"
+          ],
+          "headings": [
+            "第9章 Source Review Note：EngagementとRoE",
+            "SRC-IPA-VDP-001"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-IPA-VDP-001 IPA公式ページと2024年版PDFを取得しました。版は2024年版、ページ更新日は2026-04-06です。版の更新案内2024-06-18と現在のページ更新日を混同しません。"
+          ]
+        }
+      ],
+      "analyticProvenance": []
+    }
+  },
+  "parentDigests": {
+    "cases/ch01-integrated-security-case-example.md": "c72c0d149321a24f2b6901db381c069cff86a8536b5578eba285b9d17eb329b2",
+    "cases/ch02-authorization-decision-example.md": "74d1aa7a802525ee5f465ccbdc1404e26a974ed60e264b65978612bef8026f4a",
+    "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
+    "cases/ch05-attack-behavior-example.md": "9bc5004441f6a7911106da6cba263297bf115814d7c644c80f776c7f0e7098ac",
+    "cases/ch06-signal-flow-example.md": "a062ba22f4f0e1eb28a08342b0173a02473e995062410986b51d1a6a4af7cf0a",
+    "cases/fixtures/ch06-signal-flow.json": "73000db0a442d9be338a0e9834fe589ee387ee05ab280a9cc5f0e6fe0f0da6fb",
+    "cases/fixtures/ch05-attack-behavior.json": "1f51fa66fe82d72f28b73ed548bc669cf58f5ab30dd8674cad9ad0d5b315e781",
+    "cases/fixtures/ch07-vulnerability-prioritization.json": "37e6fac74e3b30560704a2db13ba2abfb8fd025c1dcbae6f6fbe5f213b6f3d32",
+    "cases/ch07-vulnerability-prioritization-example.md": "868840e8ee6fdb66b2645f0a954d11107d286b1c63c81a7cdb4be072d5061c3f",
+    "cases/fixtures/ch07-source-snapshot.json": "38ee030f2c6af8707d25d16ad480c50b23710a10cb6b8a914d5d19040869b21d",
+    "LAB_ARCHITECTURE.md": "b77374961863cb63b052d1a0647e3f68c6bc11ffd101ee469d104076a027f88a",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
+    ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814",
+    "manuscript/02-law-ethics-authorization.md": "60f5719bc9e1fc49df57fc20c5dcebed97b3a376adab220948a6515da39c6e2b",
+    "templates/authorization-checklist.md": "02a785e2cf59fa2ae8f53beaf9ad5745d5fa03bc5580964e20a6875bc74883ab",
+    "manuscript/08-safe-lab-evidence.md": "ea266c8fbccbeacce6a42f0dbfd54f8576c48f8683ed9028615365ffc5a63af3",
+    "templates/lab-safety-evidence-plan.md": "8d2c2a36600fc4861968c19647144c004409a3ccefe4f03274ae5b61f4b74ff8",
+    "cases/ch08-lab-evidence-example.md": "715859aea7c9ee8e939ff080447d34916a4f4b582d737719f272b394b9f17e0d",
+    "cases/fixtures/ch08-lab-plan.json": "f4ea0e4544e65fbb3447b173b0d9ab510e3aa8dea82209187727842b5f64ca8f",
+    "cases/fixtures/ch08-evidence-manifest.json": "837ff7520fc5d9f310af15487267298ada2f5703e87481404acff78ea0e2e514",
+    "cases/fixtures/ch08-control-receipts.json": "6a4b7b5b413701cec742d25fd992c88296f54043ef44cddd07d48209fa49e9a2",
+    "cases/ch11-web-api-assessment-example.md": "170f4d66d10aa2b2090018b610002b23a226db43b86b473af2216525ddca182f",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1"
+  },
+  "pages": [
+    {
+      "source": "manuscript/09-engagement-roe.md",
+      "destination": "chapters/chapter-09/index.md",
+      "section": "chapters",
+      "order": 52,
+      "title": "第9章 Engagement DesignとRules of Engagement"
+    },
+    {
+      "source": "cases/ch09-engagement-roe-example.md",
+      "destination": "cases/chapter-09-engagement-roe/index.md",
+      "section": "additional",
+      "order": 257,
+      "title": "第9章 完全合成記入例：Rules of Engagement"
+    },
+    {
+      "source": "references/ch09-source-review-2026-09-13.md",
+      "destination": "references/chapter-09-source-review/index.md",
+      "section": "additional",
+      "order": 258,
+      "title": "第9章 Source Review Note：EngagementとRoE"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch09-engagement-roe.json",
+      "destination": "downloads/ch09-engagement-roe.json"
+    },
+    {
+      "source": "schemas/ch09-engagement-roe.schema.json",
+      "destination": "downloads/ch09-engagement-roe.schema.json"
+    }
+  ],
+  "sourceIdentity": {
+    "SRC-WSTG-001": {
+      "version": "4.2; 5.0 under development",
+      "status": "stable",
+      "publishedAt": "2020-12-03",
+      "url": "https://owasp.org/www-project-web-security-testing-guide/",
+      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption."
+    },
+    "SRC-JP-LAW-001": {
+      "version": "current display effective 2025-06-01",
+      "status": "current-law",
+      "publishedAt": null,
+      "url": "https://laws.e-gov.go.jp/law/411AC0000000128",
+      "notes": "The e-Gov current display was rechecked on 2026-08-05 and showed the law effective from 2025-06-01. Always confirm current text before publication; this book is not legal advice. Chapter 9 scoped re-audit 2026-09-13: official law-data v2 and revision display confirm CurrentEnforced revision 411AC0000000128_20250601_504AC0000000068, effective 2025-06-01; Articles 2 and 3 read. The HTML shell alone is not text evidence. No individual legal applicability or renewed Authorization is asserted."
+    },
+    "SRC-IPA-VDP-001": {
+      "version": "2024 edition",
+      "status": "current-guidance",
+      "publishedAt": null,
+      "url": "https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html",
+      "notes": "The official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05, and the official page showed last update 2026-04-06. The current page and linked guideline must be rechecked at publication time. Chapter 9 scoped re-audit 2026-09-13: official page and 61-page PDF retain 2024 edition, page last update 2026-04-06; role, handling and coordination sections reviewed. PDF SHA256 98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458. Reporting/coordination guidance is not assessment or publication permission."
+    },
+    "SRC-NIST-TEST-001": {
+      "version": "SP 800-115, September 2008",
+      "status": "final",
+      "publishedAt": null,
+      "url": "https://csrc.nist.gov/pubs/sp/800/115/final",
+      "notes": "Chapter 9 checked official landing and 80-page PDF on 2026-09-13. Adopted sections 6.5-6.6 and Appendix B: planning, scope, constraints, contacts, data, stop/restart, reporting and approval. Not a modern product procedure, blanket authorization or adoption of old offensive/covert examples. Date Published is September 2008; Document History 09/30/08 is a separate attribute. Exact publication day is unknown, so publishedAt is null; do not infer it from history. PDF SHA256 58e5ed41e5c8ca34ce14fd80b70f118f2c6d613d1647bc307edca30bcc45f063. The finite eight states and numeric limits are book-authored teaching assumptions, not NIST requirements."
+    }
+  },
+  "indices": {
+    "artifact-index.md": [
+      "ART-02",
+      "ROE-2026-009",
+      "cases/ch09-engagement-roe-example.md"
+    ],
+    "cases/index.md": [
+      "ch09-engagement-roe-example.md",
+      "Draft / Do not proceed"
+    ],
+    "cases/fixtures/index.md": [
+      "ch09-engagement-roe.json",
+      "ch09-engagement-roe.schema.json"
+    ],
+    "glossary.md": [
+      "第9章",
+      "Technical completion",
+      "Restart authority"
+    ],
+    "index.md": [
+      "manuscript/09-engagement-roe.md",
+      "templates/rules-of-engagement.md",
+      "cases/ch09-engagement-roe-example.md"
+    ],
+    "figure-index.md": [
+      "F-09-01",
+      "T-09-01",
+      "T-09-02",
+      "T-09-03",
+      "T-09-04",
+      "T-09-05",
+      "T-09-06"
+    ],
+    "TOC.md": [
+      "manuscript/09-engagement-roe.md"
+    ]
+  }
+}

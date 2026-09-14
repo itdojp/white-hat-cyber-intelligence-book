@@ -33,3 +33,7 @@
 ## 第8章：Lab Safetyのオフライン照合
 
 [Plan](ch08-lab-plan.json)、[Control receipts](ch08-control-receipts.json)、[Evidence manifest](ch08-evidence-manifest.json)は[完全合成記入例](../ch08-lab-evidence-example.md)に対応する。三Run・72チェック・9合成Eventの固定レシピで、実Runtimeや通信・削除を実行しない。八状態とSafe / Unsafe / Inconclusive、実ByteのHash、停止・残存確認の区別を検査する。
+
+## 第9章：RoEの非実行計画
+
+[ART-02 JSON](ch09-engagement-roe.json)と[閉じたSchema](../../schemas/ch09-engagement-roe.schema.json)は[完全合成記入例](../ch09-engagement-roe-example.md)の全Fieldに対応する。供給三Object、有限八状態、Scope/Method/Data/Stop、期限と版、CompletionとReauthorizationを検査する。記録整合性の成功と実行許可は別で、executionAuthorizedは常にfalseである。

@@ -48,3 +48,5 @@
 `ART-17`は公開指標、導入・影響・到達条件、統制、事業影響、Owner・期限・残余リスクを分離する。[第7章合成Case](cases/ch07-vulnerability-prioritization-example.md)では親の状態を変更せず、判断の再評価条件まで記録する。
 
 `ART-18`は許可・境界、八状態、合成receipt、EvidenceのByte/由来/保持、停止、六種Cleanup、再評価を接続する。[第8章合成Case](cases/ch08-lab-evidence-example.md)は非実行モデルであり、親の状態や実作業の許可を更新しない。
+
+`ART-02`はAuthorization evidence、Scope、Method、時間・量、Data、Stop/Recovery、Completion、Reauthorizationを接続する。[第9章完全合成Case](cases/ch09-engagement-roe-example.md)のROE-2026-009はDraft / Do not proceedであり、期限経過した親AUTH-CASE-2026-001を更新しない。

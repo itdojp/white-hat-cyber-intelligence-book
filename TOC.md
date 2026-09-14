@@ -388,3 +388,5 @@
 - 付録H　ラボ運用ガイド
 - 付録I　成果物評価ルーブリック
 - 付録J　既存書籍との学習導線
+
+第9章の本文は[Engagement DesignとRules of Engagement](manuscript/09-engagement-roe.md)、成果物は[ART-02](templates/rules-of-engagement.md)と[完全合成記入例](cases/ch09-engagement-roe-example.md)を参照する。

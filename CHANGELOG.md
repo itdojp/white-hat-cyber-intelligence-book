@@ -6,6 +6,8 @@
 
 ### Added
 
+- [第9章](manuscript/09-engagement-roe.md)、既存ART-02の完成、三Objectの完全合成RoE計画・閉じたSchema・有限Layer A検査を追加。期限経過した親Authorizationを更新せずDraft / Do not proceedとし、記録整合性と実行許可を分ける。NIST SP800-115を限定参照し、実使用する法令・IPA・WSTGのみ再監査。既存章のSource版・歴史的記録は保持する。
+
 - [第8章](manuscript/08-safe-lab-evidence.md)、ART-18 Lab Safety and Evidence Plan、三Runの合成Plan・Control receipts・Evidence manifest・閉じたSchemaと読み取り専用Replayを追加。Runningを含む八状態と三判定を分け、失敗後のCleanup成功を正常完了へ置き換えない。実Runtimeは実行せず、親の状態・Authorityを更新しない。
 
 - [第7章](manuscript/07-vulnerability-prioritization.md)、ART-17 Vulnerability Prioritization Record、六件の合成判断と公開Source Snapshotを追加。導入・到達性・統制・判断は合成、EPSS / KEVは固定公開入力として分離し、CVEの有無にかかわらず未検証の義務適用はUnverifiedに保持する。
