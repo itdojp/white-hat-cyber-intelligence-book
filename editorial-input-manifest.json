@@ -1594,10 +1594,53 @@
       "targetId": "chapter-13",
       "issue": 37,
       "targetKind": "chapter",
-      "status": "selected-for-intake",
+      "status": "canonical-pr-open",
       "selectedCandidateId": "EIC-0037-16d33d9ab258",
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "canonicalPr": 136,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/136",
+        "packageId": "EIP-0008",
+        "packageSha256": "386e7148f504c9fa58a0b095bffcc6aeeaaf2be901e0d3b917e5e8db6c604b2c",
+        "inputPath": "chapter13-platform-supply-chain.predraft.md",
+        "inputSha256": "16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec",
+        "targetIssue": 37,
+        "canonicalPr": 136,
+        "currentMainSha": "c6131bfeb9d479eef93138b99c0565af33ef532e",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-15",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0037-16d33d9ab258を設計来歴としてbranch前に明示選択。"
+        ],
+        "rewrittenSections": [
+          "current Issue37/凍結契約/親Chapter4/6/9/12と再確認した一次資料から、本文/ART21/完全合成Case/JSON/閉Schema/有限LayerAを新規構成。三Plane、Human/WorkloadとSecret class ID、八Chain、五StateとSourceからRuntimeまでの直接ID/版/Evidence/期待値を判断へ接続。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw読了・実体hash照合・直接adoptionは主張しない。同梱Chapter12のconsumed/元Intake/登録Packageを変更しない。",
+          "実Cloud/CI/Registry/Token/Package install/Build/Deploy/暗号署名検証、SLSA/SPDX全標準parser、一般Secret認識、第14章以降正本は不採用またはDeferred。"
+        ],
+        "sourceRevalidation": [
+          "SSDF1.1 FinalのPS1.1/PS2.1/PS3.1/PS3.2/PW4.4を公式web readerで限定確認。Date Published February2022とHistory02/03/22を区別しpublishedAt null。SSDF1.2は2025-12-17 IPD、potential updatesはp.iii謝辞typo一件で技術改訂ではない。",
+          "SLSA1.2 Approved/1.1 Retired、公式release2025-11-24と承認決議日を区別。Tracks/Build Track Basics/Verifying artifactsの対象Digest/信頼するBuilder/期待値/保証限界を採用。教材の有限Verifiedは標準適合でも実暗号検証でもない。",
+          "SPDX公式list3.0と版別HTML3.0.1は所在/版だけ確認。SP800-190 Final2017-09の§3.5.2/4.1.4を限定確認、既存Source identity/notesは保持。公式PDFのlocal取得403により全PDF/localhash監査は主張しない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/13-platform-supply-chain.md",
+          "templates/platform-supply-chain-assessment.md",
+          "cases/ch13-platform-supply-chain-example.md",
+          "references/ch13-source-review-2026-09-15.md",
+          "cases/fixtures/ch13-supply-chain.json",
+          "schemas/ch13-supply-chain.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録4名workspace調査8457directories hit0/errors0、symlinkdirs未走査/任意rename内容検出ではない。inputReviewedAtは登録採否確認日でraw読了日ではない。",
+          "親RoE Draft/失効/元window/三Object/false、親第12章Unknown/非Federation三nullとcustomer-summary限定、独立CASE11を保持。新Human/Workload IDは仮定で実許可ではない。",
+          "供給summaryの有限比較であり、実測、Build、Deploy、署名、標準適合、安全性、法的許可、実隔離/削除、Detection成功を保証しない。Digestは合成ラベル由来。",
+          "本Intake記録作成時はPR #136 Draftで通常merge/main公開未完了。consumedはその確認後の別metadata PRで記録する。現在の進行状態はtarget.statusと最新statusHistoryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0037-16d33d9ab258",
@@ -1621,6 +1664,12 @@
           "effectiveAt": "2026-09-15",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5675937404",
           "reason": "親Chapter4/6/9/12とChapter12consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前コメントで明示選択。raw不在のため直接採用せずcurrent Issue/契約/一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/136",
+          "reason": "第13章専用Draft PR #136に本文/ART21/完全合成JSON/閉Schema/Source/有限Layer AとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
         }
       ]
     },
