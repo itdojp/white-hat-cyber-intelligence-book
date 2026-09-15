@@ -311,6 +311,40 @@ def run_regressions(data, schema, contract, source, projection):
                 ),
             )
     check("CH13-repository", not repository_errors(contract))
+    # PR136 / 5206911150: retain Chapter8 scope and make Chapter13 adoption
+    # visible to registry-only audits. Both finite consumers must reject drift.
+    from scripts import check_chapter08_contract as ch08
+    from scripts import check_chapter13_contract as ch13
+
+    sid = "SRC-NIST-CONTAINER-001"
+    current = contract["sourceIdentity"][sid]["notes"]
+    previous, added = current.split(" Chapter 13 scoped primary-text review", 1)
+    older_contract = strict_bytes(
+        (ROOT / "tests/fixtures/chapter08/publication-contract.json").read_bytes()
+    )
+    variants = [
+        ("complete", current, True),
+        ("missing-ch13", previous, False),
+        ("wrong-sections", current.replace("3.5.2 and 4.1.4", "3.5.2 only"), False),
+        ("wrong-note", current.replace("ch13-source-review", "ch08-source-review"), False),
+        ("missing-ch08", "Chapter 13 scoped primary-text review" + added, False),
+        ("conflated-states", current.replace("eight-state synthetic", "five-state synthetic"), False),
+    ]
+    for chapter, number, baseline in [(ch08, "08", older_contract), (ch13, "13", contract)]:
+        original_loader = chapter.load_json_strict
+        for label, notes, accept in variants:
+            def changed_registry(path):
+                result = original_loader(path)
+                if path == ROOT / "references/sources.json":
+                    next(s for s in result["sources"] if s["id"] == sid)["notes"] = notes
+                return result
+
+            with patch.object(chapter, "load_json_strict", side_effect=changed_registry):
+                result = chapter.repository_errors(baseline)
+            check(
+                "CH13-SRC-CONTAINER-" + number + "-" + label,
+                (not result) == accept,
+            )
     badcontract = deepcopy(contract)
     badcontract["indices"]["CHANGELOG.md"] = ["unrecorded-reader-impact"]
     check(
