@@ -1459,7 +1459,7 @@
           "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日で、raw読了日ではない。",
           "親ROE-2026-009 v1/Draft/失効/元window/三Objectを保持。所有確認・出版・Hash一致はScope追加や実行承認にならない。全候補record-only / executionAuthorized=false、CASE-2026-011は独立。",
           "有限の作成者による合成資料モデルで、実収集・観測・Source真正性・実署名・法的判断・一般PII認識・実隔離/削除を保証しない。",
-          "PR #130は通常merge/main/publication未完了。consumedはその確認後の別metadata更新でのみ記録する。 前文はPR #130作成時の記録。現在は2026-09-15の通常merge・main/publication確認済みであり、その別更新を本metadata変更で記録した。現時点の状態・証跡はtarget.statusとstatusHistoryの最新entryを参照する。"
+          "PR #130作成時の制約として「PR #130は通常merge/main/publication未完了。consumedはその確認後の別metadata更新でのみ記録する。」と記録した。現在は2026-09-15の通常merge・main/publication確認済みであり、その別更新を本metadata変更で記録した。現時点の状態・証跡はtarget.statusとstatusHistoryの最新entryを参照する。"
         ],
         "rawTrackedFiles": 0
       },
