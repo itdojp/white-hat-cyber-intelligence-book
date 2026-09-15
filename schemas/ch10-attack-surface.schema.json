@@ -1,0 +1,744 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "register",
+    "bundle"
+  ],
+  "properties": {
+    "register": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "modelVersion",
+        "synthetic",
+        "executionAuthorized",
+        "record",
+        "parents",
+        "learnerPlan",
+        "sources",
+        "candidates",
+        "handoffs",
+        "limits"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "modelVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "synthetic": {
+          "type": "boolean"
+        },
+        "executionAuthorized": {
+          "type": "boolean"
+        },
+        "record": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifactId",
+            "registerId",
+            "version",
+            "asOf",
+            "status",
+            "collectionRequirementId",
+            "question",
+            "owner",
+            "decisionId",
+            "decision",
+            "decisionUseful"
+          ],
+          "properties": {
+            "artifactId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "registerId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "asOf": {
+              "type": "string",
+              "minLength": 1
+            },
+            "status": {
+              "type": "string",
+              "minLength": 1
+            },
+            "collectionRequirementId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "question": {
+              "type": "string",
+              "minLength": 1
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1
+            },
+            "decisionId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "decision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "decisionUseful": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "parents": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "caseId",
+            "relation",
+            "decisionRequirementId",
+            "historicalDeadline",
+            "authorizationId",
+            "authorizationExpiresAt",
+            "authorizationWindow",
+            "authorizationConditions",
+            "roeId",
+            "roeVersion",
+            "roeStatus",
+            "roeObjectIds",
+            "roeExecutionAuthorized",
+            "threatModelId",
+            "threatModelStatus",
+            "parentReassessmentId",
+            "independentCaseId",
+            "parentStateChanged"
+          ],
+          "properties": {
+            "caseId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "relation": {
+              "type": "string",
+              "minLength": 1
+            },
+            "decisionRequirementId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "historicalDeadline": {
+              "type": "string",
+              "minLength": 1
+            },
+            "authorizationId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "authorizationExpiresAt": {
+              "type": "string",
+              "minLength": 1
+            },
+            "authorizationWindow": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "authorizationConditions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "roeId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "roeVersion": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "roeStatus": {
+              "type": "string",
+              "minLength": 1
+            },
+            "roeObjectIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "roeExecutionAuthorized": {
+              "type": "boolean"
+            },
+            "threatModelId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "threatModelStatus": {
+              "type": "string",
+              "minLength": 1
+            },
+            "parentReassessmentId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "independentCaseId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "parentStateChanged": {
+              "type": "boolean"
+            }
+          }
+        },
+        "learnerPlan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "collectionClass",
+            "actions",
+            "networkRequests",
+            "authenticationAttempts",
+            "rateTests",
+            "inputSourceIds",
+            "maximumSources",
+            "maximumCandidates",
+            "summaryBytes",
+            "minutes",
+            "onUnexpectedData",
+            "cleanup",
+            "cleanupStatus",
+            "retentionHours",
+            "retentionStarts",
+            "cleanupOwner"
+          ],
+          "properties": {
+            "collectionClass": {
+              "type": "string",
+              "minLength": 1
+            },
+            "actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "networkRequests": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "authenticationAttempts": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "rateTests": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "inputSourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "maximumSources": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "maximumCandidates": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "summaryBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "minutes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "onUnexpectedData": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cleanup": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cleanupStatus": {
+              "type": "string",
+              "minLength": 1
+            },
+            "retentionHours": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "retentionStarts": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cleanupOwner": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceId",
+              "provenanceId",
+              "candidateId",
+              "sourceClass",
+              "originalCollectionClass",
+              "acquisitionMethod",
+              "originalOriginId",
+              "derivedFromSourceId",
+              "publisherRole",
+              "observedAt",
+              "acquiredAt",
+              "timestampBasis",
+              "contentSha256",
+              "hashScope",
+              "transformation",
+              "termsNote",
+              "dataClass",
+              "credentialMaterial",
+              "personalDataFields",
+              "custodian",
+              "limitation"
+            ],
+            "properties": {
+              "sourceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "provenanceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "candidateId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sourceClass": {
+                "type": "string",
+                "minLength": 1
+              },
+              "originalCollectionClass": {
+                "enum": [
+                  "Passive",
+                  "Active",
+                  "Authenticated"
+                ]
+              },
+              "acquisitionMethod": {
+                "type": "string",
+                "minLength": 1
+              },
+              "originalOriginId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "derivedFromSourceId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              },
+              "publisherRole": {
+                "type": "string",
+                "minLength": 1
+              },
+              "observedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "acquiredAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "timestampBasis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "contentSha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "hashScope": {
+                "type": "string",
+                "minLength": 1
+              },
+              "transformation": {
+                "type": "string",
+                "minLength": 1
+              },
+              "termsNote": {
+                "type": "string",
+                "minLength": 1
+              },
+              "dataClass": {
+                "type": "string",
+                "minLength": 1
+              },
+              "credentialMaterial": {
+                "type": "string",
+                "minLength": 1
+              },
+              "personalDataFields": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "custodian": {
+                "type": "string",
+                "minLength": 1
+              },
+              "limitation": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "candidateId",
+              "type",
+              "locator",
+              "sourceIds",
+              "candidateOwner",
+              "ownershipStatus",
+              "ownershipConfidence",
+              "verificationStatus",
+              "ownerEvidenceSourceIds",
+              "parentAssetId",
+              "exposure",
+              "dependency",
+              "thirdPartyStatus",
+              "evidenceId",
+              "evidenceBasis",
+              "judgment",
+              "alternative",
+              "gapId",
+              "gap",
+              "gapOwner",
+              "dueAt",
+              "reassessmentId",
+              "reassessmentTrigger",
+              "nextAction",
+              "nextActionAuthorization",
+              "requiredApproval",
+              "stopReason"
+            ],
+            "properties": {
+              "candidateId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "minLength": 1
+              },
+              "locator": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sourceIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "candidateOwner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ownershipStatus": {
+                "enum": [
+                  "Confirmed owned",
+                  "Unverified",
+                  "Historical",
+                  "Third party"
+                ]
+              },
+              "ownershipConfidence": {
+                "enum": [
+                  "High",
+                  "Medium",
+                  "Low"
+                ]
+              },
+              "verificationStatus": {
+                "enum": [
+                  "Candidate",
+                  "Corroborated",
+                  "Owner confirmed",
+                  "Rejected",
+                  "Unknown"
+                ]
+              },
+              "ownerEvidenceSourceIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "parentAssetId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "minLength": 1
+              },
+              "exposure": {
+                "type": "string",
+                "minLength": 1
+              },
+              "dependency": {
+                "type": "string",
+                "minLength": 1
+              },
+              "thirdPartyStatus": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidenceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidenceBasis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "judgment": {
+                "type": "string",
+                "minLength": 1
+              },
+              "alternative": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gapId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gap": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gapOwner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "dueAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reassessmentId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reassessmentTrigger": {
+                "type": "string",
+                "minLength": 1
+              },
+              "nextAction": {
+                "type": "string",
+                "minLength": 1
+              },
+              "nextActionAuthorization": {
+                "type": "boolean"
+              },
+              "requiredApproval": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "stopReason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "handoffs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "handoffId",
+              "destination",
+              "candidateIds",
+              "provenanceIds",
+              "inputIds",
+              "scope",
+              "status",
+              "executionAuthorized"
+            ],
+            "properties": {
+              "handoffId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "destination": {
+                "type": "string",
+                "minLength": 1
+              },
+              "candidateIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "provenanceIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "inputIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "scope": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "executionAuthorized": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "coverage",
+            "verification",
+            "negativeFinding",
+            "runtime"
+          ],
+          "properties": {
+            "coverage": {
+              "type": "string",
+              "minLength": 1
+            },
+            "verification": {
+              "type": "string",
+              "minLength": 1
+            },
+            "negativeFinding": {
+              "type": "string",
+              "minLength": 1
+            },
+            "runtime": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "bundleId",
+        "synthetic",
+        "acquisitionOccurred",
+        "sources"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bundleId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "synthetic": {
+          "type": "boolean"
+        },
+        "acquisitionOccurred": {
+          "type": "boolean"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceId",
+              "content"
+            ],
+            "properties": {
+              "sourceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "content": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

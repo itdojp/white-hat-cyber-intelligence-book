@@ -323,6 +323,7 @@ def repository_errors(contract):
         "python3 scripts/check_chapter07_contract.py --no-regressions && "
         "python3 scripts/check_chapter08_contract.py --no-regressions && "
         "python3 scripts/check_chapter09_contract.py --no-regressions && "
+        "python3 scripts/check_chapter10_contract.py --no-regressions && "
         "python3 scripts/sync_book_site.py "
     ):
         errors.append("Chapter7 publication preflight")

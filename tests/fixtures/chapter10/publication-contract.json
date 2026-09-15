@@ -1,0 +1,1860 @@
+{
+  "schemaVersion": "1.0.0",
+  "parentSnapshot": {
+    "caseId": "CASE-2026-001",
+    "relation": "refines",
+    "decisionRequirementId": "DR-2026-001",
+    "historicalDeadline": "2026-07-22T00:00:00Z",
+    "authorizationId": "AUTH-CASE-2026-001",
+    "authorizationExpiresAt": "2026-08-19T09:00:00Z",
+    "authorizationWindow": [
+      "2026-08-06T00:00:00Z",
+      "2026-08-06T08:00:00Z"
+    ],
+    "authorizationConditions": [
+      "COND-AUTH-2026-001 Open",
+      "COND-AUTH-2026-002 Satisfied",
+      "COND-AUTH-2026-003 Open"
+    ],
+    "roeId": "ROE-2026-009",
+    "roeVersion": 1,
+    "roeStatus": "Draft",
+    "roeObjectIds": [
+      "OBJ-ROE09-CONFIG",
+      "OBJ-ROE09-EVENT",
+      "OBJ-ROE09-POLICY"
+    ],
+    "roeExecutionAuthorized": false,
+    "threatModelId": "TM-2026-001",
+    "threatModelStatus": "Needs Evidence",
+    "parentReassessmentId": "REA-2026-001",
+    "independentCaseId": "CASE-2026-011",
+    "parentStateChanged": false
+  },
+  "parentDigests": {
+    "cases/ch01-integrated-security-case-example.md": "c72c0d149321a24f2b6901db381c069cff86a8536b5578eba285b9d17eb329b2",
+    "cases/ch02-authorization-decision-example.md": "74d1aa7a802525ee5f465ccbdc1404e26a974ed60e264b65978612bef8026f4a",
+    "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
+    "cases/ch08-lab-evidence-example.md": "715859aea7c9ee8e939ff080447d34916a4f4b582d737719f272b394b9f17e0d",
+    "cases/fixtures/ch08-lab-plan.json": "f4ea0e4544e65fbb3447b173b0d9ab510e3aa8dea82209187727842b5f64ca8f",
+    "manuscript/09-engagement-roe.md": "2afbc548021b6f4017abf10287fc965c7417c15c0c36447763953fef2c65884a",
+    "templates/rules-of-engagement.md": "abf36127616fb838f8b599f60bbb1459e9b709381e990db4c9d855bcb81b9ef9",
+    "cases/ch09-engagement-roe-example.md": "44cf657c9ad220709c6b026ec4a894d904b1f89d88427e3babd2070e5a11b25a",
+    "cases/fixtures/ch09-engagement-roe.json": "cf3b2af1dc846981e9a9411641bc21663e7b0a0b1e90d66fd2750cdbd904f936",
+    "schemas/ch09-engagement-roe.schema.json": "f8983d4c251f27b09410a4a064e40138eab080830fed361d6b62aa201a384cd2",
+    "references/ch09-source-review-2026-09-13.md": "82ceac1a13e78805bb5d51eae2ad576238506a0e442c1617ce6f6d90384ed1b0",
+    "cases/ch11-web-api-assessment-example.md": "170f4d66d10aa2b2090018b610002b23a226db43b86b473af2216525ddca182f",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
+    ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1"
+  },
+  "sourceContentDigests": {
+    "OSRC-ASR10-001": "92cff8a6cbc3e07ac93830abe41b4098887e39629ba67b9d29dbe6a1a7f1b677",
+    "OSRC-ASR10-002": "21958fbf91a4516b0adfaf1c652fa50c45e0ad78b5f69e7a20b1af70756d375e",
+    "OSRC-ASR10-003": "4b4d80595248d9ee4fee2a806ff76e2a6d90c1494cca7dcc40ad2b2031994eab",
+    "OSRC-ASR10-004": "21dfdd67b8f926aec5b93bd2f3497c5d0aaf0c260ffd9c051aef4696f5a97434",
+    "OSRC-ASR10-005": "40476da434b9eeea1b3fb3640d2e39917acb069fa931eaac9862dfa30065902b",
+    "OSRC-ASR10-006": "5387ce2d7cfc0817cfd07e1b40f5c5789e224e4be5710efa36cec010c644b845",
+    "OSRC-ASR10-007": "337c5f8a0309ab81794fe3d2ba298a34fb6eb7d90d88513b984edecd4d864e42",
+    "OSRC-ASR10-008": "43a2fc724d6a718dc735af824bac72521fa0ffde5dfbd67fb715d71259950747",
+    "OSRC-ASR10-009": "f64cc77775195657941ca068811501915b55687fe678df3e90201a181ec70b06"
+  },
+  "sourceRoles": {
+    "OSRC-ASR10-001": {
+      "candidateId": "CAND-ASR10-001",
+      "sourceClass": "First-party inventory",
+      "originalCollectionClass": "Authenticated",
+      "acquisitionMethod": "authored-inventory-export",
+      "originalOriginId": "ORIGIN-ASR10-001",
+      "derivedFromSourceId": null,
+      "publisherRole": "SYNTH-SOURCE-PUBLISHER",
+      "observedAt": "2026-09-14T00:00:00Z"
+    },
+    "OSRC-ASR10-002": {
+      "candidateId": "CAND-ASR10-002",
+      "sourceClass": "Certificate Transparency",
+      "originalCollectionClass": "Passive",
+      "acquisitionMethod": "authored-ct-snapshot",
+      "originalOriginId": "ORIGIN-ASR10-002",
+      "derivedFromSourceId": null,
+      "publisherRole": "SYNTH-SOURCE-PUBLISHER",
+      "observedAt": "2026-09-14T00:00:00Z"
+    },
+    "OSRC-ASR10-003": {
+      "candidateId": "CAND-ASR10-003",
+      "sourceClass": "Archived DNS",
+      "originalCollectionClass": "Passive",
+      "acquisitionMethod": "authored-dns-archive",
+      "originalOriginId": "ORIGIN-ASR10-003",
+      "derivedFromSourceId": null,
+      "publisherRole": "SYNTH-SOURCE-PUBLISHER",
+      "observedAt": "2025-01-10T00:00:00Z"
+    },
+    "OSRC-ASR10-004": {
+      "candidateId": "CAND-ASR10-004",
+      "sourceClass": "Public code",
+      "originalCollectionClass": "Passive",
+      "acquisitionMethod": "authored-code-summary",
+      "originalOriginId": "ORIGIN-ASR10-004",
+      "derivedFromSourceId": null,
+      "publisherRole": "SYNTH-OTHER-ORG",
+      "observedAt": "2026-09-14T00:00:00Z"
+    },
+    "OSRC-ASR10-005": {
+      "candidateId": "CAND-ASR10-005",
+      "sourceClass": "SaaS inventory",
+      "originalCollectionClass": "Authenticated",
+      "acquisitionMethod": "authored-saas-export",
+      "originalOriginId": "ORIGIN-ASR10-005",
+      "derivedFromSourceId": null,
+      "publisherRole": "SYNTH-SOURCE-PUBLISHER",
+      "observedAt": "2026-09-14T00:00:00Z"
+    },
+    "OSRC-ASR10-006": {
+      "candidateId": "CAND-ASR10-006",
+      "sourceClass": "Package metadata",
+      "originalCollectionClass": "Passive",
+      "acquisitionMethod": "authored-package-summary",
+      "originalOriginId": "ORIGIN-ASR10-006",
+      "derivedFromSourceId": null,
+      "publisherRole": "SYNTH-SOURCE-PUBLISHER",
+      "observedAt": "2026-09-14T00:00:00Z"
+    },
+    "OSRC-ASR10-007": {
+      "candidateId": "CAND-ASR10-006",
+      "sourceClass": "Response metadata",
+      "originalCollectionClass": "Active",
+      "acquisitionMethod": "authored-response-summary",
+      "originalOriginId": "ORIGIN-ASR10-007",
+      "derivedFromSourceId": null,
+      "publisherRole": "SYNTH-SOURCE-PUBLISHER",
+      "observedAt": "2026-09-14T00:00:00Z"
+    },
+    "OSRC-ASR10-008": {
+      "candidateId": "CAND-ASR10-001",
+      "sourceClass": "Owner statement",
+      "originalCollectionClass": "Authenticated",
+      "acquisitionMethod": "authored-owner-declaration",
+      "originalOriginId": "ORIGIN-ASR10-008",
+      "derivedFromSourceId": null,
+      "publisherRole": "SYNTH-SOURCE-PUBLISHER",
+      "observedAt": "2026-09-14T00:00:00Z"
+    },
+    "OSRC-ASR10-009": {
+      "candidateId": "CAND-ASR10-002",
+      "sourceClass": "Third-party aggregator",
+      "originalCollectionClass": "Passive",
+      "acquisitionMethod": "authored-derived-summary",
+      "originalOriginId": "ORIGIN-ASR10-002",
+      "derivedFromSourceId": "OSRC-ASR10-002",
+      "publisherRole": "SYNTH-SOURCE-PUBLISHER",
+      "observedAt": "2026-09-14T00:00:00Z"
+    }
+  },
+  "candidateIdentity": {
+    "CAND-ASR10-001": {
+      "type": "Service",
+      "locator": "billing-bridge.example",
+      "dependency": "not-established",
+      "thirdPartyStatus": "not-indicated-in-supplied-case"
+    },
+    "CAND-ASR10-002": {
+      "type": "Domain",
+      "locator": "preview.billing-bridge.example",
+      "dependency": "not-established",
+      "thirdPartyStatus": "possible-unverified"
+    },
+    "CAND-ASR10-003": {
+      "type": "Domain",
+      "locator": "retired.billing-bridge.example",
+      "dependency": "not-established",
+      "thirdPartyStatus": "possible-unverified"
+    },
+    "CAND-ASR10-004": {
+      "type": "Repository",
+      "locator": "code.other-org.example/billing-bridge",
+      "dependency": "not-established",
+      "thirdPartyStatus": "confirmed-third-party"
+    },
+    "CAND-ASR10-005": {
+      "type": "SaaS",
+      "locator": "shadow-workspace.example",
+      "dependency": "not-established",
+      "thirdPartyStatus": "possible-unverified"
+    },
+    "CAND-ASR10-006": {
+      "type": "Package",
+      "locator": "registry.packages.example/billing-helper",
+      "dependency": "supplier-sdk.example",
+      "thirdPartyStatus": "possible-unverified"
+    }
+  },
+  "handoffs": [
+    {
+      "handoffId": "HOF-ASR10-001",
+      "destination": "Chapters12-13",
+      "candidateIds": [
+        "CAND-ASR10-001"
+      ],
+      "provenanceIds": [
+        "PROV-ASR10-001",
+        "PROV-ASR10-008"
+      ],
+      "inputIds": [
+        "ASR-2026-010",
+        "TM-2026-001",
+        "ROE-2026-009 v1"
+      ],
+      "scope": "owner-confirmed teaching candidate only; not operational scope",
+      "status": "planned-not-delivered",
+      "executionAuthorized": false
+    },
+    {
+      "handoffId": "HOF-ASR10-002",
+      "destination": "Chapters23-24",
+      "candidateIds": [
+        "CAND-ASR10-001",
+        "CAND-ASR10-002",
+        "CAND-ASR10-003",
+        "CAND-ASR10-004",
+        "CAND-ASR10-005",
+        "CAND-ASR10-006"
+      ],
+      "provenanceIds": [
+        "PROV-ASR10-001",
+        "PROV-ASR10-002",
+        "PROV-ASR10-003",
+        "PROV-ASR10-004",
+        "PROV-ASR10-005",
+        "PROV-ASR10-006",
+        "PROV-ASR10-007",
+        "PROV-ASR10-008",
+        "PROV-ASR10-009"
+      ],
+      "inputIds": [
+        "CR-ASR10-001",
+        "ASR-2026-010"
+      ],
+      "scope": "source lineage, transformations, uncertainties and gaps; no new collection",
+      "status": "planned-not-delivered",
+      "executionAuthorized": false
+    }
+  ],
+  "limits": {
+    "coverage": "nine supplied source summaries only; absence is not nonexistence",
+    "verification": "finite authored evidence relationships; not source authenticity or legal judgment",
+    "negativeFinding": "no global negative finding from this bounded bundle",
+    "runtime": "no real acquisition, lookup, authentication, contact or observation"
+  },
+  "sourceIdentity": {
+    "SRC-BERKELEY-001": {
+      "version": "2022 edition",
+      "status": "published",
+      "publishedAt": null,
+      "url": "https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source",
+      "notes": "Official publication identifies the 2022 edition; an exact publication day is not recorded here. Chapter 8 scoped recheck on 2026-09-13 uses the official co-publisher 2022 PDF, VI.C 155(g/h) and VI.D 167–169, for time/hash/context, handling history and original/working-copy distinction only. OHCHR landing direct retrieval returned HTTP 403. Exact edition publication day remains unknown; neither the separate 2020 announcement nor the PDF path is substituted. Chapter 25 edition and source-evaluation meaning remain unchanged. No legal admissibility, complete chain-of-custody certification, copied tables, or full cross-chapter audit is claimed."
+    },
+    "SRC-WSTG-001": {
+      "version": "4.2; 5.0 under development",
+      "status": "stable",
+      "publishedAt": "2020-12-03",
+      "url": "https://owasp.org/www-project-web-security-testing-guide/",
+      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption."
+    },
+    "SRC-CT-001": {
+      "version": "RFC 9162",
+      "status": "experimental",
+      "publishedAt": null,
+      "url": "https://www.rfc-editor.org/info/rfc9162/",
+      "notes": "Official RFC gives December 2021; publication day is unknown, so publishedAt remains null. Section 3.2.1 certificate/precertificate and issuance intent only; not deployed browser/CT implementation, current asset ownership or authorization. Erratum8670 Held for Document Update is outside adopted scope. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md."
+    },
+    "SRC-SECURITYTXT-001": {
+      "version": "RFC 9116",
+      "status": "informational",
+      "publishedAt": null,
+      "url": "https://www.rfc-editor.org/info/rfc9116/",
+      "notes": "Official RFC gives April 2022; publication day is unknown, so publishedAt remains null. Section 5.5 only: file presence/absence is not testing permission. Errata6946 Verified and7264/7743 Reported are separate from that claim; no parser or signature implementation. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md."
+    },
+    "SRC-DNS-TERM-001": {
+      "version": "RFC 9499 / BCP 219",
+      "status": "best-current-practice",
+      "publishedAt": null,
+      "url": "https://www.rfc-editor.org/info/rfc9499/",
+      "notes": "Official RFC gives March 2024; publication day is unknown, so publishedAt remains null. Section 5 RR Owner term only, not corporate ownership. Obsoletes8499, updates2308. Erratum8189 Rejected. No numerical TTL implementation claims adopted. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md."
+    },
+    "SRC-DNS-STALE-001": {
+      "version": "RFC 8767",
+      "status": "standards-track",
+      "publishedAt": null,
+      "url": "https://www.rfc-editor.org/info/rfc8767/",
+      "notes": "Official RFC gives March 2020; publication day is unknown, so publishedAt remains null. Section 4 serve-stale and TTL context only; no resolver implementation/tuning. Updates1034/1035/2181. Errata search returned no matching records at checkedAt. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md."
+    }
+  },
+  "pages": [
+    {
+      "source": "manuscript/10-recon-osint-boundary.md",
+      "destination": "chapters/chapter-10/index.md",
+      "section": "chapters",
+      "order": 53,
+      "title": "第10章 ReconnaissanceとOSINTの境界"
+    },
+    {
+      "source": "templates/attack-surface-register.md",
+      "destination": "templates/attack-surface-register/index.md",
+      "section": "additional",
+      "order": 259,
+      "title": "Attack Surface Register"
+    },
+    {
+      "source": "cases/ch10-attack-surface-example.md",
+      "destination": "cases/chapter-10-attack-surface/index.md",
+      "section": "additional",
+      "order": 261,
+      "title": "第10章 完全合成記入例：Attack Surface Register"
+    },
+    {
+      "source": "references/ch10-source-review-2026-09-14.md",
+      "destination": "references/chapter-10-source-review/index.md",
+      "section": "additional",
+      "order": 262,
+      "title": "第10章 Source Review Note：ReconとOSINTの境界"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch10-attack-surface.json",
+      "destination": "downloads/ch10-attack-surface.json"
+    },
+    {
+      "source": "cases/fixtures/ch10-source-bundle.json",
+      "destination": "downloads/ch10-source-bundle.json"
+    },
+    {
+      "source": "schemas/ch10-attack-surface.schema.json",
+      "destination": "downloads/ch10-attack-surface.schema.json"
+    }
+  ],
+  "indices": {
+    "artifact-index.md": [
+      "| ART-19 | Attack Surface Register | 10 |",
+      "Collection Requirement"
+    ],
+    "figure-index.md": [
+      "F-10-01",
+      "T-10-01",
+      "T-10-02",
+      "T-10-03",
+      "T-10-04",
+      "T-10-05"
+    ],
+    "glossary.md": [
+      "## 第10章の用語",
+      "| Unverified |"
+    ],
+    "cases/index.md": [
+      "## 第10章の教育用補足",
+      "ASR-2026-010"
+    ],
+    "cases/fixtures/index.md": [
+      "## 第10章 Attack Surface Register",
+      "ch10-source-bundle.json"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "第6章・第7章・第8章・第9章・第10章の公開前"
+    ]
+  },
+  "documents": {
+    "manuscript/10-recon-osint-boundary.md": {
+      "headings": [
+        [
+          1,
+          "第10章 ReconnaissanceとOSINTの境界"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "10.1 発見を判断要求へ戻す"
+        ],
+        [
+          2,
+          "10.2 公開と許可を分ける"
+        ],
+        [
+          2,
+          "10.3 Collection classと実際の作用を照合する"
+        ],
+        [
+          2,
+          "10.4 Sourceが証明する範囲を限定する"
+        ],
+        [
+          2,
+          "10.5 Provenance、時点、Hashを直接結ぶ"
+        ],
+        [
+          2,
+          "10.6 所有ConfidenceとVerificationを分離する"
+        ],
+        [
+          2,
+          "10.7 次Action、Gap、Handoffを記録する"
+        ],
+        [
+          2,
+          "10.8 完全合成演習と評価基準"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この章の位置付け 証明書の記録に自社のサービスと似た名前が見つかりました。それは現在の自社資産でしょうか。存在する名前、公開された情報、組織による所有、現在の稼働、検査の許可は、別々の根拠を必要とします。発見件数を増やすだけでは、この問いに答えられません。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "学習目標 この章を終えた読者は、次を行えます。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "前提知識 第2章のAuthority / Scope / Safety / Disclosure、第4章のAsset / Boundary / Evidence、第9章のRoEと再承認を前提にします。DNSの設定や証明書発行の実装経験は必要ありません。本章で扱う名前は予約値、資料は作成者が記述した完全合成データです。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "10.1 発見を判断要求へ戻す Reconnaissanceは後続判断のために対象と関係を理解する活動、OSINTは公開情報を要求に沿って評価・分析する活動、Asset Discoveryは資産候補を識別する活動として整理します。これは本書の教育用整理であり、三語を同義語として扱う定義ではありません。WSTGのInformation Gatheringは評価項目を考える分類の補助で、対象に対する許可や調査の完全性を証明しません。SRC-WSTG-001"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.1 発見を判断要求へ戻す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "10.2 公開と許可を分ける 公開閲覧可能であること、利用規約、robots、第三者の権利、個人情報の扱い、Assessmentの許可は別々の確認項目です。robotsの記述を適法性の自動保証にも、一律の法的禁止の判定器にも使いません。不明点を技術操作で埋めず、Authority ownerまたはData ownerへ戻します。Berkeley Protocolも調査の法的枠組みを文脈に応じて検討しますが、本章はその人権・国際刑事調査の文脈を企業活動の普遍的義務へ移しません。SRC-BERKELEY-001"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.2 公開と許可を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "10.3 Collection classと実際の作用を照合する 表T-10-01: Collection classの教育用区分と本演習の制限。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.3 Collection classと実際の作用を照合する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "10.4 Sourceが証明する範囲を限定する 表T-10-02: 供給資料から読めることと残るGap。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.4 Sourceが証明する範囲を限定する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "10.5 Provenance、時点、Hashを直接結ぶ Source IDは資料を、Provenance IDはその出所と取扱いの記録を、Evidence IDは特定の比較結果を識別します。本章のOSRC-ASR10-*は合成収集資料のID、SRC-*は仕様等の参考資料IDです。両者を混同しません。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.5 Provenance、時点、Hashを直接結ぶ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "10.6 所有ConfidenceとVerificationを分離する 表T-10-03: 五つのVerification stateと許容結論（本書の有限教育モデル）。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.6 所有ConfidenceとVerificationを分離する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "10.7 次Action、Gap、Handoffを記録する 確認済み候補であっても、次の実作業には現在有効なAuthorization、対象・Operation・時間のScope、System/Data owner、第三者条件の確認が必要です。本Caseはすべてrecord-only、nextActionAuthorization=falseです。第三者Assetや所有不明Assetに、親の許可を継承させません。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.7 次Action、Gap、Handoffを記録する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "10.8 完全合成演習と評価基準 Purpose: 九つの供給Sourceから六つの候補を比較し、所有確認、原典の独立性、次Actionの不足条件をART-19へ記入します。発見件数や通信成功は評価しません。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "四つの実務視点 Assessment担当は「次の確認問い」を、Asset ownerは「所有とInventoryの根拠」を、Data/法務担当は「利用条件と第三者・機微性」を、意思決定者は「許容結論・Gap・期限」を確認します。同じ表を使っても判断責任を代替しません。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準",
+            "四つの実務視点"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "章のまとめ ReconとOSINTの成果は情報量ではなく、要求に対してどこまで言えるかです。収集方法、Source、原典、時点、所有Confidence、Verification、実行許可を分離すると、誤ったAsset結合とScope拡張を防ぐ判断記録になります。本章の完成したART-19は、実作業を許可せずGapを残す成果物です。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "章のまとめ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "次に学ぶこと 第11章 Web/APIでは、独立した合成Caseで仮説とEvidenceの関係を確認します。そのCaseへ本章の候補を自動投入しません。第12〜13章へは限定したAsset候補と承認不足を、第23〜24章へはCollection RequirementとProvenanceを引き継ぎます。後続の本文は各章のIssueで順次整備します。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "次に学ぶこと"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認した版・節・Errata・採否・限界は第10章Source Review Note、RegistryはSource baselineを参照してください。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/pentest-learning-book/"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "この章の位置付け",
+            "OWN / BRIDGE / DELEGATE"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "OWN / BRIDGE / DELEGATE DELEGATE: 検索EngineやScannerの操作、脆弱性別手順はPentest学習書の責任範囲とします。本章には実在人物の追跡、身分偽装、個人情報集約の手順を含めません。第24章の詳細な公開情報調査も重複しません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "security.txtは脆弱性報告の連絡情報などを機械可読にする仕様です。そのファイルの存在・不在自体からテストの許可・禁止を推定しない点を確認します。別のPolicyに示された条件と、個別対象に対するAuthorizationは別途評価します。連絡先が分かることは検査開始の承認ではありません。SRC-SECURITYTXT-001"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.2 公開と許可を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "DNSのRRにおけるOwnerは、RRが存在するDomain名を指す技術用語で、法人の資産所有者ではありません。retired.billing-bridge.exampleというOwner名を企業所有の確認結果へ転記しません。SRC-DNS-TERM-001"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.4 Sourceが証明する範囲を限定する"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/main/CANONICAL_SOURCE.md"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: Case、Register JSON、Source bundle JSONを用意します。実対象や実Dataで代替しません。以下の任意の整合性検査は本書Repositoryで、出版基盤の固定依存が導入済みの場合だけ実行します。新しい依存取得や外部Targetの照会は演習に含めません。JSON Schemaは二つのファイルをregisterとbundleに束ねた論理入力を定義し、Checkerが固定pathから読みます。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter10_contract.py --no-regressions"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-WSTG-001: OWASP WSTG 4.2。Information Gatheringの分類補助。5.0はdevelopment。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-SECURITYTXT-001: RFC9116、Informational。security.txtとTesting permissionの分離。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "一般的なPassiveという呼称は、すべての通信がゼロであることを意味しません。本演習のPassive planはそれより狭く、提供済みファイルの読解だけ、外部通信・認証試行・Rate testはすべて0です。通常の分類を本演習の許可リストへ置き換えません。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.3 Collection classと実際の作用を照合する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: Case、Register JSON、Source bundle JSONを用意します。実対象や実Dataで代替しません。以下の任意の整合性検査は本書Repositoryで、出版基盤の固定依存が導入済みの場合だけ実行します。新しい依存取得や外部Targetの照会は演習に含めません。JSON Schemaは二つのファイルをregisterとbundleに束ねた論理入力を定義し、Checkerが固定pathから読みます。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Impact / Stop / Cleanup: 操作は教材の読解・照合・限定要約だけで、外部通信・認証試行・Rate testは0です。九Source・六候補、要約65,536 bytes、30分を教育上の上限とします。未知のData、個人情報、Credential、通信要求、Hash不一致、Scope不明を認めたら追加処理と複製を止め、参照IDとGapを記録します。作業後は自分が作った教材用コピーだけを確認して除去し、正本と他者のDataを除去しません。保持の仮定は作業終了から24時間以内、CustodianはSYNTH-EVIDENCE-CUSTODIANです。これは実装済み隔離・削除・PII完全検出の保証ではありません。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準"
+          ]
+        }
+      ],
+      "exerciseInstructionOrder": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "10.8 完全合成演習と評価基準 Purpose: 九つの供給Sourceから六つの候補を比較し、所有確認、原典の独立性、次Actionの不足条件をART-19へ記入します。発見件数や通信成功は評価しません。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: Case、Register JSON、Source bundle JSONを用意します。実対象や実Dataで代替しません。以下の任意の整合性検査は本書Repositoryで、出版基盤の固定依存が導入済みの場合だけ実行します。新しい依存取得や外部Targetの照会は演習に含めません。JSON Schemaは二つのファイルをregisterとbundleに束ねた論理入力を定義し、Checkerが固定pathから読みます。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence: 六候補それぞれのSource→Evidence→Gap→Owner→再評価と、二つのHandoffが記入されることです。任意検査の成功表示も実対象の許可や観測ではありません。Caseと二JSONの全Field一致、Source内容の固定Hash、三Collection classes、五Verification states、未承認の次Actionを検査します。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Impact / Stop / Cleanup: 操作は教材の読解・照合・限定要約だけで、外部通信・認証試行・Rate testは0です。九Source・六候補、要約65,536 bytes、30分を教育上の上限とします。未知のData、個人情報、Credential、通信要求、Hash不一致、Scope不明を認めたら追加処理と複製を止め、参照IDとGapを記録します。作業後は自分が作った教材用コピーだけを確認して除去し、正本と他者のDataを除去しません。保持の仮定は作業終了から24時間以内、CustodianはSYNTH-EVIDENCE-CUSTODIANです。これは実装済み隔離・削除・PII完全検出の保証ではありません。"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter10_contract.py --no-regressions"
+          ],
+          "headings": [
+            "第10章 ReconnaissanceとOSINTの境界",
+            "10.8 完全合成演習と評価基準"
+          ]
+        }
+      ]
+    },
+    "templates/attack-surface-register.md": {
+      "headings": [
+        [
+          1,
+          "Attack Surface Register"
+        ],
+        [
+          2,
+          "1. Document Controlと要求"
+        ],
+        [
+          2,
+          "2. Collection planと実際の作用"
+        ],
+        [
+          2,
+          "3. SourceとProvenance"
+        ],
+        [
+          2,
+          "4. Asset candidateと所有"
+        ],
+        [
+          2,
+          "5. Verificationと許容結論"
+        ],
+        [
+          2,
+          "6. 次Action、Gap、再評価"
+        ],
+        [
+          2,
+          "7. Handoffと受入"
+        ],
+        [
+          2,
+          "記入例と評価"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Attack Surface Register ART-19は、Collection RequirementからSource、候補Asset、所有Confidence、Verification、次Actionの承認不足、Gap、再評価を結ぶ記録です。発見件数や公開情報の存在は、所有・稼働・実行許可の証明ではありません。"
+          ],
+          "headings": [
+            "Attack Surface Register"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "2. Collection planと実際の作用 Collection classはPassive / Active / Authenticatedの三つです。First-party inventory等のSource classとは別欄にします。元の取得Interactionと今回の学習操作も分離します。"
+          ],
+          "headings": [
+            "Attack Surface Register",
+            "2. Collection planと実際の作用"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章の供給bundleでは、対応するcontent文字列のUTF-8 byteだけをHash対象とし、JSONファイル全体とは区別します。合成の時刻・取得・Owner statementを実観測や実署名へ読み替えません。"
+          ],
+          "headings": [
+            "Attack Surface Register",
+            "3. SourceとProvenance"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "所有者不明はUnverifiedにします。Confirmed ownedは所有者根拠と対象の対応が必要であり、RoE Scopeへの追加を意味しません。Confidenceは本章の有限な根拠評価であり、確率や真正性の認定ではありません。"
+          ],
+          "headings": [
+            "Attack Surface Register",
+            "4. Asset candidateと所有"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "5. Verificationと許容結論 Verification stateはCandidate / Corroborated / Owner confirmed / Rejected / Unknownの五つです。Unverifiedは所有属性であり、第六のStateではありません。"
+          ],
+          "headings": [
+            "Attack Surface Register",
+            "5. Verificationと許容結論"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "6. 次Action、Gap、再評価 各CandidateへAllowed next action、Next-action authorization、Required approval、Stop reason、Gap ID、Gap owner、Due date、Reassessment ID、無効化条件を付けます。本章Caseは全件record-only / nextActionAuthorization=falseです。"
+          ],
+          "headings": [
+            "Attack Surface Register",
+            "6. 次Action、Gap、再評価"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "7. Handoffと受入 第12〜13章へ渡す確認済み候補と、第23〜24章へ渡すProvenance・不確実性を別のHandoff IDで記録します。Input ID、候補、Source/Provenance、制限、planned / deliveredの区別を保持します。合成計画を実際に送付した証跡として扱いません。"
+          ],
+          "headings": [
+            "Attack Surface Register",
+            "7. Handoffと受入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "記入例と評価 第10章完全合成Caseに全Fieldの記入例があります。第10章のRubricで、作用の分離、Provenance、所有判断、承認・Handoffを評価します。個別法的判断や詳細なOSINT操作手順は本Templateの責任範囲ではありません。"
+          ],
+          "headings": [
+            "Attack Surface Register",
+            "記入例と評価"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "現在有効なAuthority、正確なAsset・Operation・時間のScope、System/Data owner、第三者利用条件を別々に確認します。所有確認、CT掲載、security.txt、公開URL、親の過去の許可は次Actionの承認を代替しません。"
+          ],
+          "headings": [
+            "Attack Surface Register",
+            "6. 次Action、Gap、再評価"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 Budgets / Stop 外部通信・認証試行・Rate testは0、件数・量・時間、上限時の停止"
+          ],
+          "headings": [
+            "Attack Surface Register",
+            "2. Collection planと実際の作用"
+          ]
+        }
+      ]
+    },
+    "cases/ch10-attack-surface-example.md": {
+      "headings": [
+        [
+          1,
+          "第10章 完全合成記入例：Attack Surface Register"
+        ],
+        [
+          2,
+          "Caseの位置付け"
+        ],
+        [
+          2,
+          "判断と代替説明"
+        ],
+        [
+          2,
+          "完全Field記録の読み方"
+        ],
+        [
+          2,
+          "register/schemaVersion"
+        ],
+        [
+          2,
+          "register/modelVersion"
+        ],
+        [
+          2,
+          "register/synthetic"
+        ],
+        [
+          2,
+          "register/executionAuthorized"
+        ],
+        [
+          2,
+          "register/record"
+        ],
+        [
+          2,
+          "register/parents"
+        ],
+        [
+          2,
+          "register/learnerPlan"
+        ],
+        [
+          2,
+          "register/sources"
+        ],
+        [
+          2,
+          "register/candidates"
+        ],
+        [
+          2,
+          "register/handoffs"
+        ],
+        [
+          2,
+          "register/limits"
+        ],
+        [
+          2,
+          "bundle/schemaVersion"
+        ],
+        [
+          2,
+          "bundle/bundleId"
+        ],
+        [
+          2,
+          "bundle/synthetic"
+        ],
+        [
+          2,
+          "bundle/acquisitionOccurred"
+        ],
+        [
+          2,
+          "bundle/sources"
+        ],
+        [
+          2,
+          "受入と残る制限"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Caseの位置付け 本記録はCASE-2026-001をrefineするART-19 / ASR-2026-010です。九つの合成資料から六つの候補を整理した完全記入例で、実対象の収集・観測・認証・所有確認を実施した記録ではありません。Sourceの時刻、申告者、取得方法も作成者の仮定です。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "Caseの位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認事実は「提供された文に何が記載されているか」、分析判断は上の限定State、仮定は供給資料の出所・時刻・申告者です。将来の稼働や攻撃を予測する記録ではありません。推奨は不足EvidenceをOwnerへ戻すことだけで、実収集を開始する指示ではありません。全候補にGap、責任者、期限、再評価Triggerを残します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "判断と代替説明"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "完全Field記録の読み方 以下はRegister JSONとSource bundle JSONの全末端Fieldです。配列番号は1起点で、各見出しのGroupとField / Valueを合わせて一つのPathを識別します。空配列やnullも省略しません。機械検査は順序と全Fieldの一致を共有Publication Projection経由で確認します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "完全Field記録の読み方"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/schemaVersion このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/schemaVersion"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/modelVersion このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/modelVersion"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/synthetic このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/synthetic"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/executionAuthorized このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/executionAuthorized"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/record このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/parents このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/parents"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/learnerPlan このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/learnerPlan"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/sources このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/sources"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/candidates このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/candidates"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/handoffs このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/handoffs"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "register/limits このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "register/limits"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "bundle/schemaVersion このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "bundle/schemaVersion"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "bundle/bundleId このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "bundle/bundleId"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "bundle/synthetic このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "bundle/synthetic"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "bundle/acquisitionOccurred このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "bundle/acquisitionOccurred"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "bundle/sources このGroupの供給Fieldを省略せず記録します。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "bundle/sources"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "受入と残る制限 記入はanalysis-complete-with-gapsですが、親の過去のDecision deadlineに間に合うかはnot-assessed-for-historical-deadlineです。第12〜13章への一候補、第23〜24章へのProvenanceのHandoffはいずれもplanned-not-deliveredで、実際に送付した証跡ではありません。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "受入と残る制限"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "判断と代替説明 CAND-ASR10-001: billing-bridge.exampleは、供給InventoryとOwner statementが親ASSET-2026-001に一致します。教材内限定でOwner confirmed / Highです。実際の現所有・稼働・実施許可は確認していません。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "判断と代替説明"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "UnknownやRejectedを隠さず記録し、所有の根拠が変われば再評価します。九資料の外側の不存在や網羅性は主張しません。実環境、法的権限、Data真正性、隔離・削除・PII完全検出の保証は行いません。"
+          ],
+          "headings": [
+            "第10章 完全合成記入例：Attack Surface Register",
+            "受入と残る制限"
+          ]
+        }
+      ]
+    },
+    "references/ch10-source-review-2026-09-14.md": {
+      "headings": [
+        [
+          1,
+          "第10章 Source Review Note：ReconとOSINTの境界"
+        ],
+        [
+          2,
+          "確認範囲と日付"
+        ],
+        [
+          2,
+          "SRC-BERKELEY-001 — Berkeley Protocol"
+        ],
+        [
+          2,
+          "SRC-WSTG-001 — WSTG Information Gathering"
+        ],
+        [
+          2,
+          "SRC-CT-001 — RFC9162"
+        ],
+        [
+          2,
+          "SRC-SECURITYTXT-001 — RFC9116"
+        ],
+        [
+          2,
+          "SRC-DNS-TERM-001 — RFC9499"
+        ],
+        [
+          2,
+          "SRC-DNS-STALE-001 — RFC8767"
+        ],
+        [
+          2,
+          "再確認と採用しなかった資料"
+        ],
+        [
+          2,
+          "成果物への対応"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認範囲と日付 Checked at: 2026-09-14。第10章、ART-19、合成Caseで実際に用いた主張だけを確認しました。資料全体への適合、法的判断、実対象の収集、Sourceの真正性を保証しません。既存章の歴史的な引用やRegistry全体の監査日を置き換えません。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "確認範囲と日付"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "人権・国際刑事調査のための文脈を、企業CTIの普遍的な法的義務へ拡張しません。Hash対象を明示するという本章の設計は、Hashから真正性や実施許可が導かれるという意味ではありません。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-BERKELEY-001 — Berkeley Protocol"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001 — WSTG Information Gathering 公式Projectはstable 4.2、5.0をdevelopmentとしています。4.2のReleaseは2020-12-03です。Versioned Information Gatheringの分類目次を確認しました。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-WSTG-001 — WSTG Information Gathering"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-CT-001 — RFC9162 公式本文とStatus / 更新関係を確認。December2021 / Experimental、RFC6962をobsoletesします。日まで分からない発行日はnullとします。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-CT-001 — RFC9162"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-SECURITYTXT-001 — RFC9116 公式本文とStatusを確認。April2022 / Informational。§5.2のRedirect、§5.3のStale情報も確認し、本文への直接採用は§5.5のTesting permissionとの分離に限定します。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-SECURITYTXT-001 — RFC9116"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-DNS-TERM-001 — RFC9499 公式本文とStatus / 更新関係を確認。March2024 / Best Current Practice / BCP219、RFC8499をobsoletesしRFC2308をupdatesします。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-DNS-TERM-001 — RFC9499"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-DNS-STALE-001 — RFC8767 公式本文とStatus / 更新関係を確認。March2020 / Standards Track、RFC1034/1035/2181をupdatesします。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-DNS-STALE-001 — RFC8767"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "再確認と採用しなかった資料 新規四RFCは月までの発行情報しか確認できないためpublishedAtをnullとし、notesに理由を記録します。今回確認したinfoページに後続のUpdated by / Obsoleted byは見当たりませんでしたが、2026-09-14時点の観測であり将来の状態を保証しません。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "再確認と採用しなかった資料"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "成果物への対応 第10章、ART-19、完全合成Caseは、Sourceの意味を教材の限定した判断に用います。実Targetの照会、Credential、実人物の情報集約、法的認定、実測を教材へ導入しません。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "成果物への対応"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://humanrights.berkeley.edu/projects/developing-the-berkeley-protocol-on-digital-open-source-investigations/"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-BERKELEY-001 — Berkeley Protocol"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-BERKELEY-001 — Berkeley Protocol 版: 2022 edition。共同発行者の公式Projectと公式PDFを確認。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://humanrights.berkeley.edu/wp-content/uploads/archive/2024/02/Berkeley-Protocol.pdf"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-BERKELEY-001 — Berkeley Protocol"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-BERKELEY-001 — Berkeley Protocol 版: 2022 edition。共同発行者の公式Projectと公式PDFを確認。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-BERKELEY-001 — Berkeley Protocol 限定採用: III39–41の法的枠組みの文脈依存、VI.C155(g/h)の取得時点・Hash、VI.D167–169の取扱いと原本/作業コピー、VI.E176のSource・item・contentの評価。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-BERKELEY-001 — Berkeley Protocol"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001 — WSTG Information Gathering 公式Projectはstable 4.2、5.0をdevelopmentとしています。4.2のReleaseは2020-12-03です。Versioned Information Gatheringの分類目次を確認しました。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-WSTG-001 — WSTG Information Gathering"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://owasp.org/www-project-web-security-testing-guide/"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-WSTG-001 — WSTG Information Gathering"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001 — WSTG Information Gathering 公式Projectはstable 4.2、5.0をdevelopmentとしています。4.2のReleaseは2020-12-03です。Versioned Information Gatheringの分類目次を確認しました。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/README"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-WSTG-001 — WSTG Information Gathering"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001 — WSTG Information Gathering 公式Projectはstable 4.2、5.0をdevelopmentとしています。4.2のReleaseは2020-12-03です。Versioned Information Gatheringの分類目次を確認しました。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/rfc/rfc9162.html"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-CT-001 — RFC9162"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-CT-001 — RFC9162 公式本文とStatus / 更新関係を確認。December2021 / Experimental、RFC6962をobsoletesします。日まで分からない発行日はnullとします。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/info/rfc9162/"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-CT-001 — RFC9162"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-CT-001 — RFC9162 公式本文とStatus / 更新関係を確認。December2021 / Experimental、RFC6962をobsoletesします。日まで分からない発行日はnullとします。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用範囲は§3.2/§3.2.1のCertificate / Precertificateと発行意図の区別だけです。最終Certificateが発行されない場合もあることから、CT metadataだけで現在の所有・稼働・実行許可を確定しないのは本章の分析上の制限です。ブラウザの実採用版、CT API、Logの網羅性、Merkle proofの実装を監査したわけではありません。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-CT-001 — RFC9162"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Errataは8670 Held for Document Update、Editorial、§2.1.3.2/§2.1.4.2のループ記述に関するものです。採用する発行意図の主張とは別で、Verifiedと記載しません。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-CT-001 — RFC9162"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/errata/rfc9162"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-CT-001 — RFC9162"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Errataは8670 Held for Document Update、Editorial、§2.1.3.2/§2.1.4.2のループ記述に関するものです。採用する発行意図の主張とは別で、Verifiedと記載しません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-SECURITYTXT-001 — RFC9116 公式本文とStatusを確認。April2022 / Informational。§5.2のRedirect、§5.3のStale情報も確認し、本文への直接採用は§5.5のTesting permissionとの分離に限定します。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-SECURITYTXT-001 — RFC9116"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/rfc/rfc9116.html"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-SECURITYTXT-001 — RFC9116"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-SECURITYTXT-001 — RFC9116 公式本文とStatusを確認。April2022 / Informational。§5.2のRedirect、§5.3のStale情報も確認し、本文への直接採用は§5.5のTesting permissionとの分離に限定します。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/info/rfc9116/"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-SECURITYTXT-001 — RFC9116"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-SECURITYTXT-001 — RFC9116 公式本文とStatusを確認。April2022 / Informational。§5.2のRedirect、§5.3のStale情報も確認し、本文への直接採用は§5.5のTesting permissionとの分離に限定します。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Errataの現在の記録は、6946 Verified（Editorial、§4の参照節訂正）、7264 Reported（Technical、時刻のZ/z）、7743 Reported（Technical、改行文法）です。Reportedを確定済みの仕様変更として扱いません。これらは本章が採用する§5.5の意味を変更する内容ではありません。security.txt Parserや署名の検証は実装しません。"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-SECURITYTXT-001 — RFC9116"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/errata/rfc9116"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-SECURITYTXT-001 — RFC9116"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Errataの現在の記録は、6946 Verified（Editorial、§4の参照節訂正）、7264 Reported（Technical、時刻のZ/z）、7743 Reported（Technical、改行文法）です。Reportedを確定済みの仕様変更として扱いません。これらは本章が採用する§5.5の意味を変更する内容ではありません。security.txt Parserや署名の検証は実装しません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/rfc/rfc9499.html"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-DNS-TERM-001 — RFC9499"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-DNS-TERM-001 — RFC9499 公式本文とStatus / 更新関係を確認。March2024 / Best Current Practice / BCP219、RFC8499をobsoletesしRFC2308をupdatesします。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/info/rfc9499/"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-DNS-TERM-001 — RFC9499"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-DNS-TERM-001 — RFC9499 公式本文とStatus / 更新関係を確認。March2024 / Best Current Practice / BCP219、RFC8499をobsoletesしRFC2308をupdatesします。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/errata/rfc9499"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-DNS-TERM-001 — RFC9499"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Errataは8189 Rejected（Editorial、用語の配列に関する報告）で、Ownerの意味を変更する根拠として扱いません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/rfc/rfc8767.html"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-DNS-STALE-001 — RFC8767"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-DNS-STALE-001 — RFC8767 公式本文とStatus / 更新関係を確認。March2020 / Standards Track、RFC1034/1035/2181をupdatesします。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/info/rfc8767/"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-DNS-STALE-001 — RFC8767"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-DNS-STALE-001 — RFC8767 公式本文とStatus / 更新関係を確認。March2020 / Standards Track、RFC1034/1035/2181をupdatesします。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/errata/rfc8767"
+          ],
+          "headings": [
+            "第10章 Source Review Note：ReconとOSINTの境界",
+            "SRC-DNS-STALE-001 — RFC8767"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用は§4のserve-staleとTTLに関する限定説明です。期限の経過や正のTTLだけで現在性を確定しないという分析上の制限へ用います。Resolver設定、全DNS仕様、実際のCache挙動の測定や推奨値は扱いません。Errata検索は確認日時点で該当記録0でした。将来も存在しないという意味ではありません。"
+          ]
+        }
+      ],
+      "analyticProvenance": []
+    }
+  }
+}
