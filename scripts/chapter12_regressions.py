@@ -33,7 +33,10 @@ from scripts.check_chapter12_contract import (
     repository_errors,
     case_parity_errors,
 )
-from scripts.check_editorial_input_manifest import ManifestError
+from scripts.check_editorial_input_manifest import (
+    ManifestError,
+    validate_schema_instance,
+)
 from scripts.publication_projection import project_documents, is_policy_scan_field
 
 
@@ -145,6 +148,47 @@ def run_regressions(data, schema, contract, source, projection):
     except ValueError:
         rejected = True
     check("CH12-EVAL-kernel-condition", rejected)
+
+    assertion_fields = ("issuerId", "audienceId", "relyingPartyId")
+    for i, applicable in ((0, True), (1, False)):
+        evaluation = data["evaluations"][i]
+        check(
+            f"CH12-FED-APPLICABILITY-positive-{i}",
+            all((evaluation[k] is not None) == applicable for k in assertion_fields),
+        )
+        for chosen in [*((k,) for k in assertion_fields), assertion_fields]:
+            d = deepcopy(data)
+            for k in chosen:
+                d["evaluations"][i][k] = None if applicable else e[k]
+            label = f"CH12-FED-APPLICABILITY-{i}-" + "/".join(chosen)
+            try:
+                validate_schema_instance(d, schema)
+                rejected = False
+            except ManifestError:
+                rejected = True
+            check(label + "-schema", rejected)
+            check(label + "-model", bool(validate(d)))
+            try:
+                outcome = evaluate_path(d, d["paths"][i + 3], d["evaluations"][i])
+                rejected = applicable and outcome == ("Deny", "EDG-IAR12-013")
+            except ValueError:
+                rejected = not applicable
+            check(label + "-kernel", rejected)
+        # The actual path-edge invariant must not depend only on a frozen
+        # identity or on the schema's two finite path branches.
+        loose_schema, altered_contract = deepcopy(schema), deepcopy(contract)
+        del loose_schema["properties"]["evaluations"]["items"]["oneOf"]
+        for k in assertion_fields:
+            altered_contract["identities"]["evaluations"][evaluation["id"]][k] = d[
+                "evaluations"
+            ][i][k]
+        check(
+            f"CH12-FED-APPLICABILITY-{i}-independent-edge-invariant",
+            any(
+                "evaluation federation tuple applicability" in error
+                for error in validate_model(d, loose_schema, altered_contract)
+            ),
+        )
 
     # Closed schema: finite traversal of the supplied record, not a fuzz grammar.
     def objects(value, path=()):
@@ -551,6 +595,17 @@ def run_regressions(data, schema, contract, source, projection):
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_bytes((ROOT / relative).read_bytes())
         check("CH12-REPO-positive", not repository_errors(contract, root))
+        changelog = root / "CHANGELOG.md"
+        original_changelog = changelog.read_text(encoding="utf-8")
+        for i, marker in enumerate(contract["indices"]["CHANGELOG.md"]):
+            changelog.write_text(
+                original_changelog.replace(marker, ""), encoding="utf-8"
+            )
+            check(
+                f"CH12-CHANGELOG-reader-impact-{i}",
+                "Chapter12 index CHANGELOG.md" in repository_errors(contract, root),
+            )
+        changelog.write_text(original_changelog, encoding="utf-8")
         p = root / "package.json"
         baseline = json.loads(p.read_text(encoding="utf-8"))
         for mode in ("missing", "after-generator"):

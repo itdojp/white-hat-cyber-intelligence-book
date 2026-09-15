@@ -181,6 +181,11 @@ def evaluate_path(data, path, request):
         raise ValueError("supplied comparison path/tuple/revision mismatch")
     edges = {e["id"]: e for e in data["edges"]}
     resources = {r["id"]: r for r in data["resources"]}
+    if not any(edges[eid]["kind"] == "Federation" for eid in path["edgeIds"]):
+        if any(
+            request[k] is not None for k in ("issuerId", "audienceId", "relyingPartyId")
+        ):
+            raise ValueError("non-federation comparison requires null assertion fields")
     denied, unknown = [], False
     for eid in path["edgeIds"]:
         edge = edges[eid]
@@ -445,6 +450,15 @@ def validate_model(data, schema, contract):
                     "event tuple binding " + pid,
                 )
             if evaluation:
+                assertion_values = [
+                    evaluation[k] for k in ("issuerId", "audienceId", "relyingPartyId")
+                ]
+                need(
+                    all(v is not None for v in assertion_values)
+                    if any(e["kind"] == "Federation" for e in chain)
+                    else all(v is None for v in assertion_values),
+                    "evaluation federation tuple applicability " + pid,
+                )
                 need(
                     path["validationMethod"] == "Policy simulation"
                     and config is not None,

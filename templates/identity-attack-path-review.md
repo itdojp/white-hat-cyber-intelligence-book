@@ -64,7 +64,7 @@ Static reviewはValidatedにしません。Brokenには必要条件の反証が�
 |---|---|
 | Comparison ID / Path ID | どのPathの比較か |
 | Input bindings | Principal、Resource、Action、Graph版、Policy版、必要条件 |
-| Federation bindings | 該当時にIssuer、Audience、受入RPを別欄で示す |
+| Federation bindings | 該当時にIssuer、Audience、受入RPを別欄で示す。非該当の供給JSONでは三欄をnullとする |
 | Expected / Actual | 期待値と再計算値、必要条件の照合結果 |
 | Refuted necessary edge | Denyならどの必要条件を反証したか |
 | Source Evidence / Time | 同一Pathの設定Evidence、作成者による時刻仮定 |

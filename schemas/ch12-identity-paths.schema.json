@@ -1378,21 +1378,33 @@
             ]
           },
           "issuerId": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "enum": [
-              "ISS-IAR12-001"
+              "ISS-IAR12-001",
+              null
             ]
           },
           "audienceId": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "enum": [
-              "RP-IAR12-003"
+              "RP-IAR12-003",
+              null
             ]
           },
           "relyingPartyId": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "enum": [
-              "RP-IAR12-003"
+              "RP-IAR12-003",
+              null
             ]
           },
           "conditions": {
@@ -1486,7 +1498,41 @@
             "type": "boolean",
             "const": true
           }
-        }
+        },
+        "oneOf": [
+          {
+            "properties": {
+              "pathId": {
+                "const": "PTH-IAR12-004"
+              },
+              "issuerId": {
+                "const": "ISS-IAR12-001"
+              },
+              "audienceId": {
+                "const": "RP-IAR12-003"
+              },
+              "relyingPartyId": {
+                "const": "RP-IAR12-003"
+              }
+            }
+          },
+          {
+            "properties": {
+              "pathId": {
+                "const": "PTH-IAR12-005"
+              },
+              "issuerId": {
+                "const": null
+              },
+              "audienceId": {
+                "const": null
+              },
+              "relyingPartyId": {
+                "const": null
+              }
+            }
+          }
+        ]
       },
       "uniqueItems": true
     },

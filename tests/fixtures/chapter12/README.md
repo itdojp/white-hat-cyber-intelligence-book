@@ -11,6 +11,8 @@ Chapter12 Layer A selects all four canonical documents and owns the supplied ART
 - FourPrincipal/sixPathstates/threeMethods, MFA changes without a path-state change, tighter budgets, conservative conclusions.
 - Typed and continuous necessary Edge chain, permission/resource/action, separate issuer/audience/RP, same graph/policy revision and complete input conditions.
 - Static review cannot validate; authored events do not authorize; known necessary denial versus unknown; unrelated edge denial cannot refute this path; no global reachability claim.
+- Federation comparisons require all three assertion identifiers; non-Federation comparisons require explicit null fields (not an Unknown condition). CH12-FED-APPLICABILITY tests cover canonical/mixed/full-null and non-applicable forged tuples at schema, model and kernel boundaries.
+- Chapter12 Source reader impact must remain in CHANGELOG (CH12-CHANGELOG); this does not rewrite historical entries.
 - Same-path config/event/evaluation Evidence, recomputed expectation/actual/refuted edge, no borrowing or unowned evidence.
 - Closed unknown/missing fields and unregistered values across every supplied object/leaf; duplicate JSON keys, UTF-8, nonstandard constants, exact timestamps.
 - Parent Draft/expiry/original window/three objects/false, unknown binding/Coverage, record-only candidate and independent Chapter11 unchanged.

@@ -6,6 +6,8 @@
 
 ### Added
 
+- [第12章](manuscript/12-enterprise-identity.md)、ART-20 Identity Attack Path Review、四Principal・六Path stateの完全合成Graphと閉じたSchema・有限Layer A検査を追加。認証の強さ、権限関係、Evidence、評価実施の許可を分け、Federation非該当の比較ではIssuer / Audience / RPをnullで明示する。有限比較の成功を実認証・実行許可・親Gap解消の証拠にしない。
+
 - [第9章](manuscript/09-engagement-roe.md)、既存ART-02の完成、三Objectの完全合成RoE計画・閉じたSchema・有限Layer A検査を追加。期限経過した親Authorizationを更新せずDraft / Do not proceedとし、記録整合性と実行許可を分ける。NIST SP800-115を限定参照し、実使用する法令・IPA・WSTGのみ再監査。既存章のSource版・歴史的記録は保持する。
 
 - [第8章](manuscript/08-safe-lab-evidence.md)、ART-18 Lab Safety and Evidence Plan、三Runの合成Plan・Control receipts・Evidence manifest・閉じたSchemaと読み取り専用Replayを追加。Runningを含む八状態と三判定を分け、失敗後のCleanup成功を正常完了へ置き換えない。実Runtimeは実行せず、親の状態・Authorityを更新しない。
@@ -36,6 +38,8 @@
 - Editorial InputのPackage identity、Target別Candidate / Disposition、決定的Summary、ZIP安全検証を持つManifest契約を追加
 
 ### Changed
+
+- 第12章のSource baselineにNIST SP 800-63-4 / 63A-4 / 63B-4 / 63C-4（2025-07-31 Final）とRFC9700 / BCP240を追加し、既存SP800-207Aの章対応を拡張。読者は自然人のAssuranceをWorkload適合へ一般化せず、MFAと認可、IssuerとAudienceを別に判断する。採用節と限界は[第12章Source Review Note](references/ch12-source-review-2026-09-15.md)で確認できる。既存Sourceの版・親章の意味とRegistry一括監査日は保持する。
 
 - 第8章向けにNIST SP 800-86 / 800-190の限定原則を追加し、Berkeley Protocol 2022 editionの取得・取扱い記録を再確認。Hashの同一性と真実性・法的証拠能力を区別し、日不明の公開日はnullを維持する。第25章の版と意味は不変、Registry一括監査日も据置き。詳細は[第8章Source Review Note](references/ch08-source-review-2026-09-13.md)に記録。
 

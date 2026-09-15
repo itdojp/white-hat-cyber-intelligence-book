@@ -179,6 +179,10 @@
     ],
     "CANONICAL_SOURCE.md": [
       "第6章・第7章・第8章・第9章・第10章・第12章の公開前"
+    ],
+    "CHANGELOG.md": [
+      "- [第12章](manuscript/12-enterprise-identity.md)、ART-20 Identity Attack Path Review、四Principal・六Path stateの完全合成Graphと閉じたSchema・有限Layer A検査を追加。認証の強さ、権限関係、Evidence、評価実施の許可を分け、Federation非該当の比較ではIssuer / Audience / RPをnullで明示する。有限比較の成功を実認証・実行許可・親Gap解消の証拠にしない。",
+      "- 第12章のSource baselineにNIST SP 800-63-4 / 63A-4 / 63B-4 / 63C-4（2025-07-31 Final）とRFC9700 / BCP240を追加し、既存SP800-207Aの章対応を拡張。読者は自然人のAssuranceをWorkload適合へ一般化せず、MFAと認可、IssuerとAudienceを別に判断する。採用節と限界は[第12章Source Review Note](references/ch12-source-review-2026-09-15.md)で確認できる。既存Sourceの版・親章の意味とRegistry一括監査日は保持する。"
     ]
   },
   "documents": {
@@ -1401,7 +1405,7 @@
             "reader_visible_text",
             "table_row",
             null,
-            "有限比較の記録 Field 記入する内容 Federation bindings 該当時にIssuer、Audience、受入RPを別欄で示す"
+            "有限比較の記録 Field 記入する内容 Federation bindings 該当時にIssuer、Audience、受入RPを別欄で示す。非該当の供給JSONでは三欄をnullとする"
           ],
           "headings": [
             "Identity Attack Path Review",
@@ -2951,9 +2955,9 @@
         "principalId": "PRN-IAR12-004",
         "resourceId": "RES-IAR12-003",
         "action": "read-customer-summary",
-        "issuerId": "ISS-IAR12-001",
-        "audienceId": "RP-IAR12-003",
-        "relyingPartyId": "RP-IAR12-003",
+        "issuerId": null,
+        "audienceId": null,
+        "relyingPartyId": null,
         "configEvidenceId": "EVD-IAR12-005",
         "basis": "authored-input-and-result-for-finite-offline-comparison",
         "networkRequests": 0,

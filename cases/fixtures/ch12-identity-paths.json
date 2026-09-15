@@ -676,9 +676,9 @@
       "principalId": "PRN-IAR12-004",
       "resourceId": "RES-IAR12-003",
       "action": "read-customer-summary",
-      "issuerId": "ISS-IAR12-001",
-      "audienceId": "RP-IAR12-003",
-      "relyingPartyId": "RP-IAR12-003",
+      "issuerId": null,
+      "audienceId": null,
+      "relyingPartyId": null,
       "conditions": [
         {
           "edgeId": "EDG-IAR12-009",

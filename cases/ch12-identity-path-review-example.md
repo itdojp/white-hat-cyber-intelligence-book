@@ -12,6 +12,8 @@ ART-20 / IAR-2026-012はCASE-2026-001をrefinesする教育用補足です。実
 
 PTH-IAR12-001は休眠Grantの仮説、002はMFA例外を持つ静的設定、003はAudit readerの合成Event、004は合成Federation条件の有限一致、005は必要な委任承認の否定、006はDevice binding不足です。004のValidatedは実際のWorkload利用や親TB-2026-004/SF-2026-006のUnknownを更新しません。005のBrokenも別経路の不存在を意味しません。
 
+EVAL-IAR12-005はFederation Edgeを含まないため、Issuer / Audience / RPの三欄をnull（非該当）とします。これは条件不足のUnknownとは異なります。004では同一PathのFederation条件に必要な三欄を照合します。
+
 確認事実は教材に含まれるFieldだけ、分析判断は各finding、仮定はGraphと時刻、推奨はTreatment計画です。確信度と代替説明は各Pathへ記録し、新しい資料・版・Owner・権限・許可の変化で再評価します。第11章のCASE-2026-011は独立で、許可やEvidenceを移しません。
 
 ## schemaVersion
@@ -802,9 +804,9 @@ PTH-IAR12-001は休眠Grantの仮説、002はMFA例外を持つ静的設定、00
 | principalId | PRN-IAR12-004 |
 | resourceId | RES-IAR12-003 |
 | action | read-customer-summary |
-| issuerId | ISS-IAR12-001 |
-| audienceId | RP-IAR12-003 |
-| relyingPartyId | RP-IAR12-003 |
+| issuerId | null |
+| audienceId | null |
+| relyingPartyId | null |
 | conditions/0/edgeId | EDG-IAR12-009 |
 | conditions/0/condition | False |
 | conditions/1/edgeId | EDG-IAR12-010 |
