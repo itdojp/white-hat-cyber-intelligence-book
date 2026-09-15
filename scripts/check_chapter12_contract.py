@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Chapter 9 Layer A: ART-02 selection, provenance and finite publication gates."""
+"""Chapter 12 Layer A: finite ART-20 surfaces and evidence/approval semantics."""
 
 from __future__ import annotations
 
@@ -13,18 +13,19 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from scripts.chapter09_semantics import (  # noqa: E402
+from scripts.chapter12_semantics import (  # noqa: E402
     DATA_PATH,
-    PARENT_PATHS,
-    DOCUMENT_PATHS,
-    read_regular,
     SCHEMA_PATH,
-    read_input,
-    validate_record,
-    conditions,
+    CONTRACT_PATH,
+    DOCUMENTS,
+    PARENTS,
+    read_regular,
+    strict_bytes,
+    validate_model,
     case_groups,
 )
-from scripts.check_editorial_input_manifest import load_json_strict, ManifestError  # noqa: E402
+from scripts.check_editorial_input_manifest import ManifestError, load_json_strict  # noqa: E402
+from scripts.check_representative_gate import SOURCE_ID_RE  # noqa: E402
 from scripts.content_safety_policy import (  # noqa: E402
     POLICY_VERSION,
     scan_action_text,
@@ -39,17 +40,18 @@ from scripts.publication_projection import (  # noqa: E402
 )
 from scripts.source_audit import meets_audit_baseline  # noqa: E402
 
-DOCUMENTS = DOCUMENT_PATHS
-
-SOURCE_IDS = ("SRC-NIST-TEST-001", "SRC-JP-LAW-001", "SRC-IPA-VDP-001", "SRC-WSTG-001")
-CONTRACT_PATH = "tests/fixtures/chapter09/publication-contract.json"
-PREFLIGHT = (
-    "python3 scripts/check_chapter06_contract.py --no-regressions",
-    "python3 scripts/check_chapter07_contract.py --no-regressions",
-    "python3 scripts/check_chapter08_contract.py --no-regressions",
-    "python3 scripts/check_chapter09_contract.py --no-regressions",
-    "python3 scripts/check_chapter10_contract.py --no-regressions",
-    "python3 scripts/check_chapter12_contract.py --no-regressions",
+SOURCE_IDS = (
+    "SRC-NIST-DIGITAL-001",
+    "SRC-NIST-PROOFING-001",
+    "SRC-NIST-AUTHN-001",
+    "SRC-NIST-FEDERATION-001",
+    "SRC-IETF-OAUTH-BCP-001",
+    "SRC-NIST-ZTAA-001",
+)
+PREFLIGHT = tuple(
+    f"python3 scripts/check_chapter{n:02}_contract.py --no-regressions"
+    for n in (6, 7, 8, 9, 10, 12)
+) + (
     "python3 scripts/sync_book_site.py --output docs",
     "npm run copy:notices",
 )
@@ -115,11 +117,26 @@ def scan_document(document, spec, require_exceptions=False):
     return errors
 
 
+def case_parity_errors(document, data):
+    actual = [
+        f.text
+        for f in document.fields
+        if is_policy_scan_field(f) and f.element_kind == "table_row"
+    ]
+    expected = [
+        f"{group} Field Value {k} {v}"
+        for group, rows in case_groups(data)
+        for k, v in rows
+    ]
+    return [] if actual == expected else ["ART20 complete JSON/projected Case parity"]
+
+
 def document_errors(document, spec, data):
     errors = scan_document(document, spec, True)
+    pairs = list(relations(document))
     headings = [
         [f.metadata_value("level"), f.text]
-        for f in document.fields
+        for f, _ in pairs
         if f.field_type == "reader_visible_text"
         and f.element_kind == "heading"
         and type(f.metadata_value("level")) is int
@@ -127,131 +144,86 @@ def document_errors(document, spec, data):
     ]
     if headings != spec["headings"]:
         errors.append(document.document_id + ": finite H1/H2 inventory")
-    counts = Counter(key(r) for _, r in relations(document))
-    for r in spec["required"]:
-        if counts[key(r)] != 1:
+    counts = Counter(key(r) for _, r in pairs)
+    for required in spec["required"]:
+        if counts[key(required)] != 1:
             errors.append(
-                document.document_id + ": required semantic field missing/duplicate"
+                document.document_id
+                + ": required semantic field missing/duplicate: "
+                + key(required)
             )
     if document.document_id == DOCUMENTS[2]:
-        actual = [
-            f.text
-            for f in document.fields
-            if is_policy_scan_field(f) and f.element_kind == "table_row"
-        ]
-        expected = [
-            f"{group} Field Value {k} {v}"
-            for group, rows in case_groups(data)
-            for k, v in rows
-        ]
-        if actual != expected:
-            errors.append("ART02 complete JSON/projected Case parity")
+        errors += case_parity_errors(document, data)
     if document.document_id == DOCUMENTS[0]:
-        # The chapter's local exercise must explain its purpose, prerequisites,
-        # expected evidence, stop conditions and cleanup before its command.
-        # Ordering uses Layer B fields, not a chapter-specific Markdown parser.
-        pairs = list(relations(document))
         positions = [
-            [i for i, (_, relation) in enumerate(pairs) if relation == expected]
+            [i for i, (_, r) in enumerate(pairs) if r == expected]
             for expected in spec["exerciseInstructionOrder"]
         ]
         if any(len(p) != 1 for p in positions) or positions != sorted(positions):
-            errors.append("Chapter9 exercise explanations before command")
+            errors.append("Chapter12 exercise explanations before command")
         body, refs = set(), set()
-        for f, r in relations(document):
+        for f, r in pairs:
             if is_policy_scan_field(f):
-                for sid in SOURCE_IDS:
-                    if sid in f.text:
-                        (
-                            refs
-                            if "参考文献・Source Note ID" in r["headings"]
-                            else body
-                        ).add(sid)
+                # Reuse the repository's Source-ID token vocabulary, not
+                # substring membership or a chapter-specific syntax parser.
+                (refs if "参考文献・Source Note ID" in r["headings"] else body).update(
+                    SOURCE_ID_RE.findall(f.text)
+                )
         if body != set(SOURCE_IDS) or refs != set(SOURCE_IDS):
-            errors.append("Chapter9 body/reference Source ownership")
+            errors.append("Chapter12 body/reference Source ownership")
     return errors
 
 
 def repository_errors(contract, root=ROOT):
     errors = []
-    if list(contract["parentDigests"]) != list(PARENT_PATHS):
-        errors.append("Chapter9 fixed parent inventory")
-    for path, digest in contract["parentDigests"].items():
-        if hashlib.sha256(read_regular(root, path)).hexdigest() != digest:
-            errors.append(path + ": unchanged parent/shared baseline")
+    if list(contract["parentDigests"]) != list(PARENTS):
+        errors.append("Chapter12 frozen parent inventory")
+    for p, digest in contract["parentDigests"].items():
+        if hashlib.sha256(read_regular(root, p)).hexdigest() != digest:
+            errors.append(p + ": unchanged parent/shared baseline")
     package = load_json_strict(root / "package.json")["scripts"]
     if (
-        package.get("check:chapter09") != "python3 scripts/check_chapter09_contract.py"
-        or package["test"].split(" && ").count("npm run check:chapter09") != 1
+        package.get("check:chapter12") != "python3 scripts/check_chapter12_contract.py"
+        or package["test"].split(" && ").count("npm run check:chapter12") != 1
     ):
-        errors.append("Chapter9 root invocation exactly once")
+        errors.append("Chapter12 root invocation exactly once")
     if package.get("sync:docs", "").split(" && ") != list(PREFLIGHT):
-        errors.append("Chapter9 safety before publication generation")
-    registry = load_json_strict(root / "site-pages.json")
+        errors.append("Chapter12 safety before publication generation")
+    pages = load_json_strict(root / "site-pages.json")
     for kind in ("pages", "staticFiles"):
         for route in contract[kind]:
-            if registry[kind].count(route) != 1:
-                errors.append("Chapter9 exact route " + route["source"])
+            if pages[kind].count(route) != 1:
+                errors.append("Chapter12 exact route " + route["source"])
     order = [
         p["source"]
-        for p in sorted(registry["pages"], key=lambda x: x["order"])
+        for p in sorted(pages["pages"], key=lambda x: x["order"])
         if p["section"] == "chapters"
     ]
     if (
-        not order.index("manuscript/08-safe-lab-evidence.md")
+        not order.index("manuscript/11-web-api-hypothesis.md")
         < order.index(DOCUMENTS[0])
-        < order.index("manuscript/11-web-api-hypothesis.md")
+        < order.index("manuscript/17-detection-engineering.md")
     ):
-        errors.append("Chapter9 navigation 8 before 9 before 11")
-    registry = load_json_strict(root / "references/sources.json")
-    sources = registry["sources"]
-    if registry["checkedAt"] != "2026-07-25" or {
-        s["id"] for s in sources if 9 in s["chapters"]
+        errors.append("Chapter12 navigation 11 before 12 before 17")
+    sources = load_json_strict(root / "references/sources.json")
+    if sources["checkedAt"] != "2026-07-25" or {
+        s["id"] for s in sources["sources"] if 12 in s["chapters"]
     } != set(SOURCE_IDS):
-        errors.append("Chapter9 scoped Source mapping/date")
+        errors.append("Chapter12 scoped Source mapping/date")
     for sid in SOURCE_IDS:
-        source = next((s for s in sources if s["id"] == sid), {})
-        review = "2027-09-13" if sid == "SRC-NIST-TEST-001" else "2026-12-13"
+        source = next((s for s in sources["sources"] if s["id"] == sid), {})
+        review = "2027-09-15" if sid == "SRC-IETF-OAUTH-BCP-001" else "2026-12-15"
         if not meets_audit_baseline(
-            source.get("checkedAt"), "2026-09-13"
+            source.get("checkedAt"), "2026-09-15"
         ) or not meets_audit_baseline(source.get("nextReviewAt"), review):
-            errors.append("Chapter9 dated Source audit " + sid)
+            errors.append("Chapter12 Source audit " + sid)
         if any(source.get(k) != v for k, v in contract["sourceIdentity"][sid].items()):
-            errors.append("Chapter9 Source version/status/date/limited adoption " + sid)
-    for path, markers in contract["indices"].items():
-        if any(
-            marker not in (root / path).read_text(encoding="utf-8")
-            for marker in markers
-        ):
-            errors.append("Chapter9 index " + path)
+            errors.append("Chapter12 fixed Source version/status/scope " + sid)
+    for p, markers in contract["indices"].items():
+        text = (root / p).read_text(encoding="utf-8")
+        if any(m not in text for m in markers):
+            errors.append("Chapter12 index " + p)
     return errors
-
-
-def canonical_errors(data):
-    if (
-        data["record"]["status"] != "Draft"
-        or data["record"]["asOf"] != "2026-09-13T09:00:00Z"
-        or data["record"]["version"] != 1
-        or data["approval"]["authorityStatus"] != "Expired"
-        or data["approval"]["signoffs"] != []
-        or data["approval"]["writtenEvidenceRef"] is not None
-        or data["approval"]["approvedVersion"] is not None
-    ):
-        return [
-            "ART02 canonical dated Draft and missing authorization must be retained"
-        ]
-    if conditions(data) != [
-        "ROE-STATUS",
-        "AUTH-STATUS",
-        "AUTH-TIME",
-        "WINDOW-AUTHORITY",
-        "WINDOW-NOW",
-        "WRITTEN-PROOF",
-        "APPROVED-VERSION",
-        "APPROVAL-ROLES",
-    ]:
-        return ["ART02 canonical Do not proceed reasons"]
-    return []
 
 
 def main():
@@ -259,28 +231,30 @@ def main():
     parser.add_argument("--no-regressions", action="store_true")
     args = parser.parse_args()
     try:
-        contract = load_json_strict(ROOT / CONTRACT_PATH)
+        data, schema, contract = (
+            strict_bytes(read_regular(ROOT, p))
+            for p in (DATA_PATH, SCHEMA_PATH, CONTRACT_PATH)
+        )
         if (
             contract["schemaVersion"] != "1.0.0"
             or list(contract["documents"]) != list(DOCUMENTS)
             or POLICY_VERSION != "1.2.0"
             or PROJECTION_VERSION != "1.1.0"
         ):
-            raise ValueError("Chapter9 finite inventory/shared versions")
-        data, schema = (read_input(ROOT, p) for p in (DATA_PATH, SCHEMA_PATH))
-        errors = validate_record(data, schema)
+            raise ValueError("Chapter12 finite inventory/shared versions")
+        errors = validate_model(data, schema, contract)
         if errors:
             raise ValueError("; ".join(errors))
-        errors += canonical_errors(data) + repository_errors(contract)
+        errors += repository_errors(contract)
         source = {p: read_regular(ROOT, p).decode("utf-8") for p in DOCUMENTS}
         projection = project_documents(source)
         if [d.document_id for d in projection.documents] != list(DOCUMENTS):
-            raise ValueError("Chapter9 projection selection/order")
+            raise ValueError("Chapter12 projection selection/order")
         for doc in projection.documents:
             errors += document_errors(doc, contract["documents"][doc.document_id], data)
         count = 0
         if not args.no_regressions:
-            from scripts.chapter09_regressions import run_regressions
+            from scripts.chapter12_regressions import run_regressions
 
             count, regression_errors = run_regressions(
                 data, schema, contract, source, projection
@@ -291,7 +265,7 @@ def main():
                 print("ERROR:", error)
             return 1
         print(
-            f"Chapter 9 contract passed: 4 complete documents; ART-02 Draft / Do not proceed; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; executionAuthorized=false"
+            f"Chapter 12 contract passed: 4 complete documents; 4 Principal classes / 6 paths; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; record-only / executionAuthorized=false"
         )
         return 0
     except (
@@ -302,7 +276,7 @@ def main():
         ManifestError,
         ProjectionRuntimeError,
     ) as exc:
-        print("ERROR: Chapter9 fail closed:", exc)
+        print("ERROR: Chapter12 fail closed:", exc)
         return 1
 
 

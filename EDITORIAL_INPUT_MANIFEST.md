@@ -17,7 +17,8 @@
 | `blueprint-only` | 1 |
 | `consumed` | 7 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 19 |
+| `registered-pending-prerequisites` | 18 |
+| `selected-for-intake` | 1 |
 
 ## Acknowledged collisions
 
@@ -56,7 +57,7 @@
 | `chapter-08` | #33 | `consumed` | `EIC-0033-eee4bacd1c7b` | #123 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5650941182) |
 | `chapter-09` | #34 | `consumed` | `EIC-0034-dd0c5e0b83f3` | #127 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5659602660) |
 | `chapter-10` | #35 | `consumed` | `EIC-0035-23f9af567b80` | #130 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5673149529) |
-| `chapter-12` | #36 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
+| `chapter-12` | #36 | `selected-for-intake` | `EIC-0036-bf2b7e4fe16e` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5673770683) |
 | `chapter-13` | #37 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
 | `chapter-14` | #38 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
 | `chapter-15` | #39 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
@@ -128,7 +129,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0036-bf2b7e4fe16e` | `EIP-0008` | `chapter12-enterprise-identity.predraft.md` | `bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0036-bf2b7e4fe16e` | `EIP-0008` | `chapter12-enterprise-identity.predraft.md` | `bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd` | `selected` | 登録設計の来歴として選択。認可workspaceで登録raw名は見つからず、raw読了・実体Hash照合・直接採用は主張しない。同梱Chapter13のDispositionへ伝播しない。 |
 
 ### `chapter-13` / Issue #37
 

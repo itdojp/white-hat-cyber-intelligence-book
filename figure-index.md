@@ -68,3 +68,15 @@
 | F-25-03 | Reassessmentと無効化条件 | `manuscript/25-structured-analysis-attribution.md` | Implemented |
 
 Mermaid図は、図だけを見なくても意味を理解できる文章代替を直後に置く。表は、列の意味と判断への使い方を本文で説明する。
+
+## 第12章の図表
+
+| ID | 内容 | 正本 | 状態 |
+|---|---|---|---|
+| F-12-01 | 権限関係と判断の接続 | `manuscript/12-enterprise-identity.md` | Implemented |
+| F-12-02 | Federation条件の読み方 | `manuscript/12-enterprise-identity.md` | Implemented |
+| T-12-01 | 四Principal classes | `manuscript/12-enterprise-identity.md` | Implemented |
+| T-12-02 | 認証・認可・Federation・実施許可 | `manuscript/12-enterprise-identity.md` | Implemented |
+| T-12-03 | 六Path states | `manuscript/12-enterprise-identity.md` | Implemented |
+| T-12-04 | 次章Handoff | `manuscript/12-enterprise-identity.md` | Implemented |
+| T-12-05 | ART-20 Rubric | `manuscript/12-enterprise-identity.md` | Implemented |

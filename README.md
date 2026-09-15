@@ -96,3 +96,9 @@ CIでは`Book Contract`と`Book QA`を実行し、`main`では同じ生成契約
 - 第三者成果物: 原ライセンスに従い`THIRD_PARTY_NOTICES.md`へ記録
 
 商用利用には別途契約が必要です。詳細は`LICENSE.md`を参照してください。
+
+### 第12章の有限Identity契約
+
+`npm run check:chapter12`はART-20の完全合成Graphと全公開Fieldを検査する。四Principal/六Path state/三Method、閉じたSchema、必要EdgeとEvidenceの版・対象整合、親RoEの非実行境界、SourceとCase表示をLayer Aで所有する。Markdown/HTML/URL解釈は共有Publication Projection1.1.0、Safetyは共有Policy1.2.0のみを使う。
+
+検査は供給レコードの比較であり、認証・IAM・Token・一般Secret認識エンジンではない。`sync:docs`は本検査の成功後にだけ生成を開始する。詳細は`tests/fixtures/chapter12/README.md`を参照する。

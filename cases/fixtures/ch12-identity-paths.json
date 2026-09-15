@@ -1,0 +1,929 @@
+{
+  "schemaVersion": "1.0.0",
+  "modelVersion": "1.0.0",
+  "synthetic": true,
+  "executionAuthorized": false,
+  "record": {
+    "artifactId": "ART-20",
+    "reviewId": "IAR-2026-012",
+    "caseId": "CASE-2026-001",
+    "relation": "refines",
+    "decisionRequirementId": "DR-2026-001",
+    "asOf": "2026-09-15T09:00:00Z",
+    "question": "供給された権限関係のどこまでを根拠で説明でき、何の許可と観測が不足するか。",
+    "graphRevision": "GRAPH-IAR12-001",
+    "policyRevision": "POLICY-IAR12-001",
+    "authoredNotMeasured": true
+  },
+  "parents": {
+    "caseId": "CASE-2026-001",
+    "relation": "refines",
+    "decisionRequirementId": "DR-2026-001",
+    "historicalDeadline": "2026-07-22T00:00:00Z",
+    "authorizationId": "AUTH-CASE-2026-001",
+    "authorizationExpiresAt": "2026-08-19T09:00:00Z",
+    "authorizationWindow": [
+      "2026-08-06T00:00:00Z",
+      "2026-08-06T08:00:00Z"
+    ],
+    "authorizationConditions": [
+      "COND-AUTH-2026-001 Open",
+      "COND-AUTH-2026-002 Satisfied",
+      "COND-AUTH-2026-003 Open"
+    ],
+    "roeId": "ROE-2026-009",
+    "roeVersion": 1,
+    "roeStatus": "Draft",
+    "roeObjectIds": [
+      "OBJ-ROE09-CONFIG",
+      "OBJ-ROE09-EVENT",
+      "OBJ-ROE09-POLICY"
+    ],
+    "roeExecutionAuthorized": false,
+    "threatModelId": "TM-2026-001",
+    "threatModelStatus": "Needs Evidence",
+    "parentReassessmentId": "REA-2026-001",
+    "independentCaseId": "CASE-2026-011",
+    "parentStateChanged": false
+  },
+  "context": {
+    "threatModelId": "TM-2026-001",
+    "signalFlowMapId": "SFM-2026-001",
+    "reconRecordId": "ASR-2026-010",
+    "reconCandidateId": "CAND-ASR10-001",
+    "parentAssetId": "ASSET-2026-001",
+    "parentScopeExpanded": false,
+    "parentBindingConfirmed": false,
+    "parentCoverageChanged": false,
+    "independentChapter11Case": "CASE-2026-011",
+    "chapter11Relation": "conceptual-handoff-only-no-evidence-or-authority-inheritance"
+  },
+  "principals": [
+    {
+      "id": "PRN-IAR12-001",
+      "principalClass": "Human",
+      "label": "SYNTH-DORMANT-ADMIN",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "lifecycle": "Dormant",
+      "credentialClass": "interactive-authenticator-class",
+      "assuranceContext": "not-assessed-no-compliance-claim",
+      "mfaStatus": "Enabled",
+      "mfaException": "exception-recorded-not-approved"
+    },
+    {
+      "id": "PRN-IAR12-002",
+      "principalClass": "Device",
+      "label": "SYNTH-DEVICE",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "lifecycle": "Unknown",
+      "credentialClass": "device-binding-class",
+      "assuranceContext": "not-assessed-no-compliance-claim",
+      "mfaStatus": "Not applicable",
+      "mfaException": "none"
+    },
+    {
+      "id": "PRN-IAR12-003",
+      "principalClass": "Service",
+      "label": "SYNTH-AUDIT-READER",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "lifecycle": "Active",
+      "credentialClass": "service-authentication-class",
+      "assuranceContext": "not-assessed-no-compliance-claim",
+      "mfaStatus": "Not applicable",
+      "mfaException": "none"
+    },
+    {
+      "id": "PRN-IAR12-004",
+      "principalClass": "Workload",
+      "label": "SYNTH-INVOICE-SYNC",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "lifecycle": "Active",
+      "credentialClass": "workload-authentication-class",
+      "assuranceContext": "not-assessed-no-compliance-claim",
+      "mfaStatus": "Not applicable",
+      "mfaException": "none"
+    }
+  ],
+  "groups": [
+    {
+      "id": "GRP-IAR12-001",
+      "label": "SYNTH-DORMANT-ADMIN-GROUP"
+    }
+  ],
+  "roles": [
+    {
+      "id": "ROL-IAR12-001",
+      "label": "SYNTH-ADMIN"
+    },
+    {
+      "id": "ROL-IAR12-002",
+      "label": "SYNTH-AUDIT-READER"
+    },
+    {
+      "id": "ROL-IAR12-003",
+      "label": "SYNTH-APP-READER"
+    }
+  ],
+  "permissions": [
+    {
+      "id": "PER-IAR12-001",
+      "resourceId": "RES-IAR12-001",
+      "action": "review-consent-change"
+    },
+    {
+      "id": "PER-IAR12-002",
+      "resourceId": "RES-IAR12-002",
+      "action": "read-audit-summary"
+    },
+    {
+      "id": "PER-IAR12-003",
+      "resourceId": "RES-IAR12-003",
+      "action": "read-customer-summary"
+    }
+  ],
+  "resources": [
+    {
+      "id": "RES-IAR12-001",
+      "label": "SYNTH-IDENTITY-CONTROL",
+      "plane": "Control",
+      "controlPlaneId": "CP-IAR12-001",
+      "relyingPartyId": "RP-IAR12-001"
+    },
+    {
+      "id": "RES-IAR12-002",
+      "label": "SYNTH-AUDIT-SUMMARY",
+      "plane": "Data",
+      "controlPlaneId": "CP-IAR12-001",
+      "relyingPartyId": "RP-IAR12-002"
+    },
+    {
+      "id": "RES-IAR12-003",
+      "label": "SYNTH-CUSTOMER-DATA-API-SUMMARY",
+      "plane": "Data",
+      "controlPlaneId": "CP-IAR12-001",
+      "relyingPartyId": "RP-IAR12-003"
+    }
+  ],
+  "controlPlanes": [
+    {
+      "id": "CP-IAR12-001",
+      "label": "SYNTH-IDENTITY-CONTROL-PLANE"
+    }
+  ],
+  "issuers": [
+    {
+      "id": "ISS-IAR12-001",
+      "label": "SYNTH-TRUSTED-ISSUER"
+    }
+  ],
+  "relyingParties": [
+    {
+      "id": "RP-IAR12-001",
+      "resourceId": "RES-IAR12-001"
+    },
+    {
+      "id": "RP-IAR12-002",
+      "resourceId": "RES-IAR12-002"
+    },
+    {
+      "id": "RP-IAR12-003",
+      "resourceId": "RES-IAR12-003"
+    }
+  ],
+  "edges": [
+    {
+      "id": "EDG-IAR12-001",
+      "fromId": "PRN-IAR12-001",
+      "toId": "GRP-IAR12-001",
+      "kind": "Membership",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-001",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-002",
+      "fromId": "GRP-IAR12-001",
+      "toId": "ROL-IAR12-001",
+      "kind": "Membership",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-001",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-003",
+      "fromId": "ROL-IAR12-001",
+      "toId": "PER-IAR12-001",
+      "kind": "Grant",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-001",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-004",
+      "fromId": "PER-IAR12-001",
+      "toId": "RES-IAR12-001",
+      "kind": "Access",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-001",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-005",
+      "fromId": "PRN-IAR12-001",
+      "toId": "ROL-IAR12-001",
+      "kind": "Membership",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-001",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-006",
+      "fromId": "PRN-IAR12-003",
+      "toId": "ROL-IAR12-002",
+      "kind": "Membership",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-003",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-007",
+      "fromId": "ROL-IAR12-002",
+      "toId": "PER-IAR12-002",
+      "kind": "Grant",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-003",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-008",
+      "fromId": "PER-IAR12-002",
+      "toId": "RES-IAR12-002",
+      "kind": "Access",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-003",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-009",
+      "fromId": "PRN-IAR12-004",
+      "toId": "PRN-IAR12-003",
+      "kind": "Delegation",
+      "condition": "False",
+      "conditionMeaning": "delegation-approval",
+      "boundaryId": "TB-2026-004",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-010",
+      "fromId": "PRN-IAR12-003",
+      "toId": "ROL-IAR12-003",
+      "kind": "Membership",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-001",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-011",
+      "fromId": "ROL-IAR12-003",
+      "toId": "PER-IAR12-003",
+      "kind": "Grant",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-001",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-012",
+      "fromId": "PER-IAR12-003",
+      "toId": "RES-IAR12-003",
+      "kind": "Access",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-001",
+      "issuerId": null,
+      "audienceId": null
+    },
+    {
+      "id": "EDG-IAR12-013",
+      "fromId": "PRN-IAR12-004",
+      "toId": "ROL-IAR12-003",
+      "kind": "Federation",
+      "condition": "True",
+      "conditionMeaning": "authored-binding",
+      "boundaryId": "TB-2026-004",
+      "issuerId": "ISS-IAR12-001",
+      "audienceId": "RP-IAR12-003"
+    },
+    {
+      "id": "EDG-IAR12-014",
+      "fromId": "PRN-IAR12-002",
+      "toId": "ROL-IAR12-003",
+      "kind": "Trust",
+      "condition": "Unknown",
+      "conditionMeaning": "device-binding",
+      "boundaryId": "TB-2026-004",
+      "issuerId": null,
+      "audienceId": null
+    }
+  ],
+  "paths": [
+    {
+      "id": "PTH-IAR12-001",
+      "label": "Dormant grant is a hypothesis",
+      "principalId": "PRN-IAR12-001",
+      "requiredPermissionId": "PER-IAR12-001",
+      "resourceId": "RES-IAR12-001",
+      "action": "review-consent-change",
+      "edgeIds": [
+        "EDG-IAR12-001",
+        "EDG-IAR12-002",
+        "EDG-IAR12-003",
+        "EDG-IAR12-004"
+      ],
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "state": "Hypothesized",
+      "validationMethod": "Static review",
+      "configEvidenceId": null,
+      "eventEvidenceId": null,
+      "evaluationId": null,
+      "threatId": "TH-2026-002",
+      "signalFlowId": "SF-2026-001",
+      "telemetryId": "TEL-IAR12-001",
+      "detectionId": "DET-IAR12-001",
+      "findingId": "FND-IAR12-001",
+      "gapId": "GAP-IAR12-001",
+      "reassessmentId": "REA-IAR12-001",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "confidence": "Low",
+      "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+      "nextAction": "record-only",
+      "executionAuthorized": false
+    },
+    {
+      "id": "PTH-IAR12-002",
+      "label": "MFA exception does not close permission path",
+      "principalId": "PRN-IAR12-001",
+      "requiredPermissionId": "PER-IAR12-001",
+      "resourceId": "RES-IAR12-001",
+      "action": "review-consent-change",
+      "edgeIds": [
+        "EDG-IAR12-005",
+        "EDG-IAR12-003",
+        "EDG-IAR12-004"
+      ],
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "state": "Config-confirmed",
+      "validationMethod": "Static review",
+      "configEvidenceId": "EVD-IAR12-002",
+      "eventEvidenceId": null,
+      "evaluationId": null,
+      "threatId": "TH-2026-002",
+      "signalFlowId": "SF-2026-004",
+      "telemetryId": "TEL-IAR12-002",
+      "detectionId": "DET-IAR12-002",
+      "findingId": "FND-IAR12-002",
+      "gapId": "GAP-IAR12-002",
+      "reassessmentId": "REA-IAR12-002",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "confidence": "Medium",
+      "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+      "nextAction": "record-only",
+      "executionAuthorized": false
+    },
+    {
+      "id": "PTH-IAR12-003",
+      "label": "Audit-reader authored event supports limited relation",
+      "principalId": "PRN-IAR12-003",
+      "requiredPermissionId": "PER-IAR12-002",
+      "resourceId": "RES-IAR12-002",
+      "action": "read-audit-summary",
+      "edgeIds": [
+        "EDG-IAR12-006",
+        "EDG-IAR12-007",
+        "EDG-IAR12-008"
+      ],
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "state": "Evidence-supported",
+      "validationMethod": "Synthetic replay",
+      "configEvidenceId": "EVD-IAR12-003",
+      "eventEvidenceId": "EVT-IAR12-003",
+      "evaluationId": null,
+      "threatId": "TH-2026-003",
+      "signalFlowId": "SF-2026-002",
+      "telemetryId": "TEL-IAR12-003",
+      "detectionId": "DET-IAR12-003",
+      "findingId": "FND-IAR12-003",
+      "gapId": "GAP-IAR12-003",
+      "reassessmentId": "REA-IAR12-003",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "confidence": "Medium",
+      "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+      "nextAction": "record-only",
+      "executionAuthorized": false
+    },
+    {
+      "id": "PTH-IAR12-004",
+      "label": "Synthetic federation tuple matches",
+      "principalId": "PRN-IAR12-004",
+      "requiredPermissionId": "PER-IAR12-003",
+      "resourceId": "RES-IAR12-003",
+      "action": "read-customer-summary",
+      "edgeIds": [
+        "EDG-IAR12-013",
+        "EDG-IAR12-011",
+        "EDG-IAR12-012"
+      ],
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "state": "Validated",
+      "validationMethod": "Policy simulation",
+      "configEvidenceId": "EVD-IAR12-004",
+      "eventEvidenceId": null,
+      "evaluationId": "EVAL-IAR12-004",
+      "threatId": "TH-2026-004",
+      "signalFlowId": "SF-2026-006",
+      "telemetryId": "TEL-IAR12-004",
+      "detectionId": "DET-IAR12-004",
+      "findingId": "FND-IAR12-004",
+      "gapId": "GAP-IAR12-004",
+      "reassessmentId": "REA-IAR12-004",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "confidence": "Medium",
+      "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+      "nextAction": "record-only",
+      "executionAuthorized": false
+    },
+    {
+      "id": "PTH-IAR12-005",
+      "label": "Necessary delegation approval is denied",
+      "principalId": "PRN-IAR12-004",
+      "requiredPermissionId": "PER-IAR12-003",
+      "resourceId": "RES-IAR12-003",
+      "action": "read-customer-summary",
+      "edgeIds": [
+        "EDG-IAR12-009",
+        "EDG-IAR12-010",
+        "EDG-IAR12-011",
+        "EDG-IAR12-012"
+      ],
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "state": "Broken",
+      "validationMethod": "Policy simulation",
+      "configEvidenceId": "EVD-IAR12-005",
+      "eventEvidenceId": null,
+      "evaluationId": "EVAL-IAR12-005",
+      "threatId": "TH-2026-004",
+      "signalFlowId": "SF-2026-006",
+      "telemetryId": "TEL-IAR12-005",
+      "detectionId": "DET-IAR12-005",
+      "findingId": "FND-IAR12-005",
+      "gapId": "GAP-IAR12-005",
+      "reassessmentId": "REA-IAR12-005",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "confidence": "Medium",
+      "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+      "nextAction": "record-only",
+      "executionAuthorized": false
+    },
+    {
+      "id": "PTH-IAR12-006",
+      "label": "Device binding condition is absent",
+      "principalId": "PRN-IAR12-002",
+      "requiredPermissionId": "PER-IAR12-003",
+      "resourceId": "RES-IAR12-003",
+      "action": "read-customer-summary",
+      "edgeIds": [
+        "EDG-IAR12-014",
+        "EDG-IAR12-011",
+        "EDG-IAR12-012"
+      ],
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "state": "Unknown",
+      "validationMethod": "Static review",
+      "configEvidenceId": null,
+      "eventEvidenceId": null,
+      "evaluationId": null,
+      "threatId": "TH-2026-004",
+      "signalFlowId": "SF-2026-006",
+      "telemetryId": "TEL-IAR12-006",
+      "detectionId": "DET-IAR12-006",
+      "findingId": "FND-IAR12-006",
+      "gapId": "GAP-IAR12-006",
+      "reassessmentId": "REA-IAR12-006",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "confidence": "Low",
+      "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+      "nextAction": "record-only",
+      "executionAuthorized": false
+    }
+  ],
+  "configEvidence": [
+    {
+      "id": "EVD-IAR12-002",
+      "pathId": "PTH-IAR12-002",
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "edgeIds": [
+        "EDG-IAR12-005",
+        "EDG-IAR12-003",
+        "EDG-IAR12-004"
+      ],
+      "recordedAt": "2026-09-15T00:00:00Z",
+      "basis": "authored-synthetic-snapshot-not-observation",
+      "synthetic": true
+    },
+    {
+      "id": "EVD-IAR12-003",
+      "pathId": "PTH-IAR12-003",
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "edgeIds": [
+        "EDG-IAR12-006",
+        "EDG-IAR12-007",
+        "EDG-IAR12-008"
+      ],
+      "recordedAt": "2026-09-15T00:00:00Z",
+      "basis": "authored-synthetic-snapshot-not-observation",
+      "synthetic": true
+    },
+    {
+      "id": "EVD-IAR12-004",
+      "pathId": "PTH-IAR12-004",
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "edgeIds": [
+        "EDG-IAR12-013",
+        "EDG-IAR12-011",
+        "EDG-IAR12-012"
+      ],
+      "recordedAt": "2026-09-15T00:00:00Z",
+      "basis": "authored-synthetic-snapshot-not-observation",
+      "synthetic": true
+    },
+    {
+      "id": "EVD-IAR12-005",
+      "pathId": "PTH-IAR12-005",
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "edgeIds": [
+        "EDG-IAR12-009",
+        "EDG-IAR12-010",
+        "EDG-IAR12-011",
+        "EDG-IAR12-012"
+      ],
+      "recordedAt": "2026-09-15T00:00:00Z",
+      "basis": "authored-synthetic-snapshot-not-observation",
+      "synthetic": true
+    }
+  ],
+  "eventEvidence": [
+    {
+      "id": "EVT-IAR12-003",
+      "pathId": "PTH-IAR12-003",
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "principalId": "PRN-IAR12-003",
+      "resourceId": "RES-IAR12-002",
+      "action": "read-audit-summary",
+      "outcome": "Allow",
+      "recordedAt": "2026-09-15T00:00:00Z",
+      "basis": "authored-synthetic-event-not-request",
+      "synthetic": true
+    }
+  ],
+  "evaluations": [
+    {
+      "id": "EVAL-IAR12-004",
+      "pathId": "PTH-IAR12-004",
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "principalId": "PRN-IAR12-004",
+      "resourceId": "RES-IAR12-003",
+      "action": "read-customer-summary",
+      "issuerId": "ISS-IAR12-001",
+      "audienceId": "RP-IAR12-003",
+      "relyingPartyId": "RP-IAR12-003",
+      "conditions": [
+        {
+          "edgeId": "EDG-IAR12-013",
+          "condition": "True"
+        },
+        {
+          "edgeId": "EDG-IAR12-011",
+          "condition": "True"
+        },
+        {
+          "edgeId": "EDG-IAR12-012",
+          "condition": "True"
+        }
+      ],
+      "expected": "Allow",
+      "actual": "Allow",
+      "refutedEdgeId": null,
+      "configEvidenceId": "EVD-IAR12-004",
+      "recordedAt": "2026-09-15T00:00:00Z",
+      "basis": "authored-input-and-result-for-finite-offline-comparison",
+      "networkRequests": 0,
+      "authenticationAttempts": 0,
+      "synthetic": true
+    },
+    {
+      "id": "EVAL-IAR12-005",
+      "pathId": "PTH-IAR12-005",
+      "graphRevision": "GRAPH-IAR12-001",
+      "policyRevision": "POLICY-IAR12-001",
+      "principalId": "PRN-IAR12-004",
+      "resourceId": "RES-IAR12-003",
+      "action": "read-customer-summary",
+      "issuerId": "ISS-IAR12-001",
+      "audienceId": "RP-IAR12-003",
+      "relyingPartyId": "RP-IAR12-003",
+      "conditions": [
+        {
+          "edgeId": "EDG-IAR12-009",
+          "condition": "False"
+        },
+        {
+          "edgeId": "EDG-IAR12-010",
+          "condition": "True"
+        },
+        {
+          "edgeId": "EDG-IAR12-011",
+          "condition": "True"
+        },
+        {
+          "edgeId": "EDG-IAR12-012",
+          "condition": "True"
+        }
+      ],
+      "expected": "Deny",
+      "actual": "Deny",
+      "refutedEdgeId": "EDG-IAR12-009",
+      "configEvidenceId": "EVD-IAR12-005",
+      "recordedAt": "2026-09-15T00:00:00Z",
+      "basis": "authored-input-and-result-for-finite-offline-comparison",
+      "networkRequests": 0,
+      "authenticationAttempts": 0,
+      "synthetic": true
+    }
+  ],
+  "findings": [
+    {
+      "id": "FND-IAR12-001",
+      "pathId": "PTH-IAR12-001",
+      "status": "teaching-analysis-not-production-finding",
+      "risk": "休眠Roleの残存による将来権限集中の仮説。現利用は未確認。",
+      "treatment": "Ownerと必要業務を再確認する計画。",
+      "telemetryId": "TEL-IAR12-001",
+      "detectionId": "DET-IAR12-001",
+      "requiredFields": [
+        "principalId",
+        "resourceId",
+        "action",
+        "policyRevision",
+        "graphRevision",
+        "outcome",
+        "eventTime",
+        "correlationId"
+      ],
+      "detectionStatus": "planned-not-tested",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "reassessmentId": "REA-IAR12-001"
+    },
+    {
+      "id": "FND-IAR12-002",
+      "pathId": "PTH-IAR12-002",
+      "status": "teaching-analysis-not-production-finding",
+      "risk": "MFA例外と管理権限の併存。認可の正しさは未検証。",
+      "treatment": "例外の期限・承認とRole縮小案を別々にReviewする計画。",
+      "telemetryId": "TEL-IAR12-002",
+      "detectionId": "DET-IAR12-002",
+      "requiredFields": [
+        "principalId",
+        "resourceId",
+        "action",
+        "policyRevision",
+        "graphRevision",
+        "outcome",
+        "eventTime",
+        "correlationId"
+      ],
+      "detectionStatus": "planned-not-tested",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "reassessmentId": "REA-IAR12-002"
+    },
+    {
+      "id": "FND-IAR12-003",
+      "pathId": "PTH-IAR12-003",
+      "status": "teaching-analysis-not-production-finding",
+      "risk": "Audit参照の記録はあるが全期間の観測性は不明。",
+      "treatment": "収集・保持・検索のGapを第16章へ渡す計画。",
+      "telemetryId": "TEL-IAR12-003",
+      "detectionId": "DET-IAR12-003",
+      "requiredFields": [
+        "principalId",
+        "resourceId",
+        "action",
+        "policyRevision",
+        "graphRevision",
+        "outcome",
+        "eventTime",
+        "correlationId"
+      ],
+      "detectionStatus": "planned-not-tested",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "reassessmentId": "REA-IAR12-003"
+    },
+    {
+      "id": "FND-IAR12-004",
+      "pathId": "PTH-IAR12-004",
+      "status": "teaching-analysis-not-production-finding",
+      "risk": "合成許可条件は一致するが実環境のbindingは未確認。",
+      "treatment": "必要ResourceとActionの最小性を確認する計画。",
+      "telemetryId": "TEL-IAR12-004",
+      "detectionId": "DET-IAR12-004",
+      "requiredFields": [
+        "principalId",
+        "resourceId",
+        "action",
+        "policyRevision",
+        "graphRevision",
+        "outcome",
+        "eventTime",
+        "correlationId"
+      ],
+      "detectionStatus": "planned-not-tested",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "reassessmentId": "REA-IAR12-004"
+    },
+    {
+      "id": "FND-IAR12-005",
+      "pathId": "PTH-IAR12-005",
+      "status": "teaching-analysis-not-production-finding",
+      "risk": "特定の必要委任条件が不成立。他経路の不存在は不明。",
+      "treatment": "否定条件の版と代替経路のGapを保持する。",
+      "telemetryId": "TEL-IAR12-005",
+      "detectionId": "DET-IAR12-005",
+      "requiredFields": [
+        "principalId",
+        "resourceId",
+        "action",
+        "policyRevision",
+        "graphRevision",
+        "outcome",
+        "eventTime",
+        "correlationId"
+      ],
+      "detectionStatus": "planned-not-tested",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "reassessmentId": "REA-IAR12-005"
+    },
+    {
+      "id": "FND-IAR12-006",
+      "pathId": "PTH-IAR12-006",
+      "status": "teaching-analysis-not-production-finding",
+      "risk": "Deviceのbinding不足。許可にも安全にも昇格しない。",
+      "treatment": "追加資料と責任者を要求しUnknownを保持する。",
+      "telemetryId": "TEL-IAR12-006",
+      "detectionId": "DET-IAR12-006",
+      "requiredFields": [
+        "principalId",
+        "resourceId",
+        "action",
+        "policyRevision",
+        "graphRevision",
+        "outcome",
+        "eventTime",
+        "correlationId"
+      ],
+      "detectionStatus": "planned-not-tested",
+      "owner": "SYNTH-IDENTITY-OWNER",
+      "reassessmentId": "REA-IAR12-006"
+    }
+  ],
+  "handoffs": [
+    {
+      "id": "HOF-IAR12-001",
+      "chapter": 11,
+      "status": "planned-not-delivered",
+      "pathIds": [
+        "PTH-IAR12-001",
+        "PTH-IAR12-002",
+        "PTH-IAR12-003",
+        "PTH-IAR12-004",
+        "PTH-IAR12-005",
+        "PTH-IAR12-006"
+      ],
+      "inputRequirement": "AuthN/AuthZ/resource/action/conditionsの概念対応。独立CaseのEvidenceは流用しない。",
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-IAR12-002",
+      "chapter": 13,
+      "status": "planned-not-delivered",
+      "pathIds": [
+        "PTH-IAR12-001",
+        "PTH-IAR12-002",
+        "PTH-IAR12-003",
+        "PTH-IAR12-004",
+        "PTH-IAR12-005",
+        "PTH-IAR12-006"
+      ],
+      "inputRequirement": "WorkloadとControl planeのOwnerとbindingの不足条件。",
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-IAR12-003",
+      "chapter": 14,
+      "status": "planned-not-delivered",
+      "pathIds": [
+        "PTH-IAR12-001",
+        "PTH-IAR12-002",
+        "PTH-IAR12-003",
+        "PTH-IAR12-004",
+        "PTH-IAR12-005",
+        "PTH-IAR12-006"
+      ],
+      "inputRequirement": "必要条件一つに限定した問い、否定条件、最小Evidenceと停止。",
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-IAR12-004",
+      "chapter": 16,
+      "status": "planned-not-delivered",
+      "pathIds": [
+        "PTH-IAR12-001",
+        "PTH-IAR12-002",
+        "PTH-IAR12-003",
+        "PTH-IAR12-004",
+        "PTH-IAR12-005",
+        "PTH-IAR12-006"
+      ],
+      "inputRequirement": "Principal/Resource/Action/版/期間/相関keyと収集・保持のGap。",
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-IAR12-005",
+      "chapter": 17,
+      "status": "planned-not-delivered",
+      "pathIds": [
+        "PTH-IAR12-001",
+        "PTH-IAR12-002",
+        "PTH-IAR12-003",
+        "PTH-IAR12-004",
+        "PTH-IAR12-005",
+        "PTH-IAR12-006"
+      ],
+      "inputRequirement": "許容結論と未観測範囲を持つ合成Test計画。実検知率は未測定。",
+      "executionAuthorized": false
+    }
+  ],
+  "limits": {
+    "mode": "non-executing-synthetic-record-review",
+    "credentialMaterial": "none",
+    "networkRequests": 0,
+    "authenticationAttempts": 0,
+    "minutes": 30,
+    "outputBytes": 65536,
+    "stop": "unknown-authority-or-input-or-boundary; stop-and-record-gap",
+    "cleanup": "remove-only-owned-working-copies; retain-canonical-sources",
+    "cleanupStatus": "not-executed",
+    "custodian": "SYNTH-EVIDENCE-CUSTODIAN",
+    "retentionHours": 24,
+    "retentionStarts": "hypothetical-session-end",
+    "assurance": "no-real-authentication-or-measurement-or-legal-assurance",
+    "pathCoverage": "six-supplied-paths-only; no-global-reachability-claim",
+    "parentDisposition": "Do not proceed"
+  }
+}

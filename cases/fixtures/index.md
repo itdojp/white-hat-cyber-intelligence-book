@@ -45,3 +45,10 @@
 - [Schema](../../schemas/ch10-attack-surface.schema.json): 二JSONをregister / bundleとして束ねた論理入力の閉じた構造。
 
 [完全記入Case](../ch10-attack-surface-example.md)に全Fieldを掲載する。Hash対象は対応するcontent文字列のUTF-8 byteだけで、JSON全体やSourceの真正性・許可とは別。第10章公開前検査を通過しない入力はsite生成前に拒否する。
+
+## 第12章 Identity Attack Path Review
+
+- [供給JSON](ch12-identity-paths.json): Principal、Role、Permission、Resource、必要Edge、Path、設定Evidence、合成Event、有限比較、FindingとHandoff。
+- [閉じたSchema](../../schemas/ch12-identity-paths.schema.json): 供給教材の有限語彙と未知Field拒否。任意のSecretを認識するParserではない。
+
+[全Fieldを掲載したCase](../ch12-identity-path-review-example.md)と一対一で照合する。外部通信・実認証・親の承認変更を行わず、公開前の第12章検査を通過してから生成する。
