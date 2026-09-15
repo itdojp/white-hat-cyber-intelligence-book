@@ -981,6 +981,12 @@
           "effectiveAt": "2026-09-15",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5673770683",
           "reason": "PR132通常merge/main公開・Chapter10consumed後にIssue36の正式四Principal/六Pathstates/三Methodsへ登録候補を明示選択。raw不在のため直接採用せず現行Issue・親契約・一次Sourceから新規構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/133",
+          "reason": "第12章専用Draft PR #133に本文/ART20/完全合成JSON/Schema/Source/有限Layer AとIntake Recordを結ぶ。通常merge/main公開前のためconsumedにしない。"
         }
       ]
     },

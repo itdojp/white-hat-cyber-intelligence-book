@@ -240,6 +240,16 @@ def validate_model(data, schema, contract):
         )
     need(data["context"] == contract["context"], "unchanged parent-context limitations")
     need(
+        data["application"] == contract["applicationIdentity"],
+        "application is not a Principal or parent binding proof",
+    )
+    need(
+        data["application"]["workloadPrincipalId"] == data["principals"][3]["id"]
+        and data["application"]["controlPlaneId"] == data["controlPlanes"][0]["id"],
+        "explicit Application/Workload/Control-plane references",
+    )
+
+    need(
         all(data["record"].get(k) == v for k, v in contract["recordIdentity"].items()),
         "record identity and authored-not-measured boundary",
     )

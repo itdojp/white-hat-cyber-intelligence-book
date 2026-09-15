@@ -45,7 +45,7 @@
 | Service | 継続するAudit参照機能のPrincipal | 機能Owner、必要権限、運用と変更の責任 |
 | Workload | 請求同期という実行単位のPrincipal | Appとのbinding、実行単位のLifecycle、委任範囲 |
 
-サービス名、App registration、実行Instance、Principal IDは同一ではありません。Deviceの健全性も、利用者の権限をそのまま証明しません。NIST SP 800-207Aが人に加えてApplication / Service identityを扱う点を、この区別の補助にします。本章の四分類を同資料の規範分類として引用しません。`SRC-NIST-ZTAA-001`
+サービス名、App registration、実行Instance、Principal IDは同一ではありません。JSONのapplication欄はAPP-IAR12-001をWorkload PrincipalとControl planeへ明示的に結びます。これは第五のPrincipal classではなく、親の現在のbindingを確認した証拠でもありません。Deviceの健全性も、利用者の権限をそのまま証明しません。NIST SP 800-207Aが人に加えてApplication / Service identityを扱う点を、この区別の補助にします。本章の四分類を同資料の規範分類として引用しません。`SRC-NIST-ZTAA-001`
 
 LifecycleとRoleを別欄にします。休眠という属性は「最近使っていない」という仮定を示しても、Grantが削除された証拠にはなりません。退職・廃止・Owner変更の手続と実際の権限状態を照合する問いを残します。
 

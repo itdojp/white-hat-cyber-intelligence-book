@@ -96,6 +96,19 @@ PTH-IAR12-001は休眠Grantの仮説、002はMFA例外を持つ静的設定、00
 | independentChapter11Case | CASE-2026-011 |
 | chapter11Relation | conceptual-handoff-only-no-evidence-or-authority-inheritance |
 
+## application
+
+| Field | Value |
+|---|---|
+| appId | APP-IAR12-001 |
+| label | SYNTH-BILLING-OAUTH-APP |
+| parentComponentAssetId | ASSET-2026-005 |
+| workloadPrincipalId | PRN-IAR12-004 |
+| controlPlaneId | CP-IAR12-001 |
+| owner | SYNTH-PLATFORM-OWNER |
+| bindingBasis | authored-assumption-not-parent-current-binding |
+| principalClass | not-a-fifth-Principal-class |
+
 ## principals PRN-IAR12-001
 
 | Field | Value |

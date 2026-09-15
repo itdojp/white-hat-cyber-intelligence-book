@@ -367,7 +367,7 @@
             "reader_visible_text",
             "p",
             null,
-            "サービス名、App registration、実行Instance、Principal IDは同一ではありません。Deviceの健全性も、利用者の権限をそのまま証明しません。NIST SP 800-207Aが人に加えてApplication / Service identityを扱う点を、この区別の補助にします。本章の四分類を同資料の規範分類として引用しません。SRC-NIST-ZTAA-001"
+            "サービス名、App registration、実行Instance、Principal IDは同一ではありません。JSONのapplication欄はAPP-IAR12-001をWorkload PrincipalとControl planeへ明示的に結びます。これは第五のPrincipal classではなく、親の現在のbindingを確認した証拠でもありません。Deviceの健全性も、利用者の権限をそのまま証明しません。NIST SP 800-207Aが人に加えてApplication / Service identityを扱う点を、この区別の補助にします。本章の四分類を同資料の規範分類として引用しません。SRC-NIST-ZTAA-001"
           ],
           "headings": [
             "第12章 Enterprise Identityとアクセス経路を評価する",
@@ -1634,6 +1634,10 @@
         [
           2,
           "context"
+        ],
+        [
+          2,
+          "application"
         ],
         [
           2,
@@ -3168,5 +3172,15 @@
         "executionAuthorized": false
       }
     }
+  },
+  "applicationIdentity": {
+    "appId": "APP-IAR12-001",
+    "label": "SYNTH-BILLING-OAUTH-APP",
+    "parentComponentAssetId": "ASSET-2026-005",
+    "workloadPrincipalId": "PRN-IAR12-004",
+    "controlPlaneId": "CP-IAR12-001",
+    "owner": "SYNTH-PLATFORM-OWNER",
+    "bindingBasis": "authored-assumption-not-parent-current-binding",
+    "principalClass": "not-a-fifth-Principal-class"
   }
 }

@@ -260,6 +260,14 @@ def run_regressions(data, schema, contract, source, projection):
     ]
     for label, path, value in negatives:
         bad(label, path, value)
+    for field, value in (
+        ("workloadPrincipalId", "PRN-IAR12-001"),
+        ("controlPlaneId", "CP-IAR12-999"),
+        ("parentComponentAssetId", "ASSET-2026-011"),
+        ("bindingBasis", "parent-current-binding-confirmed"),
+        ("principalClass", "Workload"),
+    ):
+        bad("application-" + field, ("application", field), value)
     # Two coordinated edits cannot turn a guessed result into a true comparison.
     d = deepcopy(data)
     d["evaluations"][0].update(expected="Deny", actual="Deny")

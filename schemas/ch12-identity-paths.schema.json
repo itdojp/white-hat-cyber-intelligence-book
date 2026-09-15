@@ -11,6 +11,7 @@
     "record",
     "parents",
     "context",
+    "application",
     "principals",
     "groups",
     "roles",
@@ -340,6 +341,54 @@
           "enum": [
             "conceptual-handoff-only-no-evidence-or-authority-inheritance"
           ]
+        }
+      }
+    },
+    "application": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "appId",
+        "label",
+        "parentComponentAssetId",
+        "workloadPrincipalId",
+        "controlPlaneId",
+        "owner",
+        "bindingBasis",
+        "principalClass"
+      ],
+      "properties": {
+        "appId": {
+          "type": "string",
+          "const": "APP-IAR12-001"
+        },
+        "label": {
+          "type": "string",
+          "const": "SYNTH-BILLING-OAUTH-APP"
+        },
+        "parentComponentAssetId": {
+          "type": "string",
+          "const": "ASSET-2026-005"
+        },
+        "workloadPrincipalId": {
+          "type": "string",
+          "const": "PRN-IAR12-004"
+        },
+        "controlPlaneId": {
+          "type": "string",
+          "const": "CP-IAR12-001"
+        },
+        "owner": {
+          "type": "string",
+          "const": "SYNTH-PLATFORM-OWNER"
+        },
+        "bindingBasis": {
+          "type": "string",
+          "const": "authored-assumption-not-parent-current-binding"
+        },
+        "principalClass": {
+          "type": "string",
+          "const": "not-a-fifth-Principal-class"
         }
       }
     },
