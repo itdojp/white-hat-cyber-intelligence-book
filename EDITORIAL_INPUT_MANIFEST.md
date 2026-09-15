@@ -15,8 +15,7 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
-| `canonical-pr-open` | 1 |
-| `consumed` | 8 |
+| `consumed` | 9 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 17 |
 
@@ -58,7 +57,7 @@
 | `chapter-09` | #34 | `consumed` | `EIC-0034-dd0c5e0b83f3` | #127 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5659602660) |
 | `chapter-10` | #35 | `consumed` | `EIC-0035-23f9af567b80` | #130 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5673149529) |
 | `chapter-12` | #36 | `consumed` | `EIC-0036-bf2b7e4fe16e` | #133 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5674704043) |
-| `chapter-13` | #37 | `canonical-pr-open` | `EIC-0037-16d33d9ab258` | #136 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/136) |
+| `chapter-13` | #37 | `consumed` | `EIC-0037-16d33d9ab258` | #136 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5678132066) |
 | `chapter-14` | #38 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
 | `chapter-15` | #39 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
 | `chapter-16` | #40 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228688398) |
@@ -135,7 +134,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0037-16d33d9ab258` | `EIP-0008` | `chapter13-platform-supply-chain.predraft.md` | `16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec` | `selected` | 親Chapter4/6/9/12とChapter12consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前コメントで明示選択。raw不在のため直接採用せずcurrent Issue/契約/一次資料から再構成する。 |
+| `EIC-0037-16d33d9ab258` | `EIP-0008` | `chapter13-platform-supply-chain.predraft.md` | `16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec` | `rewritten` | PR #136でIssue #37とcurrent contract・再検証済み一次資料から第13章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0008/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter12のDispositionは不変。 |
 
 ### `chapter-14` / Issue #38
 
