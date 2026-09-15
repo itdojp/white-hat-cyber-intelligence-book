@@ -1,0 +1,3190 @@
+{
+  "schemaVersion": "1.0.0",
+  "parentSnapshot": {
+    "caseId": "CASE-2026-001",
+    "relation": "refines",
+    "decisionRequirementId": "DR-2026-001",
+    "historicalDeadline": "2026-07-22T00:00:00Z",
+    "authorizationId": "AUTH-CASE-2026-001",
+    "authorizationExpiresAt": "2026-08-19T09:00:00Z",
+    "authorizationWindow": [
+      "2026-08-06T00:00:00Z",
+      "2026-08-06T08:00:00Z"
+    ],
+    "authorizationConditions": [
+      "COND-AUTH-2026-001 Open",
+      "COND-AUTH-2026-002 Satisfied",
+      "COND-AUTH-2026-003 Open"
+    ],
+    "roeId": "ROE-2026-009",
+    "roeVersion": 1,
+    "roeStatus": "Draft",
+    "roeObjectIds": [
+      "OBJ-ROE09-CONFIG",
+      "OBJ-ROE09-EVENT",
+      "OBJ-ROE09-POLICY"
+    ],
+    "roeExecutionAuthorized": false,
+    "threatModelId": "TM-2026-001",
+    "threatModelStatus": "Needs Evidence",
+    "parentReassessmentId": "REA-2026-001",
+    "independentCaseId": "CASE-2026-011",
+    "parentStateChanged": false
+  },
+  "parentDigests": {
+    "cases/ch01-integrated-security-case-example.md": "c72c0d149321a24f2b6901db381c069cff86a8536b5578eba285b9d17eb329b2",
+    "cases/ch02-authorization-decision-example.md": "74d1aa7a802525ee5f465ccbdc1404e26a974ed60e264b65978612bef8026f4a",
+    "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
+    "cases/ch08-lab-evidence-example.md": "715859aea7c9ee8e939ff080447d34916a4f4b582d737719f272b394b9f17e0d",
+    "cases/fixtures/ch08-lab-plan.json": "f4ea0e4544e65fbb3447b173b0d9ab510e3aa8dea82209187727842b5f64ca8f",
+    "manuscript/09-engagement-roe.md": "2afbc548021b6f4017abf10287fc965c7417c15c0c36447763953fef2c65884a",
+    "templates/rules-of-engagement.md": "abf36127616fb838f8b599f60bbb1459e9b709381e990db4c9d855bcb81b9ef9",
+    "cases/ch09-engagement-roe-example.md": "44cf657c9ad220709c6b026ec4a894d904b1f89d88427e3babd2070e5a11b25a",
+    "cases/fixtures/ch09-engagement-roe.json": "cf3b2af1dc846981e9a9411641bc21663e7b0a0b1e90d66fd2750cdbd904f936",
+    "schemas/ch09-engagement-roe.schema.json": "f8983d4c251f27b09410a4a064e40138eab080830fed361d6b62aa201a384cd2",
+    "references/ch09-source-review-2026-09-13.md": "82ceac1a13e78805bb5d51eae2ad576238506a0e442c1617ce6f6d90384ed1b0",
+    "cases/ch11-web-api-assessment-example.md": "170f4d66d10aa2b2090018b610002b23a226db43b86b473af2216525ddca182f",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
+    ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
+    "manuscript/04-assets-boundaries-threat-model.md": "b20d25c51f0fa27c0404a8c5d2a4753a0a5b96a7152df67be985479590940084",
+    "manuscript/06-observable-systems.md": "c11a2491c94b710b749e48dceee448832d68d9406c557be7f9a49b45077b9938",
+    "cases/ch06-signal-flow-example.md": "a062ba22f4f0e1eb28a08342b0173a02473e995062410986b51d1a6a4af7cf0a",
+    "cases/fixtures/ch06-signal-flow.json": "73000db0a442d9be338a0e9834fe589ee387ee05ab280a9cc5f0e6fe0f0da6fb",
+    "manuscript/10-recon-osint-boundary.md": "122287e232c1b07468f7b0ecdc3e1ee6f4a2a7e8a3252ea8d73c6e8e681b04b7",
+    "templates/attack-surface-register.md": "ac84aef10dedc83264180e4f9e6069f711c3613e1948875524d561c88893fa75",
+    "cases/ch10-attack-surface-example.md": "7409da76004a7c32489d620691684054cb60e486dfb7dd8a7f7dabb012ed46fa",
+    "cases/fixtures/ch10-attack-surface.json": "84247ed0d7bd12547cd94f00f9f7faf2df58a9dee1947badf7c68dfd741b5f90",
+    "cases/fixtures/ch10-source-bundle.json": "d66edf29d533d102ee7d49d6362b031cc7c9983eef89f65cba85cbc751e0e36c",
+    "schemas/ch10-attack-surface.schema.json": "84107fecbf04d7516c39696a50fdbdf4282dc494cdcac8a126b4f91064f7a160",
+    "references/ch10-source-review-2026-09-14.md": "bbe585867368ececabe92e236f3b8dbbbcd735730c6d664b0face8dd76ac67fc",
+    "manuscript/11-web-api-hypothesis.md": "4bb4768e3a0d122116cae4019bf5b344601ec64e4d5f364bb45bb8e8b9437992",
+    "cases/fixtures/ch11-web-api-assessment-dataset.json": "2f0e10f0de37b3904c9303793ce36fdd565db8a0c4614bdeaba9b8a2c65ec4ec"
+  },
+  "sourceIdentity": {
+    "SRC-NIST-DIGITAL-001": {
+      "version": "SP 800-63-4",
+      "status": "final",
+      "publishedAt": "2025-07-31",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/4/final",
+      "notes": "Scope and Applicability / Assurance Levels only; natural-person scope, no machine-to-machine conformance claim. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    "SRC-NIST-PROOFING-001": {
+      "version": "SP 800-63A-4",
+      "status": "final",
+      "publishedAt": "2025-07-31",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/a/4/final",
+      "notes": "Introduction only: identity proofing and natural-person scope; no real identity verification. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    "SRC-NIST-AUTHN-001": {
+      "version": "SP 800-63B-4",
+      "status": "final",
+      "publishedAt": "2025-07-31",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/b/4/final",
+      "notes": "Sections2 and3.2.5 only: authentication strength, MFA and phishing resistance; not authorization correctness. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    "SRC-NIST-FEDERATION-001": {
+      "version": "SP 800-63C-4",
+      "status": "final",
+      "publishedAt": "2025-07-31",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/c/4/final",
+      "notes": "IdP-issued Assertion Contents (#assertions) and Audience Restriction only; not wallet #assertion-contents or a token validator. Single-audience required FAL2+, not all FAL1. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    "SRC-IETF-OAUTH-BCP-001": {
+      "version": "RFC 9700 / BCP 240",
+      "status": "best-current-practice",
+      "publishedAt": null,
+      "url": "https://www.rfc-editor.org/info/rfc9700/",
+      "notes": "Official publication gives January2025; exact day is unknown, so publishedAt is null. Updates6749/6750/6819. Section2.3 privilege/resource/action/audience restriction only; no token handling or protocol implementation. Official errata search: no matching records at checkedAt. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    "SRC-NIST-ZTAA-001": {
+      "version": "SP 800-207A",
+      "status": "final",
+      "publishedAt": "2023-09-13",
+      "url": "https://csrc.nist.gov/pubs/sp/800/207/a/final",
+      "notes": "Application/service identity distinction only; no provider or deployment recipes."
+    }
+  },
+  "pages": [
+    {
+      "source": "manuscript/12-enterprise-identity.md",
+      "destination": "chapters/chapter-12/index.md",
+      "section": "chapters",
+      "order": 55,
+      "title": "第12章 Enterprise Identityとアクセス経路を評価する"
+    },
+    {
+      "source": "templates/identity-attack-path-review.md",
+      "destination": "templates/identity-attack-path-review/index.md",
+      "section": "additional",
+      "order": 263,
+      "title": "Identity Attack Path Review"
+    },
+    {
+      "source": "cases/ch12-identity-path-review-example.md",
+      "destination": "cases/chapter-12-identity-path-review/index.md",
+      "section": "additional",
+      "order": 264,
+      "title": "第12章 完全合成記入例：Identity Attack Path Review"
+    },
+    {
+      "source": "references/ch12-source-review-2026-09-15.md",
+      "destination": "references/chapter-12-source-review/index.md",
+      "section": "additional",
+      "order": 265,
+      "title": "第12章 Source Review Note：Identityとアクセス経路"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch12-identity-paths.json",
+      "destination": "downloads/ch12-identity-paths.json"
+    },
+    {
+      "source": "schemas/ch12-identity-paths.schema.json",
+      "destination": "downloads/ch12-identity-paths.schema.json"
+    }
+  ],
+  "indices": {
+    "artifact-index.md": [
+      "| ART-20 | Identity Attack Path Review | 12 |",
+      "六Path states"
+    ],
+    "figure-index.md": [
+      "F-12-01",
+      "F-12-02",
+      "T-12-01",
+      "T-12-02",
+      "T-12-03",
+      "T-12-04",
+      "T-12-05"
+    ],
+    "glossary.md": [
+      "## 第12章の用語",
+      "| Broken path |"
+    ],
+    "cases/index.md": [
+      "## 第12章の教育用補足",
+      "IAR-2026-012"
+    ],
+    "cases/fixtures/index.md": [
+      "## 第12章 Identity Attack Path Review",
+      "ch12-identity-paths.schema.json"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "第6章・第7章・第8章・第9章・第10章・第12章の公開前"
+    ],
+    "CHANGELOG.md": [
+      "- [第12章](manuscript/12-enterprise-identity.md)、ART-20 Identity Attack Path Review、四Principal・六Path stateの完全合成Graphと閉じたSchema・有限Layer A検査を追加。認証の強さ、権限関係、Evidence、評価実施の許可を分け、Federation非該当の比較ではIssuer / Audience / RPをnullで明示する。有限比較の成功を実認証・実行許可・親Gap解消の証拠にしない。",
+      "- 第12章のSource baselineにNIST SP 800-63-4 / 63A-4 / 63B-4 / 63C-4（2025-07-31 Final）とRFC9700 / BCP240を追加し、既存SP800-207Aの章対応を拡張。読者は自然人のAssuranceをWorkload適合へ一般化せず、MFAと認可、IssuerとAudienceを別に判断する。採用節と限界は[第12章Source Review Note](references/ch12-source-review-2026-09-15.md)で確認できる。既存Sourceの版・親章の意味とRegistry一括監査日は保持する。"
+    ]
+  },
+  "documents": {
+    "manuscript/12-enterprise-identity.md": {
+      "headings": [
+        [
+          1,
+          "第12章 Enterprise Identityとアクセス経路を評価する"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "12.1 判断要求と親の停止状態"
+        ],
+        [
+          2,
+          "12.2 PrincipalとLifecycleを分ける"
+        ],
+        [
+          2,
+          "12.3 認証、認可、評価許可は別の問い"
+        ],
+        [
+          2,
+          "12.4 Graphの線を必要条件へ変換する"
+        ],
+        [
+          2,
+          "12.5 FederationのIssuer、Audience、受入側"
+        ],
+        [
+          2,
+          "12.6 Path stateとEvidenceの上限"
+        ],
+        [
+          2,
+          "12.7 Telemetry、Finding、Treatmentへ渡す"
+        ],
+        [
+          2,
+          "12.8 安全な分析課題"
+        ],
+        [
+          2,
+          "作成する成果物と評価基準"
+        ],
+        [
+          2,
+          "よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この章の位置付け 管理者にMFAが設定されていれば、その管理者を起点とする権限上の問題は解消したと言えるでしょうか。認証が強くても、不要な権限や承認されていない委任が残ることがあります。逆に、Graphに線が一本描かれていても、その関係が現在成立するとは限りません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章はIdentityと権限関係をART-20 Identity Attack Path Reviewへ整理します。実Credentialを扱わず、供給された完全合成Graph、設定Snapshot、Policyの有限比較、合成Eventから、説明できる範囲と残るGapを記録します。経路数や認証成功数は成果指標にしません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "前提知識 第4章のAsset / Boundary、第6章の認可と観測、第9章の停止条件、第11章の認証と認可を前提にします。実Tenant、Directory、Account、Token、Cookieは必要ありません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "完全合成CaseはCASE-2026-001をrefinesする教育用補足IAR-2026-012です。第11章のCASE-2026-011 / ROE-2026-011は独立で、Evidenceや許可を借用しません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "12.1 判断要求と親の停止状態 判断要求は「供給された権限関係のどこまでを説明でき、何の許可と観測が不足するか」です。確認事実（教材内）は、同梱レコードに書かれた四Principal、十四Edge、六Pathとその比較条件です。これは実測されたIdentity inventoryではありません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.1 判断要求と親の停止状態"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "仮定として、請求書連携OAuth App、Workload identity、管理Role、顧客Data APIのsummary面、Audit readerを持つ架空の構成を置きます。分析判断は、認証強度だけで権限経路を閉じず、必要条件と観測不足を個別に管理することです。代替説明は正常な変更、資料の遅延、用途の異なるIdentityの混同です。確信度は中とし、資料のない休眠利用・Device bindingについては低とします。実環境への一般化はしません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.1 判断要求と親の停止状態"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "親DR-2026-001の歴史的判断期限2026-07-22T00:00:00ZとTM-2026-001のNeeds Evidenceを保持します。AUTH-CASE-2026-001は2026-08-19T09:00:00Zで失効し、元のTest windowは2026-08-06T00:00:00Z〜08:00:00Zです。基準時点2026-09-15のROE-2026-009 v1は Draft / Do not proceed / executionAuthorized=false のままです。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.1 判断要求と親の停止状態"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "三つのRoE Objectへ本章のPrincipalやResourceを追加しません。第10章のCAND-ASR10-001 / ASSET-2026-001は背景を結ぶIDであり、所有確認から実行許可は導きません。合成レコードを読む教材上の作業と、親の実施計画を開始することは別です。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.1 判断要求と親の停止状態"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "12.2 PrincipalとLifecycleを分ける 表T-12-01: 本教材の四分類。製品標準の排他的な分類ではなく、責任を明確にするための呼び分けです。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.2 PrincipalとLifecycleを分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "サービス名、App registration、実行Instance、Principal IDは同一ではありません。JSONのapplication欄はAPP-IAR12-001をWorkload PrincipalとControl planeへ明示的に結びます。これは第五のPrincipal classではなく、親の現在のbindingを確認した証拠でもありません。Deviceの健全性も、利用者の権限をそのまま証明しません。NIST SP 800-207Aが人に加えてApplication / Service identityを扱う点を、この区別の補助にします。本章の四分類を同資料の規範分類として引用しません。SRC-NIST-ZTAA-001"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.2 PrincipalとLifecycleを分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "LifecycleとRoleを別欄にします。休眠という属性は「最近使っていない」という仮定を示しても、Grantが削除された証拠にはなりません。退職・廃止・Owner変更の手続と実際の権限状態を照合する問いを残します。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.2 PrincipalとLifecycleを分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "12.3 認証、認可、評価許可は別の問い NIST SP 800-63-4はIdentity proofing、Authentication、FederationのAssuranceを区別します。対象範囲は自然人を中心とし、機械間認証や主体に代わるAPI利用等を明示的には扱いません。本章のWorkloadやDeviceへ、そのままIAL / AAL / FALへの適合を割り当てません。SRC-NIST-DIGITAL-001"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.3 認証、認可、評価許可は別の問い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SP 800-63A-4のIdentity proofingは、オンラインの主体と実在する自然人を一定の確かさで関連付ける過程です。架空のPrincipal IDにそれらしい名前があるだけでは、その過程を実施したことになりません。本教材のAssurance contextはすべて未評価です。SRC-NIST-PROOFING-001"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.3 認証、認可、評価許可は別の問い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "表T-12-02: 分離して記録する問い。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.3 認証、認可、評価許可は別の問い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SP 800-63B-4ではAALは認証過程の強度を扱います。AAL2はphishing-resistantな選択肢を提供し、AAL3はその耐性を要求します。MFA一般とphishing resistanceは同義ではなく、手入力のOTP等を耐性の証明にしません。これらは認可Policyの正しさを保証する条件でもありません。SRC-NIST-AUTHN-001"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.3 認証、認可、評価許可は別の問い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本CaseのHumanはMFA Enabledですが、例外と管理Roleの残存を別に記録しています。EnabledをBrokenへ変換せず、例外の対象・期限・承認Evidence、必要な業務権限を問い直します。WorkloadにはHumanのMFA要件を機械的に流用しません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.3 認証、認可、評価許可は別の問い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "12.4 Graphの線を必要条件へ変換する 図F-12-01: 権限関係と判断の接続（本書独自の概念図）。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.4 Graphの線を必要条件へ変換する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "図は侵害の順序ではありません。入力は合成設定、出力は条件付きの判断記録です。線が現在成立するか、どの境界を越えるか、何が不足しているかをIDで読むための図です。RoleからPermission、PermissionからResourceへ続く対応が途切れれば、経路の成立を主張しません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.4 Graphの線を必要条件へ変換する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Membershipは所属やRole割当て、GrantはRoleとPermissionの関係、AccessはPermissionとResourceの対応です。DelegationはあるPrincipalへ行為の範囲を委ねる関係として扱います。委任元・委任先・対象・Action・条件を残し、委任先が任意の権限を持つとは考えません。Impersonationという製品用語を使う場合も、誰として評価されるかと誰が承認したかを分離し、本章では実装しません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.4 Graphの線を必要条件へ変換する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Toxic combinationは、個々のRole名が危険という断定ではありません。同じ主体が同じResourceについて、相互承認を崩す複数のPermissionを持つなどの条件付き仮説です。本章の六Pathは全組合せを探索せず、未列挙経路のGapを残します。過大権限は業務上必要な範囲との比較で判断し、権限数の多さだけでは決めません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.4 Graphの線を必要条件へ変換する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "12.5 FederationのIssuer、Audience、受入側 Issuerは主張を発行する側、Audienceはその主張が意図する受入側、Relying party（RP）は主張を検証して利用する側です。同じ文字列欄へ混ぜると、誰を信頼し、誰向けの主張を受け入れたかが分からなくなります。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.5 FederationのIssuer、Audience、受入側"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SP 800-63C-4のIdP発行Assertionでは、IssuerとAudience、時刻・有効期間、署名等の責任を分けます。全FALでRPは自分がAudienceに含まれることを確認し、単一Audienceへの制限はFAL2以上で要求されます。本教材の単一Audienceの比較を、FAL1にも常に一つだけという規範へ拡張しません。SRC-NIST-FEDERATION-001"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.5 FederationのIssuer、Audience、受入側"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OAuthのAccess tokenと、RPへ認証情報を伝えるAssertionも同じ用途ではありません。RFC9700の§2.3は、必要なPrivilege、Resource、Action、Audienceへの制限を扱います。本章ではResource/Actionを明記する判断に限定し、実Tokenの発行・解釈・署名検証は実装しません。SRC-IETF-OAUTH-BCP-001"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.5 FederationのIssuer、Audience、受入側"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "図F-12-02: 本教材のFederation条件の読み方。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.5 FederationのIssuer、Audience、受入側"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "実装すべきProtocol検証の完全な一覧ではありません。署名、鍵配布、時刻、失効、Replay防止などを実装済みと主張せず、供給された識別子の比較だけに限定します。Workloadの例への適用も本書の教育用モデルであって、SP 800-63Cの機械間認証への適合認証ではありません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.5 FederationのIssuer、Audience、受入側"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "12.6 Path stateとEvidenceの上限 表T-12-03: ART-20の六状態。本書の有限契約であり、六段階の成熟度ではありません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.6 Path stateとEvidenceの上限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Static reviewは設定の参照を確認するだけで、Validatedへ進めません。Policy simulationは供給された必要条件の有限比較です。Synthetic replayは作成者が記述したEventのFieldを照合する意味で、認証要求やSessionを再送する処理ではありません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.6 Path stateとEvidenceの上限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "このモデルの各Pathは、必要条件の論理積です。既知の否定条件があればそのPathを反証できます。否定条件がなく必要条件が不明ならUnknownです。すべての条件が既知で一致しても、同じPath・Graph版・Policy版・入力・Evidenceと期待値の組がなければValidatedにはしません。MFAは条件の代用品ではありません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.6 Path stateとEvidenceの上限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "六つの記入例は、休眠Grantの仮説、MFA例外の設定確認、Audit readerの合成Event、Federation条件の有限一致、必要なDelegation承認の否定、Device binding不足です。四番目のPassでも、親TB-2026-004やSF-2026-006のcurrent binding / CoverageはUnknownのままです。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.6 Path stateとEvidenceの上限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "12.7 Telemetry、Finding、Treatmentへ渡す 第6章のProduced / Collected / Retained / Queryable / Validated / Unknownは観測経路の状態です。ART-20のPath stateとは別欄にし、同じValidatedという綴りだけでEvidenceを移しません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.7 Telemetry、Finding、Treatmentへ渡す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "各PathにTelemetry ID、Detection ID、Finding ID、Gap、Owner、期限、Reassessmentを付けます。必要FieldはPrincipal、Resource、Action、Graph/Policy版、Outcome、Event time、相関IDです。実Secretを相関keyにしません。Findingは教材内の分析で、Detectionはplanned-not-testedと明記します。Eventがない場合は、未発生以外に未収集、期限切れ、Field欠落、検索権限不足を比較します。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.7 Telemetry、Finding、Treatmentへ渡す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "表T-12-04: 次章への計画入力と受入条件。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.7 Telemetry、Finding、Treatmentへ渡す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Handoffはすべてplanned-not-deliveredです。将来の担当者が入力ID、版、Gapを確認した受領記録を作るまで、完了へ変更しません。TreatmentはRole縮小、例外の再確認、観測改善などの計画であり、実変更の指示ではありません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.7 Telemetry、Finding、Treatmentへ渡す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "12.8 安全な分析課題 Purpose: 六Pathについて、根拠が示す範囲と示さない範囲をART-20へ記入します。まずMFA EnabledだけでBrokenにできるか、Static reviewだけでValidatedにできるかを予想し、Caseで反証します。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: Case、合成JSON、閉じたSchemaだけを用意します。実Credential、実Tenant、実Directory、実Account、実Token、実Cookieは使用しません。任意の検査は本書Repositoryで出版基盤の固定依存が導入済みの場合だけ行います。依存取得と外部通信は演習に含めません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence / Impact: 出力はPath ID、必要条件、Evidence ID、State、反証またはGap、Owner、再評価条件です。任意コマンドはローカル教材の整合性だけを検査し、実認証、通信、許可発行は0です。本文表示を得る共有rendererも固定依存を使います。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stop / Cleanup: 不明な入力、実Dataらしい内容、外部接続の必要性、許可・境界の不一致を見つけたら追加の調査をせず停止します。検査失敗時は公開を止めます。自分で作成した作業コピーだけを整理し、正本・親記録・Evidence参照を変更しません。想定要約の上限は65,536byte、30分、保持は作業終了から24時間以内とし、実際の削除や隔離成功を検査結果から推定しません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Schemaは供給された有限教材の語彙と閉じたFieldを定義します。未知の値用Fieldや未登録文字列を受け入れないためのもので、任意の実Secretを識別する検知器でも、学習者の自由なGraphを採点する一般製品でもありません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "作成する成果物と評価基準 ART-20 TemplateはJSONなしでも記入できます。ID、Class、認証Context、Role/Permission、Edge、Resource、必要条件、検証方法、Evidence、Telemetry、Finding、Risk/Treatment、Owner、Reassessmentを残します。Unknownでも不足条件と責任者が説明できれば有効な成果物です。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "表T-12-05: 各項目0点（欠落）、1点（対応が曖昧）、2点（直接追跡できる）のRubric。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "8点以上を教材の目安とします。ただし実Data混入、実行許可への昇格、根拠のないValidated/Broken、親記録の無断変更が一つでもあれば、点数に関係なく差し戻します。資格や実業務能力の認定ではありません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "章のまとめ Identity評価では、誰が、何に、どのActionを、どの条件で許されるかをGraphとEvidenceで説明します。認証の強度、認可、Federation、実施許可を分け、必要条件の不明を隠さず、反証と観測不足を区別します。最終成果は経路数ではなく、判断と再評価へ接続したART-20です。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "章のまとめ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "次に学ぶこと 第13章ではWorkload / Platform / Supply Chainへ責任境界を広げ、第14章では必要条件一つに対する最小影響の確認、第15章ではFindingと再評価へ進みます。第16章の観測要件と第17章のDetection検証へ不足Fieldを渡します。未公開章へのリンクは作らず、全体目次で位置を確認します。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "次に学ぶこと"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "参考文献・Source Note ID 第12章Source Review Noteに採用箇所、版、Status、確認日、限界を記録します。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/practical-auth-book/"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "この章の位置付け",
+            "OWN / BRIDGE / DELEGATE"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "OWN / BRIDGE / DELEGATE DELEGATE: Kerberos、OAuth、OIDC、SAMLの実装と製品固有設定は実践 認証認可システム設計へ委譲します。専門書から戻ったら、Protocol名ではなく主体・Resource・Action・条件・EvidenceをART-20へ記入します。Credential取得、再利用、横展開の手順は本演習に含めません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OAuthのAccess tokenと、RPへ認証情報を伝えるAssertionも同じ用途ではありません。RFC9700の§2.3は、必要なPrivilege、Resource、Action、Audienceへの制限を扱います。本章ではResource/Actionを明記する判断に限定し、実Tokenの発行・解釈・署名検証は実装しません。SRC-IETF-OAUTH-BCP-001"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.5 FederationのIssuer、Audience、受入側"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/main/CANONICAL_SOURCE.md"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: Case、合成JSON、閉じたSchemaだけを用意します。実Credential、実Tenant、実Directory、実Account、実Token、実Cookieは使用しません。任意の検査は本書Repositoryで出版基盤の固定依存が導入済みの場合だけ行います。依存取得と外部通信は演習に含めません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter12_contract.py"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "OWN / BRIDGE / DELEGATE DELEGATE: Kerberos、OAuth、OIDC、SAMLの実装と製品固有設定は実践 認証認可システム設計へ委譲します。専門書から戻ったら、Protocol名ではなく主体・Resource・Action・条件・EvidenceをART-20へ記入します。Credential取得、再利用、横展開の手順は本演習に含めません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "この章の位置付け",
+            "OWN / BRIDGE / DELEGATE"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OAuthのAccess tokenと、RPへ認証情報を伝えるAssertionも同じ用途ではありません。RFC9700の§2.3は、必要なPrivilege、Resource、Action、Audienceへの制限を扱います。本章ではResource/Actionを明記する判断に限定し、実Tokenの発行・解釈・署名検証は実装しません。SRC-IETF-OAUTH-BCP-001"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.5 FederationのIssuer、Audience、受入側"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: Case、合成JSON、閉じたSchemaだけを用意します。実Credential、実Tenant、実Directory、実Account、実Token、実Cookieは使用しません。任意の検査は本書Repositoryで出版基盤の固定依存が導入済みの場合だけ行います。依存取得と外部通信は演習に含めません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        }
+      ],
+      "exerciseInstructionOrder": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "12.8 安全な分析課題 Purpose: 六Pathについて、根拠が示す範囲と示さない範囲をART-20へ記入します。まずMFA EnabledだけでBrokenにできるか、Static reviewだけでValidatedにできるかを予想し、Caseで反証します。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: Case、合成JSON、閉じたSchemaだけを用意します。実Credential、実Tenant、実Directory、実Account、実Token、実Cookieは使用しません。任意の検査は本書Repositoryで出版基盤の固定依存が導入済みの場合だけ行います。依存取得と外部通信は演習に含めません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence / Impact: 出力はPath ID、必要条件、Evidence ID、State、反証またはGap、Owner、再評価条件です。任意コマンドはローカル教材の整合性だけを検査し、実認証、通信、許可発行は0です。本文表示を得る共有rendererも固定依存を使います。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stop / Cleanup: 不明な入力、実Dataらしい内容、外部接続の必要性、許可・境界の不一致を見つけたら追加の調査をせず停止します。検査失敗時は公開を止めます。自分で作成した作業コピーだけを整理し、正本・親記録・Evidence参照を変更しません。想定要約の上限は65,536byte、30分、保持は作業終了から24時間以内とし、実際の削除や隔離成功を検査結果から推定しません。"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter12_contract.py"
+          ],
+          "headings": [
+            "第12章 Enterprise Identityとアクセス経路を評価する",
+            "12.8 安全な分析課題"
+          ]
+        }
+      ]
+    },
+    "templates/identity-attack-path-review.md": {
+      "headings": [
+        [
+          1,
+          "Identity Attack Path Review"
+        ],
+        [
+          2,
+          "このTemplateの目的と境界"
+        ],
+        [
+          2,
+          "Document ControlとDecision Requirement"
+        ],
+        [
+          2,
+          "Principal Register"
+        ],
+        [
+          2,
+          "Role、Permission、Resource、Edge"
+        ],
+        [
+          2,
+          "Path Review"
+        ],
+        [
+          2,
+          "有限比較の記録"
+        ],
+        [
+          2,
+          "Telemetry、Finding、Treatment、Reassessment"
+        ],
+        [
+          2,
+          "提出前の確認"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "このTemplateの目的と境界 ART-20は、PrincipalからResourceまでの権限関係、必要条件、Evidence、反証、観測不足、Treatmentを判断要求へ結ぶ記録です。第12章と完全合成記入例を併用します。"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "このTemplateの目的と境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "完全合成Graph、供給済みの設定Snapshot、Policy比較、合成Eventだけを用います。実Credential、実Token、実Cookie、実Tenant、実Directory、実Accountは使用しません。入力が不明なら追加の操作をせず停止し、OwnerへGapを返します。Templateを埋めることは実施許可の発行ではありません。"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "このTemplateの目的と境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document ControlとDecision Requirement Field 記入する内容 Artifact / Review ID ART-20と一意のReview ID、版、基準時点"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Document ControlとDecision Requirement"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document ControlとDecision Requirement Field 記入する内容 Case / Relation Parent Case ID、refinesまたは独立関係"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Document ControlとDecision Requirement"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document ControlとDecision Requirement Field 記入する内容 Decision Requirement 判断主体、問い、期限、判断を変える条件"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Document ControlとDecision Requirement"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document ControlとDecision Requirement Field 記入する内容 RoE / Authorization ID、版、状態、有効期限、元Window、許可不足"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Document ControlとDecision Requirement"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document ControlとDecision Requirement Field 記入する内容 Scope / Stop 供給資料、対象外、停止条件、連絡先"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Document ControlとDecision Requirement"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Document ControlとDecision Requirement Field 記入する内容 Data / Cleanup synthetic-only、Custodian、保持期限、自分の作業コピーだけの整理"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Document ControlとDecision Requirement"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Principal Register Field 記入する内容 Principal ID / Class Human / Device / Service / Workloadの一つ"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Principal Register"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Principal Register Field 記入する内容 Owner / Lifecycle 責任者、利用目的、Active/Dormant/Unknown等の根拠"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Principal Register"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Principal Register Field 記入する内容 Credential class 種類だけ。値の欄は作らない"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Principal Register"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Principal Register Field 記入する内容 Assurance context 未評価の範囲、認証過程の条件、Humanと非Humanの違い"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Principal Register"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Principal Register Field 記入する内容 MFA status / Exception 有効・不明・非適用、例外の対象・期限・承認Evidence"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Principal Register"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Principal Register Field 記入する内容 Application / Role relation App名、実行単位、Principal、Roleを同一視しない対応"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Principal Register"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Role、Permission、Resource、Edge Field 記入する内容 Role ID / Permission ID Role名と、そのRoleに結び付くPermission"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Role、Permission、Resource、Edge"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Role、Permission、Resource、Edge Field 記入する内容 Resource ID / Action 何に何を許すか。用途と必要範囲"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Role、Permission、Resource、Edge"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Role、Permission、Resource、Edge Field 記入する内容 Control Plane ID 管理面の責任者とData面との境界"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Role、Permission、Resource、Edge"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Role、Permission、Resource、Edge Field 記入する内容 Edge ID / From / To 一意の辺、始点と終点、種類"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Role、Permission、Resource、Edge"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Role、Permission、Resource、Edge Field 記入する内容 Membership / Delegation 所属、委任元・先、必要な承認、制限"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Role、Permission、Resource、Edge"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Role、Permission、Resource、Edge Field 記入する内容 Federation / Trust 信頼するIssuer、意図したAudience、受入RP、境界"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Role、Permission、Resource、Edge"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Role、Permission、Resource、Edge Field 記入する内容 Condition / Evidence True / False / Unknownと、その根拠。MFAだけで代用しない"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Role、Permission、Resource、Edge"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本TemplateのEdgeは関係の記述です。Credentialを扱う操作や侵害の実行順を記入しません。製品固有のRole名を一般的な権限の意味へ読み替えないでください。"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Role、Permission、Resource、Edge"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Path Review Field 記入する内容 Path ID / Principal 起点と判断対象のPath"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Path Review"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Path Review Field 記入する内容 Required privilege / Target 必要Permission、Resource、Action"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Path Review"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Path Review Field 記入する内容 Necessary edge IDs 始点・終点が連続する必要条件。未知の線を確認済みにしない"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Path Review"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Path Review Field 記入する内容 Graph / Policy revision 比較する同一版、供給元、変換の有無"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Path Review"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Path Review Field 記入する内容 Preconditions / Alternatives 成立条件、否定条件、ほかの説明、未列挙経路のGap"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Path Review"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Path Review Field 記入する内容 Validation method Static review / Policy simulation / Synthetic replay"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Path Review"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Path Review Field 記入する内容 Path state Hypothesized / Config-confirmed / Evidence-supported / Validated / Broken / Unknown"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Path Review"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Path Review Field 記入する内容 Evidence IDs 設定、Event、有限比較結果を分離した直接参照"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Path Review"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Path Review Field 記入する内容 Limits そのStateから言えないこと、親の状態を変えないこと"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Path Review"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Static reviewはValidatedにしません。Brokenには必要条件の反証が必要であり、MFA Enabledやログ不在だけでは記入できません。Synthetic replayは供給合成Eventの照合であり、実認証要求の再送ではありません。"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Path Review"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "有限比較の記録 Field 記入する内容 Comparison ID / Path ID どのPathの比較か"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "有限比較の記録"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "有限比較の記録 Field 記入する内容 Input bindings Principal、Resource、Action、Graph版、Policy版、必要条件"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "有限比較の記録"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "有限比較の記録 Field 記入する内容 Federation bindings 該当時にIssuer、Audience、受入RPを別欄で示す。非該当の供給JSONでは三欄をnullとする"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "有限比較の記録"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "有限比較の記録 Field 記入する内容 Expected / Actual 期待値と再計算値、必要条件の照合結果"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "有限比較の記録"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "有限比較の記録 Field 記入する内容 Refuted necessary edge Denyならどの必要条件を反証したか"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "有限比較の記録"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "有限比較の記録 Field 記入する内容 Source Evidence / Time 同一Pathの設定Evidence、作成者による時刻仮定"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "有限比較の記録"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "有限比較の記録 Field 記入する内容 Effect / Scope 通信0、認証試行0、非実行。実測・適合保証ではない"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "有限比較の記録"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Telemetry、Finding、Treatment、Reassessment Field 記入する内容 Telemetry / Detection ID 必要Field、対象期間、相関key、収集・保持・検索の不足"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Telemetry、Finding、Treatment、Reassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Telemetry、Finding、Treatment、Reassessment Field 記入する内容 Finding ID / Risk 確認事実と分析判断、業務上の影響仮説"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Telemetry、Finding、Treatment、Reassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Telemetry、Finding、Treatment、Reassessment Field 記入する内容 Treatment / Owner 最小権限、例外管理、観測改善等の計画と責任者"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Telemetry、Finding、Treatment、Reassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Telemetry、Finding、Treatment、Reassessment Field 記入する内容 Confidence / Alternatives 確信度、根拠、正常変更・資料不足等の代替説明"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Telemetry、Finding、Treatment、Reassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Telemetry、Finding、Treatment、Reassessment Field 記入する内容 Gap / Due date 不足する情報とOwner、今回の期限"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Telemetry、Finding、Treatment、Reassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Telemetry、Finding、Treatment、Reassessment Field 記入する内容 Reassessment ID 新資料・版・主体・権限・Owner・許可の変更時の再確認"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Telemetry、Finding、Treatment、Reassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Telemetry、Finding、Treatment、Reassessment Field 記入する内容 Handoff / Receipt 第11/13/14/16/17章への入力、制限、受領の有無"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Telemetry、Finding、Treatment、Reassessment"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "評価は第12章の五観点Rubricを用います。Unknownの記録も根拠と不足条件が揃えば有効です。実施許可や資格の認定には使用しません。"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "提出前の確認"
+          ]
+        }
+      ],
+      "hostProvenance": [],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本TemplateのEdgeは関係の記述です。Credentialを扱う操作や侵害の実行順を記入しません。製品固有のRole名を一般的な権限の意味へ読み替えないでください。"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "Role、Permission、Resource、Edge"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "有限比較の記録 Field 記入する内容 Effect / Scope 通信0、認証試行0、非実行。実測・適合保証ではない"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "有限比較の記録"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "提出前の確認 Credential classだけを記録し、実Dataや値の欄を追加していない。"
+          ],
+          "headings": [
+            "Identity Attack Path Review",
+            "提出前の確認"
+          ]
+        }
+      ]
+    },
+    "cases/ch12-identity-path-review-example.md": {
+      "headings": [
+        [
+          1,
+          "第12章 完全合成記入例：Identity Attack Path Review"
+        ],
+        [
+          2,
+          "この記入例の扱い"
+        ],
+        [
+          2,
+          "読み方と判断"
+        ],
+        [
+          2,
+          "schemaVersion"
+        ],
+        [
+          2,
+          "modelVersion"
+        ],
+        [
+          2,
+          "synthetic"
+        ],
+        [
+          2,
+          "executionAuthorized"
+        ],
+        [
+          2,
+          "record"
+        ],
+        [
+          2,
+          "parents"
+        ],
+        [
+          2,
+          "context"
+        ],
+        [
+          2,
+          "application"
+        ],
+        [
+          2,
+          "principals PRN-IAR12-001"
+        ],
+        [
+          2,
+          "principals PRN-IAR12-002"
+        ],
+        [
+          2,
+          "principals PRN-IAR12-003"
+        ],
+        [
+          2,
+          "principals PRN-IAR12-004"
+        ],
+        [
+          2,
+          "groups GRP-IAR12-001"
+        ],
+        [
+          2,
+          "roles ROL-IAR12-001"
+        ],
+        [
+          2,
+          "roles ROL-IAR12-002"
+        ],
+        [
+          2,
+          "roles ROL-IAR12-003"
+        ],
+        [
+          2,
+          "permissions PER-IAR12-001"
+        ],
+        [
+          2,
+          "permissions PER-IAR12-002"
+        ],
+        [
+          2,
+          "permissions PER-IAR12-003"
+        ],
+        [
+          2,
+          "resources RES-IAR12-001"
+        ],
+        [
+          2,
+          "resources RES-IAR12-002"
+        ],
+        [
+          2,
+          "resources RES-IAR12-003"
+        ],
+        [
+          2,
+          "controlPlanes CP-IAR12-001"
+        ],
+        [
+          2,
+          "issuers ISS-IAR12-001"
+        ],
+        [
+          2,
+          "relyingParties RP-IAR12-001"
+        ],
+        [
+          2,
+          "relyingParties RP-IAR12-002"
+        ],
+        [
+          2,
+          "relyingParties RP-IAR12-003"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-001"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-002"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-003"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-004"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-005"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-006"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-007"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-008"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-009"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-010"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-011"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-012"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-013"
+        ],
+        [
+          2,
+          "edges EDG-IAR12-014"
+        ],
+        [
+          2,
+          "paths PTH-IAR12-001"
+        ],
+        [
+          2,
+          "paths PTH-IAR12-002"
+        ],
+        [
+          2,
+          "paths PTH-IAR12-003"
+        ],
+        [
+          2,
+          "paths PTH-IAR12-004"
+        ],
+        [
+          2,
+          "paths PTH-IAR12-005"
+        ],
+        [
+          2,
+          "paths PTH-IAR12-006"
+        ],
+        [
+          2,
+          "configEvidence EVD-IAR12-002"
+        ],
+        [
+          2,
+          "configEvidence EVD-IAR12-003"
+        ],
+        [
+          2,
+          "configEvidence EVD-IAR12-004"
+        ],
+        [
+          2,
+          "configEvidence EVD-IAR12-005"
+        ],
+        [
+          2,
+          "eventEvidence EVT-IAR12-003"
+        ],
+        [
+          2,
+          "evaluations EVAL-IAR12-004"
+        ],
+        [
+          2,
+          "evaluations EVAL-IAR12-005"
+        ],
+        [
+          2,
+          "findings FND-IAR12-001"
+        ],
+        [
+          2,
+          "findings FND-IAR12-002"
+        ],
+        [
+          2,
+          "findings FND-IAR12-003"
+        ],
+        [
+          2,
+          "findings FND-IAR12-004"
+        ],
+        [
+          2,
+          "findings FND-IAR12-005"
+        ],
+        [
+          2,
+          "findings FND-IAR12-006"
+        ],
+        [
+          2,
+          "handoffs HOF-IAR12-001"
+        ],
+        [
+          2,
+          "handoffs HOF-IAR12-002"
+        ],
+        [
+          2,
+          "handoffs HOF-IAR12-003"
+        ],
+        [
+          2,
+          "handoffs HOF-IAR12-004"
+        ],
+        [
+          2,
+          "handoffs HOF-IAR12-005"
+        ],
+        [
+          2,
+          "limits"
+        ],
+        [
+          2,
+          "終了とHandoff"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この記入例の扱い ART-20 / IAR-2026-012はCASE-2026-001をrefinesする教育用補足です。実Tenant、Directory、Account、Credential、Token、Cookie、実Logは使用しません。すべて作成者が記述した仮定で、実測・実認証・署名・許可の証拠ではありません。"
+          ],
+          "headings": [
+            "第12章 完全合成記入例：Identity Attack Path Review",
+            "この記入例の扱い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第12章、空Template、正本JSON、閉じたSchemaを参照します。以下のField/Value表はJSONの全末端Fieldと一対一です。数字の添字は0始まりです。"
+          ],
+          "headings": [
+            "第12章 完全合成記入例：Identity Attack Path Review",
+            "この記入例の扱い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "読み方と判断 最初にparentsの期限とRoE Draft/falseを読みます。principalsからRole/Permission/Resourceへedgesをたどり、pathsの根拠をconfigEvidence、eventEvidence、evaluationsへ照合します。六つの状態はHypothesized / Config-confirmed / Evidence-supported / Validated / Broken / Unknownです。Unknownは空欄ではなく、不足を保持した判断です。"
+          ],
+          "headings": [
+            "第12章 完全合成記入例：Identity Attack Path Review",
+            "読み方と判断"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "PTH-IAR12-001は休眠Grantの仮説、002はMFA例外を持つ静的設定、003はAudit readerの合成Event、004は合成Federation条件の有限一致、005は必要な委任承認の否定、006はDevice binding不足です。004のValidatedは実際のWorkload利用や親TB-2026-004/SF-2026-006のUnknownを更新しません。005のBrokenも別経路の不存在を意味しません。"
+          ],
+          "headings": [
+            "第12章 完全合成記入例：Identity Attack Path Review",
+            "読み方と判断"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認事実は教材に含まれるFieldだけ、分析判断は各finding、仮定はGraphと時刻、推奨はTreatment計画です。確信度と代替説明は各Pathへ記録し、新しい資料・版・Owner・権限・許可の変化で再評価します。第11章のCASE-2026-011は独立で、許可やEvidenceを移しません。"
+          ],
+          "headings": [
+            "第12章 完全合成記入例：Identity Attack Path Review",
+            "読み方と判断"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "終了とHandoff これは授業用の記録比較で、親RoEはDo not proceedのままです。六つのPath、必要条件、Evidence参照、反証またはGap、Owner、期限を記入できれば教材上の提出物になります。実行許可の不足を埋めたことにはなりません。"
+          ],
+          "headings": [
+            "第12章 完全合成記入例：Identity Attack Path Review",
+            "終了とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第11/13/14/16/17章へのHandoffはplanned-not-delivered、Detectionはplanned-not-testedです。実施・受領・改修・検知率を捏造しません。自分の作業コピーだけを整理し、正本と親記録を変更しません。評価は第12章の五観点Rubricを使い、根拠のない状態昇格や実Data混入は得点にかかわらず差し戻します。"
+          ],
+          "headings": [
+            "第12章 完全合成記入例：Identity Attack Path Review",
+            "終了とHandoff"
+          ]
+        }
+      ],
+      "hostProvenance": [],
+      "analyticProvenance": []
+    },
+    "references/ch12-source-review-2026-09-15.md": {
+      "headings": [
+        [
+          1,
+          "第12章 Source Review Note：Identityとアクセス経路"
+        ],
+        [
+          2,
+          "確認範囲と日付"
+        ],
+        [
+          2,
+          "SRC-NIST-DIGITAL-001 — SP 800-63-4"
+        ],
+        [
+          2,
+          "SRC-NIST-PROOFING-001 — SP 800-63A-4"
+        ],
+        [
+          2,
+          "SRC-NIST-AUTHN-001 — SP 800-63B-4"
+        ],
+        [
+          2,
+          "SRC-NIST-FEDERATION-001 — SP 800-63C-4"
+        ],
+        [
+          2,
+          "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240"
+        ],
+        [
+          2,
+          "SRC-NIST-ZTAA-001 — SP 800-207A"
+        ],
+        [
+          2,
+          "再確認と教材への制限"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認範囲と日付 Checked at: 2026-09-15。Issue #36 / ART-20の採用主張を、公式出版記録と以下の限定本文で再確認しました。開始mainはf49455264dd6968fd3fd795ed645211d79950bc7です。Sourceの全規範、実製品、適合性、法的許可の監査ではありません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "確認範囲と日付"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SP 800-63-4とA/B/Cの各CSRCページのDocument Historyは、いずれも 2025-07-31 Final です。旧Draftの履歴やHTML生成時刻をFinalの公表日へ代用しません。四Principal、六Path state、三Method、必要Edgeの有限比較は、本書独自の教育契約です。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "確認範囲と日付"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-DIGITAL-001 — SP 800-63-4 公式出版記録と公式本文を確認しました。採用はScope and Applicability、Assurance Levelsの限定説明です。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-DIGITAL-001 — SP 800-63-4"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "IAL / AAL / FALは別の過程に対するAssuranceです。自然人を中心とする範囲を確認し、機械間認証、IoT、主体に代わるAPI利用を包括的に規定する資料として扱いません。四分類の全PrincipalへAAL等を一律に割り当てる使い方は不採用です。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-DIGITAL-001 — SP 800-63-4"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-PROOFING-001 — SP 800-63A-4 公式出版記録と公式本文のIntroductionを確認しました。採用はIdentity proofingの目的と自然人の範囲だけです。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-PROOFING-001 — SP 800-63A-4"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本Caseの合成名は本人確認Evidenceではなく、IAL適合を主張しません。本人確認書類の取得、実在人物の確認、Enrollmentの実装手順は採用しません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-PROOFING-001 — SP 800-63A-4"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-AUTHN-001 — SP 800-63B-4 公式出版記録と公式本文の§2、§3.2.5を確認しました。AAL、MFA、phishing resistanceを区別する範囲に限定します。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-AUTHN-001 — SP 800-63B-4"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "AAL2における耐性を持つ選択肢の提供と、AAL3における耐性の要求を区別します。手入力OTP等をphishing-resistantと扱いません。MFAのフラグから認可の正しさや経路の不存在を導かないのは本章の分析上の制限です。Authenticator実装、鍵管理、全AAL要件への適合監査は行っていません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-AUTHN-001 — SP 800-63B-4"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-FEDERATION-001 — SP 800-63C-4 公式出版記録と公式本文のIdP発行Assertion Contents、Audience Restrictionを確認しました。HTMLの対象anchorはassertionsとaudience-restrictionです。別のassertion-contentsはWallet側の節であり、混同しません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-FEDERATION-001 — SP 800-63C-4"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Issuer、Audience、受入RP、有効期間、署名等の役割を分ける根拠として採用します。全FALでRPは自分がAudienceに含まれることを確認し、単一Audienceの要求はFAL2以上です。本教材の単一AudienceモデルをFAL1全般へ一般化しません。Issuer/Audienceの文字列一致は完全なAssertion検証ではなく、実Token処理や機械間認証への適合を実装したとは主張しません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-FEDERATION-001 — SP 800-63C-4"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240 公式本文とStatus / 更新関係を確認しました。January2025 / Best Current Practice / BCP240、RFC6749 / 6750 / 6819をupdatesします。公表日は月までしか確認できないためRegistryのpublishedAtはnullとします。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用は§2.3のPrivilege / Resource / Action / Audienceの制限だけです。公式Errata検索は確認時点で該当0でした。将来もErrataがないという意味ではありません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "RFC6749の全更新履歴やすべてのGrantの推奨状態を監査したとは主張しません。古い実装例を転記せず、Protocol実装は専門書へ委譲します。OAuth Access tokenと、SP 800-63Cの認証Assertionの用途を同一視しません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-ZTAA-001 — SP 800-207A 公式Final記録のDocument HistoryとAbstractを再確認しました。Final日は 2023-09-13 です。人に加えてApplication / Service identityを区別するという、第6章から継承する限定命題だけを使用します。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-ZTAA-001 — SP 800-207A"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "今回SP 800-207AのPDF全本文を再監査したとは主張しません。製品構成、具体的なWorkload identity実装、Zero Trust適合性は採用範囲外です。Registryの既存notesと第6章の意味は変更せず、第12章mappingと今回の確認日だけを追加します。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-ZTAA-001 — SP 800-207A"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "再確認と教材への制限 SP 800-63系列と207Aの次回確認は2026-12-15、RFC9700は2027-09-15とします。新版、Status、Errata、採用主張、委譲先routeの変化があれば期限前でも確認します。Registry全体のcheckedAtは2026-07-25のまま保持します。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "再確認と教材への制限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "委譲先の公開入口はHTTP200を確認しました。専門書全体の内容監査ではありません。第12章の読解と合成比較は、その専門書の実装を実行せずに完結します。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "再確認と教材への制限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Raw Editorial Inputの登録名は認可workspace全域で見つかりませんでした。EIP-0008 / EIC-0036-bf2b7e4fe16eは設計来歴として選択しましたが、raw読了、実体Hash照合、直接採用は主張しません。本文、ART-20、合成JSON、Schema、有限検査は現行Issue、親契約、上記の一次Sourceから新規構成しています。同梱Chapter13のDispositionは変更しません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "再確認と教材への制限"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/63/4/final"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-DIGITAL-001 — SP 800-63-4"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-DIGITAL-001 — SP 800-63-4 公式出版記録と公式本文を確認しました。採用はScope and Applicability、Assurance Levelsの限定説明です。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://pages.nist.gov/800-63-4/sp800-63.html"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-DIGITAL-001 — SP 800-63-4"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-DIGITAL-001 — SP 800-63-4 公式出版記録と公式本文を確認しました。採用はScope and Applicability、Assurance Levelsの限定説明です。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/63/a/4/final"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-PROOFING-001 — SP 800-63A-4"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-PROOFING-001 — SP 800-63A-4 公式出版記録と公式本文のIntroductionを確認しました。採用はIdentity proofingの目的と自然人の範囲だけです。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://pages.nist.gov/800-63-4/sp800-63a.html"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-PROOFING-001 — SP 800-63A-4"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-PROOFING-001 — SP 800-63A-4 公式出版記録と公式本文のIntroductionを確認しました。採用はIdentity proofingの目的と自然人の範囲だけです。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-AUTHN-001 — SP 800-63B-4 公式出版記録と公式本文の§2、§3.2.5を確認しました。AAL、MFA、phishing resistanceを区別する範囲に限定します。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-AUTHN-001 — SP 800-63B-4"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/63/b/4/final"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-AUTHN-001 — SP 800-63B-4"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-AUTHN-001 — SP 800-63B-4 公式出版記録と公式本文の§2、§3.2.5を確認しました。AAL、MFA、phishing resistanceを区別する範囲に限定します。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://pages.nist.gov/800-63-4/sp800-63b.html"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-AUTHN-001 — SP 800-63B-4"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-AUTHN-001 — SP 800-63B-4 公式出版記録と公式本文の§2、§3.2.5を確認しました。AAL、MFA、phishing resistanceを区別する範囲に限定します。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/63/c/4/final"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-FEDERATION-001 — SP 800-63C-4"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-FEDERATION-001 — SP 800-63C-4 公式出版記録と公式本文のIdP発行Assertion Contents、Audience Restrictionを確認しました。HTMLの対象anchorはassertionsとaudience-restrictionです。別のassertion-contentsはWallet側の節であり、混同しません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://pages.nist.gov/800-63-4/sp800-63c.html"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-FEDERATION-001 — SP 800-63C-4"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-FEDERATION-001 — SP 800-63C-4 公式出版記録と公式本文のIdP発行Assertion Contents、Audience Restrictionを確認しました。HTMLの対象anchorはassertionsとaudience-restrictionです。別のassertion-contentsはWallet側の節であり、混同しません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/rfc/rfc9700.html"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240 公式本文とStatus / 更新関係を確認しました。January2025 / Best Current Practice / BCP240、RFC6749 / 6750 / 6819をupdatesします。公表日は月までしか確認できないためRegistryのpublishedAtはnullとします。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/info/rfc9700/"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240 公式本文とStatus / 更新関係を確認しました。January2025 / Best Current Practice / BCP240、RFC6749 / 6750 / 6819をupdatesします。公表日は月までしか確認できないためRegistryのpublishedAtはnullとします。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用は§2.3のPrivilege / Resource / Action / Audienceの制限だけです。公式Errata検索は確認時点で該当0でした。将来もErrataがないという意味ではありません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.rfc-editor.org/errata/rfc9700"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用は§2.3のPrivilege / Resource / Action / Audienceの制限だけです。公式Errata検索は確認時点で該当0でした。将来もErrataがないという意味ではありません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/207/a/final"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-ZTAA-001 — SP 800-207A"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-NIST-ZTAA-001 — SP 800-207A 公式Final記録のDocument HistoryとAbstractを再確認しました。Final日は 2023-09-13 です。人に加えてApplication / Service identityを区別するという、第6章から継承する限定命題だけを使用します。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/practical-auth-book/"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "再確認と教材への制限"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "委譲先の公開入口はHTTP200を確認しました。専門書全体の内容監査ではありません。第12章の読解と合成比較は、その専門書の実装を実行せずに完結します。"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Issuer、Audience、受入RP、有効期間、署名等の役割を分ける根拠として採用します。全FALでRPは自分がAudienceに含まれることを確認し、単一Audienceの要求はFAL2以上です。本教材の単一AudienceモデルをFAL1全般へ一般化しません。Issuer/Audienceの文字列一致は完全なAssertion検証ではなく、実Token処理や機械間認証への適合を実装したとは主張しません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-NIST-FEDERATION-001 — SP 800-63C-4"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "RFC6749の全更新履歴やすべてのGrantの推奨状態を監査したとは主張しません。古い実装例を転記せず、Protocol実装は専門書へ委譲します。OAuth Access tokenと、SP 800-63Cの認証Assertionの用途を同一視しません。"
+          ],
+          "headings": [
+            "第12章 Source Review Note：Identityとアクセス経路",
+            "SRC-IETF-OAUTH-BCP-001 — RFC9700 / BCP240"
+          ]
+        }
+      ]
+    }
+  },
+  "recordIdentity": {
+    "artifactId": "ART-20",
+    "reviewId": "IAR-2026-012",
+    "caseId": "CASE-2026-001",
+    "relation": "refines",
+    "decisionRequirementId": "DR-2026-001",
+    "question": "供給された権限関係のどこまでを根拠で説明でき、何の許可と観測が不足するか。",
+    "graphRevision": "GRAPH-IAR12-001",
+    "policyRevision": "POLICY-IAR12-001",
+    "authoredNotMeasured": true
+  },
+  "context": {
+    "threatModelId": "TM-2026-001",
+    "signalFlowMapId": "SFM-2026-001",
+    "reconRecordId": "ASR-2026-010",
+    "reconCandidateId": "CAND-ASR10-001",
+    "parentAssetId": "ASSET-2026-001",
+    "parentScopeExpanded": false,
+    "parentBindingConfirmed": false,
+    "parentCoverageChanged": false,
+    "independentChapter11Case": "CASE-2026-011",
+    "chapter11Relation": "conceptual-handoff-only-no-evidence-or-authority-inheritance"
+  },
+  "identities": {
+    "principals": {
+      "PRN-IAR12-001": {
+        "id": "PRN-IAR12-001",
+        "principalClass": "Human",
+        "label": "SYNTH-DORMANT-ADMIN",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "lifecycle": "Dormant",
+        "credentialClass": "interactive-authenticator-class",
+        "assuranceContext": "not-assessed-no-compliance-claim",
+        "mfaException": "exception-recorded-not-approved"
+      },
+      "PRN-IAR12-002": {
+        "id": "PRN-IAR12-002",
+        "principalClass": "Device",
+        "label": "SYNTH-DEVICE",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "lifecycle": "Unknown",
+        "credentialClass": "device-binding-class",
+        "assuranceContext": "not-assessed-no-compliance-claim",
+        "mfaException": "none"
+      },
+      "PRN-IAR12-003": {
+        "id": "PRN-IAR12-003",
+        "principalClass": "Service",
+        "label": "SYNTH-AUDIT-READER",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "lifecycle": "Active",
+        "credentialClass": "service-authentication-class",
+        "assuranceContext": "not-assessed-no-compliance-claim",
+        "mfaException": "none"
+      },
+      "PRN-IAR12-004": {
+        "id": "PRN-IAR12-004",
+        "principalClass": "Workload",
+        "label": "SYNTH-INVOICE-SYNC",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "lifecycle": "Active",
+        "credentialClass": "workload-authentication-class",
+        "assuranceContext": "not-assessed-no-compliance-claim",
+        "mfaException": "none"
+      }
+    },
+    "edges": {
+      "EDG-IAR12-001": {
+        "id": "EDG-IAR12-001",
+        "fromId": "PRN-IAR12-001",
+        "toId": "GRP-IAR12-001",
+        "kind": "Membership",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-001",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-002": {
+        "id": "EDG-IAR12-002",
+        "fromId": "GRP-IAR12-001",
+        "toId": "ROL-IAR12-001",
+        "kind": "Membership",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-001",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-003": {
+        "id": "EDG-IAR12-003",
+        "fromId": "ROL-IAR12-001",
+        "toId": "PER-IAR12-001",
+        "kind": "Grant",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-001",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-004": {
+        "id": "EDG-IAR12-004",
+        "fromId": "PER-IAR12-001",
+        "toId": "RES-IAR12-001",
+        "kind": "Access",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-001",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-005": {
+        "id": "EDG-IAR12-005",
+        "fromId": "PRN-IAR12-001",
+        "toId": "ROL-IAR12-001",
+        "kind": "Membership",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-001",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-006": {
+        "id": "EDG-IAR12-006",
+        "fromId": "PRN-IAR12-003",
+        "toId": "ROL-IAR12-002",
+        "kind": "Membership",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-003",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-007": {
+        "id": "EDG-IAR12-007",
+        "fromId": "ROL-IAR12-002",
+        "toId": "PER-IAR12-002",
+        "kind": "Grant",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-003",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-008": {
+        "id": "EDG-IAR12-008",
+        "fromId": "PER-IAR12-002",
+        "toId": "RES-IAR12-002",
+        "kind": "Access",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-003",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-009": {
+        "id": "EDG-IAR12-009",
+        "fromId": "PRN-IAR12-004",
+        "toId": "PRN-IAR12-003",
+        "kind": "Delegation",
+        "conditionMeaning": "delegation-approval",
+        "boundaryId": "TB-2026-004",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-010": {
+        "id": "EDG-IAR12-010",
+        "fromId": "PRN-IAR12-003",
+        "toId": "ROL-IAR12-003",
+        "kind": "Membership",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-001",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-011": {
+        "id": "EDG-IAR12-011",
+        "fromId": "ROL-IAR12-003",
+        "toId": "PER-IAR12-003",
+        "kind": "Grant",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-001",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-012": {
+        "id": "EDG-IAR12-012",
+        "fromId": "PER-IAR12-003",
+        "toId": "RES-IAR12-003",
+        "kind": "Access",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-001",
+        "issuerId": null,
+        "audienceId": null
+      },
+      "EDG-IAR12-013": {
+        "id": "EDG-IAR12-013",
+        "fromId": "PRN-IAR12-004",
+        "toId": "ROL-IAR12-003",
+        "kind": "Federation",
+        "conditionMeaning": "authored-binding",
+        "boundaryId": "TB-2026-004",
+        "issuerId": "ISS-IAR12-001",
+        "audienceId": "RP-IAR12-003"
+      },
+      "EDG-IAR12-014": {
+        "id": "EDG-IAR12-014",
+        "fromId": "PRN-IAR12-002",
+        "toId": "ROL-IAR12-003",
+        "kind": "Trust",
+        "conditionMeaning": "device-binding",
+        "boundaryId": "TB-2026-004",
+        "issuerId": null,
+        "audienceId": null
+      }
+    },
+    "paths": {
+      "PTH-IAR12-001": {
+        "id": "PTH-IAR12-001",
+        "label": "Dormant grant is a hypothesis",
+        "principalId": "PRN-IAR12-001",
+        "requiredPermissionId": "PER-IAR12-001",
+        "resourceId": "RES-IAR12-001",
+        "action": "review-consent-change",
+        "edgeIds": [
+          "EDG-IAR12-001",
+          "EDG-IAR12-002",
+          "EDG-IAR12-003",
+          "EDG-IAR12-004"
+        ],
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "threatId": "TH-2026-002",
+        "signalFlowId": "SF-2026-001",
+        "telemetryId": "TEL-IAR12-001",
+        "detectionId": "DET-IAR12-001",
+        "findingId": "FND-IAR12-001",
+        "gapId": "GAP-IAR12-001",
+        "reassessmentId": "REA-IAR12-001",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+        "nextAction": "record-only",
+        "executionAuthorized": false
+      },
+      "PTH-IAR12-002": {
+        "id": "PTH-IAR12-002",
+        "label": "MFA exception does not close permission path",
+        "principalId": "PRN-IAR12-001",
+        "requiredPermissionId": "PER-IAR12-001",
+        "resourceId": "RES-IAR12-001",
+        "action": "review-consent-change",
+        "edgeIds": [
+          "EDG-IAR12-005",
+          "EDG-IAR12-003",
+          "EDG-IAR12-004"
+        ],
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "threatId": "TH-2026-002",
+        "signalFlowId": "SF-2026-004",
+        "telemetryId": "TEL-IAR12-002",
+        "detectionId": "DET-IAR12-002",
+        "findingId": "FND-IAR12-002",
+        "gapId": "GAP-IAR12-002",
+        "reassessmentId": "REA-IAR12-002",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+        "nextAction": "record-only",
+        "executionAuthorized": false
+      },
+      "PTH-IAR12-003": {
+        "id": "PTH-IAR12-003",
+        "label": "Audit-reader authored event supports limited relation",
+        "principalId": "PRN-IAR12-003",
+        "requiredPermissionId": "PER-IAR12-002",
+        "resourceId": "RES-IAR12-002",
+        "action": "read-audit-summary",
+        "edgeIds": [
+          "EDG-IAR12-006",
+          "EDG-IAR12-007",
+          "EDG-IAR12-008"
+        ],
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "threatId": "TH-2026-003",
+        "signalFlowId": "SF-2026-002",
+        "telemetryId": "TEL-IAR12-003",
+        "detectionId": "DET-IAR12-003",
+        "findingId": "FND-IAR12-003",
+        "gapId": "GAP-IAR12-003",
+        "reassessmentId": "REA-IAR12-003",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+        "nextAction": "record-only",
+        "executionAuthorized": false
+      },
+      "PTH-IAR12-004": {
+        "id": "PTH-IAR12-004",
+        "label": "Synthetic federation tuple matches",
+        "principalId": "PRN-IAR12-004",
+        "requiredPermissionId": "PER-IAR12-003",
+        "resourceId": "RES-IAR12-003",
+        "action": "read-customer-summary",
+        "edgeIds": [
+          "EDG-IAR12-013",
+          "EDG-IAR12-011",
+          "EDG-IAR12-012"
+        ],
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "threatId": "TH-2026-004",
+        "signalFlowId": "SF-2026-006",
+        "telemetryId": "TEL-IAR12-004",
+        "detectionId": "DET-IAR12-004",
+        "findingId": "FND-IAR12-004",
+        "gapId": "GAP-IAR12-004",
+        "reassessmentId": "REA-IAR12-004",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+        "nextAction": "record-only",
+        "executionAuthorized": false
+      },
+      "PTH-IAR12-005": {
+        "id": "PTH-IAR12-005",
+        "label": "Necessary delegation approval is denied",
+        "principalId": "PRN-IAR12-004",
+        "requiredPermissionId": "PER-IAR12-003",
+        "resourceId": "RES-IAR12-003",
+        "action": "read-customer-summary",
+        "edgeIds": [
+          "EDG-IAR12-009",
+          "EDG-IAR12-010",
+          "EDG-IAR12-011",
+          "EDG-IAR12-012"
+        ],
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "threatId": "TH-2026-004",
+        "signalFlowId": "SF-2026-006",
+        "telemetryId": "TEL-IAR12-005",
+        "detectionId": "DET-IAR12-005",
+        "findingId": "FND-IAR12-005",
+        "gapId": "GAP-IAR12-005",
+        "reassessmentId": "REA-IAR12-005",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+        "nextAction": "record-only",
+        "executionAuthorized": false
+      },
+      "PTH-IAR12-006": {
+        "id": "PTH-IAR12-006",
+        "label": "Device binding condition is absent",
+        "principalId": "PRN-IAR12-002",
+        "requiredPermissionId": "PER-IAR12-003",
+        "resourceId": "RES-IAR12-003",
+        "action": "read-customer-summary",
+        "edgeIds": [
+          "EDG-IAR12-014",
+          "EDG-IAR12-011",
+          "EDG-IAR12-012"
+        ],
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "threatId": "TH-2026-004",
+        "signalFlowId": "SF-2026-006",
+        "telemetryId": "TEL-IAR12-006",
+        "detectionId": "DET-IAR12-006",
+        "findingId": "FND-IAR12-006",
+        "gapId": "GAP-IAR12-006",
+        "reassessmentId": "REA-IAR12-006",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "alternative": "正常な変更または資料不足を比較する。親Caseの実態は未確定。",
+        "nextAction": "record-only",
+        "executionAuthorized": false
+      }
+    },
+    "configEvidence": {
+      "EVD-IAR12-002": {
+        "id": "EVD-IAR12-002",
+        "pathId": "PTH-IAR12-002",
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "basis": "authored-synthetic-snapshot-not-observation",
+        "synthetic": true
+      },
+      "EVD-IAR12-003": {
+        "id": "EVD-IAR12-003",
+        "pathId": "PTH-IAR12-003",
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "basis": "authored-synthetic-snapshot-not-observation",
+        "synthetic": true
+      },
+      "EVD-IAR12-004": {
+        "id": "EVD-IAR12-004",
+        "pathId": "PTH-IAR12-004",
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "basis": "authored-synthetic-snapshot-not-observation",
+        "synthetic": true
+      },
+      "EVD-IAR12-005": {
+        "id": "EVD-IAR12-005",
+        "pathId": "PTH-IAR12-005",
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "basis": "authored-synthetic-snapshot-not-observation",
+        "synthetic": true
+      }
+    },
+    "eventEvidence": {
+      "EVT-IAR12-003": {
+        "id": "EVT-IAR12-003",
+        "pathId": "PTH-IAR12-003",
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "principalId": "PRN-IAR12-003",
+        "resourceId": "RES-IAR12-002",
+        "action": "read-audit-summary",
+        "basis": "authored-synthetic-event-not-request",
+        "synthetic": true
+      }
+    },
+    "evaluations": {
+      "EVAL-IAR12-004": {
+        "id": "EVAL-IAR12-004",
+        "pathId": "PTH-IAR12-004",
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "principalId": "PRN-IAR12-004",
+        "resourceId": "RES-IAR12-003",
+        "action": "read-customer-summary",
+        "issuerId": "ISS-IAR12-001",
+        "audienceId": "RP-IAR12-003",
+        "relyingPartyId": "RP-IAR12-003",
+        "configEvidenceId": "EVD-IAR12-004",
+        "basis": "authored-input-and-result-for-finite-offline-comparison",
+        "networkRequests": 0,
+        "authenticationAttempts": 0,
+        "synthetic": true
+      },
+      "EVAL-IAR12-005": {
+        "id": "EVAL-IAR12-005",
+        "pathId": "PTH-IAR12-005",
+        "graphRevision": "GRAPH-IAR12-001",
+        "policyRevision": "POLICY-IAR12-001",
+        "principalId": "PRN-IAR12-004",
+        "resourceId": "RES-IAR12-003",
+        "action": "read-customer-summary",
+        "issuerId": null,
+        "audienceId": null,
+        "relyingPartyId": null,
+        "configEvidenceId": "EVD-IAR12-005",
+        "basis": "authored-input-and-result-for-finite-offline-comparison",
+        "networkRequests": 0,
+        "authenticationAttempts": 0,
+        "synthetic": true
+      }
+    },
+    "findings": {
+      "FND-IAR12-001": {
+        "id": "FND-IAR12-001",
+        "pathId": "PTH-IAR12-001",
+        "status": "teaching-analysis-not-production-finding",
+        "risk": "休眠Roleの残存による将来権限集中の仮説。現利用は未確認。",
+        "treatment": "Ownerと必要業務を再確認する計画。",
+        "telemetryId": "TEL-IAR12-001",
+        "detectionId": "DET-IAR12-001",
+        "requiredFields": [
+          "principalId",
+          "resourceId",
+          "action",
+          "policyRevision",
+          "graphRevision",
+          "outcome",
+          "eventTime",
+          "correlationId"
+        ],
+        "detectionStatus": "planned-not-tested",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "reassessmentId": "REA-IAR12-001"
+      },
+      "FND-IAR12-002": {
+        "id": "FND-IAR12-002",
+        "pathId": "PTH-IAR12-002",
+        "status": "teaching-analysis-not-production-finding",
+        "risk": "MFA例外と管理権限の併存。認可の正しさは未検証。",
+        "treatment": "例外の期限・承認とRole縮小案を別々にReviewする計画。",
+        "telemetryId": "TEL-IAR12-002",
+        "detectionId": "DET-IAR12-002",
+        "requiredFields": [
+          "principalId",
+          "resourceId",
+          "action",
+          "policyRevision",
+          "graphRevision",
+          "outcome",
+          "eventTime",
+          "correlationId"
+        ],
+        "detectionStatus": "planned-not-tested",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "reassessmentId": "REA-IAR12-002"
+      },
+      "FND-IAR12-003": {
+        "id": "FND-IAR12-003",
+        "pathId": "PTH-IAR12-003",
+        "status": "teaching-analysis-not-production-finding",
+        "risk": "Audit参照の記録はあるが全期間の観測性は不明。",
+        "treatment": "収集・保持・検索のGapを第16章へ渡す計画。",
+        "telemetryId": "TEL-IAR12-003",
+        "detectionId": "DET-IAR12-003",
+        "requiredFields": [
+          "principalId",
+          "resourceId",
+          "action",
+          "policyRevision",
+          "graphRevision",
+          "outcome",
+          "eventTime",
+          "correlationId"
+        ],
+        "detectionStatus": "planned-not-tested",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "reassessmentId": "REA-IAR12-003"
+      },
+      "FND-IAR12-004": {
+        "id": "FND-IAR12-004",
+        "pathId": "PTH-IAR12-004",
+        "status": "teaching-analysis-not-production-finding",
+        "risk": "合成許可条件は一致するが実環境のbindingは未確認。",
+        "treatment": "必要ResourceとActionの最小性を確認する計画。",
+        "telemetryId": "TEL-IAR12-004",
+        "detectionId": "DET-IAR12-004",
+        "requiredFields": [
+          "principalId",
+          "resourceId",
+          "action",
+          "policyRevision",
+          "graphRevision",
+          "outcome",
+          "eventTime",
+          "correlationId"
+        ],
+        "detectionStatus": "planned-not-tested",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "reassessmentId": "REA-IAR12-004"
+      },
+      "FND-IAR12-005": {
+        "id": "FND-IAR12-005",
+        "pathId": "PTH-IAR12-005",
+        "status": "teaching-analysis-not-production-finding",
+        "risk": "特定の必要委任条件が不成立。他経路の不存在は不明。",
+        "treatment": "否定条件の版と代替経路のGapを保持する。",
+        "telemetryId": "TEL-IAR12-005",
+        "detectionId": "DET-IAR12-005",
+        "requiredFields": [
+          "principalId",
+          "resourceId",
+          "action",
+          "policyRevision",
+          "graphRevision",
+          "outcome",
+          "eventTime",
+          "correlationId"
+        ],
+        "detectionStatus": "planned-not-tested",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "reassessmentId": "REA-IAR12-005"
+      },
+      "FND-IAR12-006": {
+        "id": "FND-IAR12-006",
+        "pathId": "PTH-IAR12-006",
+        "status": "teaching-analysis-not-production-finding",
+        "risk": "Deviceのbinding不足。許可にも安全にも昇格しない。",
+        "treatment": "追加資料と責任者を要求しUnknownを保持する。",
+        "telemetryId": "TEL-IAR12-006",
+        "detectionId": "DET-IAR12-006",
+        "requiredFields": [
+          "principalId",
+          "resourceId",
+          "action",
+          "policyRevision",
+          "graphRevision",
+          "outcome",
+          "eventTime",
+          "correlationId"
+        ],
+        "detectionStatus": "planned-not-tested",
+        "owner": "SYNTH-IDENTITY-OWNER",
+        "reassessmentId": "REA-IAR12-006"
+      }
+    },
+    "handoffs": {
+      "HOF-IAR12-001": {
+        "id": "HOF-IAR12-001",
+        "chapter": 11,
+        "status": "planned-not-delivered",
+        "pathIds": [
+          "PTH-IAR12-001",
+          "PTH-IAR12-002",
+          "PTH-IAR12-003",
+          "PTH-IAR12-004",
+          "PTH-IAR12-005",
+          "PTH-IAR12-006"
+        ],
+        "inputRequirement": "AuthN/AuthZ/resource/action/conditionsの概念対応。独立CaseのEvidenceは流用しない。",
+        "executionAuthorized": false
+      },
+      "HOF-IAR12-002": {
+        "id": "HOF-IAR12-002",
+        "chapter": 13,
+        "status": "planned-not-delivered",
+        "pathIds": [
+          "PTH-IAR12-001",
+          "PTH-IAR12-002",
+          "PTH-IAR12-003",
+          "PTH-IAR12-004",
+          "PTH-IAR12-005",
+          "PTH-IAR12-006"
+        ],
+        "inputRequirement": "WorkloadとControl planeのOwnerとbindingの不足条件。",
+        "executionAuthorized": false
+      },
+      "HOF-IAR12-003": {
+        "id": "HOF-IAR12-003",
+        "chapter": 14,
+        "status": "planned-not-delivered",
+        "pathIds": [
+          "PTH-IAR12-001",
+          "PTH-IAR12-002",
+          "PTH-IAR12-003",
+          "PTH-IAR12-004",
+          "PTH-IAR12-005",
+          "PTH-IAR12-006"
+        ],
+        "inputRequirement": "必要条件一つに限定した問い、否定条件、最小Evidenceと停止。",
+        "executionAuthorized": false
+      },
+      "HOF-IAR12-004": {
+        "id": "HOF-IAR12-004",
+        "chapter": 16,
+        "status": "planned-not-delivered",
+        "pathIds": [
+          "PTH-IAR12-001",
+          "PTH-IAR12-002",
+          "PTH-IAR12-003",
+          "PTH-IAR12-004",
+          "PTH-IAR12-005",
+          "PTH-IAR12-006"
+        ],
+        "inputRequirement": "Principal/Resource/Action/版/期間/相関keyと収集・保持のGap。",
+        "executionAuthorized": false
+      },
+      "HOF-IAR12-005": {
+        "id": "HOF-IAR12-005",
+        "chapter": 17,
+        "status": "planned-not-delivered",
+        "pathIds": [
+          "PTH-IAR12-001",
+          "PTH-IAR12-002",
+          "PTH-IAR12-003",
+          "PTH-IAR12-004",
+          "PTH-IAR12-005",
+          "PTH-IAR12-006"
+        ],
+        "inputRequirement": "許容結論と未観測範囲を持つ合成Test計画。実検知率は未測定。",
+        "executionAuthorized": false
+      }
+    }
+  },
+  "applicationIdentity": {
+    "appId": "APP-IAR12-001",
+    "label": "SYNTH-BILLING-OAUTH-APP",
+    "parentComponentAssetId": "ASSET-2026-005",
+    "workloadPrincipalId": "PRN-IAR12-004",
+    "controlPlaneId": "CP-IAR12-001",
+    "owner": "SYNTH-PLATFORM-OWNER",
+    "bindingBasis": "authored-assumption-not-parent-current-binding",
+    "principalClass": "not-a-fifth-Principal-class"
+  }
+}

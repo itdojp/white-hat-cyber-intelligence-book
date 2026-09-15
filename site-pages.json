@@ -333,6 +333,34 @@
       "section": "additional",
       "order": 262,
       "title": "第10章 Source Review Note：ReconとOSINTの境界"
+    },
+    {
+      "source": "manuscript/12-enterprise-identity.md",
+      "destination": "chapters/chapter-12/index.md",
+      "section": "chapters",
+      "order": 55,
+      "title": "第12章 Enterprise Identityとアクセス経路を評価する"
+    },
+    {
+      "source": "templates/identity-attack-path-review.md",
+      "destination": "templates/identity-attack-path-review/index.md",
+      "section": "additional",
+      "order": 263,
+      "title": "Identity Attack Path Review"
+    },
+    {
+      "source": "cases/ch12-identity-path-review-example.md",
+      "destination": "cases/chapter-12-identity-path-review/index.md",
+      "section": "additional",
+      "order": 264,
+      "title": "第12章 完全合成記入例：Identity Attack Path Review"
+    },
+    {
+      "source": "references/ch12-source-review-2026-09-15.md",
+      "destination": "references/chapter-12-source-review/index.md",
+      "section": "additional",
+      "order": 265,
+      "title": "第12章 Source Review Note：Identityとアクセス経路"
     }
   ],
   "directoryRoutes": {
@@ -398,6 +426,14 @@
     {
       "source": "schemas/ch10-attack-surface.schema.json",
       "destination": "downloads/ch10-attack-surface.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch12-identity-paths.json",
+      "destination": "downloads/ch12-identity-paths.json"
+    },
+    {
+      "source": "schemas/ch12-identity-paths.schema.json",
+      "destination": "downloads/ch12-identity-paths.schema.json"
     }
   ]
 }

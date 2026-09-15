@@ -37,7 +37,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-ATTACK-FAQ-001 | MITRE | [MITRE ATT&CK Frequently Asked Questions](https://attack.mitre.org/resources/faq/) | current | 2026-09-06 | 2026-12-06 | 5 |
 | SRC-ATTACK-T1671-001 | MITRE | [ATT&CK v19.2 Enterprise STIX: T1671 and detection metadata subset](https://github.com/mitre/cti/blob/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json) | 19.2 / snapshot | 2026-09-06 | 2026-12-06 | 5 |
 | SRC-NIST-ZTA-001 | NIST | [Zero Trust Architecture](https://csrc.nist.gov/pubs/sp/800/207/final) | SP 800-207 / final | 2026-09-12 | 2026-12-12 | 6 |
-| SRC-NIST-ZTAA-001 | NIST | [A Zero Trust Architecture Model for Access Control in Cloud-Native Applications in Multi-Cloud Environments](https://csrc.nist.gov/pubs/sp/800/207/a/final) | SP 800-207A / final | 2026-09-12 | 2026-12-12 | 6 |
+| SRC-NIST-ZTAA-001 | NIST | [A Zero Trust Architecture Model for Access Control in Cloud-Native Applications in Multi-Cloud Environments](https://csrc.nist.gov/pubs/sp/800/207/a/final) | SP 800-207A / final | 2026-09-15 | 2026-12-15 | 6, 12 |
 | SRC-NIST-LOG-001 | NIST | [Guide to Computer Security Log Management](https://csrc.nist.gov/pubs/sp/800/92/final) | SP 800-92 / final | 2026-09-12 | 2026-12-12 | 6 |
 | SRC-NIST-LOG-DRAFT-001 | NIST | [Cybersecurity Log Management Planning Guide](https://csrc.nist.gov/pubs/sp/800/92/r1/ipd) | SP 800-92 Rev.1 IPD / initial-public-draft | 2026-09-12 | 2026-12-12 | 6 |
 | SRC-IETF-OAUTH-CORE-001 | IETF / RFC Editor | [The OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749.html) | RFC 6749 / proposed-standard | 2026-09-12 | 2026-12-12 | 6 |
@@ -52,6 +52,11 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-SECURITYTXT-001 | RFC Editor / IETF | [A File Format to Aid in Security Vulnerability Disclosure](https://www.rfc-editor.org/info/rfc9116/) | RFC 9116 / informational | 2026-09-14 | 2027-09-14 | 10 |
 | SRC-DNS-TERM-001 | RFC Editor / IETF | [DNS Terminology](https://www.rfc-editor.org/info/rfc9499/) | RFC 9499 / BCP 219 / best-current-practice | 2026-09-14 | 2027-09-14 | 10 |
 | SRC-DNS-STALE-001 | RFC Editor / IETF | [Serving Stale Data to Improve DNS Resiliency](https://www.rfc-editor.org/info/rfc8767/) | RFC 8767 / standards-track | 2026-09-14 | 2027-09-14 | 10 |
+| SRC-NIST-DIGITAL-001 | NIST | [Digital Identity Guidelines](https://csrc.nist.gov/pubs/sp/800/63/4/final) | SP 800-63-4 / final | 2026-09-15 | 2026-12-15 | 12 |
+| SRC-NIST-PROOFING-001 | NIST | [Digital Identity Guidelines: Identity Proofing and Enrollment](https://csrc.nist.gov/pubs/sp/800/63/a/4/final) | SP 800-63A-4 / final | 2026-09-15 | 2026-12-15 | 12 |
+| SRC-NIST-AUTHN-001 | NIST | [Digital Identity Guidelines: Authentication and Authenticator Management](https://csrc.nist.gov/pubs/sp/800/63/b/4/final) | SP 800-63B-4 / final | 2026-09-15 | 2026-12-15 | 12 |
+| SRC-NIST-FEDERATION-001 | NIST | [Digital Identity Guidelines: Federation and Assertions](https://csrc.nist.gov/pubs/sp/800/63/c/4/final) | SP 800-63C-4 / final | 2026-09-15 | 2026-12-15 | 12 |
+| SRC-IETF-OAUTH-BCP-001 | RFC Editor / IETF | [Best Current Practice for OAuth 2.0 Security](https://www.rfc-editor.org/info/rfc9700/) | RFC 9700 / BCP 240 / best-current-practice | 2026-09-15 | 2027-09-15 | 12 |
 
 ## 運用
 

@@ -1505,19 +1505,62 @@
       "targetId": "chapter-12",
       "issue": 36,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "canonical-pr-open",
+      "selectedCandidateId": "EIC-0036-bf2b7e4fe16e",
+      "canonicalPr": 133,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/133",
+        "packageId": "EIP-0008",
+        "packageSha256": "386e7148f504c9fa58a0b095bffcc6aeeaaf2be901e0d3b917e5e8db6c604b2c",
+        "inputPath": "chapter12-enterprise-identity.predraft.md",
+        "inputSha256": "bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd",
+        "targetIssue": 36,
+        "canonicalPr": 133,
+        "currentMainSha": "f49455264dd6968fd3fd795ed645211d79950bc7",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-15",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。登録候補EIC-0036-bf2b7e4fe16eを設計来歴として明示選択。"
+        ],
+        "rewrittenSections": [
+          "current Issue36、凍結契約、親Chapter4/6/9/10/独立Chapter11、限定一次Sourceから第12章・ART20・完全合成Graph/一JSON/閉じたSchema・有限Layer Aを新規構成。四Principal/十四Edge/六Pathstates/三Methods、Issuer/Audience/RP、必要条件とEvidence、MFAと認可を分離。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw読了・実体Hash照合・直接adoptionは主張しない。非正本紹介の追加分類/別Stateへ置換しない。同梱Chapter13のDisposition不変。",
+          "実Credential/Token/Cookie/実Tenant/Directory/Account/実認証・通信、IAM/Assertion parser、無限Graph探索、後続章正本は不採用またはDeferred。Protocol/製品実装は専門書へ委譲。"
+        ],
+        "sourceRevalidation": [
+          "公式63-4/A/B/C各CSRC Document HistoryのFinal2025-07-31と限定本文を再取得。Scope/自然人/IAL-AAL-FAL、B§2/§3.2.5、CのIdP発行AssertionとAudienceを確認し、機械間認証への適合保証はしない。",
+          "RFC9700BCP240/January2025§2.3、update6749/6750/6819、公式Errata該当0を確認。日不明のpublishedAtはnull。全OAuth更新史/実装監査ではない。",
+          "既存SP800-207A公式Final2023-09-13/AbstractのApplication/Service identityだけを再確認。第6章notesを保持。PDF全本文を再監査したとは主張しない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/12-enterprise-identity.md",
+          "templates/identity-attack-path-review.md",
+          "cases/ch12-identity-path-review-example.md",
+          "references/ch12-source-review-2026-09-15.md",
+          "cases/fixtures/ch12-identity-paths.json",
+          "schemas/ch12-identity-paths.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録名による全域調査hit0/error0で、任意rename検知はしない。inputReviewedAtは登録・採否確認日でraw読了日ではない。",
+          "親AUTH失効/元window/RoEv1 Draft/三Object/false、TM Needs Evidence、Signal Flow Gap、Chapter10record-only、独立CASE2026-011を保持。子の有限Passは親bindingや実行許可を更新しない。",
+          "有限の供給レコード・必要条件の比較。実測、実認証、製品適合、一般Secret認識、法的許可、実隔離/削除、Detection検証を保証しない。",
+          "本Intake記録作成時はPR #133 Draftで通常merge/main/publication未完了。consumedはその公開確認後の別metadata PRで記録する。現時点の進行状態はtarget.statusと最新statusHistoryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0036-bf2b7e4fe16e",
           "packageId": "EIP-0008",
           "inputPath": "chapter12-enterprise-identity.predraft.md",
           "inputSha256": "bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5673770683",
+          "dispositionReason": "登録設計の来歴として選択。認可workspaceで登録raw名は見つからず、raw読了・実体Hash照合・直接採用は主張しない。同梱Chapter13のDispositionへ伝播しない。"
         }
       ],
       "statusHistory": [
@@ -1526,6 +1569,18 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5673770683",
+          "reason": "PR132通常merge/main公開・Chapter10consumed後にIssue36の正式四Principal/六Pathstates/三Methodsへ登録候補を明示選択。raw不在のため直接採用せず現行Issue・親契約・一次Sourceから新規構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/133",
+          "reason": "第12章専用Draft PR #133に本文/ART20/完全合成JSON/Schema/Source/有限Layer AとIntake Recordを結ぶ。通常merge/main公開前のためconsumedにしない。"
         }
       ]
     },

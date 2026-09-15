@@ -109,3 +109,17 @@
 | Unverified | 所有未確認を示す属性。五Verification statesとは別 |
 
 [第10章](manuscript/10-recon-osint-boundary.md)は完全合成・offlineで、Source真正性・法的承認・実稼働を保証しない。
+
+## 第12章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Principal | 権限評価の主体。本教材はHuman/Device/Service/Workloadの四分類を使う |
+| Identity Attack Path Review | 必要条件とEvidenceを持つ権限関係の判断記録。侵害手順ではない |
+| Delegation | 委任元・先・対象・Action・制限を持つ関係。任意権限の付与ではない |
+| Issuer / Audience / Relying party | 発行者、意図した受入先、実際に検証・利用する受入側を分離する欄 |
+| Dormant grant | 利用されていないという仮定と残るGrant。取消済みや悪意を意味しない |
+| Broken path | 特定Pathに必要な条件の反証。未知の別経路の不存在ではない |
+| Synthetic replay | 第12章では供給合成EventのField照合だけ。認証要求の再送はしない |
+
+[第12章](manuscript/12-enterprise-identity.md)の六状態と観測経路のCoverageを混同しない。

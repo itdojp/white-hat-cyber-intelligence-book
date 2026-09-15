@@ -45,3 +45,7 @@
 ## 第10章の教育用補足
 
 [Attack Surface Registerの完全合成記入例](ch10-attack-surface-example.md) / ART-19 / ASR-2026-010はCASE-2026-001をrefinesする。九Source・六候補を限定して比較し、所有確認と実行許可を分ける。親RoEのDraft/失効/三Objectを保持し、全候補はrecord-only / 未承認である。
+
+## 第12章の教育用補足
+
+[Identity Attack Path Reviewの完全合成記入例](ch12-identity-path-review-example.md) / ART-20 / IAR-2026-012はCASE-2026-001をrefinesする。四Principal、十四Edge、六Pathを有限比較し、MFA・設定・合成Event・実施許可を分ける。親RoEのDraft/失効/三Object、Signal Flow Gap、独立CASE-2026-011を変更しない。

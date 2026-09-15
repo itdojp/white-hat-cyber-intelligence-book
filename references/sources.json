@@ -651,13 +651,14 @@
       "version": "SP 800-207A",
       "url": "https://csrc.nist.gov/pubs/sp/800/207/a/final",
       "publishedAt": "2023-09-13",
-      "checkedAt": "2026-09-12",
-      "nextReviewAt": "2026-12-12",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
       "reviewTriggers": [
         "Revision, publication status, errata or adopted meaning changes"
       ],
       "chapters": [
-        6
+        6,
+        12
       ],
       "notes": "Application/service identity distinction only; no provider or deployment recipes."
     },
@@ -935,6 +936,106 @@
         10
       ],
       "notes": "Official RFC gives March 2020; publication day is unknown, so publishedAt remains null. Section 4 serve-stale and TTL context only; no resolver implementation/tuning. Updates1034/1035/2181. Errata search returned no matching records at checkedAt. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md."
+    },
+    {
+      "id": "SRC-NIST-DIGITAL-001",
+      "publisher": "NIST",
+      "title": "Digital Identity Guidelines",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-63-4",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/4/final",
+      "publishedAt": "2025-07-31",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Revision/status/errata change",
+        "Adopted Chapter12 claim or scope changes"
+      ],
+      "chapters": [
+        12
+      ],
+      "notes": "Scope and Applicability / Assurance Levels only; natural-person scope, no machine-to-machine conformance claim. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-NIST-PROOFING-001",
+      "publisher": "NIST",
+      "title": "Digital Identity Guidelines: Identity Proofing and Enrollment",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-63A-4",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/a/4/final",
+      "publishedAt": "2025-07-31",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Revision/status/errata change",
+        "Adopted Chapter12 claim or scope changes"
+      ],
+      "chapters": [
+        12
+      ],
+      "notes": "Introduction only: identity proofing and natural-person scope; no real identity verification. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-NIST-AUTHN-001",
+      "publisher": "NIST",
+      "title": "Digital Identity Guidelines: Authentication and Authenticator Management",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-63B-4",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/b/4/final",
+      "publishedAt": "2025-07-31",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Revision/status/errata change",
+        "Adopted Chapter12 claim or scope changes"
+      ],
+      "chapters": [
+        12
+      ],
+      "notes": "Sections2 and3.2.5 only: authentication strength, MFA and phishing resistance; not authorization correctness. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-NIST-FEDERATION-001",
+      "publisher": "NIST",
+      "title": "Digital Identity Guidelines: Federation and Assertions",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-63C-4",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/c/4/final",
+      "publishedAt": "2025-07-31",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Revision/status/errata change",
+        "Adopted Chapter12 claim or scope changes"
+      ],
+      "chapters": [
+        12
+      ],
+      "notes": "IdP-issued Assertion Contents (#assertions) and Audience Restriction only; not wallet #assertion-contents or a token validator. Single-audience required FAL2+, not all FAL1. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-IETF-OAUTH-BCP-001",
+      "publisher": "RFC Editor / IETF",
+      "title": "Best Current Practice for OAuth 2.0 Security",
+      "kind": "specification",
+      "status": "best-current-practice",
+      "version": "RFC 9700 / BCP 240",
+      "url": "https://www.rfc-editor.org/info/rfc9700/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2027-09-15",
+      "reviewTriggers": [
+        "RFC status/update/replacement/errata change",
+        "Adopted Chapter12 claim changes"
+      ],
+      "chapters": [
+        12
+      ],
+      "notes": "Official publication gives January2025; exact day is unknown, so publishedAt is null. Updates6749/6750/6819. Section2.3 privilege/resource/action/audience restriction only; no token handling or protocol implementation. Official errata search: no matching records at checkedAt. Scoped review: references/ch12-source-review-2026-09-15.md."
     }
   ]
 }

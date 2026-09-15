@@ -1,0 +1,1851 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ART-20 supplied finite synthetic identity-path teaching record; not an IAM interchange schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "modelVersion",
+    "synthetic",
+    "executionAuthorized",
+    "record",
+    "parents",
+    "context",
+    "application",
+    "principals",
+    "groups",
+    "roles",
+    "permissions",
+    "resources",
+    "controlPlanes",
+    "issuers",
+    "relyingParties",
+    "edges",
+    "paths",
+    "configEvidence",
+    "eventEvidence",
+    "evaluations",
+    "findings",
+    "handoffs",
+    "limits"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": [
+        "1.0.0"
+      ]
+    },
+    "modelVersion": {
+      "type": "string",
+      "enum": [
+        "1.0.0"
+      ]
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true
+    },
+    "executionAuthorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "reviewId",
+        "caseId",
+        "relation",
+        "decisionRequirementId",
+        "asOf",
+        "question",
+        "graphRevision",
+        "policyRevision",
+        "authoredNotMeasured"
+      ],
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "enum": [
+            "ART-20"
+          ]
+        },
+        "reviewId": {
+          "type": "string",
+          "enum": [
+            "IAR-2026-012"
+          ]
+        },
+        "caseId": {
+          "type": "string",
+          "enum": [
+            "CASE-2026-001"
+          ]
+        },
+        "relation": {
+          "type": "string",
+          "enum": [
+            "refines"
+          ]
+        },
+        "decisionRequirementId": {
+          "type": "string",
+          "enum": [
+            "DR-2026-001"
+          ]
+        },
+        "asOf": {
+          "type": "string",
+          "enum": [
+            "2026-09-15T09:00:00Z"
+          ]
+        },
+        "question": {
+          "type": "string",
+          "enum": [
+            "供給された権限関係のどこまでを根拠で説明でき、何の許可と観測が不足するか。"
+          ]
+        },
+        "graphRevision": {
+          "type": "string",
+          "enum": [
+            "GRAPH-IAR12-001"
+          ]
+        },
+        "policyRevision": {
+          "type": "string",
+          "enum": [
+            "POLICY-IAR12-001"
+          ]
+        },
+        "authoredNotMeasured": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "parents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "caseId",
+        "relation",
+        "decisionRequirementId",
+        "historicalDeadline",
+        "authorizationId",
+        "authorizationExpiresAt",
+        "authorizationWindow",
+        "authorizationConditions",
+        "roeId",
+        "roeVersion",
+        "roeStatus",
+        "roeObjectIds",
+        "roeExecutionAuthorized",
+        "threatModelId",
+        "threatModelStatus",
+        "parentReassessmentId",
+        "independentCaseId",
+        "parentStateChanged"
+      ],
+      "properties": {
+        "caseId": {
+          "type": "string",
+          "enum": [
+            "CASE-2026-001"
+          ]
+        },
+        "relation": {
+          "type": "string",
+          "enum": [
+            "refines"
+          ]
+        },
+        "decisionRequirementId": {
+          "type": "string",
+          "enum": [
+            "DR-2026-001"
+          ]
+        },
+        "historicalDeadline": {
+          "type": "string",
+          "enum": [
+            "2026-07-22T00:00:00Z"
+          ]
+        },
+        "authorizationId": {
+          "type": "string",
+          "enum": [
+            "AUTH-CASE-2026-001"
+          ]
+        },
+        "authorizationExpiresAt": {
+          "type": "string",
+          "enum": [
+            "2026-08-19T09:00:00Z"
+          ]
+        },
+        "authorizationWindow": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "2026-08-06T00:00:00Z",
+              "2026-08-06T08:00:00Z"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "authorizationConditions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "COND-AUTH-2026-001 Open",
+              "COND-AUTH-2026-002 Satisfied",
+              "COND-AUTH-2026-003 Open"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "roeId": {
+          "type": "string",
+          "enum": [
+            "ROE-2026-009"
+          ]
+        },
+        "roeVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65536
+        },
+        "roeStatus": {
+          "type": "string",
+          "enum": [
+            "Draft"
+          ]
+        },
+        "roeObjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "OBJ-ROE09-CONFIG",
+              "OBJ-ROE09-EVENT",
+              "OBJ-ROE09-POLICY"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "roeExecutionAuthorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "threatModelId": {
+          "type": "string",
+          "enum": [
+            "TM-2026-001"
+          ]
+        },
+        "threatModelStatus": {
+          "type": "string",
+          "enum": [
+            "Needs Evidence"
+          ]
+        },
+        "parentReassessmentId": {
+          "type": "string",
+          "enum": [
+            "REA-2026-001"
+          ]
+        },
+        "independentCaseId": {
+          "type": "string",
+          "enum": [
+            "CASE-2026-011"
+          ]
+        },
+        "parentStateChanged": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "threatModelId",
+        "signalFlowMapId",
+        "reconRecordId",
+        "reconCandidateId",
+        "parentAssetId",
+        "parentScopeExpanded",
+        "parentBindingConfirmed",
+        "parentCoverageChanged",
+        "independentChapter11Case",
+        "chapter11Relation"
+      ],
+      "properties": {
+        "threatModelId": {
+          "type": "string",
+          "enum": [
+            "TM-2026-001"
+          ]
+        },
+        "signalFlowMapId": {
+          "type": "string",
+          "enum": [
+            "SFM-2026-001"
+          ]
+        },
+        "reconRecordId": {
+          "type": "string",
+          "enum": [
+            "ASR-2026-010"
+          ]
+        },
+        "reconCandidateId": {
+          "type": "string",
+          "enum": [
+            "CAND-ASR10-001"
+          ]
+        },
+        "parentAssetId": {
+          "type": "string",
+          "enum": [
+            "ASSET-2026-001"
+          ]
+        },
+        "parentScopeExpanded": {
+          "type": "boolean",
+          "const": false
+        },
+        "parentBindingConfirmed": {
+          "type": "boolean",
+          "const": false
+        },
+        "parentCoverageChanged": {
+          "type": "boolean",
+          "const": false
+        },
+        "independentChapter11Case": {
+          "type": "string",
+          "enum": [
+            "CASE-2026-011"
+          ]
+        },
+        "chapter11Relation": {
+          "type": "string",
+          "enum": [
+            "conceptual-handoff-only-no-evidence-or-authority-inheritance"
+          ]
+        }
+      }
+    },
+    "application": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "appId",
+        "label",
+        "parentComponentAssetId",
+        "workloadPrincipalId",
+        "controlPlaneId",
+        "owner",
+        "bindingBasis",
+        "principalClass"
+      ],
+      "properties": {
+        "appId": {
+          "type": "string",
+          "const": "APP-IAR12-001"
+        },
+        "label": {
+          "type": "string",
+          "const": "SYNTH-BILLING-OAUTH-APP"
+        },
+        "parentComponentAssetId": {
+          "type": "string",
+          "const": "ASSET-2026-005"
+        },
+        "workloadPrincipalId": {
+          "type": "string",
+          "const": "PRN-IAR12-004"
+        },
+        "controlPlaneId": {
+          "type": "string",
+          "const": "CP-IAR12-001"
+        },
+        "owner": {
+          "type": "string",
+          "const": "SYNTH-PLATFORM-OWNER"
+        },
+        "bindingBasis": {
+          "type": "string",
+          "const": "authored-assumption-not-parent-current-binding"
+        },
+        "principalClass": {
+          "type": "string",
+          "const": "not-a-fifth-Principal-class"
+        }
+      }
+    },
+    "principals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "principalClass",
+          "label",
+          "owner",
+          "lifecycle",
+          "credentialClass",
+          "assuranceContext",
+          "mfaStatus",
+          "mfaException"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "PRN-IAR12-001",
+              "PRN-IAR12-002",
+              "PRN-IAR12-003",
+              "PRN-IAR12-004"
+            ]
+          },
+          "principalClass": {
+            "type": "string",
+            "enum": [
+              "Human",
+              "Device",
+              "Service",
+              "Workload"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "SYNTH-DORMANT-ADMIN",
+              "SYNTH-DEVICE",
+              "SYNTH-AUDIT-READER",
+              "SYNTH-INVOICE-SYNC"
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "enum": [
+              "SYNTH-IDENTITY-OWNER"
+            ]
+          },
+          "lifecycle": {
+            "type": "string",
+            "enum": [
+              "Dormant",
+              "Unknown",
+              "Active"
+            ]
+          },
+          "credentialClass": {
+            "type": "string",
+            "enum": [
+              "interactive-authenticator-class",
+              "device-binding-class",
+              "service-authentication-class",
+              "workload-authentication-class"
+            ]
+          },
+          "assuranceContext": {
+            "type": "string",
+            "enum": [
+              "not-assessed-no-compliance-claim"
+            ]
+          },
+          "mfaStatus": {
+            "type": "string",
+            "enum": [
+              "Enabled",
+              "Disabled",
+              "Unknown",
+              "Not applicable"
+            ]
+          },
+          "mfaException": {
+            "type": "string",
+            "enum": [
+              "exception-recorded-not-approved",
+              "none"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "GRP-IAR12-001"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "SYNTH-DORMANT-ADMIN-GROUP"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "ROL-IAR12-001",
+              "ROL-IAR12-002",
+              "ROL-IAR12-003"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "SYNTH-ADMIN",
+              "SYNTH-AUDIT-READER",
+              "SYNTH-APP-READER"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "resourceId",
+          "action"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "PER-IAR12-001",
+              "PER-IAR12-002",
+              "PER-IAR12-003"
+            ]
+          },
+          "resourceId": {
+            "type": "string",
+            "enum": [
+              "RES-IAR12-001",
+              "RES-IAR12-002",
+              "RES-IAR12-003"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "review-consent-change",
+              "read-audit-summary",
+              "read-customer-summary"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "plane",
+          "controlPlaneId",
+          "relyingPartyId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "RES-IAR12-001",
+              "RES-IAR12-002",
+              "RES-IAR12-003"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "SYNTH-IDENTITY-CONTROL",
+              "SYNTH-AUDIT-SUMMARY",
+              "SYNTH-CUSTOMER-DATA-API-SUMMARY"
+            ]
+          },
+          "plane": {
+            "type": "string",
+            "enum": [
+              "Control",
+              "Data"
+            ]
+          },
+          "controlPlaneId": {
+            "type": "string",
+            "enum": [
+              "CP-IAR12-001"
+            ]
+          },
+          "relyingPartyId": {
+            "type": "string",
+            "enum": [
+              "RP-IAR12-001",
+              "RP-IAR12-002",
+              "RP-IAR12-003"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "controlPlanes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "CP-IAR12-001"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "SYNTH-IDENTITY-CONTROL-PLANE"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "issuers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "ISS-IAR12-001"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "SYNTH-TRUSTED-ISSUER"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "relyingParties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "resourceId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "RP-IAR12-001",
+              "RP-IAR12-002",
+              "RP-IAR12-003"
+            ]
+          },
+          "resourceId": {
+            "type": "string",
+            "enum": [
+              "RES-IAR12-001",
+              "RES-IAR12-002",
+              "RES-IAR12-003"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "fromId",
+          "toId",
+          "kind",
+          "condition",
+          "conditionMeaning",
+          "boundaryId",
+          "issuerId",
+          "audienceId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "EDG-IAR12-001",
+              "EDG-IAR12-002",
+              "EDG-IAR12-003",
+              "EDG-IAR12-004",
+              "EDG-IAR12-005",
+              "EDG-IAR12-006",
+              "EDG-IAR12-007",
+              "EDG-IAR12-008",
+              "EDG-IAR12-009",
+              "EDG-IAR12-010",
+              "EDG-IAR12-011",
+              "EDG-IAR12-012",
+              "EDG-IAR12-013",
+              "EDG-IAR12-014"
+            ]
+          },
+          "fromId": {
+            "type": "string",
+            "enum": [
+              "PRN-IAR12-001",
+              "GRP-IAR12-001",
+              "ROL-IAR12-001",
+              "PER-IAR12-001",
+              "PRN-IAR12-003",
+              "ROL-IAR12-002",
+              "PER-IAR12-002",
+              "PRN-IAR12-004",
+              "ROL-IAR12-003",
+              "PER-IAR12-003",
+              "PRN-IAR12-002"
+            ]
+          },
+          "toId": {
+            "type": "string",
+            "enum": [
+              "GRP-IAR12-001",
+              "ROL-IAR12-001",
+              "PER-IAR12-001",
+              "RES-IAR12-001",
+              "ROL-IAR12-002",
+              "PER-IAR12-002",
+              "RES-IAR12-002",
+              "PRN-IAR12-003",
+              "ROL-IAR12-003",
+              "PER-IAR12-003",
+              "RES-IAR12-003"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "Membership",
+              "Grant",
+              "Access",
+              "Delegation",
+              "Federation",
+              "Trust"
+            ]
+          },
+          "condition": {
+            "type": "string",
+            "enum": [
+              "True",
+              "False",
+              "Unknown"
+            ]
+          },
+          "conditionMeaning": {
+            "type": "string",
+            "enum": [
+              "authored-binding",
+              "delegation-approval",
+              "device-binding"
+            ]
+          },
+          "boundaryId": {
+            "type": "string",
+            "enum": [
+              "TB-2026-001",
+              "TB-2026-003",
+              "TB-2026-004"
+            ]
+          },
+          "issuerId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "enum": [
+              null,
+              "ISS-IAR12-001"
+            ]
+          },
+          "audienceId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "enum": [
+              null,
+              "RP-IAR12-003"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "paths": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "principalId",
+          "requiredPermissionId",
+          "resourceId",
+          "action",
+          "edgeIds",
+          "graphRevision",
+          "policyRevision",
+          "state",
+          "validationMethod",
+          "configEvidenceId",
+          "eventEvidenceId",
+          "evaluationId",
+          "threatId",
+          "signalFlowId",
+          "telemetryId",
+          "detectionId",
+          "findingId",
+          "gapId",
+          "reassessmentId",
+          "owner",
+          "dueAt",
+          "confidence",
+          "alternative",
+          "nextAction",
+          "executionAuthorized"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "PTH-IAR12-001",
+              "PTH-IAR12-002",
+              "PTH-IAR12-003",
+              "PTH-IAR12-004",
+              "PTH-IAR12-005",
+              "PTH-IAR12-006"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "Dormant grant is a hypothesis",
+              "MFA exception does not close permission path",
+              "Audit-reader authored event supports limited relation",
+              "Synthetic federation tuple matches",
+              "Necessary delegation approval is denied",
+              "Device binding condition is absent"
+            ]
+          },
+          "principalId": {
+            "type": "string",
+            "enum": [
+              "PRN-IAR12-001",
+              "PRN-IAR12-003",
+              "PRN-IAR12-004",
+              "PRN-IAR12-002"
+            ]
+          },
+          "requiredPermissionId": {
+            "type": "string",
+            "enum": [
+              "PER-IAR12-001",
+              "PER-IAR12-002",
+              "PER-IAR12-003"
+            ]
+          },
+          "resourceId": {
+            "type": "string",
+            "enum": [
+              "RES-IAR12-001",
+              "RES-IAR12-002",
+              "RES-IAR12-003"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "review-consent-change",
+              "read-audit-summary",
+              "read-customer-summary"
+            ]
+          },
+          "edgeIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "EDG-IAR12-001",
+                "EDG-IAR12-002",
+                "EDG-IAR12-003",
+                "EDG-IAR12-004",
+                "EDG-IAR12-005",
+                "EDG-IAR12-006",
+                "EDG-IAR12-007",
+                "EDG-IAR12-008",
+                "EDG-IAR12-013",
+                "EDG-IAR12-011",
+                "EDG-IAR12-012",
+                "EDG-IAR12-009",
+                "EDG-IAR12-010",
+                "EDG-IAR12-014"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "graphRevision": {
+            "type": "string",
+            "enum": [
+              "GRAPH-IAR12-001"
+            ]
+          },
+          "policyRevision": {
+            "type": "string",
+            "enum": [
+              "POLICY-IAR12-001"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "Hypothesized",
+              "Config-confirmed",
+              "Evidence-supported",
+              "Validated",
+              "Broken",
+              "Unknown"
+            ]
+          },
+          "validationMethod": {
+            "type": "string",
+            "enum": [
+              "Static review",
+              "Policy simulation",
+              "Synthetic replay"
+            ]
+          },
+          "configEvidenceId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "enum": [
+              null,
+              "EVD-IAR12-002",
+              "EVD-IAR12-003",
+              "EVD-IAR12-004",
+              "EVD-IAR12-005"
+            ]
+          },
+          "eventEvidenceId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "enum": [
+              null,
+              "EVT-IAR12-003"
+            ]
+          },
+          "evaluationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "enum": [
+              null,
+              "EVAL-IAR12-004",
+              "EVAL-IAR12-005"
+            ]
+          },
+          "threatId": {
+            "type": "string",
+            "enum": [
+              "TH-2026-002",
+              "TH-2026-003",
+              "TH-2026-004"
+            ]
+          },
+          "signalFlowId": {
+            "type": "string",
+            "enum": [
+              "SF-2026-001",
+              "SF-2026-004",
+              "SF-2026-002",
+              "SF-2026-006"
+            ]
+          },
+          "telemetryId": {
+            "type": "string",
+            "enum": [
+              "TEL-IAR12-001",
+              "TEL-IAR12-002",
+              "TEL-IAR12-003",
+              "TEL-IAR12-004",
+              "TEL-IAR12-005",
+              "TEL-IAR12-006"
+            ]
+          },
+          "detectionId": {
+            "type": "string",
+            "enum": [
+              "DET-IAR12-001",
+              "DET-IAR12-002",
+              "DET-IAR12-003",
+              "DET-IAR12-004",
+              "DET-IAR12-005",
+              "DET-IAR12-006"
+            ]
+          },
+          "findingId": {
+            "type": "string",
+            "enum": [
+              "FND-IAR12-001",
+              "FND-IAR12-002",
+              "FND-IAR12-003",
+              "FND-IAR12-004",
+              "FND-IAR12-005",
+              "FND-IAR12-006"
+            ]
+          },
+          "gapId": {
+            "type": "string",
+            "enum": [
+              "GAP-IAR12-001",
+              "GAP-IAR12-002",
+              "GAP-IAR12-003",
+              "GAP-IAR12-004",
+              "GAP-IAR12-005",
+              "GAP-IAR12-006"
+            ]
+          },
+          "reassessmentId": {
+            "type": "string",
+            "enum": [
+              "REA-IAR12-001",
+              "REA-IAR12-002",
+              "REA-IAR12-003",
+              "REA-IAR12-004",
+              "REA-IAR12-005",
+              "REA-IAR12-006"
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "enum": [
+              "SYNTH-IDENTITY-OWNER"
+            ]
+          },
+          "dueAt": {
+            "type": "string",
+            "enum": [
+              "2026-09-22T00:00:00Z"
+            ]
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "Low",
+              "Medium"
+            ]
+          },
+          "alternative": {
+            "type": "string",
+            "enum": [
+              "正常な変更または資料不足を比較する。親Caseの実態は未確定。"
+            ]
+          },
+          "nextAction": {
+            "type": "string",
+            "enum": [
+              "record-only"
+            ]
+          },
+          "executionAuthorized": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "configEvidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "pathId",
+          "graphRevision",
+          "policyRevision",
+          "edgeIds",
+          "recordedAt",
+          "basis",
+          "synthetic"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "EVD-IAR12-002",
+              "EVD-IAR12-003",
+              "EVD-IAR12-004",
+              "EVD-IAR12-005"
+            ]
+          },
+          "pathId": {
+            "type": "string",
+            "enum": [
+              "PTH-IAR12-002",
+              "PTH-IAR12-003",
+              "PTH-IAR12-004",
+              "PTH-IAR12-005"
+            ]
+          },
+          "graphRevision": {
+            "type": "string",
+            "enum": [
+              "GRAPH-IAR12-001"
+            ]
+          },
+          "policyRevision": {
+            "type": "string",
+            "enum": [
+              "POLICY-IAR12-001"
+            ]
+          },
+          "edgeIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "EDG-IAR12-005",
+                "EDG-IAR12-003",
+                "EDG-IAR12-004",
+                "EDG-IAR12-006",
+                "EDG-IAR12-007",
+                "EDG-IAR12-008",
+                "EDG-IAR12-013",
+                "EDG-IAR12-011",
+                "EDG-IAR12-012",
+                "EDG-IAR12-009",
+                "EDG-IAR12-010"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "recordedAt": {
+            "type": "string",
+            "enum": [
+              "2026-09-15T00:00:00Z"
+            ]
+          },
+          "basis": {
+            "type": "string",
+            "enum": [
+              "authored-synthetic-snapshot-not-observation"
+            ]
+          },
+          "synthetic": {
+            "type": "boolean",
+            "const": true
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "eventEvidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "pathId",
+          "graphRevision",
+          "policyRevision",
+          "principalId",
+          "resourceId",
+          "action",
+          "outcome",
+          "recordedAt",
+          "basis",
+          "synthetic"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "EVT-IAR12-003"
+            ]
+          },
+          "pathId": {
+            "type": "string",
+            "enum": [
+              "PTH-IAR12-003"
+            ]
+          },
+          "graphRevision": {
+            "type": "string",
+            "enum": [
+              "GRAPH-IAR12-001"
+            ]
+          },
+          "policyRevision": {
+            "type": "string",
+            "enum": [
+              "POLICY-IAR12-001"
+            ]
+          },
+          "principalId": {
+            "type": "string",
+            "enum": [
+              "PRN-IAR12-003"
+            ]
+          },
+          "resourceId": {
+            "type": "string",
+            "enum": [
+              "RES-IAR12-002"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "read-audit-summary"
+            ]
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "Allow"
+            ]
+          },
+          "recordedAt": {
+            "type": "string",
+            "enum": [
+              "2026-09-15T00:00:00Z"
+            ]
+          },
+          "basis": {
+            "type": "string",
+            "enum": [
+              "authored-synthetic-event-not-request"
+            ]
+          },
+          "synthetic": {
+            "type": "boolean",
+            "const": true
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "evaluations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "pathId",
+          "graphRevision",
+          "policyRevision",
+          "principalId",
+          "resourceId",
+          "action",
+          "issuerId",
+          "audienceId",
+          "relyingPartyId",
+          "conditions",
+          "expected",
+          "actual",
+          "refutedEdgeId",
+          "configEvidenceId",
+          "recordedAt",
+          "basis",
+          "networkRequests",
+          "authenticationAttempts",
+          "synthetic"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "EVAL-IAR12-004",
+              "EVAL-IAR12-005"
+            ]
+          },
+          "pathId": {
+            "type": "string",
+            "enum": [
+              "PTH-IAR12-004",
+              "PTH-IAR12-005"
+            ]
+          },
+          "graphRevision": {
+            "type": "string",
+            "enum": [
+              "GRAPH-IAR12-001"
+            ]
+          },
+          "policyRevision": {
+            "type": "string",
+            "enum": [
+              "POLICY-IAR12-001"
+            ]
+          },
+          "principalId": {
+            "type": "string",
+            "enum": [
+              "PRN-IAR12-004"
+            ]
+          },
+          "resourceId": {
+            "type": "string",
+            "enum": [
+              "RES-IAR12-003"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "read-customer-summary"
+            ]
+          },
+          "issuerId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "ISS-IAR12-001",
+              null
+            ]
+          },
+          "audienceId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "RP-IAR12-003",
+              null
+            ]
+          },
+          "relyingPartyId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "RP-IAR12-003",
+              null
+            ]
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "edgeId",
+                "condition"
+              ],
+              "properties": {
+                "edgeId": {
+                  "type": "string",
+                  "enum": [
+                    "EDG-IAR12-013",
+                    "EDG-IAR12-011",
+                    "EDG-IAR12-012",
+                    "EDG-IAR12-009",
+                    "EDG-IAR12-010"
+                  ]
+                },
+                "condition": {
+                  "type": "string",
+                  "enum": [
+                    "True",
+                    "False",
+                    "Unknown"
+                  ]
+                }
+              }
+            },
+            "uniqueItems": true
+          },
+          "expected": {
+            "type": "string",
+            "enum": [
+              "Allow",
+              "Deny",
+              "Unknown"
+            ]
+          },
+          "actual": {
+            "type": "string",
+            "enum": [
+              "Allow",
+              "Deny",
+              "Unknown"
+            ]
+          },
+          "refutedEdgeId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "enum": [
+              null,
+              "EDG-IAR12-009"
+            ]
+          },
+          "configEvidenceId": {
+            "type": "string",
+            "enum": [
+              "EVD-IAR12-004",
+              "EVD-IAR12-005"
+            ]
+          },
+          "recordedAt": {
+            "type": "string",
+            "enum": [
+              "2026-09-15T00:00:00Z"
+            ]
+          },
+          "basis": {
+            "type": "string",
+            "enum": [
+              "authored-input-and-result-for-finite-offline-comparison"
+            ]
+          },
+          "networkRequests": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65536
+          },
+          "authenticationAttempts": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65536
+          },
+          "synthetic": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "oneOf": [
+          {
+            "properties": {
+              "pathId": {
+                "const": "PTH-IAR12-004"
+              },
+              "issuerId": {
+                "const": "ISS-IAR12-001"
+              },
+              "audienceId": {
+                "const": "RP-IAR12-003"
+              },
+              "relyingPartyId": {
+                "const": "RP-IAR12-003"
+              }
+            }
+          },
+          {
+            "properties": {
+              "pathId": {
+                "const": "PTH-IAR12-005"
+              },
+              "issuerId": {
+                "const": null
+              },
+              "audienceId": {
+                "const": null
+              },
+              "relyingPartyId": {
+                "const": null
+              }
+            }
+          }
+        ]
+      },
+      "uniqueItems": true
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "pathId",
+          "status",
+          "risk",
+          "treatment",
+          "telemetryId",
+          "detectionId",
+          "requiredFields",
+          "detectionStatus",
+          "owner",
+          "reassessmentId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "FND-IAR12-001",
+              "FND-IAR12-002",
+              "FND-IAR12-003",
+              "FND-IAR12-004",
+              "FND-IAR12-005",
+              "FND-IAR12-006"
+            ]
+          },
+          "pathId": {
+            "type": "string",
+            "enum": [
+              "PTH-IAR12-001",
+              "PTH-IAR12-002",
+              "PTH-IAR12-003",
+              "PTH-IAR12-004",
+              "PTH-IAR12-005",
+              "PTH-IAR12-006"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "teaching-analysis-not-production-finding"
+            ]
+          },
+          "risk": {
+            "type": "string",
+            "enum": [
+              "休眠Roleの残存による将来権限集中の仮説。現利用は未確認。",
+              "MFA例外と管理権限の併存。認可の正しさは未検証。",
+              "Audit参照の記録はあるが全期間の観測性は不明。",
+              "合成許可条件は一致するが実環境のbindingは未確認。",
+              "特定の必要委任条件が不成立。他経路の不存在は不明。",
+              "Deviceのbinding不足。許可にも安全にも昇格しない。"
+            ]
+          },
+          "treatment": {
+            "type": "string",
+            "enum": [
+              "Ownerと必要業務を再確認する計画。",
+              "例外の期限・承認とRole縮小案を別々にReviewする計画。",
+              "収集・保持・検索のGapを第16章へ渡す計画。",
+              "必要ResourceとActionの最小性を確認する計画。",
+              "否定条件の版と代替経路のGapを保持する。",
+              "追加資料と責任者を要求しUnknownを保持する。"
+            ]
+          },
+          "telemetryId": {
+            "type": "string",
+            "enum": [
+              "TEL-IAR12-001",
+              "TEL-IAR12-002",
+              "TEL-IAR12-003",
+              "TEL-IAR12-004",
+              "TEL-IAR12-005",
+              "TEL-IAR12-006"
+            ]
+          },
+          "detectionId": {
+            "type": "string",
+            "enum": [
+              "DET-IAR12-001",
+              "DET-IAR12-002",
+              "DET-IAR12-003",
+              "DET-IAR12-004",
+              "DET-IAR12-005",
+              "DET-IAR12-006"
+            ]
+          },
+          "requiredFields": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "principalId",
+                "resourceId",
+                "action",
+                "policyRevision",
+                "graphRevision",
+                "outcome",
+                "eventTime",
+                "correlationId"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "detectionStatus": {
+            "type": "string",
+            "enum": [
+              "planned-not-tested"
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "enum": [
+              "SYNTH-IDENTITY-OWNER"
+            ]
+          },
+          "reassessmentId": {
+            "type": "string",
+            "enum": [
+              "REA-IAR12-001",
+              "REA-IAR12-002",
+              "REA-IAR12-003",
+              "REA-IAR12-004",
+              "REA-IAR12-005",
+              "REA-IAR12-006"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "handoffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "chapter",
+          "status",
+          "pathIds",
+          "inputRequirement",
+          "executionAuthorized"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "HOF-IAR12-001",
+              "HOF-IAR12-002",
+              "HOF-IAR12-003",
+              "HOF-IAR12-004",
+              "HOF-IAR12-005"
+            ]
+          },
+          "chapter": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65536
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "planned-not-delivered"
+            ]
+          },
+          "pathIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "PTH-IAR12-001",
+                "PTH-IAR12-002",
+                "PTH-IAR12-003",
+                "PTH-IAR12-004",
+                "PTH-IAR12-005",
+                "PTH-IAR12-006"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "inputRequirement": {
+            "type": "string",
+            "enum": [
+              "AuthN/AuthZ/resource/action/conditionsの概念対応。独立CaseのEvidenceは流用しない。",
+              "WorkloadとControl planeのOwnerとbindingの不足条件。",
+              "必要条件一つに限定した問い、否定条件、最小Evidenceと停止。",
+              "Principal/Resource/Action/版/期間/相関keyと収集・保持のGap。",
+              "許容結論と未観測範囲を持つ合成Test計画。実検知率は未測定。"
+            ]
+          },
+          "executionAuthorized": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "credentialMaterial",
+        "networkRequests",
+        "authenticationAttempts",
+        "minutes",
+        "outputBytes",
+        "stop",
+        "cleanup",
+        "cleanupStatus",
+        "custodian",
+        "retentionHours",
+        "retentionStarts",
+        "assurance",
+        "pathCoverage",
+        "parentDisposition"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "non-executing-synthetic-record-review"
+          ]
+        },
+        "credentialMaterial": {
+          "type": "string",
+          "enum": [
+            "none"
+          ]
+        },
+        "networkRequests": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65536
+        },
+        "authenticationAttempts": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65536
+        },
+        "minutes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65536
+        },
+        "outputBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65536
+        },
+        "stop": {
+          "type": "string",
+          "enum": [
+            "unknown-authority-or-input-or-boundary; stop-and-record-gap"
+          ]
+        },
+        "cleanup": {
+          "type": "string",
+          "enum": [
+            "remove-only-owned-working-copies; retain-canonical-sources"
+          ]
+        },
+        "cleanupStatus": {
+          "type": "string",
+          "enum": [
+            "not-executed"
+          ]
+        },
+        "custodian": {
+          "type": "string",
+          "enum": [
+            "SYNTH-EVIDENCE-CUSTODIAN"
+          ]
+        },
+        "retentionHours": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65536
+        },
+        "retentionStarts": {
+          "type": "string",
+          "enum": [
+            "hypothetical-session-end"
+          ]
+        },
+        "assurance": {
+          "type": "string",
+          "enum": [
+            "no-real-authentication-or-measurement-or-legal-assurance"
+          ]
+        },
+        "pathCoverage": {
+          "type": "string",
+          "enum": [
+            "six-supplied-paths-only; no-global-reachability-claim"
+          ]
+        },
+        "parentDisposition": {
+          "type": "string",
+          "enum": [
+            "Do not proceed"
+          ]
+        }
+      }
+    }
+  }
+}
