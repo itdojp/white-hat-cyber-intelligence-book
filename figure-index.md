@@ -80,3 +80,14 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 | T-12-03 | 六Path states | `manuscript/12-enterprise-identity.md` | Implemented |
 | T-12-04 | 次章Handoff | `manuscript/12-enterprise-identity.md` | Implemented |
 | T-12-05 | ART-20 Rubric | `manuscript/12-enterprise-identity.md` | Implemented |
+
+## 第13章の図表
+
+| ID | 内容 | 正本 | 状態 |
+|---|---|---|---|
+| F-13-01 | Sourceから判断までの対応 | `manuscript/13-platform-supply-chain.md` | Implemented |
+| T-13-01 | 三Plane | `manuscript/13-platform-supply-chain.md` | Implemented |
+| T-13-02 | Digestと署名と出所とSBOM | `manuscript/13-platform-supply-chain.md` | Implemented |
+| T-13-03 | 五状態 | `manuscript/13-platform-supply-chain.md` | Implemented |
+| T-13-04 | ART21 Rubric | `manuscript/13-platform-supply-chain.md` | Implemented |
+| T-13-05 | ART21記入欄 | `templates/platform-supply-chain-assessment.md` | Implemented |

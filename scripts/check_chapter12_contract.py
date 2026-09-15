@@ -50,7 +50,7 @@ SOURCE_IDS = (
 )
 PREFLIGHT = tuple(
     f"python3 scripts/check_chapter{n:02}_contract.py --no-regressions"
-    for n in (6, 7, 8, 9, 10, 12)
+    for n in (6, 7, 8, 9, 10, 12, 13)
 ) + (
     "python3 scripts/sync_book_site.py --output docs",
     "npm run copy:notices",

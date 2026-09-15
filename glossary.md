@@ -123,3 +123,15 @@
 | Synthetic replay | 第12章では供給合成EventのField照合だけ。認証要求の再送はしない |
 
 [第12章](manuscript/12-enterprise-identity.md)の六状態と観測経路のCoverageを混同しない。
+
+## 第13章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Build Plane | SourceとDependencyをArtifactへ結ぶ処理と権限の境界 |
+| Provenance | Artifactの作成主体・過程・入力についての記録。存在だけでは真正性を保証しない |
+| SBOM summary | 本章ではComponentの供給要約。SPDX適合や完全性を主張しない |
+| Promotion plan | 環境間のArtifact移行計画。本CaseはPlanned-onlyで未承認 |
+| ART21 Verified | 同一Chainと版の有限summary比較の一致。実署名・実安全・実許可ではない |
+
+[第13章](manuscript/13-platform-supply-chain.md)の五状態をSLSA levelや親の観測状態へ読み替えない。

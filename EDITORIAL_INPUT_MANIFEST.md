@@ -17,7 +17,8 @@
 | `blueprint-only` | 1 |
 | `consumed` | 8 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 18 |
+| `registered-pending-prerequisites` | 17 |
+| `selected-for-intake` | 1 |
 
 ## Acknowledged collisions
 
@@ -57,7 +58,7 @@
 | `chapter-09` | #34 | `consumed` | `EIC-0034-dd0c5e0b83f3` | #127 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5659602660) |
 | `chapter-10` | #35 | `consumed` | `EIC-0035-23f9af567b80` | #130 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5673149529) |
 | `chapter-12` | #36 | `consumed` | `EIC-0036-bf2b7e4fe16e` | #133 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5674704043) |
-| `chapter-13` | #37 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
+| `chapter-13` | #37 | `selected-for-intake` | `EIC-0037-16d33d9ab258` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5675937404) |
 | `chapter-14` | #38 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
 | `chapter-15` | #39 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
 | `chapter-16` | #40 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228688398) |
@@ -134,7 +135,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0037-16d33d9ab258` | `EIP-0008` | `chapter13-platform-supply-chain.predraft.md` | `16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0037-16d33d9ab258` | `EIP-0008` | `chapter13-platform-supply-chain.predraft.md` | `16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec` | `selected` | 親Chapter4/6/9/12とChapter12consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前コメントで明示選択。raw不在のため直接採用せずcurrent Issue/契約/一次資料から再構成する。 |
 
 ### `chapter-14` / Issue #38
 

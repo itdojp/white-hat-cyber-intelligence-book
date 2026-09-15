@@ -827,13 +827,14 @@
       "version": "SP 800-190, Final, September 2017",
       "url": "https://csrc.nist.gov/pubs/sp/800/190/final",
       "publishedAt": null,
-      "checkedAt": "2026-09-13",
-      "nextReviewAt": "2027-09-13",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2027-09-15",
       "reviewTriggers": [
         "Revision, withdrawal, official URL relocation or adopted scope change"
       ],
       "chapters": [
-        8
+        8,
+        13
       ],
       "notes": "CSRC Date Published is September 2017; its distinct History date is 09/25/17. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3.5.2, 4.4.2, 4.4.3 and 4.5.5: shared-kernel residual risk, network/runtime/host boundaries. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed."
     },
@@ -1036,6 +1037,63 @@
         12
       ],
       "notes": "Official publication gives January2025; exact day is unknown, so publishedAt is null. Updates6749/6750/6819. Section2.3 privilege/resource/action/audience restriction only; no token handling or protocol implementation. Official errata search: no matching records at checkedAt. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-NIST-SSDF-001",
+      "publisher": "NIST",
+      "title": "Secure Software Development Framework",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-218 / SSDF 1.1",
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "publishedAt": null,
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Version/status/replacement/errata or adopted scope change"
+      ],
+      "chapters": [
+        13
+      ],
+      "notes": "Date Published February2022; History02/03/22 is distinct, so exact publication day unknown and publishedAt null. Chapter13 adopts only PS1.1/PS2.1/PS3.1/PS3.2/PW4.4. Rev1/SSDF1.2 remains Initial Public Draft (2025-12-17); not adopted as Final. No full-document local PDF/hash audit or standard conformance claim. Scoped review: references/ch13-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-SLSA-001",
+      "publisher": "SLSA / OpenSSF",
+      "title": "SLSA Specification",
+      "kind": "specification",
+      "status": "approved",
+      "version": "1.2",
+      "url": "https://slsa.dev/spec/v1.2/",
+      "publishedAt": "2025-11-24",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Version/status/replacement/errata or adopted scope change"
+      ],
+      "chapters": [
+        13
+      ],
+      "notes": "Official release announcement date, not independently verified approval-decision date. Version1.1 Retired. Scoped Tracks/Build Track Basics/Verifying artifacts Steps1/2 review: identity/digest/expectations and platform-trust limitations. ART21 is a separate finite authored-summary comparison, no SLSA level or crypto verification. Scoped review: references/ch13-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-SPDX-001",
+      "publisher": "SPDX / Linux Foundation",
+      "title": "SPDX Specifications",
+      "kind": "specification",
+      "status": "published",
+      "version": "Current list 3.0 / versioned HTML 3.0.1",
+      "url": "https://spdx.dev/use/specifications/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Version/status/replacement/errata or adopted scope change"
+      ],
+      "chapters": [
+        13
+      ],
+      "notes": "Exact publication date unknown; official version list and linked3.0.1 HTML identify distinct minor/patch labels. Chapter13 uses version/location only; no full model/schema/JSON-LD review or conformance claim. Teaching SBOM summary is not SPDX. Scoped review: references/ch13-source-review-2026-09-15.md."
     }
   ]
 }

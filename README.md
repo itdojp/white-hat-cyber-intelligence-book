@@ -102,3 +102,9 @@ CIでは`Book Contract`と`Book QA`を実行し、`main`では同じ生成契約
 `npm run check:chapter12`はART-20の完全合成Graphと全公開Fieldを検査する。四Principal/六Path state/三Method、閉じたSchema、必要EdgeとEvidenceの版・対象整合、親RoEの非実行境界、SourceとCase表示をLayer Aで所有する。Markdown/HTML/URL解釈は共有Publication Projection1.1.0、Safetyは共有Policy1.2.0のみを使う。
 
 検査は供給レコードの比較であり、認証・IAM・Token・一般Secret認識エンジンではない。`sync:docs`は本検査の成功後にだけ生成を開始する。詳細は`tests/fixtures/chapter12/README.md`を参照する。
+
+### 第13章の有限Supply Chain契約
+
+`npm run check:chapter13`はART-21の供給summaryだけを検査する。Layer Aは三Plane、八Chain、五状態、SourceからRuntimeまでのID/版/Evidence、親の非実行境界、四文書とCase全Fieldの対応を所有する。Markdown/HTML/URLは共有Projection1.1.0、安全文法は共有Policy1.2.0だけを使う。
+
+実Cloud/CI/Registry/Package/Token/署名検証や、標準適合を実装するものではない。`sync:docs`はこの検査に成功してから生成する。有限Corpusと制限は`tests/fixtures/chapter13/README.md`を参照する。

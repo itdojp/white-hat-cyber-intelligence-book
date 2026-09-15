@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Chapter 10 Layer A: finite ART-19 surfaces and evidence/approval semantics."""
+"""Chapter 13 Layer A: finite ART-20 surfaces and evidence/approval semantics."""
 
 from __future__ import annotations
 
@@ -13,9 +13,8 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from scripts.chapter10_semantics import (  # noqa: E402
+from scripts.chapter13_semantics import (  # noqa: E402
     DATA_PATH,
-    BUNDLE_PATH,
     SCHEMA_PATH,
     CONTRACT_PATH,
     DOCUMENTS,
@@ -42,12 +41,10 @@ from scripts.publication_projection import (  # noqa: E402
 from scripts.source_audit import meets_audit_baseline  # noqa: E402
 
 SOURCE_IDS = (
-    "SRC-BERKELEY-001",
-    "SRC-WSTG-001",
-    "SRC-CT-001",
-    "SRC-SECURITYTXT-001",
-    "SRC-DNS-TERM-001",
-    "SRC-DNS-STALE-001",
+    "SRC-NIST-SSDF-001",
+    "SRC-SLSA-001",
+    "SRC-NIST-CONTAINER-001",
+    "SRC-SPDX-001",
 )
 PREFLIGHT = tuple(
     f"python3 scripts/check_chapter{n:02}_contract.py --no-regressions"
@@ -118,7 +115,21 @@ def scan_document(document, spec, require_exceptions=False):
     return errors
 
 
-def document_errors(document, spec, data, bundle):
+def case_parity_errors(document, data):
+    actual = [
+        f.text
+        for f in document.fields
+        if is_policy_scan_field(f) and f.element_kind == "table_row"
+    ]
+    expected = [
+        f"{group} Field Value {k} {v}"
+        for group, rows in case_groups(data)
+        for k, v in rows
+    ]
+    return [] if actual == expected else ["ART21 complete JSON/projected Case parity"]
+
+
+def document_errors(document, spec, data):
     errors = scan_document(document, spec, True)
     pairs = list(relations(document))
     headings = [
@@ -140,25 +151,14 @@ def document_errors(document, spec, data, bundle):
                 + key(required)
             )
     if document.document_id == DOCUMENTS[2]:
-        actual = [
-            f.text
-            for f, _ in pairs
-            if is_policy_scan_field(f) and f.element_kind == "table_row"
-        ]
-        expected = [
-            f"{group} Field Value {k} {v}"
-            for group, rows in case_groups(data, bundle)
-            for k, v in rows
-        ]
-        if actual != expected:
-            errors.append("ART19 complete two-JSON/projected Case parity")
+        errors += case_parity_errors(document, data)
     if document.document_id == DOCUMENTS[0]:
         positions = [
             [i for i, (_, r) in enumerate(pairs) if r == expected]
             for expected in spec["exerciseInstructionOrder"]
         ]
         if any(len(p) != 1 for p in positions) or positions != sorted(positions):
-            errors.append("Chapter10 exercise explanations before command")
+            errors.append("Chapter13 exercise explanations before command")
         body, refs = set(), set()
         for f, r in pairs:
             if is_policy_scan_field(f):
@@ -168,59 +168,59 @@ def document_errors(document, spec, data, bundle):
                     SOURCE_ID_RE.findall(f.text)
                 )
         if body != set(SOURCE_IDS) or refs != set(SOURCE_IDS):
-            errors.append("Chapter10 body/reference Source ownership")
+            errors.append("Chapter13 body/reference Source ownership")
     return errors
 
 
 def repository_errors(contract, root=ROOT):
     errors = []
     if list(contract["parentDigests"]) != list(PARENTS):
-        errors.append("Chapter10 frozen parent inventory")
+        errors.append("Chapter13 frozen parent inventory")
     for p, digest in contract["parentDigests"].items():
         if hashlib.sha256(read_regular(root, p)).hexdigest() != digest:
             errors.append(p + ": unchanged parent/shared baseline")
     package = load_json_strict(root / "package.json")["scripts"]
     if (
-        package.get("check:chapter10") != "python3 scripts/check_chapter10_contract.py"
-        or package["test"].split(" && ").count("npm run check:chapter10") != 1
+        package.get("check:chapter13") != "python3 scripts/check_chapter13_contract.py"
+        or package["test"].split(" && ").count("npm run check:chapter13") != 1
     ):
-        errors.append("Chapter10 root invocation exactly once")
+        errors.append("Chapter13 root invocation exactly once")
     if package.get("sync:docs", "").split(" && ") != list(PREFLIGHT):
-        errors.append("Chapter10 safety before publication generation")
+        errors.append("Chapter13 safety before publication generation")
     pages = load_json_strict(root / "site-pages.json")
     for kind in ("pages", "staticFiles"):
         for route in contract[kind]:
             if pages[kind].count(route) != 1:
-                errors.append("Chapter10 exact route " + route["source"])
+                errors.append("Chapter13 exact route " + route["source"])
     order = [
         p["source"]
         for p in sorted(pages["pages"], key=lambda x: x["order"])
         if p["section"] == "chapters"
     ]
     if (
-        not order.index("manuscript/09-engagement-roe.md")
+        not order.index("manuscript/12-enterprise-identity.md")
         < order.index(DOCUMENTS[0])
-        < order.index("manuscript/11-web-api-hypothesis.md")
+        < order.index("manuscript/17-detection-engineering.md")
     ):
-        errors.append("Chapter10 navigation 9 before 10 before 11")
+        errors.append("Chapter13 navigation 12 before 13 before 17")
     sources = load_json_strict(root / "references/sources.json")
     if sources["checkedAt"] != "2026-07-25" or {
-        s["id"] for s in sources["sources"] if 10 in s["chapters"]
+        s["id"] for s in sources["sources"] if 13 in s["chapters"]
     } != set(SOURCE_IDS):
-        errors.append("Chapter10 scoped Source mapping/date")
+        errors.append("Chapter13 scoped Source mapping/date")
     for sid in SOURCE_IDS:
         source = next((s for s in sources["sources"] if s["id"] == sid), {})
-        review = "2026-12-14" if sid == "SRC-WSTG-001" else "2027-09-14"
+        review = "2027-09-15" if sid == "SRC-NIST-CONTAINER-001" else "2026-12-15"
         if not meets_audit_baseline(
-            source.get("checkedAt"), "2026-09-14"
+            source.get("checkedAt"), "2026-09-15"
         ) or not meets_audit_baseline(source.get("nextReviewAt"), review):
-            errors.append("Chapter10 Source audit " + sid)
+            errors.append("Chapter13 Source audit " + sid)
         if any(source.get(k) != v for k, v in contract["sourceIdentity"][sid].items()):
-            errors.append("Chapter10 fixed Source version/status/scope " + sid)
+            errors.append("Chapter13 fixed Source version/status/scope " + sid)
     for p, markers in contract["indices"].items():
         text = (root / p).read_text(encoding="utf-8")
         if any(m not in text for m in markers):
-            errors.append("Chapter10 index " + p)
+            errors.append("Chapter13 index " + p)
     return errors
 
 
@@ -229,9 +229,9 @@ def main():
     parser.add_argument("--no-regressions", action="store_true")
     args = parser.parse_args()
     try:
-        data, bundle, schema, contract = (
+        data, schema, contract = (
             strict_bytes(read_regular(ROOT, p))
-            for p in (DATA_PATH, BUNDLE_PATH, SCHEMA_PATH, CONTRACT_PATH)
+            for p in (DATA_PATH, SCHEMA_PATH, CONTRACT_PATH)
         )
         if (
             contract["schemaVersion"] != "1.0.0"
@@ -239,25 +239,23 @@ def main():
             or POLICY_VERSION != "1.2.0"
             or PROJECTION_VERSION != "1.1.0"
         ):
-            raise ValueError("Chapter10 finite inventory/shared versions")
-        errors = validate_model(data, bundle, schema, contract)
+            raise ValueError("Chapter13 finite inventory/shared versions")
+        errors = validate_model(data, schema, contract)
         if errors:
             raise ValueError("; ".join(errors))
         errors += repository_errors(contract)
         source = {p: read_regular(ROOT, p).decode("utf-8") for p in DOCUMENTS}
         projection = project_documents(source)
         if [d.document_id for d in projection.documents] != list(DOCUMENTS):
-            raise ValueError("Chapter10 projection selection/order")
+            raise ValueError("Chapter13 projection selection/order")
         for doc in projection.documents:
-            errors += document_errors(
-                doc, contract["documents"][doc.document_id], data, bundle
-            )
+            errors += document_errors(doc, contract["documents"][doc.document_id], data)
         count = 0
         if not args.no_regressions:
-            from scripts.chapter10_regressions import run_regressions
+            from scripts.chapter13_regressions import run_regressions
 
             count, regression_errors = run_regressions(
-                data, bundle, schema, contract, source, projection
+                data, schema, contract, source, projection
             )
             errors += regression_errors
         if errors:
@@ -265,7 +263,7 @@ def main():
                 print("ERROR:", error)
             return 1
         print(
-            f"Chapter 10 contract passed: 4 complete documents; 9 sources / 6 candidates; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; record-only / executionAuthorized=false"
+            f"Chapter 13 contract passed: 4 complete documents; 3 Planes / 8 chains / 5 states; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; record-only / executionAuthorized=false"
         )
         return 0
     except (
@@ -276,7 +274,7 @@ def main():
         ManifestError,
         ProjectionRuntimeError,
     ) as exc:
-        print("ERROR: Chapter10 fail closed:", exc)
+        print("ERROR: Chapter13 fail closed:", exc)
         return 1
 
 

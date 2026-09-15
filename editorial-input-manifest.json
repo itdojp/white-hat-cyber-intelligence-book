@@ -1594,8 +1594,8 @@
       "targetId": "chapter-13",
       "issue": 37,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
+      "status": "selected-for-intake",
+      "selectedCandidateId": "EIC-0037-16d33d9ab258",
       "canonicalPr": null,
       "intakeRecord": null,
       "candidates": [
@@ -1604,9 +1604,9 @@
           "packageId": "EIP-0008",
           "inputPath": "chapter13-platform-supply-chain.predraft.md",
           "inputSha256": "16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5675937404",
+          "dispositionReason": "親Chapter4/6/9/12とChapter12consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前コメントで明示選択。raw不在のため直接採用せずcurrent Issue/契約/一次資料から再構成する。"
         }
       ],
       "statusHistory": [
@@ -1615,6 +1615,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5675937404",
+          "reason": "親Chapter4/6/9/12とChapter12consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前コメントで明示選択。raw不在のため直接採用せずcurrent Issue/契約/一次資料から再構成する。"
         }
       ]
     },
