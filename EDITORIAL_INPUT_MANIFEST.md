@@ -15,8 +15,7 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
-| `canonical-pr-open` | 1 |
-| `consumed` | 7 |
+| `consumed` | 8 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 18 |
 
@@ -57,7 +56,7 @@
 | `chapter-08` | #33 | `consumed` | `EIC-0033-eee4bacd1c7b` | #123 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5650941182) |
 | `chapter-09` | #34 | `consumed` | `EIC-0034-dd0c5e0b83f3` | #127 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5659602660) |
 | `chapter-10` | #35 | `consumed` | `EIC-0035-23f9af567b80` | #130 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5673149529) |
-| `chapter-12` | #36 | `canonical-pr-open` | `EIC-0036-bf2b7e4fe16e` | #133 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/133) |
+| `chapter-12` | #36 | `consumed` | `EIC-0036-bf2b7e4fe16e` | #133 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5674704043) |
 | `chapter-13` | #37 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
 | `chapter-14` | #38 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
 | `chapter-15` | #39 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
@@ -129,7 +128,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0036-bf2b7e4fe16e` | `EIP-0008` | `chapter12-enterprise-identity.predraft.md` | `bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd` | `selected` | 登録設計の来歴として選択。認可workspaceで登録raw名は見つからず、raw読了・実体Hash照合・直接採用は主張しない。同梱Chapter13のDispositionへ伝播しない。 |
+| `EIC-0036-bf2b7e4fe16e` | `EIP-0008` | `chapter12-enterprise-identity.predraft.md` | `bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd` | `rewritten` | PR #133でIssue #36とcurrent contract・再検証済み一次資料から第12章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0008/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter13のDispositionは不変。 |
 
 ### `chapter-13` / Issue #37
 
