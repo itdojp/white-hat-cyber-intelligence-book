@@ -149,7 +149,7 @@ def case_groups(data):
             yield title, rows
 
 
-"""Finite authored comparison; noncanonical spike, no parsing or execution."""
+"""Finite authored comparison of supplied records; no parsing or execution."""
 
 
 def compare(chain, expected):

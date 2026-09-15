@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Chapter 13 Layer A: finite ART-20 surfaces and evidence/approval semantics."""
+"""Chapter 13 Layer A: finite ART-21 surfaces and evidence/approval semantics."""
 
 from __future__ import annotations
 
