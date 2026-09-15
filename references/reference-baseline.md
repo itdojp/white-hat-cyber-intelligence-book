@@ -46,7 +46,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-CVSS-001 | FIRST | [CVSS v4.0 Specification and User Guide](https://www.first.org/cvss/v4.0/specification-document) | 4.0 / Specification 1.2 / User Guide 1.2 / released | 2026-09-12 | 2026-12-12 | 7 |
 | SRC-CISA-VRM-001 | CISA | [CISA Announces BOD 26-04: official issuance bulletin](https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a) | BOD 26-04 issuance announcement only / published | 2026-09-12 | 2026-12-12 | 7 |
 | SRC-NIST-DFIR-001 | NIST | [Guide to Integrating Forensic Techniques into Incident Response](https://csrc.nist.gov/pubs/sp/800/86/final) | SP 800-86, Final, August 2006 / final | 2026-09-13 | 2027-09-13 | 8 |
-| SRC-NIST-CONTAINER-001 | NIST | [Application Container Security Guide](https://csrc.nist.gov/pubs/sp/800/190/final) | SP 800-190, Final, September 2017 / final | 2026-09-13 | 2027-09-13 | 8 |
+| SRC-NIST-CONTAINER-001 | NIST | [Application Container Security Guide](https://csrc.nist.gov/pubs/sp/800/190/final) | SP 800-190, Final, September 2017 / final | 2026-09-15 | 2027-09-15 | 8, 13 |
 | SRC-NIST-TEST-001 | NIST | [Technical Guide to Information Security Testing and Assessment](https://csrc.nist.gov/pubs/sp/800/115/final) | SP 800-115, September 2008 / final | 2026-09-13 | 2027-09-13 | 9 |
 | SRC-CT-001 | RFC Editor / IETF | [Certificate Transparency Version 2.0](https://www.rfc-editor.org/info/rfc9162/) | RFC 9162 / experimental | 2026-09-14 | 2027-09-14 | 10 |
 | SRC-SECURITYTXT-001 | RFC Editor / IETF | [A File Format to Aid in Security Vulnerability Disclosure](https://www.rfc-editor.org/info/rfc9116/) | RFC 9116 / informational | 2026-09-14 | 2027-09-14 | 10 |
@@ -57,6 +57,9 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-NIST-AUTHN-001 | NIST | [Digital Identity Guidelines: Authentication and Authenticator Management](https://csrc.nist.gov/pubs/sp/800/63/b/4/final) | SP 800-63B-4 / final | 2026-09-15 | 2026-12-15 | 12 |
 | SRC-NIST-FEDERATION-001 | NIST | [Digital Identity Guidelines: Federation and Assertions](https://csrc.nist.gov/pubs/sp/800/63/c/4/final) | SP 800-63C-4 / final | 2026-09-15 | 2026-12-15 | 12 |
 | SRC-IETF-OAUTH-BCP-001 | RFC Editor / IETF | [Best Current Practice for OAuth 2.0 Security](https://www.rfc-editor.org/info/rfc9700/) | RFC 9700 / BCP 240 / best-current-practice | 2026-09-15 | 2027-09-15 | 12 |
+| SRC-NIST-SSDF-001 | NIST | [Secure Software Development Framework](https://csrc.nist.gov/pubs/sp/800/218/final) | SP 800-218 / SSDF 1.1 / final | 2026-09-15 | 2026-12-15 | 13 |
+| SRC-SLSA-001 | SLSA / OpenSSF | [SLSA Specification](https://slsa.dev/spec/v1.2/) | 1.2 / approved | 2026-09-15 | 2026-12-15 | 13 |
+| SRC-SPDX-001 | SPDX / Linux Foundation | [SPDX Specifications](https://spdx.dev/use/specifications/) | Current list 3.0 / versioned HTML 3.0.1 / published | 2026-09-15 | 2026-12-15 | 13 |
 
 ## 運用
 

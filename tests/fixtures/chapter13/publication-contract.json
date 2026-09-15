@@ -1,0 +1,2527 @@
+{
+  "schemaVersion": "1.0.0",
+  "fixedContext": {
+    "schemaVersion": "1.0.0",
+    "synthetic": true,
+    "record": {
+      "id": "PSA-2026-013",
+      "artifactId": "ART-21",
+      "caseId": "CASE-2026-001",
+      "relation": "refines",
+      "serviceId": "SVC-PSA13-001",
+      "asOf": "2026-09-15T09:00:00Z",
+      "revision": "PSA13-REV-001",
+      "purpose": "供給されたSourceからRuntimeまでの記録の対応と、未確認の条件を区別する。",
+      "authoredNotMeasured": true
+    },
+    "parents": {
+      "caseId": "CASE-2026-001",
+      "relation": "refines",
+      "decisionRequirementId": "DR-2026-001",
+      "historicalDeadline": "2026-07-22T00:00:00Z",
+      "authorizationId": "AUTH-CASE-2026-001",
+      "authorizationExpiresAt": "2026-08-19T09:00:00Z",
+      "authorizationWindow": [
+        "2026-08-06T00:00:00Z",
+        "2026-08-06T08:00:00Z"
+      ],
+      "authorizationConditions": [
+        "COND-AUTH-2026-001 Open",
+        "COND-AUTH-2026-002 Satisfied",
+        "COND-AUTH-2026-003 Open"
+      ],
+      "roeId": "ROE-2026-009",
+      "roeVersion": 1,
+      "roeStatus": "Draft",
+      "roeObjectIds": [
+        "OBJ-ROE09-CONFIG",
+        "OBJ-ROE09-EVENT",
+        "OBJ-ROE09-POLICY"
+      ],
+      "roeExecutionAuthorized": false,
+      "threatModelId": "TM-2026-001",
+      "threatModelStatus": "Needs Evidence",
+      "parentReassessmentId": "REA-2026-001",
+      "independentCaseId": "CASE-2026-011",
+      "parentStateChanged": false
+    },
+    "parentIdentity": {
+      "reviewId": "IAR-2026-012",
+      "pathId": "PTH-IAR12-004",
+      "pathState": "Validated",
+      "principalId": "PRN-IAR12-004",
+      "permission": "read-customer-summary",
+      "signalFlowId": "SF-2026-006",
+      "threatId": "TH-2026-004",
+      "boundaryId": "TB-2026-004",
+      "currentBinding": "Unknown",
+      "coverage": "Unknown",
+      "nonFederationEvaluationId": "EVAL-IAR12-005",
+      "nonFederationAssertion": [
+        null,
+        null,
+        null
+      ],
+      "use": "background-gap-only-no-build-or-deploy-permission"
+    },
+    "safety": {
+      "executionAuthorized": false,
+      "externalConnections": 0,
+      "actualBuilds": 0,
+      "actualDeployments": 0,
+      "actualSignatureVerifications": 0,
+      "actualTrust": "Not assessed",
+      "standardCompliance": "Not assessed",
+      "safeClaim": false,
+      "secretValuesPresent": false,
+      "inputKind": "authored-summary-only-not-standard-document",
+      "digestMeaning": "sha256-of-authored-label-not-real-artifact",
+      "nextAction": "record-only",
+      "stop": "実Dataらしい内容、未知の入力、外部接続、許可不明なら停止する。",
+      "cleanup": "自分の作業コピーだけを整理し、正本と親Evidenceを保持する。",
+      "durationMinutes": 30,
+      "retentionHours": 24
+    },
+    "platform": {
+      "id": "PLT-PSA13-001",
+      "serviceId": "SVC-PSA13-001",
+      "businessPurpose": "架空の請求書連携の変更根拠を記録する。",
+      "controlPlaneId": "CP-PSA13-001",
+      "dataPlaneId": "DP-PSA13-001",
+      "buildPlaneId": "BP-PSA13-001",
+      "runtimeBoundaryId": "RB-PSA13-001",
+      "saasIntegrationId": "SAAS-PSA13-001",
+      "saasScope": "metadata-only-no-provider-access",
+      "owner": "SYNTH-PLATFORM-OWNER"
+    },
+    "principals": [
+      {
+        "id": "HUM-PSA13-001",
+        "class": "Human",
+        "permission": "review-promotion-plan",
+        "secretClass": "interactive-authenticator-class",
+        "owner": "SYNTH-REVIEW-OWNER",
+        "secretClassId": "SEC-PSA13-001"
+      },
+      {
+        "id": "WRK-PSA13-001",
+        "class": "Workload",
+        "permission": "build-summary-only",
+        "secretClass": "workload-authentication-class",
+        "owner": "SYNTH-BUILD-OWNER",
+        "secretClassId": "SEC-PSA13-002"
+      }
+    ],
+    "secretClasses": [
+      {
+        "id": "SEC-PSA13-001",
+        "principalId": "HUM-PSA13-001",
+        "secretClass": "interactive-authenticator-class",
+        "valueIncluded": false,
+        "owner": "SYNTH-REVIEW-OWNER"
+      },
+      {
+        "id": "SEC-PSA13-002",
+        "principalId": "WRK-PSA13-001",
+        "secretClass": "workload-authentication-class",
+        "valueIncluded": false,
+        "owner": "SYNTH-BUILD-OWNER"
+      }
+    ],
+    "handoffs": [
+      {
+        "id": "HOF-PSA13-014",
+        "chapter": 14,
+        "assessmentId": "PSA-2026-013",
+        "input": "Validation question / Build-Deploy correlation / supply-chain boundary",
+        "state": "planned-not-delivered",
+        "owner": "SYNTH-PLATFORM-OWNER",
+        "parentStateChanged": false
+      },
+      {
+        "id": "HOF-PSA13-016",
+        "chapter": 16,
+        "assessmentId": "PSA-2026-013",
+        "input": "Validation question / Build-Deploy correlation / supply-chain boundary",
+        "state": "planned-not-delivered",
+        "owner": "SYNTH-PLATFORM-OWNER",
+        "parentStateChanged": false
+      },
+      {
+        "id": "HOF-PSA13-027",
+        "chapter": 27,
+        "assessmentId": "PSA-2026-013",
+        "input": "Validation question / Build-Deploy correlation / supply-chain boundary",
+        "state": "planned-not-delivered",
+        "owner": "SYNTH-PLATFORM-OWNER",
+        "parentStateChanged": false
+      }
+    ]
+  },
+  "expectations": [
+    {
+      "id": "EXP-PSA13-001",
+      "chainId": "CHN-PSA13-001",
+      "recordRevision": "PSA13-REV-001",
+      "sourceRevision": "cad8efa6b5af487f26222c95a5f908b5daa8b7b4",
+      "lockDigest": "1a85c55f15c449b3294f5e930d53c6dd316d4c80d3a395b84680848443fc7998",
+      "artifactDigest": "9efdb1d2979cdb7429c6b0204e7351ac835a19498b7dac316f03503e6e687c87",
+      "builderId": "BLD-PSA13-001",
+      "buildType": "finite-summary-v1",
+      "parameters": "target=synthetic-summary",
+      "actionRevision": "91296223262f7a7f6d82352e0947f4786b203f6e",
+      "workloadPrincipalId": "WRK-PSA13-001",
+      "permission": "build-summary-only",
+      "runnerClass": "ephemeral-unprivileged",
+      "isolation": "separate-build-runtime",
+      "network": "deny-external",
+      "cache": "reviewed-no-cross-run-state",
+      "expectedRuntimeBoundary": "RB-PSA13-001",
+      "trustBasis": "author-supplied-expectation-not-real-root-of-trust",
+      "secretClassId": "SEC-PSA13-002"
+    },
+    {
+      "id": "EXP-PSA13-002",
+      "chainId": "CHN-PSA13-002",
+      "recordRevision": "PSA13-REV-001",
+      "sourceRevision": "70b7f0245f128a1368c1758be35300512e5172f1",
+      "lockDigest": "8fd6ad965fe15db3b80dcb63edbd05941faa48adab0f8594d73d3da3ef0c8b0f",
+      "artifactDigest": "28ef2aa48879e820e3f8cb272dbde6ef7421941e91b8cacc3ae9de98869ec543",
+      "builderId": "BLD-PSA13-001",
+      "buildType": "finite-summary-v1",
+      "parameters": "target=synthetic-summary",
+      "actionRevision": "91296223262f7a7f6d82352e0947f4786b203f6e",
+      "workloadPrincipalId": "WRK-PSA13-001",
+      "permission": "build-summary-only",
+      "runnerClass": "ephemeral-unprivileged",
+      "isolation": "separate-build-runtime",
+      "network": "deny-external",
+      "cache": "reviewed-no-cross-run-state",
+      "expectedRuntimeBoundary": "RB-PSA13-001",
+      "trustBasis": "author-supplied-expectation-not-real-root-of-trust",
+      "secretClassId": "SEC-PSA13-002"
+    },
+    {
+      "id": "EXP-PSA13-003",
+      "chainId": "CHN-PSA13-003",
+      "recordRevision": "PSA13-REV-001",
+      "sourceRevision": "fbc0223202a7f096804b1b551b63977abc10d34d",
+      "lockDigest": "5125dc39778971489248810b241596ad6cc13b9325d4e81aca905b3c5c48f417",
+      "artifactDigest": "0ba0c99132d6e945af38d032bd5dd175368bbbe90a5e486dc81833cf48c0ac2b",
+      "builderId": "BLD-PSA13-001",
+      "buildType": "finite-summary-v1",
+      "parameters": "target=synthetic-summary",
+      "actionRevision": "91296223262f7a7f6d82352e0947f4786b203f6e",
+      "workloadPrincipalId": "WRK-PSA13-001",
+      "permission": "build-summary-only",
+      "runnerClass": "ephemeral-unprivileged",
+      "isolation": "separate-build-runtime",
+      "network": "deny-external",
+      "cache": "reviewed-no-cross-run-state",
+      "expectedRuntimeBoundary": "RB-PSA13-001",
+      "trustBasis": "author-supplied-expectation-not-real-root-of-trust",
+      "secretClassId": "SEC-PSA13-002"
+    },
+    {
+      "id": "EXP-PSA13-004",
+      "chainId": "CHN-PSA13-004",
+      "recordRevision": "PSA13-REV-001",
+      "sourceRevision": "f0eb21aecc5bf32ef0d9bdf3c354d64497cf9309",
+      "lockDigest": "c81c83d998538f2eb1ca390155c1b02d4a4cbbb7998c705a784280d52b9a237e",
+      "artifactDigest": "9228102d16300a4ec3b9ce86327ed14b05b9ad287a94314a7ecdaac253f0a40b",
+      "builderId": "BLD-PSA13-001",
+      "buildType": "finite-summary-v1",
+      "parameters": "target=synthetic-summary",
+      "actionRevision": "91296223262f7a7f6d82352e0947f4786b203f6e",
+      "workloadPrincipalId": "WRK-PSA13-001",
+      "permission": "build-summary-only",
+      "runnerClass": "ephemeral-unprivileged",
+      "isolation": "separate-build-runtime",
+      "network": "deny-external",
+      "cache": "reviewed-no-cross-run-state",
+      "expectedRuntimeBoundary": "RB-PSA13-001",
+      "trustBasis": "author-supplied-expectation-not-real-root-of-trust",
+      "secretClassId": "SEC-PSA13-002"
+    },
+    {
+      "id": "EXP-PSA13-005",
+      "chainId": "CHN-PSA13-005",
+      "recordRevision": "PSA13-REV-001",
+      "sourceRevision": "a561b92f0034a2fecc2077af920a1ea3b3919146",
+      "lockDigest": "e96862b409d4bf25394ce710f8e398b2c11806c327fcc219a1fdb1be1c240b7f",
+      "artifactDigest": "2212905502d5c258c6894da127b8daab0d9a33e41201d4d13faed328ef75ef60",
+      "builderId": "BLD-PSA13-001",
+      "buildType": "finite-summary-v1",
+      "parameters": "target=synthetic-summary",
+      "actionRevision": "91296223262f7a7f6d82352e0947f4786b203f6e",
+      "workloadPrincipalId": "WRK-PSA13-001",
+      "permission": "build-summary-only",
+      "runnerClass": "ephemeral-unprivileged",
+      "isolation": "separate-build-runtime",
+      "network": "deny-external",
+      "cache": "reviewed-no-cross-run-state",
+      "expectedRuntimeBoundary": "RB-PSA13-001",
+      "trustBasis": "author-supplied-expectation-not-real-root-of-trust",
+      "secretClassId": "SEC-PSA13-002"
+    },
+    {
+      "id": "EXP-PSA13-006",
+      "chainId": "CHN-PSA13-006",
+      "recordRevision": "PSA13-REV-001",
+      "sourceRevision": "00b4953c634e5d2eaf5e3e7a26ff8308e917c4fb",
+      "lockDigest": "1193af504a42d1b29c60986036ce6d3b87f9d9afe2b1eda60a6e6f86b64f08de",
+      "artifactDigest": "098ce0d27fb46e5c96aed75b185169c094eabe243383e5a9b71bc7c7867f8bf4",
+      "builderId": "BLD-PSA13-001",
+      "buildType": "finite-summary-v1",
+      "parameters": "target=synthetic-summary",
+      "actionRevision": "91296223262f7a7f6d82352e0947f4786b203f6e",
+      "workloadPrincipalId": "WRK-PSA13-001",
+      "permission": "build-summary-only",
+      "runnerClass": "ephemeral-unprivileged",
+      "isolation": "separate-build-runtime",
+      "network": "deny-external",
+      "cache": "reviewed-no-cross-run-state",
+      "expectedRuntimeBoundary": "RB-PSA13-001",
+      "trustBasis": "author-supplied-expectation-not-real-root-of-trust",
+      "secretClassId": "SEC-PSA13-002"
+    },
+    {
+      "id": "EXP-PSA13-007",
+      "chainId": "CHN-PSA13-007",
+      "recordRevision": "PSA13-REV-001",
+      "sourceRevision": "26addbb641d46ab9166d2f04008ad49bb5e6fd63",
+      "lockDigest": "c05aee88d88b4b8622008d17e8f2d55f10f9181d107a724e926f2286e2afd25b",
+      "artifactDigest": "f5950ccec365ac9bbf6bf1ea01894cf925732667df4bce3372de095f1f81f028",
+      "builderId": "BLD-PSA13-001",
+      "buildType": "finite-summary-v1",
+      "parameters": "target=synthetic-summary",
+      "actionRevision": "91296223262f7a7f6d82352e0947f4786b203f6e",
+      "workloadPrincipalId": "WRK-PSA13-001",
+      "permission": "build-summary-only",
+      "runnerClass": "ephemeral-unprivileged",
+      "isolation": "separate-build-runtime",
+      "network": "deny-external",
+      "cache": "reviewed-no-cross-run-state",
+      "expectedRuntimeBoundary": "RB-PSA13-001",
+      "trustBasis": "author-supplied-expectation-not-real-root-of-trust",
+      "secretClassId": "SEC-PSA13-002"
+    },
+    {
+      "id": "EXP-PSA13-008",
+      "chainId": "CHN-PSA13-008",
+      "recordRevision": "PSA13-REV-001",
+      "sourceRevision": "b5e904c240aad31128eef64b478a295fc317d179",
+      "lockDigest": "969a8dd26cda281da27b9cb086c7d7edfba9dcd8f866888a42bedca1889ddd02",
+      "artifactDigest": "1ca98a80850d87fb76d5f3d751bb343cbe72bd930cbf8147c9d4d1bb8e045ac5",
+      "builderId": "BLD-PSA13-001",
+      "buildType": "finite-summary-v1",
+      "parameters": "target=synthetic-summary",
+      "actionRevision": "91296223262f7a7f6d82352e0947f4786b203f6e",
+      "workloadPrincipalId": "WRK-PSA13-001",
+      "permission": "build-summary-only",
+      "runnerClass": "ephemeral-unprivileged",
+      "isolation": "separate-build-runtime",
+      "network": "deny-external",
+      "cache": "reviewed-no-cross-run-state",
+      "expectedRuntimeBoundary": "RB-PSA13-001",
+      "trustBasis": "author-supplied-expectation-not-real-root-of-trust",
+      "secretClassId": "SEC-PSA13-002"
+    }
+  ],
+  "parentDigests": {
+    "cases/ch01-integrated-security-case-example.md": "c72c0d149321a24f2b6901db381c069cff86a8536b5578eba285b9d17eb329b2",
+    "cases/ch02-authorization-decision-example.md": "74d1aa7a802525ee5f465ccbdc1404e26a974ed60e264b65978612bef8026f4a",
+    "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
+    "cases/ch08-lab-evidence-example.md": "715859aea7c9ee8e939ff080447d34916a4f4b582d737719f272b394b9f17e0d",
+    "cases/fixtures/ch08-lab-plan.json": "f4ea0e4544e65fbb3447b173b0d9ab510e3aa8dea82209187727842b5f64ca8f",
+    "manuscript/09-engagement-roe.md": "2afbc548021b6f4017abf10287fc965c7417c15c0c36447763953fef2c65884a",
+    "templates/rules-of-engagement.md": "abf36127616fb838f8b599f60bbb1459e9b709381e990db4c9d855bcb81b9ef9",
+    "cases/ch09-engagement-roe-example.md": "44cf657c9ad220709c6b026ec4a894d904b1f89d88427e3babd2070e5a11b25a",
+    "cases/fixtures/ch09-engagement-roe.json": "cf3b2af1dc846981e9a9411641bc21663e7b0a0b1e90d66fd2750cdbd904f936",
+    "schemas/ch09-engagement-roe.schema.json": "f8983d4c251f27b09410a4a064e40138eab080830fed361d6b62aa201a384cd2",
+    "references/ch09-source-review-2026-09-13.md": "82ceac1a13e78805bb5d51eae2ad576238506a0e442c1617ce6f6d90384ed1b0",
+    "cases/ch11-web-api-assessment-example.md": "170f4d66d10aa2b2090018b610002b23a226db43b86b473af2216525ddca182f",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
+    ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
+    "manuscript/04-assets-boundaries-threat-model.md": "b20d25c51f0fa27c0404a8c5d2a4753a0a5b96a7152df67be985479590940084",
+    "manuscript/06-observable-systems.md": "c11a2491c94b710b749e48dceee448832d68d9406c557be7f9a49b45077b9938",
+    "cases/ch06-signal-flow-example.md": "a062ba22f4f0e1eb28a08342b0173a02473e995062410986b51d1a6a4af7cf0a",
+    "cases/fixtures/ch06-signal-flow.json": "73000db0a442d9be338a0e9834fe589ee387ee05ab280a9cc5f0e6fe0f0da6fb",
+    "manuscript/10-recon-osint-boundary.md": "122287e232c1b07468f7b0ecdc3e1ee6f4a2a7e8a3252ea8d73c6e8e681b04b7",
+    "templates/attack-surface-register.md": "ac84aef10dedc83264180e4f9e6069f711c3613e1948875524d561c88893fa75",
+    "cases/ch10-attack-surface-example.md": "7409da76004a7c32489d620691684054cb60e486dfb7dd8a7f7dabb012ed46fa",
+    "cases/fixtures/ch10-attack-surface.json": "84247ed0d7bd12547cd94f00f9f7faf2df58a9dee1947badf7c68dfd741b5f90",
+    "cases/fixtures/ch10-source-bundle.json": "d66edf29d533d102ee7d49d6362b031cc7c9983eef89f65cba85cbc751e0e36c",
+    "schemas/ch10-attack-surface.schema.json": "84107fecbf04d7516c39696a50fdbdf4282dc494cdcac8a126b4f91064f7a160",
+    "references/ch10-source-review-2026-09-14.md": "bbe585867368ececabe92e236f3b8dbbbcd735730c6d664b0face8dd76ac67fc",
+    "manuscript/11-web-api-hypothesis.md": "4bb4768e3a0d122116cae4019bf5b344601ec64e4d5f364bb45bb8e8b9437992",
+    "cases/fixtures/ch11-web-api-assessment-dataset.json": "2f0e10f0de37b3904c9303793ce36fdd565db8a0c4614bdeaba9b8a2c65ec4ec",
+    "manuscript/12-enterprise-identity.md": "642483bda2082a61a302b8967a91a5cec8e971116d025b4e25779753b7d238ab",
+    "templates/identity-attack-path-review.md": "47d9d8e2347c3ecfb6c9c7d135ceab9fe111165e9d722b278ead4a32984a427a",
+    "cases/ch12-identity-path-review-example.md": "0caa79dcb448212f08f5d6d44c5af705bf850be7b60bd610fab93a5e6ffc1bd3",
+    "references/ch12-source-review-2026-09-15.md": "21220e5329a42daf45180c5f3555dec23f82204ad41de69aada442b6d5659f38",
+    "cases/fixtures/ch12-identity-paths.json": "7bcaad91e1fe1ac5cea69d6e622a206f3db17ad986195e0c8191ffe7354d6491",
+    "schemas/ch12-identity-paths.schema.json": "72a4778b936e0939afa63c2a6330efa98cd192c4f74c24aee5048b1095bacce6"
+  },
+  "sourceIdentity": {
+    "SRC-NIST-SSDF-001": {
+      "publisher": "NIST",
+      "title": "Secure Software Development Framework",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-218 / SSDF 1.1",
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "publishedAt": null,
+      "notes": "Date Published February2022; History02/03/22 is distinct, so exact publication day unknown and publishedAt null. Chapter13 adopts only PS1.1/PS2.1/PS3.1/PS3.2/PW4.4. Rev1/SSDF1.2 remains Initial Public Draft (2025-12-17); not adopted as Final. No full-document local PDF/hash audit or standard conformance claim. Scoped review: references/ch13-source-review-2026-09-15.md."
+    },
+    "SRC-SLSA-001": {
+      "publisher": "SLSA / OpenSSF",
+      "title": "SLSA Specification",
+      "kind": "specification",
+      "status": "approved",
+      "version": "1.2",
+      "url": "https://slsa.dev/spec/v1.2/",
+      "publishedAt": "2025-11-24",
+      "notes": "Official release announcement date, not independently verified approval-decision date. Version1.1 Retired. Scoped Tracks/Build Track Basics/Verifying artifacts Steps1/2 review: identity/digest/expectations and platform-trust limitations. ART21 is a separate finite authored-summary comparison, no SLSA level or crypto verification. Scoped review: references/ch13-source-review-2026-09-15.md."
+    },
+    "SRC-NIST-CONTAINER-001": {
+      "publisher": "NIST",
+      "title": "Application Container Security Guide",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-190, Final, September 2017",
+      "url": "https://csrc.nist.gov/pubs/sp/800/190/final",
+      "publishedAt": null,
+      "notes": "CSRC Date Published is September 2017; its distinct History date is 09/25/17. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3.5.2, 4.4.2, 4.4.3 and 4.5.5: shared-kernel residual risk, network/runtime/host boundaries. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed. Chapter 13 scoped primary-text review on 2026-09-15: sections 3.5.2 and 4.1.4, shared-kernel residual risk and secret-handling boundaries, as recorded in references/ch13-source-review-2026-09-15.md. Historical principles only; no current product configuration, isolation assurance, full-document audit or local PDF hash audit is claimed. Chapter 13 uses a separate five-state authored-summary comparison, not Chapter 8's eight-state receipt lifecycle or a standard-mandated certification."
+    },
+    "SRC-SPDX-001": {
+      "publisher": "SPDX / Linux Foundation",
+      "title": "SPDX Specifications",
+      "kind": "specification",
+      "status": "published",
+      "version": "Current list 3.0 / versioned HTML 3.0.1",
+      "url": "https://spdx.dev/use/specifications/",
+      "publishedAt": null,
+      "notes": "Exact publication date unknown; official version list and linked3.0.1 HTML identify distinct minor/patch labels. Chapter13 uses version/location only; no full model/schema/JSON-LD review or conformance claim. Teaching SBOM summary is not SPDX. Scoped review: references/ch13-source-review-2026-09-15.md."
+    }
+  },
+  "pages": [
+    {
+      "source": "manuscript/13-platform-supply-chain.md",
+      "destination": "chapters/chapter-13/index.md",
+      "section": "chapters",
+      "order": 56,
+      "title": "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する"
+    },
+    {
+      "source": "templates/platform-supply-chain-assessment.md",
+      "destination": "templates/platform-supply-chain-assessment/index.md",
+      "section": "additional",
+      "order": 266,
+      "title": "Platform and Supply Chain Assessment"
+    },
+    {
+      "source": "cases/ch13-platform-supply-chain-example.md",
+      "destination": "cases/chapter-13-platform-supply-chain/index.md",
+      "section": "additional",
+      "order": 267,
+      "title": "第13章 完全合成記入例：Platform and Supply Chain Assessment"
+    },
+    {
+      "source": "references/ch13-source-review-2026-09-15.md",
+      "destination": "references/chapter-13-source-review/index.md",
+      "section": "additional",
+      "order": 268,
+      "title": "第13章 Source Review Note：PlatformとSupply Chain"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch13-supply-chain.json",
+      "destination": "downloads/ch13-supply-chain.json"
+    },
+    {
+      "source": "schemas/ch13-supply-chain.schema.json",
+      "destination": "downloads/ch13-supply-chain.schema.json"
+    }
+  ],
+  "indices": {
+    "artifact-index.md": [
+      "| ART-21 | Platform and Supply Chain Assessment | 13 |"
+    ],
+    "figure-index.md": [
+      "F-13-01",
+      "T-13-01",
+      "T-13-02",
+      "T-13-03",
+      "T-13-04",
+      "T-13-05"
+    ],
+    "glossary.md": [
+      "## 第13章の用語",
+      "| ART21 Verified |"
+    ],
+    "cases/index.md": [
+      "## 第13章の教育用補足",
+      "PSA-2026-013"
+    ],
+    "cases/fixtures/index.md": [
+      "## 第13章 Platform and Supply Chain Assessment",
+      "ch13-supply-chain.schema.json"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "第6章・第7章・第8章・第9章・第10章・第12章・第13章の公開前"
+    ],
+    "CHANGELOG.md": [
+      "第13章の本文・ART-21・完全合成記入例",
+      "SourceからRuntimeまでの追跡と五状態"
+    ]
+  },
+  "documents": {
+    "manuscript/13-platform-supply-chain.md": {
+      "headings": [
+        [
+          1,
+          "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "13.1 判断要求と親の境界"
+        ],
+        [
+          2,
+          "13.2 三つのPlaneと変更可能点"
+        ],
+        [
+          2,
+          "13.3 Source、Dependency、外部Action"
+        ],
+        [
+          2,
+          "13.4 Human、Workload、Runner、Secret class"
+        ],
+        [
+          2,
+          "13.5 Digest、署名、Provenance、SBOM"
+        ],
+        [
+          2,
+          "13.6 Registry、Promotion、Deployment、Runtime"
+        ],
+        [
+          2,
+          "13.7 五状態とEvidenceの上限"
+        ],
+        [
+          2,
+          "13.8 観測、検証、判断へ渡す"
+        ],
+        [
+          2,
+          "13.9 安全な分析課題"
+        ],
+        [
+          2,
+          "作成する成果物と評価基準"
+        ],
+        [
+          2,
+          "よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この章の位置付け 同じrelease tagを指すArtifactに署名とSBOMが付いていれば、そのまま本番へ進めてよいでしょうか。確認すべきなのは資料の数ではなく、誰が何を変更でき、その資料がどのSource、Build、Artifact、Deploymentを指すかです。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章はART-21 Platform and Supply Chain Assessmentへ判断を残します。Cloud、Container、CI/CD、Dependency、SaaSを個別の製品手順にせず、SourceからRuntimeまでの信頼境界として扱います。供給された合成summaryの比較だけで課題が完結します。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "前提知識 第4章のAssetとBoundary、第6章の観測条件、第9章の許可、第12章の主体と権限の区別を前提にします。実Cloud account、実CI、実Registry、実Tokenは不要です。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "完全合成CaseはCASE-2026-001をrefinesするPSA-2026-013です。ここでBuild、Promotion、Runtimeと呼ぶものも、作成者が記述した非実行の記録です。実Packageの取得やビルドを行ったという意味ではありません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "13.1 判断要求と親の境界 問いは「供給記録のどこまでが同じ対象に結び付き、何が未確認か」です。確認事実（教材内）は八ChainのFieldと参照関係です。仮定として架空の請求書連携サービスを置きます。分析判断は、tagや署名の存在から許可を導かず、変更可能点と観測不足を管理することです。代替説明は正常な変更、記録遅延、資料不足で、確信度は中、出所不明の記録は低とします。実環境への一般化はしません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.1 判断要求と親の境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "親DR-2026-001の歴史的期限2026-07-22T00:00:00Z、TM-2026-001のNeeds Evidenceを保持します。AUTH-CASE-2026-001は2026-08-19T09:00:00Zで失効し、元のTest windowは2026-08-06T00:00:00Z〜08:00:00Zです。基準時点2026-09-15のROE-2026-009 v1は Draft / Do not proceed / executionAuthorized=false のままです。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.1 判断要求と親の境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第12章のPTH-IAR12-004はcustomer summaryへの権限条件の比較であり、本章のBuildやDeployへの権限ではありません。新しいHuman / Workload IDは架空の役割記述で、親の三RoE Objectへ追加しません。TB-2026-004 / SF-2026-006のcurrent bindingとCoverageはUnknownのままです。独立したCASE-2026-011のEvidenceや許可も借用しません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.1 判断要求と親の境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "13.2 三つのPlaneと変更可能点 表T-13-01: 本章の判断用分類。Providerの実装モデルを統一する分類ではありません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.2 三つのPlaneと変更可能点"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Buildが終わってもControl PlaneとData Planeの責任は終わりません。SaaS連携も、外部サービスという名前だけで一つの箱にせず、誰が連携設定を変更でき、WorkloadがどのDataを扱う予定かを分けます。本CaseのSaaSはmetadata-onlyで、実Providerへの接続はありません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.2 三つのPlaneと変更可能点"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "図F-13-01: Sourceから判断までの記録の対応（本書独自図）。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.2 三つのPlaneと変更可能点"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "入力は完全合成の記録、出力は条件付きの判断です。矢印は実行順の指示ではなく参照IDの対応を示します。途中で同名tagに頼り、Digestや版の対応を失ったら、その先を同じ対象として扱いません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.2 三つのPlaneと変更可能点"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "13.3 Source、Dependency、外部Action Branchやtagは便利な名前ですが、その名前だけを変更不能な対象識別子として使いません。Source revision、Dependency lock、Actionの版・Source・Review状態を別欄に残します。Lockがあることと、内容が審査済みであることも別です。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.3 Source、Dependency、外部Action"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SSDF 1.1のPS.1.1はSource等への最小権限、PS.2.1はreleaseの完全性検証情報、PS.3はreleaseと出所情報の保持、PW.4.4は第三者Componentの継続的評価を扱います。本章はこれらを根拠に、取得元・版・変更履歴・審査の問いを分けます。特定のPackageが安全であるとの判定はしません。SRC-NIST-SSDF-001"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.3 Source、Dependency、外部Action"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "悪い例はmutable branchだけを記録し、それをVerifiedとする判断です。八Chainの002はこの問題をRejectedとして残します。003はunversioned actionと未審査の記録です。公開Package名や実リポジトリを脆弱な対象例にせず、合成の名前と予約済みDomainだけを使います。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.3 Source、Dependency、外部Action"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "13.4 Human、Workload、Runner、Secret class HumanはPromotion計画をレビューする役割、WorkloadはBuild summaryの役割として別IDとPermissionを持ちます。Humanの承認という記載だけでWorkloadへ広い権限を与えず、Workloadの技術的な成功からHumanの承認を推定しません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.4 Human、Workload、Runner、Secret class"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "RunnerはIsolation、Network、Cache、実行権限を分けて読みます。ephemeralというラベルだけでは、状態の残存や他のBuildからの影響がない証拠になりません。004のruntime-write-excessは、期待するbuild-summary-onlyとの矛盾です。実際の権限行使は行わず、資料上の不一致としてRejectedにします。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.4 Human、Workload、Runner、Secret class"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Secretはclassだけを記録し、値、Cookie、Tokenを教材へ含めません。SP 800-190の§4.1.4はImageへのSecret埋込みを避ける考え方、§3.5.2は共有Kernelの残余リスクを扱います。2017年の原則を用いるもので、現在のContainer製品や隔離の保証ではありません。SRC-NIST-CONTAINER-001"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.4 Human、Workload、Runner、Secret class"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "13.5 Digest、署名、Provenance、SBOM 表T-13-02: 異なる問いを同じ「確認済み」へ畳み込まない。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.5 Digest、署名、Provenance、SBOM"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SLSA 1.2ではSource TrackとBuild Trackを区別します。前者はSource revisionの作成過程、後者はArtifactとBuildの出所情報を扱います。本書の五状態とSLSA levelを対応させません。SRC-SLSA-001"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.5 Digest、署名、Provenance、SBOM"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Artifact検証では、対象Digest、信頼するBuilderと署名の検証、Source、Build type、想定Parameterを分けます。Provenanceを持つだけでは確認が終わらず、Build L3もBuild platform自体の侵害を保証範囲へ含めません。未知のexternalParametersを拒否する規範上の推奨と、任意の外側拡張Fieldの扱いは同一ではありません。SRC-SLSA-001"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.5 Digest、署名、Provenance、SBOM"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本Caseのexpectationsは作成者が別に与えた比較条件です。chainが自称するBuilderから期待値を作りません。ただし実際のroot of trustではなく、署名状態はRecorded-unverified、実署名検証回数は0です。Verifiedは供給summaryの有限照合だけを意味し、実際のTrusted / Policy-compliant / Safeはすべて未評価です。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.5 Digest、署名、Provenance、SBOM"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SPDX公式一覧のCurrent Versionは3.0、版別HTMLは3.0.1です。本章では所在と版を区別する参照に限定します。供給する簡略SBOMは本書独自のsummaryで、SPDX JSON-LDやSLSA Attestationの標準適合文書ではありません。SRC-SPDX-001"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.5 Digest、署名、Provenance、SBOM"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "13.6 Registry、Promotion、Deployment、Runtime Registryの同じtagでも、記録時点が違えば指す内容が異なる可能性があります。Artifact IDとDigestをRegistry、Promotion、Deployment、Runtimeへ直接結びます。008はRuntimeの記録Digestだけが異なる対比で、他の資料が整っていてもRejectedです。差異は侵害の断定ではなく、同一対象という必要条件への反証です。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.6 Registry、Promotion、Deployment、Runtime"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "StagingからProductionへのPromotionは本CaseではPlanned-only、approved=falseです。DeploymentもPlanned-only、RuntimeはAuthored-snapshot-not-deployedです。架空の将来構成の対応を調べることと、変更を実施した記録は別です。Deployment成功や復旧成功を捏造しません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.6 Registry、Promotion、Deployment、Runtime"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "13.7 五状態とEvidenceの上限 表T-13-03: ART-21の有限状態。標準認証や五段階の成熟度ではありません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.7 五状態とEvidenceの上限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "既知の矛盾は他の不足より優先します。矛盾がなく必要な記録がnullならUnknownです。すべて既知でも、EvidenceのbasisがDeclared summaryならDeclared、Observed summaryならObservedに留めます。Compared summaryと同一の期待値があって初めてVerifiedとします。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.7 五状態とEvidenceの上限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "001は有限一致、002〜004は前述の悪い記録、005は出所不足、006は宣言だけ、007は観測summaryだけ、008はRuntime差異です。全件をVerifiedへ直すことが課題ではありません。UnknownやRejectedに根拠、Owner、期限を付けられれば有効な成果物です。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.7 五状態とEvidenceの上限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "13.8 観測、検証、判断へ渡す 攻撃者視点では変更可能点を仮説化し、防御者視点ではVersion、Builder、Permission、Digestの差異を観測候補にします。分析者は正常な変更や資料遅延を代替説明として比較し、意思決定者は追加資料、境界の見直し、保留を選びます。実環境での動作や侵害を推測で断定しません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.8 観測、検証、判断へ渡す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "各ChainのFindingはEvidenceを直接参照し、Treatment、Owner、期限、Decision、Reassessmentへ続きます。第14章には一つの必要条件と最小Evidence、第16章にはSource revision / Builder / Artifact digest / Deployment ID / Event time、第27章にはModel・Dataの供給過程でも再検討すべき境界を渡します。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.8 観測、検証、判断へ渡す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Handoffはplanned-not-deliveredです。第6章の観測状態や第12章のPath stateを、この五状態で更新しません。後続担当者の受領と新たな許可がないまま実施計画へ昇格させません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.8 観測、検証、判断へ渡す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "13.9 安全な分析課題 Purpose: 八ChainをART-21へ整理し、署名・SBOM・tagがあるだけでVerifiedへ進めるかを、Caseを見る前に予想します。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: Case、合成JSON、閉じたSchemaだけを使います。実Cloud、CI、Registry、Token、Package installは使用しません。任意検査はLinux/WSL2と出版基盤の固定依存が導入済みの本Repositoryでだけ行います。依存取得は演習に含めません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence / Impact: 出力はChain ID、必要条件、Evidence ID、五状態、反証またはGap、Owner、再評価条件です。任意コマンドはローカル教材の整合性だけを検査します。実Build、実Deploy、実署名検証、実許可発行は0です。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stop / Cleanup: 未知の入力、実Dataらしい内容、外部接続の必要性、親の許可・範囲との不一致があれば停止します。失敗時は公開を止めます。自分の作業コピーだけを整理し、正本と親Evidenceを保持します。課題は30分、作業summaryは65,536byte以内、保持は終了後24時間以内を目安とし、削除や隔離の実施成功を検査結果から推定しません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Schemaは供給教材だけの閉じたFieldと語彙を定義します。未知Fieldや値を拒否する契約であり、任意の実Secretを識別する検知器、標準適合validator、学習者の任意Artifactを採点する製品ではありません。表示されるDigestは合成ラベルから作成した値で、実Artifactのbyteを検証した証拠ではありません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "作成する成果物と評価基準 ART-21 TemplateはJSONなしでも記入できます。実データではなく本Caseの記録だけで判断の筋道を説明してください。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "表T-13-04: 各観点0点（欠落）、1点（曖昧）、2点（直接追跡できる）のRubric。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "8点以上を教材の目安とします。ただし実Data混入、根拠のないVerified、実行許可への昇格、親記録の変更は点数にかかわらず差し戻します。資格や実務能力の認定ではありません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "章のまとめ SourceからRuntimeまで、同じ対象・版・主体・期待値を追跡して初めて、記録の一致と不足を分けられます。ART-21は製品チェック数ではなく、その根拠と判断の上限を残す成果物です。有限一致を実際の安全性や実行許可へ一般化しません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "章のまとめ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "次に学ぶこと 第14章の検証設計へ、反証できる必要条件、最小Evidence、停止条件を渡します。現時点ではplanned-not-deliveredで、目次から今後の構成を確認できます。第16章へ観測Field、第27章へAIの供給過程の境界を引き継ぐ計画も残します。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "次に学ぶこと"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "参考文献・Source Note ID 確認日は2026-09-15です。SSDF 1.1はFinal、1.2はInitial Public Draftとして分離し、SLSAは1.2 Approvedを採用します。採用節、版、限界、再確認条件はSource Review Noteに記録します。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/it-infra-security-guide-book/"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "この章の位置付け",
+            "OWN / BRIDGE / DELEGATE"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "OWN / BRIDGE / DELEGATE DELEGATE: Provider CLI、KubernetesやContainerの設定強化、CI製品とPackage managerの操作はITインフラセキュリティとPodmanによるコンテナ運用へ委譲します。戻ったら設定コマンドではなく、必要条件、Owner、Evidence、停止条件をART-21へ記入します。Supply-chain exploitの実演は含めません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/podman-book/"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "この章の位置付け",
+            "OWN / BRIDGE / DELEGATE"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "OWN / BRIDGE / DELEGATE DELEGATE: Provider CLI、KubernetesやContainerの設定強化、CI製品とPackage managerの操作はITインフラセキュリティとPodmanによるコンテナ運用へ委譲します。戻ったら設定コマンドではなく、必要条件、Owner、Evidence、停止条件をART-21へ記入します。Supply-chain exploitの実演は含めません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SSDF 1.1のPS.1.1はSource等への最小権限、PS.2.1はreleaseの完全性検証情報、PS.3はreleaseと出所情報の保持、PW.4.4は第三者Componentの継続的評価を扱います。本章はこれらを根拠に、取得元・版・変更履歴・審査の問いを分けます。特定のPackageが安全であるとの判定はしません。SRC-NIST-SSDF-001"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.3 Source、Dependency、外部Action"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Secretはclassだけを記録し、値、Cookie、Tokenを教材へ含めません。SP 800-190の§4.1.4はImageへのSecret埋込みを避ける考え方、§3.5.2は共有Kernelの残余リスクを扱います。2017年の原則を用いるもので、現在のContainer製品や隔離の保証ではありません。SRC-NIST-CONTAINER-001"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.4 Human、Workload、Runner、Secret class"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SLSA 1.2ではSource TrackとBuild Trackを区別します。前者はSource revisionの作成過程、後者はArtifactとBuildの出所情報を扱います。本書の五状態とSLSA levelを対応させません。SRC-SLSA-001"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.5 Digest、署名、Provenance、SBOM"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SPDX公式一覧のCurrent Versionは3.0、版別HTMLは3.0.1です。本章では所在と版を区別する参照に限定します。供給する簡略SBOMは本書独自のsummaryで、SPDX JSON-LDやSLSA Attestationの標準適合文書ではありません。SRC-SPDX-001"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.5 Digest、署名、Provenance、SBOM"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/main/CANONICAL_SOURCE.md"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: Case、合成JSON、閉じたSchemaだけを使います。実Cloud、CI、Registry、Token、Package installは使用しません。任意検査はLinux/WSL2と出版基盤の固定依存が導入済みの本Repositoryでだけ行います。依存取得は演習に含めません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter13_contract.py"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "参考文献・Source Note ID 確認日は2026-09-15です。SSDF 1.1はFinal、1.2はInitial Public Draftとして分離し、SLSAは1.2 Approvedを採用します。採用節、版、限界、再確認条件はSource Review Noteに記録します。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Secretはclassだけを記録し、値、Cookie、Tokenを教材へ含めません。SP 800-190の§4.1.4はImageへのSecret埋込みを避ける考え方、§3.5.2は共有Kernelの残余リスクを扱います。2017年の原則を用いるもので、現在のContainer製品や隔離の保証ではありません。SRC-NIST-CONTAINER-001"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.4 Human、Workload、Runner、Secret class"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-CONTAINER-001: SP 800-190、共有KernelとSecretの境界に限る歴史的原則。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "exerciseInstructionOrder": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "13.9 安全な分析課題 Purpose: 八ChainをART-21へ整理し、署名・SBOM・tagがあるだけでVerifiedへ進めるかを、Caseを見る前に予想します。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: Case、合成JSON、閉じたSchemaだけを使います。実Cloud、CI、Registry、Token、Package installは使用しません。任意検査はLinux/WSL2と出版基盤の固定依存が導入済みの本Repositoryでだけ行います。依存取得は演習に含めません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence / Impact: 出力はChain ID、必要条件、Evidence ID、五状態、反証またはGap、Owner、再評価条件です。任意コマンドはローカル教材の整合性だけを検査します。実Build、実Deploy、実署名検証、実許可発行は0です。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stop / Cleanup: 未知の入力、実Dataらしい内容、外部接続の必要性、親の許可・範囲との不一致があれば停止します。失敗時は公開を止めます。自分の作業コピーだけを整理し、正本と親Evidenceを保持します。課題は30分、作業summaryは65,536byte以内、保持は終了後24時間以内を目安とし、削除や隔離の実施成功を検査結果から推定しません。"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter13_contract.py"
+          ],
+          "headings": [
+            "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する",
+            "13.9 安全な分析課題"
+          ]
+        }
+      ]
+    },
+    "templates/platform-supply-chain-assessment.md": {
+      "headings": [
+        [
+          1,
+          "ART-21 Platform and Supply Chain Assessment"
+        ],
+        [
+          2,
+          "目的と使用範囲"
+        ],
+        [
+          2,
+          "Authority / Scope / Safety"
+        ],
+        [
+          2,
+          "記入欄"
+        ],
+        [
+          2,
+          "Stateと判断の規則"
+        ],
+        [
+          2,
+          "親と次工程への接続"
+        ],
+        [
+          2,
+          "Stop / Cleanup / Rubric"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "目的と使用範囲 SourceからRuntimeまでの変更可能点、必要条件、Evidence、判断の上限を記録するTemplateです。第13章と完全合成記入例を使います。本Templateの完成は、実Cloud、CI、Registry、Package、Tokenへの操作許可ではありません。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "目的と使用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Authority / Scope / Safety Assessment ID、Case ID、Service ID、RoE IDと版、対象、期限、Stop、Ownerを最初に記入します。CASE-2026-001の補足ならrefinesを明示し、親RoE Draft / Do not proceed / executionAuthorized=false、失効したAUTHと元Window、三Objectを変更しません。独立CASE-2026-011の許可やEvidenceは借用しません。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "Authority / Scope / Safety"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "合成Policy、SBOM summary、Provenance summary、Build log summary、Artifact metadataだけを用います。Secretはclassのみで、実値、Token、Cookie、Credentialは使用しません。実Cloud、実Registry、実CIへ接続せず、実Build、実Deploy、署名検証を実施しません。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "Authority / Scope / Safety"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "記入欄 表T-13-05: 一つのAssessmentについて、同じ対象と版を直接IDで接続する。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Identity Assessment / Case / Service / RoE / revision / asOf 別Caseや失効記録から許可を借用"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Platform Control / Build / Data Plane、Runtime boundary、SaaS scope 境界とOwnerが不明"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Source Repository / revision / Lock ID / Lock digest branch名やtagだけを不変根拠にする"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Dependency / Action ID / version / Source / review / revision 未審査やunversionedをVerifiedへ昇格"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Principal / Secret Human / Workload ID、Permission、Owner、Secret class IDと分類 主体の混同、Secret値の入力"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Build ID / Source ID / revision / Lock / Builder / Runner / Isolation / Network / Cache / log ID 別Sourceや過大権限を見落とす"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Artifact ID / Build ID / Digest / Signature status / SBOM ID 署名やSBOMの存在を安全保証にする"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Provenance ID / subject digest / Source / Lock / Builder / build type / parameters 対象や信頼する主体が別"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Promotion / Runtime Registry / Digest / environment / Promotion / Deployment / Runtime IDsと各状態 同名tagで差替えを見落とす"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Evidence / State 同じChain / version / expectation / basis / 五状態 / 反証またはGap 別対象のEvidence、根拠のない昇格"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field group 必須欄 差し戻す条件 Decision Finding / Treatment / Owner / 期限 / Decision / Reassessment 次の問いと責任が不明"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stateと判断の規則 状態はDeclared / Observed / Verified / Rejected / Unknownの五つだけです。これは本書の記録契約で、SLSA levelでも標準適合証明でもありません。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "Stateと判断の規則"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "必要条件の既知の矛盾があればRejected、矛盾がなく必要な情報が不明ならUnknownです。条件が一致しても宣言summaryだけならDeclared、観測summaryだけならObservedです。同一Chain、版、期待値、Evidenceを使った有限比較が一致するときだけVerifiedとします。実測がない本Caseでは、Observedという語も作成者が記述した観測summaryの範囲です。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "Stateと判断の規則"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Signed、Trusted、Policy-compliant、Safeと実施許可は別の問いです。期待するBuilderを、未検証のProvenance自身の主張から採用しません。Recorded-unverifiedな署名、未評価のTrustやComplianceを、有限Verifiedで上書きしません。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "Stateと判断の規則"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "親と次工程への接続 ART-21→第12章Identity Path→第6章Signal Flow→第4章Threat Modelを直接IDで結びます。ただし背景のGapを参照するだけなら、その用途を明示します。customer summaryへのPermissionをBuild/Deployへ転用しません。非FederationのIssuer / Audience / RPがnullであることと、不足資料のUnknownも区別します。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "親と次工程への接続"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第14章へValidation question、第16章へBuild/Deployの相関Field、第27章へModel/Data供給過程の境界を渡す計画を残します。現在はplanned-not-deliveredで、親の状態やCoverageを更新しません。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "親と次工程への接続"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stop / Cleanup / Rubric 未知の入力、実Dataらしい内容、外部接続の必要性、許可・境界の不一致があれば停止します。自分の作業コピーだけを整理し、正本と親Evidenceを保持します。合成ラベルのDigestを実Artifactの検証結果として記入しません。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "Stop / Cleanup / Rubric"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第13章の五観点Rubricを用い、各0〜2点、8点以上を教材の目安にします。実Data混入、根拠のないVerified、実行許可への昇格、親記録変更があれば点数にかかわらず差し戻します。Unknownでも根拠・Owner・期限があれば有効な成果物です。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "Stop / Cleanup / Rubric"
+          ]
+        }
+      ],
+      "hostProvenance": [],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "合成Policy、SBOM summary、Provenance summary、Build log summary、Artifact metadataだけを用います。Secretはclassのみで、実値、Token、Cookie、Credentialは使用しません。実Cloud、実Registry、実CIへ接続せず、実Build、実Deploy、署名検証を実施しません。"
+          ],
+          "headings": [
+            "ART-21 Platform and Supply Chain Assessment",
+            "Authority / Scope / Safety"
+          ]
+        }
+      ]
+    },
+    "cases/ch13-platform-supply-chain-example.md": {
+      "headings": [
+        [
+          1,
+          "第13章 完全合成記入例：Platform and Supply Chain Assessment"
+        ],
+        [
+          2,
+          "この記入例の扱い"
+        ],
+        [
+          2,
+          "読み方と対比"
+        ],
+        [
+          2,
+          "停止条件と評価"
+        ],
+        [
+          2,
+          "schemaVersion"
+        ],
+        [
+          2,
+          "synthetic"
+        ],
+        [
+          2,
+          "record"
+        ],
+        [
+          2,
+          "parents"
+        ],
+        [
+          2,
+          "parentIdentity"
+        ],
+        [
+          2,
+          "safety"
+        ],
+        [
+          2,
+          "platform"
+        ],
+        [
+          2,
+          "principals HUM-PSA13-001"
+        ],
+        [
+          2,
+          "principals WRK-PSA13-001"
+        ],
+        [
+          2,
+          "secretClasses SEC-PSA13-001"
+        ],
+        [
+          2,
+          "secretClasses SEC-PSA13-002"
+        ],
+        [
+          2,
+          "expectations EXP-PSA13-001"
+        ],
+        [
+          2,
+          "expectations EXP-PSA13-002"
+        ],
+        [
+          2,
+          "expectations EXP-PSA13-003"
+        ],
+        [
+          2,
+          "expectations EXP-PSA13-004"
+        ],
+        [
+          2,
+          "expectations EXP-PSA13-005"
+        ],
+        [
+          2,
+          "expectations EXP-PSA13-006"
+        ],
+        [
+          2,
+          "expectations EXP-PSA13-007"
+        ],
+        [
+          2,
+          "expectations EXP-PSA13-008"
+        ],
+        [
+          2,
+          "chains CHN-PSA13-001"
+        ],
+        [
+          2,
+          "chains CHN-PSA13-002"
+        ],
+        [
+          2,
+          "chains CHN-PSA13-003"
+        ],
+        [
+          2,
+          "chains CHN-PSA13-004"
+        ],
+        [
+          2,
+          "chains CHN-PSA13-005"
+        ],
+        [
+          2,
+          "chains CHN-PSA13-006"
+        ],
+        [
+          2,
+          "chains CHN-PSA13-007"
+        ],
+        [
+          2,
+          "chains CHN-PSA13-008"
+        ],
+        [
+          2,
+          "handoffs HOF-PSA13-014"
+        ],
+        [
+          2,
+          "handoffs HOF-PSA13-016"
+        ],
+        [
+          2,
+          "handoffs HOF-PSA13-027"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この記入例の扱い ART-21 / PSA-2026-013はCASE-2026-001をrefinesする非実行の教材です。全記録・時刻・Digest・Identity・判断は作成者が記述したもので、実Cloud、CI、Registry、Token、Package、Build、Deploymentの測定結果ではありません。Digestは合成ラベル由来で、実Artifactのbyte検証ではありません。"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "この記入例の扱い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第13章、空Template、正本JSON、閉じたSchemaを参照します。以下はJSONの全末端Fieldと一対一のField/Value表です。添字は0始まりです。"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "この記入例の扱い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "読み方と対比 最初にparents、parentIdentity、safetyを読みます。親RoE Draft / Do not proceed / executionAuthorized=false、失効AUTH、元Window、三Objectを変更しません。第12章のcustomer-summary権限は本章のBuild/Deploy許可ではありません。独立CASE-2026-011のEvidenceも借用しません。"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "読み方と対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "001はexpectationsと同一対象の有限比較が一致、002はmutable source、003はunversioned action、004はRunnerの過大権限、005はProvenance不足、006は宣言だけ、007は観測summaryだけ、008はRuntime Digest差異です。状態はDeclared / Observed / Verified / Rejected / Unknownで、全件をVerifiedに揃えません。"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "読み方と対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Signed、Trusted、Policy-compliant、Safeと実施許可は分離します。全署名はRecorded-unverified、実署名検証0、実Trustと標準適合は未評価です。001のVerifiedも本書独自summaryの比較だけであり、SPDX/SLSA準拠、実署名や実Buildの成功ではありません。既知の矛盾はRejected、矛盾がなく必要記録が不明ならUnknownです。"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "読み方と対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認事実は供給Fieldだけ、分析判断はfinding、仮定はPlatformと時刻、推奨はTreatment計画です。正常な変更、資料遅延、不足を代替説明として保持し、版や資料が変われば再評価します。SourceからRuntimeまでをIDで辿り、Finding / Treatment / Owner / Decision / Reassessmentを読みます。"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "読み方と対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "停止条件と評価 実Dataらしい内容、未知入力、外部接続、許可不明なら停止します。実Token、実Credential、実Registry、実CIは使用しません。自分の作業コピーだけを整理し、正本と親Evidenceを保持します。第13章の五観点Rubricを使い、根拠のない状態昇格、親記録変更、実Data混入は点数にかかわらず差し戻します。Handoffはplanned-not-deliveredです。"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "停止条件と評価"
+          ]
+        }
+      ],
+      "hostProvenance": [],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "secretClasses SEC-PSA13-002 Field Value owner SYNTH-BUILD-OWNER"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "secretClasses SEC-PSA13-002"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-001 Field Value build/secretClassId SEC-PSA13-002"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-001"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-002 Field Value build/secretClassId SEC-PSA13-002"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-002"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-003 Field Value build/secretClassId SEC-PSA13-002"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-003"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-003 Field Value deployment/digest 0ba0c99132d6e945af38d032bd5dd175368bbbe90a5e486dc81833cf48c0ac2b"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-003"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-004 Field Value build/secretClassId SEC-PSA13-002"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-004"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-004 Field Value deployment/digest 9228102d16300a4ec3b9ce86327ed14b05b9ad287a94314a7ecdaac253f0a40b"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-004"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-005 Field Value build/sourceRevision a561b92f0034a2fecc2077af920a1ea3b3919146"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-005"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-005 Field Value build/lockDigest e96862b409d4bf25394ce710f8e398b2c11806c327fcc219a1fdb1be1c240b7f"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-005"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-005 Field Value build/secretClassId SEC-PSA13-002"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-005"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-005 Field Value deployment/digest 2212905502d5c258c6894da127b8daab0d9a33e41201d4d13faed328ef75ef60"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-005"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-006 Field Value build/secretClassId SEC-PSA13-002"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-006"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-007 Field Value build/secretClassId SEC-PSA13-002"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-007"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-008 Field Value build/sourceRevision b5e904c240aad31128eef64b478a295fc317d179"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-008"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "chains CHN-PSA13-008 Field Value build/secretClassId SEC-PSA13-002"
+          ],
+          "headings": [
+            "第13章 完全合成記入例：Platform and Supply Chain Assessment",
+            "chains CHN-PSA13-008"
+          ]
+        }
+      ]
+    },
+    "references/ch13-source-review-2026-09-15.md": {
+      "headings": [
+        [
+          1,
+          "第13章 Source Review Note：PlatformとSupply Chain"
+        ],
+        [
+          2,
+          "確認範囲"
+        ],
+        [
+          2,
+          "SSDF"
+        ],
+        [
+          2,
+          "SLSA"
+        ],
+        [
+          2,
+          "Container"
+        ],
+        [
+          2,
+          "SPDX"
+        ],
+        [
+          2,
+          "取得証跡と制限"
+        ],
+        [
+          2,
+          "再確認条件"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認範囲 確認日は2026-09-15です。第13章とART-21の採用主張だけを一次資料へ照合しました。全規範、Provider、実Package、標準適合を監査したとは主張しません。AI生成物や非正本草稿を出典にしません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "確認範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SSDF SRC-NIST-SSDF-001はNIST SP 800-218 / SSDF 1.1です。Date PublishedはFebruary 2022、Document Historyは2022-02-03 Finalです。公開月と履歴上の日付を区別し、厳密な公開日は未確定としてRegistryのpublishedAtをnullにします。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SSDF"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "一次本文のPS.1.1、PS.2.1、PS.3.1/3.2、PW.4.4を限定確認しました。採用するのは最小権限、release完全性の情報、出所記録、第三者Componentの継続的評価を分ける考え方です。例示される操作を本章の実行手順にはしません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SSDF"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Rev.1 / SSDF 1.2は2025-12-17 Initial Public Draftで、コメント期間は終了しています。Finalとして採用しません。公式のpotential updates表はXML cellとして読み、p.iii謝辞の社名綴り訂正候補1件を確認しました。新しい技術要件や正式改訂として扱いません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SSDF"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SLSA SRC-SLSA-001はSLSA 1.2 Approvedです。公式release発表の日付は2025-11-24です。これは公開発表日であり、承認決議日を独立確認したものではありません。1.1はRetiredで、過去設計コメントの「1.1 current」は再採用しません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SLSA"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用範囲はTracks、Build Track Basics、Verifying artifactsの手順1/2と前提です。SourceとBuildの保証対象、対象Digest、署名の検証と期待するBuilder、Source、buildType、externalParametersを分けます。Build platform自体の侵害はBuild L3の保証範囲外という限定を維持します。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SLSA"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "教材のexpectationsは別の供給記録として固定した比較条件で、実際のroot of trustではありません。五状態や閉Schemaは本書独自で、実SLSA level判定、標準Attestation parser、署名検証器を実装しません。未知externalParametersの拒否と任意拡張Fieldの互換性を一律に扱いません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SLSA"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Container SRC-NIST-CONTAINER-001はNIST SP 800-190です。Date PublishedはSeptember 2017、Document Historyは2017-09-25 Finalです。既存の第8章Source identityと利用範囲を変更しません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "Container"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "一次本文の§3.5.2、§4.1.4を限定確認しました。共有KernelとSecretの境界に関する歴史的原則だけを採用し、現行製品、具体的設定、隔離成功を保証しません。本Noteが第13章の追加利用範囲を記録します。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "Container"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SPDX SRC-SPDX-001は公式仕様一覧のCurrent Version 3.0と、そこから参照できる版別HTML 3.0.1です。一覧のminor表記と版別patch表記を区別します。厳密な公開日は分からないためpublishedAtはnullとします。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SPDX"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用するのは仕様の所在と版の確認だけです。全SPDXモデル、Schema、JSON-LDを読了・実装したとは主張しません。供給するSBOM summaryは本書独自形式で、SPDX適合文書でも完全なComponent inventoryでもありません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SPDX"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "取得証跡と制限 公式HTMLは取得byte、HTTP status、SHA-256、response Dateをローカル証跡へ保存しました。HTTP取得時刻と資料公開日を区別します。公式PDFはweb readerで上記節を確認しました。ローカルPDF取得はHTTP403となったため、全PDFのローカルhash監査や完全保存を主張しません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "取得証跡と制限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "外部Source URLは資料の参照先であって演習Targetではありません。実Cloud、CI、Registry、Token、実Packageへ接続して評価したものではありません。署名、Trust、Compliance、Safety、許可は別の問いとして保持します。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "取得証跡と制限"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "再確認条件 SSDFのFinal化・改訂・更新候補、SLSAの版・status・検証前提、SPDXの版や所在、NIST Containerの改訂・廃止・利用範囲変更で再確認します。次回期限はSSDF/SLSA/SPDXが2026-12-15、Containerが2027-09-15です。Registry全体の基準日は進めず、今回確認した項目だけを更新します。読者影響をCHANGELOGへ記録します。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "再確認条件"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SSDF SRC-NIST-SSDF-001はNIST SP 800-218 / SSDF 1.1です。Date PublishedはFebruary 2022、Document Historyは2022-02-03 Finalです。公開月と履歴上の日付を区別し、厳密な公開日は未確定としてRegistryのpublishedAtをnullにします。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SSDF"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/218/final"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SSDF"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SSDF SRC-NIST-SSDF-001はNIST SP 800-218 / SSDF 1.1です。Date PublishedはFebruary 2022、Document Historyは2022-02-03 Finalです。公開月と履歴上の日付を区別し、厳密な公開日は未確定としてRegistryのpublishedAtをnullにします。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "一次本文のPS.1.1、PS.2.1、PS.3.1/3.2、PW.4.4を限定確認しました。採用するのは最小権限、release完全性の情報、出所記録、第三者Componentの継続的評価を分ける考え方です。例示される操作を本章の実行手順にはしません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SSDF"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-218.pdf"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SSDF"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "一次本文のPS.1.1、PS.2.1、PS.3.1/3.2、PW.4.4を限定確認しました。採用するのは最小権限、release完全性の情報、出所記録、第三者Componentの継続的評価を分ける考え方です。例示される操作を本章の実行手順にはしません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Rev.1 / SSDF 1.2は2025-12-17 Initial Public Draftで、コメント期間は終了しています。Finalとして採用しません。公式のpotential updates表はXML cellとして読み、p.iii謝辞の社名綴り訂正候補1件を確認しました。新しい技術要件や正式改訂として扱いません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SSDF"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/218/r1/ipd"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SSDF"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Rev.1 / SSDF 1.2は2025-12-17 Initial Public Draftで、コメント期間は終了しています。Finalとして採用しません。公式のpotential updates表はXML cellとして読み、p.iii謝辞の社名綴り訂正候補1件を確認しました。新しい技術要件や正式改訂として扱いません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/files/pubs/sp/800/218/final/docs/sp800-218-potential-updates.xlsx"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SSDF"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Rev.1 / SSDF 1.2は2025-12-17 Initial Public Draftで、コメント期間は終了しています。Finalとして採用しません。公式のpotential updates表はXML cellとして読み、p.iii謝辞の社名綴り訂正候補1件を確認しました。新しい技術要件や正式改訂として扱いません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SLSA SRC-SLSA-001はSLSA 1.2 Approvedです。公式release発表の日付は2025-11-24です。これは公開発表日であり、承認決議日を独立確認したものではありません。1.1はRetiredで、過去設計コメントの「1.1 current」は再採用しません。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SLSA"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://slsa.dev/spec/v1.2/"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SLSA"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SLSA SRC-SLSA-001はSLSA 1.2 Approvedです。公式release発表の日付は2025-11-24です。これは公開発表日であり、承認決議日を独立確認したものではありません。1.1はRetiredで、過去設計コメントの「1.1 current」は再採用しません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://slsa.dev/blog/2025/11/announce-slsa-v1.2"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SLSA"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SLSA SRC-SLSA-001はSLSA 1.2 Approvedです。公式release発表の日付は2025-11-24です。これは公開発表日であり、承認決議日を独立確認したものではありません。1.1はRetiredで、過去設計コメントの「1.1 current」は再採用しません。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://slsa.dev/spec/v1.2/tracks"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SLSA"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用範囲はTracks、Build Track Basics、Verifying artifactsの手順1/2と前提です。SourceとBuildの保証対象、対象Digest、署名の検証と期待するBuilder、Source、buildType、externalParametersを分けます。Build platform自体の侵害はBuild L3の保証範囲外という限定を維持します。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://slsa.dev/spec/v1.2/build-track-basics"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SLSA"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用範囲はTracks、Build Track Basics、Verifying artifactsの手順1/2と前提です。SourceとBuildの保証対象、対象Digest、署名の検証と期待するBuilder、Source、buildType、externalParametersを分けます。Build platform自体の侵害はBuild L3の保証範囲外という限定を維持します。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://slsa.dev/spec/v1.2/verifying-artifacts"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SLSA"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用範囲はTracks、Build Track Basics、Verifying artifactsの手順1/2と前提です。SourceとBuildの保証対象、対象Digest、署名の検証と期待するBuilder、Source、buildType、externalParametersを分けます。Build platform自体の侵害はBuild L3の保証範囲外という限定を維持します。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/190/final"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "Container"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Container SRC-NIST-CONTAINER-001はNIST SP 800-190です。Date PublishedはSeptember 2017、Document Historyは2017-09-25 Finalです。既存の第8章Source identityと利用範囲を変更しません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "一次本文の§3.5.2、§4.1.4を限定確認しました。共有KernelとSecretの境界に関する歴史的原則だけを採用し、現行製品、具体的設定、隔離成功を保証しません。本Noteが第13章の追加利用範囲を記録します。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "Container"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "Container"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "一次本文の§3.5.2、§4.1.4を限定確認しました。共有KernelとSecretの境界に関する歴史的原則だけを採用し、現行製品、具体的設定、隔離成功を保証しません。本Noteが第13章の追加利用範囲を記録します。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SPDX SRC-SPDX-001は公式仕様一覧のCurrent Version 3.0と、そこから参照できる版別HTML 3.0.1です。一覧のminor表記と版別patch表記を区別します。厳密な公開日は分からないためpublishedAtはnullとします。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SPDX"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://spdx.dev/use/specifications/"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SPDX"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SPDX SRC-SPDX-001は公式仕様一覧のCurrent Version 3.0と、そこから参照できる版別HTML 3.0.1です。一覧のminor表記と版別patch表記を区別します。厳密な公開日は分からないためpublishedAtはnullとします。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://spdx.github.io/spdx-spec/v3.0.1/"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "SPDX"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SPDX SRC-SPDX-001は公式仕様一覧のCurrent Version 3.0と、そこから参照できる版別HTML 3.0.1です。一覧のminor表記と版別patch表記を区別します。厳密な公開日は分からないためpublishedAtはnullとします。"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "一次本文の§3.5.2、§4.1.4を限定確認しました。共有KernelとSecretの境界に関する歴史的原則だけを採用し、現行製品、具体的設定、隔離成功を保証しません。本Noteが第13章の追加利用範囲を記録します。"
+          ],
+          "headings": [
+            "第13章 Source Review Note：PlatformとSupply Chain",
+            "Container"
+          ]
+        }
+      ]
+    }
+  }
+}

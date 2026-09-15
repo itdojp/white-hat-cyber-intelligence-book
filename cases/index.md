@@ -49,3 +49,7 @@
 ## 第12章の教育用補足
 
 [Identity Attack Path Reviewの完全合成記入例](ch12-identity-path-review-example.md) / ART-20 / IAR-2026-012はCASE-2026-001をrefinesする。四Principal、十四Edge、六Pathを有限比較し、MFA・設定・合成Event・実施許可を分ける。親RoEのDraft/失効/三Object、Signal Flow Gap、独立CASE-2026-011を変更しない。
+
+## 第13章の教育用補足
+
+[Platform and Supply Chain Assessmentの完全合成記入例](ch13-platform-supply-chain-example.md) / ART-21 / PSA-2026-013はCASE-2026-001をrefinesする。三Planeと八Chainを五状態で評価し、mutable source、unversioned action、過大権限、出所不足、Runtime差異を記録する。実Cloud/CI/Registry/Tokenは使用せず、親RoE Draft/失効/三Objectと独立CASE-2026-011を変更しない。

@@ -361,6 +361,34 @@
       "section": "additional",
       "order": 265,
       "title": "第12章 Source Review Note：Identityとアクセス経路"
+    },
+    {
+      "source": "manuscript/13-platform-supply-chain.md",
+      "destination": "chapters/chapter-13/index.md",
+      "section": "chapters",
+      "order": 56,
+      "title": "第13章 Cloud、Container、CI/CD、Software Supply Chainを評価する"
+    },
+    {
+      "source": "templates/platform-supply-chain-assessment.md",
+      "destination": "templates/platform-supply-chain-assessment/index.md",
+      "section": "additional",
+      "order": 266,
+      "title": "Platform and Supply Chain Assessment"
+    },
+    {
+      "source": "cases/ch13-platform-supply-chain-example.md",
+      "destination": "cases/chapter-13-platform-supply-chain/index.md",
+      "section": "additional",
+      "order": 267,
+      "title": "第13章 完全合成記入例：Platform and Supply Chain Assessment"
+    },
+    {
+      "source": "references/ch13-source-review-2026-09-15.md",
+      "destination": "references/chapter-13-source-review/index.md",
+      "section": "additional",
+      "order": 268,
+      "title": "第13章 Source Review Note：PlatformとSupply Chain"
     }
   ],
   "directoryRoutes": {
@@ -434,6 +462,14 @@
     {
       "source": "schemas/ch12-identity-paths.schema.json",
       "destination": "downloads/ch12-identity-paths.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch13-supply-chain.json",
+      "destination": "downloads/ch13-supply-chain.json"
+    },
+    {
+      "source": "schemas/ch13-supply-chain.schema.json",
+      "destination": "downloads/ch13-supply-chain.schema.json"
     }
   ]
 }

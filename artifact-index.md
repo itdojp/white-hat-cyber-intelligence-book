@@ -22,6 +22,7 @@
 | ART-18 | Lab Safety and Evidence Plan | 8 | `templates/lab-safety-evidence-plan.md` |
 | ART-19 | Attack Surface Register | 10 | `templates/attack-surface-register.md` |
 | ART-20 | Identity Attack Path Review | 12 | `templates/identity-attack-path-review.md` |
+| ART-21 | Platform and Supply Chain Assessment | 13 | `templates/platform-supply-chain-assessment.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -56,3 +57,5 @@
 `ART-19`はCollection Requirement、Source/Provenance/時点、候補Asset、所有Confidence、五Verification states、次Actionの承認不足、Evidence/Gap/Owner/再評価を接続する。[第10章Case](cases/ch10-attack-surface-example.md)はCASE-2026-001をrefinesし、親RoEのDraft/失効/Scopeを変更しない。
 
 `ART-20`はPrincipal/Class/Owner/Lifecycle、Role/Permission/Resource、必要Edge、六Path states、Evidence/Telemetry/Finding/Treatment/再評価を結びます。[第12章Case](cases/ch12-identity-path-review-example.md)は完全合成・非実行で、親RoEのDraft/失効/三Objectを変更しません。
+
+`ART-21`はSource/Lock/Builder/Artifact/Digest/Promotion/RuntimeをEvidence、五状態、Finding/Treatment/Owner/Decision/Reassessmentへ結ぶ。[第13章Case](cases/ch13-platform-supply-chain-example.md)は完全合成で、署名・Trust・Compliance・Safety・実許可を分離し、親の停止状態を変更しない。

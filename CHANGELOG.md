@@ -74,3 +74,13 @@
 - 書籍名を「ホワイトハッカーとサイバーインテリジェンス実践体系」に決定
 - 副題を「攻撃者の行動を理解し、検証・検知・対応・経営判断につなげる」に決定
 - Series UX Profile Bを採用
+
+## 2026-09-15 第13章 Platform / Supply Chain
+
+### Added
+
+- 第13章の本文・ART-21・完全合成記入例、八Chainの供給JSON/閉Schema、有限Layer A、Source Reviewと公開導線を追加。
+
+### Changed
+
+- SourceからRuntimeまでの追跡と五状態を読者向けに明示。署名、Trust、Compliance、Safety、実施許可を分離し、SSDF1.1 Final/SLSA1.2 Approved、SPDX版表記、Container歴史的原則の利用範囲を記録。親の本文・許可・Evidence、共有Policy/Projectionと依存は変更しない。

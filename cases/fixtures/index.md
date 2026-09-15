@@ -52,3 +52,10 @@
 - [閉じたSchema](../../schemas/ch12-identity-paths.schema.json): 供給教材の有限語彙と未知Field拒否。任意のSecretを認識するParserではない。
 
 [全Fieldを掲載したCase](../ch12-identity-path-review-example.md)と一対一で照合する。外部通信・実認証・親の承認変更を行わず、公開前の第12章検査を通過してから生成する。
+
+## 第13章 Platform and Supply Chain Assessment
+
+- [供給JSON](ch13-supply-chain.json): 合成Source、Lock、Build、Artifact、Provenance、Registry、Promotion、Deployment、Runtimeと判断の記録。
+- [閉じたSchema](../../schemas/ch13-supply-chain.schema.json): 供給語彙だけの未知Field拒否。SPDX/SLSAや一般Secret認識のSchemaではない。
+
+[全FieldのCase表示](../ch13-platform-supply-chain-example.md)と一対一で照合する。実Build/Deploy/署名検証/許可発行をせず、第13章の公開前検査後にだけ生成する。
