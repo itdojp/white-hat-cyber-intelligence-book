@@ -1505,7 +1505,7 @@
       "targetId": "chapter-12",
       "issue": 36,
       "targetKind": "chapter",
-      "status": "canonical-pr-open",
+      "status": "consumed",
       "selectedCandidateId": "EIC-0036-bf2b7e4fe16e",
       "canonicalPr": 133,
       "intakeRecord": {
@@ -1558,9 +1558,9 @@
           "packageId": "EIP-0008",
           "inputPath": "chapter12-enterprise-identity.predraft.md",
           "inputSha256": "bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd",
-          "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5673770683",
-          "dispositionReason": "登録設計の来歴として選択。認可workspaceで登録raw名は見つからず、raw読了・実体Hash照合・直接採用は主張しない。同梱Chapter13のDispositionへ伝播しない。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5674704043",
+          "dispositionReason": "PR #133でIssue #36とcurrent contract・再検証済み一次資料から第12章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0008/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter13のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -1581,6 +1581,12 @@
           "effectiveAt": "2026-09-15",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/133",
           "reason": "第12章専用Draft PR #133に本文/ART20/完全合成JSON/Schema/Source/有限Layer AとIntake Recordを結ぶ。通常merge/main公開前のためconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5674704043",
+          "reason": "PR #133通常merge: eec3eca864786ffc8ad25cbbcc6f7a1b24995f98。最終検証headとmerge tree一致。exact-main Book Contract 34927591344 / Book QA 34927591414 / Deploy Pages 34927591325、deployment 6451659627がsuccess。第12章・ART-20・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む34公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter13のDispositionを保持。"
         }
       ]
     },
