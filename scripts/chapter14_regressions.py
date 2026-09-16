@@ -176,6 +176,39 @@ def run_regressions(data, schema, contract, source, projection):
                 rejects(lambda: validate_schema_instance(d, schema)),
             )
 
+    # Every supplied array has a finite upper bound; absent evidence IDs
+    # remain valid empty arrays (the maximum is not a minimum).
+    def schema_arrays(node, value, path=()):
+        if node.get("type") == "array":
+            yield node, value, path
+            if value:
+                yield from schema_arrays(node["items"], value[0], path + ("0",))
+        elif node.get("type") == "object":
+            for name, child in node["properties"].items():
+                yield from schema_arrays(child, value[name], path + (name,))
+
+    for node, values, path in schema_arrays(schema, data):
+        d = deepcopy(data)
+        exemplar = values[0] if values else "EXTRA-EVIDENCE-ID"
+        put(d, path, [deepcopy(exemplar) for _ in range(node["maxItems"] + 1)])
+        check(
+            "CH14-SCHEMA-array-upper-" + "-".join(path),
+            rejects(lambda: validate_schema_instance(d, schema)),
+        )
+    for field in ["validations", "expectations", "handoffs"]:
+        for mutation in ["distinct-extra", "same-count-duplicate"]:
+            d = deepcopy(data)
+            extra = deepcopy(d[field][0])
+            if mutation == "distinct-extra":
+                extra["id"] = "EXTRA-FINITE-RECORD"
+                d[field].append(extra)
+            else:
+                d[field][-1] = extra
+            check(
+                "CH14-SCHEMA-record-count-" + field + "-" + mutation,
+                rejects(lambda: validate_schema_instance(d, schema)),
+            )
+
     # Traverse only the finite supplied document, never an unbounded grammar.
     def objects(obj, path=()):
         if isinstance(obj, dict):
@@ -236,7 +269,7 @@ def run_regressions(data, schema, contract, source, projection):
             (("parentFindingId",), "FND-CASE11-001"),
         ]:
             bad(
-                "BOUNDARY-" + str(i) + "-".join(path),
+                "BOUNDARY-" + str(i) + "-" + "-".join(path),
                 ("validations", str(i)) + path,
                 value,
             )
@@ -617,4 +650,9 @@ def run_regressions(data, schema, contract, source, projection):
         else:
             ok = False
         check("CH14-IO-unknown", ok)
+    check(
+        "CH14-regression-boundary-id-separator",
+        "CH14-BOUNDARY-0-stepsAfterStop" in ids
+        and "CH14-BOUNDARY-0stepsAfterStop" not in ids,
+    )
     return len(ids), errors

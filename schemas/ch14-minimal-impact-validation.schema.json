@@ -139,7 +139,8 @@
             "type": "string",
             "minLength": 1
           },
-          "minItems": 2
+          "minItems": 2,
+          "maxItems": 2
         },
         "authorizationConditions": {
           "type": "array",
@@ -147,7 +148,8 @@
             "type": "string",
             "minLength": 1
           },
-          "minItems": 3
+          "minItems": 3,
+          "maxItems": 3
         },
         "roeId": {
           "type": "string",
@@ -166,7 +168,8 @@
             "type": "string",
             "minLength": 1
           },
-          "minItems": 3
+          "minItems": 3,
+          "maxItems": 3
         },
         "roeExecutionAuthorized": {
           "type": "boolean",
@@ -266,7 +269,8 @@
           "items": {
             "type": "null"
           },
-          "minItems": 3
+          "minItems": 3,
+          "maxItems": 3
         },
         "parentPermission": {
           "type": "string",
@@ -293,7 +297,8 @@
             ]
           },
           "minItems": 8,
-          "uniqueItems": true
+          "uniqueItems": true,
+          "maxItems": 8
         },
         "labRuntimeExecuted": {
           "type": "boolean",
@@ -326,7 +331,8 @@
             ]
           },
           "minItems": 4,
-          "uniqueItems": true
+          "uniqueItems": true,
+          "maxItems": 4
         },
         "results": {
           "type": "array",
@@ -343,7 +349,8 @@
             ]
           },
           "minItems": 6,
-          "uniqueItems": true
+          "uniqueItems": true,
+          "maxItems": 6
         },
         "sourceIds": {
           "type": "array",
@@ -351,7 +358,8 @@
             "type": "string",
             "minLength": 1
           },
-          "minItems": 2
+          "minItems": 2,
+          "maxItems": 2
         }
       }
     },
@@ -498,7 +506,8 @@
               "type": "string",
               "minLength": 1
             },
-            "minItems": 2
+            "minItems": 2,
+            "maxItems": 2
           },
           "expectedValues": {
             "type": "array",
@@ -506,7 +515,8 @@
               "type": "string",
               "minLength": 1
             },
-            "minItems": 2
+            "minItems": 2,
+            "maxItems": 2
           },
           "criterionDescriptions": {
             "type": "array",
@@ -514,7 +524,8 @@
               "type": "string",
               "minLength": 1
             },
-            "minItems": 2
+            "minItems": 2,
+            "maxItems": 2
           },
           "scope": {
             "type": "string",
@@ -522,7 +533,9 @@
           }
         }
       },
-      "minItems": 8
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true
     },
     "validations": {
       "type": "array",
@@ -691,7 +704,8 @@
                 }
               }
             },
-            "minItems": 2
+            "minItems": 2,
+            "maxItems": 2
           },
           "evidenceIds": {
             "type": "array",
@@ -699,7 +713,8 @@
               "type": "string",
               "minLength": 1
             },
-            "minItems": 0
+            "minItems": 0,
+            "maxItems": 2
           },
           "minimumEvidenceMet": {
             "type": "boolean"
@@ -938,7 +953,8 @@
                   "type": "string",
                   "minLength": 1
                 },
-                "minItems": 0
+                "minItems": 0,
+                "maxItems": 2
               },
               "treatment": {
                 "type": "string",
@@ -1017,7 +1033,9 @@
           }
         }
       },
-      "minItems": 8
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true
     },
     "handoffs": {
       "type": "array",
@@ -1068,7 +1086,9 @@
           }
         }
       },
-      "minItems": 2
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true
     }
   }
 }
