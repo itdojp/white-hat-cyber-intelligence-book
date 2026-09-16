@@ -87,6 +87,58 @@ def run_regressions(data, schema, contract, source, projection):
     relaxed["properties"]["validations"]["items"]["additionalProperties"] = True
     check("CH14-schema-cannot-loosen", bool(validate_model(data, relaxed, contract)))
 
+    # Standalone published Schema must enforce the declared finite vocabulary,
+    # not rely exclusively on the Python model's cross-record validation.
+    from scripts.check_editorial_input_manifest import validate_schema_instance
+
+    check(
+        "CH14-SCHEMA-standalone-canonical",
+        not rejects(lambda: validate_schema_instance(data, schema)),
+    )
+    schema_probes = [
+        (("validations", "0", "method"), "M0"),
+        (("expectations", "0", "method"), "M7"),
+        (("context", "methods", "0"), "Exploit"),
+        (("context", "results", "0"), "Not performed"),
+        (("context", "labStates", "0"), "Unknown"),
+        (("validations", "0", "judgment", "result"), "Not performed"),
+        (("validations", "0", "executionDisposition"), "Executed"),
+        (("validations", "0", "observations", "0", "basis"), "Measured"),
+        (("validations", "0", "judgment", "confidence"), "Certain"),
+        (("validations", "0", "stop", "trigger"), "Continue"),
+        (("validations", "0", "stop", "reason"), "Successful operation"),
+        (("validations", "0", "stop", "nextAction"), "Execute"),
+        (("validations", "0", "cleanup", "status"), "Actually deleted"),
+        (("validations", "0", "residual", "status"), "Safe"),
+        (("validations", "0", "decision", "recordStatus"), "Accepted"),
+        (("handoffs", "0", "status"), "Delivered"),
+        (("validations", "0", "actualOperations"), 1),
+        (("validations", "0", "stepsAfterStop"), 1),
+        (("validations", "0", "cleanup", "actualDeletionPerformed"), True),
+        (("validations", "0", "residual", "actualSystemAssessed"), True),
+        (("validations", "0", "decision", "executionAuthorized"), True),
+        (("handoffs", "0", "executionAuthorized"), True),
+        (("context", "parentActualBuilds"), 1),
+        (("context", "parentActualDeployments"), 1),
+        (("context", "parentActualSignatureVerifications"), 1),
+        (("context", "labRuntimeExecuted"), True),
+        (("safety", "actualOperations"), 1),
+        (("safety", "actualNetworkConnections"), 1),
+        (("safety", "actualAccountsCreated"), 1),
+        (("safety", "realCredentialsPresent"), True),
+        (("safety", "actualCleanupVerified"), True),
+        (("safety", "permissionGranted"), True),
+        (("safety", "impactMeasured"), True),
+        (("safety", "safeClaim"), True),
+    ]
+    for number, (path, value) in enumerate(schema_probes):
+        d = deepcopy(data)
+        put(d, path, value)
+        check(
+            f"CH14-SCHEMA-standalone-negative-{number:02}",
+            rejects(lambda: validate_schema_instance(d, schema)),
+        )
+
     # Traverse only the finite supplied document, never an unbounded grammar.
     def objects(obj, path=()):
         if isinstance(obj, dict):

@@ -223,13 +223,22 @@
           "minLength": 1
         },
         "parentActualBuilds": {
-          "type": "integer"
+          "type": "integer",
+          "enum": [
+            0
+          ]
         },
         "parentActualDeployments": {
-          "type": "integer"
+          "type": "integer",
+          "enum": [
+            0
+          ]
         },
         "parentActualSignatureVerifications": {
-          "type": "integer"
+          "type": "integer",
+          "enum": [
+            0
+          ]
         },
         "identityReviewId": {
           "type": "string",
@@ -262,12 +271,25 @@
           "type": "array",
           "items": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "enum": [
+              "Planned",
+              "Preflight passed",
+              "Ready",
+              "Running",
+              "Stopped",
+              "Destroyed",
+              "Cleanup verified",
+              "Failed closed"
+            ]
           },
           "minItems": 8
         },
         "labRuntimeExecuted": {
-          "type": "boolean"
+          "type": "boolean",
+          "enum": [
+            false
+          ]
         },
         "independentCaseId": {
           "type": "string",
@@ -285,7 +307,13 @@
           "type": "array",
           "items": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "enum": [
+              "Static",
+              "Simulation",
+              "Offline replay",
+              "Minimal synthetic operation"
+            ]
           },
           "minItems": 4
         },
@@ -293,7 +321,15 @@
           "type": "array",
           "items": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "enum": [
+              "Supported",
+              "Partially supported",
+              "Weakened",
+              "Inconclusive",
+              "Rejected",
+              "Stopped"
+            ]
           },
           "minItems": 6
         },
@@ -336,28 +372,52 @@
           "minLength": 1
         },
         "actualOperations": {
-          "type": "integer"
+          "type": "integer",
+          "enum": [
+            0
+          ]
         },
         "actualNetworkConnections": {
-          "type": "integer"
+          "type": "integer",
+          "enum": [
+            0
+          ]
         },
         "actualAccountsCreated": {
-          "type": "integer"
+          "type": "integer",
+          "enum": [
+            0
+          ]
         },
         "realCredentialsPresent": {
-          "type": "boolean"
+          "type": "boolean",
+          "enum": [
+            false
+          ]
         },
         "actualCleanupVerified": {
-          "type": "boolean"
+          "type": "boolean",
+          "enum": [
+            false
+          ]
         },
         "permissionGranted": {
-          "type": "boolean"
+          "type": "boolean",
+          "enum": [
+            false
+          ]
         },
         "impactMeasured": {
-          "type": "boolean"
+          "type": "boolean",
+          "enum": [
+            false
+          ]
         },
         "safeClaim": {
-          "type": "boolean"
+          "type": "boolean",
+          "enum": [
+            false
+          ]
         },
         "limits": {
           "type": "string",
@@ -412,7 +472,13 @@
           },
           "method": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "enum": [
+              "Static",
+              "Simulation",
+              "Offline replay",
+              "Minimal synthetic operation"
+            ]
           },
           "criterionIds": {
             "type": "array",
@@ -524,7 +590,13 @@
           },
           "method": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "enum": [
+              "Static",
+              "Simulation",
+              "Offline replay",
+              "Minimal synthetic operation"
+            ]
           },
           "methodRationale": {
             "type": "string",
@@ -532,7 +604,11 @@
           },
           "executionDisposition": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "enum": [
+              "Authored review only",
+              "Not performed"
+            ]
           },
           "unperformedReason": {
             "type": "string",
@@ -595,7 +671,11 @@
                 },
                 "basis": {
                   "type": "string",
-                  "minLength": 1
+                  "minLength": 1,
+                  "enum": [
+                    "authored-observation",
+                    "empty-evidence-slot-not-observed"
+                  ]
                 }
               }
             },
@@ -616,10 +696,16 @@
             "type": "integer"
           },
           "stepsAfterStop": {
-            "type": "integer"
+            "type": "integer",
+            "enum": [
+              0
+            ]
           },
           "actualOperations": {
-            "type": "integer"
+            "type": "integer",
+            "enum": [
+              0
+            ]
           },
           "stop": {
             "type": "object",
@@ -638,7 +724,11 @@
               },
               "trigger": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "enum": [
+                  "None",
+                  "Unexpected-input-symbol"
+                ]
               },
               "triggerEvidenceId": {
                 "type": [
@@ -648,11 +738,20 @@
               },
               "reason": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "enum": [
+                  "Unexpected-input-symbol",
+                  "Not-performed",
+                  "Evidence-sufficient",
+                  "Evidence-gap"
+                ]
               },
               "nextAction": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "enum": [
+                  "Record limitation only"
+                ]
               }
             }
           },
@@ -687,7 +786,11 @@
               },
               "status": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "enum": [
+                  "Not started",
+                  "Recorded complete"
+                ]
               },
               "evidenceId": {
                 "type": [
@@ -696,7 +799,10 @@
                 ]
               },
               "actualDeletionPerformed": {
-                "type": "boolean"
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
               }
             }
           },
@@ -726,7 +832,11 @@
               },
               "status": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "enum": [
+                  "Unknown",
+                  "Recorded clear"
+                ]
               },
               "evidenceId": {
                 "type": [
@@ -735,7 +845,10 @@
                 ]
               },
               "actualSystemAssessed": {
-                "type": "boolean"
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
               }
             }
           },
@@ -753,11 +866,23 @@
             "properties": {
               "result": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "enum": [
+                  "Supported",
+                  "Partially supported",
+                  "Weakened",
+                  "Inconclusive",
+                  "Rejected",
+                  "Stopped"
+                ]
               },
               "confidence": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "enum": [
+                  "低",
+                  "中"
+                ]
               },
               "supportedScope": {
                 "type": "string",
@@ -848,10 +973,17 @@
               },
               "recordStatus": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "enum": [
+                  "Open",
+                  "Complete"
+                ]
               },
               "executionAuthorized": {
-                "type": "boolean"
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
               },
               "owner": {
                 "type": "string",
@@ -907,14 +1039,20 @@
           },
           "status": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "enum": [
+              "planned-not-delivered"
+            ]
           },
           "purpose": {
             "type": "string",
             "minLength": 1
           },
           "executionAuthorized": {
-            "type": "boolean"
+            "type": "boolean",
+            "enum": [
+              false
+            ]
           }
         }
       },
