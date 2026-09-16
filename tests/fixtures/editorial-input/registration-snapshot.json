@@ -1043,6 +1043,12 @@
           "effectiveAt": "2026-09-16",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5686084068",
           "reason": "親Chapter8/9/11/12/13とChapter13consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前に明示選択。raw不在のため直接採用せず正式Issue/現行契約/一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-16",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/139",
+          "reason": "第14章専用Draft PR #139に本文/ART22/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
         }
       ]
     },
