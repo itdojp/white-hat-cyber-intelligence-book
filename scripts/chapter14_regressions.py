@@ -139,6 +139,43 @@ def run_regressions(data, schema, contract, source, projection):
             rejects(lambda: validate_schema_instance(d, schema)),
         )
 
+    # PR139: standalone Schema preserves parent nonexecution (P1) and
+    # exact vocabulary cardinality (P2). Enum + minItems + uniqueness fixes
+    # each finite set without extending the shared schema validator grammar.
+    for path, value in [
+        (("parents", "roeExecutionAuthorized"), True),
+        (("parents", "parentStateChanged"), True),
+        (("record", "authoredNotMeasured"), False),
+    ]:
+        d = deepcopy(data)
+        put(d, path, value)
+        check(
+            "CH14-SCHEMA-parent-boundary-" + path[-1],
+            rejects(lambda: validate_schema_instance(d, schema)),
+        )
+    for field in ["methods", "results", "labStates"]:
+        d = deepcopy(data)
+        d["context"][field].reverse()
+        check(
+            "CH14-SCHEMA-inventory-permutation-" + field,
+            not rejects(lambda: validate_schema_instance(d, schema)),
+        )
+        for mutation in ["extra-duplicate", "same-length-duplicate", "missing", "unknown"]:
+            d = deepcopy(data)
+            values = d["context"][field]
+            if mutation == "extra-duplicate":
+                values.append(values[0])
+            elif mutation == "same-length-duplicate":
+                values[-1] = values[0]
+            elif mutation == "missing":
+                values.pop()
+            else:
+                values[-1] = "Unknown-unsupported"
+            check(
+                "CH14-SCHEMA-inventory-" + field + "-" + mutation,
+                rejects(lambda: validate_schema_instance(d, schema)),
+            )
+
     # Traverse only the finite supplied document, never an unbounded grammar.
     def objects(obj, path=()):
         if isinstance(obj, dict):

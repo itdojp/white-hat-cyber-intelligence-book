@@ -74,7 +74,10 @@
           "minLength": 1
         },
         "authoredNotMeasured": {
-          "type": "boolean"
+          "type": "boolean",
+          "enum": [
+            true
+          ]
         },
         "purpose": {
           "type": "string",
@@ -166,7 +169,10 @@
           "minItems": 3
         },
         "roeExecutionAuthorized": {
-          "type": "boolean"
+          "type": "boolean",
+          "enum": [
+            false
+          ]
         },
         "threatModelId": {
           "type": "string",
@@ -185,7 +191,10 @@
           "minLength": 1
         },
         "parentStateChanged": {
-          "type": "boolean"
+          "type": "boolean",
+          "enum": [
+            false
+          ]
         }
       }
     },
@@ -283,7 +292,8 @@
               "Failed closed"
             ]
           },
-          "minItems": 8
+          "minItems": 8,
+          "uniqueItems": true
         },
         "labRuntimeExecuted": {
           "type": "boolean",
@@ -315,7 +325,8 @@
               "Minimal synthetic operation"
             ]
           },
-          "minItems": 4
+          "minItems": 4,
+          "uniqueItems": true
         },
         "results": {
           "type": "array",
@@ -331,7 +342,8 @@
               "Stopped"
             ]
           },
-          "minItems": 6
+          "minItems": 6,
+          "uniqueItems": true
         },
         "sourceIds": {
           "type": "array",
