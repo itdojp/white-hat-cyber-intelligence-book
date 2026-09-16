@@ -1,0 +1,1094 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ART-22 finite supplied reading records; not operational authorization or NIST/OWASP conformance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "executionAuthorized",
+    "record",
+    "parents",
+    "context",
+    "safety",
+    "expectations",
+    "validations",
+    "handoffs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "1.0.0"
+      ]
+    },
+    "synthetic": {
+      "type": "boolean",
+      "enum": [
+        true
+      ]
+    },
+    "executionAuthorized": {
+      "type": "boolean",
+      "enum": [
+        false
+      ]
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactId",
+        "caseId",
+        "relation",
+        "revision",
+        "asOf",
+        "authoredNotMeasured",
+        "purpose"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifactId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authoredNotMeasured": {
+          "type": "boolean",
+          "enum": [
+            true
+          ]
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "parents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "caseId",
+        "relation",
+        "decisionRequirementId",
+        "historicalDeadline",
+        "authorizationId",
+        "authorizationExpiresAt",
+        "authorizationWindow",
+        "authorizationConditions",
+        "roeId",
+        "roeVersion",
+        "roeStatus",
+        "roeObjectIds",
+        "roeExecutionAuthorized",
+        "threatModelId",
+        "threatModelStatus",
+        "parentReassessmentId",
+        "independentCaseId",
+        "parentStateChanged"
+      ],
+      "properties": {
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionRequirementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "historicalDeadline": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorizationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorizationExpiresAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorizationWindow": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "authorizationConditions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "roeId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "roeVersion": {
+          "type": "integer"
+        },
+        "roeStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "roeObjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "roeExecutionAuthorized": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "threatModelId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "threatModelStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentReassessmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independentCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentStateChanged": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assessmentId",
+        "parentVerifiedMeaning",
+        "parentActualBuilds",
+        "parentActualDeployments",
+        "parentActualSignatureVerifications",
+        "identityReviewId",
+        "identityBinding",
+        "identityCoverage",
+        "nonFederationAssertion",
+        "parentPermission",
+        "labPlanId",
+        "labStates",
+        "labRuntimeExecuted",
+        "independentCaseId",
+        "independentRoeId",
+        "independentUse",
+        "methods",
+        "results",
+        "sourceIds"
+      ],
+      "properties": {
+        "assessmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentVerifiedMeaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentActualBuilds": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "parentActualDeployments": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "parentActualSignatureVerifications": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "identityReviewId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identityBinding": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identityCoverage": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nonFederationAssertion": {
+          "type": "array",
+          "items": {
+            "type": "null"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "parentPermission": {
+          "type": "string",
+          "minLength": 1
+        },
+        "labPlanId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "labStates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Planned",
+              "Preflight passed",
+              "Ready",
+              "Running",
+              "Stopped",
+              "Destroyed",
+              "Cleanup verified",
+              "Failed closed"
+            ]
+          },
+          "minItems": 8,
+          "uniqueItems": true,
+          "maxItems": 8
+        },
+        "labRuntimeExecuted": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "independentCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independentRoeId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independentUse": {
+          "type": "string",
+          "minLength": 1
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Static",
+              "Simulation",
+              "Offline replay",
+              "Minimal synthetic operation"
+            ]
+          },
+          "minItems": 4,
+          "uniqueItems": true,
+          "maxItems": 4
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Supported",
+              "Partially supported",
+              "Weakened",
+              "Inconclusive",
+              "Rejected",
+              "Stopped"
+            ]
+          },
+          "minItems": 6,
+          "uniqueItems": true,
+          "maxItems": 6
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataClass",
+        "mode",
+        "actualOperations",
+        "actualNetworkConnections",
+        "actualAccountsCreated",
+        "realCredentialsPresent",
+        "actualCleanupVerified",
+        "permissionGranted",
+        "impactMeasured",
+        "safeClaim",
+        "limits",
+        "stop",
+        "cleanup",
+        "notPerformed"
+      ],
+      "properties": {
+        "dataClass": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actualOperations": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "actualNetworkConnections": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "actualAccountsCreated": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "realCredentialsPresent": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "actualCleanupVerified": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "permissionGranted": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "impactMeasured": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "safeClaim": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "limits": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stop": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notPerformed": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "expectations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "validationId",
+          "subjectId",
+          "subjectRevision",
+          "method",
+          "criterionIds",
+          "expectedValues",
+          "criterionDescriptions",
+          "scope"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "validationId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "method": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Static",
+              "Simulation",
+              "Offline replay",
+              "Minimal synthetic operation"
+            ]
+          },
+          "criterionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "expectedValues": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "criterionDescriptions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true
+    },
+    "validations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "revision",
+          "hypothesisId",
+          "parentFindingId",
+          "authorityId",
+          "roeId",
+          "labPlanId",
+          "decisionQuestion",
+          "minimumEvidenceQuestion",
+          "expectationId",
+          "method",
+          "methodRationale",
+          "executionDisposition",
+          "unperformedReason",
+          "subjectId",
+          "subjectRevision",
+          "observations",
+          "evidenceIds",
+          "minimumEvidenceMet",
+          "declaredReadSteps",
+          "stepsAfterStop",
+          "actualOperations",
+          "stop",
+          "cleanup",
+          "residual",
+          "judgment",
+          "finding",
+          "decision"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "hypothesisId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parentFindingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authorityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "roeId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "labPlanId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "decisionQuestion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minimumEvidenceQuestion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expectationId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "method": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Static",
+              "Simulation",
+              "Offline replay",
+              "Minimal synthetic operation"
+            ]
+          },
+          "methodRationale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "executionDisposition": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Authored review only",
+              "Not performed"
+            ]
+          },
+          "unperformedReason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "criterionId",
+                "subjectId",
+                "subjectRevision",
+                "present",
+                "value",
+                "recordedAt",
+                "basis"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "criterionId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "subjectId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "subjectRevision": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "present": {
+                  "type": "boolean"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "recordedAt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "basis": {
+                  "type": "string",
+                  "minLength": 1,
+                  "enum": [
+                    "authored-observation",
+                    "empty-evidence-slot-not-observed"
+                  ]
+                }
+              }
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "evidenceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0,
+            "maxItems": 2
+          },
+          "minimumEvidenceMet": {
+            "type": "boolean"
+          },
+          "declaredReadSteps": {
+            "type": "integer"
+          },
+          "stepsAfterStop": {
+            "type": "integer",
+            "enum": [
+              0
+            ]
+          },
+          "actualOperations": {
+            "type": "integer",
+            "enum": [
+              0
+            ]
+          },
+          "stop": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "trigger",
+              "triggerEvidenceId",
+              "reason",
+              "nextAction"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "trigger": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "None",
+                  "Unexpected-input-symbol"
+                ]
+              },
+              "triggerEvidenceId": {
+                "type": [
+                  "null",
+                  "string"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Unexpected-input-symbol",
+                  "Not-performed",
+                  "Evidence-sufficient",
+                  "Evidence-gap"
+                ]
+              },
+              "nextAction": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Record limitation only"
+                ]
+              }
+            }
+          },
+          "cleanup": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "owner",
+              "scope",
+              "action",
+              "status",
+              "evidenceId",
+              "actualDeletionPerformed"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scope": {
+                "type": "string",
+                "minLength": 1
+              },
+              "action": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Not started",
+                  "Recorded complete"
+                ]
+              },
+              "evidenceId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "actualDeletionPerformed": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
+            }
+          },
+          "residual": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "owner",
+              "scope",
+              "status",
+              "evidenceId",
+              "actualSystemAssessed"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scope": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Unknown",
+                  "Recorded clear"
+                ]
+              },
+              "evidenceId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "actualSystemAssessed": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
+            }
+          },
+          "judgment": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "result",
+              "confidence",
+              "supportedScope",
+              "gap",
+              "alternative",
+              "claimCeiling"
+            ],
+            "properties": {
+              "result": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Supported",
+                  "Partially supported",
+                  "Weakened",
+                  "Inconclusive",
+                  "Rejected",
+                  "Stopped"
+                ]
+              },
+              "confidence": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "低",
+                  "中"
+                ]
+              },
+              "supportedScope": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gap": {
+                "type": "string",
+                "minLength": 1
+              },
+              "alternative": {
+                "type": "string",
+                "minLength": 1
+              },
+              "claimCeiling": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "finding": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "validationId",
+              "evidenceIds",
+              "treatment"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "validationId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidenceIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 0,
+                "maxItems": 2
+              },
+              "treatment": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "decision": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "findingId",
+              "stopId",
+              "cleanupId",
+              "residualId",
+              "recordStatus",
+              "executionAuthorized",
+              "owner",
+              "reassessmentId",
+              "dueAt",
+              "reopenWhen"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "findingId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "stopId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "cleanupId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "residualId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "recordStatus": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Open",
+                  "Complete"
+                ]
+              },
+              "executionAuthorized": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reassessmentId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "dueAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reopenWhen": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      },
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true
+    },
+    "handoffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "caseId",
+          "recordId",
+          "targetChapter",
+          "status",
+          "purpose",
+          "executionAuthorized"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "caseId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recordId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetChapter": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "planned-not-delivered"
+            ]
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "executionAuthorized": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          }
+        }
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true
+    }
+  }
+}

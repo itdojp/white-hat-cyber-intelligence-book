@@ -1294,7 +1294,7 @@
     "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
     "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
     ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814",
-    "scripts/check_editorial_input_manifest.py": "b63cb1d0bb18fb0b66f72125ed23370e3ed40d2afa2da7001c9ee317f23e6c08"
+    "scripts/check_editorial_input_manifest.py": "187b4061772aa68c4cd57d282cfa458ba9e224a50b9619418573d77f886a28c3"
   },
   "sourceIdentity": {
     "SRC-BERKELEY-001": {
@@ -1353,7 +1353,7 @@
       "ch08-evidence-manifest.json"
     ],
     "CANONICAL_SOURCE.md": [
-      "固定rendererを使用する第6章・第7章・第8章・第9章・第10章・第12章・第13章の公開前安全検査",
+      "固定rendererを使用する第6章・第7章・第8章・第9章・第10章・第12章・第13章・第14章の公開前安全検査",
       "初回は`bundle install`を先に実行する"
     ],
     "CHANGELOG.md": [

@@ -157,6 +157,7 @@ SUPPORTED_SCHEMA_KEYWORDS = {
     "properties",
     "items",
     "minItems",
+    "maxItems",
     "uniqueItems",
     "minLength",
     "pattern",
@@ -450,7 +451,7 @@ def validate_supported_schema_nodes(
         ]
         if len(encoded) != len(set(encoded)):
             fail(f"{label}.enum: duplicate values")
-    for keyword in ("minItems", "minLength"):
+    for keyword in ("minItems", "maxItems", "minLength"):
         if keyword in node and (
             not isinstance(node[keyword], int)
             or isinstance(node[keyword], bool)
@@ -607,6 +608,9 @@ def validate_schema_instance_node(
         minimum_items = node.get("minItems")
         if minimum_items is not None and len(value) < minimum_items:
             fail(f"{instance_label}: JSON Schema minItems violation")
+        maximum_items = node.get("maxItems")
+        if maximum_items is not None and len(value) > maximum_items:
+            fail(f"{instance_label}: JSON Schema maxItems violation")
         if node.get("uniqueItems") is True:
             serialized = [
                 json.dumps(
@@ -2689,7 +2693,44 @@ def run_manifest_regressions(
             fail(f"exact-head environment regression returned unexpected error: {exc}")
     else:
         fail("exact-head environment regression accepted a different checkout")
-    return len(cases) + 26
+    return len(cases) + 26 + run_schema_array_regressions()
+
+
+def run_schema_array_regressions() -> int:
+    """Generic maxItems boundaries, independent of any chapter or dataset."""
+    cases = [
+        ("empty-zero", [], {"type": "array", "maxItems": 0}, True),
+        ("zero-overflow", [1], {"type": "array", "maxItems": 0}, False),
+        ("exact-one", [1], {"type": "array", "maxItems": 1}, True),
+        ("distinct-overflow", [1, 2], {"type": "array", "maxItems": 1}, False),
+        ("duplicate-overflow", [1, 1], {"type": "array", "maxItems": 1}, False),
+        ("nonarray-inapplicable", "value", {"maxItems": 0}, True),
+        ("omitted-upper-bound", [1, 2], {"type": "array", "minItems": 1}, True),
+        ("exact-lower-upper", [1, 2], {"type": "array", "minItems": 2, "maxItems": 2}, True),
+        ("nested-upper", [[1, 2]], {"type": "array", "items": {"type": "array", "maxItems": 1}}, False),
+    ]
+    for label, value, schema, expected in cases:
+        validate_supported_schema_nodes(schema, "schema", schema)
+        try:
+            validate_schema_instance(value, schema)
+            accepted = True
+        except ManifestError as exc:
+            if "maxItems violation" not in str(exc):
+                fail(f"schema-array {label}: unexpected error: {exc}")
+            accepted = False
+        if accepted != expected:
+            fail(f"schema-array {label}: expected accepted={expected}")
+    invalid_limits = [-1, True, 1.5, "1", None]
+    for value in invalid_limits:
+        schema = {"type": "array", "maxItems": value}
+        try:
+            validate_supported_schema_nodes(schema, "schema", schema)
+        except ManifestError as exc:
+            if "maxItems: expected non-negative integer" not in str(exc):
+                fail(f"schema-array malformed limit: unexpected error: {exc}")
+        else:
+            fail("schema-array accepted malformed maxItems")
+    return len(cases) + len(invalid_limits)
 
 
 def write_test_zip(

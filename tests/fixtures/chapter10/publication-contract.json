@@ -265,7 +265,7 @@
       "status": "stable",
       "publishedAt": "2020-12-03",
       "url": "https://owasp.org/www-project-web-security-testing-guide/",
-      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption."
+      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption. Chapter 14 scoped primary-text review (2026-09-16): versioned 4.2 Introduction only, What is Testing, How To Reference WSTG Scenarios/Linking, and The Need for a Balanced Approach. No individual technique or complete scenario corpus adopted; 5.0 development and 4.3 Unreleased are not the adopted version. Six Results/four Methods are book-owned; supplied response comparison is not real HTTP testing. Scope: references/ch14-source-review-2026-09-16.md. Existing chapter 15 mapping is retained, not freshly audited here."
     },
     "SRC-CT-001": {
       "version": "RFC 9162",
@@ -366,7 +366,7 @@
       "ch10-source-bundle.json"
     ],
     "CANONICAL_SOURCE.md": [
-      "第6章・第7章・第8章・第9章・第10章・第12章・第13章の公開前"
+      "第6章・第7章・第8章・第9章・第10章・第12章・第13章・第14章の公開前"
     ]
   },
   "documents": {

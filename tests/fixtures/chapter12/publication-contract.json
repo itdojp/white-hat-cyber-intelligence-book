@@ -178,7 +178,7 @@
       "ch12-identity-paths.schema.json"
     ],
     "CANONICAL_SOURCE.md": [
-      "第6章・第7章・第8章・第9章・第10章・第12章・第13章の公開前"
+      "第6章・第7章・第8章・第9章・第10章・第12章・第13章・第14章の公開前"
     ],
     "CHANGELOG.md": [
       "- [第12章](manuscript/12-enterprise-identity.md)、ART-20 Identity Attack Path Review、四Principal・六Path stateの完全合成Graphと閉じたSchema・有限Layer A検査を追加。認証の強さ、権限関係、Evidence、評価実施の許可を分け、Federation非該当の比較ではIssuer / Audience / RPをnullで明示する。有限比較の成功を実認証・実行許可・親Gap解消の証拠にしない。",

@@ -389,6 +389,34 @@
       "section": "additional",
       "order": 268,
       "title": "第13章 Source Review Note：PlatformとSupply Chain"
+    },
+    {
+      "source": "manuscript/14-minimal-impact-validation.md",
+      "destination": "chapters/chapter-14/index.md",
+      "section": "chapters",
+      "order": 57,
+      "title": "第14章 最小影響で成立性を確認し、止め、戻す"
+    },
+    {
+      "source": "templates/minimal-impact-validation-record.md",
+      "destination": "templates/minimal-impact-validation-record/index.md",
+      "section": "additional",
+      "order": 271,
+      "title": "Minimal-Impact Validation Record"
+    },
+    {
+      "source": "cases/ch14-minimal-impact-validation-example.md",
+      "destination": "cases/chapter-14-minimal-impact-validation/index.md",
+      "section": "additional",
+      "order": 272,
+      "title": "第14章 完全合成記入例：Minimal-Impact Validation Record"
+    },
+    {
+      "source": "references/ch14-source-review-2026-09-16.md",
+      "destination": "references/chapter-14-source-review/index.md",
+      "section": "additional",
+      "order": 273,
+      "title": "第14章 Source Review Note：最小影響の判断と停止"
     }
   ],
   "directoryRoutes": {
@@ -470,6 +498,14 @@
     {
       "source": "schemas/ch13-supply-chain.schema.json",
       "destination": "downloads/ch13-supply-chain.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch14-minimal-impact-validation.json",
+      "destination": "downloads/ch14-minimal-impact-validation.json"
+    },
+    {
+      "source": "schemas/ch14-minimal-impact-validation.schema.json",
+      "destination": "downloads/ch14-minimal-impact-validation.schema.json"
     }
   ]
 }

@@ -1679,7 +1679,7 @@
       "status": "stable",
       "publishedAt": "2020-12-03",
       "url": "https://owasp.org/www-project-web-security-testing-guide/",
-      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption."
+      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption. Chapter 14 scoped primary-text review (2026-09-16): versioned 4.2 Introduction only, What is Testing, How To Reference WSTG Scenarios/Linking, and The Need for a Balanced Approach. No individual technique or complete scenario corpus adopted; 5.0 development and 4.3 Unreleased are not the adopted version. Six Results/four Methods are book-owned; supplied response comparison is not real HTTP testing. Scope: references/ch14-source-review-2026-09-16.md. Existing chapter 15 mapping is retained, not freshly audited here."
     },
     "SRC-JP-LAW-001": {
       "version": "current display effective 2025-06-01",
@@ -1700,7 +1700,7 @@
       "status": "final",
       "publishedAt": null,
       "url": "https://csrc.nist.gov/pubs/sp/800/115/final",
-      "notes": "Chapter 9 checked official landing and 80-page PDF on 2026-09-13. Adopted sections 6.5-6.6 and Appendix B: planning, scope, constraints, contacts, data, stop/restart, reporting and approval. Not a modern product procedure, blanket authorization or adoption of old offensive/covert examples. Date Published is September 2008; Document History 09/30/08 is a separate attribute. Exact publication day is unknown, so publishedAt is null; do not infer it from history. PDF SHA256 58e5ed41e5c8ca34ce14fd80b70f118f2c6d613d1647bc307edca30bcc45f063. The finite eight states and numeric limits are book-authored teaching assumptions, not NIST requirements."
+      "notes": "Chapter 9 checked official landing and 80-page PDF on 2026-09-13. Adopted sections 6.5-6.6 and Appendix B: planning, scope, constraints, contacts, data, stop/restart, reporting and approval. Not a modern product procedure, blanket authorization or adoption of old offensive/covert examples. Date Published is September 2008; Document History 09/30/08 is a separate attribute. Exact publication day is unknown, so publishedAt is null; do not infer it from history. PDF SHA256 58e5ed41e5c8ca34ce14fd80b70f118f2c6d613d1647bc307edca30bcc45f063. The finite eight states and numeric limits are book-authored teaching assumptions, not NIST requirements. Chapter 14 scoped primary-text review (2026-09-16): sections 6.5, 7.2, 7.3, 7.4 introduction only, and 8.1-8.2 for planning, coordination/stop, analysis, data-handling scope and reporting. No historical covert/attack/product examples or section 7.4.4 media-sanitization classification adopted as current operations. Six Results, four Methods, two scalar criteria, eight authored records and separate Not performed/cleanup/residual rules are book-owned, not NIST requirements. Scope and PDF retrieval hash: references/ch14-source-review-2026-09-16.md."
     }
   },
   "indices": {

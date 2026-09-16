@@ -53,3 +53,7 @@
 ## 第13章の教育用補足
 
 [Platform and Supply Chain Assessmentの完全合成記入例](ch13-platform-supply-chain-example.md) / ART-21 / PSA-2026-013はCASE-2026-001をrefinesする。三Planeと八Chainを五状態で評価し、mutable source、unversioned action、過大権限、出所不足、Runtime差異を記録する。実Cloud/CI/Registry/Tokenは使用せず、親RoE Draft/失効/三Objectと独立CASE-2026-011を変更しない。
+
+## 第14章の教育用補足
+
+[Minimal-Impact Validation Recordの完全合成記入例](ch14-minimal-impact-validation-example.md) / ART-22 / MIV-2026-014はCASE-2026-001をrefinesする。八記録を六Result・四Methodで比較し、全実操作0、未実施・停止・Cleanup・残存Unknownを分ける。親RoE Draft/失効/元Window/三Objectと独立CASE-2026-011の境界を変更しない。
