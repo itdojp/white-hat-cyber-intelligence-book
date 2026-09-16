@@ -59,3 +59,10 @@
 - [閉じたSchema](../../schemas/ch13-supply-chain.schema.json): 供給語彙だけの未知Field拒否。SPDX/SLSAや一般Secret認識のSchemaではない。
 
 [全FieldのCase表示](../ch13-platform-supply-chain-example.md)と一対一で照合する。実Build/Deploy/署名検証/許可発行をせず、第13章の公開前検査後にだけ生成する。
+
+## 第14章 Minimal-Impact Validation Record
+
+- [供給JSON](ch14-minimal-impact-validation.json): 二つの期待条件と合成観測、停止、整理、残存確認、判断を持つ八記録。
+- [閉じたSchema](../../schemas/ch14-minimal-impact-validation.schema.json): 本教材の有限語彙と未知Field拒否。実行許可や標準適合のSchemaではない。
+
+[全FieldのCase表示](../ch14-minimal-impact-validation-example.md)と一対一で照合する。合成IDの比較だけを行い、実サービスへの接続や合成Accountの作成は行わない。

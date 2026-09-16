@@ -108,3 +108,9 @@ CIでは`Book Contract`と`Book QA`を実行し、`main`では同じ生成契約
 `npm run check:chapter13`はART-21の供給summaryだけを検査する。Layer Aは三Plane、八Chain、五状態、SourceからRuntimeまでのID/版/Evidence、親の非実行境界、四文書とCase全Fieldの対応を所有する。Markdown/HTML/URLは共有Projection1.1.0、安全文法は共有Policy1.2.0だけを使う。
 
 実Cloud/CI/Registry/Package/Token/署名検証や、標準適合を実装するものではない。`sync:docs`はこの検査に成功してから生成する。有限Corpusと制限は`tests/fixtures/chapter13/README.md`を参照する。
+
+### 第14章の有限最小影響Validation契約
+
+`npm run check:chapter14`はART-22の八つの供給記録を検査する。Layer Aは二条件の比較、六Result、四Method、未実施/停止/Cleanup/Residual、親境界、四文書とCase全Fieldの対応を所有する。Markdown/HTML/URLは共有Projection1.1.0、安全文法は共有Policy1.2.0だけを使う。
+
+実Replay、サービス接続、Account作成、操作・削除・残存影響の測定は実装しない。`sync:docs`は本検査の成功後にだけ生成する。有限Corpusと非目標は`tests/fixtures/chapter14/README.md`を参照する。

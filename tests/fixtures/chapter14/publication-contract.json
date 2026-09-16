@@ -1,0 +1,2308 @@
+{
+  "schemaVersion": "1.0.0",
+  "fixedContext": {
+    "schemaVersion": "1.0.0",
+    "synthetic": true,
+    "executionAuthorized": false,
+    "record": {
+      "id": "MIV-2026-014",
+      "artifactId": "ART-22",
+      "caseId": "CASE-2026-001",
+      "relation": "refines",
+      "revision": "MIV14-REV-001",
+      "asOf": "2026-09-16T00:00:00Z",
+      "authoredNotMeasured": true,
+      "purpose": "最小限の供給Evidence、停止、未実施、残存確認を区別する。"
+    },
+    "parents": {
+      "caseId": "CASE-2026-001",
+      "relation": "refines",
+      "decisionRequirementId": "DR-2026-001",
+      "historicalDeadline": "2026-07-22T00:00:00Z",
+      "authorizationId": "AUTH-CASE-2026-001",
+      "authorizationExpiresAt": "2026-08-19T09:00:00Z",
+      "authorizationWindow": [
+        "2026-08-06T00:00:00Z",
+        "2026-08-06T08:00:00Z"
+      ],
+      "authorizationConditions": [
+        "COND-AUTH-2026-001 Open",
+        "COND-AUTH-2026-002 Satisfied",
+        "COND-AUTH-2026-003 Open"
+      ],
+      "roeId": "ROE-2026-009",
+      "roeVersion": 1,
+      "roeStatus": "Draft",
+      "roeObjectIds": [
+        "OBJ-ROE09-CONFIG",
+        "OBJ-ROE09-EVENT",
+        "OBJ-ROE09-POLICY"
+      ],
+      "roeExecutionAuthorized": false,
+      "threatModelId": "TM-2026-001",
+      "threatModelStatus": "Needs Evidence",
+      "parentReassessmentId": "REA-2026-001",
+      "independentCaseId": "CASE-2026-011",
+      "parentStateChanged": false
+    },
+    "context": {
+      "assessmentId": "PSA-2026-013",
+      "parentVerifiedMeaning": "authored-summary-comparison-only",
+      "parentActualBuilds": 0,
+      "parentActualDeployments": 0,
+      "parentActualSignatureVerifications": 0,
+      "identityReviewId": "IAR-2026-012",
+      "identityBinding": "Unknown",
+      "identityCoverage": "Unknown",
+      "nonFederationAssertion": [
+        null,
+        null,
+        null
+      ],
+      "parentPermission": "read-customer-summary-not-validation-permission",
+      "labPlanId": "LABPLAN-2026-001",
+      "labStates": [
+        "Planned",
+        "Preflight passed",
+        "Ready",
+        "Running",
+        "Stopped",
+        "Destroyed",
+        "Cleanup verified",
+        "Failed closed"
+      ],
+      "labRuntimeExecuted": false,
+      "independentCaseId": "CASE-2026-011",
+      "independentRoeId": "ROE-2026-011",
+      "independentUse": "comparison-only-not-parent-evidence-or-authorization",
+      "methods": [
+        "Static",
+        "Simulation",
+        "Offline replay",
+        "Minimal synthetic operation"
+      ],
+      "results": [
+        "Supported",
+        "Partially supported",
+        "Weakened",
+        "Inconclusive",
+        "Rejected",
+        "Stopped"
+      ],
+      "sourceIds": [
+        "SRC-NIST-TEST-001",
+        "SRC-WSTG-001"
+      ]
+    },
+    "safety": {
+      "dataClass": "authored-synthetic-only",
+      "mode": "read-only-supplied-records",
+      "actualOperations": 0,
+      "actualNetworkConnections": 0,
+      "actualAccountsCreated": 0,
+      "realCredentialsPresent": false,
+      "actualCleanupVerified": false,
+      "permissionGranted": false,
+      "impactMeasured": false,
+      "safeClaim": false,
+      "limits": "8 supplied records; no service access; no runtime or package execution",
+      "stop": "実Data、未知の入力、外部通信、Scope不明なら停止する。",
+      "cleanup": "自分の読解用作業コピーだけを整理し、親Evidenceと正本を保持する。",
+      "notPerformed": "実Dataを取得しない。実Credentialを再利用しない。横展開、永続化、回避、DoS、破壊は実施しない。"
+    },
+    "handoffs": [
+      {
+        "id": "HOF-MIV14-15",
+        "caseId": "CASE-2026-001",
+        "recordId": "MIV-2026-014",
+        "targetChapter": 15,
+        "status": "planned-not-delivered",
+        "purpose": "FindingとEvidence limitationを渡す計画。実施許可や検知成功は渡さない。",
+        "executionAuthorized": false
+      },
+      {
+        "id": "HOF-MIV14-21",
+        "caseId": "CASE-2026-001",
+        "recordId": "MIV-2026-014",
+        "targetChapter": 21,
+        "status": "planned-not-delivered",
+        "purpose": "FindingとEvidence limitationを渡す計画。実施許可や検知成功は渡さない。",
+        "executionAuthorized": false
+      }
+    ]
+  },
+  "expectations": [
+    {
+      "id": "EXP-MIV14-001",
+      "validationId": "VAL-MIV14-001",
+      "subjectId": "OBJ-MIV14-001",
+      "subjectRevision": "SUPPLIED-REV-001",
+      "method": "Static",
+      "criterionIds": [
+        "CRT-MIV14-001-A",
+        "CRT-MIV14-001-B"
+      ],
+      "expectedValues": [
+        "OBJ-MIV14-001",
+        "AUD-MIV14-001"
+      ],
+      "criterionDescriptions": [
+        "供給された対象Resource IDが期待した対象と一致する。",
+        "供給された監査参照IDが期待した参照と一致する。"
+      ],
+      "scope": "supplied-record-only"
+    },
+    {
+      "id": "EXP-MIV14-002",
+      "validationId": "VAL-MIV14-002",
+      "subjectId": "OBJ-MIV14-002",
+      "subjectRevision": "SUPPLIED-REV-001",
+      "method": "Simulation",
+      "criterionIds": [
+        "CRT-MIV14-002-A",
+        "CRT-MIV14-002-B"
+      ],
+      "expectedValues": [
+        "OBJ-MIV14-002",
+        "AUD-MIV14-002"
+      ],
+      "criterionDescriptions": [
+        "供給された対象Resource IDが期待した対象と一致する。",
+        "供給された監査参照IDが期待した参照と一致する。"
+      ],
+      "scope": "supplied-record-only"
+    },
+    {
+      "id": "EXP-MIV14-003",
+      "validationId": "VAL-MIV14-003",
+      "subjectId": "OBJ-MIV14-003",
+      "subjectRevision": "SUPPLIED-REV-001",
+      "method": "Offline replay",
+      "criterionIds": [
+        "CRT-MIV14-003-A",
+        "CRT-MIV14-003-B"
+      ],
+      "expectedValues": [
+        "OBJ-MIV14-003",
+        "AUD-MIV14-003"
+      ],
+      "criterionDescriptions": [
+        "供給された対象Resource IDが期待した対象と一致する。",
+        "供給された監査参照IDが期待した参照と一致する。"
+      ],
+      "scope": "supplied-record-only"
+    },
+    {
+      "id": "EXP-MIV14-004",
+      "validationId": "VAL-MIV14-004",
+      "subjectId": "OBJ-MIV14-004",
+      "subjectRevision": "SUPPLIED-REV-001",
+      "method": "Offline replay",
+      "criterionIds": [
+        "CRT-MIV14-004-A",
+        "CRT-MIV14-004-B"
+      ],
+      "expectedValues": [
+        "OBJ-MIV14-004",
+        "AUD-MIV14-004"
+      ],
+      "criterionDescriptions": [
+        "供給された対象Resource IDが期待した対象と一致する。",
+        "供給された監査参照IDが期待した参照と一致する。"
+      ],
+      "scope": "supplied-record-only"
+    },
+    {
+      "id": "EXP-MIV14-005",
+      "validationId": "VAL-MIV14-005",
+      "subjectId": "OBJ-MIV14-005",
+      "subjectRevision": "SUPPLIED-REV-001",
+      "method": "Static",
+      "criterionIds": [
+        "CRT-MIV14-005-A",
+        "CRT-MIV14-005-B"
+      ],
+      "expectedValues": [
+        "OBJ-MIV14-005",
+        "AUD-MIV14-005"
+      ],
+      "criterionDescriptions": [
+        "供給された対象Resource IDが期待した対象と一致する。",
+        "供給された監査参照IDが期待した参照と一致する。"
+      ],
+      "scope": "supplied-record-only"
+    },
+    {
+      "id": "EXP-MIV14-006",
+      "validationId": "VAL-MIV14-006",
+      "subjectId": "OBJ-MIV14-006",
+      "subjectRevision": "SUPPLIED-REV-001",
+      "method": "Minimal synthetic operation",
+      "criterionIds": [
+        "CRT-MIV14-006-A",
+        "CRT-MIV14-006-B"
+      ],
+      "expectedValues": [
+        "OBJ-MIV14-006",
+        "AUD-MIV14-006"
+      ],
+      "criterionDescriptions": [
+        "供給された対象Resource IDが期待した対象と一致する。",
+        "供給された監査参照IDが期待した参照と一致する。"
+      ],
+      "scope": "supplied-record-only"
+    },
+    {
+      "id": "EXP-MIV14-007",
+      "validationId": "VAL-MIV14-007",
+      "subjectId": "OBJ-MIV14-007",
+      "subjectRevision": "SUPPLIED-REV-001",
+      "method": "Static",
+      "criterionIds": [
+        "CRT-MIV14-007-A",
+        "CRT-MIV14-007-B"
+      ],
+      "expectedValues": [
+        "OBJ-MIV14-007",
+        "AUD-MIV14-007"
+      ],
+      "criterionDescriptions": [
+        "供給された対象Resource IDが期待した対象と一致する。",
+        "供給された監査参照IDが期待した参照と一致する。"
+      ],
+      "scope": "supplied-record-only"
+    },
+    {
+      "id": "EXP-MIV14-008",
+      "validationId": "VAL-MIV14-008",
+      "subjectId": "OBJ-MIV14-008",
+      "subjectRevision": "SUPPLIED-REV-001",
+      "method": "Static",
+      "criterionIds": [
+        "CRT-MIV14-008-A",
+        "CRT-MIV14-008-B"
+      ],
+      "expectedValues": [
+        "OBJ-MIV14-008",
+        "AUD-MIV14-008"
+      ],
+      "criterionDescriptions": [
+        "供給された対象Resource IDが期待した対象と一致する。",
+        "供給された監査参照IDが期待した参照と一致する。"
+      ],
+      "scope": "supplied-record-only"
+    }
+  ],
+  "authoredInputs": [
+    {
+      "decisionQuestion": "この供給資料の対象Resource IDと監査参照IDは、期待した二条件それぞれに一致するか。",
+      "minimumEvidenceQuestion": "この対象ID・版の二条件について供給記録だけで支持と反証を区別できるか。",
+      "methodRationale": "問いに必要な二条件だけを供給記録で読む。手法名は実行許可ではない。",
+      "unperformedReason": "実サービスへの操作は全件実施しない。供給記録の読解だけを表す。",
+      "observations": [
+        {
+          "id": "EVD-MIV14-001-1",
+          "criterionId": "CRT-MIV14-001-A",
+          "subjectId": "OBJ-MIV14-001",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": true,
+          "value": "OBJ-MIV14-001",
+          "recordedAt": "2026-09-15T23:00:00Z",
+          "basis": "authored-observation"
+        },
+        {
+          "id": "EVD-MIV14-001-2",
+          "criterionId": "CRT-MIV14-001-B",
+          "subjectId": "OBJ-MIV14-001",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": true,
+          "value": "AUD-MIV14-001",
+          "recordedAt": "2026-09-15T23:00:00Z",
+          "basis": "authored-observation"
+        }
+      ],
+      "judgment": {
+        "confidence": "中",
+        "supportedScope": "二条件",
+        "gap": "対象の実装と実影響は全件未測定。未観測の条件を推測しない。",
+        "alternative": "供給資料と実システムの状態が異なる可能性がある。",
+        "claimCeiling": "供給Policyの条件だけ。実装・実到達・業務影響は未確認。"
+      },
+      "treatment": "未確認条件を記録し、必要なら新しい計画・許可の判断へ戻す。",
+      "cleanupAction": "作業コピーを整理する設計を記録し、正本と親資料を保持する。"
+    },
+    {
+      "decisionQuestion": "この供給資料の対象Resource IDと監査参照IDは、期待した二条件それぞれに一致するか。",
+      "minimumEvidenceQuestion": "この対象ID・版の二条件について供給記録だけで支持と反証を区別できるか。",
+      "methodRationale": "問いに必要な二条件だけを供給記録で読む。手法名は実行許可ではない。",
+      "unperformedReason": "実サービスへの操作は全件実施しない。供給記録の読解だけを表す。",
+      "observations": [
+        {
+          "id": "EVD-MIV14-002-1",
+          "criterionId": "CRT-MIV14-002-A",
+          "subjectId": "OBJ-MIV14-002",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": true,
+          "value": "OBJ-MIV14-002",
+          "recordedAt": "2026-09-15T23:00:00Z",
+          "basis": "authored-observation"
+        },
+        {
+          "id": "EVD-MIV14-002-2",
+          "criterionId": "CRT-MIV14-002-B",
+          "subjectId": "OBJ-MIV14-002",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": false,
+          "value": null,
+          "recordedAt": null,
+          "basis": "empty-evidence-slot-not-observed"
+        }
+      ],
+      "judgment": {
+        "confidence": "低",
+        "supportedScope": "条件Aのみ",
+        "gap": "対象の実装と実影響は全件未測定。未観測の条件を推測しない。",
+        "alternative": "供給資料と実システムの状態が異なる可能性がある。",
+        "claimCeiling": "一条件だけ支持。未確認の条件を補完しない。"
+      },
+      "treatment": "未確認条件を記録し、必要なら新しい計画・許可の判断へ戻す。",
+      "cleanupAction": "作業コピーを整理する設計を記録し、正本と親資料を保持する。"
+    },
+    {
+      "decisionQuestion": "この供給資料の対象Resource IDと監査参照IDは、期待した二条件それぞれに一致するか。",
+      "minimumEvidenceQuestion": "この対象ID・版の二条件について供給記録だけで支持と反証を区別できるか。",
+      "methodRationale": "問いに必要な二条件だけを供給記録で読む。手法名は実行許可ではない。",
+      "unperformedReason": "実サービスへの操作は全件実施しない。供給記録の読解だけを表す。",
+      "observations": [
+        {
+          "id": "EVD-MIV14-003-1",
+          "criterionId": "CRT-MIV14-003-A",
+          "subjectId": "OBJ-MIV14-003",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": true,
+          "value": "OTHER-MIV14-003-1",
+          "recordedAt": "2026-09-15T23:00:00Z",
+          "basis": "authored-observation"
+        },
+        {
+          "id": "EVD-MIV14-003-2",
+          "criterionId": "CRT-MIV14-003-B",
+          "subjectId": "OBJ-MIV14-003",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": false,
+          "value": null,
+          "recordedAt": null,
+          "basis": "empty-evidence-slot-not-observed"
+        }
+      ],
+      "judgment": {
+        "confidence": "低",
+        "supportedScope": "支持範囲なし",
+        "gap": "対象の実装と実影響は全件未測定。未観測の条件を推測しない。",
+        "alternative": "供給資料と実システムの状態が異なる可能性がある。",
+        "claimCeiling": "一つの反証と一つのGap。仮説の一部を弱めるだけ。"
+      },
+      "treatment": "未確認条件を記録し、必要なら新しい計画・許可の判断へ戻す。",
+      "cleanupAction": "作業コピーを整理する設計を記録し、正本と親資料を保持する。"
+    },
+    {
+      "decisionQuestion": "この供給資料の対象Resource IDと監査参照IDは、期待した二条件それぞれに一致するか。",
+      "minimumEvidenceQuestion": "この対象ID・版の二条件について供給記録だけで支持と反証を区別できるか。",
+      "methodRationale": "問いに必要な二条件だけを供給記録で読む。手法名は実行許可ではない。",
+      "unperformedReason": "実サービスへの操作は全件実施しない。供給記録の読解だけを表す。",
+      "observations": [
+        {
+          "id": "EVD-MIV14-004-1",
+          "criterionId": "CRT-MIV14-004-A",
+          "subjectId": "OBJ-MIV14-004",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": true,
+          "value": "OTHER-MIV14-004-1",
+          "recordedAt": "2026-09-15T23:00:00Z",
+          "basis": "authored-observation"
+        },
+        {
+          "id": "EVD-MIV14-004-2",
+          "criterionId": "CRT-MIV14-004-B",
+          "subjectId": "OBJ-MIV14-004",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": true,
+          "value": "OTHER-MIV14-004-2",
+          "recordedAt": "2026-09-15T23:00:00Z",
+          "basis": "authored-observation"
+        }
+      ],
+      "judgment": {
+        "confidence": "中",
+        "supportedScope": "支持範囲なし",
+        "gap": "対象の実装と実影響は全件未測定。未観測の条件を推測しない。",
+        "alternative": "供給資料と実システムの状態が異なる可能性がある。",
+        "claimCeiling": "この供給資料での二条件は反証。実環境全体の否定ではない。"
+      },
+      "treatment": "未確認条件を記録し、必要なら新しい計画・許可の判断へ戻す。",
+      "cleanupAction": "作業コピーを整理する設計を記録し、正本と親資料を保持する。"
+    },
+    {
+      "decisionQuestion": "この供給資料の対象Resource IDと監査参照IDは、期待した二条件それぞれに一致するか。",
+      "minimumEvidenceQuestion": "この対象ID・版の二条件について供給記録だけで支持と反証を区別できるか。",
+      "methodRationale": "問いに必要な二条件だけを供給記録で読む。手法名は実行許可ではない。",
+      "unperformedReason": "実サービスへの操作は全件実施しない。供給記録の読解だけを表す。",
+      "observations": [
+        {
+          "id": "EVD-MIV14-005-1",
+          "criterionId": "CRT-MIV14-005-A",
+          "subjectId": "OBJ-MIV14-005",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": false,
+          "value": null,
+          "recordedAt": null,
+          "basis": "empty-evidence-slot-not-observed"
+        },
+        {
+          "id": "EVD-MIV14-005-2",
+          "criterionId": "CRT-MIV14-005-B",
+          "subjectId": "OBJ-MIV14-005",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": false,
+          "value": null,
+          "recordedAt": null,
+          "basis": "empty-evidence-slot-not-observed"
+        }
+      ],
+      "judgment": {
+        "confidence": "低",
+        "supportedScope": "支持範囲なし",
+        "gap": "対象の実装と実影響は全件未測定。未観測の条件を推測しない。",
+        "alternative": "供給資料と実システムの状態が異なる可能性がある。",
+        "claimCeiling": "必要な観測がなく、支持も反証も確定できない。"
+      },
+      "treatment": "未確認条件を記録し、必要なら新しい計画・許可の判断へ戻す。",
+      "cleanupAction": "作業コピーを整理する設計を記録し、正本と親資料を保持する。"
+    },
+    {
+      "decisionQuestion": "この供給資料の対象Resource IDと監査参照IDは、期待した二条件それぞれに一致するか。",
+      "minimumEvidenceQuestion": "この対象ID・版の二条件について供給記録だけで支持と反証を区別できるか。",
+      "methodRationale": "問いに必要な二条件だけを供給記録で読む。手法名は実行許可ではない。",
+      "unperformedReason": "親RoEはDraftで許可は失効。本教材は実操作を行わず、合成Account作成も実施しない。",
+      "observations": [
+        {
+          "id": "EVD-MIV14-006-1",
+          "criterionId": "CRT-MIV14-006-A",
+          "subjectId": "OBJ-MIV14-006",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": false,
+          "value": null,
+          "recordedAt": null,
+          "basis": "empty-evidence-slot-not-observed"
+        },
+        {
+          "id": "EVD-MIV14-006-2",
+          "criterionId": "CRT-MIV14-006-B",
+          "subjectId": "OBJ-MIV14-006",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": false,
+          "value": null,
+          "recordedAt": null,
+          "basis": "empty-evidence-slot-not-observed"
+        }
+      ],
+      "judgment": {
+        "confidence": "低",
+        "supportedScope": "支持範囲なし",
+        "gap": "対象の実装と実影響は全件未測定。未観測の条件を推測しない。",
+        "alternative": "供給資料と実システムの状態が異なる可能性がある。",
+        "claimCeiling": "実施しない。資料だけでは問いの結論は確定できない。"
+      },
+      "treatment": "未確認条件を記録し、必要なら新しい計画・許可の判断へ戻す。",
+      "cleanupAction": "作業コピーを整理する設計を記録し、正本と親資料を保持する。"
+    },
+    {
+      "decisionQuestion": "この供給資料の対象Resource IDと監査参照IDは、期待した二条件それぞれに一致するか。",
+      "minimumEvidenceQuestion": "この対象ID・版の二条件について供給記録だけで支持と反証を区別できるか。",
+      "methodRationale": "問いに必要な二条件だけを供給記録で読む。手法名は実行許可ではない。",
+      "unperformedReason": "実サービスへの操作は全件実施しない。供給記録の読解だけを表す。",
+      "observations": [
+        {
+          "id": "EVD-MIV14-007-1",
+          "criterionId": "CRT-MIV14-007-A",
+          "subjectId": "OBJ-MIV14-007",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": false,
+          "value": null,
+          "recordedAt": null,
+          "basis": "empty-evidence-slot-not-observed"
+        },
+        {
+          "id": "EVD-MIV14-007-2",
+          "criterionId": "CRT-MIV14-007-B",
+          "subjectId": "OBJ-MIV14-007",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": false,
+          "value": null,
+          "recordedAt": null,
+          "basis": "empty-evidence-slot-not-observed"
+        }
+      ],
+      "judgment": {
+        "confidence": "低",
+        "supportedScope": "支持範囲なし",
+        "gap": "対象の実装と実影響は全件未測定。未観測の条件を推測しない。",
+        "alternative": "供給資料と実システムの状態が異なる可能性がある。",
+        "claimCeiling": "停止の記録だけ。実Dataの検出や実プロセス停止の測定ではない。"
+      },
+      "treatment": "未確認条件を記録し、必要なら新しい計画・許可の判断へ戻す。",
+      "cleanupAction": "作業コピーを整理する設計を記録し、正本と親資料を保持する。"
+    },
+    {
+      "decisionQuestion": "この供給資料の対象Resource IDと監査参照IDは、期待した二条件それぞれに一致するか。",
+      "minimumEvidenceQuestion": "この対象ID・版の二条件について供給記録だけで支持と反証を区別できるか。",
+      "methodRationale": "問いに必要な二条件だけを供給記録で読む。手法名は実行許可ではない。",
+      "unperformedReason": "実サービスへの操作は全件実施しない。供給記録の読解だけを表す。",
+      "observations": [
+        {
+          "id": "EVD-MIV14-008-1",
+          "criterionId": "CRT-MIV14-008-A",
+          "subjectId": "OBJ-MIV14-008",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": true,
+          "value": "OBJ-MIV14-008",
+          "recordedAt": "2026-09-15T23:00:00Z",
+          "basis": "authored-observation"
+        },
+        {
+          "id": "EVD-MIV14-008-2",
+          "criterionId": "CRT-MIV14-008-B",
+          "subjectId": "OBJ-MIV14-008",
+          "subjectRevision": "SUPPLIED-REV-001",
+          "present": true,
+          "value": "AUD-MIV14-008",
+          "recordedAt": "2026-09-15T23:00:00Z",
+          "basis": "authored-observation"
+        }
+      ],
+      "judgment": {
+        "confidence": "低",
+        "supportedScope": "二条件",
+        "gap": "対象の実装と実影響は全件未測定。未観測の条件を推測しない。",
+        "alternative": "供給資料と実システムの状態が異なる可能性がある。",
+        "claimCeiling": "問いは支持されても、残存確認が不足し記録はOpen。"
+      },
+      "treatment": "未確認条件を記録し、必要なら新しい計画・許可の判断へ戻す。",
+      "cleanupAction": "作業コピーを整理する設計を記録し、正本と親資料を保持する。"
+    }
+  ],
+  "parentDigests": {
+    "cases/ch01-integrated-security-case-example.md": "c72c0d149321a24f2b6901db381c069cff86a8536b5578eba285b9d17eb329b2",
+    "cases/ch02-authorization-decision-example.md": "74d1aa7a802525ee5f465ccbdc1404e26a974ed60e264b65978612bef8026f4a",
+    "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
+    "cases/ch08-lab-evidence-example.md": "715859aea7c9ee8e939ff080447d34916a4f4b582d737719f272b394b9f17e0d",
+    "cases/fixtures/ch08-lab-plan.json": "f4ea0e4544e65fbb3447b173b0d9ab510e3aa8dea82209187727842b5f64ca8f",
+    "manuscript/09-engagement-roe.md": "2afbc548021b6f4017abf10287fc965c7417c15c0c36447763953fef2c65884a",
+    "templates/rules-of-engagement.md": "abf36127616fb838f8b599f60bbb1459e9b709381e990db4c9d855bcb81b9ef9",
+    "cases/ch09-engagement-roe-example.md": "44cf657c9ad220709c6b026ec4a894d904b1f89d88427e3babd2070e5a11b25a",
+    "cases/fixtures/ch09-engagement-roe.json": "cf3b2af1dc846981e9a9411641bc21663e7b0a0b1e90d66fd2750cdbd904f936",
+    "schemas/ch09-engagement-roe.schema.json": "f8983d4c251f27b09410a4a064e40138eab080830fed361d6b62aa201a384cd2",
+    "references/ch09-source-review-2026-09-13.md": "82ceac1a13e78805bb5d51eae2ad576238506a0e442c1617ce6f6d90384ed1b0",
+    "cases/ch11-web-api-assessment-example.md": "170f4d66d10aa2b2090018b610002b23a226db43b86b473af2216525ddca182f",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
+    ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
+    "manuscript/04-assets-boundaries-threat-model.md": "b20d25c51f0fa27c0404a8c5d2a4753a0a5b96a7152df67be985479590940084",
+    "manuscript/06-observable-systems.md": "c11a2491c94b710b749e48dceee448832d68d9406c557be7f9a49b45077b9938",
+    "cases/ch06-signal-flow-example.md": "a062ba22f4f0e1eb28a08342b0173a02473e995062410986b51d1a6a4af7cf0a",
+    "cases/fixtures/ch06-signal-flow.json": "73000db0a442d9be338a0e9834fe589ee387ee05ab280a9cc5f0e6fe0f0da6fb",
+    "manuscript/10-recon-osint-boundary.md": "122287e232c1b07468f7b0ecdc3e1ee6f4a2a7e8a3252ea8d73c6e8e681b04b7",
+    "templates/attack-surface-register.md": "ac84aef10dedc83264180e4f9e6069f711c3613e1948875524d561c88893fa75",
+    "cases/ch10-attack-surface-example.md": "7409da76004a7c32489d620691684054cb60e486dfb7dd8a7f7dabb012ed46fa",
+    "cases/fixtures/ch10-attack-surface.json": "84247ed0d7bd12547cd94f00f9f7faf2df58a9dee1947badf7c68dfd741b5f90",
+    "cases/fixtures/ch10-source-bundle.json": "d66edf29d533d102ee7d49d6362b031cc7c9983eef89f65cba85cbc751e0e36c",
+    "schemas/ch10-attack-surface.schema.json": "84107fecbf04d7516c39696a50fdbdf4282dc494cdcac8a126b4f91064f7a160",
+    "references/ch10-source-review-2026-09-14.md": "bbe585867368ececabe92e236f3b8dbbbcd735730c6d664b0face8dd76ac67fc",
+    "manuscript/11-web-api-hypothesis.md": "4bb4768e3a0d122116cae4019bf5b344601ec64e4d5f364bb45bb8e8b9437992",
+    "cases/fixtures/ch11-web-api-assessment-dataset.json": "2f0e10f0de37b3904c9303793ce36fdd565db8a0c4614bdeaba9b8a2c65ec4ec",
+    "manuscript/12-enterprise-identity.md": "642483bda2082a61a302b8967a91a5cec8e971116d025b4e25779753b7d238ab",
+    "templates/identity-attack-path-review.md": "47d9d8e2347c3ecfb6c9c7d135ceab9fe111165e9d722b278ead4a32984a427a",
+    "cases/ch12-identity-path-review-example.md": "0caa79dcb448212f08f5d6d44c5af705bf850be7b60bd610fab93a5e6ffc1bd3",
+    "references/ch12-source-review-2026-09-15.md": "21220e5329a42daf45180c5f3555dec23f82204ad41de69aada442b6d5659f38",
+    "cases/fixtures/ch12-identity-paths.json": "7bcaad91e1fe1ac5cea69d6e622a206f3db17ad986195e0c8191ffe7354d6491",
+    "schemas/ch12-identity-paths.schema.json": "72a4778b936e0939afa63c2a6330efa98cd192c4f74c24aee5048b1095bacce6",
+    "manuscript/13-platform-supply-chain.md": "6f1feafc4a87393e68e0020c4aed2858b1cfda0e203dbfe91f6565f36a61b57e",
+    "templates/platform-supply-chain-assessment.md": "3d5066a47bcdd995c8a6ace0a017e42116f802695561f3968ab1e6cbe7ded866",
+    "cases/ch13-platform-supply-chain-example.md": "2b7f65bbeb4d66f9f8f9eed58ecb54cd69ed458891a666f6a27158bc92dff876",
+    "references/ch13-source-review-2026-09-15.md": "44ebfde1aa46782196cd58ebc3dbd0c0ca44432929d571bd5d8a4f3f9a77562a",
+    "cases/fixtures/ch13-supply-chain.json": "ad39fbefbace47f8a61b17aa796c4246e2f65f0c5b47be593b93cc202b42ee4c",
+    "schemas/ch13-supply-chain.schema.json": "ae5376644932e2b2f4b848ae2e050262110a346e5a1c8640453563eeecf22a6f"
+  },
+  "documents": {
+    "manuscript/14-minimal-impact-validation.md": {
+      "headings": [
+        [
+          1,
+          "第14章 最小影響で成立性を確認し、止め、戻す"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケース：あと一歩を正当化しない"
+        ],
+        [
+          2,
+          "全体像：問いから停止・残存確認まで"
+        ],
+        [
+          2,
+          "基本概念：存在条件と業務影響は別の問い"
+        ],
+        [
+          2,
+          "四つのMethodを最小十分性で選ぶ"
+        ],
+        [
+          2,
+          "六つのResultと実施有無を分離する"
+        ],
+        [
+          2,
+          "十分なEvidenceで停止する"
+        ],
+        [
+          2,
+          "CleanupとResidual checkを別に記録する"
+        ],
+        [
+          2,
+          "四つの視点と責任分担"
+        ],
+        [
+          2,
+          "安全な分析課題"
+        ],
+        [
+          2,
+          "作成する成果物"
+        ],
+        [
+          2,
+          "評価基準"
+        ],
+        [
+          2,
+          "よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この章の位置付け 第13章のVerifiedは供給された記録の比較結果であり、追加操作の許可ではありません。本章は、何を確かめれば判断できるかを先に定め、必要なEvidenceが得られたら止める設計を扱います。結果が強いことと、調査を深く進めることを同じにしません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "成果物はART-22 Minimal-Impact Validation Recordです。MIV-2026-014はCASE-2026-001をrefinesします。第11章のCASE-2026-011とROE-2026-011は独立した比較対象のままです。別CaseのEvidenceや許可を、本章の親記録へ付け替えません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "前提知識 第8章の記録と実ラボの区別、第9章のAuthority / RoE、第11章の仮説、第12章の権限とGap、第13章の供給記録の上限を前提にします。Runningを含む第8章の八状態は、実ラボを動かした証明ではありません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "親AUTH-CASE-2026-001は2026-08-19T09:00:00Zに失効し、元Test windowは2026-08-06T00:00:00Z〜08:00:00Zです。ROE-2026-009はversion 1のDraft、三つのObjectとexecutionAuthorized=falseを保持します。本章の読解課題は配布された合成資料だけを対象とし、この親記録を更新・延長しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "導入ケース：あと一歩を正当化しない 架空の評価担当者は、供給Policyで二つの条件が整合することを確認しました。「実際のDataも見れば報告が強くなる」という案が出ます。しかし、今回の問いは設定条件の整合です。業務Dataの取得を必要条件にすり替えると、当初の判断要求と許可範囲を失います。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "導入ケース：あと一歩を正当化しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "別の担当者は、一つの合成応答だけを読んで「対策は有効」と書きました。監査記録は欠けています。こちらは深く進めるのではなく、支持できる範囲と不足するEvidenceを分ける必要があります。二つの事例に共通する問題は、結論を先に決めて必要Evidenceを後から増減させることです。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "導入ケース：あと一歩を正当化しない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "全体像：問いから停止・残存確認まで 次の流れを左から読みます。入力は供給された仮説と親の制約、出力は主張の上限を持つ判断記録です。矢印は許可の自動継承でも、実操作の実行順でもありません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "全体像：問いから停止・残存確認まで"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "F-14-01はこの判断の接続を表します。資料の版、対象ID、操作対象、Evidenceの所有者が変われば同じ問いとは扱わず、計画へ戻します。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "全体像：問いから停止・残存確認まで"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "基本概念：存在条件と業務影響は別の問い Proof of Vulnerabilityは、対象の弱点について定めた成立条件をEvidenceで評価することです。Proof of Impactは、その弱点が特定の業務へ与える影響を評価する別の問いです。前者の支持から、後者の測定済みという結論は導けません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "基本概念：存在条件と業務影響は別の問い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章のSupportedは合成資料内の限定された仮説が支持された状態です。実到達、実装の完全性、侵害なし、暗号検証、安全性、法的許可を意味しません。第12章のUnknown binding / Coverageと非Federation評価の三つのnull、第13章の実Build・Deploy・署名検証0も保持します。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "基本概念：存在条件と業務影響は別の問い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Minimum evidence questionには、対象ID・版、判断する条件、期待する証拠、反証となる証拠、未確認なら結論を保留する条件を書きます。対象の違う二つの観測を、一つの条件を満たす証拠として合算しません。本教材では対象Resource IDと監査参照IDの二つを期待値と完全一致で比較します。これは作成者が記述した記録同士の比較であり、実製品の制御や応答を測定するものではありません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "基本概念：存在条件と業務影響は別の問い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "四つのMethodを最小十分性で選ぶ Methodは以下の四種類です。名称だけで強弱や実施許可を与えません。WSTGの基準との比較と複数手法の組合せという考え方を補助にしつつ、本書の有限四分類は教材独自の設計です。SRC-WSTG-001"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "四つのMethodを最小十分性で選ぶ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本教材では四Methodとも実サービスへ接続しません。最後のMethodを選ぶ記録も計画だけで、executionDisposition=Not performedです。Staticで答えられる問いを、報告を強く見せるために実操作へ昇格しません。必要な証拠がない場合は、不足と代替の問いを残します。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "四つのMethodを最小十分性で選ぶ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "NIST SP 800-115の計画・実施中の調整・分析・報告の枠組みを、問い、Scope、制限、連絡、Evidenceの取扱いを事前に結ぶ背景として用います。古い製品手順や侵入例を採用するものではありません。SRC-NIST-TEST-001"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "四つのMethodを最小十分性で選ぶ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Not performedは第七のResultではなく実施有無の欄です。未実施の記録では問いのResultをInconclusiveとし、なぜ実施しないかを残します。Methodの四分類とResultの六分類は別の軸です。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "六つのResultと実施有無を分離する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "判定はまず停止trigger、次に未実施、次に供給された二条件のEvidenceを見る順です。観測valueは合成ID文字列またはnullです。期待IDとの完全一致をtrue、不一致をfalse、未観測をnullという比較結果に変換します。nullは未観測でありfalseではありません。Evidence slotにIDを割り当てただけでは観測済みになりません。present=falseのslotはevidenceIdsへ含めず、時刻もnullにします。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "六つのResultと実施有無を分離する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "十分なEvidenceで停止する 二条件の支持または反証が揃えば、供給記録についての最小Evidenceは十分です。追加の確認を続けず、停止理由を記録します。揃わなければEvidence-gapとして止め、欠落を補うための実操作を自動承認しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "十分なEvidenceで停止する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "想定外の権限、外部通信、実Data、Scope外Asset、未知の入力が現れたら停止します。実Dataを取得しません。実Credentialを再利用しません。横展開、永続化、回避、DoS、破壊は実施しません。本教材の停止例はUnexpected-input-symbolという作成者の記号だけであり、実Dataを配布した例ではありません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "十分なEvidenceで停止する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "stepsAfterStop=0は供給記録上の継続がないことを表し、実プロセスを制御する安全装置ではありません。停止後は追加操作を行わず、責任者、対象、Evidence、未確認事項、次の判断を記録します。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "十分なEvidenceで停止する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "CleanupとResidual checkを別に記録する Cleanupには対象、所有者、予定した整理、記録上の完了証拠を記載します。Residual checkには別の確認者と証拠を割り当てます。親第8章のreceiptは今回の作業コピーの証拠ではなく、別のScopeのままです。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "CleanupとResidual checkを別に記録する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本教材のRecorded completeとRecorded clearは、作成者が供給した読解用記録の値です。実削除や実システムの残存影響を測定したものではありません。正本や親Evidenceは削除対象にしません。現実のデータ取扱い・保存・廃棄は個別の計画と組織方針へ戻す必要があります。SRC-NIST-TEST-001"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "CleanupとResidual checkを別に記録する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Cleanup未開始、またはResidual checkがUnknownならrecordStatus=Openです。SupportedでもCompleteへ進めません。一方、Gap・制限・Owner・期限が埋まり、読解記録の整理と確認が揃えばInconclusiveの記録もCompleteになり得ます。これは業務上の問題が解決した意味ではありません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "CleanupとResidual checkを別に記録する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWNは最小十分なEvidenceと停止・残存確認の判断記録です。BRIDGEは親章のAuthority / Hypothesisと、第15章のFinding / Retest、第21章のControl ValidationへのHandoffです。後続Handoffはplanned-not-deliveredであり、本章だけで後続成果物を完成扱いにしません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "四つの視点と責任分担"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "DELEGATEは脆弱性別手順・Exploit開発・製品設定です。Pentest学習書へ委譲し、本章には問いとEvidenceの選択に必要な境界だけを残します。委譲先の掲載手順も、本章の親RoEに実行許可を追加しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "四つの視点と責任分担"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "安全な分析課題 Purpose: 完全合成記入例の八記録を、ART-22 Templateへ整理し、Result・実施有無・記録完了を区別します。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: 配布したJSONとSchemaだけを読みます。Python 3とRepositoryの固定Ruby bundleを準備済みのローカルcheckoutを前提とし、依存不足なら停止します。実Target、実Account、外部通信は必要ありません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence / Impact: 次のコマンドは供給記録と公開文書の契約を読む検査です。成功時は八記録・四Method・六ResultとPolicy/Projectionの版を表示します。ソース正本や親の状態を変更せず、サービスやラボを起動しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stop / Cleanup: ERROR、未知入力、依存不足、想定外の通信があれば停止します。追加の取得・再試行で判断を補完せず、自分の読解用コピーとエラー記録を区別して整理します。正本と親Evidenceは保持し、実システムの削除成功とは主張しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "最初に001と005で十分性とGapを比べ、002と003で部分支持と反証を分けます。004ではRejectedの対象範囲を確認し、006では未実施を第七Resultにしない理由を書きます。007は停止triggerを優先し、008はSupportedでも残存確認が不足すればOpenであることを説明してください。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "良い記録は「供給資料の二条件は支持されたが実影響は未測定、残存確認はUnknown、Ownerと期限を残す」と書きます。悪い記録は「証拠があるので全部安全」と一般化します。反証例は「両条件の不一致」を示しても実環境全体を否定せず、対象版に結論を限定します。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "作成する成果物 ART-22にはHypothesis、Authority、Validation、Expected / Disconfirming Evidence、Stop、Cleanup、Residual、Finding、Decision、ReassessmentをIDで接続します。Templateの空欄は記入すべき問いであり、承認済みの初期値ではありません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "作成する成果物"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "完全合成CaseはJSONの全末端値を公開Field/Value表へ対応付けます。Schemaはこの有限教材用で、任意の実環境記録やNIST/OWASP適合を判定するものではありません。共有Publication Projection 1.1.0とContent Safety Policy 1.2.0へ全四文書を渡し、章固有のMarkdown/HTML parserは追加しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "作成する成果物"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "評価基準 各行を0点（欠落・不整合）、1点（記載はあるが追跡不足）、2点（直接Evidenceと制限を追跡可能）で評価します。合計点で安全上の欠落を相殺しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "よくある誤解 「最小合成操作なら許可不要」ではありません。「ResultがSupportedなら完了」でもありません。「未実施だからRejected」とも言えません。実施有無、問いの判定、記録の完了、実システムの状態を分けて読みます。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "「NISTやOWASPに載っているので実施する」という判断も避けます。今回採用するのは計画・比較・分析・報告の考え方の限定範囲です。Sourceは個別環境のAuthorityになりません。SRC-NIST-TEST-001 / SRC-WSTG-001"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "章のまとめ 最初に問いと主張上限を決め、必要な供給Evidenceだけを比較します。十分なら停止し、不足や未実施ならその理由を記録します。CleanupとResidual checkを別に扱い、SupportedからCompleteや実操作許可へ飛躍しないことがART-22の中心です。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "章のまとめ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "次に学ぶこと 第15章ではFindingを改修・再評価・残存リスクの判断へ接続します。本章から渡すのは限定された結論とEvidence、Gap、Owner、期限であり、親RoEの更新や後続検証の成功ではありません。現在は成果物索引で接続先の役割を確認します。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "次に学ぶこと"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/pentest-learning-book/"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "四つの視点と責任分担"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "DELEGATEは脆弱性別手順・Exploit開発・製品設定です。Pentest学習書へ委譲し、本章には問いとEvidenceの選択に必要な境界だけを残します。委譲先の掲載手順も、本章の親RoEに実行許可を追加しません。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter14_contract.py --no-regressions"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "完全合成CaseはJSONの全末端値を公開Field/Value表へ対応付けます。Schemaはこの有限教材用で、任意の実環境記録やNIST/OWASP適合を判定するものではありません。共有Publication Projection 1.1.0とContent Safety Policy 1.2.0へ全四文書を渡し、章固有のMarkdown/HTML parserは追加しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "作成する成果物"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-WSTG-001: OWASP WSTG 4.2のIntroduction、比較・版別参照・複数手法の考え方。5.0 developmentや4.3 Unreleasedを採用版にしません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本教材では四Methodとも実サービスへ接続しません。最後のMethodを選ぶ記録も計画だけで、executionDisposition=Not performedです。Staticで答えられる問いを、報告を強く見せるために実操作へ昇格しません。必要な証拠がない場合は、不足と代替の問いを残します。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "四つのMethodを最小十分性で選ぶ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "想定外の権限、外部通信、実Data、Scope外Asset、未知の入力が現れたら停止します。実Dataを取得しません。実Credentialを再利用しません。横展開、永続化、回避、DoS、破壊は実施しません。本教材の停止例はUnexpected-input-symbolという作成者の記号だけであり、実Dataを配布した例ではありません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "十分なEvidenceで停止する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本教材のRecorded completeとRecorded clearは、作成者が供給した読解用記録の値です。実削除や実システムの残存影響を測定したものではありません。正本や親Evidenceは削除対象にしません。現実のデータ取扱い・保存・廃棄は個別の計画と組織方針へ戻す必要があります。SRC-NIST-TEST-001"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "CleanupとResidual checkを別に記録する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stop / Cleanup: ERROR、未知入力、依存不足、想定外の通信があれば停止します。追加の取得・再試行で判断を補完せず、自分の読解用コピーとエラー記録を区別して整理します。正本と親Evidenceは保持し、実システムの削除成功とは主張しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "完全合成CaseはJSONの全末端値を公開Field/Value表へ対応付けます。Schemaはこの有限教材用で、任意の実環境記録やNIST/OWASP適合を判定するものではありません。共有Publication Projection 1.1.0とContent Safety Policy 1.2.0へ全四文書を渡し、章固有のMarkdown/HTML parserは追加しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "作成する成果物"
+          ]
+        }
+      ],
+      "exerciseInstructionOrder": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "安全な分析課題 Purpose: 完全合成記入例の八記録を、ART-22 Templateへ整理し、Result・実施有無・記録完了を区別します。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: 配布したJSONとSchemaだけを読みます。Python 3とRepositoryの固定Ruby bundleを準備済みのローカルcheckoutを前提とし、依存不足なら停止します。実Target、実Account、外部通信は必要ありません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence / Impact: 次のコマンドは供給記録と公開文書の契約を読む検査です。成功時は八記録・四Method・六ResultとPolicy/Projectionの版を表示します。ソース正本や親の状態を変更せず、サービスやラボを起動しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stop / Cleanup: ERROR、未知入力、依存不足、想定外の通信があれば停止します。追加の取得・再試行で判断を補完せず、自分の読解用コピーとエラー記録を区別して整理します。正本と親Evidenceは保持し、実システムの削除成功とは主張しません。"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter14_contract.py --no-regressions"
+          ],
+          "headings": [
+            "第14章 最小影響で成立性を確認し、止め、戻す",
+            "安全な分析課題"
+          ]
+        }
+      ]
+    },
+    "templates/minimal-impact-validation-record.md": {
+      "headings": [
+        [
+          1,
+          "Minimal-Impact Validation Record"
+        ],
+        [
+          2,
+          "このTemplateの扱い"
+        ],
+        [
+          2,
+          "識別と境界"
+        ],
+        [
+          2,
+          "問いと最小十分なEvidence"
+        ],
+        [
+          2,
+          "停止と残存確認"
+        ],
+        [
+          2,
+          "判断とHandoff"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "このTemplateの扱い ART-22は最小限のEvidence、停止、Cleanup、Residual checkを判断へ接続する記録です。第14章と完全合成例を併用します。空欄は承認済みの値ではありません。"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "このTemplateの扱い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "識別と境界 Field 記入する内容 Record / Artifact / Case / Relation 記録ID・版・ART-22・親Case・refines等の根拠"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "識別と境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "識別と境界 Field 記入する内容 Hypothesis / Parent Finding 評価する仮説と親の限定された判断"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "識別と境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "識別と境界 Field 記入する内容 Authority / RoE / Lab Plan 対象・期限・状態・許可の根拠、失効やDraftを隠さない"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "識別と境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "識別と境界 Field 記入する内容 Subject / Revision / Owner 資料対象ID・版・所有者"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "識別と境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "識別と境界 Field 記入する内容 Data classification / Mode 合成・非実行などの範囲と実測との差"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "識別と境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "識別と境界 Field 記入する内容 Independent comparison 独立Caseは親Evidenceや許可に統合しない"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "識別と境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "問いと最小十分なEvidence Field 記入する内容 Decision question / Minimum evidence question 判断に必要な条件と対象範囲"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "問いと最小十分なEvidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "問いと最小十分なEvidence Field 記入する内容 Method / Rationale Static / Simulation / Offline replay / Minimal synthetic operationから選ぶ理由"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "問いと最小十分なEvidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "問いと最小十分なEvidence Field 記入する内容 Execution disposition 実施有無、未実施ならその理由と安全な代替"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "問いと最小十分なEvidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "問いと最小十分なEvidence Field 記入する内容 Expected / Disconfirming evidence 条件ID、期待値、反証、未観測の扱い"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "問いと最小十分なEvidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "問いと最小十分なEvidence Field 記入する内容 Evidence ID / Subject / Revision / Time 証拠と問いの直接対応、空slotを観測済みにしない"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "問いと最小十分なEvidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "問いと最小十分なEvidence Field 記入する内容 Observation / Limitation / Alternative 読めた範囲、Gap、代替説明、結論を変える条件"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "問いと最小十分なEvidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "問いと最小十分なEvidence Field 記入する内容 Claim ceiling / Confidence 実影響・許可へ一般化しない主張上限と確信度"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "問いと最小十分なEvidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "停止と残存確認 Field 記入する内容 Stop ID / Trigger / Evidence / Reason 十分なEvidence、不足、想定外入力の停止根拠"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "停止と残存確認"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "停止と残存確認 Field 記入する内容 Post-stop steps / Next action 追加操作を続けず、記録と責任者判断へ戻す"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "停止と残存確認"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "停止と残存確認 Field 記入する内容 Cleanup ID / Scope / Owner / Evidence 自分の作業コピーと正本・親Evidenceを区別する"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "停止と残存確認"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "停止と残存確認 Field 記入する内容 Residual ID / Scope / Reviewer / Evidence 整理の記入とは別に残存の確認を記録する"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "停止と残存確認"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "停止と残存確認 Field 記入する内容 Actual operation / Actual deletion 記録上の値と実測の有無を区別する"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "停止と残存確認"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "判断とHandoff Field 記入する内容 Result Supported / Partially supported / Weakened / Inconclusive / Rejected / Stopped"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "判断とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "判断とHandoff Field 記入する内容 Supported scope / Gap 支持・反証・未確認を対象条件ごとに分ける"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "判断とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "判断とHandoff Field 記入する内容 Record status Cleanup・Residual未完了ならOpen、Resultと混同しない"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "判断とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "判断とHandoff Field 記入する内容 Finding / Treatment / Decision 仮説、Evidence、停止、制限をIDで結ぶ"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "判断とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "判断とHandoff Field 記入する内容 Owner / Reassessment / Due / Reopen 次の責任者、期限、結論を見直す条件"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "判断とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "判断とHandoff Field 記入する内容 Handoff 第15章・第21章への受渡し計画と未完了の区別"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "判断とHandoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Not performedは実施有無の欄であり、第七のResultではありません。親の失効AUTH、RoE Draft、Unknown、独立Caseを本Templateの記入だけで昇格させません。実Data取得、Credential再利用、横展開、永続化、回避、DoS、破壊は実施しません。"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "判断とHandoff"
+          ]
+        }
+      ],
+      "hostProvenance": [],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Not performedは実施有無の欄であり、第七のResultではありません。親の失効AUTH、RoE Draft、Unknown、独立Caseを本Templateの記入だけで昇格させません。実Data取得、Credential再利用、横展開、永続化、回避、DoS、破壊は実施しません。"
+          ],
+          "headings": [
+            "Minimal-Impact Validation Record",
+            "判断とHandoff"
+          ]
+        }
+      ]
+    },
+    "cases/ch14-minimal-impact-validation-example.md": {
+      "headings": [
+        [
+          1,
+          "第14章 完全合成記入例：Minimal-Impact Validation Record"
+        ],
+        [
+          2,
+          "この記入例の扱い"
+        ],
+        [
+          2,
+          "読み方と対比"
+        ],
+        [
+          2,
+          "停止条件と評価"
+        ],
+        [
+          2,
+          "schemaVersion"
+        ],
+        [
+          2,
+          "synthetic"
+        ],
+        [
+          2,
+          "executionAuthorized"
+        ],
+        [
+          2,
+          "record"
+        ],
+        [
+          2,
+          "parents"
+        ],
+        [
+          2,
+          "context"
+        ],
+        [
+          2,
+          "safety"
+        ],
+        [
+          2,
+          "expectations EXP-MIV14-001"
+        ],
+        [
+          2,
+          "expectations EXP-MIV14-002"
+        ],
+        [
+          2,
+          "expectations EXP-MIV14-003"
+        ],
+        [
+          2,
+          "expectations EXP-MIV14-004"
+        ],
+        [
+          2,
+          "expectations EXP-MIV14-005"
+        ],
+        [
+          2,
+          "expectations EXP-MIV14-006"
+        ],
+        [
+          2,
+          "expectations EXP-MIV14-007"
+        ],
+        [
+          2,
+          "expectations EXP-MIV14-008"
+        ],
+        [
+          2,
+          "validations VAL-MIV14-001"
+        ],
+        [
+          2,
+          "validations VAL-MIV14-002"
+        ],
+        [
+          2,
+          "validations VAL-MIV14-003"
+        ],
+        [
+          2,
+          "validations VAL-MIV14-004"
+        ],
+        [
+          2,
+          "validations VAL-MIV14-005"
+        ],
+        [
+          2,
+          "validations VAL-MIV14-006"
+        ],
+        [
+          2,
+          "validations VAL-MIV14-007"
+        ],
+        [
+          2,
+          "validations VAL-MIV14-008"
+        ],
+        [
+          2,
+          "handoffs HOF-MIV14-15"
+        ],
+        [
+          2,
+          "handoffs HOF-MIV14-21"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この記入例の扱い ART-22 / MIV-2026-014はCASE-2026-001をrefinesする非実行の教材です。全ID・観測値・時刻・停止・整理・判断は作成者が記述した供給記録であり、実サービス、実Account、実Data、実操作や実残存影響の測定結果ではありません。"
+          ],
+          "headings": [
+            "第14章 完全合成記入例：Minimal-Impact Validation Record",
+            "この記入例の扱い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第14章、空Template、正本JSON、閉じたSchemaを参照します。以下はJSONの全末端Fieldと一対一のField/Value表です。添字は0始まりで、空配列も表示します。"
+          ],
+          "headings": [
+            "第14章 完全合成記入例：Minimal-Impact Validation Record",
+            "この記入例の扱い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "読み方と対比 最初にparents、context、safetyを読みます。親RoE Draft / executionAuthorized=false、失効AUTH、元Window、三Objectは変えません。第8章のRunningを含む八状態と実行有無、第12章のUnknownとnonFederation三null、第13章のVerifiedと実Build/Deploy/署名検証0を分離します。独立CASE-2026-011のEvidenceや許可を借用しません。"
+          ],
+          "headings": [
+            "第14章 完全合成記入例：Minimal-Impact Validation Record",
+            "読み方と対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "各expectationsは対象Resource IDと監査参照IDという二条件の期待値を持ちます。observationsの合成ID文字列がそれぞれ一致すれば支持、不一致なら反証、present=false/value=nullなら未観測です。空slotにIDがあっても、evidenceIdsには含めません。この比較は実製品の制御や応答を測定するものではありません。"
+          ],
+          "headings": [
+            "第14章 完全合成記入例：Minimal-Impact Validation Record",
+            "読み方と対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "001は二条件支持、002は支持とGap、003は反証とGap、004は二条件反証、005は観測不足です。006はMinimal synthetic operationの計画だけでNot performed / Inconclusive、007は未知入力を表す記号によるStopped、008はSupportedでもResidual UnknownのためOpenです。六Resultと四Methodを全件同じ状態へ揃えません。"
+          ],
+          "headings": [
+            "第14章 完全合成記入例：Minimal-Impact Validation Record",
+            "読み方と対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Resultは供給された二条件の比較に限定します。停止triggerを最優先し、未実施を別欄へ記録します。Supportedは実影響や安全性ではなく、Completeは記録上の整理・確認が揃った状態です。Gapと制限が記録されていれば005のInconclusiveもCompleteになり得ます。006/007/008はOpenです。"
+          ],
+          "headings": [
+            "第14章 完全合成記入例：Minimal-Impact Validation Record",
+            "読み方と対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認事実は供給Field、分析判断はjudgment、仮定は合成対象と時刻、推奨はfindingとdecisionの計画です。実環境との差異や資料不足を代替説明に残し、Hypothesis / Validation / Evidence / Stop / Cleanup / Residual / Finding / Decision / ReassessmentをIDで辿ります。Handoffはplanned-not-deliveredです。"
+          ],
+          "headings": [
+            "第14章 完全合成記入例：Minimal-Impact Validation Record",
+            "読み方と対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "停止条件と評価 実Data、未知入力、外部通信、Scope不明なら停止します。実Credentialを再利用しません。横展開、永続化、回避、DoS、破壊は実施しません。全actualOperations=0、stepsAfterStop=0は供給記録の値であり実プロセスの制御ではありません。Cleanup/Residualは今回の読解用作業コピーだけのScopeで、親receiptや正本を整理対象へ付け替えません。"
+          ],
+          "headings": [
+            "第14章 完全合成記入例：Minimal-Impact Validation Record",
+            "停止条件と評価"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章の五観点Rubricを使い、十分性と過剰な追加確認、支持と反証、未実施とRejectedを区別します。実Data混入、停止後の追加操作、未確認のResidualからCompleteへの昇格、親許可の改変は点数にかかわらず差し戻します。"
+          ],
+          "headings": [
+            "第14章 完全合成記入例：Minimal-Impact Validation Record",
+            "停止条件と評価"
+          ]
+        }
+      ],
+      "hostProvenance": [],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "停止条件と評価 実Data、未知入力、外部通信、Scope不明なら停止します。実Credentialを再利用しません。横展開、永続化、回避、DoS、破壊は実施しません。全actualOperations=0、stepsAfterStop=0は供給記録の値であり実プロセスの制御ではありません。Cleanup/Residualは今回の読解用作業コピーだけのScopeで、親receiptや正本を整理対象へ付け替えません。"
+          ],
+          "headings": [
+            "第14章 完全合成記入例：Minimal-Impact Validation Record",
+            "停止条件と評価"
+          ]
+        }
+      ]
+    },
+    "references/ch14-source-review-2026-09-16.md": {
+      "headings": [
+        [
+          1,
+          "第14章 Source Review Note：最小影響の判断と停止"
+        ],
+        [
+          2,
+          "確認範囲"
+        ],
+        [
+          2,
+          "NIST SP 800-115"
+        ],
+        [
+          2,
+          "OWASP WSTG"
+        ],
+        [
+          2,
+          "本教材の判断と非採用範囲"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認範囲 確認日は2026-09-16です。第14章のMethod選択、事前計画、Evidence分析、停止・データ取扱い、Findingへの接続を説明するため、以下の範囲だけを再確認しました。Sourceは個別環境の実施許可ではなく、本書の六Result・四Method・数値上限・合成記録を規定していません。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "確認範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "NIST SP 800-115 SRC-NIST-TEST-001。公式Finalページと80ページPDFを確認しました。採用は§6.5の計画と承認、§7.2の実施中調整と停止、§7.3の分析、§7.4導入のデータ取扱い、§8.1〜8.2の緩和策と報告への接続です。既存第9章の§6.5〜6.6/Appendix Bの採用記録は保持します。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "NIST SP 800-115"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Date PublishedはSeptember 2008、Document Historyの2008-09-30 Finalは別の属性です。厳密な公開日は確認できないためRegistryのpublishedAtはnullを維持します。取得PDFのSHA-256は58e5ed41e5c8ca34ce14fd80b70f118f2c6d613d1647bc307edca30bcc45f063で、第9章の取得記録と一致しました。hash一致は資料の内容や主張全体を再監査した意味ではありません。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "NIST SP 800-115"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "古い攻撃・秘匿例、製品手順、§7.4.4の当時の媒体消去分類を現在の運用手順として採用しません。実Dataの保存・廃棄を本章の合成Cleanup値で保証せず、組織の計画と現行規範へ戻します。ローカルPDF変換ツールは未導入のため、限定採用節の本文は公式PDFのweb readerで確認しました。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "NIST SP 800-115"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWASP WSTG SRC-WSTG-001。公式Projectは4.2の版別提供、5.0開発中、4.3 Unreleasedを区別しています。既存の4.2公開日2020-12-03と採用版を保持します。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "OWASP WSTG"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用箇所はversioned 4.2 IntroductionのWhat is Testing、How To Reference WSTG Scenarios / Linking、The Need for a Balanced Approachです。基準との比較、版を含む参照、単一手法へ依存しない考え方を補助とし、個別脆弱性の手順や全Scenarioは採用しません。今回の供給応答比較は実HTTP試験ではありません。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "OWASP WSTG"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "既存第9〜11章のSource記録を保持し、第14章の利用箇所だけをRegistry notesへ追記しました。以前からある第15章mappingを今回の再監査済みという意味にしません。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "OWASP WSTG"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本教材の判断と非採用範囲 六Result、四Method、二つの比較条件、八記録、Not performedの独立欄、供給記録上の停止優先とCleanup/Residualによる完了条件は、Issue #38と本書契約に基づく教育用の有限設計です。NIST/OWASPへの準拠判定や実システムの状態保証ではありません。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "本教材の判断と非採用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "非正本の登録コメントにあったNIST SP 800-53Aは本章では採用しません。新しいSource IDや未確認の主張を追加せず、必要な二Sourceへ範囲を限定します。実Target、実Credential、外部通信、実Build/Deploy/署名検証は行っていません。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "本教材の判断と非採用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Registry-wide baselineは2026-07-25のままです。個別のcheckedAtは2026-09-16、nextReviewAtはNISTが2027-09-16、WSTGが2026-12-16です。版・Status・採用節・停止や許可境界が変わった場合は、本文・Template・Case・fixture・contractを一緒に再監査します。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "本教材の判断と非採用範囲"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "NIST SP 800-115 SRC-NIST-TEST-001。公式Finalページと80ページPDFを確認しました。採用は§6.5の計画と承認、§7.2の実施中調整と停止、§7.3の分析、§7.4導入のデータ取扱い、§8.1〜8.2の緩和策と報告への接続です。既存第9章の§6.5〜6.6/Appendix Bの採用記録は保持します。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "NIST SP 800-115"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://csrc.nist.gov/pubs/sp/800/115/final"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "NIST SP 800-115"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "NIST SP 800-115 SRC-NIST-TEST-001。公式Finalページと80ページPDFを確認しました。採用は§6.5の計画と承認、§7.2の実施中調整と停止、§7.3の分析、§7.4導入のデータ取扱い、§8.1〜8.2の緩和策と報告への接続です。既存第9章の§6.5〜6.6/Appendix Bの採用記録は保持します。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-115.pdf"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "NIST SP 800-115"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "NIST SP 800-115 SRC-NIST-TEST-001。公式Finalページと80ページPDFを確認しました。採用は§6.5の計画と承認、§7.2の実施中調整と停止、§7.3の分析、§7.4導入のデータ取扱い、§8.1〜8.2の緩和策と報告への接続です。既存第9章の§6.5〜6.6/Appendix Bの採用記録は保持します。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "古い攻撃・秘匿例、製品手順、§7.4.4の当時の媒体消去分類を現在の運用手順として採用しません。実Dataの保存・廃棄を本章の合成Cleanup値で保証せず、組織の計画と現行規範へ戻します。ローカルPDF変換ツールは未導入のため、限定採用節の本文は公式PDFのweb readerで確認しました。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "NIST SP 800-115"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWASP WSTG SRC-WSTG-001。公式Projectは4.2の版別提供、5.0開発中、4.3 Unreleasedを区別しています。既存の4.2公開日2020-12-03と採用版を保持します。"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "OWASP WSTG"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://owasp.org/www-project-web-security-testing-guide/"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "OWASP WSTG"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWASP WSTG SRC-WSTG-001。公式Projectは4.2の版別提供、5.0開発中、4.3 Unreleasedを区別しています。既存の4.2公開日2020-12-03と採用版を保持します。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://owasp.org/www-project-web-security-testing-guide/v42/2-Introduction/"
+          ],
+          "headings": [
+            "第14章 Source Review Note：最小影響の判断と停止",
+            "OWASP WSTG"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用箇所はversioned 4.2 IntroductionのWhat is Testing、How To Reference WSTG Scenarios / Linking、The Need for a Balanced Approachです。基準との比較、版を含む参照、単一手法へ依存しない考え方を補助とし、個別脆弱性の手順や全Scenarioは採用しません。今回の供給応答比較は実HTTP試験ではありません。"
+          ]
+        }
+      ],
+      "analyticProvenance": []
+    }
+  },
+  "indices": {
+    "artifact-index.md": [
+      "| ART-22 | Minimal-Impact Validation Record | 14 |"
+    ],
+    "figure-index.md": [
+      "F-14-01",
+      "T-14-01",
+      "T-14-02",
+      "T-14-03",
+      "T-14-04",
+      "T-14-05"
+    ],
+    "glossary.md": [
+      "## 第14章の用語",
+      "| ART22 Supported |"
+    ],
+    "cases/index.md": [
+      "## 第14章の教育用補足",
+      "MIV-2026-014"
+    ],
+    "cases/fixtures/index.md": [
+      "## 第14章 Minimal-Impact Validation Record",
+      "ch14-minimal-impact-validation.schema.json"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "第6章・第7章・第8章・第9章・第10章・第12章・第13章・第14章の公開前"
+    ],
+    "CHANGELOG.md": [
+      "第14章の本文・ART-22・完全合成記入例",
+      "六Resultと四Method、未実施と停止"
+    ],
+    "README.md": [
+      "### 第14章の有限最小影響Validation契約",
+      "tests/fixtures/chapter14/README.md"
+    ]
+  },
+  "sourceIdentity": {
+    "SRC-NIST-TEST-001": {
+      "publisher": "NIST",
+      "title": "Technical Guide to Information Security Testing and Assessment",
+      "kind": "technical-guide",
+      "status": "final",
+      "version": "SP 800-115, September 2008",
+      "url": "https://csrc.nist.gov/pubs/sp/800/115/final",
+      "publishedAt": null,
+      "notes": "Chapter 9 checked official landing and 80-page PDF on 2026-09-13. Adopted sections 6.5-6.6 and Appendix B: planning, scope, constraints, contacts, data, stop/restart, reporting and approval. Not a modern product procedure, blanket authorization or adoption of old offensive/covert examples. Date Published is September 2008; Document History 09/30/08 is a separate attribute. Exact publication day is unknown, so publishedAt is null; do not infer it from history. PDF SHA256 58e5ed41e5c8ca34ce14fd80b70f118f2c6d613d1647bc307edca30bcc45f063. The finite eight states and numeric limits are book-authored teaching assumptions, not NIST requirements. Chapter 14 scoped primary-text review (2026-09-16): sections 6.5, 7.2, 7.3, 7.4 introduction only, and 8.1-8.2 for planning, coordination/stop, analysis, data-handling scope and reporting. No historical covert/attack/product examples or section 7.4.4 media-sanitization classification adopted as current operations. Six Results, four Methods, two scalar criteria, eight authored records and separate Not performed/cleanup/residual rules are book-owned, not NIST requirements. Scope and PDF retrieval hash: references/ch14-source-review-2026-09-16.md."
+    },
+    "SRC-WSTG-001": {
+      "publisher": "OWASP",
+      "title": "Web Security Testing Guide",
+      "kind": "testing-guide",
+      "status": "stable",
+      "version": "4.2; 5.0 under development",
+      "url": "https://owasp.org/www-project-web-security-testing-guide/",
+      "publishedAt": "2020-12-03",
+      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption. Chapter 14 scoped primary-text review (2026-09-16): versioned 4.2 Introduction only, What is Testing, How To Reference WSTG Scenarios/Linking, and The Need for a Balanced Approach. No individual technique or complete scenario corpus adopted; 5.0 development and 4.3 Unreleased are not the adopted version. Six Results/four Methods are book-owned; supplied response comparison is not real HTTP testing. Scope: references/ch14-source-review-2026-09-16.md. Existing chapter 15 mapping is retained, not freshly audited here."
+    }
+  },
+  "pages": [
+    {
+      "source": "manuscript/14-minimal-impact-validation.md",
+      "destination": "chapters/chapter-14/index.md",
+      "section": "chapters",
+      "order": 57,
+      "title": "第14章 最小影響で成立性を確認し、止め、戻す"
+    },
+    {
+      "source": "templates/minimal-impact-validation-record.md",
+      "destination": "templates/minimal-impact-validation-record/index.md",
+      "section": "additional",
+      "order": 271,
+      "title": "Minimal-Impact Validation Record"
+    },
+    {
+      "source": "cases/ch14-minimal-impact-validation-example.md",
+      "destination": "cases/chapter-14-minimal-impact-validation/index.md",
+      "section": "additional",
+      "order": 272,
+      "title": "第14章 完全合成記入例：Minimal-Impact Validation Record"
+    },
+    {
+      "source": "references/ch14-source-review-2026-09-16.md",
+      "destination": "references/chapter-14-source-review/index.md",
+      "section": "additional",
+      "order": 273,
+      "title": "第14章 Source Review Note：最小影響の判断と停止"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch14-minimal-impact-validation.json",
+      "destination": "downloads/ch14-minimal-impact-validation.json"
+    },
+    {
+      "source": "schemas/ch14-minimal-impact-validation.schema.json",
+      "destination": "downloads/ch14-minimal-impact-validation.schema.json"
+    }
+  ],
+  "schemaSha256": "336cb90c9ce451c2262c339a318e35d878c436d73455e0a1e26896d3a7877f49"
+}

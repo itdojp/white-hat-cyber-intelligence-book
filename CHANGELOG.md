@@ -84,3 +84,13 @@
 ### Changed
 
 - SourceからRuntimeまでの追跡と五状態を読者向けに明示。署名、Trust、Compliance、Safety、実施許可を分離し、SSDF1.1 Final/SLSA1.2 Approved、SPDX版表記、Container歴史的原則の利用範囲を記録。親の本文・許可・Evidence、共有Policy/Projectionと依存は変更しない。
+
+## 2026-09-16 第14章 最小影響Validation
+
+### Added
+
+- 第14章の本文・ART-22・完全合成記入例、八記録の供給JSON/閉Schema、有限Layer A、Source Reviewと公開導線を追加。
+
+### Changed
+
+- 六Resultと四Method、未実施と停止、Cleanup/Residualによる記録完了を分離。実影響・安全性・許可を主張せず、NIST SP800-115/WSTG4.2の限定採用scopeを過去Source利用記録に追記。親の本文・許可・Evidence、共有Policy/Projection、formatter pinと依存は変更しない。

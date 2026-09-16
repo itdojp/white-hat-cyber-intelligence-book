@@ -23,6 +23,7 @@
 | ART-19 | Attack Surface Register | 10 | `templates/attack-surface-register.md` |
 | ART-20 | Identity Attack Path Review | 12 | `templates/identity-attack-path-review.md` |
 | ART-21 | Platform and Supply Chain Assessment | 13 | `templates/platform-supply-chain-assessment.md` |
+| ART-22 | Minimal-Impact Validation Record | 14 | `templates/minimal-impact-validation-record.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -59,3 +60,5 @@
 `ART-20`はPrincipal/Class/Owner/Lifecycle、Role/Permission/Resource、必要Edge、六Path states、Evidence/Telemetry/Finding/Treatment/再評価を結びます。[第12章Case](cases/ch12-identity-path-review-example.md)は完全合成・非実行で、親RoEのDraft/失効/三Objectを変更しません。
 
 `ART-21`はSource/Lock/Builder/Artifact/Digest/Promotion/RuntimeをEvidence、五状態、Finding/Treatment/Owner/Decision/Reassessmentへ結ぶ。[第13章Case](cases/ch13-platform-supply-chain-example.md)は完全合成で、署名・Trust・Compliance・Safety・実許可を分離し、親の停止状態を変更しない。
+
+`ART-22`は問い、Authority、Validation、支持/反証/未観測、Stop、Cleanup/Residual、Finding/Decision/Reassessmentを接続する。[第14章Case](cases/ch14-minimal-impact-validation-example.md)は八つの完全合成記録で六Result・四Methodを区別し、未実施を別欄へ残す。Supportedも実影響・実許可ではなく、残存UnknownならOpenを維持する。

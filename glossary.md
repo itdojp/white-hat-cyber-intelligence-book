@@ -135,3 +135,15 @@
 | ART21 Verified | 同一Chainと版の有限summary比較の一致。実署名・実安全・実許可ではない |
 
 [第13章](manuscript/13-platform-supply-chain.md)の五状態をSLSA levelや親の観測状態へ読み替えない。
+
+## 第14章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Minimum evidence question | 対象ID・版と必要条件を限定し、十分性と不足を先に定める問い |
+| ART22 Supported | 供給資料の二条件が支持された結果。実影響・安全性・許可とは別 |
+| Not performed | 実施有無の欄。本章ではResultをInconclusiveとし、第七Resultにしない |
+| Residual check | Cleanupとは別のScope・確認者・Evidenceによる残存確認。本教材の値は実測でない |
+| ART22 Complete | 読解記録の整理と確認が揃うこと。業務上の問題の解決とは別 |
+
+[第14章](manuscript/14-minimal-impact-validation.md)ではResult、実施有無、記録完了を分ける。

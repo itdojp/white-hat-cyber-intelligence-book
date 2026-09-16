@@ -91,3 +91,14 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 | T-13-03 | 五状態 | `manuscript/13-platform-supply-chain.md` | Implemented |
 | T-13-04 | ART21 Rubric | `manuscript/13-platform-supply-chain.md` | Implemented |
 | T-13-05 | ART21記入欄 | `templates/platform-supply-chain-assessment.md` | Implemented |
+
+## 第14章の図表
+
+| ID | 内容 | 正本 | 状態 |
+|---|---|---|---|
+| F-14-01 | 問いから停止・残存確認まで | `manuscript/14-minimal-impact-validation.md` | Implemented |
+| T-14-01 | 四Methodと主張上限 | `manuscript/14-minimal-impact-validation.md` | Implemented |
+| T-14-02 | 六Resultと必要説明 | `manuscript/14-minimal-impact-validation.md` | Implemented |
+| T-14-03 | 四つの視点 | `manuscript/14-minimal-impact-validation.md` | Implemented |
+| T-14-04 | ART22 Rubric | `manuscript/14-minimal-impact-validation.md` | Implemented |
+| T-14-05 | ART22記入欄 | `templates/minimal-impact-validation-record.md` | Implemented |
