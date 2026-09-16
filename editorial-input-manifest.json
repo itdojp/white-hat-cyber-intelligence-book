@@ -1683,7 +1683,7 @@
       "targetId": "chapter-14",
       "issue": 38,
       "targetKind": "chapter",
-      "status": "canonical-pr-open",
+      "status": "consumed",
       "selectedCandidateId": "EIC-0038-3e687b3de61f",
       "canonicalPr": 139,
       "intakeRecord": {
@@ -1737,9 +1737,9 @@
           "packageId": "EIP-0009",
           "inputPath": "chapter14-minimal-impact-validation.predraft.md",
           "inputSha256": "3e687b3de61f4c6a0b20365b04f483064edf5ac07c2ff4cc6ffbe0cbd89bf58f",
-          "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5686084068",
-          "dispositionReason": "親Chapter8/9/11/12/13とChapter13consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前に明示選択。raw不在のため直接採用せず正式Issue/現行契約/一次資料から再構成する。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5692616067",
+          "dispositionReason": "PR #139でIssue #38とcurrent contract・再検証済み一次資料から第14章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0009/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter15のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -1760,6 +1760,12 @@
           "effectiveAt": "2026-09-16",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/139",
           "reason": "第14章専用Draft PR #139に本文/ART22/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-16",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5692616067",
+          "reason": "PR #139通常merge: 99dd185db99e4bbba581b4f829cfde495eb3a50a。最終検証headとmerge tree一致。exact-main Book Contract 35059304952 / Book QA 35059304680 / Deploy Pages 35059304679、deployment 6474531706がsuccess。第14章・ART-22・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む46公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十四JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter15のDispositionを保持。"
         }
       ]
     },
