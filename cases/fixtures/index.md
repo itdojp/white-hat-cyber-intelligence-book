@@ -66,3 +66,10 @@
 - [閉じたSchema](../../schemas/ch14-minimal-impact-validation.schema.json): 本教材の有限語彙と未知Field拒否。実行許可や標準適合のSchemaではない。
 
 [全FieldのCase表示](../ch14-minimal-impact-validation-example.md)と一対一で照合する。合成IDの比較だけを行い、実サービスへの接続や合成Accountの作成は行わない。
+
+## 第15章 FindingとRetest
+
+- [供給JSON](ch15-findings-retest-risk.json): Finding、三種類のTreatment、Retest、Residual、Acceptance、Reassessment、Disclosureを持つ七つの独立した合成対比。
+- [閉じたSchema](../../schemas/ch15-findings-retest-risk.schema.json): 有限語彙・非実行フラグ・未知Field拒否。実許可の証明や一般的なWorkflow engineではない。
+
+[全FieldのCase表示](../ch15-findings-retest-risk-example.md)と一対一で照合する。固定asOfを使い、実Scanner・実変更・実Retest・実届出を行わない。

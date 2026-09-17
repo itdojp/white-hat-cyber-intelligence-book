@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "manifestVersion": "1.0.0",
-  "auditedAt": "2026-09-16",
+  "auditedAt": "2026-09-17",
   "source": {
     "repository": "https://github.com/itdojp/white-hat-cyber-intelligence-book",
     "registrationIssue": 63,
@@ -1773,8 +1773,8 @@
       "targetId": "chapter-15",
       "issue": 39,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
+      "status": "selected-for-intake",
+      "selectedCandidateId": "EIC-0039-c168fc29af42",
       "canonicalPr": null,
       "intakeRecord": null,
       "candidates": [
@@ -1783,9 +1783,9 @@
           "packageId": "EIP-0009",
           "inputPath": "chapter15-findings-retest-risk.predraft.md",
           "inputSha256": "c168fc29af42cc50a38d23c581172bc4953125775f71867d60c36d5a726b7b3c",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5708381252",
+          "dispositionReason": "親Chapter7〜14とChapter14consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前に明示選択。raw不在のため直接採用せず正式Issue/現行契約/一次資料から再構成する。"
         }
       ],
       "statusHistory": [
@@ -1794,6 +1794,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5708381252",
+          "reason": "親Chapter7〜14とChapter14consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前に明示選択。raw不在のため直接採用せず正式Issue/現行契約/一次資料から再構成する。"
         }
       ]
     },

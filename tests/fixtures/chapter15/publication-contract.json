@@ -1,0 +1,4245 @@
+{
+  "schemaSha256": "dca3ce75a01654a0875644e85bcd9da26762afb72f2d5afe2f9b2602ea22455a",
+  "authoredInputs": {
+    "schemaVersion": "1.0.0",
+    "synthetic": true,
+    "executionAuthorized": false,
+    "record": {
+      "id": "FRT-2026-015",
+      "revision": "FRT15-REV-001",
+      "caseId": "CASE-2026-001",
+      "relation": "refines",
+      "artifactIds": [
+        "ART-04",
+        "ART-23"
+      ],
+      "asOf": "2026-09-16T23:00:00Z",
+      "scenarioMeaning": "seven-independent-authored-alternatives-not-a-production-timeline",
+      "actualOperations": 0
+    },
+    "parents": {
+      "caseId": "CASE-2026-001",
+      "relation": "refines",
+      "decisionRequirementId": "DR-2026-001",
+      "historicalDeadline": "2026-07-22T00:00:00Z",
+      "authorizationId": "AUTH-CASE-2026-001",
+      "authorizationExpiresAt": "2026-08-19T09:00:00Z",
+      "authorizationWindow": [
+        "2026-08-06T00:00:00Z",
+        "2026-08-06T08:00:00Z"
+      ],
+      "authorizationConditions": [
+        "COND-AUTH-2026-001 Open",
+        "COND-AUTH-2026-002 Satisfied",
+        "COND-AUTH-2026-003 Open"
+      ],
+      "roeId": "ROE-2026-009",
+      "roeVersion": 1,
+      "roeStatus": "Draft",
+      "roeObjectIds": [
+        "OBJ-ROE09-CONFIG",
+        "OBJ-ROE09-EVENT",
+        "OBJ-ROE09-POLICY"
+      ],
+      "roeExecutionAuthorized": false,
+      "threatModelId": "TM-2026-001",
+      "threatModelStatus": "Needs Evidence",
+      "parentReassessmentId": "REA-2026-001",
+      "independentCaseId": "CASE-2026-011",
+      "parentStateChanged": false
+    },
+    "context": {
+      "parentValidationRecord": "MIV-2026-014",
+      "parentHandoffId": "HOF-MIV14-15",
+      "parentHandoffStatus": "planned-not-delivered",
+      "parentStateChanged": false,
+      "parentValidationId": "VAL-MIV14-001",
+      "parentFindingId": "FND-MIV14-001",
+      "parentEvidenceRole": "method-reference-not-evidence-for-new-subject",
+      "parentCompleteMeaning": "authored-reading-record-only",
+      "parentSupportedMeaning": "supplied-two-criteria-only",
+      "parentCopyResidualMeaning": "current-authored-reading-copy-only",
+      "parentIdentityApplication": "APP-IAR12-001",
+      "newApplication": "APP-FRT15-001",
+      "applicationRelation": "authored-variant-not-parent-current-binding",
+      "parentIdentityBinding": "Unknown",
+      "parentPlatformVerifiedMeaning": "authored-summary-comparison-only",
+      "independentCaseId": "CASE-2026-011",
+      "independentEvidenceUsed": false,
+      "labStates": [
+        "Planned",
+        "Preflight passed",
+        "Ready",
+        "Running",
+        "Stopped",
+        "Destroyed",
+        "Cleanup verified",
+        "Failed closed"
+      ],
+      "labRuntimeExecuted": false,
+      "priorityReference": "VPR-ITEM-001",
+      "priorityReferenceMeaning": "contrast-only-no-CVE-rating-transferred",
+      "findingStatuses": [
+        "Open",
+        "Mitigated",
+        "Accepted",
+        "Retest required",
+        "Closed",
+        "Reopened"
+      ],
+      "retestResults": [
+        "Passed",
+        "Partial",
+        "Failed",
+        "Inconclusive",
+        "Stopped"
+      ],
+      "sourceIds": [
+        "SRC-IPA-VDP-001",
+        "SRC-WSTG-001",
+        "SRC-CVSS-001"
+      ]
+    },
+    "safety": {
+      "actualNetworkConnections": 0,
+      "actualSystemChanges": 0,
+      "actualScannerRuns": 0,
+      "actualNoticesSent": 0,
+      "actualPublicDisclosures": 0,
+      "realCredentialsPresent": false,
+      "legalPermissionGranted": false,
+      "riskAcceptanceOverridesAuthority": false,
+      "measuredBusinessImpact": false,
+      "actualCleanupPerformed": false,
+      "stop": "未知の入力・Scope不一致・追跡不能があれば読解を止め、追加操作を行わない。",
+      "cleanup": "作業メモだけを整理し、正本・親資料を保持する。実システムを変更しない。実システムを削除しない。"
+    },
+    "findings": [
+      {
+        "id": "FND-FRT15-001",
+        "scenarioId": "SCN-FRT15-001",
+        "caseId": "CASE-2026-001",
+        "assetId": "ASSET-2026-005",
+        "threatId": "TH-2026-004",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-001",
+        "requestedStage": "Report",
+        "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+        "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+        "rootCondition": {
+          "id": "ROOT-FRT15-001",
+          "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+          "basis": "authored-design-comparison-not-verified-implementation"
+        },
+        "validation": {
+          "id": "VAL-FRT15-001",
+          "findingId": "FND-FRT15-001",
+          "subjectId": "APP-FRT15-001",
+          "subjectRevision": "BEFORE-FRT15-001",
+          "method": "Static authored comparison",
+          "requirementPermission": "read-summary",
+          "declaredPermission": "read-all-summaries",
+          "evidenceId": "EVD-FRT15-001",
+          "basis": "authored-supplied-values",
+          "actualOperation": false
+        },
+        "evidenceIds": [
+          "EVD-FRT15-001"
+        ],
+        "scope": {
+          "confirmed": "この供給版の権限宣言文字列だけ。",
+          "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+          "excluded": "親の別Object、実利用者、第三者環境。",
+          "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+        },
+        "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+        "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+        "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+        "confidence": "中",
+        "alternative": "供給設計と実装の権限制約が異なる可能性。",
+        "priority": {
+          "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+          "cvssScore": null,
+          "cvssVector": null,
+          "cvssNomenclature": null,
+          "automaticDecision": false,
+          "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+        },
+        "treatments": [
+          {
+            "id": "TMP-FRT15-001",
+            "kind": "Temporary",
+            "controlId": "CTRL-TMP-FRT15-001",
+            "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+            "benefit": "判断までの露出を限定する計画。",
+            "cost": "必要な連携を制限する可能性。",
+            "dependency": "業務Ownerによる対象範囲の確認。",
+            "owner": "SYNTH-SERVICE-OWNER",
+            "dueAt": "2026-09-25T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "PERM-FRT15-001",
+            "kind": "Permanent",
+            "controlId": "CTRL-PERM-FRT15-001",
+            "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+            "benefit": "根本条件を変更対象として明示できる。",
+            "cost": "連携先との仕様確認が必要。",
+            "dependency": "新しい変更計画と別の許可判断。",
+            "owner": "SYNTH-DESIGN-OWNER",
+            "dueAt": "2026-09-28T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "COMP-FRT15-001",
+            "kind": "Compensating",
+            "controlId": "CTRL-COMP-FRT15-001",
+            "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+            "benefit": "Gapを後続確認へ追跡できる。",
+            "cost": "権限宣言の差そのものは残る。",
+            "dependency": "必要Telemetryの提供条件。",
+            "owner": "SYNTH-DETECTION-OWNER",
+            "dueAt": "2026-09-27T00:00:00Z",
+            "implemented": false
+          }
+        ],
+        "recommendedTreatmentId": "PERM-FRT15-001",
+        "retestId": "RT-FRT15-001",
+        "acceptance": {
+          "present": false,
+          "id": null,
+          "findingId": null,
+          "subjectId": null,
+          "scope": null,
+          "authorityReference": null,
+          "authorityHolder": null,
+          "decisionOwner": null,
+          "basis": null,
+          "decidedAt": null,
+          "expiresAt": null,
+          "residualRiskId": null,
+          "reassessmentId": null,
+          "conditions": null,
+          "overridesAssessmentAuthority": false
+        },
+        "residualRisk": {
+          "id": "RES-FRT15-001",
+          "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+          "owner": "SYNTH-RISK-OWNER",
+          "businessRiskZero": false
+        },
+        "decision": {
+          "id": "DEC-FRT15-001",
+          "findingId": "FND-FRT15-001",
+          "action": "Remediate",
+          "basis": "open-review",
+          "owner": "SYNTH-CASE-OWNER",
+          "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+          "executionAuthorized": false
+        },
+        "reassessment": {
+          "id": "REA-FRT15-001",
+          "findingId": "FND-FRT15-001",
+          "owner": "SYNTH-CASE-OWNER",
+          "dueAt": "2026-09-20T00:00:00Z",
+          "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+          "reopenReason": null
+        },
+        "disclosure": {
+          "classification": "Synthetic teaching only",
+          "audience": "Synthetic internal roles",
+          "coordinationStatus": "Not initiated",
+          "publicReleaseAuthorized": false,
+          "actualNoticeSent": false
+        },
+        "temporaryReviewEvidenceId": null
+      },
+      {
+        "id": "FND-FRT15-002",
+        "scenarioId": "SCN-FRT15-002",
+        "caseId": "CASE-2026-001",
+        "assetId": "ASSET-2026-005",
+        "threatId": "TH-2026-004",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-002",
+        "requestedStage": "Mitigate",
+        "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+        "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+        "rootCondition": {
+          "id": "ROOT-FRT15-002",
+          "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+          "basis": "authored-design-comparison-not-verified-implementation"
+        },
+        "validation": {
+          "id": "VAL-FRT15-002",
+          "findingId": "FND-FRT15-002",
+          "subjectId": "APP-FRT15-001",
+          "subjectRevision": "BEFORE-FRT15-002",
+          "method": "Static authored comparison",
+          "requirementPermission": "read-summary",
+          "declaredPermission": "read-all-summaries",
+          "evidenceId": "EVD-FRT15-002",
+          "basis": "authored-supplied-values",
+          "actualOperation": false
+        },
+        "evidenceIds": [
+          "EVD-FRT15-002"
+        ],
+        "scope": {
+          "confirmed": "この供給版の権限宣言文字列だけ。",
+          "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+          "excluded": "親の別Object、実利用者、第三者環境。",
+          "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+        },
+        "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+        "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+        "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+        "confidence": "中",
+        "alternative": "供給設計と実装の権限制約が異なる可能性。",
+        "priority": {
+          "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+          "cvssScore": null,
+          "cvssVector": null,
+          "cvssNomenclature": null,
+          "automaticDecision": false,
+          "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+        },
+        "treatments": [
+          {
+            "id": "TMP-FRT15-002",
+            "kind": "Temporary",
+            "controlId": "CTRL-TMP-FRT15-002",
+            "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+            "benefit": "判断までの露出を限定する計画。",
+            "cost": "必要な連携を制限する可能性。",
+            "dependency": "業務Ownerによる対象範囲の確認。",
+            "owner": "SYNTH-SERVICE-OWNER",
+            "dueAt": "2026-09-25T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "PERM-FRT15-002",
+            "kind": "Permanent",
+            "controlId": "CTRL-PERM-FRT15-002",
+            "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+            "benefit": "根本条件を変更対象として明示できる。",
+            "cost": "連携先との仕様確認が必要。",
+            "dependency": "新しい変更計画と別の許可判断。",
+            "owner": "SYNTH-DESIGN-OWNER",
+            "dueAt": "2026-09-28T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "COMP-FRT15-002",
+            "kind": "Compensating",
+            "controlId": "CTRL-COMP-FRT15-002",
+            "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+            "benefit": "Gapを後続確認へ追跡できる。",
+            "cost": "権限宣言の差そのものは残る。",
+            "dependency": "必要Telemetryの提供条件。",
+            "owner": "SYNTH-DETECTION-OWNER",
+            "dueAt": "2026-09-27T00:00:00Z",
+            "implemented": false
+          }
+        ],
+        "recommendedTreatmentId": "PERM-FRT15-002",
+        "retestId": "RT-FRT15-002",
+        "acceptance": {
+          "present": false,
+          "id": null,
+          "findingId": null,
+          "subjectId": null,
+          "scope": null,
+          "authorityReference": null,
+          "authorityHolder": null,
+          "decisionOwner": null,
+          "basis": null,
+          "decidedAt": null,
+          "expiresAt": null,
+          "residualRiskId": null,
+          "reassessmentId": null,
+          "conditions": null,
+          "overridesAssessmentAuthority": false
+        },
+        "residualRisk": {
+          "id": "RES-FRT15-002",
+          "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+          "owner": "SYNTH-RISK-OWNER",
+          "businessRiskZero": false
+        },
+        "decision": {
+          "id": "DEC-FRT15-002",
+          "findingId": "FND-FRT15-002",
+          "action": "Remediate",
+          "basis": "open-review",
+          "owner": "SYNTH-CASE-OWNER",
+          "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+          "executionAuthorized": false
+        },
+        "reassessment": {
+          "id": "REA-FRT15-002",
+          "findingId": "FND-FRT15-002",
+          "owner": "SYNTH-CASE-OWNER",
+          "dueAt": "2026-09-20T00:00:00Z",
+          "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+          "reopenReason": null
+        },
+        "disclosure": {
+          "classification": "Synthetic teaching only",
+          "audience": "Synthetic internal roles",
+          "coordinationStatus": "Not initiated",
+          "publicReleaseAuthorized": false,
+          "actualNoticeSent": false
+        },
+        "temporaryReviewEvidenceId": "TMP-EVD-FRT15-002"
+      },
+      {
+        "id": "FND-FRT15-003",
+        "scenarioId": "SCN-FRT15-003",
+        "caseId": "CASE-2026-001",
+        "assetId": "ASSET-2026-005",
+        "threatId": "TH-2026-004",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-003",
+        "requestedStage": "Accept",
+        "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+        "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+        "rootCondition": {
+          "id": "ROOT-FRT15-003",
+          "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+          "basis": "authored-design-comparison-not-verified-implementation"
+        },
+        "validation": {
+          "id": "VAL-FRT15-003",
+          "findingId": "FND-FRT15-003",
+          "subjectId": "APP-FRT15-001",
+          "subjectRevision": "BEFORE-FRT15-003",
+          "method": "Static authored comparison",
+          "requirementPermission": "read-summary",
+          "declaredPermission": "read-all-summaries",
+          "evidenceId": "EVD-FRT15-003",
+          "basis": "authored-supplied-values",
+          "actualOperation": false
+        },
+        "evidenceIds": [
+          "EVD-FRT15-003"
+        ],
+        "scope": {
+          "confirmed": "この供給版の権限宣言文字列だけ。",
+          "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+          "excluded": "親の別Object、実利用者、第三者環境。",
+          "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+        },
+        "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+        "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+        "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+        "confidence": "中",
+        "alternative": "供給設計と実装の権限制約が異なる可能性。",
+        "priority": {
+          "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+          "cvssScore": null,
+          "cvssVector": null,
+          "cvssNomenclature": null,
+          "automaticDecision": false,
+          "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+        },
+        "treatments": [
+          {
+            "id": "TMP-FRT15-003",
+            "kind": "Temporary",
+            "controlId": "CTRL-TMP-FRT15-003",
+            "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+            "benefit": "判断までの露出を限定する計画。",
+            "cost": "必要な連携を制限する可能性。",
+            "dependency": "業務Ownerによる対象範囲の確認。",
+            "owner": "SYNTH-SERVICE-OWNER",
+            "dueAt": "2026-09-25T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "PERM-FRT15-003",
+            "kind": "Permanent",
+            "controlId": "CTRL-PERM-FRT15-003",
+            "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+            "benefit": "根本条件を変更対象として明示できる。",
+            "cost": "連携先との仕様確認が必要。",
+            "dependency": "新しい変更計画と別の許可判断。",
+            "owner": "SYNTH-DESIGN-OWNER",
+            "dueAt": "2026-09-28T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "COMP-FRT15-003",
+            "kind": "Compensating",
+            "controlId": "CTRL-COMP-FRT15-003",
+            "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+            "benefit": "Gapを後続確認へ追跡できる。",
+            "cost": "権限宣言の差そのものは残る。",
+            "dependency": "必要Telemetryの提供条件。",
+            "owner": "SYNTH-DETECTION-OWNER",
+            "dueAt": "2026-09-27T00:00:00Z",
+            "implemented": false
+          }
+        ],
+        "recommendedTreatmentId": "PERM-FRT15-003",
+        "retestId": null,
+        "acceptance": {
+          "present": true,
+          "id": "ACC-FRT15-003",
+          "findingId": "FND-FRT15-003",
+          "subjectId": "APP-FRT15-001",
+          "scope": "current-supplied-scenario-only",
+          "authorityReference": "DELEGATION-FRT15-003",
+          "authorityHolder": "SYNTH-RISK-OWNER",
+          "decisionOwner": "SYNTH-RISK-OWNER",
+          "basis": "authored-delegation-not-assessment-permission",
+          "decidedAt": "2026-09-14T00:00:00Z",
+          "expiresAt": "2026-09-30T00:00:00Z",
+          "residualRiskId": "RES-FRT15-003",
+          "reassessmentId": "REA-FRT15-003",
+          "conditions": "対象版・Scope・Evidence・担当が変われば受容判断を再開する。",
+          "overridesAssessmentAuthority": false
+        },
+        "residualRisk": {
+          "id": "RES-FRT15-003",
+          "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+          "owner": "SYNTH-RISK-OWNER",
+          "businessRiskZero": false
+        },
+        "decision": {
+          "id": "DEC-FRT15-003",
+          "findingId": "FND-FRT15-003",
+          "action": "Accept",
+          "basis": "acceptance",
+          "owner": "SYNTH-CASE-OWNER",
+          "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+          "executionAuthorized": false
+        },
+        "reassessment": {
+          "id": "REA-FRT15-003",
+          "findingId": "FND-FRT15-003",
+          "owner": "SYNTH-CASE-OWNER",
+          "dueAt": "2026-09-20T00:00:00Z",
+          "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+          "reopenReason": null
+        },
+        "disclosure": {
+          "classification": "Synthetic teaching only",
+          "audience": "Synthetic internal roles",
+          "coordinationStatus": "Not initiated",
+          "publicReleaseAuthorized": false,
+          "actualNoticeSent": false
+        },
+        "temporaryReviewEvidenceId": null
+      },
+      {
+        "id": "FND-FRT15-004",
+        "scenarioId": "SCN-FRT15-004",
+        "caseId": "CASE-2026-001",
+        "assetId": "ASSET-2026-005",
+        "threatId": "TH-2026-004",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-004",
+        "requestedStage": "Retest",
+        "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+        "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+        "rootCondition": {
+          "id": "ROOT-FRT15-004",
+          "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+          "basis": "authored-design-comparison-not-verified-implementation"
+        },
+        "validation": {
+          "id": "VAL-FRT15-004",
+          "findingId": "FND-FRT15-004",
+          "subjectId": "APP-FRT15-001",
+          "subjectRevision": "BEFORE-FRT15-004",
+          "method": "Static authored comparison",
+          "requirementPermission": "read-summary",
+          "declaredPermission": "read-all-summaries",
+          "evidenceId": "EVD-FRT15-004",
+          "basis": "authored-supplied-values",
+          "actualOperation": false
+        },
+        "evidenceIds": [
+          "EVD-FRT15-004"
+        ],
+        "scope": {
+          "confirmed": "この供給版の権限宣言文字列だけ。",
+          "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+          "excluded": "親の別Object、実利用者、第三者環境。",
+          "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+        },
+        "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+        "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+        "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+        "confidence": "中",
+        "alternative": "供給設計と実装の権限制約が異なる可能性。",
+        "priority": {
+          "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+          "cvssScore": null,
+          "cvssVector": null,
+          "cvssNomenclature": null,
+          "automaticDecision": false,
+          "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+        },
+        "treatments": [
+          {
+            "id": "TMP-FRT15-004",
+            "kind": "Temporary",
+            "controlId": "CTRL-TMP-FRT15-004",
+            "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+            "benefit": "判断までの露出を限定する計画。",
+            "cost": "必要な連携を制限する可能性。",
+            "dependency": "業務Ownerによる対象範囲の確認。",
+            "owner": "SYNTH-SERVICE-OWNER",
+            "dueAt": "2026-09-25T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "PERM-FRT15-004",
+            "kind": "Permanent",
+            "controlId": "CTRL-PERM-FRT15-004",
+            "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+            "benefit": "根本条件を変更対象として明示できる。",
+            "cost": "連携先との仕様確認が必要。",
+            "dependency": "新しい変更計画と別の許可判断。",
+            "owner": "SYNTH-DESIGN-OWNER",
+            "dueAt": "2026-09-28T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "COMP-FRT15-004",
+            "kind": "Compensating",
+            "controlId": "CTRL-COMP-FRT15-004",
+            "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+            "benefit": "Gapを後続確認へ追跡できる。",
+            "cost": "権限宣言の差そのものは残る。",
+            "dependency": "必要Telemetryの提供条件。",
+            "owner": "SYNTH-DETECTION-OWNER",
+            "dueAt": "2026-09-27T00:00:00Z",
+            "implemented": false
+          }
+        ],
+        "recommendedTreatmentId": "PERM-FRT15-004",
+        "retestId": "RT-FRT15-004",
+        "acceptance": {
+          "present": false,
+          "id": null,
+          "findingId": null,
+          "subjectId": null,
+          "scope": null,
+          "authorityReference": null,
+          "authorityHolder": null,
+          "decisionOwner": null,
+          "basis": null,
+          "decidedAt": null,
+          "expiresAt": null,
+          "residualRiskId": null,
+          "reassessmentId": null,
+          "conditions": null,
+          "overridesAssessmentAuthority": false
+        },
+        "residualRisk": {
+          "id": "RES-FRT15-004",
+          "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+          "owner": "SYNTH-RISK-OWNER",
+          "businessRiskZero": false
+        },
+        "decision": {
+          "id": "DEC-FRT15-004",
+          "findingId": "FND-FRT15-004",
+          "action": "Remediate",
+          "basis": "open-review",
+          "owner": "SYNTH-CASE-OWNER",
+          "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+          "executionAuthorized": false
+        },
+        "reassessment": {
+          "id": "REA-FRT15-004",
+          "findingId": "FND-FRT15-004",
+          "owner": "SYNTH-CASE-OWNER",
+          "dueAt": "2026-09-20T00:00:00Z",
+          "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+          "reopenReason": null
+        },
+        "disclosure": {
+          "classification": "Synthetic teaching only",
+          "audience": "Synthetic internal roles",
+          "coordinationStatus": "Not initiated",
+          "publicReleaseAuthorized": false,
+          "actualNoticeSent": false
+        },
+        "temporaryReviewEvidenceId": null
+      },
+      {
+        "id": "FND-FRT15-005",
+        "scenarioId": "SCN-FRT15-005",
+        "caseId": "CASE-2026-001",
+        "assetId": "ASSET-2026-005",
+        "threatId": "TH-2026-004",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-005",
+        "requestedStage": "Close",
+        "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+        "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+        "rootCondition": {
+          "id": "ROOT-FRT15-005",
+          "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+          "basis": "authored-design-comparison-not-verified-implementation"
+        },
+        "validation": {
+          "id": "VAL-FRT15-005",
+          "findingId": "FND-FRT15-005",
+          "subjectId": "APP-FRT15-001",
+          "subjectRevision": "BEFORE-FRT15-005",
+          "method": "Static authored comparison",
+          "requirementPermission": "read-summary",
+          "declaredPermission": "read-all-summaries",
+          "evidenceId": "EVD-FRT15-005",
+          "basis": "authored-supplied-values",
+          "actualOperation": false
+        },
+        "evidenceIds": [
+          "EVD-FRT15-005"
+        ],
+        "scope": {
+          "confirmed": "この供給版の権限宣言文字列だけ。",
+          "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+          "excluded": "親の別Object、実利用者、第三者環境。",
+          "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+        },
+        "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+        "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+        "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+        "confidence": "中",
+        "alternative": "供給設計と実装の権限制約が異なる可能性。",
+        "priority": {
+          "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+          "cvssScore": null,
+          "cvssVector": null,
+          "cvssNomenclature": null,
+          "automaticDecision": false,
+          "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+        },
+        "treatments": [
+          {
+            "id": "TMP-FRT15-005",
+            "kind": "Temporary",
+            "controlId": "CTRL-TMP-FRT15-005",
+            "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+            "benefit": "判断までの露出を限定する計画。",
+            "cost": "必要な連携を制限する可能性。",
+            "dependency": "業務Ownerによる対象範囲の確認。",
+            "owner": "SYNTH-SERVICE-OWNER",
+            "dueAt": "2026-09-25T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "PERM-FRT15-005",
+            "kind": "Permanent",
+            "controlId": "CTRL-PERM-FRT15-005",
+            "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+            "benefit": "根本条件を変更対象として明示できる。",
+            "cost": "連携先との仕様確認が必要。",
+            "dependency": "新しい変更計画と別の許可判断。",
+            "owner": "SYNTH-DESIGN-OWNER",
+            "dueAt": "2026-09-28T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "COMP-FRT15-005",
+            "kind": "Compensating",
+            "controlId": "CTRL-COMP-FRT15-005",
+            "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+            "benefit": "Gapを後続確認へ追跡できる。",
+            "cost": "権限宣言の差そのものは残る。",
+            "dependency": "必要Telemetryの提供条件。",
+            "owner": "SYNTH-DETECTION-OWNER",
+            "dueAt": "2026-09-27T00:00:00Z",
+            "implemented": false
+          }
+        ],
+        "recommendedTreatmentId": "PERM-FRT15-005",
+        "retestId": "RT-FRT15-005",
+        "acceptance": {
+          "present": false,
+          "id": null,
+          "findingId": null,
+          "subjectId": null,
+          "scope": null,
+          "authorityReference": null,
+          "authorityHolder": null,
+          "decisionOwner": null,
+          "basis": null,
+          "decidedAt": null,
+          "expiresAt": null,
+          "residualRiskId": null,
+          "reassessmentId": null,
+          "conditions": null,
+          "overridesAssessmentAuthority": false
+        },
+        "residualRisk": {
+          "id": "RES-FRT15-005",
+          "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+          "owner": "SYNTH-RISK-OWNER",
+          "businessRiskZero": false
+        },
+        "decision": {
+          "id": "DEC-FRT15-005",
+          "findingId": "FND-FRT15-005",
+          "action": "Remediate",
+          "basis": "retest",
+          "owner": "SYNTH-CASE-OWNER",
+          "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+          "executionAuthorized": false
+        },
+        "reassessment": {
+          "id": "REA-FRT15-005",
+          "findingId": "FND-FRT15-005",
+          "owner": "SYNTH-CASE-OWNER",
+          "dueAt": "2026-09-20T00:00:00Z",
+          "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+          "reopenReason": null
+        },
+        "disclosure": {
+          "classification": "Synthetic teaching only",
+          "audience": "Synthetic internal roles",
+          "coordinationStatus": "Not initiated",
+          "publicReleaseAuthorized": false,
+          "actualNoticeSent": false
+        },
+        "temporaryReviewEvidenceId": null
+      },
+      {
+        "id": "FND-FRT15-006",
+        "scenarioId": "SCN-FRT15-006",
+        "caseId": "CASE-2026-001",
+        "assetId": "ASSET-2026-005",
+        "threatId": "TH-2026-004",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-006",
+        "requestedStage": "Reopen",
+        "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+        "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+        "rootCondition": {
+          "id": "ROOT-FRT15-006",
+          "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+          "basis": "authored-design-comparison-not-verified-implementation"
+        },
+        "validation": {
+          "id": "VAL-FRT15-006",
+          "findingId": "FND-FRT15-006",
+          "subjectId": "APP-FRT15-001",
+          "subjectRevision": "BEFORE-FRT15-006",
+          "method": "Static authored comparison",
+          "requirementPermission": "read-summary",
+          "declaredPermission": "read-all-summaries",
+          "evidenceId": "EVD-FRT15-006",
+          "basis": "authored-supplied-values",
+          "actualOperation": false
+        },
+        "evidenceIds": [
+          "EVD-FRT15-006"
+        ],
+        "scope": {
+          "confirmed": "この供給版の権限宣言文字列だけ。",
+          "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+          "excluded": "親の別Object、実利用者、第三者環境。",
+          "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+        },
+        "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+        "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+        "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+        "confidence": "中",
+        "alternative": "供給設計と実装の権限制約が異なる可能性。",
+        "priority": {
+          "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+          "cvssScore": null,
+          "cvssVector": null,
+          "cvssNomenclature": null,
+          "automaticDecision": false,
+          "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+        },
+        "treatments": [
+          {
+            "id": "TMP-FRT15-006",
+            "kind": "Temporary",
+            "controlId": "CTRL-TMP-FRT15-006",
+            "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+            "benefit": "判断までの露出を限定する計画。",
+            "cost": "必要な連携を制限する可能性。",
+            "dependency": "業務Ownerによる対象範囲の確認。",
+            "owner": "SYNTH-SERVICE-OWNER",
+            "dueAt": "2026-09-25T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "PERM-FRT15-006",
+            "kind": "Permanent",
+            "controlId": "CTRL-PERM-FRT15-006",
+            "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+            "benefit": "根本条件を変更対象として明示できる。",
+            "cost": "連携先との仕様確認が必要。",
+            "dependency": "新しい変更計画と別の許可判断。",
+            "owner": "SYNTH-DESIGN-OWNER",
+            "dueAt": "2026-09-28T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "COMP-FRT15-006",
+            "kind": "Compensating",
+            "controlId": "CTRL-COMP-FRT15-006",
+            "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+            "benefit": "Gapを後続確認へ追跡できる。",
+            "cost": "権限宣言の差そのものは残る。",
+            "dependency": "必要Telemetryの提供条件。",
+            "owner": "SYNTH-DETECTION-OWNER",
+            "dueAt": "2026-09-27T00:00:00Z",
+            "implemented": false
+          }
+        ],
+        "recommendedTreatmentId": "PERM-FRT15-006",
+        "retestId": "RT-FRT15-006",
+        "acceptance": {
+          "present": true,
+          "id": "ACC-FRT15-006",
+          "findingId": "FND-FRT15-006",
+          "subjectId": "APP-FRT15-001",
+          "scope": "current-supplied-scenario-only",
+          "authorityReference": "DELEGATION-FRT15-006",
+          "authorityHolder": "SYNTH-RISK-OWNER",
+          "decisionOwner": "SYNTH-RISK-OWNER",
+          "basis": "authored-delegation-not-assessment-permission",
+          "decidedAt": "2026-09-14T00:00:00Z",
+          "expiresAt": "2026-09-15T00:00:00Z",
+          "residualRiskId": "RES-FRT15-006",
+          "reassessmentId": "REA-FRT15-006",
+          "conditions": "対象版・Scope・Evidence・担当が変われば受容判断を再開する。",
+          "overridesAssessmentAuthority": false
+        },
+        "residualRisk": {
+          "id": "RES-FRT15-006",
+          "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+          "owner": "SYNTH-RISK-OWNER",
+          "businessRiskZero": false
+        },
+        "decision": {
+          "id": "DEC-FRT15-006",
+          "findingId": "FND-FRT15-006",
+          "action": "Remediate",
+          "basis": "open-review",
+          "owner": "SYNTH-CASE-OWNER",
+          "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+          "executionAuthorized": false
+        },
+        "reassessment": {
+          "id": "REA-FRT15-006",
+          "findingId": "FND-FRT15-006",
+          "owner": "SYNTH-CASE-OWNER",
+          "dueAt": "2026-09-20T00:00:00Z",
+          "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+          "reopenReason": "停止と過去受容の期限切れを供給記録から確認した。"
+        },
+        "disclosure": {
+          "classification": "Synthetic teaching only",
+          "audience": "Synthetic internal roles",
+          "coordinationStatus": "Not initiated",
+          "publicReleaseAuthorized": false,
+          "actualNoticeSent": false
+        },
+        "temporaryReviewEvidenceId": null
+      },
+      {
+        "id": "FND-FRT15-007",
+        "scenarioId": "SCN-FRT15-007",
+        "caseId": "CASE-2026-001",
+        "assetId": "ASSET-2026-005",
+        "threatId": "TH-2026-004",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-007",
+        "requestedStage": "Close",
+        "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+        "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+        "rootCondition": {
+          "id": "ROOT-FRT15-007",
+          "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+          "basis": "authored-design-comparison-not-verified-implementation"
+        },
+        "validation": {
+          "id": "VAL-FRT15-007",
+          "findingId": "FND-FRT15-007",
+          "subjectId": "APP-FRT15-001",
+          "subjectRevision": "BEFORE-FRT15-007",
+          "method": "Static authored comparison",
+          "requirementPermission": "read-summary",
+          "declaredPermission": "read-all-summaries",
+          "evidenceId": "EVD-FRT15-007",
+          "basis": "authored-supplied-values",
+          "actualOperation": false
+        },
+        "evidenceIds": [
+          "EVD-FRT15-007"
+        ],
+        "scope": {
+          "confirmed": "この供給版の権限宣言文字列だけ。",
+          "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+          "excluded": "親の別Object、実利用者、第三者環境。",
+          "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+        },
+        "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+        "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+        "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+        "confidence": "中",
+        "alternative": "供給設計と実装の権限制約が異なる可能性。",
+        "priority": {
+          "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+          "cvssScore": null,
+          "cvssVector": null,
+          "cvssNomenclature": null,
+          "automaticDecision": false,
+          "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+        },
+        "treatments": [
+          {
+            "id": "TMP-FRT15-007",
+            "kind": "Temporary",
+            "controlId": "CTRL-TMP-FRT15-007",
+            "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+            "benefit": "判断までの露出を限定する計画。",
+            "cost": "必要な連携を制限する可能性。",
+            "dependency": "業務Ownerによる対象範囲の確認。",
+            "owner": "SYNTH-SERVICE-OWNER",
+            "dueAt": "2026-09-25T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "PERM-FRT15-007",
+            "kind": "Permanent",
+            "controlId": "CTRL-PERM-FRT15-007",
+            "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+            "benefit": "根本条件を変更対象として明示できる。",
+            "cost": "連携先との仕様確認が必要。",
+            "dependency": "新しい変更計画と別の許可判断。",
+            "owner": "SYNTH-DESIGN-OWNER",
+            "dueAt": "2026-09-28T00:00:00Z",
+            "implemented": false
+          },
+          {
+            "id": "COMP-FRT15-007",
+            "kind": "Compensating",
+            "controlId": "CTRL-COMP-FRT15-007",
+            "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+            "benefit": "Gapを後続確認へ追跡できる。",
+            "cost": "権限宣言の差そのものは残る。",
+            "dependency": "必要Telemetryの提供条件。",
+            "owner": "SYNTH-DETECTION-OWNER",
+            "dueAt": "2026-09-27T00:00:00Z",
+            "implemented": false
+          }
+        ],
+        "recommendedTreatmentId": "PERM-FRT15-007",
+        "retestId": null,
+        "acceptance": {
+          "present": true,
+          "id": "ACC-FRT15-007",
+          "findingId": "FND-FRT15-007",
+          "subjectId": "APP-FRT15-001",
+          "scope": "current-supplied-scenario-only",
+          "authorityReference": "DELEGATION-FRT15-007",
+          "authorityHolder": "SYNTH-RISK-OWNER",
+          "decisionOwner": "SYNTH-RISK-OWNER",
+          "basis": "authored-delegation-not-assessment-permission",
+          "decidedAt": "2026-09-14T00:00:00Z",
+          "expiresAt": "2026-09-30T00:00:00Z",
+          "residualRiskId": "RES-FRT15-007",
+          "reassessmentId": "REA-FRT15-007",
+          "conditions": "対象版・Scope・Evidence・担当が変われば受容判断を再開する。",
+          "overridesAssessmentAuthority": false
+        },
+        "residualRisk": {
+          "id": "RES-FRT15-007",
+          "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+          "owner": "SYNTH-RISK-OWNER",
+          "businessRiskZero": false
+        },
+        "decision": {
+          "id": "DEC-FRT15-007",
+          "findingId": "FND-FRT15-007",
+          "action": "Accept",
+          "basis": "acceptance",
+          "owner": "SYNTH-CASE-OWNER",
+          "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+          "executionAuthorized": false
+        },
+        "reassessment": {
+          "id": "REA-FRT15-007",
+          "findingId": "FND-FRT15-007",
+          "owner": "SYNTH-CASE-OWNER",
+          "dueAt": "2026-09-20T00:00:00Z",
+          "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+          "reopenReason": null
+        },
+        "disclosure": {
+          "classification": "Synthetic teaching only",
+          "audience": "Synthetic internal roles",
+          "coordinationStatus": "Not initiated",
+          "publicReleaseAuthorized": false,
+          "actualNoticeSent": false
+        },
+        "temporaryReviewEvidenceId": null
+      }
+    ],
+    "retests": [
+      {
+        "id": "RT-FRT15-001",
+        "findingId": "FND-FRT15-001",
+        "subjectId": "APP-FRT15-001",
+        "beforeRevision": "BEFORE-FRT15-001",
+        "changeReference": "CHG-FRT15-001",
+        "changedRevision": "AFTER-FRT15-001",
+        "changeMeaning": "authored-change-summary-not-real-change",
+        "scope": "current-supplied-scenario-only",
+        "method": "Static authored comparison",
+        "requiredMethod": "Static authored comparison",
+        "criteria": [
+          {
+            "id": "CRT-FRT15-001-1",
+            "field": "permission",
+            "expected": "read-summary"
+          },
+          {
+            "id": "CRT-FRT15-001-2",
+            "field": "auditReference",
+            "expected": "AUD-FRT15-EXPECTED"
+          }
+        ],
+        "observations": [
+          {
+            "id": "RT-EVD-FRT15-001-1",
+            "criterionId": "CRT-FRT15-001-1",
+            "subjectId": "APP-FRT15-001",
+            "revision": "AFTER-FRT15-001",
+            "present": true,
+            "value": "read-all-summaries",
+            "basis": "authored-supplied-value"
+          },
+          {
+            "id": "RT-EVD-FRT15-001-2",
+            "criterionId": "CRT-FRT15-001-2",
+            "subjectId": "APP-FRT15-001",
+            "revision": "AFTER-FRT15-001",
+            "present": true,
+            "value": "AUD-FRT15-EXPECTED",
+            "basis": "authored-supplied-value"
+          }
+        ],
+        "stopTrigger": "None",
+        "stepsAfterStop": 0,
+        "actualOperations": 0,
+        "owner": "SYNTH-RETEST-REVIEWER",
+        "recordedAt": "2026-09-16T22:00:00Z",
+        "limitation": "二つの供給欄だけを比較。実ScannerやBusiness Logicの動作試験は行っていない。",
+        "regressionScope": "同じ供給Scenarioの二条件だけ。全System非回帰ではない。",
+        "residualRiskId": "RES-FRT15-001",
+        "reassessmentId": "REA-FRT15-001"
+      },
+      {
+        "id": "RT-FRT15-002",
+        "findingId": "FND-FRT15-002",
+        "subjectId": "APP-FRT15-001",
+        "beforeRevision": "BEFORE-FRT15-002",
+        "changeReference": "CHG-FRT15-002",
+        "changedRevision": "AFTER-FRT15-002",
+        "changeMeaning": "authored-change-summary-not-real-change",
+        "scope": "current-supplied-scenario-only",
+        "method": "Static authored comparison",
+        "requiredMethod": "Static authored comparison",
+        "criteria": [
+          {
+            "id": "CRT-FRT15-002-1",
+            "field": "permission",
+            "expected": "read-summary"
+          },
+          {
+            "id": "CRT-FRT15-002-2",
+            "field": "auditReference",
+            "expected": "AUD-FRT15-EXPECTED"
+          }
+        ],
+        "observations": [
+          {
+            "id": "RT-EVD-FRT15-002-1",
+            "criterionId": "CRT-FRT15-002-1",
+            "subjectId": "APP-FRT15-001",
+            "revision": "AFTER-FRT15-002",
+            "present": true,
+            "value": "read-summary",
+            "basis": "authored-supplied-value"
+          },
+          {
+            "id": "RT-EVD-FRT15-002-2",
+            "criterionId": "CRT-FRT15-002-2",
+            "subjectId": "APP-FRT15-001",
+            "revision": "AFTER-FRT15-002",
+            "present": true,
+            "value": "AUD-FRT15-OTHER",
+            "basis": "authored-supplied-value"
+          }
+        ],
+        "stopTrigger": "None",
+        "stepsAfterStop": 0,
+        "actualOperations": 0,
+        "owner": "SYNTH-RETEST-REVIEWER",
+        "recordedAt": "2026-09-16T22:00:00Z",
+        "limitation": "二つの供給欄だけを比較。実ScannerやBusiness Logicの動作試験は行っていない。",
+        "regressionScope": "同じ供給Scenarioの二条件だけ。全System非回帰ではない。",
+        "residualRiskId": "RES-FRT15-002",
+        "reassessmentId": "REA-FRT15-002"
+      },
+      {
+        "id": "RT-FRT15-004",
+        "findingId": "FND-FRT15-004",
+        "subjectId": "APP-FRT15-001",
+        "beforeRevision": "BEFORE-FRT15-004",
+        "changeReference": "CHG-FRT15-004",
+        "changedRevision": "AFTER-FRT15-004",
+        "changeMeaning": "authored-change-summary-not-real-change",
+        "scope": "current-supplied-scenario-only",
+        "method": "Scanner summary only",
+        "requiredMethod": "Static authored comparison",
+        "criteria": [
+          {
+            "id": "CRT-FRT15-004-1",
+            "field": "permission",
+            "expected": "read-summary"
+          },
+          {
+            "id": "CRT-FRT15-004-2",
+            "field": "auditReference",
+            "expected": "AUD-FRT15-EXPECTED"
+          }
+        ],
+        "observations": [
+          {
+            "id": "RT-EVD-FRT15-004-1",
+            "criterionId": "CRT-FRT15-004-1",
+            "subjectId": "APP-FRT15-001",
+            "revision": "AFTER-FRT15-004",
+            "present": false,
+            "value": null,
+            "basis": "missing-not-failed"
+          },
+          {
+            "id": "RT-EVD-FRT15-004-2",
+            "criterionId": "CRT-FRT15-004-2",
+            "subjectId": "APP-FRT15-001",
+            "revision": "AFTER-FRT15-004",
+            "present": false,
+            "value": null,
+            "basis": "missing-not-failed"
+          }
+        ],
+        "stopTrigger": "None",
+        "stepsAfterStop": 0,
+        "actualOperations": 0,
+        "owner": "SYNTH-RETEST-REVIEWER",
+        "recordedAt": "2026-09-16T22:00:00Z",
+        "limitation": "二つの供給欄だけを比較。実ScannerやBusiness Logicの動作試験は行っていない。",
+        "regressionScope": "同じ供給Scenarioの二条件だけ。全System非回帰ではない。",
+        "residualRiskId": "RES-FRT15-004",
+        "reassessmentId": "REA-FRT15-004"
+      },
+      {
+        "id": "RT-FRT15-005",
+        "findingId": "FND-FRT15-005",
+        "subjectId": "APP-FRT15-001",
+        "beforeRevision": "BEFORE-FRT15-005",
+        "changeReference": "CHG-FRT15-005",
+        "changedRevision": "AFTER-FRT15-005",
+        "changeMeaning": "authored-change-summary-not-real-change",
+        "scope": "current-supplied-scenario-only",
+        "method": "Static authored comparison",
+        "requiredMethod": "Static authored comparison",
+        "criteria": [
+          {
+            "id": "CRT-FRT15-005-1",
+            "field": "permission",
+            "expected": "read-summary"
+          },
+          {
+            "id": "CRT-FRT15-005-2",
+            "field": "auditReference",
+            "expected": "AUD-FRT15-EXPECTED"
+          }
+        ],
+        "observations": [
+          {
+            "id": "RT-EVD-FRT15-005-1",
+            "criterionId": "CRT-FRT15-005-1",
+            "subjectId": "APP-FRT15-001",
+            "revision": "AFTER-FRT15-005",
+            "present": true,
+            "value": "read-summary",
+            "basis": "authored-supplied-value"
+          },
+          {
+            "id": "RT-EVD-FRT15-005-2",
+            "criterionId": "CRT-FRT15-005-2",
+            "subjectId": "APP-FRT15-001",
+            "revision": "AFTER-FRT15-005",
+            "present": true,
+            "value": "AUD-FRT15-EXPECTED",
+            "basis": "authored-supplied-value"
+          }
+        ],
+        "stopTrigger": "None",
+        "stepsAfterStop": 0,
+        "actualOperations": 0,
+        "owner": "SYNTH-RETEST-REVIEWER",
+        "recordedAt": "2026-09-16T22:00:00Z",
+        "limitation": "二つの供給欄だけを比較。実ScannerやBusiness Logicの動作試験は行っていない。",
+        "regressionScope": "同じ供給Scenarioの二条件だけ。全System非回帰ではない。",
+        "residualRiskId": "RES-FRT15-005",
+        "reassessmentId": "REA-FRT15-005"
+      },
+      {
+        "id": "RT-FRT15-006",
+        "findingId": "FND-FRT15-006",
+        "subjectId": "APP-FRT15-001",
+        "beforeRevision": "BEFORE-FRT15-006",
+        "changeReference": "CHG-FRT15-006",
+        "changedRevision": "AFTER-FRT15-006",
+        "changeMeaning": "authored-change-summary-not-real-change",
+        "scope": "current-supplied-scenario-only",
+        "method": "Static authored comparison",
+        "requiredMethod": "Static authored comparison",
+        "criteria": [
+          {
+            "id": "CRT-FRT15-006-1",
+            "field": "permission",
+            "expected": "read-summary"
+          },
+          {
+            "id": "CRT-FRT15-006-2",
+            "field": "auditReference",
+            "expected": "AUD-FRT15-EXPECTED"
+          }
+        ],
+        "observations": [
+          {
+            "id": "RT-EVD-FRT15-006-1",
+            "criterionId": "CRT-FRT15-006-1",
+            "subjectId": "APP-FRT15-001",
+            "revision": "AFTER-FRT15-006",
+            "present": true,
+            "value": "read-summary",
+            "basis": "authored-supplied-value"
+          },
+          {
+            "id": "RT-EVD-FRT15-006-2",
+            "criterionId": "CRT-FRT15-006-2",
+            "subjectId": "APP-FRT15-001",
+            "revision": "AFTER-FRT15-006",
+            "present": true,
+            "value": "AUD-FRT15-EXPECTED",
+            "basis": "authored-supplied-value"
+          }
+        ],
+        "stopTrigger": "Unexpected-input-symbol",
+        "stepsAfterStop": 0,
+        "actualOperations": 0,
+        "owner": "SYNTH-RETEST-REVIEWER",
+        "recordedAt": "2026-09-16T22:00:00Z",
+        "limitation": "二つの供給欄だけを比較。実ScannerやBusiness Logicの動作試験は行っていない。",
+        "regressionScope": "同じ供給Scenarioの二条件だけ。全System非回帰ではない。",
+        "residualRiskId": "RES-FRT15-006",
+        "reassessmentId": "REA-FRT15-006"
+      }
+    ],
+    "handoffs": [
+      {
+        "id": "HOF-FRT15-16",
+        "targetChapter": 16,
+        "findingIds": [
+          "FND-FRT15-001",
+          "FND-FRT15-002",
+          "FND-FRT15-003",
+          "FND-FRT15-004",
+          "FND-FRT15-005",
+          "FND-FRT15-006",
+          "FND-FRT15-007"
+        ],
+        "recordId": "FRT-2026-015",
+        "purpose": "対象・版・時刻・判断の必須Fieldと未観測Gap。",
+        "status": "planned-not-delivered",
+        "executionAuthorized": false
+      },
+      {
+        "id": "HOF-FRT15-17",
+        "targetChapter": 17,
+        "findingIds": [
+          "FND-FRT15-001",
+          "FND-FRT15-002",
+          "FND-FRT15-003",
+          "FND-FRT15-004",
+          "FND-FRT15-005",
+          "FND-FRT15-006",
+          "FND-FRT15-007"
+        ],
+        "recordId": "FRT-2026-015",
+        "purpose": "検知の仮説と必要Evidence。検知成功の証明ではない。",
+        "status": "planned-not-delivered",
+        "executionAuthorized": false
+      },
+      {
+        "id": "HOF-FRT15-21",
+        "targetChapter": 21,
+        "findingIds": [
+          "FND-FRT15-001",
+          "FND-FRT15-002",
+          "FND-FRT15-003",
+          "FND-FRT15-004",
+          "FND-FRT15-005",
+          "FND-FRT15-006",
+          "FND-FRT15-007"
+        ],
+        "recordId": "FRT-2026-015",
+        "purpose": "統制の受入条件と反証条件。",
+        "status": "planned-not-delivered",
+        "executionAuthorized": false
+      },
+      {
+        "id": "HOF-FRT15-22",
+        "targetChapter": 22,
+        "findingIds": [
+          "FND-FRT15-001",
+          "FND-FRT15-002",
+          "FND-FRT15-003",
+          "FND-FRT15-004",
+          "FND-FRT15-005",
+          "FND-FRT15-006",
+          "FND-FRT15-007"
+        ],
+        "recordId": "FRT-2026-015",
+        "purpose": "改修BacklogのOwner・期限・依存。",
+        "status": "planned-not-delivered",
+        "executionAuthorized": false
+      },
+      {
+        "id": "HOF-FRT15-26",
+        "targetChapter": 26,
+        "findingIds": [
+          "FND-FRT15-001",
+          "FND-FRT15-002",
+          "FND-FRT15-003",
+          "FND-FRT15-004",
+          "FND-FRT15-005",
+          "FND-FRT15-006",
+          "FND-FRT15-007"
+        ],
+        "recordId": "FRT-2026-015",
+        "purpose": "残存Riskと判断Owner、次の再評価条件。",
+        "status": "planned-not-delivered",
+        "executionAuthorized": false
+      }
+    ]
+  },
+  "schemaVersion": "1.0.0",
+  "parentDigests": {
+    "cases/ch01-integrated-security-case-example.md": "c72c0d149321a24f2b6901db381c069cff86a8536b5578eba285b9d17eb329b2",
+    "cases/ch02-authorization-decision-example.md": "74d1aa7a802525ee5f465ccbdc1404e26a974ed60e264b65978612bef8026f4a",
+    "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
+    "cases/ch08-lab-evidence-example.md": "715859aea7c9ee8e939ff080447d34916a4f4b582d737719f272b394b9f17e0d",
+    "cases/fixtures/ch08-lab-plan.json": "f4ea0e4544e65fbb3447b173b0d9ab510e3aa8dea82209187727842b5f64ca8f",
+    "manuscript/09-engagement-roe.md": "2afbc548021b6f4017abf10287fc965c7417c15c0c36447763953fef2c65884a",
+    "templates/rules-of-engagement.md": "abf36127616fb838f8b599f60bbb1459e9b709381e990db4c9d855bcb81b9ef9",
+    "cases/ch09-engagement-roe-example.md": "44cf657c9ad220709c6b026ec4a894d904b1f89d88427e3babd2070e5a11b25a",
+    "cases/fixtures/ch09-engagement-roe.json": "cf3b2af1dc846981e9a9411641bc21663e7b0a0b1e90d66fd2750cdbd904f936",
+    "schemas/ch09-engagement-roe.schema.json": "f8983d4c251f27b09410a4a064e40138eab080830fed361d6b62aa201a384cd2",
+    "references/ch09-source-review-2026-09-13.md": "82ceac1a13e78805bb5d51eae2ad576238506a0e442c1617ce6f6d90384ed1b0",
+    "cases/ch11-web-api-assessment-example.md": "170f4d66d10aa2b2090018b610002b23a226db43b86b473af2216525ddca182f",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
+    ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
+    "manuscript/04-assets-boundaries-threat-model.md": "b20d25c51f0fa27c0404a8c5d2a4753a0a5b96a7152df67be985479590940084",
+    "manuscript/06-observable-systems.md": "c11a2491c94b710b749e48dceee448832d68d9406c557be7f9a49b45077b9938",
+    "cases/ch06-signal-flow-example.md": "a062ba22f4f0e1eb28a08342b0173a02473e995062410986b51d1a6a4af7cf0a",
+    "cases/fixtures/ch06-signal-flow.json": "73000db0a442d9be338a0e9834fe589ee387ee05ab280a9cc5f0e6fe0f0da6fb",
+    "manuscript/10-recon-osint-boundary.md": "122287e232c1b07468f7b0ecdc3e1ee6f4a2a7e8a3252ea8d73c6e8e681b04b7",
+    "templates/attack-surface-register.md": "ac84aef10dedc83264180e4f9e6069f711c3613e1948875524d561c88893fa75",
+    "cases/ch10-attack-surface-example.md": "7409da76004a7c32489d620691684054cb60e486dfb7dd8a7f7dabb012ed46fa",
+    "cases/fixtures/ch10-attack-surface.json": "84247ed0d7bd12547cd94f00f9f7faf2df58a9dee1947badf7c68dfd741b5f90",
+    "cases/fixtures/ch10-source-bundle.json": "d66edf29d533d102ee7d49d6362b031cc7c9983eef89f65cba85cbc751e0e36c",
+    "schemas/ch10-attack-surface.schema.json": "84107fecbf04d7516c39696a50fdbdf4282dc494cdcac8a126b4f91064f7a160",
+    "references/ch10-source-review-2026-09-14.md": "bbe585867368ececabe92e236f3b8dbbbcd735730c6d664b0face8dd76ac67fc",
+    "manuscript/11-web-api-hypothesis.md": "4bb4768e3a0d122116cae4019bf5b344601ec64e4d5f364bb45bb8e8b9437992",
+    "cases/fixtures/ch11-web-api-assessment-dataset.json": "2f0e10f0de37b3904c9303793ce36fdd565db8a0c4614bdeaba9b8a2c65ec4ec",
+    "manuscript/12-enterprise-identity.md": "642483bda2082a61a302b8967a91a5cec8e971116d025b4e25779753b7d238ab",
+    "templates/identity-attack-path-review.md": "47d9d8e2347c3ecfb6c9c7d135ceab9fe111165e9d722b278ead4a32984a427a",
+    "cases/ch12-identity-path-review-example.md": "0caa79dcb448212f08f5d6d44c5af705bf850be7b60bd610fab93a5e6ffc1bd3",
+    "references/ch12-source-review-2026-09-15.md": "21220e5329a42daf45180c5f3555dec23f82204ad41de69aada442b6d5659f38",
+    "cases/fixtures/ch12-identity-paths.json": "7bcaad91e1fe1ac5cea69d6e622a206f3db17ad986195e0c8191ffe7354d6491",
+    "schemas/ch12-identity-paths.schema.json": "72a4778b936e0939afa63c2a6330efa98cd192c4f74c24aee5048b1095bacce6",
+    "manuscript/13-platform-supply-chain.md": "6f1feafc4a87393e68e0020c4aed2858b1cfda0e203dbfe91f6565f36a61b57e",
+    "templates/platform-supply-chain-assessment.md": "3d5066a47bcdd995c8a6ace0a017e42116f802695561f3968ab1e6cbe7ded866",
+    "cases/ch13-platform-supply-chain-example.md": "2b7f65bbeb4d66f9f8f9eed58ecb54cd69ed458891a666f6a27158bc92dff876",
+    "references/ch13-source-review-2026-09-15.md": "44ebfde1aa46782196cd58ebc3dbd0c0ca44432929d571bd5d8a4f3f9a77562a",
+    "cases/fixtures/ch13-supply-chain.json": "ad39fbefbace47f8a61b17aa796c4246e2f65f0c5b47be593b93cc202b42ee4c",
+    "schemas/ch13-supply-chain.schema.json": "ae5376644932e2b2f4b848ae2e050262110a346e5a1c8640453563eeecf22a6f",
+    "manuscript/07-vulnerability-prioritization.md": "4af916c955a6d5e9b3824389570cd72951e7e0cd87be318c45f0ddc07162f3be",
+    "cases/fixtures/ch07-vulnerability-prioritization.json": "37e6fac74e3b30560704a2db13ba2abfb8fd025c1dcbae6f6fbe5f213b6f3d32",
+    "manuscript/14-minimal-impact-validation.md": "86d6d106ab64a38602f41d669bc6c66df47642f0e96cae292d047bf29253a8d3",
+    "templates/minimal-impact-validation-record.md": "3693a46a9a7bbab6c29c3268c1fc53cf6b3fc2241ce76495d9e2eab15fac089c",
+    "cases/ch14-minimal-impact-validation-example.md": "920e50b2b94152bf8c93bd640de1bec9dc61e2fcf3deb8bfacc682ada9764aa2",
+    "references/ch14-source-review-2026-09-16.md": "855c89e63c554bd403a9cf51d8261410594ad2abad5a2aa08db7a4c0c8a376c2",
+    "cases/fixtures/ch14-minimal-impact-validation.json": "0ef78c7e51a200de200c9293fe047dab95408c2353128bc75c6388448600e7bc",
+    "schemas/ch14-minimal-impact-validation.schema.json": "a469a61ac4703690e548b84438dc1d12ce66a4367db36c866408c834a785ee5e"
+  },
+  "documents": {
+    "manuscript/15-findings-retest-risk.md": {
+      "headings": [
+        [
+          1,
+          "第15章 Finding、改修、再評価、リスク受容"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケース：権限を減らしたという報告だけで閉じてよいか"
+        ],
+        [
+          2,
+          "全体像：状態より先に根拠の連鎖を作る"
+        ],
+        [
+          2,
+          "症状と根本条件、技術影響と事業影響を分ける"
+        ],
+        [
+          2,
+          "Severity、Priority、Treatmentを一つの値にしない"
+        ],
+        [
+          2,
+          "Retestは変更後の問いを再確認する記録である"
+        ],
+        [
+          2,
+          "六つのFinding状態とClosedの根拠"
+        ],
+        [
+          2,
+          "残存Risk、受容権限、期限と開示を接続する"
+        ],
+        [
+          2,
+          "四つの視点と後続章への引継ぎ"
+        ],
+        [
+          2,
+          "安全な演習：七つの判断を比べる"
+        ],
+        [
+          2,
+          "作成する成果物と評価基準"
+        ],
+        [
+          2,
+          "よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この章の位置付け 第14章では、問いに必要なEvidenceを限定し、停止と整理を判断記録へ接続した。本章では、その記録を「何を直すか、何を再確認するか、誰が残るRiskを引き受けるか」へ変換する。Findingは脆弱性名の一覧ではなく、対象・条件・根拠・判断の対応を後から検証できる報告単位である。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWNはFinding Report、Retest Record、残存リスクと受容権限の引継ぎである。BRIDGEは第7章の優先度、第11〜14章の評価、第16〜17章の観測・検知、第21〜22章の統制改善、第26章の意思決定である。DELEGATEは個別Patch、認証実装、変更管理の詳細と法的判断である。攻撃評価専門書と認証・認可専門書で詳細を確認した場合も、対象版・変更参照・Evidenceの範囲を本章の記録へ戻す。委譲先の操作は本演習の前提ではない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 Findingを構造化できる。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 対策の種類を分けられる。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 Finding ReportとRetest Recordを作成できる。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "前提知識 第7章のSeverityとPriority、第9章のRoE、第12章のIdentity binding、第14章のResultとEvidence不足を理解していること。CASE-2026-001の親RoEはDraftで、元のAuthorization期限と実施Windowは経過している。親の三Objectと実行不可という境界は、本章でも変更しない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "必修課題は、供給された完全合成JSONを読むS1の分析課題である。実Scanner、実Account、実変更、実Retest、実届出、実公開を行わない。実在の脆弱性の認定、標準適合、法的責任や安全性の証明を目標にしない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "導入ケース：権限を減らしたという報告だけで閉じてよいか 架空の請求連携について、業務要件にはread-summary、供給設計にはread-all-summariesと書かれている。担当者は「必要な範囲へ直したので完了」と述べる。しかし、変更後の版、対象App、監査記録との対応、例外Scopeが未記載なら、報告を受け取った事実と改修成功の確認は別である。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "導入ケース：権限を減らしたという報告だけで閉じてよいか"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章のAPP-FRT15-001は、第12章のOAuth App設計から作った別の合成教材である。親Appの現在のbindingや実装を引き継いだ実測ではない。FRT-2026-015はCASE-2026-001をrefinesするが、七つのScenarioは独立した判断の対比であり、一つの本番Findingの時系列ではない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "導入ケース：権限を減らしたという報告だけで閉じてよいか"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第14章のVAL-MIV14-001とFND-MIV14-001は手法の参照元である。本章の新しい対象を検証したEvidenceではない。各Findingには新たなVAL-FRT15-*と供給Evidenceを付ける。親のHOF-MIV14-15はplanned-not-deliveredのまま保持し、親を後から配達済みへ書き換えない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "導入ケース：権限を減らしたという報告だけで閉じてよいか"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "全体像：状態より先に根拠の連鎖を作る F-15-01は、本章で追跡する判断の流れである。入力は対象版を持つ供給記録、出力はART-04とART-23、境界は実操作や実権限を与えないことである。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "全体像：状態より先に根拠の連鎖を作る"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "同じIDを記載するだけでは追跡は成立しない。対象、版、Scope、時点が同じかを確認する。Evidence不足を別Scenarioや親Caseの記録で埋めない。第11章のCASE-2026-011は独立した比較例であり、親Evidenceや許可へ付け替えない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "全体像：状態より先に根拠の連鎖を作る"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "症状と根本条件、技術影響と事業影響を分ける T-15-01では、観測に近い記述から判断までを分ける。確認できるのは供給された設計文字列の差であり、実システム上の過大権限そのものではない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "症状と根本条件、技術影響と事業影響を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "欄 良い記録 避ける飛躍 Symptom 同じ供給版で要件とpermission欄が異なる 実データへ到達できたと書く"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "症状と根本条件、技術影響と事業影響を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "欄 良い記録 避ける飛躍 Root condition 要件と権限宣言を照合する承認条件が供給設計にないという分析候補 記録がないため実運用にも承認がないと断定する"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "症状と根本条件、技術影響と事業影響を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "欄 良い記録 避ける飛躍 Technical impact 供給設計上の範囲差。実装上の到達性は未確認 別Appや別版にも成立すると広げる"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "症状と根本条件、技術影響と事業影響を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "欄 良い記録 避ける飛躍 Business impact 請求処理への影響を懸念する仮説。損失は未測定 Severityから損害額を算出する"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "症状と根本条件、技術影響と事業影響を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "欄 良い記録 避ける飛躍 Limitation 実装、現在のbinding、例外経路の資料がない 未観測を不存在や安全の根拠にする"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "症状と根本条件、技術影響と事業影響を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Affected scopeはConfirmed / Candidate / Excluded / Unknownを分ける。本教材のConfirmedも「供給された文字列を確認した範囲」であり、実製品の影響範囲ではない。確信度は中とし、実装側に別の制約がある可能性を代替説明に残す。新たな対象版や実装Evidenceが得られれば、この判断を再評価する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "症状と根本条件、技術影響と事業影響を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "WSTG 4.2 Reportingは、Scope・Limitationsと読者別の報告、Findingの参照可能な識別子、再テスト時の前回結果との対応を考える補助となる。一つの報告形式の提案であって、本章の状態一覧を定める標準ではない（SRC-WSTG-001）。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "症状と根本条件、技術影響と事業影響を分ける"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Severity、Priority、Treatmentを一つの値にしない CVSSは技術的な深刻度を伝える材料であり、組織の業務依存や受容権限をすべて表すものではない。第7章のScore・Vector・Nomenclatureの契約を継承し、必要な情報がなければ新しいScoreを作らない。CVSSにはBase / Threat / Environmental / Supplementalがあり、組織固有の判断には範囲外の要因も必要となる（SRC-CVSS-001）。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Severity、Priority、Treatmentを一つの値にしない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章は新しいScoreを付けず、JSONの三欄をnullにする。第7章のVPR-ITEM-001は「高いSignalでも別の文脈では判断が異なる」という比較参照だけであり、そのCVE評価をOAuth Appへ移す根拠ではない。修正順位、Urgency、Due dateは、業務依存、Evidence不足、変更可能な時期、Ownerの判断理由を別欄に残す。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Severity、Priority、Treatmentを一つの値にしない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "T-15-02では、対策の便益と負担を比較する。どれも供給された計画案であり、実装済みではない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Severity、Priority、Treatmentを一つの値にしない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "種類 比較する案 限界と依存 Temporary 利用Scopeを一時的に絞る計画 必要連携を制約する可能性。権限宣言の根本修正ではない"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Severity、Priority、Treatmentを一つの値にしない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "種類 比較する案 限界と依存 Permanent 業務要件と権限宣言を対応付ける改版 仕様確認、変更計画、別の許可判断が必要"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Severity、Priority、Treatmentを一つの値にしない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "種類 比較する案 限界と依存 Compensating 対象・版・判断を監査記録へ接続する代替統制 説明可能性は増すが、権限宣言の差自体は残る"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Severity、Priority、Treatmentを一つの値にしない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "推奨案にはTreatment ID、Control ID、Owner、期限、Dependencyを付ける。「監視する」だけでOwnerや観測項目がなければ、未解決の作業を隠したことになる。補償的統制を恒久改修と同じ意味でClosedへ接続しない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Severity、Priority、Treatmentを一つの値にしない"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Retestは変更後の問いを再確認する記録である ART-23では、Finding ID、対象、変更前後の版、Change reference、Scope、Acceptance criteriaを先に定義する。本教材の二条件は、第一に必要な権限宣言、第二に期待した監査参照である。実際のBusiness Logicや実サービスの挙動試験は範囲外である。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Retestは変更後の問いを再確認する記録である"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "T-15-03の五Resultは本書の有限教材ルールであり、一般のRetestにそのまま適用する自動判定器ではない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Retestは変更後の問いを再確認する記録である"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Result 本教材の条件 残す説明 Passed 同じ対象・変更後版で二条件が一致 二条件以外のScopeは未確認"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Retestは変更後の問いを再確認する記録である"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Result 本教材の条件 残す説明 Partial 権限宣言は一致し、監査参照は不一致 どこまで支持し、何が残るか"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Retestは変更後の問いを再確認する記録である"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Result 本教材の条件 残す説明 Failed 必要な観測が揃い、第一の権限条件が不一致 満たさなかったAcceptance criteria"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Retestは変更後の問いを再確認する記録である"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Result 本教材の条件 残す説明 Inconclusive 観測不足、またはMethodが条件を確認できない 不足資料と次に必要な確認"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Retestは変更後の問いを再確認する記録である"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Result 本教材の条件 残す説明 Stopped 供給記録の停止triggerが成立 追加確認をせず、停止理由と引継ぎを残す"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Retestは変更後の問いを再確認する記録である"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "停止を最優先にし、欠測をfalseとしてFailedへ変換しない。Scannerの要約だけでは、本教材の設計二条件との対応を確認できないためInconclusiveとする。Scannerを増やして再実行する演習ではない。WSTGの前回Finding・更新状態・参照関係の説明を補助に使うが、この五Resultは本書独自の設計である（SRC-WSTG-001）。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Retestは変更後の問いを再確認する記録である"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Retest記録には限界とRegression scopeも必要である。二つの供給欄がPassedでも、全システムの非回帰や実影響なしを証明したことにはならない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "Retestは変更後の問いを再確認する記録である"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "六つのFinding状態とClosedの根拠 T-15-04は、供給された判断記録の状態を表す。状態だけで実環境の改善を証明しない。特にMitigatedの教材例は、一時的なScope制限案のレビュー記録を持つという設定であり、実装済みフラグはfalseのままである。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "六つのFinding状態とClosedの根拠"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 記録上の意味 必要な根拠 Open 初回報告を受け付け、次の判断を残す 対象・条件・Evidence・Owner"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "六つのFinding状態とClosedの根拠"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 記録上の意味 必要な根拠 Mitigated 一時的対策について限定されたレビュー記録がある Temporary案と同じScenarioの根拠"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "六つのFinding状態とClosedの根拠"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 記録上の意味 必要な根拠 Accepted 残存Riskを明示的な権限・期限・条件で引き受ける設定 有効な受容記録、Residual、Reassessment"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "六つのFinding状態とClosedの根拠"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 記録上の意味 必要な根拠 Retest required 現在の記録では再確認が必要 変更参照、確認すべき条件と不足Evidence"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "六つのFinding状態とClosedの根拠"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 記録上の意味 必要な根拠 Closed この記録の終了条件を満たす 十分なRetest、または明示的で有効な受容根拠"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "六つのFinding状態とClosedの根拠"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status 記録上の意味 必要な根拠 Reopened 終了・受容の前提を再評価する 停止や期限切れ等の無効化条件と次の担当"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "六つのFinding状態とClosedの根拠"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Closedの経路は二つを区別する。Retestで閉じた場合は確認したScopeを示す。受容で閉じた場合は未修正の条件と受容の根拠を示す。受容によるClosedを「修正済み」と表示しない。第14章のCompleteは読解記録の整理が完了した意味なので、本章のClosedを自動的に成立させない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "六つのFinding状態とClosedの根拠"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "残存Risk、受容権限、期限と開示を接続する 受容記録にはFinding・対象・Scope、権限の参照、権限保有者と判断者、決定日時、失効日時、条件、Residual risk ID、Reassessment IDが必要である。誰かが「承知した」と書いただけでは代替にならない。期限切れや対象版の変更があれば、有効性を再確認する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "残存Risk、受容権限、期限と開示を接続する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本教材のDELEGATION-FRT15-*は架空の業務判断記録であり、評価作業のAuthorizationではない。AcceptedでもClosedでも、親RoE Draft、元Window、失効したAUTH、三Object、executionAuthorized=falseを維持する。Risk acceptanceでAuthority不足や法的禁止を上書きしない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "残存Risk、受容権限、期限と開示を接続する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "開示はFinding状態と別の軸である。IPA/JPCERT/CCのガイドラインは、脆弱性関連情報の取扱いに関する役割と調整の枠組みを説明している。調整状況とAudienceを別記する参考にするが、評価や公表の個別許可として扱わない（SRC-IPA-VDP-001）。本章ではclassificationをSynthetic teaching only、audienceをSynthetic internal roles、coordinationStatusをNot initiatedに限定する。教材の公開と、実際の脆弱性の公表許可は別である。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "残存Risk、受容権限、期限と開示を接続する"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "四つの視点と後続章への引継ぎ T-15-05では、異なる役割が同じEvidenceをどこまで使えるかを示す。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "四つの視点と後続章への引継ぎ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "視点 問い 渡すもの 攻撃評価 どの成立条件がどの版で支持されたか Validation、限界、停止理由"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "四つの視点と後続章への引継ぎ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "視点 問い 渡すもの 防御 どの変更とどの観測で条件を確認するか Control、Retest criteria、Telemetry gap"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "四つの視点と後続章への引継ぎ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "視点 問い 渡すもの 分析 事実と仮説、支持と未観測を区別できるか 代替説明、確信度、反証条件"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "四つの視点と後続章への引継ぎ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "視点 問い 渡すもの 意思決定 誰が期限付きで残るRiskを扱うか 選択肢、Owner、期限、再評価条件"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "四つの視点と後続章への引継ぎ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第16章へ必須Fieldと未観測Gap、第17章へ検知仮説、第21章へ統制の受入条件、第22章へ改善Backlog、第26章へ経営上の含意を渡す。未実装の章へリンクがあるだけで引継ぎ完了とはしない。本JSONの五Handoffはplanned-not-deliveredである。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "四つの視点と後続章への引継ぎ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "安全な演習：七つの判断を比べる Purpose: ART-04とART-23の根拠を読み、Findingの状態とRetestの結果を別々に説明する。供給された七Scenarioの差だけを扱う。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: 自己所有の作業コピーと、固定済み依存を導入済みの本Repositoryを使う。教材JSONは読み取り専用である。実Target・実Credential・実Networkへ操作しない。親の実行許可を変更しない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence / Impact: 検査は供給ID・版・有限状態と公開文書の対応を確認する。成功出力は教材整合性であって、実脆弱性や実改修の証明ではない。ローカルでPythonと固定rendererを実行する資源を使うが、評価対象への通信はしない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stop / Cleanup: 未知の入力、版の不一致、追跡不能、実データの疑いがあれば読解を停止する。追加取得や操作を行わない。終了時は作業メモを整理し、正本と親資料を保持する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "コマンドは教材自体の検査であり、実ScannerやRetestツールを起動しない。先に全Fieldの合成記入例を読み、次の順で自分の判断を記録する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "各FindingのSymptom、Root condition、確認済みScope、未知Scopeを分ける。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "同じ供給値から、Temporary / Permanent / Compensatingの便益・負担・依存を比較する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "各Retestの対象と変更後版を辿り、Passed / Partial / Failed / Inconclusive / Stoppedの根拠を説明する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "FND-FRT15-005のRetestによるClosedと、007の受容によるClosedを比較する。未修正条件を隠していないか確認する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "006の期限切れと停止からReopenedを説明する。編集日ではなく供給record.asOfを基準にする。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "第14章のSupported/Completeや作業コピーのRecorded clearを、実改修や業務Riskゼロへ読み替えていないか点検する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "作成する成果物と評価基準 ART-04 Finding Reportの既存欄を埋め、ART-23 Retest RecordをFinding IDで結ぶ。供給JSONと閉じたSchemaはこの有限教材専用である。Schemaの構造検査だけでは、権限の実在性や参照先の正しさは証明できない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "T-15-06では、好ましい結果の件数ではなく追跡可能性を評価する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 到達基準 未達の例 記述 症状・根本条件・技術影響・事業影響が分離 Evidenceのない断定"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 到達基準 未達の例 参照 対象・版・Validation・Evidenceが一致 別Scenarioの資料へ付替え"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 到達基準 未達の例 対策 三種類の案、Owner、期限、依存を比較 Severityだけで修正・受容を決める"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 到達基準 未達の例 Retest 変更参照・条件・観測・限界を説明 Scanner要約だけでPassed"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 到達基準 未達の例 Decision Closedの経路と受容権限・期限が明示 受容を実施許可に読み替える"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 到達基準 未達の例 Handoff Residual、再評価、Audience、Gapの担当を残す 未観測や未配達を完了と表示"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "作成する成果物と評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 FailedはEvidence不足と同じではない。欠測はInconclusiveとして残す。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 Partialを都合のよいPassedへ丸めない。確認できない範囲を明記する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 Acceptedは永久免責でも評価許可でもない。ClosedでもResidual riskは残り得る。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 供給記録の時刻と現在の編集日を混同しない。教材の受容期限を毎日延長しない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 対象や版を省略したEvidence数の増加は、根拠の強さを保証しない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "章のまとめ Findingの品質は件数ではなく、条件からEvidence、影響、対策、Retest、Decisionまでを辿れるかで決まる。結果がInconclusiveでも、不足・Owner・期限・許容結論を記録できれば教材上の成果物は完成し得る。業務課題の解決、実環境の安全、実施許可とは区別する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "章のまとめ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "次に学ぶこと 第16章では、Retestと判断に必要なTelemetryを取得できる条件を設計する。先に公開済みの第17章へ進む場合は、Findingから渡した仮説と観測Gapを検知の受入条件に接続し、対応付けだけを検知成功とみなさない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "次に学ぶこと"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-IPA-VDP-001: 2024年版。役割と情報取扱い・調整の限定範囲。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-WSTG-001: 4.2固定版Reporting。Scope、Limitations、FindingとRetestの対応。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-CVSS-001: CVSS4.0 / Specification1.2 / User Guide1.2。第7章を継承したSeverityと組織判断の分離。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "2026-09-17のSource Reviewに版、取得元、採用範囲と非採用範囲を記録する。本章の六Status、五Result、二条件比較は本書独自の教材契約である。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/pentest-learning-book/"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "この章の位置付け"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWNはFinding Report、Retest Record、残存リスクと受容権限の引継ぎである。BRIDGEは第7章の優先度、第11〜14章の評価、第16〜17章の観測・検知、第21〜22章の統制改善、第26章の意思決定である。DELEGATEは個別Patch、認証実装、変更管理の詳細と法的判断である。攻撃評価専門書と認証・認可専門書で詳細を確認した場合も、対象版・変更参照・Evidenceの範囲を本章の記録へ戻す。委譲先の操作は本演習の前提ではない。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://itdojp.github.io/practical-auth-book/"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "この章の位置付け"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWNはFinding Report、Retest Record、残存リスクと受容権限の引継ぎである。BRIDGEは第7章の優先度、第11〜14章の評価、第16〜17章の観測・検知、第21〜22章の統制改善、第26章の意思決定である。DELEGATEは個別Patch、認証実装、変更管理の詳細と法的判断である。攻撃評価専門書と認証・認可専門書で詳細を確認した場合も、対象版・変更参照・Evidenceの範囲を本章の記録へ戻す。委譲先の操作は本演習の前提ではない。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter15_contract.py"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "006の期限切れと停止からReopenedを説明する。編集日ではなく供給record.asOfを基準にする。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "参考文献・Source Note ID SRC-WSTG-001: 4.2固定版Reporting。Scope、Limitations、FindingとRetestの対応。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "analyticProvenance": [],
+      "exerciseInstructionOrder": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "安全な演習：七つの判断を比べる Purpose: ART-04とART-23の根拠を読み、Findingの状態とRetestの結果を別々に説明する。供給された七Scenarioの差だけを扱う。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Prerequisite / Authority / Scope: 自己所有の作業コピーと、固定済み依存を導入済みの本Repositoryを使う。教材JSONは読み取り専用である。実Target・実Credential・実Networkへ操作しない。親の実行許可を変更しない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence / Impact: 検査は供給ID・版・有限状態と公開文書の対応を確認する。成功出力は教材整合性であって、実脆弱性や実改修の証明ではない。ローカルでPythonと固定rendererを実行する資源を使うが、評価対象への通信はしない。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stop / Cleanup: 未知の入力、版の不一致、追跡不能、実データの疑いがあれば読解を停止する。追加取得や操作を行わない。終了時は作業メモを整理し、正本と親資料を保持する。"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter15_contract.py"
+          ],
+          "headings": [
+            "第15章 Finding、改修、再評価、リスク受容",
+            "安全な演習：七つの判断を比べる"
+          ]
+        }
+      ]
+    },
+    "templates/finding-report.md": {
+      "headings": [
+        [
+          1,
+          "Finding Report"
+        ],
+        [
+          2,
+          "Summary"
+        ],
+        [
+          2,
+          "Preconditions"
+        ],
+        [
+          2,
+          "Minimal-impact validation"
+        ],
+        [
+          2,
+          "Evidence"
+        ],
+        [
+          2,
+          "Impact"
+        ],
+        [
+          2,
+          "Root cause"
+        ],
+        [
+          2,
+          "Risk context"
+        ],
+        [
+          2,
+          "Remediation"
+        ],
+        [
+          2,
+          "Retest acceptance criteria"
+        ],
+        [
+          2,
+          "Residual risk and owner"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Finding Report ART-04はFindingの条件・根拠・影響・対策・Decisionをつなぐ記録である。既存の見出しを維持し、第15章で対象版と受容の欄を補う。空欄を推測で埋めず、Unknownとその理由・担当・期限を残す。"
+          ],
+          "headings": [
+            "Finding Report"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Finding ID:"
+          ],
+          "headings": [
+            "Finding Report"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Title:"
+          ],
+          "headings": [
+            "Finding Report"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Status: Open / Mitigated / Accepted / Retest required / Closed / Reopened"
+          ],
+          "headings": [
+            "Finding Report"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Scope: Confirmed / Candidate / Excluded / Unknownを分ける。"
+          ],
+          "headings": [
+            "Finding Report"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Evidence timestamp / time zone:"
+          ],
+          "headings": [
+            "Finding Report"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Case ID / refinesまたはindependent:"
+          ],
+          "headings": [
+            "Finding Report"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Asset / Threat / Subject ID / Revision:"
+          ],
+          "headings": [
+            "Finding Report"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Decision Requirement / Authority / RoE reference:"
+          ],
+          "headings": [
+            "Finding Report"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Summary SymptomとRoot conditionを別々に書く。確認事実、分析判断、仮定を区別し、確信度・代替説明・結論を変える条件を添える。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Summary"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Preconditions 対象、版、Scope、許可の状態、使用する供給資料を限定する。本書の合成課題では実操作を行わない。別Caseの許可やEvidenceを借用しない。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Preconditions"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Minimal-impact validation Validation ID / Finding ID / same subject and revision:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Minimal-impact validation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Minimal-impact validation Authorized operation: 本教材は供給記録の読解のみ。実施許可を発行しない。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Minimal-impact validation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Minimal-impact validation Expected result:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Minimal-impact validation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Minimal-impact validation Observed result / evidence basis:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Minimal-impact validation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Minimal-impact validation Stop point:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Minimal-impact validation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Minimal-impact validation Cleanup: 作業メモを整理し、正本・親資料を保持する。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Minimal-impact validation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Evidence Evidence ID Description Hash / location Limitations 記入するEvidence ID 同じ対象版の供給根拠 読み取り専用の参照 未確認の範囲"
+          ],
+          "headings": [
+            "Finding Report",
+            "Evidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "対象と版をlocationまたは説明で追跡する。供給値、観測、解釈を分け、実Credential・実個人情報を記入しない。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Evidence"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Impact Technical impact:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Impact"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Impact Business impact: 実測・仮説・未測定を区別する。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Impact"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Impact Affected assets / identities: Confirmed / Candidate / Excluded / Unknown。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Impact"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Root cause Root condition ID、主張、Evidence、代替説明、未確認範囲を記載する。症状の言い換えや、根拠のない組織・個人の責任断定にしない。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Root cause"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Risk context Severity inputs: CVSSを記載する場合はScore / Vector / Nomenclatureを第7章の契約に従って併記する。未評価なら新たな値を作らない。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Risk context"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Risk context Exposure:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Risk context"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Risk context Exploitation evidence:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Risk context"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Risk context Compensating controls:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Risk context"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Risk context Priority rationale: 業務依存、Evidence不足、Owner、Urgency、Due dateを分ける。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Risk context"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Remediation Immediate containment: Temporary案のTreatment ID / Control ID。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Remediation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Remediation Permanent correction: Permanent案のTreatment ID / Control ID。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Remediation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Remediation Alternative control: Compensating案のTreatment ID / Control ID。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Remediation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Remediation 各案の便益 / 負担 / Dependency / Owner / Due date:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Remediation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Remediation Recommended Treatment IDと選択理由:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Remediation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "案を実装済みと混同しない。一時的な緩和や監査の追加を、根本条件の解消と同じ意味で表示しない。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Remediation"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Retest acceptance criteria ART-23へRetest ID、Finding ID、Change reference、対象・変更前後版、Scope、期待Evidence、Method、限界を接続する。Scanner要約だけでRetest完了としない。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Retest acceptance criteria"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Residual risk and owner Residual risk ID / 未確認条件 / Owner:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Residual risk and owner"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Residual risk and owner Decision ID / Finding ID / Action / 判断理由:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Residual risk and owner"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Residual risk and owner Acceptance ID / Authority reference / Holder / Decision owner / Scope:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Residual risk and owner"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Residual risk and owner Decision time / Expiry / Conditions:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Residual risk and owner"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Residual risk and owner Reassessment ID / Owner / Due date / Reopen trigger:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Residual risk and owner"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Residual risk and owner Disclosure classification / Audience / Coordination status:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Residual risk and owner"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Closedには十分なRetestまたは明示的で有効なRisk acceptanceの根拠を記す。受容で閉じた場合は「修正済み」と表示しない。受容権限は評価作業のAuthorityを上書きしない。教材のAudienceはSynthetic internal roles、coordinationStatusはNot initiatedで、実届出・実公表は行わない。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Residual risk and owner"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "完全合成記入例で、記録の完了と業務課題の解決を区別する。"
+          ],
+          "headings": [
+            "Finding Report",
+            "Residual risk and owner"
+          ]
+        }
+      ],
+      "hostProvenance": [],
+      "analyticProvenance": [],
+      "legacyHeadings": [
+        "## Summary",
+        "## Preconditions",
+        "## Minimal-impact validation",
+        "## Evidence",
+        "## Impact",
+        "## Root cause",
+        "## Risk context",
+        "## Remediation",
+        "## Retest acceptance criteria",
+        "## Residual risk and owner"
+      ]
+    },
+    "cases/ch15-findings-retest-risk-example.md": {
+      "headings": [
+        [
+          1,
+          "第15章 完全合成記入例：Finding ReportとRetest Record"
+        ],
+        [
+          2,
+          "この記入例の扱い"
+        ],
+        [
+          2,
+          "親記録と対象の境界"
+        ],
+        [
+          2,
+          "七つの独立した対比"
+        ],
+        [
+          2,
+          "判断・停止・引継ぎ"
+        ],
+        [
+          2,
+          "schemaVersion"
+        ],
+        [
+          2,
+          "synthetic"
+        ],
+        [
+          2,
+          "executionAuthorized"
+        ],
+        [
+          2,
+          "record"
+        ],
+        [
+          2,
+          "parents"
+        ],
+        [
+          2,
+          "context"
+        ],
+        [
+          2,
+          "safety"
+        ],
+        [
+          2,
+          "findings FND-FRT15-001"
+        ],
+        [
+          2,
+          "findings FND-FRT15-002"
+        ],
+        [
+          2,
+          "findings FND-FRT15-003"
+        ],
+        [
+          2,
+          "findings FND-FRT15-004"
+        ],
+        [
+          2,
+          "findings FND-FRT15-005"
+        ],
+        [
+          2,
+          "findings FND-FRT15-006"
+        ],
+        [
+          2,
+          "findings FND-FRT15-007"
+        ],
+        [
+          2,
+          "retests RT-FRT15-001"
+        ],
+        [
+          2,
+          "retests RT-FRT15-002"
+        ],
+        [
+          2,
+          "retests RT-FRT15-004"
+        ],
+        [
+          2,
+          "retests RT-FRT15-005"
+        ],
+        [
+          2,
+          "retests RT-FRT15-006"
+        ],
+        [
+          2,
+          "handoffs HOF-FRT15-16"
+        ],
+        [
+          2,
+          "handoffs HOF-FRT15-17"
+        ],
+        [
+          2,
+          "handoffs HOF-FRT15-21"
+        ],
+        [
+          2,
+          "handoffs HOF-FRT15-22"
+        ],
+        [
+          2,
+          "handoffs HOF-FRT15-26"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この記入例の扱い ART-04 / ART-23 / FRT-2026-015はCASE-2026-001をrefinesする非実行の教材である。全ID・値・時刻・判断は作成者が記述した供給記録であり、実サービスの応答、実対策の効果、実許可の発行結果ではない。実操作・実通信・実変更・実届出・実公表は行わない。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "この記入例の扱い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第15章、Finding Report、Retest Record、正本JSON、閉じたSchemaを参照する。以下はJSONの全末端Fieldと一対一のField/Value表であり、添字は0始まり、nullと空配列も表示する。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "この記入例の扱い"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "親記録と対象の境界 最初にrecord、parents、context、safetyを読む。親RoEのDraft、失効AUTH、元Window、三Objectのfalse、第8章のRunningを含む八状態、独立CASE-2026-011、第12章のUnknown、第13章のVerified=供給summary比較、第14章のSupported/Complete/ResidualのScopeは変えない。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "親記録と対象の境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章のAPP-FRT15-001は第12章のOAuth例から新規作成した教材である。親14のVAL/FNDは方法参照だけであり、新Appの成立性Evidenceではない。各FindingのvalidationとevidenceIdsは新しいsubjectIdとsubjectRevisionへ直接結び付く。第7章のVPR比較もSeverityの自動転用ではない。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "親記録と対象の境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "七つの独立した対比 七Findingは一つの実運用上の状態遷移履歴ではない。同じ設計上の権限差を出発点にした独立した教材の選択肢であり、固定asOfにおける供給判断を比較する。001 Open / Failed、002 Mitigated / Partial、003 Accepted / 明示的Acceptance、004 Retest required / Inconclusive、005 Closed / Passed、006 Reopened / Stoppedと期限切れAcceptance、007 Closed / 明示的Acceptanceを読む。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "七つの独立した対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Mitigatedは供給された一時対策レビューEvidenceがある教材状態であり、implemented=falseの実環境へ対策を実施したという意味ではない。Closedの二つの根拠を混ぜず、AcceptedやClosedでもResidualをゼロにしない。Acceptanceの権限範囲は当該供給シナリオだけで、評価の実行許可を上書きしない。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "七つの独立した対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "五Retestはpermissionを主条件、auditReferenceを補助条件とする二条件比較である。停止を最優先し、Method不足・欠測はInconclusive、主条件不一致はFailed、主条件一致かつ補助不一致はPartial、両一致だけPassedとする。Scanner summary onlyは必要Methodを満たさず、再実行の記述だけで完了へ進めない。Retest IDがない二記録はAcceptance経路であり、欠けたRetestを捏造しない。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "七つの独立した対比"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "判断・停止・引継ぎ 確認事実は供給Field、分析判断はrootConditionとjudgment、仮定は合成対象と固定時刻、推奨はTreatmentとDecisionの計画に分ける。実事業影響は未測定、別説明と不足情報を残す。残存・Owner・期限・再評価・Audience・調整状況を別々に記入する。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "判断・停止・引継ぎ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "実Data、外部通信、Scope不明、未知入力なら停止する。実Credentialを再利用しない。実システムを変更しない。実システムを削除しない。実許可と実開示の判断が必要なら教材の外で責任者へ確認する。五Handoffはplanned-not-deliveredであり、第16〜22章や第26章の受領や改善効果を主張しない。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "判断・停止・引継ぎ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章の六観点Rubricを使い、症状と根本条件、SeverityとPriority、対策と証拠、RetestとAcceptance、ClosedとResidualを区別する。権限不足の上書き、Scannerだけでの完了、Evidenceの対象付替え、期限切れAcceptanceからのClosedは差し戻す。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "判断・停止・引継ぎ"
+          ]
+        }
+      ],
+      "hostProvenance": [],
+      "analyticProvenance": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Mitigatedは供給された一時対策レビューEvidenceがある教材状態であり、implemented=falseの実環境へ対策を実施したという意味ではない。Closedの二つの根拠を混ぜず、AcceptedやClosedでもResidualをゼロにしない。Acceptanceの権限範囲は当該供給シナリオだけで、評価の実行許可を上書きしない。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "七つの独立した対比"
+          ]
+        }
+      ]
+    },
+    "references/ch15-source-review-2026-09-17.md": {
+      "headings": [
+        [
+          1,
+          "第15章 Source Review — 2026-09-17"
+        ],
+        [
+          2,
+          "SRC-IPA-VDP-001：役割と調整"
+        ],
+        [
+          2,
+          "SRC-WSTG-001：固定4.2のReporting"
+        ],
+        [
+          2,
+          "SRC-CVSS-001：Severityと判断の分離"
+        ],
+        [
+          2,
+          "本書独自の契約と非採用範囲"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第15章 Source Review — 2026-09-17 確認日: 2026-09-17。対象はFindingの構造、Retestの参照、Severityと組織判断、情報取扱いの限定範囲である。全規範・法令・実製品の適合監査ではない。Registry-wide baselineは2026-07-25を維持し、三つの個別Sourceの採用scopeだけを再確認する。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-IPA-VDP-001：役割と調整 IPA公式ページは2024年版を案内し、ページ最終更新は2026-04-06である。公式PDFの2024年版・全61ページを取得し、SHA256は98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458で、前回の第9章監査と一致した。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-IPA-VDP-001：役割と調整"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "今回読む範囲はⅠの枠組み・関係者の役割と、Ⅱの情報・対策・対応状況の定義である。Findingの状態とは別にAudienceと調整状況を記録する補助として使用する。届出手順の実行、実際の公表時期の判断、法的責任の認定、全付録の再監査には使用しない。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-IPA-VDP-001：役割と調整"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ページの更新日、2024年版の案内日、PDFの版を区別する。RegistryのpublishedAtは従来どおりnullとし、今回の限定確認で文書全体の公開日を上書きしない。次回確認2026-12-17、改訂または開示章の公開時に再確認する。第2章・第9章の既存利用記録は保持する。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-IPA-VDP-001：役割と調整"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001：固定4.2のReporting OWASP公式ProjectのStable 4.2と開発版を区別する。本章は公式Repositoryの4.2固定commitにあるReportingを参照する。tag v4.2からcommit dd33419e10edb22b78d89325a6c2aad9f184e3a2へ対応し、取得本文のGit blobは9e2131fb657f555acc48f55785da2b50a4a4feda、SHA256はac4c37f76f1d4ef1aab5d67636cef856a8cfecb0c482cbb73238ef0269fdba12である。署名検証済みのtagとは主張しない。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-WSTG-001：固定4.2のReporting"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用範囲はAbout this Section、1.4 Scope、1.5 Limitations、2 Executive Summary、3 Findingsの前回結果との参照と3.2の報告項目である。一つの報告形式の提案を、固定必須標準として扱わない。実機微情報の取得、個別悪用手順、免責文の転載、外部参考リンク群の採用は範囲外である。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-WSTG-001：固定4.2のReporting"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "公式Webの旧Reporting routeは前回404だったため、取得可能な固定Sourceを使う。Web routeの復旧を確認したという意味ではない。第9・10・14章の既存notesと採用範囲を全文保持し、今回のReporting scopeを追記する。次回確認2026-12-17、Stableまたは開発版のreleaseと参照先変更を契機に再確認する。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-WSTG-001：固定4.2のReporting"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-CVSS-001：Severityと判断の分離 FIRST SpecificationとUser Guideで、標準4.0と両文書版1.2を確認した。採用する意味はSpecificationの冒頭・Introductionの四Metric groups、ScoreとVector、組織のRisk判断にはCVSS範囲外の要因も必要という限定範囲である。User Guideは文書版を確認し、全Scoring rubricを再監査したとは主張しない。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-CVSS-001：Severityと判断の分離"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第7章の既存Source契約と供給比較例を保持する。本章では新たなScore・Vectorを付けず、実CVEの評価をOAuth Appへ転用しない。Calculatorの更新、CWEの新規採用、実脆弱性のrating、全仕様適合の確認は行わない。publishedAtは文書改訂の正確な日付を推定せずnullを保持する。次回確認2026-12-17、版・採用意味の変更時に再確認する。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-CVSS-001：Severityと判断の分離"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本書独自の契約と非採用範囲 六Finding Status、五Retest Result、二条件の比較優先順、供給Acceptanceの有効性判定は本書独自の有限教材であり、上記Sourceの規定をそのまま実装したものではない。NIST SP800-53A・800-39・CSF、CWEは登録済み先行草稿で名前が挙がっても、本章では新規採用しない。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "本書独自の契約と非採用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "実Target、実Credential、実Account、実変更、実Retest、実届出、実公表は行わない。権限・法的判断・Disclosureの個別判断が必要になったら、教材の外で責任者と専門家へ確認する。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "本書独自の契約と非採用範囲"
+          ]
+        }
+      ],
+      "hostProvenance": [
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-IPA-VDP-001：役割と調整"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-IPA-VDP-001：役割と調整 IPA公式ページは2024年版を案内し、ページ最終更新は2026-04-06である。公式PDFの2024年版・全61ページを取得し、SHA256は98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458で、前回の第9章監査と一致した。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.ipa.go.jp/security/guide/vuln/ug65p90000019by0-att/partnership_guideline.pdf"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-IPA-VDP-001：役割と調整"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-IPA-VDP-001：役割と調整 IPA公式ページは2024年版を案内し、ページ最終更新は2026-04-06である。公式PDFの2024年版・全61ページを取得し、SHA256は98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458で、前回の第9章監査と一致した。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001：固定4.2のReporting OWASP公式ProjectのStable 4.2と開発版を区別する。本章は公式Repositoryの4.2固定commitにあるReportingを参照する。tag v4.2からcommit dd33419e10edb22b78d89325a6c2aad9f184e3a2へ対応し、取得本文のGit blobは9e2131fb657f555acc48f55785da2b50a4a4feda、SHA256はac4c37f76f1d4ef1aab5d67636cef856a8cfecb0c482cbb73238ef0269fdba12である。署名検証済みのtagとは主張しない。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-WSTG-001：固定4.2のReporting"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://owasp.org/www-project-web-security-testing-guide/"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-WSTG-001：固定4.2のReporting"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001：固定4.2のReporting OWASP公式ProjectのStable 4.2と開発版を区別する。本章は公式Repositoryの4.2固定commitにあるReportingを参照する。tag v4.2からcommit dd33419e10edb22b78d89325a6c2aad9f184e3a2へ対応し、取得本文のGit blobは9e2131fb657f555acc48f55785da2b50a4a4feda、SHA256はac4c37f76f1d4ef1aab5d67636cef856a8cfecb0c482cbb73238ef0269fdba12である。署名検証済みのtagとは主張しない。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://github.com/OWASP/wstg/blob/dd33419e10edb22b78d89325a6c2aad9f184e3a2/document/5-Reporting/README.md"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-WSTG-001：固定4.2のReporting"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-WSTG-001：固定4.2のReporting OWASP公式ProjectのStable 4.2と開発版を区別する。本章は公式Repositoryの4.2固定commitにあるReportingを参照する。tag v4.2からcommit dd33419e10edb22b78d89325a6c2aad9f184e3a2へ対応し、取得本文のGit blobは9e2131fb657f555acc48f55785da2b50a4a4feda、SHA256はac4c37f76f1d4ef1aab5d67636cef856a8cfecb0c482cbb73238ef0269fdba12である。署名検証済みのtagとは主張しない。"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "採用範囲はAbout this Section、1.4 Scope、1.5 Limitations、2 Executive Summary、3 Findingsの前回結果との参照と3.2の報告項目である。一つの報告形式の提案を、固定必須標準として扱わない。実機微情報の取得、個別悪用手順、免責文の転載、外部参考リンク群の採用は範囲外である。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-WSTG-001：固定4.2のReporting"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-CVSS-001：Severityと判断の分離 FIRST SpecificationとUser Guideで、標準4.0と両文書版1.2を確認した。採用する意味はSpecificationの冒頭・Introductionの四Metric groups、ScoreとVector、組織のRisk判断にはCVSS範囲外の要因も必要という限定範囲である。User Guideは文書版を確認し、全Scoring rubricを再監査したとは主張しない。"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-CVSS-001：Severityと判断の分離"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.first.org/cvss/v4.0/specification-document"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-CVSS-001：Severityと判断の分離"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-CVSS-001：Severityと判断の分離 FIRST SpecificationとUser Guideで、標準4.0と両文書版1.2を確認した。採用する意味はSpecificationの冒頭・Introductionの四Metric groups、ScoreとVector、組織のRisk判断にはCVSS範囲外の要因も必要という限定範囲である。User Guideは文書版を確認し、全Scoring rubricを再監査したとは主張しない。"
+          ]
+        },
+        {
+          "field": [
+            "destination",
+            "link",
+            "href",
+            "https://www.first.org/cvss/v4.0/user-guide"
+          ],
+          "headings": [
+            "第15章 Source Review — 2026-09-17",
+            "SRC-CVSS-001：Severityと判断の分離"
+          ],
+          "owner": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SRC-CVSS-001：Severityと判断の分離 FIRST SpecificationとUser Guideで、標準4.0と両文書版1.2を確認した。採用する意味はSpecificationの冒頭・Introductionの四Metric groups、ScoreとVector、組織のRisk判断にはCVSS範囲外の要因も必要という限定範囲である。User Guideは文書版を確認し、全Scoring rubricを再監査したとは主張しない。"
+          ]
+        }
+      ],
+      "analyticProvenance": []
+    },
+    "templates/retest-record.md": {
+      "headings": [
+        [
+          1,
+          "Retest Record"
+        ],
+        [
+          2,
+          "この記録の境界"
+        ],
+        [
+          2,
+          "T-15-07 Retestの記入欄"
+        ],
+        [
+          2,
+          "判断を残す"
+        ],
+        [
+          2,
+          "完全合成例と読み取り専用データ"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Retest Record ART-23はART-04 Finding Reportに対する再確認記録である。実作業の許可や一般のRisk判定器ではない。第15章の必修課題は供給された完全合成記録の読解だけで完結する。"
+          ],
+          "headings": [
+            "Retest Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この記録の境界 Purposeは変更後の問い・条件・Evidenceを対応付けること。Prerequisite / Authority / Scopeは対象と版を限定した供給資料であり、親の許可状態を変更しない。Expected evidenceは各条件を支持・反証・未観測として説明できる記録である。Impactはローカルの読解に限定し、実Scannerや実System変更を行わない。"
+          ],
+          "headings": [
+            "Retest Record",
+            "この記録の境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Stopは未知入力・Scope不一致・追跡不能である。追加操作をせず、理由と次の担当を記録する。Cleanupは作業メモの整理に限定し、正本と親資料を保持する。"
+          ],
+          "headings": [
+            "Retest Record",
+            "この記録の境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Retest ID / Finding ID ART-04の対象との直接参照 別Findingへ付け替えない"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Subject / before revision 変更前の対象と版 元Validationとの一致"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Change reference / changed revision 供給された変更記録と変更後版 実改修と混同しない"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Scope / Method 必要な条件を確認できる方法 Scanner要約だけで十分としない"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Acceptance criteria 条件ID、期待値、対象版 期待値を観測から逆算しない"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Observation / Evidence Evidence ID、条件ID、対象、版、present、value、basis 欠測をfalseに変換しない"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Stop / continuation trigger、理由、停止後追加操作0 停止を最優先にする"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Result Passed / Partial / Failed / Inconclusive / Stopped 支持した範囲と限界を併記"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Regression scope 再確認した範囲と未確認範囲 全System非回帰を主張しない"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Residual / Decision Residual risk ID、判断Owner、理由 PassedでもRiskゼロとしない"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-15-07 Retestの記入欄 欄 記入するもの 確認点 Expiry / Reassessment 受容期限、再評価ID、担当、期限、条件 記録を永久受容にしない"
+          ],
+          "headings": [
+            "Retest Record",
+            "T-15-07 Retestの記入欄"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "判断を残す 第一の権限条件と第二の監査参照を、同じ対象・変更後版で比較する。停止ならStopped、欠測やMethod不足ならInconclusive、第一条件が不一致ならFailed、第一のみ一致ならPartial、両条件一致ならPassedとする。この優先順は二条件を持つ本教材だけの契約である。"
+          ],
+          "headings": [
+            "Retest Record",
+            "判断を残す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Closedへ進める場合、十分なRetestを根拠にしたのか、有効な明示的受容を根拠にしたのかをART-04に戻して記録する。受容記録にはAuthority reference、Holder、Scope、Expiry、Residual、Reassessmentが必要である。実行許可や公表許可は付与しない。"
+          ],
+          "headings": [
+            "Retest Record",
+            "判断を残す"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "完全合成例と読み取り専用データ 七Finding・五Retestの全Field表示"
+          ],
+          "headings": [
+            "Retest Record",
+            "完全合成例と読み取り専用データ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "完全合成例と読み取り専用データ 供給JSON"
+          ],
+          "headings": [
+            "Retest Record",
+            "完全合成例と読み取り専用データ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "完全合成例と読み取り専用データ 閉じたSchema"
+          ],
+          "headings": [
+            "Retest Record",
+            "完全合成例と読み取り専用データ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "実データ、実Credential、実連絡先は使用しない。結果は供給値の比較であり、実脆弱性や実改修の成立を証明しない。"
+          ],
+          "headings": [
+            "Retest Record",
+            "完全合成例と読み取り専用データ"
+          ]
+        }
+      ],
+      "hostProvenance": [],
+      "analyticProvenance": []
+    }
+  },
+  "indices": {
+    "artifact-index.md": [
+      "| ART-04 | Finding Report | 15 |",
+      "| ART-23 | Retest Record | 15 |"
+    ],
+    "figure-index.md": [
+      "F-15-01",
+      "T-15-01",
+      "T-15-02",
+      "T-15-03",
+      "T-15-04",
+      "T-15-05",
+      "T-15-06",
+      "T-15-07"
+    ],
+    "glossary.md": [
+      "## 第15章の用語",
+      "| ART04 Closed |"
+    ],
+    "cases/index.md": [
+      "## 第15章の教育用補足",
+      "FRT-2026-015"
+    ],
+    "cases/fixtures/index.md": [
+      "## 第15章 FindingとRetest",
+      "ch15-findings-retest-risk.schema.json"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "第6章・第7章・第8章・第9章・第10章・第12章・第13章・第14章・第15章の公開前"
+    ],
+    "CHANGELOG.md": [
+      "第15章本文・ART-23・完全合成記入例",
+      "ART-04を既存見出し・URLを保持して拡張"
+    ],
+    "README.md": [
+      "### 第15章の有限Finding・Retest契約",
+      "tests/fixtures/chapter15/README.md"
+    ]
+  },
+  "legacyArt04Headings": [
+    "## Summary",
+    "## Preconditions",
+    "## Minimal-impact validation",
+    "## Evidence",
+    "## Impact",
+    "## Root cause",
+    "## Risk context",
+    "## Remediation",
+    "## Retest acceptance criteria",
+    "## Residual risk and owner"
+  ],
+  "sourceIdentity": {
+    "SRC-IPA-VDP-001": {
+      "publisher": "IPA / JPCERT/CC",
+      "title": "情報セキュリティ早期警戒パートナーシップガイドライン",
+      "kind": "guideline",
+      "status": "current-guidance",
+      "version": "2024 edition",
+      "url": "https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html",
+      "publishedAt": null,
+      "notes": "The official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05, and the official page showed last update 2026-04-06. The current page and linked guideline must be rechecked at publication time. Chapter 9 scoped re-audit 2026-09-13: official page and 61-page PDF retain 2024 edition, page last update 2026-04-06; role, handling and coordination sections reviewed. PDF SHA256 98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458. Reporting/coordination guidance is not assessment or publication permission. Chapter 15 scoped primary-text review (2026-09-17): 2024 guideline sections I roles/framework and II definitions of information, countermeasures and response status only. Audience and coordination remain separate from Finding status. No actual notification, publication-date decision, legal finding or full appendix audit. Existing publishedAt=null and prior chapter notes retained; scope and retrieved PDF hash: references/ch15-source-review-2026-09-17.md."
+    },
+    "SRC-WSTG-001": {
+      "publisher": "OWASP",
+      "title": "Web Security Testing Guide",
+      "kind": "testing-guide",
+      "status": "stable",
+      "version": "4.2; 5.0 under development",
+      "url": "https://owasp.org/www-project-web-security-testing-guide/",
+      "publishedAt": "2020-12-03",
+      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption. Chapter 14 scoped primary-text review (2026-09-16): versioned 4.2 Introduction only, What is Testing, How To Reference WSTG Scenarios/Linking, and The Need for a Balanced Approach. No individual technique or complete scenario corpus adopted; 5.0 development and 4.3 Unreleased are not the adopted version. Six Results/four Methods are book-owned; supplied response comparison is not real HTTP testing. Scope: references/ch14-source-review-2026-09-16.md. Existing chapter 15 mapping is retained, not freshly audited here. Chapter 15 scoped primary-text review (2026-09-17): v4.2 Reporting at fixed commit dd33419e10edb22b78d89325a6c2aad9f184e3a2, About this Section, 1.4 Scope, 1.5 Limitations, 2 Executive Summary and 3 Findings including prior-report/retest references and 3.2 fields. A proposed reporting format, not a mandatory standard. No individual exploitation steps, real sensitive-data acquisition, disclaimer reproduction or external bibliography adopted. Six Finding Statuses/five Retest Results are book-owned. Fixed blob and SHA256: references/ch15-source-review-2026-09-17.md."
+    },
+    "SRC-CVSS-001": {
+      "publisher": "FIRST",
+      "title": "CVSS v4.0 Specification and User Guide",
+      "kind": "specification",
+      "status": "released",
+      "version": "4.0 / Specification 1.2 / User Guide 1.2",
+      "url": "https://www.first.org/cvss/v4.0/specification-document",
+      "publishedAt": null,
+      "notes": "Standard 4.0 and document versions 1.2 directly verified. Exact publication day for the current document revision is unknown and is not inferred from the standard launch date. Base/Threat/Environmental/Supplemental and nomenclature only. Finite author-synthetic vectors checked with FIRSTdotorg/cvss-v4-calculator commit c5b0d409ae9f57c44264c6ce5f27d89298e1d32a; not vendor/CVE scores or a runtime calculator. Chapter 15 scoped primary-text review (2026-09-17): CVSS standard 4.0, Specification and User Guide document revision 1.2 verified. Specification introduction only for four metric groups, score/vector and additional organizational risk factors. User Guide revision verified, not a fresh complete scoring-rubric audit. Existing chapter 7 inputs preserved; no new OAuth score/vector or CVE rating transfer, no CWE adoption or calculator update. Scope: references/ch15-source-review-2026-09-17.md."
+    }
+  },
+  "pages": [
+    {
+      "source": "manuscript/15-findings-retest-risk.md",
+      "destination": "chapters/chapter-15/index.md",
+      "section": "chapters",
+      "order": 58,
+      "title": "第15章 Finding、改修、再評価、リスク受容"
+    },
+    {
+      "source": "cases/ch15-findings-retest-risk-example.md",
+      "destination": "cases/chapter-15-findings-retest-risk/index.md",
+      "section": "additional",
+      "order": 274,
+      "title": "第15章 完全合成記入例：Finding ReportとRetest Record"
+    },
+    {
+      "source": "references/ch15-source-review-2026-09-17.md",
+      "destination": "references/chapter-15-source-review/index.md",
+      "section": "additional",
+      "order": 275,
+      "title": "第15章 Source Review — 2026-09-17"
+    },
+    {
+      "source": "templates/retest-record.md",
+      "destination": "templates/retest-record/index.md",
+      "section": "additional",
+      "order": 276,
+      "title": "Retest Record"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch15-findings-retest-risk.json",
+      "destination": "downloads/ch15-findings-retest-risk.json"
+    },
+    {
+      "source": "schemas/ch15-findings-retest-risk.schema.json",
+      "destination": "downloads/ch15-findings-retest-risk.schema.json"
+    }
+  ],
+  "legacyArt04Route": {
+    "source": "templates/finding-report.md",
+    "destination": "templates/finding-report/index.md",
+    "section": "additional",
+    "order": 160
+  }
+}

@@ -1,0 +1,1489 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ART-04/ART-23 finite supplied teaching data; not authorization or a general risk workflow",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "executionAuthorized",
+    "record",
+    "parents",
+    "context",
+    "safety",
+    "findings",
+    "retests",
+    "handoffs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "1.0.0"
+      ]
+    },
+    "synthetic": {
+      "type": "boolean",
+      "enum": [
+        true
+      ]
+    },
+    "executionAuthorized": {
+      "type": "boolean",
+      "enum": [
+        false
+      ]
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "caseId",
+        "relation",
+        "artifactIds",
+        "asOf",
+        "scenarioMeaning",
+        "actualOperations"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifactIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "asOf": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scenarioMeaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actualOperations": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        }
+      }
+    },
+    "parents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "caseId",
+        "relation",
+        "decisionRequirementId",
+        "historicalDeadline",
+        "authorizationId",
+        "authorizationExpiresAt",
+        "authorizationWindow",
+        "authorizationConditions",
+        "roeId",
+        "roeVersion",
+        "roeStatus",
+        "roeObjectIds",
+        "roeExecutionAuthorized",
+        "threatModelId",
+        "threatModelStatus",
+        "parentReassessmentId",
+        "independentCaseId",
+        "parentStateChanged"
+      ],
+      "properties": {
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionRequirementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "historicalDeadline": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorizationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorizationExpiresAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorizationWindow": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "authorizationConditions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true
+        },
+        "roeId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "roeVersion": {
+          "type": "integer",
+          "enum": [
+            1
+          ]
+        },
+        "roeStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "roeObjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true
+        },
+        "roeExecutionAuthorized": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "threatModelId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "threatModelStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentReassessmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independentCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentStateChanged": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parentValidationRecord",
+        "parentHandoffId",
+        "parentHandoffStatus",
+        "parentStateChanged",
+        "parentValidationId",
+        "parentFindingId",
+        "parentEvidenceRole",
+        "parentCompleteMeaning",
+        "parentSupportedMeaning",
+        "parentCopyResidualMeaning",
+        "parentIdentityApplication",
+        "newApplication",
+        "applicationRelation",
+        "parentIdentityBinding",
+        "parentPlatformVerifiedMeaning",
+        "independentCaseId",
+        "independentEvidenceUsed",
+        "labStates",
+        "labRuntimeExecuted",
+        "priorityReference",
+        "priorityReferenceMeaning",
+        "findingStatuses",
+        "retestResults",
+        "sourceIds"
+      ],
+      "properties": {
+        "parentValidationRecord": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentHandoffId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentHandoffStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentStateChanged": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "parentValidationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentFindingId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentEvidenceRole": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentCompleteMeaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentSupportedMeaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentCopyResidualMeaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentIdentityApplication": {
+          "type": "string",
+          "minLength": 1
+        },
+        "newApplication": {
+          "type": "string",
+          "minLength": 1
+        },
+        "applicationRelation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentIdentityBinding": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentPlatformVerifiedMeaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independentCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independentEvidenceUsed": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "labStates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Planned",
+              "Preflight passed",
+              "Ready",
+              "Running",
+              "Stopped",
+              "Destroyed",
+              "Cleanup verified",
+              "Failed closed"
+            ]
+          },
+          "minItems": 8,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "labRuntimeExecuted": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "priorityReference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "priorityReferenceMeaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "findingStatuses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Open",
+              "Mitigated",
+              "Accepted",
+              "Retest required",
+              "Closed",
+              "Reopened"
+            ]
+          },
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true
+        },
+        "retestResults": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Passed",
+              "Partial",
+              "Failed",
+              "Inconclusive",
+              "Stopped"
+            ]
+          },
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "SRC-IPA-VDP-001",
+              "SRC-WSTG-001",
+              "SRC-CVSS-001"
+            ]
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actualNetworkConnections",
+        "actualSystemChanges",
+        "actualScannerRuns",
+        "actualNoticesSent",
+        "actualPublicDisclosures",
+        "realCredentialsPresent",
+        "legalPermissionGranted",
+        "riskAcceptanceOverridesAuthority",
+        "measuredBusinessImpact",
+        "actualCleanupPerformed",
+        "stop",
+        "cleanup"
+      ],
+      "properties": {
+        "actualNetworkConnections": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "actualSystemChanges": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "actualScannerRuns": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "actualNoticesSent": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "actualPublicDisclosures": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "realCredentialsPresent": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "legalPermissionGranted": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "riskAcceptanceOverridesAuthority": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "measuredBusinessImpact": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "actualCleanupPerformed": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "stop": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "scenarioId",
+          "caseId",
+          "assetId",
+          "threatId",
+          "subjectId",
+          "subjectRevision",
+          "status",
+          "requestedStage",
+          "title",
+          "symptom",
+          "rootCondition",
+          "validation",
+          "evidenceIds",
+          "scope",
+          "technicalImpact",
+          "businessImpact",
+          "limitation",
+          "confidence",
+          "alternative",
+          "priority",
+          "treatments",
+          "recommendedTreatmentId",
+          "retestId",
+          "acceptance",
+          "residualRisk",
+          "decision",
+          "reassessment",
+          "disclosure",
+          "temporaryReviewEvidenceId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scenarioId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "caseId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assetId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "threatId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Open",
+              "Mitigated",
+              "Accepted",
+              "Retest required",
+              "Closed",
+              "Reopened"
+            ]
+          },
+          "requestedStage": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Report",
+              "Mitigate",
+              "Accept",
+              "Retest",
+              "Close",
+              "Reopen"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "symptom": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rootCondition": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "claim",
+              "basis"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "claim": {
+                "type": "string",
+                "minLength": 1
+              },
+              "basis": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "authored-design-comparison-not-verified-implementation"
+                ]
+              }
+            }
+          },
+          "validation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "findingId",
+              "subjectId",
+              "subjectRevision",
+              "method",
+              "requirementPermission",
+              "declaredPermission",
+              "evidenceId",
+              "basis",
+              "actualOperation"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "findingId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "subjectId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "subjectRevision": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Static authored comparison"
+                ]
+              },
+              "requirementPermission": {
+                "type": "string",
+                "minLength": 1
+              },
+              "declaredPermission": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidenceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "basis": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "authored-supplied-values"
+                ]
+              },
+              "actualOperation": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
+            }
+          },
+          "evidenceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "maxItems": 1,
+            "uniqueItems": true
+          },
+          "scope": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "confirmed",
+              "candidate",
+              "excluded",
+              "unknown"
+            ],
+            "properties": {
+              "confirmed": {
+                "type": "string",
+                "minLength": 1
+              },
+              "candidate": {
+                "type": "string",
+                "minLength": 1
+              },
+              "excluded": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unknown": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "technicalImpact": {
+            "type": "string",
+            "minLength": 1
+          },
+          "businessImpact": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "confidence": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "中"
+            ]
+          },
+          "alternative": {
+            "type": "string",
+            "minLength": 1
+          },
+          "priority": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "severityReference",
+              "cvssScore",
+              "cvssVector",
+              "cvssNomenclature",
+              "automaticDecision",
+              "reason"
+            ],
+            "properties": {
+              "severityReference": {
+                "type": "string",
+                "minLength": 1
+              },
+              "cvssScore": {
+                "type": "null",
+                "enum": [
+                  null
+                ]
+              },
+              "cvssVector": {
+                "type": "null",
+                "enum": [
+                  null
+                ]
+              },
+              "cvssNomenclature": {
+                "type": "null",
+                "enum": [
+                  null
+                ]
+              },
+              "automaticDecision": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "treatments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "kind",
+                "controlId",
+                "proposal",
+                "benefit",
+                "cost",
+                "dependency",
+                "owner",
+                "dueAt",
+                "implemented"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "kind": {
+                  "type": "string",
+                  "minLength": 1,
+                  "enum": [
+                    "Temporary",
+                    "Permanent",
+                    "Compensating"
+                  ]
+                },
+                "controlId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "proposal": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "benefit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "cost": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "dependency": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "owner": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "dueAt": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "implemented": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                }
+              }
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "uniqueItems": true
+          },
+          "recommendedTreatmentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retestId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "acceptance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "present",
+              "id",
+              "findingId",
+              "subjectId",
+              "scope",
+              "authorityReference",
+              "authorityHolder",
+              "decisionOwner",
+              "basis",
+              "decidedAt",
+              "expiresAt",
+              "residualRiskId",
+              "reassessmentId",
+              "conditions",
+              "overridesAssessmentAuthority"
+            ],
+            "properties": {
+              "present": {
+                "type": "boolean",
+                "enum": [
+                  false,
+                  true
+                ]
+              },
+              "id": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "findingId": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "subjectId": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "scope": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1,
+                "enum": [
+                  null,
+                  "current-supplied-scenario-only"
+                ]
+              },
+              "authorityReference": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "authorityHolder": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "decisionOwner": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "basis": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1,
+                "enum": [
+                  null,
+                  "authored-delegation-not-assessment-permission"
+                ]
+              },
+              "decidedAt": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "expiresAt": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "residualRiskId": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "reassessmentId": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "conditions": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              },
+              "overridesAssessmentAuthority": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
+            }
+          },
+          "residualRisk": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "claim",
+              "owner",
+              "businessRiskZero"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "claim": {
+                "type": "string",
+                "minLength": 1
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "businessRiskZero": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
+            }
+          },
+          "decision": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "findingId",
+              "action",
+              "basis",
+              "owner",
+              "reason",
+              "executionAuthorized"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "findingId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "action": {
+                "type": "string",
+                "minLength": 1
+              },
+              "basis": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "open-review",
+                  "acceptance",
+                  "retest"
+                ]
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "executionAuthorized": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
+            }
+          },
+          "reassessment": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "findingId",
+              "owner",
+              "dueAt",
+              "trigger",
+              "reopenReason"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "findingId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "dueAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "trigger": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reopenReason": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
+              }
+            }
+          },
+          "disclosure": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "classification",
+              "audience",
+              "coordinationStatus",
+              "publicReleaseAuthorized",
+              "actualNoticeSent"
+            ],
+            "properties": {
+              "classification": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Synthetic teaching only"
+                ]
+              },
+              "audience": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Synthetic internal roles"
+                ]
+              },
+              "coordinationStatus": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Not initiated"
+                ]
+              },
+              "publicReleaseAuthorized": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              },
+              "actualNoticeSent": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
+            }
+          },
+          "temporaryReviewEvidenceId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 7,
+      "maxItems": 7,
+      "uniqueItems": true
+    },
+    "retests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "findingId",
+          "subjectId",
+          "beforeRevision",
+          "changeReference",
+          "changedRevision",
+          "changeMeaning",
+          "scope",
+          "method",
+          "requiredMethod",
+          "criteria",
+          "observations",
+          "result",
+          "stopTrigger",
+          "stepsAfterStop",
+          "actualOperations",
+          "owner",
+          "recordedAt",
+          "limitation",
+          "regressionScope",
+          "residualRiskId",
+          "reassessmentId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "findingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "beforeRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "changeReference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "changedRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "changeMeaning": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "authored-change-summary-not-real-change"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "current-supplied-scenario-only"
+            ]
+          },
+          "method": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Static authored comparison",
+              "Scanner summary only"
+            ]
+          },
+          "requiredMethod": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Static authored comparison"
+            ]
+          },
+          "criteria": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "field",
+                "expected"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "field": {
+                  "type": "string",
+                  "minLength": 1,
+                  "enum": [
+                    "permission",
+                    "auditReference"
+                  ]
+                },
+                "expected": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "uniqueItems": true
+          },
+          "observations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "criterionId",
+                "subjectId",
+                "revision",
+                "present",
+                "value",
+                "basis"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "criterionId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "subjectId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "revision": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "present": {
+                  "type": "boolean",
+                  "enum": [
+                    true,
+                    false
+                  ]
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1
+                },
+                "basis": {
+                  "type": "string",
+                  "minLength": 1,
+                  "enum": [
+                    "authored-supplied-value",
+                    "missing-not-failed"
+                  ]
+                }
+              }
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "uniqueItems": true
+          },
+          "result": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Failed",
+              "Partial",
+              "Inconclusive",
+              "Passed",
+              "Stopped"
+            ]
+          },
+          "stopTrigger": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "None",
+              "Unexpected-input-symbol"
+            ]
+          },
+          "stepsAfterStop": {
+            "type": "integer",
+            "enum": [
+              0
+            ]
+          },
+          "actualOperations": {
+            "type": "integer",
+            "enum": [
+              0
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recordedAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "regressionScope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "residualRiskId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessmentId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true
+    },
+    "handoffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "targetChapter",
+          "findingIds",
+          "recordId",
+          "purpose",
+          "status",
+          "executionAuthorized"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetChapter": {
+            "type": "integer",
+            "enum": [
+              16,
+              17,
+              21,
+              22,
+              26
+            ]
+          },
+          "findingIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 7,
+            "maxItems": 7,
+            "uniqueItems": true
+          },
+          "recordId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "planned-not-delivered"
+            ]
+          },
+          "executionAuthorized": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          }
+        }
+      },
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true
+    }
+  }
+}

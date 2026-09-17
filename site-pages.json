@@ -417,6 +417,34 @@
       "section": "additional",
       "order": 273,
       "title": "第14章 Source Review Note：最小影響の判断と停止"
+    },
+    {
+      "source": "manuscript/15-findings-retest-risk.md",
+      "destination": "chapters/chapter-15/index.md",
+      "section": "chapters",
+      "order": 58,
+      "title": "第15章 Finding、改修、再評価、リスク受容"
+    },
+    {
+      "source": "cases/ch15-findings-retest-risk-example.md",
+      "destination": "cases/chapter-15-findings-retest-risk/index.md",
+      "section": "additional",
+      "order": 274,
+      "title": "第15章 完全合成記入例：Finding ReportとRetest Record"
+    },
+    {
+      "source": "references/ch15-source-review-2026-09-17.md",
+      "destination": "references/chapter-15-source-review/index.md",
+      "section": "additional",
+      "order": 275,
+      "title": "第15章 Source Review — 2026-09-17"
+    },
+    {
+      "source": "templates/retest-record.md",
+      "destination": "templates/retest-record/index.md",
+      "section": "additional",
+      "order": 276,
+      "title": "Retest Record"
     }
   ],
   "directoryRoutes": {
@@ -506,6 +534,14 @@
     {
       "source": "schemas/ch14-minimal-impact-validation.schema.json",
       "destination": "downloads/ch14-minimal-impact-validation.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch15-findings-retest-risk.json",
+      "destination": "downloads/ch15-findings-retest-risk.json"
+    },
+    {
+      "source": "schemas/ch15-findings-retest-risk.schema.json",
+      "destination": "downloads/ch15-findings-retest-risk.schema.json"
     }
   ]
 }

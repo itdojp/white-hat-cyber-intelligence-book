@@ -57,3 +57,7 @@
 ## 第14章の教育用補足
 
 [Minimal-Impact Validation Recordの完全合成記入例](ch14-minimal-impact-validation-example.md) / ART-22 / MIV-2026-014はCASE-2026-001をrefinesする。八記録を六Result・四Methodで比較し、全実操作0、未実施・停止・Cleanup・残存Unknownを分ける。親RoE Draft/失効/元Window/三Objectと独立CASE-2026-011の境界を変更しない。
+
+## 第15章の教育用補足
+
+[Finding ReportとRetest Recordの完全合成記入例](ch15-findings-retest-risk-example.md) / ART-04 / ART-23 / FRT-2026-015はCASE-2026-001をrefinesする。七つの独立した判断例、五Retest、五つの未配達Handoffを持つ。親14は方法参照だけで、新OAuth教材のEvidenceへ付け替えない。親RoEのDraft/失効/元Window/三Objectfalseと独立CASE-2026-011を保持する。
