@@ -494,6 +494,49 @@ def run_regressions(data, schema, contract, source, projection):
             ),
         )
 
+    # Ready-review P1: a jointly rewritten Retest may agree internally but
+    # cannot close a Finding whose independently supplied requirement differs.
+    original = data["findings"][4]
+    matched = deepcopy(lookup[original["retestId"]])
+    matched["criteria"][0]["expected"] = original["validation"]["declaredPermission"]
+    matched["observations"][0]["value"] = matched["criteria"][0]["expected"]
+    check("CH15-R142-RETEST-joint-local-match", retest_result(matched) == "Passed")
+    check(
+        "CH15-R142-P1-RETEST-ORIGIN",
+        rejects(lambda: finding_status(original, matched, now)),
+    )
+    changed = deepcopy(matched)
+    changed["criteria"][0]["expected"] = "different-requirement"
+    changed["observations"][0]["value"] = "different-requirement"
+    check(
+        "CH15-R142-RETEST-arbitrary-joint-match",
+        rejects(lambda: finding_status(original, changed, now)),
+    )
+    changed = deepcopy(lookup[original["retestId"]])
+    changed["observations"][0]["value"] = original["validation"]["declaredPermission"]
+    check(
+        "CH15-R142-RETEST-observation-only-fails",
+        retest_result(changed) == "Failed"
+        and rejects(lambda: finding_status(original, changed, now)),
+    )
+    check(
+        "CH15-R142-RETEST-original-requirement-closes",
+        finding_status(original, lookup[original["retestId"]], now) == "Closed",
+    )
+    for i, candidate in enumerate(data["findings"]):
+        if candidate["retestId"] is None:
+            continue
+        changed = deepcopy(lookup[candidate["retestId"]])
+        changed["criteria"][0]["expected"] = "rewritten"
+        changed["observations"][0]["value"] = "rewritten"
+        if not changed["observations"][0]["present"]:
+            changed["observations"][0]["present"] = True
+            changed["observations"][0]["basis"] = "authored-supplied-value"
+        check(
+            f"CH15-R142-RETEST-every-finding-origin-{i}",
+            rejects(lambda: finding_status(candidate, changed, now)),
+        )
+
     # Exact typed field/cardinality/location provenance. No source syntax parsing.
     for di, doc in enumerate(projection.documents):
         spec = contract["documents"][doc.document_id]

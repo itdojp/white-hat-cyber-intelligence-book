@@ -345,6 +345,13 @@ def finding_status(finding, retest, as_of, delegations, temporary_reviews):
         ):
             raise ValueError("Finding/Retest direct reference")
         result = retest_result(retest)
+        if (
+            retest["criteria"][0]["expected"]
+            != finding["validation"]["requirementPermission"]
+        ):
+            raise ValueError(
+                "Retest primary criterion must retain original Finding requirement"
+            )
     elif finding["retestId"] is not None:
         raise ValueError("missing referenced Retest")
     stage = finding["requestedStage"]
