@@ -28,6 +28,8 @@ Mitigatedは供給された一時対策レビューEvidenceがある教材状態
 
 本章の六観点Rubricを使い、症状と根本条件、SeverityとPriority、対策と証拠、RetestとAcceptance、ClosedとResidualを区別する。権限不足の上書き、Scannerだけでの完了、Evidenceの対象付替え、期限切れAcceptanceからのClosedは差し戻す。
 
+受容はacceptanceのsubjectRevision欄と独立delegationsを照合し、権限のHolder・Scope・対象版・有効期間を自己申告欄だけから推定しない。temporaryReviewsはTemporary TreatmentとControlに直接結び、供給案の限定Scopeを担当者がレビューした記録を持つ。どちらも作成者が記述した教材であり、実権限や実効果の検証ではない。
+
 ## schemaVersion
 
 | Field | Value |
@@ -243,6 +245,7 @@ Mitigatedは供給された一時対策レビューEvidenceがある教材状態
 | acceptance/reassessmentId | null |
 | acceptance/conditions | null |
 | acceptance/overridesAssessmentAuthority | false |
+| acceptance/subjectRevision | null |
 | residualRisk/id | RES-FRT15-001 |
 | residualRisk/claim | 実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。 |
 | residualRisk/owner | SYNTH-RISK-OWNER |
@@ -358,6 +361,7 @@ Mitigatedは供給された一時対策レビューEvidenceがある教材状態
 | acceptance/reassessmentId | null |
 | acceptance/conditions | null |
 | acceptance/overridesAssessmentAuthority | false |
+| acceptance/subjectRevision | null |
 | residualRisk/id | RES-FRT15-002 |
 | residualRisk/claim | 実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。 |
 | residualRisk/owner | SYNTH-RISK-OWNER |
@@ -473,6 +477,7 @@ Mitigatedは供給された一時対策レビューEvidenceがある教材状態
 | acceptance/reassessmentId | REA-FRT15-003 |
 | acceptance/conditions | 対象版・Scope・Evidence・担当が変われば受容判断を再開する。 |
 | acceptance/overridesAssessmentAuthority | false |
+| acceptance/subjectRevision | BEFORE-FRT15-003 |
 | residualRisk/id | RES-FRT15-003 |
 | residualRisk/claim | 実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。 |
 | residualRisk/owner | SYNTH-RISK-OWNER |
@@ -588,6 +593,7 @@ Mitigatedは供給された一時対策レビューEvidenceがある教材状態
 | acceptance/reassessmentId | null |
 | acceptance/conditions | null |
 | acceptance/overridesAssessmentAuthority | false |
+| acceptance/subjectRevision | null |
 | residualRisk/id | RES-FRT15-004 |
 | residualRisk/claim | 実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。 |
 | residualRisk/owner | SYNTH-RISK-OWNER |
@@ -703,6 +709,7 @@ Mitigatedは供給された一時対策レビューEvidenceがある教材状態
 | acceptance/reassessmentId | null |
 | acceptance/conditions | null |
 | acceptance/overridesAssessmentAuthority | false |
+| acceptance/subjectRevision | null |
 | residualRisk/id | RES-FRT15-005 |
 | residualRisk/claim | 実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。 |
 | residualRisk/owner | SYNTH-RISK-OWNER |
@@ -818,6 +825,7 @@ Mitigatedは供給された一時対策レビューEvidenceがある教材状態
 | acceptance/reassessmentId | REA-FRT15-006 |
 | acceptance/conditions | 対象版・Scope・Evidence・担当が変われば受容判断を再開する。 |
 | acceptance/overridesAssessmentAuthority | false |
+| acceptance/subjectRevision | BEFORE-FRT15-006 |
 | residualRisk/id | RES-FRT15-006 |
 | residualRisk/claim | 実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。 |
 | residualRisk/owner | SYNTH-RISK-OWNER |
@@ -933,6 +941,7 @@ Mitigatedは供給された一時対策レビューEvidenceがある教材状態
 | acceptance/reassessmentId | REA-FRT15-007 |
 | acceptance/conditions | 対象版・Scope・Evidence・担当が変われば受容判断を再開する。 |
 | acceptance/overridesAssessmentAuthority | false |
+| acceptance/subjectRevision | BEFORE-FRT15-007 |
 | residualRisk/id | RES-FRT15-007 |
 | residualRisk/claim | 実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。 |
 | residualRisk/owner | SYNTH-RISK-OWNER |
@@ -1271,3 +1280,86 @@ Mitigatedは供給された一時対策レビューEvidenceがある教材状態
 | purpose | 残存Riskと判断Owner、次の再評価条件。 |
 | status | planned-not-delivered |
 | executionAuthorized | false |
+
+## delegations DELEGATION-FRT15-003
+
+| Field | Value |
+|---|---|
+| id | DELEGATION-FRT15-003 |
+| findingId | FND-FRT15-003 |
+| scenarioId | SCN-FRT15-003 |
+| subjectId | APP-FRT15-001 |
+| subjectRevision | BEFORE-FRT15-003 |
+| scope | current-supplied-scenario-only |
+| holder | SYNTH-RISK-OWNER |
+| role | Synthetic business risk owner |
+| authorityKind | Risk acceptance only |
+| basis | authored-business-risk-delegation |
+| validFrom | 2026-09-13T00:00:00Z |
+| validUntil | 2026-09-30T00:00:00Z |
+| assessmentAuthorizationGranted | false |
+| realDelegationIssued | false |
+| limitation | 作成者が別欄に記述した教材上の業務受容権限。実権限の発行や実在性の証明ではない。 |
+
+## delegations DELEGATION-FRT15-006
+
+| Field | Value |
+|---|---|
+| id | DELEGATION-FRT15-006 |
+| findingId | FND-FRT15-006 |
+| scenarioId | SCN-FRT15-006 |
+| subjectId | APP-FRT15-001 |
+| subjectRevision | BEFORE-FRT15-006 |
+| scope | current-supplied-scenario-only |
+| holder | SYNTH-RISK-OWNER |
+| role | Synthetic business risk owner |
+| authorityKind | Risk acceptance only |
+| basis | authored-business-risk-delegation |
+| validFrom | 2026-09-13T00:00:00Z |
+| validUntil | 2026-09-30T00:00:00Z |
+| assessmentAuthorizationGranted | false |
+| realDelegationIssued | false |
+| limitation | 作成者が別欄に記述した教材上の業務受容権限。実権限の発行や実在性の証明ではない。 |
+
+## delegations DELEGATION-FRT15-007
+
+| Field | Value |
+|---|---|
+| id | DELEGATION-FRT15-007 |
+| findingId | FND-FRT15-007 |
+| scenarioId | SCN-FRT15-007 |
+| subjectId | APP-FRT15-001 |
+| subjectRevision | BEFORE-FRT15-007 |
+| scope | current-supplied-scenario-only |
+| holder | SYNTH-RISK-OWNER |
+| role | Synthetic business risk owner |
+| authorityKind | Risk acceptance only |
+| basis | authored-business-risk-delegation |
+| validFrom | 2026-09-13T00:00:00Z |
+| validUntil | 2026-09-30T00:00:00Z |
+| assessmentAuthorizationGranted | false |
+| realDelegationIssued | false |
+| limitation | 作成者が別欄に記述した教材上の業務受容権限。実権限の発行や実在性の証明ではない。 |
+
+## temporaryReviews TMP-EVD-FRT15-002
+
+| Field | Value |
+|---|---|
+| id | TMP-EVD-FRT15-002 |
+| findingId | FND-FRT15-002 |
+| scenarioId | SCN-FRT15-002 |
+| subjectId | APP-FRT15-001 |
+| subjectRevision | BEFORE-FRT15-002 |
+| treatmentId | TMP-FRT15-002 |
+| controlId | CTRL-TMP-FRT15-002 |
+| scope | current-supplied-scenario-only |
+| reviewer | SYNTH-TEMPORARY-REVIEWER |
+| recordedAt | 2026-09-16T22:00:00Z |
+| basis | authored-temporary-plan-review |
+| question | Temporary案の利用Scopeは供給要件に対応した限定範囲として記載されているか。 |
+| requiredPlanScope | current-authored-summary-only |
+| reviewedPlanScope | current-authored-summary-only |
+| conclusion | Limited plan scope reviewed |
+| limitation | Temporary案の供給記述だけを照合した。実適用・実緩和効果は未確認である。 |
+| actualOperations | 0 |
+| realMitigationEffectMeasured | false |

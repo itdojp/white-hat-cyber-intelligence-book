@@ -72,7 +72,9 @@ Root condition ID、主張、Evidence、代替説明、未確認範囲を記載�
 
 - Residual risk ID / 未確認条件 / Owner:
 - Decision ID / Finding ID / Action / 判断理由:
-- Acceptance ID / Authority reference / Holder / Decision owner / Scope:
+- Acceptance ID / Subject revision / Authority reference / Holder / Decision owner / Scope:
+- Separate Delegation ID / Subject revision / Scenario / Scope / Holder / Authority kind / Valid from-until:
+- Temporary review ID / Treatment ID / Control ID / Subject revision / Reviewer / Time / Expected and reviewed plan scope / Limitation:
 - Decision time / Expiry / Conditions:
 - Reassessment ID / Owner / Due date / Reopen trigger:
 - Disclosure classification / Audience / Coordination status:

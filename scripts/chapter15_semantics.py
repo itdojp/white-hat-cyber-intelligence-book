@@ -226,8 +226,19 @@ def retest_result(record):
     return "Passed" if outcomes[1] else "Partial"
 
 
-def acceptance_valid(finding, as_of):
-    """Finite supplied delegation scope and expiry, not real authority issuance."""
+def resolve_one(records, identity, label):
+    """Resolve one independently supplied record; bare/duplicate IDs fail closed."""
+    matches = [record for record in records if record["id"] == identity]
+    if type(identity) is not str or not identity or len(matches) != 1:
+        raise ValueError(label + " needs exactly one supplied record")
+    return matches[0]
+
+
+def acceptance_valid(finding, as_of, delegations):
+    """Bound acceptance to the revision and separate supplied delegation.
+
+    This resolves authored business-risk records, not real authority issuance.
+    """
     a = finding["acceptance"]
     if type(a["present"]) is not bool:
         raise ValueError("typed acceptance presence")
@@ -243,22 +254,85 @@ def acceptance_valid(finding, as_of):
     if (
         a["findingId"] != finding["id"]
         or a["subjectId"] != finding["subjectId"]
+        or a["subjectRevision"] != finding["subjectRevision"]
         or a["scope"] != "current-supplied-scenario-only"
         or a["authorityHolder"] != a["decisionOwner"]
         or a["basis"] != "authored-delegation-not-assessment-permission"
         or a["residualRiskId"] != finding["residualRisk"]["id"]
         or a["reassessmentId"] != finding["reassessment"]["id"]
     ):
-        raise ValueError("acceptance holder/scope/traceability")
+        raise ValueError("acceptance revision/holder/scope/traceability")
+    grant = resolve_one(delegations, a["authorityReference"], "acceptance delegation")
+    if (
+        any(
+            grant[k] != finding[k]
+            for k in ("scenarioId", "subjectId", "subjectRevision")
+        )
+        or grant["findingId"] != finding["id"]
+        or grant["scope"] != a["scope"]
+        or grant["holder"] != a["authorityHolder"]
+        or grant["role"] != "Synthetic business risk owner"
+        or grant["authorityKind"] != "Risk acceptance only"
+        or grant["basis"] != "authored-business-risk-delegation"
+        or grant["assessmentAuthorizationGranted"] is not False
+        or grant["realDelegationIssued"] is not False
+        or type(grant["limitation"]) is not str
+        or not grant["limitation"].strip()
+    ):
+        raise ValueError("separate delegation holder/subject/revision/scope/authority")
     decided, expiry, now = utc(a["decidedAt"]), utc(a["expiresAt"]), utc(as_of)
-    if decided >= expiry or decided > now:
-        raise ValueError("acceptance chronology")
-    return now < expiry
+    starts, ends = utc(grant["validFrom"]), utc(grant["validUntil"])
+    if (
+        decided >= expiry
+        or decided > now
+        or starts >= ends
+        or not starts <= decided < ends
+        or expiry > ends
+    ):
+        raise ValueError("acceptance/delegation chronology and validity ceiling")
+    return now < expiry and starts <= now < ends
 
 
-def finding_status(finding, retest, as_of):
+def temporary_review_valid(finding, as_of, reviews):
+    """Resolve a scoped review of the Temporary plan, not mitigation execution."""
+    review = resolve_one(
+        reviews, finding["temporaryReviewEvidenceId"], "Temporary review"
+    )
+    treatment = resolve_one(
+        finding["treatments"], review["treatmentId"], "Temporary treatment"
+    )
+    if (
+        review["findingId"] != finding["id"]
+        or any(
+            review[k] != finding[k]
+            for k in ("scenarioId", "subjectId", "subjectRevision")
+        )
+        or treatment["kind"] != "Temporary"
+        or treatment["implemented"] is not False
+        or review["controlId"] != treatment["controlId"]
+        or review["scope"] != "current-supplied-scenario-only"
+        or review["basis"] != "authored-temporary-plan-review"
+        or review["requiredPlanScope"] != "current-authored-summary-only"
+        or review["reviewedPlanScope"] != review["requiredPlanScope"]
+        or review["conclusion"] != "Limited plan scope reviewed"
+        or type(review["actualOperations"]) is not int
+        or review["actualOperations"] != 0
+        or review["realMitigationEffectMeasured"] is not False
+    ):
+        raise ValueError("Temporary review treatment/subject/revision/basis/boundary")
+    if any(
+        type(review[k]) is not str or not review[k].strip()
+        for k in ("reviewer", "question", "limitation")
+    ):
+        raise ValueError("Temporary review content/reviewer/limitation")
+    if utc(review["recordedAt"]) > utc(as_of):
+        raise ValueError("Temporary review cannot postdate decision snapshot")
+    return True
+
+
+def finding_status(finding, retest, as_of, delegations, temporary_reviews):
     """Guard an authored workflow decision; severity is never the decision maker."""
-    valid = acceptance_valid(finding, as_of)
+    valid = acceptance_valid(finding, as_of, delegations)
     result = None
     if retest is not None:
         if (
@@ -289,10 +363,7 @@ def finding_status(finding, retest, as_of):
     if stage == "Report":
         return "Open"
     if stage == "Mitigate":
-        if not finding["temporaryReviewEvidenceId"]:
-            raise ValueError(
-                "Mitigated needs bounded supplied temporary review evidence"
-            )
+        temporary_review_valid(finding, as_of, temporary_reviews)
         return "Mitigated"
     if stage == "Retest":
         return "Retest required"
@@ -349,6 +420,15 @@ def validate_model(data, schema, contract):
     need(
         [r["id"] for r in retests] == [f"RT-FRT15-{i:03}" for i in (1, 2, 4, 5, 6)],
         "five ordered distinct Retests",
+    )
+    need(
+        [g["id"] for g in data["delegations"]]
+        == [f"DELEGATION-FRT15-{i:03}" for i in (3, 6, 7)],
+        "three independent supplied delegation records",
+    )
+    need(
+        [r["id"] for r in data["temporaryReviews"]] == ["TMP-EVD-FRT15-002"],
+        "one structured Temporary review record",
     )
     if errors:
         return errors
@@ -423,7 +503,10 @@ def validate_model(data, schema, contract):
             for t in f["treatments"]:
                 need(utc(as_of) < utc(t["dueAt"]), "Treatment due date")
             need(
-                f["status"] == finding_status(f, r, as_of),
+                f["status"]
+                == finding_status(
+                    f, r, as_of, data["delegations"], data["temporaryReviews"]
+                ),
                 "recomputed Finding status " + f["id"],
             )
             if r:

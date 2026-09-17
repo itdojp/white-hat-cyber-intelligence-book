@@ -27,3 +27,7 @@ Digest-pinned parents retain Chapter8's eight states including Running; Chapter9
 Prior Source notes remain intact with a dated scoped suffix. CVSS chapter15 mapping is added; registry-wide baseline is not refreshed. Prior preflight lists are mechanically extended, not their semantics. Formatter and dependency pins remain fixed.
 
 Run `python3 scripts/check_chapter15_contract.py` with `PYTHONHASHSEED=0,1,7,42`, then the shared pinned-renderer corpus, full root/pinned QA, actual prepublication negative tests, determinism/canonical drift, links/assets, desktop/mobile and independent PR review. Unit success does not replace those gates or establish real remediation, safety, authorization or disclosure permission.
+
+## PR142 independent-review regressions
+
+`CH15-R142-P1-REVISION` binds acceptance.subjectRevision directly to Finding and Delegation. `CH15-R142-P1-DELEGATION` resolves exactly one separate supplied delegation, verifies finding/scenario/subject/revision/scope/holder/business-risk role and validFrom/validUntil, and rejects an acceptance extending beyond that authority. `CH15-R142-P1-TEMPORARY` resolves a structured Temporary review and its Treatment/Control, identity/revision, reviewer/time/question/plan-scope comparison/basis/limitation. Missing, duplicate, foreign, changed-version, expired and authority-override cases fail. Records remain authored, not actual delegation issuance or mitigation measurement. Full fixture freeze is not used as a substitute for these direct relational kernel tests.

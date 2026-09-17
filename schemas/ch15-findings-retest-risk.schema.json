@@ -13,7 +13,9 @@
     "safety",
     "findings",
     "retests",
-    "handoffs"
+    "handoffs",
+    "delegations",
+    "temporaryReviews"
   ],
   "properties": {
     "schemaVersion": {
@@ -886,7 +888,8 @@
               "residualRiskId",
               "reassessmentId",
               "conditions",
-              "overridesAssessmentAuthority"
+              "overridesAssessmentAuthority",
+              "subjectRevision"
             ],
             "properties": {
               "present": {
@@ -1000,6 +1003,13 @@
                 "enum": [
                   false
                 ]
+              },
+              "subjectRevision": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "minLength": 1
               }
             }
           },
@@ -1483,6 +1493,219 @@
       },
       "minItems": 5,
       "maxItems": 5,
+      "uniqueItems": true
+    },
+    "delegations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "findingId",
+          "scenarioId",
+          "subjectId",
+          "subjectRevision",
+          "scope",
+          "holder",
+          "role",
+          "authorityKind",
+          "basis",
+          "validFrom",
+          "validUntil",
+          "assessmentAuthorizationGranted",
+          "realDelegationIssued",
+          "limitation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "findingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scenarioId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "current-supplied-scenario-only"
+            ]
+          },
+          "holder": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authorityKind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "basis": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "authored-business-risk-delegation"
+            ]
+          },
+          "validFrom": {
+            "type": "string",
+            "minLength": 1
+          },
+          "validUntil": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assessmentAuthorizationGranted": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "realDelegationIssued": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true
+    },
+    "temporaryReviews": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "findingId",
+          "scenarioId",
+          "subjectId",
+          "subjectRevision",
+          "treatmentId",
+          "controlId",
+          "scope",
+          "reviewer",
+          "recordedAt",
+          "basis",
+          "question",
+          "requiredPlanScope",
+          "reviewedPlanScope",
+          "conclusion",
+          "limitation",
+          "actualOperations",
+          "realMitigationEffectMeasured"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "findingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scenarioId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "treatmentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "controlId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "current-supplied-scenario-only"
+            ]
+          },
+          "reviewer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recordedAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "basis": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "authored-temporary-plan-review"
+            ]
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requiredPlanScope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewedPlanScope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "conclusion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "actualOperations": {
+            "type": "integer",
+            "enum": [
+              0
+            ]
+          },
+          "realMitigationEffectMeasured": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 1,
       "uniqueItems": true
     }
   }

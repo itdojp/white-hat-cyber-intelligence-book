@@ -94,7 +94,7 @@ Retest記録には限界とRegression scopeも必要である。二つの供給�
 
 ## 六つのFinding状態とClosedの根拠
 
-T-15-04は、供給された判断記録の状態を表す。状態だけで実環境の改善を証明しない。特にMitigatedの教材例は、一時的なScope制限案のレビュー記録を持つという設定であり、実装済みフラグはfalseのままである。
+T-15-04は、供給された判断記録の状態を表す。状態だけで実環境の改善を証明しない。特にMitigatedの教材例は、一時的なScope制限案のレビュー記録を持つという設定であり、実装済みフラグはfalseのままである。Temporaryレビューは独立したtemporaryReviewsの一件であり、Finding・Scenario・対象版・Temporary Treatment・Controlへ直接結ぶ。レビュー担当、時刻、問い、期待した計画Scopeと供給記述、結論、制限を記録する。裸のEvidence IDだけではMitigatedへ進めない。
 
 | Status | 記録上の意味 | 必要な根拠 |
 |---|---|---|
@@ -109,7 +109,7 @@ Closedの経路は二つを区別する。Retestで閉じた場合は確認し�
 
 ## 残存Risk、受容権限、期限と開示を接続する
 
-受容記録にはFinding・対象・Scope、権限の参照、権限保有者と判断者、決定日時、失効日時、条件、Residual risk ID、Reassessment IDが必要である。誰かが「承知した」と書いただけでは代替にならない。期限切れや対象版の変更があれば、有効性を再確認する。
+受容記録にはFinding・対象・Scope、権限の参照、権限保有者と判断者、決定日時、失効日時、条件、Residual risk ID、Reassessment IDが必要である。誰かが「承知した」と書いただけでは代替にならない。期限切れや対象版の変更があれば、有効性を再確認する。供給JSONではacceptanceのsubjectRevision欄をFindingの対象版へ直接結び、独立したdelegationsからauthorityReferenceを一件だけ解決する。Delegationの対象・版・Scenario・Scope・Holder・業務受容権限・有効期間を照合し、受容期限はその期間を超えない。実権限の発行ではない。
 
 本教材のDELEGATION-FRT15-*は架空の業務判断記録であり、評価作業のAuthorizationではない。AcceptedでもClosedでも、親RoE Draft、元Window、失効したAUTH、三Object、executionAuthorized=falseを維持する。Risk acceptanceでAuthority不足や法的禁止を上書きしない。
 

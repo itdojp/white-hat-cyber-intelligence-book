@@ -19,8 +19,8 @@ from scripts.chapter15_semantics import (
     leaves,
     validate_model,
     retest_result,
-    acceptance_valid,
-    finding_status,
+    acceptance_valid as _acceptance_valid,
+    finding_status as _finding_status,
 )
 from scripts.check_chapter15_contract import (
     ROOT,
@@ -44,6 +44,14 @@ def run_regressions(data, schema, contract, source, projection):
         ids.append(label)
         if not ok:
             errors.append("regression failed: " + label)
+
+    def acceptance_valid(finding, as_of):
+        return _acceptance_valid(finding, as_of, data["delegations"])
+
+    def finding_status(finding, retest, as_of):
+        return _finding_status(
+            finding, retest, as_of, data["delegations"], data["temporaryReviews"]
+        )
 
     def validate(d):
         return validate_model(d, schema, contract)
@@ -138,14 +146,17 @@ def run_regressions(data, schema, contract, source, projection):
                 "CH15-SCHEMA-set-" + field + "-" + mutation,
                 rejects(lambda: validate_schema_instance(d, schema)),
             )
-    for field in ("findings", "retests", "handoffs"):
+    for field in ("findings", "retests", "handoffs", "delegations", "temporaryReviews"):
         for mutation in ("extra", "duplicate", "missing"):
             d = deepcopy(data)
             a = d[field]
             if mutation == "extra":
                 a.append(deepcopy(a[0]))
             elif mutation == "duplicate":
-                a[-1] = deepcopy(a[0])
+                if len(a) == 1:
+                    a.append(deepcopy(a[0]))
+                else:
+                    a[-1] = deepcopy(a[0])
             else:
                 a.pop()
             check(
@@ -341,6 +352,147 @@ def run_regressions(data, schema, contract, source, projection):
         "CH15-DECISION-reopen-reason",
         rejects(lambda: finding_status(m, lookup[m["retestId"]], now)),
     )
+
+    # Three independent-review P1 counterexamples, evaluated without fixture
+    # freeze: resolve actual supplied owners, not just syntactically valid IDs.
+    accepted = deepcopy(data["findings"][2])
+    revised = deepcopy(accepted)
+    revised["subjectRevision"] = "UNACCEPTED-REVISION"
+    check(
+        "CH15-R142-P1-REVISION",
+        rejects(lambda: _acceptance_valid(revised, now, data["delegations"])),
+    )
+    revised = deepcopy(accepted)
+    revised["acceptance"]["subjectRevision"] = "OTHER"
+    check(
+        "CH15-R142-P1-REVISION-acceptance",
+        rejects(lambda: _acceptance_valid(revised, now, data["delegations"])),
+    )
+    grants = deepcopy(data["delegations"])
+    grants[0]["subjectRevision"] = "OTHER"
+    check(
+        "CH15-R142-P1-REVISION-delegation",
+        rejects(lambda: _acceptance_valid(accepted, now, grants)),
+    )
+    undeclared = deepcopy(accepted)
+    undeclared["acceptance"]["authorityReference"] = "UNDEFINED-DELEGATION"
+    check(
+        "CH15-R142-P1-DELEGATION",
+        rejects(lambda: _acceptance_valid(undeclared, now, data["delegations"])),
+    )
+    for name, grants in [
+        ("missing", []),
+        ("duplicate", data["delegations"] + [deepcopy(data["delegations"][0])]),
+        ("foreign", data["delegations"][1:]),
+    ]:
+        check(
+            "CH15-R142-DELEGATION-" + name,
+            rejects(lambda: _acceptance_valid(accepted, now, grants)),
+        )
+    for field, value in [
+        ("findingId", "other"),
+        ("scenarioId", "other"),
+        ("subjectId", "other"),
+        ("subjectRevision", "other"),
+        ("scope", "other"),
+        ("holder", "other"),
+        ("role", "Assessment operator"),
+        ("authorityKind", "Assessment execution"),
+        ("basis", "real-approval"),
+        ("assessmentAuthorizationGranted", True),
+        ("realDelegationIssued", True),
+        ("limitation", ""),
+        ("validFrom", "2026-09-14T00:00:01Z"),
+        ("validUntil", "2026-09-29T23:59:59Z"),
+        ("validUntil", "2026-09-13T00:00:00Z"),
+    ]:
+        grants = deepcopy(data["delegations"])
+        grants[0][field] = value
+        check(
+            "CH15-R142-DELEGATION-field-" + field + "-" + str(value),
+            rejects(lambda: _acceptance_valid(accepted, now, grants)),
+        )
+    # Authority-end equality closes validity; acceptance may not outlive grant.
+    check(
+        "CH15-R142-DELEGATION-end-exclusive",
+        not _acceptance_valid(accepted, "2026-09-30T00:00:00Z", data["delegations"]),
+    )
+    changed = deepcopy(accepted)
+    changed["acceptance"]["authorityHolder"] = changed["acceptance"][
+        "decisionOwner"
+    ] = "SELF-DECLARED"
+    check(
+        "CH15-R142-DELEGATION-joint-self-claim",
+        rejects(lambda: _acceptance_valid(changed, now, data["delegations"])),
+    )
+    mitigated = deepcopy(data["findings"][1])
+    rt = lookup[mitigated["retestId"]]
+    undeclared = deepcopy(mitigated)
+    undeclared["temporaryReviewEvidenceId"] = "UNDEFINED-TEMP-REVIEW"
+    check(
+        "CH15-R142-P1-TEMPORARY",
+        rejects(
+            lambda: _finding_status(
+                undeclared, rt, now, data["delegations"], data["temporaryReviews"]
+            )
+        ),
+    )
+    for name, reviews in [("missing", []), ("duplicate", data["temporaryReviews"] * 2)]:
+        check(
+            "CH15-R142-TEMPORARY-" + name,
+            rejects(
+                lambda: _finding_status(
+                    mitigated, rt, now, data["delegations"], reviews
+                )
+            ),
+        )
+    for field, value in [
+        ("findingId", "other"),
+        ("scenarioId", "other"),
+        ("subjectId", "other"),
+        ("subjectRevision", "other"),
+        ("treatmentId", mitigated["treatments"][1]["id"]),
+        ("treatmentId", "missing"),
+        ("controlId", "other"),
+        ("scope", "other"),
+        ("basis", "measured"),
+        ("requiredPlanScope", "other"),
+        ("reviewedPlanScope", "other"),
+        ("conclusion", "Mitigation applied"),
+        ("reviewer", ""),
+        ("question", ""),
+        ("limitation", ""),
+        ("recordedAt", "2026-09-16T23:00:01Z"),
+        ("actualOperations", True),
+        ("actualOperations", 1),
+        ("realMitigationEffectMeasured", True),
+    ]:
+        reviews = deepcopy(data["temporaryReviews"])
+        reviews[0][field] = value
+        check(
+            "CH15-R142-TEMPORARY-field-" + field + "-" + str(value),
+            rejects(
+                lambda: _finding_status(
+                    mitigated, rt, now, data["delegations"], reviews
+                )
+            ),
+        )
+    for name, change in [
+        ("duplicate-treatment", deepcopy(mitigated)),
+        ("actual-implementation", deepcopy(mitigated)),
+    ]:
+        if name == "duplicate-treatment":
+            change["treatments"].append(deepcopy(change["treatments"][0]))
+        else:
+            change["treatments"][0]["implemented"] = True
+        check(
+            "CH15-R142-TEMPORARY-" + name,
+            rejects(
+                lambda: _finding_status(
+                    change, rt, now, data["delegations"], data["temporaryReviews"]
+                )
+            ),
+        )
 
     # Exact typed field/cardinality/location provenance. No source syntax parsing.
     for di, doc in enumerate(projection.documents):

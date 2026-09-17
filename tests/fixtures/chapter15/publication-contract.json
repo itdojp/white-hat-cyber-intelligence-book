@@ -1,5 +1,5 @@
 {
-  "schemaSha256": "dca3ce75a01654a0875644e85bcd9da26762afb72f2d5afe2f9b2602ea22455a",
+  "schemaSha256": "be64872097d932b32ecd10c066ad30256122f2f92181ee0869bc442d3776e44d",
   "authoredInputs": {
     "schemaVersion": "1.0.0",
     "synthetic": true,
@@ -220,7 +220,8 @@
           "residualRiskId": null,
           "reassessmentId": null,
           "conditions": null,
-          "overridesAssessmentAuthority": false
+          "overridesAssessmentAuthority": false,
+          "subjectRevision": null
         },
         "residualRisk": {
           "id": "RES-FRT15-001",
@@ -359,7 +360,8 @@
           "residualRiskId": null,
           "reassessmentId": null,
           "conditions": null,
-          "overridesAssessmentAuthority": false
+          "overridesAssessmentAuthority": false,
+          "subjectRevision": null
         },
         "residualRisk": {
           "id": "RES-FRT15-002",
@@ -498,7 +500,8 @@
           "residualRiskId": "RES-FRT15-003",
           "reassessmentId": "REA-FRT15-003",
           "conditions": "対象版・Scope・Evidence・担当が変われば受容判断を再開する。",
-          "overridesAssessmentAuthority": false
+          "overridesAssessmentAuthority": false,
+          "subjectRevision": "BEFORE-FRT15-003"
         },
         "residualRisk": {
           "id": "RES-FRT15-003",
@@ -637,7 +640,8 @@
           "residualRiskId": null,
           "reassessmentId": null,
           "conditions": null,
-          "overridesAssessmentAuthority": false
+          "overridesAssessmentAuthority": false,
+          "subjectRevision": null
         },
         "residualRisk": {
           "id": "RES-FRT15-004",
@@ -776,7 +780,8 @@
           "residualRiskId": null,
           "reassessmentId": null,
           "conditions": null,
-          "overridesAssessmentAuthority": false
+          "overridesAssessmentAuthority": false,
+          "subjectRevision": null
         },
         "residualRisk": {
           "id": "RES-FRT15-005",
@@ -915,7 +920,8 @@
           "residualRiskId": "RES-FRT15-006",
           "reassessmentId": "REA-FRT15-006",
           "conditions": "対象版・Scope・Evidence・担当が変われば受容判断を再開する。",
-          "overridesAssessmentAuthority": false
+          "overridesAssessmentAuthority": false,
+          "subjectRevision": "BEFORE-FRT15-006"
         },
         "residualRisk": {
           "id": "RES-FRT15-006",
@@ -1054,7 +1060,8 @@
           "residualRiskId": "RES-FRT15-007",
           "reassessmentId": "REA-FRT15-007",
           "conditions": "対象版・Scope・Evidence・担当が変われば受容判断を再開する。",
-          "overridesAssessmentAuthority": false
+          "overridesAssessmentAuthority": false,
+          "subjectRevision": "BEFORE-FRT15-007"
         },
         "residualRisk": {
           "id": "RES-FRT15-007",
@@ -1441,6 +1448,81 @@
         "purpose": "残存Riskと判断Owner、次の再評価条件。",
         "status": "planned-not-delivered",
         "executionAuthorized": false
+      }
+    ],
+    "delegations": [
+      {
+        "id": "DELEGATION-FRT15-003",
+        "findingId": "FND-FRT15-003",
+        "scenarioId": "SCN-FRT15-003",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-003",
+        "scope": "current-supplied-scenario-only",
+        "holder": "SYNTH-RISK-OWNER",
+        "role": "Synthetic business risk owner",
+        "authorityKind": "Risk acceptance only",
+        "basis": "authored-business-risk-delegation",
+        "validFrom": "2026-09-13T00:00:00Z",
+        "validUntil": "2026-09-30T00:00:00Z",
+        "assessmentAuthorizationGranted": false,
+        "realDelegationIssued": false,
+        "limitation": "作成者が別欄に記述した教材上の業務受容権限。実権限の発行や実在性の証明ではない。"
+      },
+      {
+        "id": "DELEGATION-FRT15-006",
+        "findingId": "FND-FRT15-006",
+        "scenarioId": "SCN-FRT15-006",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-006",
+        "scope": "current-supplied-scenario-only",
+        "holder": "SYNTH-RISK-OWNER",
+        "role": "Synthetic business risk owner",
+        "authorityKind": "Risk acceptance only",
+        "basis": "authored-business-risk-delegation",
+        "validFrom": "2026-09-13T00:00:00Z",
+        "validUntil": "2026-09-30T00:00:00Z",
+        "assessmentAuthorizationGranted": false,
+        "realDelegationIssued": false,
+        "limitation": "作成者が別欄に記述した教材上の業務受容権限。実権限の発行や実在性の証明ではない。"
+      },
+      {
+        "id": "DELEGATION-FRT15-007",
+        "findingId": "FND-FRT15-007",
+        "scenarioId": "SCN-FRT15-007",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-007",
+        "scope": "current-supplied-scenario-only",
+        "holder": "SYNTH-RISK-OWNER",
+        "role": "Synthetic business risk owner",
+        "authorityKind": "Risk acceptance only",
+        "basis": "authored-business-risk-delegation",
+        "validFrom": "2026-09-13T00:00:00Z",
+        "validUntil": "2026-09-30T00:00:00Z",
+        "assessmentAuthorizationGranted": false,
+        "realDelegationIssued": false,
+        "limitation": "作成者が別欄に記述した教材上の業務受容権限。実権限の発行や実在性の証明ではない。"
+      }
+    ],
+    "temporaryReviews": [
+      {
+        "id": "TMP-EVD-FRT15-002",
+        "findingId": "FND-FRT15-002",
+        "scenarioId": "SCN-FRT15-002",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-002",
+        "treatmentId": "TMP-FRT15-002",
+        "controlId": "CTRL-TMP-FRT15-002",
+        "scope": "current-supplied-scenario-only",
+        "reviewer": "SYNTH-TEMPORARY-REVIEWER",
+        "recordedAt": "2026-09-16T22:00:00Z",
+        "basis": "authored-temporary-plan-review",
+        "question": "Temporary案の利用Scopeは供給要件に対応した限定範囲として記載されているか。",
+        "requiredPlanScope": "current-authored-summary-only",
+        "reviewedPlanScope": "current-authored-summary-only",
+        "conclusion": "Limited plan scope reviewed",
+        "limitation": "Temporary案の供給記述だけを照合した。実適用・実緩和効果は未確認である。",
+        "actualOperations": 0,
+        "realMitigationEffectMeasured": false
       }
     ]
   },
@@ -2015,7 +2097,7 @@
             "reader_visible_text",
             "p",
             null,
-            "六つのFinding状態とClosedの根拠 T-15-04は、供給された判断記録の状態を表す。状態だけで実環境の改善を証明しない。特にMitigatedの教材例は、一時的なScope制限案のレビュー記録を持つという設定であり、実装済みフラグはfalseのままである。"
+            "六つのFinding状態とClosedの根拠 T-15-04は、供給された判断記録の状態を表す。状態だけで実環境の改善を証明しない。特にMitigatedの教材例は、一時的なScope制限案のレビュー記録を持つという設定であり、実装済みフラグはfalseのままである。Temporaryレビューは独立したtemporaryReviewsの一件であり、Finding・Scenario・対象版・Temporary Treatment・Controlへ直接結ぶ。レビュー担当、時刻、問い、期待した計画Scopeと供給記述、結論、制限を記録する。裸のEvidence IDだけではMitigatedへ進めない。"
           ],
           "headings": [
             "第15章 Finding、改修、再評価、リスク受容",
@@ -2111,7 +2193,7 @@
             "reader_visible_text",
             "p",
             null,
-            "残存Risk、受容権限、期限と開示を接続する 受容記録にはFinding・対象・Scope、権限の参照、権限保有者と判断者、決定日時、失効日時、条件、Residual risk ID、Reassessment IDが必要である。誰かが「承知した」と書いただけでは代替にならない。期限切れや対象版の変更があれば、有効性を再確認する。"
+            "残存Risk、受容権限、期限と開示を接続する 受容記録にはFinding・対象・Scope、権限の参照、権限保有者と判断者、決定日時、失効日時、条件、Residual risk ID、Reassessment IDが必要である。誰かが「承知した」と書いただけでは代替にならない。期限切れや対象版の変更があれば、有効性を再確認する。供給JSONではacceptanceのsubjectRevision欄をFindingの対象版へ直接結び、独立したdelegationsからauthorityReferenceを一件だけ解決する。Delegationの対象・版・Scenario・Scope・Holder・業務受容権限・有効期間を照合し、受容期限はその期間を超えない。実権限の発行ではない。"
           ],
           "headings": [
             "第15章 Finding、改修、再評価、リスク受容",
@@ -3201,7 +3283,31 @@
             "reader_visible_text",
             "list_path",
             null,
-            "Residual risk and owner Acceptance ID / Authority reference / Holder / Decision owner / Scope:"
+            "Residual risk and owner Acceptance ID / Subject revision / Authority reference / Holder / Decision owner / Scope:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Residual risk and owner"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Residual risk and owner Separate Delegation ID / Subject revision / Scenario / Scope / Holder / Authority kind / Valid from-until:"
+          ],
+          "headings": [
+            "Finding Report",
+            "Residual risk and owner"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Residual risk and owner Temporary review ID / Treatment ID / Control ID / Subject revision / Reviewer / Time / Expected and reviewed plan scope / Limitation:"
           ],
           "headings": [
             "Finding Report",
@@ -3401,6 +3507,22 @@
         [
           2,
           "handoffs HOF-FRT15-26"
+        ],
+        [
+          2,
+          "delegations DELEGATION-FRT15-003"
+        ],
+        [
+          2,
+          "delegations DELEGATION-FRT15-006"
+        ],
+        [
+          2,
+          "delegations DELEGATION-FRT15-007"
+        ],
+        [
+          2,
+          "temporaryReviews TMP-EVD-FRT15-002"
         ]
       ],
       "required": [
@@ -3518,6 +3640,18 @@
             "p",
             null,
             "本章の六観点Rubricを使い、症状と根本条件、SeverityとPriority、対策と証拠、RetestとAcceptance、ClosedとResidualを区別する。権限不足の上書き、Scannerだけでの完了、Evidenceの対象付替え、期限切れAcceptanceからのClosedは差し戻す。"
+          ],
+          "headings": [
+            "第15章 完全合成記入例：Finding ReportとRetest Record",
+            "判断・停止・引継ぎ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "受容はacceptanceのsubjectRevision欄と独立delegationsを照合し、権限のHolder・Scope・対象版・有効期間を自己申告欄だけから推定しない。temporaryReviewsはTemporary TreatmentとControlに直接結び、供給案の限定Scopeを担当者がレビューした記録を持つ。どちらも作成者が記述した教材であり、実権限や実効果の検証ではない。"
           ],
           "headings": [
             "第15章 完全合成記入例：Finding ReportとRetest Record",
