@@ -6,6 +6,8 @@
 
 ### Added
 
+- [第II部の横断対応表](cases/part-ii-assessment-risk-map.md)と有限検査を追加。直接ID参照と別Case・別対象への方法参照を分け、親Draft・期限・未配達Handoffを保持する。第11章の独立Case、第15章の七つの独立判断例、既存章の正本を変更しない。
+
 - [第12章](manuscript/12-enterprise-identity.md)、ART-20 Identity Attack Path Review、四Principal・六Path stateの完全合成Graphと閉じたSchema・有限Layer A検査を追加。認証の強さ、権限関係、Evidence、評価実施の許可を分け、Federation非該当の比較ではIssuer / Audience / RPをnullで明示する。有限比較の成功を実認証・実行許可・親Gap解消の証拠にしない。
 
 - [第9章](manuscript/09-engagement-roe.md)、既存ART-02の完成、三Objectの完全合成RoE計画・閉じたSchema・有限Layer A検査を追加。期限経過した親Authorizationを更新せずDraft / Do not proceedとし、記録整合性と実行許可を分ける。NIST SP800-115を限定参照し、実使用する法令・IPA・WSTGのみ再監査。既存章のSource版・歴史的記録は保持する。
