@@ -61,3 +61,7 @@
 ## 第15章の教育用補足
 
 [Finding ReportとRetest Recordの完全合成記入例](ch15-findings-retest-risk-example.md) / ART-04 / ART-23 / FRT-2026-015はCASE-2026-001をrefinesする。七つの独立した判断例、五Retest、五つの未配達Handoffを持つ。親14は方法参照だけで、新OAuth教材のEvidenceへ付け替えない。親RoEのDraft/失効/元Window/三Objectfalseと独立CASE-2026-011を保持する。
+
+## 第II部の横断読解
+
+[AssessmentからRisk判断への対応表](part-ii-assessment-risk-map.md)で、第9〜15章の参照ID、独立Case、対象・版・Scope、未配達Handoffを区別して読む。新しい許可やEvidenceの継承を意味しない。

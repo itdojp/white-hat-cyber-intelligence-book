@@ -445,6 +445,13 @@
       "section": "additional",
       "order": 276,
       "title": "Retest Record"
+    },
+    {
+      "source": "cases/part-ii-assessment-risk-map.md",
+      "destination": "cases/part-ii-assessment-risk-map/index.md",
+      "section": "additional",
+      "order": 319,
+      "title": "第II部 横断読解：AssessmentからRisk判断へ"
     }
   ],
   "directoryRoutes": {
