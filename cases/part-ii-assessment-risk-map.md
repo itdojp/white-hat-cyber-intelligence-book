@@ -70,7 +70,7 @@ Retestの`findingId`、`subjectId`、`beforeRevision`と、FindingのID・対象
 
 ## HandoffのGapと受領条件
 
-既存のHandoffは`planned-not-delivered`である。次表の担当は、読者が不足条件を記録する際の**提案上の担当Role**であり、既存記録に新たな割当や受領を追記したものではない。受領条件も将来の確認項目であって、充足済みとは扱わない。
+CASE-2026-001をrefinesする第9・10・12〜15章の供給JSONにあるHandoffは`planned-not-delivered`である。次表の担当は、読者が不足条件を記録する際の**提案上の担当Role**であり、既存記録に新たな割当や受領を追記したものではない。受領条件も将来の確認項目であって、充足済みとは扱わない。
 
 | 接続 | Gap | 提案上の担当Role | 将来の受領条件 |
 |---|---|---|---|

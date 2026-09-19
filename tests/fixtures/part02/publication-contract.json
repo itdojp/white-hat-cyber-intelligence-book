@@ -409,7 +409,7 @@
       "p",
       null,
       null,
-      "HandoffのGapと受領条件 既存のHandoffはplanned-not-deliveredである。次表の担当は、読者が不足条件を記録する際の提案上の担当Roleであり、既存記録に新たな割当や受領を追記したものではない。受領条件も将来の確認項目であって、充足済みとは扱わない。"
+      "HandoffのGapと受領条件 CASE-2026-001をrefinesする第9・10・12〜15章の供給JSONにあるHandoffはplanned-not-deliveredである。次表の担当は、読者が不足条件を記録する際の提案上の担当Roleであり、既存記録に新たな割当や受領を追記したものではない。受領条件も将来の確認項目であって、充足済みとは扱わない。"
     ],
     [
       "reader_visible_text",
