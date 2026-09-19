@@ -2231,7 +2231,7 @@
       "ch14-minimal-impact-validation.schema.json"
     ],
     "CANONICAL_SOURCE.md": [
-      "第6章・第7章・第8章・第9章・第10章・第12章・第13章・第14章の公開前"
+      "第6章・第7章・第8章・第9章・第10章・第12章・第13章・第14章・第15章の公開前"
     ],
     "CHANGELOG.md": [
       "第14章の本文・ART-22・完全合成記入例",
@@ -2261,7 +2261,7 @@
       "version": "4.2; 5.0 under development",
       "url": "https://owasp.org/www-project-web-security-testing-guide/",
       "publishedAt": "2020-12-03",
-      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption. Chapter 14 scoped primary-text review (2026-09-16): versioned 4.2 Introduction only, What is Testing, How To Reference WSTG Scenarios/Linking, and The Need for a Balanced Approach. No individual technique or complete scenario corpus adopted; 5.0 development and 4.3 Unreleased are not the adopted version. Six Results/four Methods are book-owned; supplied response comparison is not real HTTP testing. Scope: references/ch14-source-review-2026-09-16.md. Existing chapter 15 mapping is retained, not freshly audited here."
+      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption. Chapter 14 scoped primary-text review (2026-09-16): versioned 4.2 Introduction only, What is Testing, How To Reference WSTG Scenarios/Linking, and The Need for a Balanced Approach. No individual technique or complete scenario corpus adopted; 5.0 development and 4.3 Unreleased are not the adopted version. Six Results/four Methods are book-owned; supplied response comparison is not real HTTP testing. Scope: references/ch14-source-review-2026-09-16.md. Existing chapter 15 mapping is retained, not freshly audited here. Chapter 15 scoped primary-text review (2026-09-17): v4.2 Reporting at fixed commit dd33419e10edb22b78d89325a6c2aad9f184e3a2, About this Section, 1.4 Scope, 1.5 Limitations, 2 Executive Summary and 3 Findings including prior-report/retest references and 3.2 fields. A proposed reporting format, not a mandatory standard. No individual exploitation steps, real sensitive-data acquisition, disclaimer reproduction or external bibliography adopted. Six Finding Statuses/five Retest Results are book-owned. Fixed blob and SHA256: references/ch15-source-review-2026-09-17.md."
     }
   },
   "pages": [

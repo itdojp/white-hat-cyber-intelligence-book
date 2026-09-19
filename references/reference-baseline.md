@@ -18,7 +18,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-IR-001 | NIST | [Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | SP 800-61 Rev.3 / final | 2026-08-03 | 2027-08-03 | 1, 17, 19, 20, 22 |
 | SRC-BERKELEY-001 | OHCHR / UC Berkeley | [Berkeley Protocol on Digital Open Source Investigations](https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source) | 2022 edition / published | 2026-09-14 | 2027-09-14 | 8, 10, 24, 25 |
 | SRC-OWASP-TOP10-001 | OWASP | [OWASP Top 10:2025](https://owasp.org/Top10/) | 2025 / released | 2026-09-12 | 2026-12-12 | 7, 11 |
-| SRC-WSTG-001 | OWASP | [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | 4.2; 5.0 under development / stable | 2026-09-16 | 2026-12-16 | 9, 10, 11, 14, 15 |
+| SRC-WSTG-001 | OWASP | [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | 4.2; 5.0 under development / stable | 2026-09-17 | 2026-12-17 | 9, 10, 11, 14, 15 |
 | SRC-API-001 | OWASP | [OWASP API Security Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/) | 2023 / released | 2026-08-03 | 2027-01-25 | 11 |
 | SRC-EPSS-001 | FIRST | [Exploit Prediction Scoring System](https://www.first.org/epss/) | v5 (model identifier v2026.06.15) / current | 2026-09-12 | 2026-12-12 | 7 |
 | SRC-KEV-001 | CISA | [Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | continuously-updated | 2026-09-12 | 2026-12-12 | 7, 22 |
@@ -32,7 +32,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-OWASP-AGENT-001 | OWASP GenAI Security Project | [Top 10 Risks and Mitigations for Agentic AI Security](https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/) | 2026 guidance / released | 2026-07-25 | 2026-10-25 | 27, 28 |
 | SRC-AISVS-001 | OWASP | [Artificial Intelligence Security Verification Standard](https://owasp.org/www-project-artificial-intelligence-security-verification-standard-aisvs-docs/) | 1.0 / live | 2026-07-25 | 2026-10-25 | 27 |
 | SRC-JP-LAW-001 | e-Gov | [不正アクセス行為の禁止等に関する法律](https://laws.e-gov.go.jp/law/411AC0000000128) | current display effective 2025-06-01 / current-law | 2026-09-13 | 2026-12-13 | 2, 9 |
-| SRC-IPA-VDP-001 | IPA / JPCERT/CC | [情報セキュリティ早期警戒パートナーシップガイドライン](https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html) | 2024 edition / current-guidance | 2026-09-13 | 2026-12-13 | 2, 9, 15 |
+| SRC-IPA-VDP-001 | IPA / JPCERT/CC | [情報セキュリティ早期警戒パートナーシップガイドライン](https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html) | 2024 edition / current-guidance | 2026-09-17 | 2026-12-17 | 2, 9, 15 |
 | SRC-IANA-TLD-001 | Internet Assigned Numbers Authority (IANA) | [Root Zone Database — TLDs alpha by domain](https://data.iana.org/TLD/tlds-alpha-by-domain.txt) | 2026080300 / current-snapshot | 2026-08-03 | 2026-11-03 | 25 |
 | SRC-ATTACK-FAQ-001 | MITRE | [MITRE ATT&CK Frequently Asked Questions](https://attack.mitre.org/resources/faq/) | current | 2026-09-06 | 2026-12-06 | 5 |
 | SRC-ATTACK-T1671-001 | MITRE | [ATT&CK v19.2 Enterprise STIX: T1671 and detection metadata subset](https://github.com/mitre/cti/blob/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json) | 19.2 / snapshot | 2026-09-06 | 2026-12-06 | 5 |
@@ -43,7 +43,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-IETF-OAUTH-CORE-001 | IETF / RFC Editor | [The OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749.html) | RFC 6749 / proposed-standard | 2026-09-12 | 2026-12-12 | 6 |
 | SRC-CVE-001 | NIST | [Common Vulnerabilities and Exposures glossary](https://csrc.nist.gov/glossary/term/common_vulnerabilities_and_exposures) | live-reference | 2026-09-12 | 2026-12-12 | 7 |
 | SRC-CWE-001 | MITRE | [Common Weakness Enumeration Archive](https://cwe.mitre.org/data/archive.html) | 4.20 / released | 2026-09-12 | 2026-12-12 | 7 |
-| SRC-CVSS-001 | FIRST | [CVSS v4.0 Specification and User Guide](https://www.first.org/cvss/v4.0/specification-document) | 4.0 / Specification 1.2 / User Guide 1.2 / released | 2026-09-12 | 2026-12-12 | 7 |
+| SRC-CVSS-001 | FIRST | [CVSS v4.0 Specification and User Guide](https://www.first.org/cvss/v4.0/specification-document) | 4.0 / Specification 1.2 / User Guide 1.2 / released | 2026-09-17 | 2026-12-17 | 7, 15 |
 | SRC-CISA-VRM-001 | CISA | [CISA Announces BOD 26-04: official issuance bulletin](https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a) | BOD 26-04 issuance announcement only / published | 2026-09-12 | 2026-12-12 | 7 |
 | SRC-NIST-DFIR-001 | NIST | [Guide to Integrating Forensic Techniques into Incident Response](https://csrc.nist.gov/pubs/sp/800/86/final) | SP 800-86, Final, August 2006 / final | 2026-09-13 | 2027-09-13 | 8 |
 | SRC-NIST-CONTAINER-001 | NIST | [Application Container Security Guide](https://csrc.nist.gov/pubs/sp/800/190/final) | SP 800-190, Final, September 2017 / final | 2026-09-15 | 2027-09-15 | 8, 13 |

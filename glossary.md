@@ -147,3 +147,15 @@
 | ART22 Complete | 読解記録の整理と確認が揃うこと。業務上の問題の解決とは別 |
 
 [第14章](manuscript/14-minimal-impact-validation.md)ではResult、実施有無、記録完了を分ける。
+
+## 第15章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Finding | 対象・条件・根拠・判断を追跡できる報告単位 |
+| Retest | 変更後の対象版で受入条件を再確認する記録。Scannerの要約だけでは完了しない |
+| Risk acceptance | 権限・Scope・期限・条件を持つ残存リスクの受容。評価の実行許可とは別 |
+| Compensating control | 残る条件を別の手段で扱う統制。恒久改修と同一視しない |
+| ART04 Closed | 十分なRetestまたは明示的な有効な受容を根拠にした記録の終了。修正済みやリスクゼロとは別 |
+
+[第15章](manuscript/15-findings-retest-risk.md)ではStatusとResult、SeverityとPriority、受容と実施許可を分ける。

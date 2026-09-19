@@ -102,3 +102,16 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 | T-14-03 | 四つの視点 | `manuscript/14-minimal-impact-validation.md` | Implemented |
 | T-14-04 | ART22 Rubric | `manuscript/14-minimal-impact-validation.md` | Implemented |
 | T-14-05 | ART22記入欄 | `templates/minimal-impact-validation-record.md` | Implemented |
+
+## 第15章の図表
+
+| ID | 内容 | 正本 | 状態 |
+|---|---|---|---|
+| F-15-01 | Findingから再評価まで | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-01 | 症状・根本条件・影響 | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-02 | 三種類の対策 | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-03 | 五Retest Result | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-04 | 六Finding Status | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-05 | 四つの視点 | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-06 | 六観点Rubric | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-07 | Retest Record記入欄 | `templates/retest-record.md` | Implemented |

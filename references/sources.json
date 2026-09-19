@@ -273,8 +273,8 @@
       "version": "4.2; 5.0 under development",
       "url": "https://owasp.org/www-project-web-security-testing-guide/",
       "publishedAt": "2020-12-03",
-      "checkedAt": "2026-09-16",
-      "nextReviewAt": "2026-12-16",
+      "checkedAt": "2026-09-17",
+      "nextReviewAt": "2026-12-17",
       "reviewTriggers": [
         "WSTG stable or 5.0 release"
       ],
@@ -285,7 +285,7 @@
         14,
         15
       ],
-      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption. Chapter 14 scoped primary-text review (2026-09-16): versioned 4.2 Introduction only, What is Testing, How To Reference WSTG Scenarios/Linking, and The Need for a Balanced Approach. No individual technique or complete scenario corpus adopted; 5.0 development and 4.3 Unreleased are not the adopted version. Six Results/four Methods are book-owned; supplied response comparison is not real HTTP testing. Scope: references/ch14-source-review-2026-09-16.md. Existing chapter 15 mapping is retained, not freshly audited here."
+      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption. Chapter 14 scoped primary-text review (2026-09-16): versioned 4.2 Introduction only, What is Testing, How To Reference WSTG Scenarios/Linking, and The Need for a Balanced Approach. No individual technique or complete scenario corpus adopted; 5.0 development and 4.3 Unreleased are not the adopted version. Six Results/four Methods are book-owned; supplied response comparison is not real HTTP testing. Scope: references/ch14-source-review-2026-09-16.md. Existing chapter 15 mapping is retained, not freshly audited here. Chapter 15 scoped primary-text review (2026-09-17): v4.2 Reporting at fixed commit dd33419e10edb22b78d89325a6c2aad9f184e3a2, About this Section, 1.4 Scope, 1.5 Limitations, 2 Executive Summary and 3 Findings including prior-report/retest references and 3.2 fields. A proposed reporting format, not a mandatory standard. No individual exploitation steps, real sensitive-data acquisition, disclaimer reproduction or external bibliography adopted. Six Finding Statuses/five Retest Results are book-owned. Fixed blob and SHA256: references/ch15-source-review-2026-09-17.md."
     },
     {
       "id": "SRC-API-001",
@@ -553,8 +553,8 @@
       "version": "2024 edition",
       "url": "https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html",
       "publishedAt": null,
-      "checkedAt": "2026-09-13",
-      "nextReviewAt": "2026-12-13",
+      "checkedAt": "2026-09-17",
+      "nextReviewAt": "2026-12-17",
       "reviewTriggers": [
         "guideline revision or disclosure chapter release"
       ],
@@ -563,7 +563,7 @@
         9,
         15
       ],
-      "notes": "The official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05, and the official page showed last update 2026-04-06. The current page and linked guideline must be rechecked at publication time. Chapter 9 scoped re-audit 2026-09-13: official page and 61-page PDF retain 2024 edition, page last update 2026-04-06; role, handling and coordination sections reviewed. PDF SHA256 98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458. Reporting/coordination guidance is not assessment or publication permission."
+      "notes": "The official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05, and the official page showed last update 2026-04-06. The current page and linked guideline must be rechecked at publication time. Chapter 9 scoped re-audit 2026-09-13: official page and 61-page PDF retain 2024 edition, page last update 2026-04-06; role, handling and coordination sections reviewed. PDF SHA256 98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458. Reporting/coordination guidance is not assessment or publication permission. Chapter 15 scoped primary-text review (2026-09-17): 2024 guideline sections I roles/framework and II definitions of information, countermeasures and response status only. Audience and coordination remain separate from Finding status. No actual notification, publication-date decision, legal finding or full appendix audit. Existing publishedAt=null and prior chapter notes retained; scope and retrieved PDF hash: references/ch15-source-review-2026-09-17.md."
     },
     {
       "id": "SRC-IANA-TLD-001",
@@ -768,16 +768,17 @@
       "version": "4.0 / Specification 1.2 / User Guide 1.2",
       "url": "https://www.first.org/cvss/v4.0/specification-document",
       "publishedAt": null,
-      "checkedAt": "2026-09-12",
-      "nextReviewAt": "2026-12-12",
+      "checkedAt": "2026-09-17",
+      "nextReviewAt": "2026-12-17",
       "reviewTriggers": [
         "Source version/status or adopted meaning changes",
         "Before operational use or legal interpretation"
       ],
       "chapters": [
-        7
+        7,
+        15
       ],
-      "notes": "Standard 4.0 and document versions 1.2 directly verified. Exact publication day for the current document revision is unknown and is not inferred from the standard launch date. Base/Threat/Environmental/Supplemental and nomenclature only. Finite author-synthetic vectors checked with FIRSTdotorg/cvss-v4-calculator commit c5b0d409ae9f57c44264c6ce5f27d89298e1d32a; not vendor/CVE scores or a runtime calculator."
+      "notes": "Standard 4.0 and document versions 1.2 directly verified. Exact publication day for the current document revision is unknown and is not inferred from the standard launch date. Base/Threat/Environmental/Supplemental and nomenclature only. Finite author-synthetic vectors checked with FIRSTdotorg/cvss-v4-calculator commit c5b0d409ae9f57c44264c6ce5f27d89298e1d32a; not vendor/CVE scores or a runtime calculator. Chapter 15 scoped primary-text review (2026-09-17): CVSS standard 4.0, Specification and User Guide document revision 1.2 verified. Specification introduction only for four metric groups, score/vector and additional organizational risk factors. User Guide revision verified, not a fresh complete scoring-rubric audit. Existing chapter 7 inputs preserved; no new OAuth score/vector or CVE rating transfer, no CWE adoption or calculator update. Scope: references/ch15-source-review-2026-09-17.md."
     },
     {
       "id": "SRC-CISA-VRM-001",

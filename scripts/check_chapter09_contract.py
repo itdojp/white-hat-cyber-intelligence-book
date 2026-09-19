@@ -52,6 +52,7 @@ PREFLIGHT = (
     "python3 scripts/check_chapter12_contract.py --no-regressions",
     "python3 scripts/check_chapter13_contract.py --no-regressions",
     "python3 scripts/check_chapter14_contract.py --no-regressions",
+    "python3 scripts/check_chapter15_contract.py --no-regressions",
     "python3 scripts/sync_book_site.py --output docs",
     "npm run copy:notices",
 )

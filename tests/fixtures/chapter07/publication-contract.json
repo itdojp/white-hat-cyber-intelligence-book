@@ -1815,7 +1815,7 @@
       "version": "4.0 / Specification 1.2 / User Guide 1.2",
       "url": "https://www.first.org/cvss/v4.0/specification-document",
       "publishedAt": null,
-      "notes": "Standard 4.0 and document versions 1.2 directly verified. Exact publication day for the current document revision is unknown and is not inferred from the standard launch date. Base/Threat/Environmental/Supplemental and nomenclature only. Finite author-synthetic vectors checked with FIRSTdotorg/cvss-v4-calculator commit c5b0d409ae9f57c44264c6ce5f27d89298e1d32a; not vendor/CVE scores or a runtime calculator."
+      "notes": "Standard 4.0 and document versions 1.2 directly verified. Exact publication day for the current document revision is unknown and is not inferred from the standard launch date. Base/Threat/Environmental/Supplemental and nomenclature only. Finite author-synthetic vectors checked with FIRSTdotorg/cvss-v4-calculator commit c5b0d409ae9f57c44264c6ce5f27d89298e1d32a; not vendor/CVE scores or a runtime calculator. Chapter 15 scoped primary-text review (2026-09-17): CVSS standard 4.0, Specification and User Guide document revision 1.2 verified. Specification introduction only for four metric groups, score/vector and additional organizational risk factors. User Guide revision verified, not a fresh complete scoring-rubric audit. Existing chapter 7 inputs preserved; no new OAuth score/vector or CVE rating transfer, no CWE adoption or calculator update. Scope: references/ch15-source-review-2026-09-17.md."
     },
     "SRC-CISA-VRM-001": {
       "id": "SRC-CISA-VRM-001",
