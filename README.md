@@ -120,3 +120,11 @@ CIでは`Book Contract`と`Book QA`を実行し、`main`では同じ生成契約
 `npm run check:chapter15`はART-04/ART-23の七Findingと五Retestを検査する。Layer Aは有限選択、対象版と参照、二条件比較、六Status/五Result、受容の権限・期限・残存・再評価、親境界、五文書とCase全Field対応を所有する。Markdown/HTML/URLは共有Projection1.1.0、安全文法は共有Policy1.2.0だけを使う。
 
 実変更、Scanner、業務承認、公開通知を実装しない。既存ART04見出しとrouteを保持する。`sync:docs`は本検査成功後だけ生成する。有限Corpusと非目標は`tests/fixtures/chapter15/README.md`を参照する。
+
+## 第II部の横断整合
+
+[読者向け対応表](cases/part-ii-assessment-risk-map.md)と[編集上の裁定根拠](PART_II_RECONCILIATION.md)を参照してください。Ruby/Bundlerを含む上記依存の導入後、供給JSONの参照と新ページの公開面をオフライン検査できます。実操作・通信・正本変更は行いません。不整合で失敗したら公開せず、元の章契約と対象版を確認してください。Runtimeを起動しないため破棄作業は不要です。
+
+```bash
+npm run check:part02
+```
