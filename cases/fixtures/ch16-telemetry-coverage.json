@@ -1,0 +1,1630 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "executionAuthorized": false,
+  "readOnly": true,
+  "networkRequired": false,
+  "record": {
+    "id": "TCM-2026-016",
+    "artifactId": "ART-24",
+    "revision": "TCM16-REV-001",
+    "subjectId": "APP-TCM16-001",
+    "caseId": "CASE-DET-2026-001",
+    "relatedCaseId": "CASE-2026-001",
+    "relation": "refines",
+    "asOf": "2026-09-21T00:00:00Z",
+    "meaning": "independent-authored-contrasts-not-live-pipeline",
+    "actualCollections": 0,
+    "actualDeployments": 0,
+    "sourceIds": [
+      "SRC-ATTACK-001",
+      "SRC-ATTACK-DET-001",
+      "SRC-NIST-LOG-001",
+      "SRC-NIST-LOG-DRAFT-001",
+      "SRC-IR-001"
+    ],
+    "coverageStates": [
+      "Required",
+      "Produced",
+      "Collected",
+      "Retained",
+      "Queryable",
+      "Validated",
+      "Unknown"
+    ]
+  },
+  "parents": {
+    "behaviorMapId": "BMAP-2026-001",
+    "behaviorId": "BM-2026-002",
+    "signalMapId": "SFM-2026-001",
+    "signalFlowId": "SF-2026-001",
+    "findingRecordId": "FRT-2026-015",
+    "findingId": "FND-FRT15-001",
+    "findingSubjectId": "APP-FRT15-001",
+    "findingRevision": "BEFORE-FRT15-001",
+    "handoffId": "HOF-FRT15-16",
+    "handoffStatus": "planned-not-delivered",
+    "detectionRecordId": "DVR-2026-017-001",
+    "detectionId": "DET-2026-017-001",
+    "telemetryIds": [
+      "TEL-DET-2026-001",
+      "TEL-DET-2026-002",
+      "TEL-DET-2026-003"
+    ],
+    "evidenceRole": "method-reference-not-evidence-for-new-subject",
+    "parentStateChanged": false,
+    "authorityTransferred": false,
+    "evidenceTransferred": false,
+    "parentHandoffReceived": false,
+    "chapter17ContractSatisfied": false
+  },
+  "safety": {
+    "scope": "offline-authored-json-reading-only",
+    "owner": "SYNTH-TCM16-OWNER",
+    "authority": "owned-reading-copy-not-parent-RoE",
+    "stop": "Unknown input, actual data, external connection or unclear scope: stop reading and record the gap.",
+    "cleanup": "整理するのは自分の読解メモだけ。供給Evidenceと正本は変更しない。",
+    "classification": "public-synthetic-only",
+    "personalDataIncluded": false,
+    "productSchemaClaimed": false
+  },
+  "requirements": [
+    {
+      "id": "EQ-TCM16-001",
+      "rowId": "ROW-TCM16-001",
+      "question": "同意変更入力の限定Field検査",
+      "consumer": "Detection",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "eventType": "consent-change",
+      "windowStart": "2026-09-21T00:00:00Z",
+      "windowEnd": "2026-09-21T00:10:00Z",
+      "decisionDeadline": "2026-09-21T01:00:00Z",
+      "requiredRetentionDays": 1,
+      "maximumClockUncertaintySeconds": 5,
+      "maximumIngestDelaySeconds": 60,
+      "identityNamespace": "SYNTH-TCM16",
+      "normalizerVersion": "NORM-TCM16-1",
+      "classification": "public-synthetic-only",
+      "requiredFields": [
+        {
+          "name": "event_time",
+          "purpose": "発生時刻による問いの期間照合",
+          "consumer": "Detection"
+        },
+        {
+          "name": "observed_time",
+          "purpose": "観測側の時刻と不確かさ",
+          "consumer": "Detection"
+        },
+        {
+          "name": "ingest_time",
+          "purpose": "到着遅延の評価",
+          "consumer": "Detection"
+        },
+        {
+          "name": "actor_id",
+          "purpose": "合成主体の区別",
+          "consumer": "Detection"
+        },
+        {
+          "name": "target_workload_id",
+          "purpose": "対象IDの照合",
+          "consumer": "Detection"
+        },
+        {
+          "name": "event_type",
+          "purpose": "対象とするEvent種別の照合",
+          "consumer": "Detection"
+        },
+        {
+          "name": "granted_scope_set",
+          "purpose": "同意変更の内容を示す合成分類",
+          "consumer": "Detection"
+        },
+        {
+          "name": "change_ticket_id",
+          "purpose": "承認参照の有無と意味の分離",
+          "consumer": "Detection"
+        },
+        {
+          "name": "result",
+          "purpose": "供給Eventの結果表現",
+          "consumer": "Detection"
+        }
+      ]
+    },
+    {
+      "id": "EQ-TCM16-002",
+      "rowId": "ROW-TCM16-002",
+      "question": "生成とCollector到着を分ける",
+      "consumer": "Detection",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "eventType": "consent-change",
+      "windowStart": "2026-09-21T00:00:00Z",
+      "windowEnd": "2026-09-21T00:10:00Z",
+      "decisionDeadline": "2026-09-21T01:00:00Z",
+      "requiredRetentionDays": 1,
+      "maximumClockUncertaintySeconds": 5,
+      "maximumIngestDelaySeconds": 60,
+      "identityNamespace": "SYNTH-TCM16",
+      "normalizerVersion": "NORM-TCM16-1",
+      "classification": "public-synthetic-only",
+      "requiredFields": [
+        {
+          "name": "event_time",
+          "purpose": "発生時刻による問いの期間照合",
+          "consumer": "Detection"
+        },
+        {
+          "name": "observed_time",
+          "purpose": "観測側の時刻と不確かさ",
+          "consumer": "Detection"
+        },
+        {
+          "name": "ingest_time",
+          "purpose": "到着遅延の評価",
+          "consumer": "Detection"
+        },
+        {
+          "name": "actor_id",
+          "purpose": "合成主体の区別",
+          "consumer": "Detection"
+        },
+        {
+          "name": "target_workload_id",
+          "purpose": "対象IDの照合",
+          "consumer": "Detection"
+        },
+        {
+          "name": "event_type",
+          "purpose": "対象とするEvent種別の照合",
+          "consumer": "Detection"
+        },
+        {
+          "name": "granted_scope_set",
+          "purpose": "同意変更の内容を示す合成分類",
+          "consumer": "Detection"
+        },
+        {
+          "name": "change_ticket_id",
+          "purpose": "承認参照の有無と意味の分離",
+          "consumer": "Detection"
+        },
+        {
+          "name": "result",
+          "purpose": "供給Eventの結果表現",
+          "consumer": "Detection"
+        }
+      ]
+    },
+    {
+      "id": "EQ-TCM16-003",
+      "rowId": "ROW-TCM16-003",
+      "question": "判断期限までの保持不足",
+      "consumer": "IR",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "eventType": "consent-change",
+      "windowStart": "2026-09-21T00:00:00Z",
+      "windowEnd": "2026-09-21T00:10:00Z",
+      "decisionDeadline": "2026-09-21T01:00:00Z",
+      "requiredRetentionDays": 1,
+      "maximumClockUncertaintySeconds": 5,
+      "maximumIngestDelaySeconds": 60,
+      "identityNamespace": "SYNTH-TCM16",
+      "normalizerVersion": "NORM-TCM16-1",
+      "classification": "public-synthetic-only",
+      "requiredFields": [
+        {
+          "name": "event_time",
+          "purpose": "発生時刻による問いの期間照合",
+          "consumer": "IR"
+        },
+        {
+          "name": "observed_time",
+          "purpose": "観測側の時刻と不確かさ",
+          "consumer": "IR"
+        },
+        {
+          "name": "ingest_time",
+          "purpose": "到着遅延の評価",
+          "consumer": "IR"
+        },
+        {
+          "name": "actor_id",
+          "purpose": "合成主体の区別",
+          "consumer": "IR"
+        },
+        {
+          "name": "target_workload_id",
+          "purpose": "対象IDの照合",
+          "consumer": "IR"
+        },
+        {
+          "name": "event_type",
+          "purpose": "対象とするEvent種別の照合",
+          "consumer": "IR"
+        },
+        {
+          "name": "granted_scope_set",
+          "purpose": "同意変更の内容を示す合成分類",
+          "consumer": "IR"
+        },
+        {
+          "name": "change_ticket_id",
+          "purpose": "承認参照の有無と意味の分離",
+          "consumer": "IR"
+        },
+        {
+          "name": "result",
+          "purpose": "供給Eventの結果表現",
+          "consumer": "IR"
+        }
+      ]
+    },
+    {
+      "id": "EQ-TCM16-004",
+      "rowId": "ROW-TCM16-004",
+      "question": "保持済みでも検索根拠がない",
+      "consumer": "Audit",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "eventType": "consent-change",
+      "windowStart": "2026-09-21T00:00:00Z",
+      "windowEnd": "2026-09-21T00:10:00Z",
+      "decisionDeadline": "2026-09-21T01:00:00Z",
+      "requiredRetentionDays": 1,
+      "maximumClockUncertaintySeconds": 5,
+      "maximumIngestDelaySeconds": 60,
+      "identityNamespace": "SYNTH-TCM16",
+      "normalizerVersion": "NORM-TCM16-1",
+      "classification": "public-synthetic-only",
+      "requiredFields": [
+        {
+          "name": "event_time",
+          "purpose": "発生時刻による問いの期間照合",
+          "consumer": "Audit"
+        },
+        {
+          "name": "observed_time",
+          "purpose": "観測側の時刻と不確かさ",
+          "consumer": "Audit"
+        },
+        {
+          "name": "ingest_time",
+          "purpose": "到着遅延の評価",
+          "consumer": "Audit"
+        },
+        {
+          "name": "actor_id",
+          "purpose": "合成主体の区別",
+          "consumer": "Audit"
+        },
+        {
+          "name": "target_workload_id",
+          "purpose": "対象IDの照合",
+          "consumer": "Audit"
+        },
+        {
+          "name": "event_type",
+          "purpose": "対象とするEvent種別の照合",
+          "consumer": "Audit"
+        },
+        {
+          "name": "granted_scope_set",
+          "purpose": "同意変更の内容を示す合成分類",
+          "consumer": "Audit"
+        },
+        {
+          "name": "change_ticket_id",
+          "purpose": "承認参照の有無と意味の分離",
+          "consumer": "Audit"
+        },
+        {
+          "name": "result",
+          "purpose": "供給Eventの結果表現",
+          "consumer": "Audit"
+        }
+      ]
+    },
+    {
+      "id": "EQ-TCM16-005",
+      "rowId": "ROW-TCM16-005",
+      "question": "相関Windowより時刻誤差が大きい",
+      "consumer": "Hunt",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "eventType": "consent-change",
+      "windowStart": "2026-09-21T00:00:00Z",
+      "windowEnd": "2026-09-21T00:10:00Z",
+      "decisionDeadline": "2026-09-21T01:00:00Z",
+      "requiredRetentionDays": 1,
+      "maximumClockUncertaintySeconds": 5,
+      "maximumIngestDelaySeconds": 60,
+      "identityNamespace": "SYNTH-TCM16",
+      "normalizerVersion": "NORM-TCM16-1",
+      "classification": "public-synthetic-only",
+      "requiredFields": [
+        {
+          "name": "event_time",
+          "purpose": "発生時刻による問いの期間照合",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "observed_time",
+          "purpose": "観測側の時刻と不確かさ",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "ingest_time",
+          "purpose": "到着遅延の評価",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "actor_id",
+          "purpose": "合成主体の区別",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "target_workload_id",
+          "purpose": "対象IDの照合",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "event_type",
+          "purpose": "対象とするEvent種別の照合",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "granted_scope_set",
+          "purpose": "同意変更の内容を示す合成分類",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "change_ticket_id",
+          "purpose": "承認参照の有無と意味の分離",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "result",
+          "purpose": "供給Eventの結果表現",
+          "consumer": "Hunt"
+        }
+      ]
+    },
+    {
+      "id": "EQ-TCM16-006",
+      "rowId": "ROW-TCM16-006",
+      "question": "同じID文字列でも正規化版が違う",
+      "consumer": "Hunt",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "eventType": "consent-change",
+      "windowStart": "2026-09-21T00:00:00Z",
+      "windowEnd": "2026-09-21T00:10:00Z",
+      "decisionDeadline": "2026-09-21T01:00:00Z",
+      "requiredRetentionDays": 1,
+      "maximumClockUncertaintySeconds": 5,
+      "maximumIngestDelaySeconds": 60,
+      "identityNamespace": "SYNTH-TCM16",
+      "normalizerVersion": "NORM-TCM16-1",
+      "classification": "public-synthetic-only",
+      "requiredFields": [
+        {
+          "name": "event_time",
+          "purpose": "発生時刻による問いの期間照合",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "observed_time",
+          "purpose": "観測側の時刻と不確かさ",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "ingest_time",
+          "purpose": "到着遅延の評価",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "actor_id",
+          "purpose": "合成主体の区別",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "target_workload_id",
+          "purpose": "対象IDの照合",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "event_type",
+          "purpose": "対象とするEvent種別の照合",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "granted_scope_set",
+          "purpose": "同意変更の内容を示す合成分類",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "change_ticket_id",
+          "purpose": "承認参照の有無と意味の分離",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "result",
+          "purpose": "供給Eventの結果表現",
+          "consumer": "Hunt"
+        }
+      ]
+    },
+    {
+      "id": "EQ-TCM16-007",
+      "rowId": "ROW-TCM16-007",
+      "question": "Workload API Eventを必要とするが未生成",
+      "consumer": "Hunt",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "eventType": "workload-api-access",
+      "windowStart": "2026-09-21T00:00:00Z",
+      "windowEnd": "2026-09-21T00:10:00Z",
+      "decisionDeadline": "2026-09-21T01:00:00Z",
+      "requiredRetentionDays": 1,
+      "maximumClockUncertaintySeconds": 5,
+      "maximumIngestDelaySeconds": 60,
+      "identityNamespace": "SYNTH-TCM16",
+      "normalizerVersion": "NORM-TCM16-1",
+      "classification": "public-synthetic-only",
+      "requiredFields": [
+        {
+          "name": "event_time",
+          "purpose": "発生時刻による問いの期間照合",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "observed_time",
+          "purpose": "観測側の時刻と不確かさ",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "ingest_time",
+          "purpose": "到着遅延の評価",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "actor_id",
+          "purpose": "合成主体の区別",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "target_workload_id",
+          "purpose": "対象IDの照合",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "event_type",
+          "purpose": "対象とするEvent種別の照合",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "granted_scope_set",
+          "purpose": "同意変更の内容を示す合成分類",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "change_ticket_id",
+          "purpose": "承認参照の有無と意味の分離",
+          "consumer": "Hunt"
+        },
+        {
+          "name": "result",
+          "purpose": "供給Eventの結果表現",
+          "consumer": "Hunt"
+        }
+      ]
+    },
+    {
+      "id": "EQ-TCM16-008",
+      "rowId": "ROW-TCM16-008",
+      "question": "Authentication contextの取扱根拠が未確認",
+      "consumer": "IR",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "eventType": "authentication-context",
+      "windowStart": "2026-09-21T00:00:00Z",
+      "windowEnd": "2026-09-21T00:10:00Z",
+      "decisionDeadline": "2026-09-21T01:00:00Z",
+      "requiredRetentionDays": 1,
+      "maximumClockUncertaintySeconds": 5,
+      "maximumIngestDelaySeconds": 60,
+      "identityNamespace": "SYNTH-TCM16",
+      "normalizerVersion": "NORM-TCM16-1",
+      "classification": "public-synthetic-only",
+      "requiredFields": [
+        {
+          "name": "event_time",
+          "purpose": "発生時刻による問いの期間照合",
+          "consumer": "IR"
+        },
+        {
+          "name": "observed_time",
+          "purpose": "観測側の時刻と不確かさ",
+          "consumer": "IR"
+        },
+        {
+          "name": "ingest_time",
+          "purpose": "到着遅延の評価",
+          "consumer": "IR"
+        },
+        {
+          "name": "actor_id",
+          "purpose": "合成主体の区別",
+          "consumer": "IR"
+        },
+        {
+          "name": "target_workload_id",
+          "purpose": "対象IDの照合",
+          "consumer": "IR"
+        },
+        {
+          "name": "event_type",
+          "purpose": "対象とするEvent種別の照合",
+          "consumer": "IR"
+        },
+        {
+          "name": "granted_scope_set",
+          "purpose": "同意変更の内容を示す合成分類",
+          "consumer": "IR"
+        },
+        {
+          "name": "change_ticket_id",
+          "purpose": "承認参照の有無と意味の分離",
+          "consumer": "IR"
+        },
+        {
+          "name": "result",
+          "purpose": "供給Eventの結果表現",
+          "consumer": "IR"
+        }
+      ]
+    },
+    {
+      "id": "EQ-TCM16-009",
+      "rowId": "ROW-TCM16-009",
+      "question": "同意変更の入力はあるが調査用保持が不足",
+      "consumer": "DFIR",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "eventType": "consent-change",
+      "windowStart": "2026-09-21T00:00:00Z",
+      "windowEnd": "2026-09-21T00:10:00Z",
+      "decisionDeadline": "2026-09-21T01:00:00Z",
+      "requiredRetentionDays": 30,
+      "maximumClockUncertaintySeconds": 5,
+      "maximumIngestDelaySeconds": 60,
+      "identityNamespace": "SYNTH-TCM16",
+      "normalizerVersion": "NORM-TCM16-1",
+      "classification": "public-synthetic-only",
+      "requiredFields": [
+        {
+          "name": "event_time",
+          "purpose": "発生時刻による問いの期間照合",
+          "consumer": "DFIR"
+        },
+        {
+          "name": "observed_time",
+          "purpose": "観測側の時刻と不確かさ",
+          "consumer": "DFIR"
+        },
+        {
+          "name": "ingest_time",
+          "purpose": "到着遅延の評価",
+          "consumer": "DFIR"
+        },
+        {
+          "name": "actor_id",
+          "purpose": "合成主体の区別",
+          "consumer": "DFIR"
+        },
+        {
+          "name": "target_workload_id",
+          "purpose": "対象IDの照合",
+          "consumer": "DFIR"
+        },
+        {
+          "name": "event_type",
+          "purpose": "対象とするEvent種別の照合",
+          "consumer": "DFIR"
+        },
+        {
+          "name": "granted_scope_set",
+          "purpose": "同意変更の内容を示す合成分類",
+          "consumer": "DFIR"
+        },
+        {
+          "name": "change_ticket_id",
+          "purpose": "承認参照の有無と意味の分離",
+          "consumer": "DFIR"
+        },
+        {
+          "name": "result",
+          "purpose": "供給Eventの結果表現",
+          "consumer": "DFIR"
+        }
+      ]
+    },
+    {
+      "id": "EQ-TCM16-010",
+      "rowId": "ROW-TCM16-010",
+      "question": "十分な限定Telemetryで一致Eventがない",
+      "consumer": "Detection",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "eventType": "consent-change",
+      "windowStart": "2026-09-21T00:00:00Z",
+      "windowEnd": "2026-09-21T00:10:00Z",
+      "decisionDeadline": "2026-09-21T01:00:00Z",
+      "requiredRetentionDays": 1,
+      "maximumClockUncertaintySeconds": 5,
+      "maximumIngestDelaySeconds": 60,
+      "identityNamespace": "SYNTH-TCM16",
+      "normalizerVersion": "NORM-TCM16-1",
+      "classification": "public-synthetic-only",
+      "requiredFields": [
+        {
+          "name": "event_time",
+          "purpose": "発生時刻による問いの期間照合",
+          "consumer": "Detection"
+        },
+        {
+          "name": "observed_time",
+          "purpose": "観測側の時刻と不確かさ",
+          "consumer": "Detection"
+        },
+        {
+          "name": "ingest_time",
+          "purpose": "到着遅延の評価",
+          "consumer": "Detection"
+        },
+        {
+          "name": "actor_id",
+          "purpose": "合成主体の区別",
+          "consumer": "Detection"
+        },
+        {
+          "name": "target_workload_id",
+          "purpose": "対象IDの照合",
+          "consumer": "Detection"
+        },
+        {
+          "name": "event_type",
+          "purpose": "対象とするEvent種別の照合",
+          "consumer": "Detection"
+        },
+        {
+          "name": "granted_scope_set",
+          "purpose": "同意変更の内容を示す合成分類",
+          "consumer": "Detection"
+        },
+        {
+          "name": "change_ticket_id",
+          "purpose": "承認参照の有無と意味の分離",
+          "consumer": "Detection"
+        },
+        {
+          "name": "result",
+          "purpose": "供給Eventの結果表現",
+          "consumer": "Detection"
+        }
+      ]
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "FIX-TCM16-001",
+      "rowId": "ROW-TCM16-001",
+      "questionId": "EQ-TCM16-001",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "synthetic": true,
+      "eventPresence": "present",
+      "observationWindowComplete": false,
+      "records": [
+        {
+          "event_time": "2026-09-21T00:05:00Z",
+          "observed_time": "2026-09-21T00:05:01Z",
+          "ingest_time": "2026-09-21T00:05:02Z",
+          "actor_id": "SYNTH-ACTOR-TCM16-001",
+          "target_workload_id": "APP-TCM16-001",
+          "event_type": "consent-change",
+          "granted_scope_set": [
+            "read-summary"
+          ],
+          "change_ticket_id": "SYNTH-CHANGE-TCM16-001",
+          "result": "synthetic-recorded"
+        }
+      ]
+    },
+    {
+      "id": "FIX-TCM16-002",
+      "rowId": "ROW-TCM16-002",
+      "questionId": "EQ-TCM16-002",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "synthetic": true,
+      "eventPresence": "present",
+      "observationWindowComplete": false,
+      "records": [
+        {
+          "event_time": "2026-09-21T00:05:00Z",
+          "observed_time": "2026-09-21T00:05:01Z",
+          "ingest_time": "2026-09-21T00:05:02Z",
+          "actor_id": "SYNTH-ACTOR-TCM16-001",
+          "target_workload_id": "APP-TCM16-001",
+          "event_type": "consent-change",
+          "granted_scope_set": [
+            "read-summary"
+          ],
+          "change_ticket_id": "SYNTH-CHANGE-TCM16-001",
+          "result": "synthetic-recorded"
+        }
+      ]
+    },
+    {
+      "id": "FIX-TCM16-003",
+      "rowId": "ROW-TCM16-003",
+      "questionId": "EQ-TCM16-003",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "synthetic": true,
+      "eventPresence": "present",
+      "observationWindowComplete": false,
+      "records": [
+        {
+          "event_time": "2026-09-21T00:05:00Z",
+          "observed_time": "2026-09-21T00:05:01Z",
+          "ingest_time": "2026-09-21T00:05:02Z",
+          "actor_id": "SYNTH-ACTOR-TCM16-001",
+          "target_workload_id": "APP-TCM16-001",
+          "event_type": "consent-change",
+          "granted_scope_set": [
+            "read-summary"
+          ],
+          "change_ticket_id": "SYNTH-CHANGE-TCM16-001",
+          "result": "synthetic-recorded"
+        }
+      ]
+    },
+    {
+      "id": "FIX-TCM16-004",
+      "rowId": "ROW-TCM16-004",
+      "questionId": "EQ-TCM16-004",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "synthetic": true,
+      "eventPresence": "present",
+      "observationWindowComplete": false,
+      "records": [
+        {
+          "event_time": "2026-09-21T00:05:00Z",
+          "observed_time": "2026-09-21T00:05:01Z",
+          "ingest_time": "2026-09-21T00:05:02Z",
+          "actor_id": "SYNTH-ACTOR-TCM16-001",
+          "target_workload_id": "APP-TCM16-001",
+          "event_type": "consent-change",
+          "granted_scope_set": [
+            "read-summary"
+          ],
+          "change_ticket_id": "SYNTH-CHANGE-TCM16-001",
+          "result": "synthetic-recorded"
+        }
+      ]
+    },
+    {
+      "id": "FIX-TCM16-005",
+      "rowId": "ROW-TCM16-005",
+      "questionId": "EQ-TCM16-005",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "synthetic": true,
+      "eventPresence": "present",
+      "observationWindowComplete": false,
+      "records": [
+        {
+          "event_time": "2026-09-21T00:05:00Z",
+          "observed_time": "2026-09-21T00:05:01Z",
+          "ingest_time": "2026-09-21T00:05:02Z",
+          "actor_id": "SYNTH-ACTOR-TCM16-001",
+          "target_workload_id": "APP-TCM16-001",
+          "event_type": "consent-change",
+          "granted_scope_set": [
+            "read-summary"
+          ],
+          "change_ticket_id": "SYNTH-CHANGE-TCM16-001",
+          "result": "synthetic-recorded"
+        }
+      ]
+    },
+    {
+      "id": "FIX-TCM16-006",
+      "rowId": "ROW-TCM16-006",
+      "questionId": "EQ-TCM16-006",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "synthetic": true,
+      "eventPresence": "present",
+      "observationWindowComplete": false,
+      "records": [
+        {
+          "event_time": "2026-09-21T00:05:00Z",
+          "observed_time": "2026-09-21T00:05:01Z",
+          "ingest_time": "2026-09-21T00:05:02Z",
+          "actor_id": "SYNTH-ACTOR-TCM16-001",
+          "target_workload_id": "APP-TCM16-001",
+          "event_type": "consent-change",
+          "granted_scope_set": [
+            "read-summary"
+          ],
+          "change_ticket_id": "SYNTH-CHANGE-TCM16-001",
+          "result": "synthetic-recorded"
+        }
+      ]
+    },
+    {
+      "id": "FIX-TCM16-007",
+      "rowId": "ROW-TCM16-007",
+      "questionId": "EQ-TCM16-007",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "synthetic": true,
+      "eventPresence": "unknown",
+      "observationWindowComplete": false,
+      "records": []
+    },
+    {
+      "id": "FIX-TCM16-008",
+      "rowId": "ROW-TCM16-008",
+      "questionId": "EQ-TCM16-008",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "synthetic": true,
+      "eventPresence": "unknown",
+      "observationWindowComplete": false,
+      "records": []
+    },
+    {
+      "id": "FIX-TCM16-009",
+      "rowId": "ROW-TCM16-009",
+      "questionId": "EQ-TCM16-009",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "synthetic": true,
+      "eventPresence": "present",
+      "observationWindowComplete": false,
+      "records": [
+        {
+          "event_time": "2026-09-21T00:05:00Z",
+          "observed_time": "2026-09-21T00:05:01Z",
+          "ingest_time": "2026-09-21T00:05:02Z",
+          "actor_id": "SYNTH-ACTOR-TCM16-001",
+          "target_workload_id": "APP-TCM16-001",
+          "event_type": "consent-change",
+          "granted_scope_set": [
+            "read-summary"
+          ],
+          "change_ticket_id": "SYNTH-CHANGE-TCM16-001",
+          "result": "synthetic-recorded"
+        }
+      ]
+    },
+    {
+      "id": "FIX-TCM16-010",
+      "rowId": "ROW-TCM16-010",
+      "questionId": "EQ-TCM16-010",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "synthetic": true,
+      "eventPresence": "absent",
+      "observationWindowComplete": true,
+      "records": []
+    }
+  ],
+  "receipts": [
+    {
+      "id": "EVD-TCM16-001-1",
+      "stage": "Produced",
+      "rowId": "ROW-TCM16-001",
+      "questionId": "EQ-TCM16-001",
+      "fixtureId": "FIX-TCM16-001",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-001-2",
+      "stage": "Collected",
+      "rowId": "ROW-TCM16-001",
+      "questionId": "EQ-TCM16-001",
+      "fixtureId": "FIX-TCM16-001",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-001-3",
+      "stage": "Retained",
+      "rowId": "ROW-TCM16-001",
+      "questionId": "EQ-TCM16-001",
+      "fixtureId": "FIX-TCM16-001",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-001-4",
+      "stage": "Queryable",
+      "rowId": "ROW-TCM16-001",
+      "questionId": "EQ-TCM16-001",
+      "fixtureId": "FIX-TCM16-001",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-002-1",
+      "stage": "Produced",
+      "rowId": "ROW-TCM16-002",
+      "questionId": "EQ-TCM16-002",
+      "fixtureId": "FIX-TCM16-002",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-003-1",
+      "stage": "Produced",
+      "rowId": "ROW-TCM16-003",
+      "questionId": "EQ-TCM16-003",
+      "fixtureId": "FIX-TCM16-003",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-003-2",
+      "stage": "Collected",
+      "rowId": "ROW-TCM16-003",
+      "questionId": "EQ-TCM16-003",
+      "fixtureId": "FIX-TCM16-003",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-004-1",
+      "stage": "Produced",
+      "rowId": "ROW-TCM16-004",
+      "questionId": "EQ-TCM16-004",
+      "fixtureId": "FIX-TCM16-004",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-004-2",
+      "stage": "Collected",
+      "rowId": "ROW-TCM16-004",
+      "questionId": "EQ-TCM16-004",
+      "fixtureId": "FIX-TCM16-004",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-004-3",
+      "stage": "Retained",
+      "rowId": "ROW-TCM16-004",
+      "questionId": "EQ-TCM16-004",
+      "fixtureId": "FIX-TCM16-004",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-005-1",
+      "stage": "Produced",
+      "rowId": "ROW-TCM16-005",
+      "questionId": "EQ-TCM16-005",
+      "fixtureId": "FIX-TCM16-005",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-005-2",
+      "stage": "Collected",
+      "rowId": "ROW-TCM16-005",
+      "questionId": "EQ-TCM16-005",
+      "fixtureId": "FIX-TCM16-005",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-005-3",
+      "stage": "Retained",
+      "rowId": "ROW-TCM16-005",
+      "questionId": "EQ-TCM16-005",
+      "fixtureId": "FIX-TCM16-005",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-005-4",
+      "stage": "Queryable",
+      "rowId": "ROW-TCM16-005",
+      "questionId": "EQ-TCM16-005",
+      "fixtureId": "FIX-TCM16-005",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-006-1",
+      "stage": "Produced",
+      "rowId": "ROW-TCM16-006",
+      "questionId": "EQ-TCM16-006",
+      "fixtureId": "FIX-TCM16-006",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-006-2",
+      "stage": "Collected",
+      "rowId": "ROW-TCM16-006",
+      "questionId": "EQ-TCM16-006",
+      "fixtureId": "FIX-TCM16-006",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-006-3",
+      "stage": "Retained",
+      "rowId": "ROW-TCM16-006",
+      "questionId": "EQ-TCM16-006",
+      "fixtureId": "FIX-TCM16-006",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-006-4",
+      "stage": "Queryable",
+      "rowId": "ROW-TCM16-006",
+      "questionId": "EQ-TCM16-006",
+      "fixtureId": "FIX-TCM16-006",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-009-1",
+      "stage": "Produced",
+      "rowId": "ROW-TCM16-009",
+      "questionId": "EQ-TCM16-009",
+      "fixtureId": "FIX-TCM16-009",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-009-2",
+      "stage": "Collected",
+      "rowId": "ROW-TCM16-009",
+      "questionId": "EQ-TCM16-009",
+      "fixtureId": "FIX-TCM16-009",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-010-1",
+      "stage": "Produced",
+      "rowId": "ROW-TCM16-010",
+      "questionId": "EQ-TCM16-010",
+      "fixtureId": "FIX-TCM16-010",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-010-2",
+      "stage": "Collected",
+      "rowId": "ROW-TCM16-010",
+      "questionId": "EQ-TCM16-010",
+      "fixtureId": "FIX-TCM16-010",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-010-3",
+      "stage": "Retained",
+      "rowId": "ROW-TCM16-010",
+      "questionId": "EQ-TCM16-010",
+      "fixtureId": "FIX-TCM16-010",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    },
+    {
+      "id": "EVD-TCM16-010-4",
+      "stage": "Queryable",
+      "rowId": "ROW-TCM16-010",
+      "questionId": "EQ-TCM16-010",
+      "fixtureId": "FIX-TCM16-010",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "meaning": "authored-stage-receipt-not-live-measurement"
+    }
+  ],
+  "rows": [
+    {
+      "id": "ROW-TCM16-001",
+      "questionId": "EQ-TCM16-001",
+      "fixtureId": "FIX-TCM16-001",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "producerId": "SYNTH-PRODUCER-TCM16",
+      "collectorId": "SYNTH-COLLECTOR-TCM16",
+      "transport": "offline-supplied-records",
+      "schemaVersion": "TCM16-EVENT-1",
+      "normalizerVersion": "NORM-TCM16-1",
+      "identityNamespace": "SYNTH-TCM16",
+      "clockSource": "SYNTH-UTC-CLOCK",
+      "timezone": "UTC",
+      "clockUncertaintySeconds": 2,
+      "ingestDelaySeconds": 2,
+      "retentionStart": "2026-09-21T00:00:00Z",
+      "retentionEnd": "2026-09-23T00:00:00Z",
+      "integrityReference": "SYNTH-ORIGINAL-TCM16-001",
+      "integrityMeaning": "supplied-byte-comparison-not-authenticity",
+      "classification": "public-synthetic-only",
+      "processingBasis": "synthetic-reading-only",
+      "accessRole": "SYNTH-DETECTION-READER",
+      "receiptIds": [
+        "EVD-TCM16-001-1",
+        "EVD-TCM16-001-2",
+        "EVD-TCM16-001-3",
+        "EVD-TCM16-001-4"
+      ],
+      "coverage": "Validated",
+      "testId": "TEST-TCM16-001",
+      "validationId": "VAL-TCM16-001",
+      "validationEvidenceId": "EVD-TEST-TCM16-001",
+      "allowedConclusion": "bounded-input-contract-satisfied",
+      "gapId": "GAP-TCM16-001",
+      "gap": "限定入力検査だけであり親17の検知全体は未評価。",
+      "owner": "SYNTH-TCM16-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "reassessment": "Schema、対象版、時間精度、保持、Identity、Consumer目的が変われば再比較。"
+    },
+    {
+      "id": "ROW-TCM16-002",
+      "questionId": "EQ-TCM16-002",
+      "fixtureId": "FIX-TCM16-002",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "producerId": "SYNTH-PRODUCER-TCM16",
+      "collectorId": "SYNTH-COLLECTOR-TCM16",
+      "transport": "offline-supplied-records",
+      "schemaVersion": "TCM16-EVENT-1",
+      "normalizerVersion": "NORM-TCM16-1",
+      "identityNamespace": "SYNTH-TCM16",
+      "clockSource": "SYNTH-UTC-CLOCK",
+      "timezone": "UTC",
+      "clockUncertaintySeconds": 2,
+      "ingestDelaySeconds": 120,
+      "retentionStart": "2026-09-21T00:00:00Z",
+      "retentionEnd": "2026-09-23T00:00:00Z",
+      "integrityReference": "SYNTH-ORIGINAL-TCM16-002",
+      "integrityMeaning": "supplied-byte-comparison-not-authenticity",
+      "classification": "public-synthetic-only",
+      "processingBasis": "synthetic-reading-only",
+      "accessRole": "SYNTH-DETECTION-READER",
+      "receiptIds": [
+        "EVD-TCM16-002-1"
+      ],
+      "coverage": "Produced",
+      "testId": "TEST-TCM16-002",
+      "validationId": "VAL-TCM16-002",
+      "validationEvidenceId": "EVD-TEST-TCM16-002",
+      "allowedConclusion": "collector-evidence-missing",
+      "gapId": "GAP-TCM16-002",
+      "gap": "生成とCollector到着を分ける",
+      "owner": "SYNTH-TCM16-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "reassessment": "Schema、対象版、時間精度、保持、Identity、Consumer目的が変われば再比較。"
+    },
+    {
+      "id": "ROW-TCM16-003",
+      "questionId": "EQ-TCM16-003",
+      "fixtureId": "FIX-TCM16-003",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "producerId": "SYNTH-PRODUCER-TCM16",
+      "collectorId": "SYNTH-COLLECTOR-TCM16",
+      "transport": "offline-supplied-records",
+      "schemaVersion": "TCM16-EVENT-1",
+      "normalizerVersion": "NORM-TCM16-1",
+      "identityNamespace": "SYNTH-TCM16",
+      "clockSource": "SYNTH-UTC-CLOCK",
+      "timezone": "UTC",
+      "clockUncertaintySeconds": 2,
+      "ingestDelaySeconds": 2,
+      "retentionStart": "2026-09-21T00:00:00Z",
+      "retentionEnd": "2026-09-21T00:30:00Z",
+      "integrityReference": "SYNTH-ORIGINAL-TCM16-003",
+      "integrityMeaning": "supplied-byte-comparison-not-authenticity",
+      "classification": "public-synthetic-only",
+      "processingBasis": "synthetic-reading-only",
+      "accessRole": "SYNTH-IR-READER",
+      "receiptIds": [
+        "EVD-TCM16-003-1",
+        "EVD-TCM16-003-2"
+      ],
+      "coverage": "Collected",
+      "testId": "TEST-TCM16-003",
+      "validationId": "VAL-TCM16-003",
+      "validationEvidenceId": "EVD-TEST-TCM16-003",
+      "allowedConclusion": "retention-gap",
+      "gapId": "GAP-TCM16-003",
+      "gap": "判断期限までの保持不足",
+      "owner": "SYNTH-TCM16-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "reassessment": "Schema、対象版、時間精度、保持、Identity、Consumer目的が変われば再比較。"
+    },
+    {
+      "id": "ROW-TCM16-004",
+      "questionId": "EQ-TCM16-004",
+      "fixtureId": "FIX-TCM16-004",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "producerId": "SYNTH-PRODUCER-TCM16",
+      "collectorId": "SYNTH-COLLECTOR-TCM16",
+      "transport": "offline-supplied-records",
+      "schemaVersion": "TCM16-EVENT-1",
+      "normalizerVersion": "NORM-TCM16-1",
+      "identityNamespace": "SYNTH-TCM16",
+      "clockSource": "SYNTH-UTC-CLOCK",
+      "timezone": "UTC",
+      "clockUncertaintySeconds": 2,
+      "ingestDelaySeconds": 2,
+      "retentionStart": "2026-09-21T00:00:00Z",
+      "retentionEnd": "2026-09-23T00:00:00Z",
+      "integrityReference": "SYNTH-ORIGINAL-TCM16-004",
+      "integrityMeaning": "supplied-byte-comparison-not-authenticity",
+      "classification": "public-synthetic-only",
+      "processingBasis": "synthetic-reading-only",
+      "accessRole": "SYNTH-AUDIT-READER",
+      "receiptIds": [
+        "EVD-TCM16-004-1",
+        "EVD-TCM16-004-2",
+        "EVD-TCM16-004-3"
+      ],
+      "coverage": "Retained",
+      "testId": "TEST-TCM16-004",
+      "validationId": "VAL-TCM16-004",
+      "validationEvidenceId": "EVD-TEST-TCM16-004",
+      "allowedConclusion": "query-evidence-missing",
+      "gapId": "GAP-TCM16-004",
+      "gap": "保持済みでも検索根拠がない",
+      "owner": "SYNTH-TCM16-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "reassessment": "Schema、対象版、時間精度、保持、Identity、Consumer目的が変われば再比較。"
+    },
+    {
+      "id": "ROW-TCM16-005",
+      "questionId": "EQ-TCM16-005",
+      "fixtureId": "FIX-TCM16-005",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "producerId": "SYNTH-PRODUCER-TCM16",
+      "collectorId": "SYNTH-COLLECTOR-TCM16",
+      "transport": "offline-supplied-records",
+      "schemaVersion": "TCM16-EVENT-1",
+      "normalizerVersion": "NORM-TCM16-1",
+      "identityNamespace": "SYNTH-TCM16",
+      "clockSource": "SYNTH-UTC-CLOCK",
+      "timezone": "UTC",
+      "clockUncertaintySeconds": 120,
+      "ingestDelaySeconds": 2,
+      "retentionStart": "2026-09-21T00:00:00Z",
+      "retentionEnd": "2026-09-23T00:00:00Z",
+      "integrityReference": "SYNTH-ORIGINAL-TCM16-005",
+      "integrityMeaning": "supplied-byte-comparison-not-authenticity",
+      "classification": "public-synthetic-only",
+      "processingBasis": "synthetic-reading-only",
+      "accessRole": "SYNTH-HUNT-READER",
+      "receiptIds": [
+        "EVD-TCM16-005-1",
+        "EVD-TCM16-005-2",
+        "EVD-TCM16-005-3",
+        "EVD-TCM16-005-4"
+      ],
+      "coverage": "Queryable",
+      "testId": "TEST-TCM16-005",
+      "validationId": "VAL-TCM16-005",
+      "validationEvidenceId": "EVD-TEST-TCM16-005",
+      "allowedConclusion": "clock-uncertainty",
+      "gapId": "GAP-TCM16-005",
+      "gap": "相関Windowより時刻誤差が大きい",
+      "owner": "SYNTH-TCM16-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "reassessment": "Schema、対象版、時間精度、保持、Identity、Consumer目的が変われば再比較。"
+    },
+    {
+      "id": "ROW-TCM16-006",
+      "questionId": "EQ-TCM16-006",
+      "fixtureId": "FIX-TCM16-006",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "producerId": "SYNTH-PRODUCER-TCM16",
+      "collectorId": "SYNTH-COLLECTOR-TCM16",
+      "transport": "offline-supplied-records",
+      "schemaVersion": "TCM16-EVENT-1",
+      "normalizerVersion": "NORM-TCM16-2",
+      "identityNamespace": "SYNTH-TCM16",
+      "clockSource": "SYNTH-UTC-CLOCK",
+      "timezone": "UTC",
+      "clockUncertaintySeconds": 2,
+      "ingestDelaySeconds": 2,
+      "retentionStart": "2026-09-21T00:00:00Z",
+      "retentionEnd": "2026-09-23T00:00:00Z",
+      "integrityReference": "SYNTH-ORIGINAL-TCM16-006",
+      "integrityMeaning": "supplied-byte-comparison-not-authenticity",
+      "classification": "public-synthetic-only",
+      "processingBasis": "synthetic-reading-only",
+      "accessRole": "SYNTH-HUNT-READER",
+      "receiptIds": [
+        "EVD-TCM16-006-1",
+        "EVD-TCM16-006-2",
+        "EVD-TCM16-006-3",
+        "EVD-TCM16-006-4"
+      ],
+      "coverage": "Queryable",
+      "testId": "TEST-TCM16-006",
+      "validationId": "VAL-TCM16-006",
+      "validationEvidenceId": "EVD-TEST-TCM16-006",
+      "allowedConclusion": "identity-normalization-mismatch",
+      "gapId": "GAP-TCM16-006",
+      "gap": "同じID文字列でも正規化版が違う",
+      "owner": "SYNTH-TCM16-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "reassessment": "Schema、対象版、時間精度、保持、Identity、Consumer目的が変われば再比較。"
+    },
+    {
+      "id": "ROW-TCM16-007",
+      "questionId": "EQ-TCM16-007",
+      "fixtureId": "FIX-TCM16-007",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "producerId": "SYNTH-PRODUCER-TCM16",
+      "collectorId": "SYNTH-COLLECTOR-TCM16",
+      "transport": "offline-supplied-records",
+      "schemaVersion": "TCM16-EVENT-1",
+      "normalizerVersion": "NORM-TCM16-1",
+      "identityNamespace": "SYNTH-TCM16",
+      "clockSource": "SYNTH-UTC-CLOCK",
+      "timezone": "UTC",
+      "clockUncertaintySeconds": 2,
+      "ingestDelaySeconds": 2,
+      "retentionStart": "2026-09-21T00:00:00Z",
+      "retentionEnd": "2026-09-23T00:00:00Z",
+      "integrityReference": "SYNTH-ORIGINAL-TCM16-007",
+      "integrityMeaning": "supplied-byte-comparison-not-authenticity",
+      "classification": "public-synthetic-only",
+      "processingBasis": "synthetic-reading-only",
+      "accessRole": "SYNTH-HUNT-READER",
+      "receiptIds": [],
+      "coverage": "Required",
+      "testId": "TEST-TCM16-007",
+      "validationId": "VAL-TCM16-007",
+      "validationEvidenceId": "EVD-TEST-TCM16-007",
+      "allowedConclusion": "producer-evidence-missing",
+      "gapId": "GAP-TCM16-007",
+      "gap": "Workload API Eventを必要とするが未生成",
+      "owner": "SYNTH-TCM16-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "reassessment": "Schema、対象版、時間精度、保持、Identity、Consumer目的が変われば再比較。"
+    },
+    {
+      "id": "ROW-TCM16-008",
+      "questionId": "EQ-TCM16-008",
+      "fixtureId": "FIX-TCM16-008",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "producerId": "SYNTH-PRODUCER-TCM16",
+      "collectorId": "SYNTH-COLLECTOR-TCM16",
+      "transport": "offline-supplied-records",
+      "schemaVersion": "TCM16-EVENT-1",
+      "normalizerVersion": "NORM-TCM16-1",
+      "identityNamespace": "SYNTH-TCM16",
+      "clockSource": "SYNTH-UTC-CLOCK",
+      "timezone": "UTC",
+      "clockUncertaintySeconds": 2,
+      "ingestDelaySeconds": 2,
+      "retentionStart": "2026-09-21T00:00:00Z",
+      "retentionEnd": "2026-09-23T00:00:00Z",
+      "integrityReference": "SYNTH-ORIGINAL-TCM16-008",
+      "integrityMeaning": "supplied-byte-comparison-not-authenticity",
+      "classification": "public-synthetic-only",
+      "processingBasis": "unknown",
+      "accessRole": "SYNTH-IR-READER",
+      "receiptIds": [],
+      "coverage": "Unknown",
+      "testId": "TEST-TCM16-008",
+      "validationId": "VAL-TCM16-008",
+      "validationEvidenceId": "EVD-TEST-TCM16-008",
+      "allowedConclusion": "privacy-basis-unknown",
+      "gapId": "GAP-TCM16-008",
+      "gap": "Authentication contextの取扱根拠が未確認",
+      "owner": "SYNTH-TCM16-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "reassessment": "Schema、対象版、時間精度、保持、Identity、Consumer目的が変われば再比較。"
+    },
+    {
+      "id": "ROW-TCM16-009",
+      "questionId": "EQ-TCM16-009",
+      "fixtureId": "FIX-TCM16-009",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "producerId": "SYNTH-PRODUCER-TCM16",
+      "collectorId": "SYNTH-COLLECTOR-TCM16",
+      "transport": "offline-supplied-records",
+      "schemaVersion": "TCM16-EVENT-1",
+      "normalizerVersion": "NORM-TCM16-1",
+      "identityNamespace": "SYNTH-TCM16",
+      "clockSource": "SYNTH-UTC-CLOCK",
+      "timezone": "UTC",
+      "clockUncertaintySeconds": 2,
+      "ingestDelaySeconds": 2,
+      "retentionStart": "2026-09-21T00:00:00Z",
+      "retentionEnd": "2026-09-23T00:00:00Z",
+      "integrityReference": "SYNTH-ORIGINAL-TCM16-009",
+      "integrityMeaning": "supplied-byte-comparison-not-authenticity",
+      "classification": "public-synthetic-only",
+      "processingBasis": "synthetic-reading-only",
+      "accessRole": "SYNTH-DFIR-READER",
+      "receiptIds": [
+        "EVD-TCM16-009-1",
+        "EVD-TCM16-009-2"
+      ],
+      "coverage": "Collected",
+      "testId": "TEST-TCM16-009",
+      "validationId": "VAL-TCM16-009",
+      "validationEvidenceId": "EVD-TEST-TCM16-009",
+      "allowedConclusion": "retention-gap",
+      "gapId": "GAP-TCM16-009",
+      "gap": "同意変更の入力はあるが調査用保持が不足",
+      "owner": "SYNTH-TCM16-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "reassessment": "Schema、対象版、時間精度、保持、Identity、Consumer目的が変われば再比較。"
+    },
+    {
+      "id": "ROW-TCM16-010",
+      "questionId": "EQ-TCM16-010",
+      "fixtureId": "FIX-TCM16-010",
+      "subjectId": "APP-TCM16-001",
+      "revision": "TCM16-REV-001",
+      "producerId": "SYNTH-PRODUCER-TCM16",
+      "collectorId": "SYNTH-COLLECTOR-TCM16",
+      "transport": "offline-supplied-records",
+      "schemaVersion": "TCM16-EVENT-1",
+      "normalizerVersion": "NORM-TCM16-1",
+      "identityNamespace": "SYNTH-TCM16",
+      "clockSource": "SYNTH-UTC-CLOCK",
+      "timezone": "UTC",
+      "clockUncertaintySeconds": 2,
+      "ingestDelaySeconds": 2,
+      "retentionStart": "2026-09-21T00:00:00Z",
+      "retentionEnd": "2026-09-23T00:00:00Z",
+      "integrityReference": "SYNTH-ORIGINAL-TCM16-010",
+      "integrityMeaning": "supplied-byte-comparison-not-authenticity",
+      "classification": "public-synthetic-only",
+      "processingBasis": "synthetic-reading-only",
+      "accessRole": "SYNTH-DETECTION-READER",
+      "receiptIds": [
+        "EVD-TCM16-010-1",
+        "EVD-TCM16-010-2",
+        "EVD-TCM16-010-3",
+        "EVD-TCM16-010-4"
+      ],
+      "coverage": "Validated",
+      "testId": "TEST-TCM16-010",
+      "validationId": "VAL-TCM16-010",
+      "validationEvidenceId": "EVD-TEST-TCM16-010",
+      "allowedConclusion": "not-observed-in-synthetic-window",
+      "gapId": "GAP-TCM16-010",
+      "gap": "限定合成Windowだけの未観測。実侵害の不存在ではない。",
+      "owner": "SYNTH-TCM16-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "reassessment": "Schema、対象版、時間精度、保持、Identity、Consumer目的が変われば再比較。"
+    }
+  ],
+  "handoffs": [
+    {
+      "id": "HOF-TCM16-17",
+      "targetChapter": 17,
+      "consumer": "Detection",
+      "recordId": "TCM-2026-016",
+      "rowIds": [
+        "ROW-TCM16-001",
+        "ROW-TCM16-002",
+        "ROW-TCM16-010"
+      ],
+      "status": "planned-not-delivered",
+      "receiptId": null,
+      "executionAuthorized": false,
+      "owner": "SYNTH-DETECTION-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "acceptance": "受け手が対象版、問い、必要Field、許される結論、Gap、再評価条件を別途照合する。",
+      "limitation": "参照IDは受領・実行許可・検知成功の証拠ではない。"
+    },
+    {
+      "id": "HOF-TCM16-18",
+      "targetChapter": 18,
+      "consumer": "Hunt",
+      "recordId": "TCM-2026-016",
+      "rowIds": [
+        "ROW-TCM16-005",
+        "ROW-TCM16-006",
+        "ROW-TCM16-007"
+      ],
+      "status": "planned-not-delivered",
+      "receiptId": null,
+      "executionAuthorized": false,
+      "owner": "SYNTH-HUNT-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "acceptance": "受け手が対象版、問い、必要Field、許される結論、Gap、再評価条件を別途照合する。",
+      "limitation": "参照IDは受領・実行許可・検知成功の証拠ではない。"
+    },
+    {
+      "id": "HOF-TCM16-19",
+      "targetChapter": 19,
+      "consumer": "IR",
+      "recordId": "TCM-2026-016",
+      "rowIds": [
+        "ROW-TCM16-003",
+        "ROW-TCM16-008"
+      ],
+      "status": "planned-not-delivered",
+      "receiptId": null,
+      "executionAuthorized": false,
+      "owner": "SYNTH-IR-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "acceptance": "受け手が対象版、問い、必要Field、許される結論、Gap、再評価条件を別途照合する。",
+      "limitation": "参照IDは受領・実行許可・検知成功の証拠ではない。"
+    },
+    {
+      "id": "HOF-TCM16-20",
+      "targetChapter": 20,
+      "consumer": "DFIR",
+      "recordId": "TCM-2026-016",
+      "rowIds": [
+        "ROW-TCM16-009"
+      ],
+      "status": "planned-not-delivered",
+      "receiptId": null,
+      "executionAuthorized": false,
+      "owner": "SYNTH-DFIR-OWNER",
+      "dueAt": "2026-09-22T00:00:00Z",
+      "acceptance": "受け手が対象版、問い、必要Field、許される結論、Gap、再評価条件を別途照合する。",
+      "limitation": "参照IDは受領・実行許可・検知成功の証拠ではない。"
+    }
+  ]
+}

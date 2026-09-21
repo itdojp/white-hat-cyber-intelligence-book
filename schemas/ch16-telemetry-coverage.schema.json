@@ -1,0 +1,956 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ART-24 finite synthetic reading model; not a product or authority schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "executionAuthorized",
+    "readOnly",
+    "networkRequired",
+    "record",
+    "parents",
+    "safety",
+    "requirements",
+    "fixtures",
+    "receipts",
+    "rows",
+    "handoffs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "synthetic": {
+      "type": "boolean",
+      "enum": [
+        true
+      ]
+    },
+    "executionAuthorized": {
+      "type": "boolean",
+      "enum": [
+        false
+      ]
+    },
+    "readOnly": {
+      "type": "boolean",
+      "enum": [
+        true
+      ]
+    },
+    "networkRequired": {
+      "type": "boolean",
+      "enum": [
+        false
+      ]
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactId",
+        "revision",
+        "subjectId",
+        "caseId",
+        "relatedCaseId",
+        "relation",
+        "asOf",
+        "meaning",
+        "actualCollections",
+        "actualDeployments",
+        "sourceIds",
+        "coverageStates"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifactId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subjectId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relatedCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "minLength": 1
+        },
+        "meaning": {
+          "type": "string",
+          "minLength": 1,
+          "enum": [
+            "independent-authored-contrasts-not-live-pipeline"
+          ]
+        },
+        "actualCollections": {
+          "type": "integer",
+          "minimum": 0,
+          "enum": [
+            0
+          ]
+        },
+        "actualDeployments": {
+          "type": "integer",
+          "minimum": 0,
+          "enum": [
+            0
+          ]
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "coverageStates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Required",
+              "Produced",
+              "Collected",
+              "Retained",
+              "Queryable",
+              "Validated",
+              "Unknown"
+            ]
+          },
+          "minItems": 7,
+          "maxItems": 7,
+          "uniqueItems": true
+        }
+      }
+    },
+    "parents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "behaviorMapId",
+        "behaviorId",
+        "signalMapId",
+        "signalFlowId",
+        "findingRecordId",
+        "findingId",
+        "findingSubjectId",
+        "findingRevision",
+        "handoffId",
+        "handoffStatus",
+        "detectionRecordId",
+        "detectionId",
+        "telemetryIds",
+        "evidenceRole",
+        "parentStateChanged",
+        "authorityTransferred",
+        "evidenceTransferred",
+        "parentHandoffReceived",
+        "chapter17ContractSatisfied"
+      ],
+      "properties": {
+        "behaviorMapId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "behaviorId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signalMapId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signalFlowId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "findingRecordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "findingId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "findingSubjectId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "findingRevision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handoffId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handoffStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "detectionRecordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "detectionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "telemetryIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true
+        },
+        "evidenceRole": {
+          "type": "string",
+          "minLength": 1,
+          "enum": [
+            "method-reference-not-evidence-for-new-subject"
+          ]
+        },
+        "parentStateChanged": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "authorityTransferred": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "evidenceTransferred": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "parentHandoffReceived": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "chapter17ContractSatisfied": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "owner",
+        "authority",
+        "stop",
+        "cleanup",
+        "classification",
+        "personalDataIncluded",
+        "productSchemaClaimed"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "minLength": 1,
+          "enum": [
+            "offline-authored-json-reading-only"
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stop": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup": {
+          "type": "string",
+          "minLength": 1
+        },
+        "classification": {
+          "type": "string",
+          "minLength": 1,
+          "enum": [
+            "public-synthetic-only"
+          ]
+        },
+        "personalDataIncluded": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "productSchemaClaimed": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "rowId",
+          "question",
+          "consumer",
+          "subjectId",
+          "revision",
+          "eventType",
+          "windowStart",
+          "windowEnd",
+          "decisionDeadline",
+          "requiredRetentionDays",
+          "maximumClockUncertaintySeconds",
+          "maximumIngestDelaySeconds",
+          "identityNamespace",
+          "normalizerVersion",
+          "classification",
+          "requiredFields"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rowId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "consumer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "eventType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "windowStart": {
+            "type": "string",
+            "minLength": 1
+          },
+          "windowEnd": {
+            "type": "string",
+            "minLength": 1
+          },
+          "decisionDeadline": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requiredRetentionDays": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "maximumClockUncertaintySeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "maximumIngestDelaySeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "identityNamespace": {
+            "type": "string",
+            "minLength": 1
+          },
+          "normalizerVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "classification": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "public-synthetic-only"
+            ]
+          },
+          "requiredFields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "purpose",
+                "consumer"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "purpose": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "consumer": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "minItems": 9,
+            "maxItems": 9,
+            "uniqueItems": true
+          }
+        }
+      },
+      "minItems": 10,
+      "maxItems": 10,
+      "uniqueItems": true
+    },
+    "fixtures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "rowId",
+          "questionId",
+          "subjectId",
+          "revision",
+          "synthetic",
+          "eventPresence",
+          "observationWindowComplete",
+          "records"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rowId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "questionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "synthetic": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "eventPresence": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "present",
+              "unknown",
+              "absent"
+            ]
+          },
+          "observationWindowComplete": {
+            "type": "boolean",
+            "enum": [
+              false,
+              true
+            ]
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "event_time",
+                "observed_time",
+                "ingest_time",
+                "actor_id",
+                "target_workload_id",
+                "event_type",
+                "granted_scope_set",
+                "change_ticket_id",
+                "result"
+              ],
+              "properties": {
+                "event_time": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "observed_time": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "ingest_time": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "actor_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "target_workload_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "event_type": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "granted_scope_set": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "uniqueItems": true
+                },
+                "change_ticket_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "result": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "minItems": 0,
+            "maxItems": 1,
+            "uniqueItems": true
+          }
+        }
+      },
+      "minItems": 10,
+      "maxItems": 10,
+      "uniqueItems": true
+    },
+    "receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "stage",
+          "rowId",
+          "questionId",
+          "fixtureId",
+          "subjectId",
+          "revision",
+          "meaning"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "stage": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Produced",
+              "Collected",
+              "Retained",
+              "Queryable"
+            ]
+          },
+          "rowId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "questionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fixtureId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "authored-stage-receipt-not-live-measurement"
+            ]
+          }
+        }
+      },
+      "minItems": 24,
+      "maxItems": 24,
+      "uniqueItems": true
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "questionId",
+          "fixtureId",
+          "subjectId",
+          "revision",
+          "producerId",
+          "collectorId",
+          "transport",
+          "schemaVersion",
+          "normalizerVersion",
+          "identityNamespace",
+          "clockSource",
+          "timezone",
+          "clockUncertaintySeconds",
+          "ingestDelaySeconds",
+          "retentionStart",
+          "retentionEnd",
+          "integrityReference",
+          "integrityMeaning",
+          "classification",
+          "processingBasis",
+          "accessRole",
+          "receiptIds",
+          "coverage",
+          "testId",
+          "validationId",
+          "validationEvidenceId",
+          "allowedConclusion",
+          "gapId",
+          "gap",
+          "owner",
+          "dueAt",
+          "reassessment"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "questionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fixtureId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "producerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "collectorId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "transport": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "offline-supplied-records"
+            ]
+          },
+          "schemaVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "normalizerVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "identityNamespace": {
+            "type": "string",
+            "minLength": 1
+          },
+          "clockSource": {
+            "type": "string",
+            "minLength": 1
+          },
+          "timezone": {
+            "type": "string",
+            "minLength": 1
+          },
+          "clockUncertaintySeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "ingestDelaySeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "retentionStart": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retentionEnd": {
+            "type": "string",
+            "minLength": 1
+          },
+          "integrityReference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "integrityMeaning": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "supplied-byte-comparison-not-authenticity"
+            ]
+          },
+          "classification": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "public-synthetic-only"
+            ]
+          },
+          "processingBasis": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "synthetic-reading-only",
+              "unknown"
+            ]
+          },
+          "accessRole": {
+            "type": "string",
+            "minLength": 1
+          },
+          "receiptIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0,
+            "maxItems": 4,
+            "uniqueItems": true
+          },
+          "coverage": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Required",
+              "Produced",
+              "Collected",
+              "Retained",
+              "Queryable",
+              "Validated",
+              "Unknown"
+            ]
+          },
+          "testId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "validationId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "validationEvidenceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "allowedConclusion": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "bounded-input-contract-satisfied",
+              "collector-evidence-missing",
+              "retention-gap",
+              "query-evidence-missing",
+              "clock-uncertainty",
+              "identity-normalization-mismatch",
+              "producer-evidence-missing",
+              "privacy-basis-unknown",
+              "not-observed-in-synthetic-window"
+            ]
+          },
+          "gapId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gap": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dueAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessment": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 10,
+      "maxItems": 10,
+      "uniqueItems": true
+    },
+    "handoffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "targetChapter",
+          "consumer",
+          "recordId",
+          "rowIds",
+          "status",
+          "receiptId",
+          "executionAuthorized",
+          "owner",
+          "dueAt",
+          "acceptance",
+          "limitation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetChapter": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "consumer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recordId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rowIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "maxItems": 3,
+            "uniqueItems": true
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "planned-not-delivered"
+            ]
+          },
+          "receiptId": {
+            "type": "null"
+          },
+          "executionAuthorized": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dueAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "acceptance": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true
+    }
+  }
+}

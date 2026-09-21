@@ -6,6 +6,8 @@
 
 ### Added
 
+- [第16章](manuscript/16-telemetry-evidence-readiness.md)、ART-24、十の完全合成対比、閉Schemaと有限読解契約を追加。七状態と時刻・同一性・保持・Privacy・Gapを分け、親5/6/15/17のEvidence・権限・未配達は変更しない。一次資料は限定節のみ再確認。
+
 - [第II部の横断対応表](cases/part-ii-assessment-risk-map.md)と有限検査を追加。直接ID参照と別Case・別対象への方法参照を分け、親Draft・期限・未配達Handoffを保持する。第11章の独立Case、第15章の七つの独立判断例、既存章の正本を変更しない。
 
 - [第12章](manuscript/12-enterprise-identity.md)、ART-20 Identity Attack Path Review、四Principal・六Path stateの完全合成Graphと閉じたSchema・有限Layer A検査を追加。認証の強さ、権限関係、Evidence、評価実施の許可を分け、Federation非該当の比較ではIssuer / Audience / RPをnullで明示する。有限比較の成功を実認証・実行許可・親Gap解消の証拠にしない。
