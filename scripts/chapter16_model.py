@@ -320,8 +320,9 @@ def validate_model(data, schema, contract):
         ids = [r["id"] for r in data[kind]]
         if len(ids) != len(set(ids)):
             errors.append("ART24 duplicate identity: " + kind)
+    requirements = {q["id"]: q for q in data["requirements"]}
     for i, row in enumerate(data["rows"], 1):
-        req = next(q for q in data["requirements"] if q["id"] == row["questionId"])
+        req = requirements[row["questionId"]]
         fixture = next(f for f in data["fixtures"] if f["id"] == row["fixtureId"])
         expected = assess(
             row,
@@ -357,8 +358,8 @@ def validate_model(data, schema, contract):
     for handoff in data["handoffs"]:
         owned = [
             r["id"]
-            for r, q in zip(data["rows"], data["requirements"])
-            if q["consumer"] == handoff["consumer"]
+            for r in data["rows"]
+            if requirements[r["questionId"]]["consumer"] == handoff["consumer"]
         ]
         if handoff["rowIds"] != owned:
             errors.append("ART24 handoff consumer ownership")

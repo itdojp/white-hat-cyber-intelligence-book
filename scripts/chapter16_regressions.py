@@ -239,6 +239,28 @@ def run_regressions(data, schema, contract, source, projection):
             outcome(row, req, f, data["receipts"], digest(f)) == expected,
         )
 
+    # Review4061647060: an editorial reorder cannot transfer another Consumer's row.
+    # Refresh authored-input hashes deliberately; the semantic check must still bind IDs.
+    for other in (2, 3, 4, 8):
+        d, c = deepcopy(data), deepcopy(contract)
+        d["requirements"][0], d["requirements"][other] = (
+            d["requirements"][other],
+            d["requirements"][0],
+        )
+        c["authoredInputs"]["requirements"] = digest(d["requirements"])
+        check(f"TCM-K-HANDOFF-REORDER-{other}", not validate_model(d, schema, c))
+        for handoff in d["handoffs"]:
+            handoff["rowIds"] = [
+                row["id"]
+                for row, question in zip(d["rows"], d["requirements"])
+                if question["consumer"] == handoff["consumer"]
+            ]
+        c["authoredInputs"]["handoffs"] = digest(d["handoffs"])
+        check(
+            f"TCM-K-HANDOFF-WRONG-OWNER-{other}",
+            "ART24 handoff consumer ownership" in validate_model(d, schema, c),
+        )
+
     # Closed shape: every authored object requires every field, at every array element.
     def walk(value, path=()):
         if isinstance(value, dict):
