@@ -73,3 +73,7 @@
 - [閉じたSchema](../../schemas/ch15-findings-retest-risk.schema.json): 有限語彙・非実行フラグ・未知Field拒否。実許可の証明や一般的なWorkflow engineではない。
 
 [全FieldのCase表示](../ch15-findings-retest-risk-example.md)と一対一で照合する。固定asOfを使い、実Scanner・実変更・実Retest・実届出を行わない。
+
+## 第16章の合成記録
+
+[Telemetry Coverage JSON](ch16-telemetry-coverage.json)と[閉じたSchema](../../schemas/ch16-telemetry-coverage.schema.json)は十の独立した問い・二十四の供給段階receiptを比較する読解専用入力である。実製品の測定結果ではない。[全欄Case](../ch16-telemetry-coverage-example.md)へ戻る。

@@ -6,16 +6,16 @@ Registry全体の最終一括監査日: **2026-07-25**
 
 | ID | 発行主体 | 文書 | 版・状態 | 確認日 | 次回確認 | 主な章 |
 |---|---|---|---|---|---|---|
-| SRC-ATTACK-001 | MITRE | [MITRE ATT&CK Version History and August 2026 Updates](https://attack.mitre.org/resources/versions/) | 19.2 / current | 2026-09-12 | 2026-12-12 | 0, 1, 5, 6, 16, 17, 21, 25, 26 |
+| SRC-ATTACK-001 | MITRE | [MITRE ATT&CK Version History and August 2026 Updates](https://attack.mitre.org/resources/versions/) | 19.2 / current | 2026-09-21 | 2026-12-21 | 0, 1, 5, 6, 16, 17, 21, 25, 26 |
 | SRC-ATTACK-DS-001 | MITRE | [ATT&CK Data Sources](https://attack.mitre.org/datasources/) | Deprecated in ATT&CK v18 / deprecated-reference | 2026-09-06 | 2026-12-06 | 5, 17 |
-| SRC-ATTACK-DET-001 | MITRE | [ATT&CK Detection Strategies](https://attack.mitre.org/detectionstrategies/) | current | 2026-09-12 | 2026-12-12 | 5, 6, 17 |
+| SRC-ATTACK-DET-001 | MITRE | [ATT&CK Detection Strategies](https://attack.mitre.org/detectionstrategies/) | current | 2026-09-21 | 2026-12-21 | 5, 6, 16, 17 |
 | SRC-SIGMA-001 | SigmaHQ | [Sigma Rules Specification](https://sigmahq.io/sigma-specification/specification/sigma-rules-specification.html) | 2.1.0 / current | 2026-08-03 | 2027-08-03 | 17 |
 | SRC-NICE-001 | NIST | [Workforce Framework for Cybersecurity (NICE Framework)](https://csrc.nist.gov/pubs/sp/800/181/r1/final) | SP 800-181 Rev.1 / final | 2026-08-05 | 2026-11-05 | 0, 1, 3 |
 | SRC-NICE-COMP-001 | NIST | [NICE Framework Components v2.2.0](https://www.nist.gov/news-events/news/2026/04/nice-releases-nice-framework-components-v220) | 2.2.0 / current | 2026-08-05 | 2026-11-05 | 3 |
 | SRC-CSF-001 | NIST | [Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework) | 2.0 / final | 2026-08-08 | 2026-11-08 | 1, 4, 19, 22 |
 | SRC-NIST-RISK-001 | NIST | [Guide for Conducting Risk Assessments](https://csrc.nist.gov/pubs/sp/800/30/r1/final) | SP 800-30 Rev.1 / final | 2026-08-08 | 2026-11-08 | 4 |
 | SRC-OWASP-TM-001 | OWASP Foundation | [OWASP Threat Modeling Project](https://owasp.org/www-project-threat-modeling/) | maintained-project-guidance | 2026-08-08 | 2026-11-08 | 4 |
-| SRC-IR-001 | NIST | [Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | SP 800-61 Rev.3 / final | 2026-08-03 | 2027-08-03 | 1, 17, 19, 20, 22 |
+| SRC-IR-001 | NIST | [Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | SP 800-61 Rev.3 / final | 2026-09-21 | 2027-08-03 | 1, 16, 17, 19, 20, 22 |
 | SRC-BERKELEY-001 | OHCHR / UC Berkeley | [Berkeley Protocol on Digital Open Source Investigations](https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source) | 2022 edition / published | 2026-09-14 | 2027-09-14 | 8, 10, 24, 25 |
 | SRC-OWASP-TOP10-001 | OWASP | [OWASP Top 10:2025](https://owasp.org/Top10/) | 2025 / released | 2026-09-12 | 2026-12-12 | 7, 11 |
 | SRC-WSTG-001 | OWASP | [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | 4.2; 5.0 under development / stable | 2026-09-17 | 2026-12-17 | 9, 10, 11, 14, 15 |
@@ -38,8 +38,8 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-ATTACK-T1671-001 | MITRE | [ATT&CK v19.2 Enterprise STIX: T1671 and detection metadata subset](https://github.com/mitre/cti/blob/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json) | 19.2 / snapshot | 2026-09-06 | 2026-12-06 | 5 |
 | SRC-NIST-ZTA-001 | NIST | [Zero Trust Architecture](https://csrc.nist.gov/pubs/sp/800/207/final) | SP 800-207 / final | 2026-09-12 | 2026-12-12 | 6 |
 | SRC-NIST-ZTAA-001 | NIST | [A Zero Trust Architecture Model for Access Control in Cloud-Native Applications in Multi-Cloud Environments](https://csrc.nist.gov/pubs/sp/800/207/a/final) | SP 800-207A / final | 2026-09-15 | 2026-12-15 | 6, 12 |
-| SRC-NIST-LOG-001 | NIST | [Guide to Computer Security Log Management](https://csrc.nist.gov/pubs/sp/800/92/final) | SP 800-92 / final | 2026-09-12 | 2026-12-12 | 6 |
-| SRC-NIST-LOG-DRAFT-001 | NIST | [Cybersecurity Log Management Planning Guide](https://csrc.nist.gov/pubs/sp/800/92/r1/ipd) | SP 800-92 Rev.1 IPD / initial-public-draft | 2026-09-12 | 2026-12-12 | 6 |
+| SRC-NIST-LOG-001 | NIST | [Guide to Computer Security Log Management](https://csrc.nist.gov/pubs/sp/800/92/final) | SP 800-92 / final | 2026-09-21 | 2026-12-21 | 6, 16 |
+| SRC-NIST-LOG-DRAFT-001 | NIST | [Cybersecurity Log Management Planning Guide](https://csrc.nist.gov/pubs/sp/800/92/r1/ipd) | SP 800-92 Rev.1 IPD / initial-public-draft | 2026-09-21 | 2026-12-21 | 6, 16 |
 | SRC-IETF-OAUTH-CORE-001 | IETF / RFC Editor | [The OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749.html) | RFC 6749 / proposed-standard | 2026-09-12 | 2026-12-12 | 6 |
 | SRC-CVE-001 | NIST | [Common Vulnerabilities and Exposures glossary](https://csrc.nist.gov/glossary/term/common_vulnerabilities_and_exposures) | live-reference | 2026-09-12 | 2026-12-12 | 7 |
 | SRC-CWE-001 | MITRE | [Common Weakness Enumeration Archive](https://cwe.mitre.org/data/archive.html) | 4.20 / released | 2026-09-12 | 2026-12-12 | 7 |

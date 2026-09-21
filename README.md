@@ -128,3 +128,7 @@ CIでは`Book Contract`と`Book QA`を実行し、`main`では同じ生成契約
 ```bash
 npm run check:part02
 ```
+
+## 第16章の読解契約
+
+[第16章](manuscript/16-telemetry-evidence-readiness.md)、[ART-24](templates/telemetry-coverage-map.md)、[全欄Case](cases/ch16-telemetry-coverage-example.md)を追加する。十の独立した合成対比を七状態・二十四receipt・必要Field・時刻・Identity・保持・Gapへ接続し、親5/6/15/17の記録を変更しない。Linux / WSL2、Python 3.12と固定依存導入後の`npm run check:chapter16`は有限Layer A検査であり、実収集・実検知・実行許可の成功ではない。Markdown構文は共有Publication Projection 1.1.0、安全文法はContent Safety Policy 1.2.0だけが所有する。

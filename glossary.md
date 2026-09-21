@@ -159,3 +159,15 @@
 | ART04 Closed | 十分なRetestまたは明示的な有効な受容を根拠にした記録の終了。修正済みやリスクゼロとは別 |
 
 [第15章](manuscript/15-findings-retest-risk.md)ではStatusとResult、SeverityとPriority、受容と実施許可を分ける。
+
+## 第16章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Telemetry Coverage | 特定の対象・版・問いに必要な観測の根拠と不足 |
+| Evidence Readiness | 判断に必要なデータと取扱条件の準備。法的適格性の認定ではない |
+| Clock uncertainty | 時刻比較で考慮する不確かさ。到着順を発生順にしない |
+| ART24 Validated | 供給合成入力の限定比較の成功。実収集・検知・権限とは別 |
+| Not observed | 根拠がある限定観測Window内の未観測。侵害の不存在ではない |
+
+[第16章](manuscript/16-telemetry-evidence-readiness.md)では七状態と相関品質、親参照とEvidence受領を分ける。

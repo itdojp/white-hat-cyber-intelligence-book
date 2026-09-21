@@ -115,3 +115,14 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 | T-15-05 | 四つの視点 | `manuscript/15-findings-retest-risk.md` | Implemented |
 | T-15-06 | 六観点Rubric | `manuscript/15-findings-retest-risk.md` | Implemented |
 | T-15-07 | Retest Record記入欄 | `templates/retest-record.md` | Implemented |
+
+## 第16章
+
+| ID | 図表 | 正本 |
+|---|---|---|
+| F-16-01 | 問いから再評価への設計順序 | `manuscript/16-telemetry-evidence-readiness.md` |
+| T-16-01 | Fieldと目的 | 同上 |
+| T-16-02 | 七つのCoverage状態 | 同上 |
+| T-16-03 | Consumer別の結論上限 | 同上 |
+| T-16-04 | 読解の評価基準 | 同上 |
+| T-16-05 | CoverageとValidationの最小欄 | `templates/telemetry-coverage-map.md` |

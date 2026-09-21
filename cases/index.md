@@ -65,3 +65,7 @@
 ## 第II部の横断読解
 
 [AssessmentからRisk判断への対応表](part-ii-assessment-risk-map.md)で、第9〜15章の参照ID、独立Case、対象・版・Scope、未配達Handoffを区別して読む。新しい許可やEvidenceの継承を意味しない。
+
+## 第16章 Telemetry Coverage
+
+[完全合成記入例](ch16-telemetry-coverage-example.md)はART-24の全欄と十の独立した対比を示す。[JSON](fixtures/ch16-telemetry-coverage.json)と[Schema](../schemas/ch16-telemetry-coverage.schema.json)を読解に用い、親のEvidence、権限、未配達を変更しない。

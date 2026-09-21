@@ -25,6 +25,7 @@
 | ART-21 | Platform and Supply Chain Assessment | 13 | `templates/platform-supply-chain-assessment.md` |
 | ART-22 | Minimal-Impact Validation Record | 14 | `templates/minimal-impact-validation-record.md` |
 | ART-23 | Retest Record | 15 | `templates/retest-record.md` |
+| ART-24 | Telemetry Coverage Map | 16 | `templates/telemetry-coverage-map.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -65,3 +66,5 @@
 `ART-22`は問い、Authority、Validation、支持/反証/未観測、Stop、Cleanup/Residual、Finding/Decision/Reassessmentを接続する。[第14章Case](cases/ch14-minimal-impact-validation-example.md)は八つの完全合成記録で六Result・四Methodを区別し、未実施を別欄へ残す。Supportedも実影響・実許可ではなく、残存UnknownならOpenを維持する。
 
 `ART-04`の既存見出しと公開URLを保持し、Finding・対象版・Evidence・Treatment・Decision・Residual・受容権限を接続する。`ART-23`は変更参照とRetest条件・観測・限界を記録する。[第15章Case](cases/ch15-findings-retest-risk-example.md)の七つの独立した合成対比では、六Status、五Result、Retestと受容の二つのClosed経路を区別する。実改修や実行許可を与えない。
+
+`ART-24`は問い、必要Field、Consumer、七つのCoverage状態、品質、Gap、Owner、有限Validationと再評価を接続する。[第16章Case](cases/ch16-telemetry-coverage-example.md)は十の独立した合成対比であり、実収集・親Evidence・実行許可・Handoff受領を認定しない。

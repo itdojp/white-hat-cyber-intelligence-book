@@ -11,8 +11,8 @@
       "version": "19.2",
       "url": "https://attack.mitre.org/resources/versions/",
       "publishedAt": null,
-      "checkedAt": "2026-09-12",
-      "nextReviewAt": "2026-12-12",
+      "checkedAt": "2026-09-21",
+      "nextReviewAt": "2026-12-21",
       "reviewTriggers": [
         "ATT&CK major or minor release",
         "Used Object version, modified, revoked/deprecated or relationship change"
@@ -28,7 +28,7 @@
         25,
         26
       ],
-      "notes": "Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration. publishedAt is null because the live Version History page does not establish its own publication timestamp. The related release UTC timestamp and Updates effective/start date above are separate context, not the publication date of this live page. Publication date of the live page is unknown; monitor Version History and Updates on the recorded review triggers rather than guessing a date. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted."
+      "notes": "Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration. publishedAt is null because the live Version History page does not establish its own publication timestamp. The related release UTC timestamp and Updates effective/start date above are separate context, not the publication date of this live page. Publication date of the live page is unknown; monitor Version History and Updates on the recorded review triggers rather than guessing a date. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Version History19.2; inherited Chapter5 snapshot retained; behavior mapping is not telemetry coverage. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned."
     },
     {
       "id": "SRC-ATTACK-DS-001",
@@ -60,8 +60,8 @@
       "version": null,
       "url": "https://attack.mitre.org/detectionstrategies/",
       "publishedAt": null,
-      "checkedAt": "2026-09-12",
-      "nextReviewAt": "2026-12-12",
+      "checkedAt": "2026-09-21",
+      "nextReviewAt": "2026-12-21",
       "reviewTriggers": [
         "ATT&CK detection strategy additions or model changes",
         "Used Object version, modified, revoked/deprecated or relationship change"
@@ -69,9 +69,10 @@
       "chapters": [
         5,
         6,
+        16,
         17
       ],
-      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt. Rechecked for Chapter 5 on 2026-09-06; DET0539 and analytic/data-component references are pinned separately in SRC-ATTACK-T1671-001. No product detection validation is implied. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted."
+      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt. Rechecked for Chapter 5 on 2026-09-06; DET0539 and analytic/data-component references are pinned separately in SRC-ATTACK-T1671-001. No product detection validation is implied. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Introductory definition of strategies grouping platform analytics only; no new object mapping or catalogue count. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned."
     },
     {
       "id": "SRC-SIGMA-001",
@@ -207,19 +208,20 @@
       "version": "SP 800-61 Rev.3",
       "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
       "publishedAt": "2025-04-03",
-      "checkedAt": "2026-08-03",
+      "checkedAt": "2026-09-21",
       "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
         "NIST revision or supplemental guidance change"
       ],
       "chapters": [
         1,
+        16,
         17,
         19,
         20,
         22
       ],
-      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03."
+      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned."
     },
     {
       "id": "SRC-BERKELEY-001",
@@ -671,15 +673,16 @@
       "version": "SP 800-92",
       "url": "https://csrc.nist.gov/pubs/sp/800/92/final",
       "publishedAt": "2006-09-13",
-      "checkedAt": "2026-09-12",
-      "nextReviewAt": "2026-12-12",
+      "checkedAt": "2026-09-21",
+      "nextReviewAt": "2026-12-21",
       "reviewTriggers": [
         "Revision, publication status, errata or adopted meaning changes"
       ],
       "chapters": [
-        6
+        6,
+        16
       ],
-      "notes": "Sections 2-3 lifecycle, normalization, time and retention only. Old product examples and MD5/SHA-1 recommendations are not adopted."
+      "notes": "Sections 2-3 lifecycle, normalization, time and retention only. Old product examples and MD5/SHA-1 recommendations are not adopted. Chapter16 scoped review (2026-09-21): Sections3.2 functions/normalization/time,4.2 purpose/retention/access/sensitive information,5.6 bounded testing/reassessment only. Old products, legal examples, MD5/SHA1 advice and digest-as-signature wording are not adopted. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned."
     },
     {
       "id": "SRC-NIST-LOG-DRAFT-001",
@@ -690,15 +693,16 @@
       "version": "SP 800-92 Rev.1 IPD",
       "url": "https://csrc.nist.gov/pubs/sp/800/92/r1/ipd",
       "publishedAt": "2023-10-11",
-      "checkedAt": "2026-09-12",
-      "nextReviewAt": "2026-12-12",
+      "checkedAt": "2026-09-21",
+      "nextReviewAt": "2026-12-21",
       "reviewTriggers": [
         "Revision, publication status, errata or adopted meaning changes"
       ],
       "chapters": [
-        6
+        6,
+        16
       ],
-      "notes": "Monitoring only, not a final normative source. Publication history and NIST log-management project checked; closed comments do not mean Final."
+      "notes": "Monitoring only, not a final normative source. Publication history and NIST log-management project checked; closed comments do not mean Final. Chapter16 scoped review (2026-09-21): IPD2023-10-11 metadata/status only; closed comment period is not Final. Draft body not adopted. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned."
     },
     {
       "id": "SRC-IETF-OAUTH-CORE-001",

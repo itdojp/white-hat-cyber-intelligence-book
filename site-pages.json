@@ -452,6 +452,34 @@
       "section": "additional",
       "order": 319,
       "title": "第II部 横断読解：AssessmentからRisk判断へ"
+    },
+    {
+      "source": "manuscript/16-telemetry-evidence-readiness.md",
+      "destination": "chapters/chapter-16/index.md",
+      "section": "chapters",
+      "order": 59,
+      "title": "第16章 Telemetry ArchitectureとEvidence Readiness"
+    },
+    {
+      "source": "templates/telemetry-coverage-map.md",
+      "destination": "templates/telemetry-coverage-map/index.md",
+      "section": "additional",
+      "order": 277,
+      "title": "Telemetry Coverage Map"
+    },
+    {
+      "source": "cases/ch16-telemetry-coverage-example.md",
+      "destination": "cases/chapter-16-telemetry-coverage/index.md",
+      "section": "additional",
+      "order": 278,
+      "title": "第16章 完全合成記入例：Telemetry Coverage Map"
+    },
+    {
+      "source": "references/ch16-source-review-2026-09-21.md",
+      "destination": "references/chapter-16-source-review/index.md",
+      "section": "additional",
+      "order": 279,
+      "title": "第16章 Source Review — 2026-09-21"
     }
   ],
   "directoryRoutes": {
@@ -549,6 +577,14 @@
     {
       "source": "schemas/ch15-findings-retest-risk.schema.json",
       "destination": "downloads/ch15-findings-retest-risk.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch16-telemetry-coverage.json",
+      "destination": "downloads/ch16-telemetry-coverage.json"
+    },
+    {
+      "source": "schemas/ch16-telemetry-coverage.schema.json",
+      "destination": "downloads/ch16-telemetry-coverage.schema.json"
     }
   ]
 }
