@@ -1,5 +1,7 @@
 """Finite ART24 semantic and selection counterexamples; no syntax grammar."""
 
+from contextlib import redirect_stdout
+from io import StringIO
 from copy import deepcopy
 from dataclasses import replace
 import os
@@ -379,6 +381,44 @@ def run_regressions(data, schema, contract, source, projection):
                 for e in validate_model(d, schema, contract)
             ),
         )
+
+    # Chapter17 keeps its historical audit floor while Chapter16 advances IR review.
+    from scripts import check_chapter17_contract as chapter17
+
+    real_load = chapter17.load_json
+    sources = real_load("references/sources.json")
+    for value, expected in [
+        ("2026-08-03", 0),
+        ("2026-09-21", 0),
+        ("2026-08-02", 1),
+        ("20260921", 1),
+        ("2026-9-21", 1),
+        ("2026-02-30", 1),
+        (None, 1),
+        (True, 1),
+    ]:
+        changed = deepcopy(sources)
+        next(x for x in changed["sources"] if x["id"] == "SRC-IR-001")["checkedAt"] = (
+            value
+        )
+
+        def load_for_probe(path):
+            return changed if path == "references/sources.json" else real_load(path)
+
+        output = StringIO()
+        with (
+            patch.object(chapter17, "ERRORS", []),
+            patch.object(chapter17, "load_json", load_for_probe),
+            redirect_stdout(output),
+        ):
+            result = chapter17.main()
+        check("TCM-COMPAT-IR-DATE-" + str(value), result == expected)
+        if expected:
+            check(
+                "TCM-COMPAT-IR-REASON-" + str(value),
+                "SRC-IR-001 predates the Chapter 17 audit baseline"
+                in output.getvalue(),
+            )
 
     # Static bounded input IO, no arbitrary file/network/command parameter.
     work = ROOT / ".work"

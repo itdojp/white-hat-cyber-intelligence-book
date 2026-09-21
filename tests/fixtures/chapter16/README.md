@@ -30,3 +30,8 @@ products. `--no-regressions` is the mandatory publication preflight; it still
 checks all canonical documents, schema, semantics, parents, Source and routes.
 Unknown fields/surfaces are fail closed until reviewed; arbitrary telemetry,
 product parsers, collection engines and filesystem race confinement are non-goals.
+
+TCM-COMPAT exercises the actual Chapter17 contract with scoped IR Source review
+dates: its historical 2026-08-03 floor remains, later canonical dates are allowed,
+and older/invalid/noncanonical dates are rejected. Source meaning/version/scope
+are still separately reviewed; a later date alone is not editorial validation.
