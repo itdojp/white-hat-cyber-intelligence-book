@@ -43,7 +43,8 @@ def run_regressions(data, schema, contract, source, projection):
 
     def rejected(fn):
         try:
-            return bool(fn())
+            result = fn()
+            return isinstance(result, list) and bool(result)
         except (ValueError, TypeError, KeyError, StopIteration, OSError, ManifestError):
             return True
 
@@ -52,6 +53,11 @@ def run_regressions(data, schema, contract, source, projection):
             return assess(row, req, fixture, receipts, original)
         except (ValueError, TypeError, KeyError):
             return "Rejected"
+
+    check("TCM-H-NONEMPTY-BYTES-ARE-NOT-REJECTION", not rejected(lambda: b"accepted"))
+    check(
+        "TCM-H-NONEMPTY-JSON-IS-NOT-REJECTION", not rejected(lambda: {"accepted": True})
+    )
 
     # Kernel tests deliberately do not invoke schema or frozen authored-input hashes.
     for i, row in enumerate(data["rows"]):
