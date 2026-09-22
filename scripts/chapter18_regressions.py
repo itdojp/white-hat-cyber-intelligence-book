@@ -224,6 +224,23 @@ def run_regressions(data, schema, contract, source, projection):
     ]
     check("H-K-PURE-DIRECT-IMPORTS", imports == ["copy"])
 
+    # PR150 / discussion_r4072522451: unchanged schema permits these values.
+    # Refresh the exact edited top-level digest to isolate semantic enforcement.
+    for root, key, value in (
+        ("record", "actualCollections", 1),
+        ("record", "actualIncidents", 1),
+        ("safety", "personalDataIncluded", True),
+        ("safety", "productSchemaClaimed", True),
+    ):
+        changed, checkpoint = deepcopy(data), deepcopy(contract)
+        changed[root][key] = value
+        checkpoint["authoredInputs"][root] = digest(changed[root])
+        check(
+            "H-M-SYNTHETIC-" + root + "-" + key,
+            validate_model(changed, schema, checkpoint)
+            == ["ART06 synthetic-only record claims"],
+        )
+
     # Closed structure at every canonical object, independent of authored hashes.
     for path, obj in containers(data):
         for key in obj:

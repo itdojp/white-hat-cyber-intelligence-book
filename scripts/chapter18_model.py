@@ -131,6 +131,15 @@ def case_groups(data):
 def validate_model(data, schema, contract):
     validate_schema_instance(data, schema)
     errors = []
+    # These safety claims are semantic invariants, not editorial snapshot values.
+    # Refreshing authored hashes or projected Case fields cannot authorize them.
+    if (
+        data["record"]["actualCollections"] != 0
+        or data["record"]["actualIncidents"] != 0
+        or data["safety"]["personalDataIncluded"] is not False
+        or data["safety"]["productSchemaClaimed"] is not False
+    ):
+        errors.append("ART06 synthetic-only record claims")
     if tuple(data["record"]["resultStates"]) != RESULTS or data["plan"] != PLAN:
         errors.append("ART06 frozen query plan / five results")
     for key, expected in contract["authoredInputs"].items():
