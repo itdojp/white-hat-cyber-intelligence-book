@@ -9,6 +9,7 @@ from pathlib import PurePosixPath
 import stat
 
 from scripts.chapter18_query import PLAN, RESULTS, evaluate
+from scripts.chapter18_judgments import judgment_errors
 from scripts.check_editorial_input_manifest import (
     _reject_constant,
     _reject_duplicate_keys,
@@ -165,6 +166,7 @@ def validate_model(data, schema, contract):
             or supply["meaning"] != "supplied-fixture-comparison-not-authenticity"
         ):
             errors.append(row["id"] + ": supplied evidence binding/digest")
+        errors += judgment_errors(row, actual)
         judgment = row["judgment"]
         if (
             judgment["result"] != actual["result"]

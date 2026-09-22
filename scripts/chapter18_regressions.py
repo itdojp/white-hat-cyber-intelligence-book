@@ -20,6 +20,7 @@ from scripts.chapter18_model import (
     validate_model,
 )
 from scripts.chapter18_query import RESULTS, LIMIT, VERSION, evaluate, verify_claim
+from scripts.chapter18_judgments import PROFILES, judgment_errors
 from scripts.check_chapter18_contract import (
     ROOT,
     inventory,
@@ -264,6 +265,75 @@ def run_regressions(data, schema, contract, source, projection):
             and {k: row["queryResult"][k] for k in matched["expected"]}
             == matched["expected"],
         )
+        # PR150 / discussion_r4072891989: prose is a controlled reviewed
+        # vocabulary, independent of refreshed authored/projection checkpoints.
+        check(
+            f"H-M-JUDGMENT-POSITIVE-{i}",
+            not judgment_errors(row, evaluate(row["input"])),
+        )
+        for field, value in (
+            ("permittedConclusion", "侵害が確定し、全システムは安全である。"),
+            ("alternative", "代替説明はすべて排除した。"),
+            ("confidenceBasis", "供給外を含めてすべて確認した。"),
+            ("gap", "情報欠落は一切ない。"),
+            ("nextAction", "通知と受領は完了した。"),
+            ("confidence", "低" if row["judgment"]["confidence"] == "高" else "高"),
+        ):
+            changed, checkpoint = deepcopy(data), deepcopy(contract)
+            changed["contrasts"][i]["judgment"][field] = value
+            checkpoint["authoredInputs"]["contrasts"] = digest(changed["contrasts"])
+            check(
+                f"H-M-JUDGMENT-CLAIM-{i}-{field}",
+                validate_model(changed, schema, checkpoint)
+                == [row["id"] + ": unreviewed judgment claim: " + field],
+            )
+        changed, checkpoint = deepcopy(data), deepcopy(contract)
+        changed["contrasts"][i]["corpusId"] = "QCASE18-99"
+        checkpoint["authoredInputs"]["contrasts"] = digest(changed["contrasts"])
+        check(
+            f"H-M-JUDGMENT-CORPUS-{i}",
+            validate_model(changed, schema, checkpoint)
+            == [row["id"] + ": judgment result/scope/profile binding"],
+        )
+        changed, checkpoint = deepcopy(data), deepcopy(contract)
+        changed["contrasts"][i]["judgment"]["reassessment"] = "以後の再評価は不要。"
+        checkpoint["authoredInputs"]["contrasts"] = digest(changed["contrasts"])
+        check(
+            f"H-M-JUDGMENT-REASSESS-{i}",
+            validate_model(changed, schema, checkpoint)
+            == [row["id"] + ": unreviewed judgment reassessment"],
+        )
+        for field in ("acceptance", "limitation"):
+            changed, checkpoint = deepcopy(data), deepcopy(contract)
+            changed["contrasts"][i]["handoffs"][0][field] = "受領と承認は完了済み。"
+            checkpoint["authoredInputs"]["contrasts"] = digest(changed["contrasts"])
+            check(
+                f"H-M-JUDGMENT-HANDOFF-{i}-{field}",
+                validate_model(changed, schema, checkpoint)
+                == [row["id"] + ": unreviewed handoff analysis boundary"],
+            )
+        # Even a benign rewrite needs explicit profile review, not a hash refresh.
+        changed, checkpoint = deepcopy(data), deepcopy(contract)
+        changed["contrasts"][i]["judgment"]["permittedConclusion"] += "（限定した結論）"
+        checkpoint["authoredInputs"]["contrasts"] = digest(changed["contrasts"])
+        check(
+            f"H-M-JUDGMENT-UNREVIEWED-WORDING-{i}",
+            validate_model(changed, schema, checkpoint)
+            == [row["id"] + ": unreviewed judgment claim: permittedConclusion"],
+        )
+        for field, value in (
+            ("result", next(r for r in RESULTS if r != row["queryResult"]["result"])),
+            ("gaps", ["unreviewed-gap"]),
+            ("limit", "all-systems-safe"),
+            ("scope", {}),
+        ):
+            actual = deepcopy(row["queryResult"])
+            actual[field] = value
+            check(
+                f"H-M-JUDGMENT-BOUND-{i}-{field}",
+                judgment_errors(row, actual)
+                == [row["id"] + ": judgment result/scope/profile binding"],
+            )
         mutations = [
             (
                 ("queryResult", "result"),
@@ -311,6 +381,19 @@ def run_regressions(data, schema, contract, source, projection):
                 for e in validate_model(changed, schema, contract)
             ),
         )
+    check(
+        "H-M-JUDGMENT-INVENTORY", set(PROFILES) == {r["id"] for r in data["contrasts"]}
+    )
+    check("H-M-JUDGMENT-RESULTS", {p.result for p in PROFILES.values()} == set(RESULTS))
+    check("H-SCHEMA-NO-PLACEHOLDER-ID", "$id" not in schema)
+    check(
+        "H-SCHEMA-NO-REMOTE-REF",
+        all(
+            "$ref" not in node
+            for _, node in containers(schema)
+            if isinstance(node, dict)
+        ),
+    )
     for name in (
         "parentStateChanged",
         "authorityTransferred",
