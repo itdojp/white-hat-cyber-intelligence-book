@@ -171,3 +171,15 @@
 | Not observed | 根拠がある限定観測Window内の未観測。侵害の不存在ではない |
 
 [第16章](manuscript/16-telemetry-evidence-readiness.md)では七状態と相関品質、親参照とEvidence受領を分ける。
+
+## 第18章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Hunt Hypothesis | 対象と観測、支持・反証条件を持つ探索の問い |
+| Negative Finding | 根拠あるCoverageと固定した対象・期間・Queryに限る未観測 |
+| Pivot | 次の問いへ進む条件付き接続。無断のScope拡大ではない |
+| ART06 Supported | 供給合成入力が限定仮説と整合する判断。侵害確定ではない |
+| ART06 Inconclusive | 観測条件や比較目的の不足による判断保留 |
+
+[第18章](manuscript/18-threat-hunting.md)で五ResultとCoverage、代替説明、再評価を接続する。

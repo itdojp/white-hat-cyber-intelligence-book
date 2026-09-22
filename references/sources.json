@@ -11,7 +11,7 @@
       "version": "19.2",
       "url": "https://attack.mitre.org/resources/versions/",
       "publishedAt": null,
-      "checkedAt": "2026-09-21",
+      "checkedAt": "2026-09-22",
       "nextReviewAt": "2026-12-21",
       "reviewTriggers": [
         "ATT&CK major or minor release",
@@ -24,11 +24,12 @@
         6,
         16,
         17,
+        18,
         21,
         25,
         26
       ],
-      "notes": "Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration. publishedAt is null because the live Version History page does not establish its own publication timestamp. The related release UTC timestamp and Updates effective/start date above are separate context, not the publication date of this live page. Publication date of the live page is unknown; monitor Version History and Updates on the recorded review triggers rather than guessing a date. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Version History19.2; inherited Chapter5 snapshot retained; behavior mapping is not telemetry coverage. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned."
+      "notes": "Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration. publishedAt is null because the live Version History page does not establish its own publication timestamp. The related release UTC timestamp and Updates effective/start date above are separate context, not the publication date of this live page. Publication date of the live page is unknown; monitor Version History and Updates on the recorded review triggers rather than guessing a date. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Version History19.2; inherited Chapter5 snapshot retained; behavior mapping is not telemetry coverage. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: 公式Version History current19.2とUpdatesを確認。版付き仮説語彙に限定し、全CTI object監査・Coverage認定・帰属推定ではない。詳細はch18-source-review-2026-09-22.md。"
     },
     {
       "id": "SRC-ATTACK-DS-001",
@@ -60,7 +61,7 @@
       "version": null,
       "url": "https://attack.mitre.org/detectionstrategies/",
       "publishedAt": null,
-      "checkedAt": "2026-09-21",
+      "checkedAt": "2026-09-22",
       "nextReviewAt": "2026-12-21",
       "reviewTriggers": [
         "ATT&CK detection strategy additions or model changes",
@@ -70,9 +71,10 @@
         5,
         6,
         16,
-        17
+        17,
+        18
       ],
-      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt. Rechecked for Chapter 5 on 2026-09-06; DET0539 and analytic/data-component references are pinned separately in SRC-ATTACK-T1671-001. No product detection validation is implied. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Introductory definition of strategies grouping platform analytics only; no new object mapping or catalogue count. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned."
+      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt. Rechecked for Chapter 5 on 2026-09-06; DET0539 and analytic/data-component references are pinned separately in SRC-ATTACK-T1671-001. No product detection validation is implied. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Introductory definition of strategies grouping platform analytics only; no new object mapping or catalogue count. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: Strategyが複数Analyticsをまとめる導入説明を確認。五Resultと有限Hunt算法は本書独自で、製品Query・取得済みCoverageの証明ではない。詳細はch18-source-review-2026-09-22.md。"
     },
     {
       "id": "SRC-SIGMA-001",
@@ -208,7 +210,7 @@
       "version": "SP 800-61 Rev.3",
       "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
       "publishedAt": "2025-04-03",
-      "checkedAt": "2026-09-21",
+      "checkedAt": "2026-09-22",
       "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
         "NIST revision or supplemental guidance change"
@@ -217,11 +219,12 @@
         1,
         16,
         17,
+        18,
         19,
         20,
         22
       ],
-      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned."
+      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: FinalのDE.AE-08/p26、RS.MA-02/p27、RS.AN-06/07/p29をIncident基準・Triage・記録の来歴に限定参照。本書の五Resultや算法の規範・法的認定ではない。詳細はch18-source-review-2026-09-22.md。"
     },
     {
       "id": "SRC-BERKELEY-001",

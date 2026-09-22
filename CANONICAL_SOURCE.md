@@ -96,3 +96,5 @@ RegistryのSchemaは`schemas/site-pages.schema.json`で管理する。新しい�
 Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設定の状態を確認した上で完了判定する。代表章はPhase 0完了前にDraftとして開始できるが、mergeはPhase 0のOperator Gate完了後とする。
 
 第16章の公開前安全検査も、第II部横断対応表の検査の直前、生成先削除の前に実行する。`check:chapter16`は四つの正本文書全体、合成JSONとSchema、直接親参照、Source、公開経路を有限検査する。共有Projection/Policy以外に構文解析器を持たず、未知の入力・欄・章構成変更は再レビューまでfail closedとする。
+
+第18章の公開前検査も、第II部横断対応表の検査と生成先削除の前に実行する。`check:chapter18`は本文、既存ART-06、Case、Source Noteの全体と、固定合成JSON、Schema、親参照、公開経路を扱う。有限の合成Queryは章固有の問いを比較するだけで、SIEMや任意Query言語ではない。構文と安全文法は共有Projection/Policyが所有する。

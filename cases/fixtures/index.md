@@ -77,3 +77,7 @@
 ## 第16章の合成記録
 
 [Telemetry Coverage JSON](ch16-telemetry-coverage.json)と[閉じたSchema](../../schemas/ch16-telemetry-coverage.schema.json)は十の独立した問い・二十四の供給段階receiptを比較する読解専用入力である。実製品の測定結果ではない。[全欄Case](../ch16-telemetry-coverage-example.md)へ戻る。
+
+## 第18章の合成記録
+
+[Hunt JSON](ch18-threat-hunting.json)と[閉じたSchema](../../schemas/ch18-threat-hunting.schema.json)は、固定合成入力に対する十二の独立対比を示す。Receiptは教育用仮定であり、実Collectorの証拠ではない。[Artifact全欄Case](../ch18-hunt-plan-example.md)へ戻る。

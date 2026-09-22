@@ -69,3 +69,7 @@
 ## 第16章 Telemetry Coverage
 
 [完全合成記入例](ch16-telemetry-coverage-example.md)はART-24の全欄と十の独立した対比を示す。[JSON](fixtures/ch16-telemetry-coverage.json)と[Schema](../schemas/ch16-telemetry-coverage.schema.json)を読解に用い、親のEvidence、権限、未配達を変更しない。
+
+## 第18章 Threat Hunting
+
+[Hunt Plan and Findings記入例](ch18-hunt-plan-example.md)はART-06の十二の独立対比である。[合成JSON](fixtures/ch18-threat-hunting.json)と[Schema](../schemas/ch18-threat-hunting.schema.json)へ対応し、0件と観測不足を区別する。原DVR/DET/TEL/fixtureと未配達は不変である。

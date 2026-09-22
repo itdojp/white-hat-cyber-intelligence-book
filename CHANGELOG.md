@@ -6,6 +6,8 @@
 
 ### Added
 
+- [第18章](manuscript/18-threat-hunting.md)、既存ART-06拡張、十二の完全合成対比、閉Schemaと有限Query/読解契約を追加。五Result、Coverage、Negative Finding、代替説明、Backlog、再評価を接続し、親16/17のEvidence・権限・未配達を変更しない。
+
 - [第16章](manuscript/16-telemetry-evidence-readiness.md)、ART-24、十の完全合成対比、閉Schemaと有限読解契約を追加。七状態と時刻・同一性・保持・Privacy・Gapを分け、親5/6/15/17のEvidence・権限・未配達は変更しない。一次資料は限定節のみ再確認。
 
 - [第II部の横断対応表](cases/part-ii-assessment-risk-map.md)と有限検査を追加。直接ID参照と別Case・別対象への方法参照を分け、親Draft・期限・未配達Handoffを保持する。第11章の独立Case、第15章の七つの独立判断例、既存章の正本を変更しない。

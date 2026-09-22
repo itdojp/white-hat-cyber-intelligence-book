@@ -1130,6 +1130,18 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-22",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5777112567",
+          "reason": "PR149 actual-main公開とIssue148完了後、唯一EIC-0041-5a08af6d1ae3をbranch前に登録設計来歴として選択。raw実体はworkspaceに不在で読了/hash実照合/直接採用なし。正式Issue41の五Result、現行親契約と一次資料から新規制作し、同梱Chapter19を保持する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-22",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/150",
+          "reason": "第18章専用Draft PR #150に本文/ART06/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
         }
       ]
     },

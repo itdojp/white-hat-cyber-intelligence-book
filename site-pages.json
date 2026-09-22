@@ -480,6 +480,27 @@
       "section": "additional",
       "order": 279,
       "title": "第16章 Source Review — 2026-09-21"
+    },
+    {
+      "source": "manuscript/18-threat-hunting.md",
+      "destination": "chapters/chapter-18/index.md",
+      "section": "chapters",
+      "order": 201,
+      "title": "第18章 Threat Huntingを仮説・探索・Negative Findingへ構造化する"
+    },
+    {
+      "source": "cases/ch18-hunt-plan-example.md",
+      "destination": "cases/chapter-18-hunt-plan/index.md",
+      "section": "additional",
+      "order": 281,
+      "title": "第18章 完全合成記入例：Hunt Plan and Findings"
+    },
+    {
+      "source": "references/ch18-source-review-2026-09-22.md",
+      "destination": "references/chapter-18-source-review/index.md",
+      "section": "additional",
+      "order": 282,
+      "title": "第18章 Source Review — 2026-09-22"
     }
   ],
   "directoryRoutes": {
@@ -585,6 +606,14 @@
     {
       "source": "schemas/ch16-telemetry-coverage.schema.json",
       "destination": "downloads/ch16-telemetry-coverage.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch18-threat-hunting.json",
+      "destination": "downloads/ch18-threat-hunting.json"
+    },
+    {
+      "source": "schemas/ch18-threat-hunting.schema.json",
+      "destination": "downloads/ch18-threat-hunting.schema.json"
     }
   ]
 }
