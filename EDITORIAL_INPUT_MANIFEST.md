@@ -17,7 +17,8 @@
 | `blueprint-only` | 1 |
 | `consumed` | 12 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 14 |
+| `registered-pending-prerequisites` | 13 |
+| `selected-for-intake` | 1 |
 
 ## Acknowledged collisions
 
@@ -61,7 +62,7 @@
 | `chapter-14` | #38 | `consumed` | `EIC-0038-3e687b3de61f` | #139 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5692616067) |
 | `chapter-15` | #39 | `consumed` | `EIC-0039-c168fc29af42` | #142 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5740271229) |
 | `chapter-16` | #40 | `consumed` | `EIC-0040-38fbe94b39aa` | #147 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/40#issuecomment-5767224085) |
-| `chapter-18` | #41 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526) |
+| `chapter-18` | #41 | `selected-for-intake` | `EIC-0041-5a08af6d1ae3` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5777112567) |
 | `chapter-19` | #42 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526) |
 | `chapter-20` | #43 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622) |
 | `chapter-21` | #44 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622) |
@@ -158,7 +159,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0041-5a08af6d1ae3` | `EIP-0010` | `chapter18-threat-hunting.predraft.md` | `5a08af6d1ae3f94b622ddec1f36f133b763d5b6eaac03f1ef08b415d0b540bbd` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0041-5a08af6d1ae3` | `EIP-0010` | `chapter18-threat-hunting.predraft.md` | `5a08af6d1ae3f94b622ddec1f36f133b763d5b6eaac03f1ef08b415d0b540bbd` | `selected` | 唯一の登録候補をbranch前に設計来歴として選択。raw実体不在で読了/hash実照合/直接採用なし。正式Issue41と現行契約から新規制作する。 |
 
 ### `chapter-19` / Issue #42
 

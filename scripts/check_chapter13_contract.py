@@ -51,6 +51,7 @@ PREFLIGHT = tuple(
     for n in (6, 7, 8, 9, 10, 12, 13, 14, 15)
 ) + (
     "python3 scripts/check_chapter16_contract.py --no-regressions",
+    "python3 scripts/check_chapter18_contract.py --no-regressions",
     "python3 scripts/check_part02_contract.py --no-regressions",
     "python3 scripts/sync_book_site.py --output docs",
     "npm run copy:notices",

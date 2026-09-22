@@ -126,3 +126,12 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 | T-16-03 | Consumer別の結論上限 | 同上 |
 | T-16-04 | 読解の評価基準 | 同上 |
 | T-16-05 | CoverageとValidationの最小欄 | `templates/telemetry-coverage-map.md` |
+
+## 第18章
+
+| ID | 図表 | 正本 |
+|---|---|---|
+| F-18-01 | 問いから再評価まで | `manuscript/18-threat-hunting.md` |
+| T-18-01 | 有限Queryの範囲と境界 | 同上 |
+| T-18-02 | 五つのResultと許されない飛躍 | 同上 |
+| T-18-03 | 読解の評価基準 | 同上 |
