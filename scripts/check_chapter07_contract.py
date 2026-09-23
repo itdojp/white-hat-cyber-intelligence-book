@@ -330,6 +330,7 @@ def repository_errors(contract):
         "python3 scripts/check_chapter15_contract.py --no-regressions && "
         "python3 scripts/check_chapter16_contract.py --no-regressions && "
         "python3 scripts/check_chapter18_contract.py --no-regressions && "
+        "python3 scripts/check_chapter19_contract.py --no-regressions && "
         "python3 scripts/check_part02_contract.py --no-regressions && "
         "python3 scripts/sync_book_site.py "
     ):

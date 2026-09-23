@@ -1,0 +1,311 @@
+"""Finite ART25 semantic/selection tests; generic syntax remains shared-owned."""
+
+from copy import deepcopy
+from dataclasses import replace
+from pathlib import Path
+import tempfile
+
+from scripts.chapter19_decisions import STATES, VERSION, evaluate
+from scripts.chapter19_model import (
+    DATA,
+    CORPUS,
+    DOCUMENTS,
+    strict,
+    read_regular,
+    digest,
+    validate_model,
+)
+from scripts.check_chapter19_contract import (
+    ROOT,
+    document_errors,
+    inventory,
+    scan_document,
+    parent_errors,
+)
+from scripts.check_editorial_input_manifest import (
+    ManifestError,
+    validate_schema_instance,
+)
+from scripts.publication_projection import project_documents, is_policy_scan_field
+
+
+def at(value, path):
+    for key in path:
+        value = value[key]
+    return value
+
+
+def objects(value, path=()):
+    if isinstance(value, dict):
+        yield path, value
+        for key, item in value.items():
+            yield from objects(item, path + (key,))
+    elif isinstance(value, list):
+        for key, item in enumerate(value):
+            yield from objects(item, path + (key,))
+
+
+def run_regressions(data, schema, contract, source, projection):
+    checks, errors = [], []
+
+    def check(name, ok):
+        if name in checks:
+            errors.append("duplicate ART25 regression: " + name)
+        checks.append(name)
+        if not ok:
+            errors.append("failed ART25 regression: " + name)
+
+    def rejected(fn):
+        try:
+            result = fn()
+            return isinstance(result, list) and bool(result)
+        except (ValueError, ManifestError, KeyError, TypeError, StopIteration, OSError):
+            return True
+
+    check("harness-object-not-error", not rejected(lambda: {"accepted": True}))
+    check("harness-bytes-not-error", not rejected(lambda: b"ok"))
+    corpus = strict(read_regular(ROOT, CORPUS))
+    cases = corpus["cases"]
+    check(
+        "corpus-inventory",
+        corpus["caseCount"] == len(cases) == 60
+        and [c["id"] for c in cases] == [f"ICHECK19-{i:03}" for i in range(1, 61)],
+    )
+    check("corpus-version", corpus["decisionVersion"] == VERSION)
+    inputs = {r["id"]: r["input"] for r in data["contrasts"]}
+    check("corpus-ownership", set(inputs) == {c["baseCaseId"] for c in cases})
+    check(
+        "corpus-seven-states",
+        set(STATES) <= {c["expected"].get("status") for c in cases},
+    )
+    input_schema = schema["properties"]["contrasts"]["items"]["properties"]["input"]
+    for case in cases:
+        value = deepcopy(inputs[case["baseCaseId"]])
+        for patch in case["patches"]:
+            at(value, patch["path"][:-1])[patch["path"][-1]] = deepcopy(patch["value"])
+        original = deepcopy(value)
+        expected = case["expected"]
+        try:
+            validate_schema_instance(value, input_schema)
+            output = evaluate(value)
+            check(
+                case["id"],
+                "errorContains" not in expected
+                and all(output[k] == v for k, v in expected.items()),
+            )
+            check(
+                case["id"] + "-decision",
+                output["decision"] == ("deferred" if output["gaps"] else "accepted"),
+            )
+            check(
+                case["id"] + "-unique-gaps",
+                len(output["gaps"]) == len(set(output["gaps"])),
+            )
+            changed = deepcopy(value)
+            changed["evidence"].reverse()
+            for items in changed["scope"].values():
+                items.reverse()
+            check(case["id"] + "-evidence-order", evaluate(changed) == output)
+            check(
+                case["id"] + "-key-order",
+                evaluate(dict(reversed(list(value.items())))) == output,
+            )
+        except (ValueError, ManifestError) as exc:
+            check(
+                case["id"],
+                "errorContains" in expected and expected["errorContains"] in str(exc),
+            )
+        check(case["id"] + "-pure", value == original)
+    # Schema closure at every existing object, not just the canonical root.
+    for path, obj in objects(data):
+        changed = deepcopy(data)
+        at(changed, path)["unreviewedField"] = True
+        check(
+            "extra-" + str(path),
+            rejected(lambda: validate_schema_instance(changed, schema)),
+        )
+        # Required-field coverage once per structural path; no fuzzing grammar.
+        for key in obj:
+            changed = deepcopy(data)
+            del at(changed, path)[key]
+            check(
+                "missing-" + str(path) + key,
+                rejected(lambda: validate_schema_instance(changed, schema)),
+            )
+    # Refresh the editorial hash as an author could: safety/claims still fail.
+    for i, row in enumerate(data["contrasts"]):
+        for key in row["judgment"]:
+            changed = deepcopy(data)
+            changed["contrasts"][i]["judgment"][key] = (
+                "全組織で侵害なし、全改善完了、実通知済みと判断する。"
+            )
+            refreshed = deepcopy(contract)
+            refreshed["authoredInputs"]["contrasts"] = digest(changed["contrasts"])
+            check(
+                f"judgment-{i}-{key}",
+                rejected(lambda: validate_model(changed, schema, refreshed)),
+            )
+        for key in (
+            "executionAuthorized",
+            "notificationDecided",
+            "noIncidentClaim",
+            "improvementComplete",
+        ):
+            changed = deepcopy(data)
+            changed["contrasts"][i]["expected"][key] = True
+            refreshed = deepcopy(contract)
+            refreshed["authoredInputs"]["contrasts"] = digest(changed["contrasts"])
+            check(
+                f"claim-{i}-{key}",
+                rejected(lambda: validate_model(changed, schema, refreshed)),
+            )
+        changed = deepcopy(data)
+        changed["contrasts"][i]["expected"]["status"] = "No incident"
+        check(
+            f"unknown-state-{i}",
+            rejected(lambda: validate_model(changed, schema, contract)),
+        )
+    for key in (
+        "actualIncidents",
+        "actualActions",
+        "actualNotifications",
+        "actualCollections",
+    ):
+        for value in (1, True, False):
+            changed = deepcopy(data)
+            changed["record"][key] = value
+            refreshed = deepcopy(contract)
+            refreshed["authoredInputs"]["record"] = digest(changed["record"])
+            check(
+                f"zero-claim-{key}-{value}",
+                rejected(lambda: validate_model(changed, schema, refreshed)),
+            )
+    for key in (
+        "authorityTransferred",
+        "evidenceTransferred",
+        "parentHandoffReceived",
+        "parentStateChanged",
+    ):
+        changed = deepcopy(data)
+        changed["parents"][key] = True
+        check("parent-" + key, bool(parent_errors(changed, ROOT)))
+    check("canonical-model", not validate_model(data, schema, contract))
+    check("canonical-parent", not parent_errors(data, ROOT))
+    # Direct publication selection: preamble/body/tail and new section drift.
+    mutations = {}
+    ownership = {}
+    for path in DOCUMENTS:
+        for label, text in (
+            ("preamble", "追加の未レビュー前文。\n\n" + source[path]),
+            ("tail", source[path] + "\n未レビューの末尾。\n"),
+            ("section", source[path] + "\n## 新しい未レビュー節\n\n追加内容。\n"),
+            ("unsafe", source[path] + "\n第三者の本番システムへ接続する。\n"),
+        ):
+            key = path + "#" + label
+            mutations[key] = text
+            ownership[key] = path
+    projected = project_documents(mutations)
+    for doc in projected.documents:
+        path = ownership[doc.document_id]
+        check(
+            "selection-" + doc.document_id,
+            bool(
+                document_errors(
+                    replace(doc, document_id=path), contract["documents"][path], data
+                )
+            ),
+        )
+        if doc.document_id.endswith("#unsafe"):
+            check(
+                "shared-unsafe-" + doc.document_id,
+                any(
+                    "target.real_or_external" in e
+                    for e in scan_document(doc, {"hostProvenance": []})
+                ),
+            )
+    for doc in projection.documents:
+        spec = contract["documents"][doc.document_id]
+        check("canonical-" + doc.document_id, not document_errors(doc, spec, data))
+        check("full-inventory-" + doc.document_id, inventory(doc) == spec["fields"])
+        # The generic renderer is not reimplemented. Mutate its typed visible
+        # output at every selected field to prove the shared scanner is reached.
+        for i, field in enumerate(doc.fields):
+            if not is_policy_scan_field(field):
+                continue
+            changed = replace(
+                field,
+                text="第三者の本番システムへ接続する。",
+                normalized_text="第三者の本番システムへ接続する。",
+            )
+            item = replace(doc, fields=(changed,))
+            finding = scan_document(item, {"hostProvenance": []})
+            check(
+                f"policy-field-{doc.document_id}-{i}",
+                any("target.real_or_external" in v for v in finding),
+            )
+        for n, provenance in enumerate(spec["hostProvenance"]):
+            selected = next(
+                f
+                for f in doc.fields
+                if [
+                    f.field_type,
+                    f.element_kind,
+                    f.attribute,
+                    f.metadata_value("level"),
+                    f.text,
+                    f.location,
+                ]
+                == provenance
+            )
+            for suffix, changed in (
+                ("moved", replace(selected, line=selected.line + 1)),
+                (
+                    "changed",
+                    replace(
+                        selected,
+                        text=selected.text + " other.invalid-host.net",
+                        normalized_text=selected.normalized_text
+                        + " other.invalid-host.net",
+                    ),
+                ),
+            ):
+                check(
+                    f"provenance-{doc.document_id}-{n}-{suffix}",
+                    bool(
+                        scan_document(
+                            replace(doc, fields=(changed,)),
+                            {"hostProvenance": [provenance]},
+                        )
+                    ),
+                )
+            check(
+                f"provenance-{doc.document_id}-{n}-duplicate",
+                bool(
+                    scan_document(
+                        replace(doc, fields=(selected, selected)),
+                        {"hostProvenance": [provenance]},
+                    )
+                ),
+            )
+    check("strict-duplicate-json", rejected(lambda: strict(b'{"x":1,"x":2}')))
+    check("strict-nonfinite-json", rejected(lambda: strict(b'{"x":NaN}')))
+    check("strict-invalid-utf8", rejected(lambda: strict(b"\xff")))
+    # Bounded local IO tests: owned ignored scratch only, automatic cleanup.
+    scratch = ROOT / ".work/ch19-regressions"
+    scratch.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=scratch) as directory:
+        root = Path(directory)
+        p = root / DATA
+        p.parent.mkdir(parents=True)
+        p.write_bytes(b"{}")
+        check("regular-read", read_regular(root, DATA) == b"{}")
+        p.unlink()
+        p.symlink_to("absent")
+        check("symlink-rejected", rejected(lambda: read_regular(root, DATA)))
+        p.unlink()
+        p.write_bytes(b"x" * (1024 * 1024 + 1))
+        check("oversize-rejected", rejected(lambda: read_regular(root, DATA)))
+        check(
+            "unowned-input-rejected", rejected(lambda: read_regular(root, "other.json"))
+        )
+    return len(checks), errors

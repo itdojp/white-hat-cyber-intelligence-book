@@ -13548,7 +13548,7 @@ def source_contract_errors(chapter: str, registry: dict, note: str) -> list[str]
             "version": "2.0",
             "url": "https://www.nist.gov/cyberframework",
             "publishedAt": "2024-02-26",
-            "checkedAt": "2026-08-08",
+            "checkedAt": "2026-09-23",
             "nextReviewAt": "2026-11-08",
             "reviewTriggers": [
                 "NIST CSF revision or errata",

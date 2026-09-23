@@ -183,3 +183,16 @@
 | ART06 Inconclusive | 観測条件や比較目的の不足による判断保留 |
 
 [第18章](manuscript/18-threat-hunting.md)で五ResultとCoverage、代替説明、再評価を接続する。
+
+## 第19章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Incident Candidate | 判断主体が宣言基準と比較すべき候補 |
+| Incident Declaration | Owner・Reason・Timestampと基準に結び付く宣言判断 |
+| Confirmed Scope | 指定対象・版・Windowの供給Evidenceで確認した範囲 |
+| Unknown Scope | 観測不足などにより結論を出せない範囲。除外ではない |
+| ART25 Closed | 限定した復旧検証と残余リスクの担当付き閉鎖。改善完了ではない |
+| Reopened | 旧閉鎖を保持し、新Evidenceに基づいて再開する判断 |
+
+[第19章](manuscript/19-incident-response.md)では分類・重大度・優先度・状態を分離する。

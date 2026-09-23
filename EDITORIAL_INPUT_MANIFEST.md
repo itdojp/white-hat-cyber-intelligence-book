@@ -17,7 +17,8 @@
 | `blueprint-only` | 1 |
 | `consumed` | 13 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 13 |
+| `registered-pending-prerequisites` | 12 |
+| `selected-for-intake` | 1 |
 
 ## Acknowledged collisions
 
@@ -62,7 +63,7 @@
 | `chapter-15` | #39 | `consumed` | `EIC-0039-c168fc29af42` | #142 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5740271229) |
 | `chapter-16` | #40 | `consumed` | `EIC-0040-38fbe94b39aa` | #147 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/40#issuecomment-5767224085) |
 | `chapter-18` | #41 | `consumed` | `EIC-0041-5a08af6d1ae3` | #150 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5785664929) |
-| `chapter-19` | #42 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526) |
+| `chapter-19` | #42 | `selected-for-intake` | `EIC-0042-3630c01fb55d` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5790260467) |
 | `chapter-20` | #43 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622) |
 | `chapter-21` | #44 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622) |
 | `chapter-22` | #45 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
@@ -164,7 +165,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0042-3630c01fb55d` | `EIP-0010` | `chapter19-incident-response.predraft.md` | `3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0042-3630c01fb55d` | `EIP-0010` | `chapter19-incident-response.predraft.md` | `3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68` | `selected` | 前提39/40/41と管理PR152の実main公開完了後、唯一候補をbranch前に選択。登録4basenameの認可workspace所在検索はhit0/errors0、raw未読・実体hash未照合・直接採用なし。現Issue/契約/一次資料から新規制作する。 |
 
 ### `chapter-20` / Issue #43
 

@@ -136,3 +136,7 @@ npm run check:part02
 ## 第18章の読解契約
 
 [第18章](manuscript/18-threat-hunting.md)、[ART-06](templates/hunt-report.md)、[完全合成Case](cases/ch18-hunt-plan-example.md)は仮説、Coverage、有限Query/Pivot、五Result、Gapと再評価を結ぶ。Linux / WSL2、Python 3.12と固定依存導入後の`npm run check:chapter18`は四公開文書、十二の対比、四十の独立期待値を持つ有限契約である。実SIEM・実Log・実Handoffは扱わない。Layer Aだけが章固有であり、構文は共有Projection 1.1.0、安全文法はPolicy 1.2.0に委譲する。
+
+## 第19章の読解契約
+
+[第19章](manuscript/19-incident-response.md)、[ART-25](templates/incident-action-plan.md)、[完全合成Case](cases/ch19-incident-action-plan-example.md)は七状態と宣言・Scope・Evidence・復旧検証・残余リスクを結ぶ。Linux / WSL2、Python 3.12と固定依存導入後の`npm run check:chapter19`は四公開面と十二の独立した供給Snapshotを検査する。実IRの自動化ではなく、実操作・通知・収集は0、親のEvidence・権限・未配達は不変である。Layer Aのみ章固有、構文はProjection 1.1.0、安全文法はPolicy 1.2.0が所有する。
