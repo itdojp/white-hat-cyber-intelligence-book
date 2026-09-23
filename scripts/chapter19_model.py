@@ -7,7 +7,7 @@ from pathlib import PurePosixPath
 import stat
 
 from scripts.chapter19_decisions import STATES, OPTIONS, evaluate, instant
-from scripts.chapter19_judgments import PROFILES
+from scripts.chapter19_judgments import PROFILES, CLAIM_RESULTS
 from scripts.check_editorial_input_manifest import (
     _reject_constant,
     _reject_duplicate_keys,
@@ -235,6 +235,8 @@ def validate_model(data, schema, contract):
         ):
             errors.append("ART25 incident/threat question identity")
         result = evaluate(inp)
+        if (result["status"], tuple(result["gaps"])) != CLAIM_RESULTS.get(row["id"]):
+            errors.append(row["id"] + ": reviewed judgment/result binding")
         if row["expected"] != result:
             errors.append(row["id"] + ": supplied decision does not support claim")
         if row["judgment"] != PROFILES.get(row["id"]):

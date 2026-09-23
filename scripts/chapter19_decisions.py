@@ -82,6 +82,8 @@ def evaluate(data):
         raise ValueError("ART25 finite educational transition")
     if current["requested"] != "Closed" and data["closure"] is not None:
         raise ValueError("ART25 closure record requires Closed request")
+    if current["requested"] != "Reopened" and data["reopening"] is not None:
+        raise ValueError("ART25 reopening record requires Reopened request")
     evidence = {e["id"]: e for e in data["evidence"]}
     if len(evidence) != len(data["evidence"]):
         raise ValueError("ART25 duplicate evidence ID")
@@ -312,6 +314,36 @@ def evaluate(data):
                 and instant(reopening["at"]) == at,
                 "reopen-new-evidence-owner-time-history",
             )
+    # Integrity is unconditional for every supplied Evidence ID. A known
+    # receipt may still be unknown/contradicted or absent (None); those are
+    # transition-specific gaps, not permission to accept a dangling/wrong-kind ID.
+    receipt(data["analysisId"], "analysis")
+    prior_closure = previous["closure"]
+    receipt(
+        previous["closureValidationId"],
+        "recovery-validation",
+        asset=prior_closure["asset"] if prior_closure is not None else None,
+    )
+    preservation = data["preservation"]
+    if preservation is not None:
+        action = data["containment"]
+        receipt(
+            preservation["evidenceId"],
+            "preservation",
+            asset=action["asset"] if action is not None else None,
+        )
+    for record_key, reference_key, kind in (
+        ("declaration", "criteriaId", "declaration-criteria"),
+        ("containment", "validationId", "containment-validation"),
+        ("recovery", "criteriaId", "recovery-criteria"),
+        ("recovery", "validationId", "recovery-validation"),
+    ):
+        record = data[record_key]
+        if record is not None:
+            receipt(record[reference_key], kind, asset=record["asset"])
+    if data["reopening"] is not None:
+        receipt(data["reopening"]["newEvidenceId"], "new-evidence")
+
     return {
         "status": previous["status"] if gaps else target,
         "decision": "deferred" if gaps else "accepted",

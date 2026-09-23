@@ -198,6 +198,82 @@ def run_regressions(data, schema, contract, source, projection):
             )
     # Existing canonical Closed/deferred and Reopened/prior closure remain valid.
     check("review-closure-canonical-positive", not refreshed_model(data))
+    # Ready review: every supplied Evidence ID has referential integrity even
+    # when a different transition is requested. Unknown is not a dangling ID.
+    reference_paths = (
+        ("declaration", "criteriaId"),
+        ("preservation", "evidenceId"),
+        ("analysisId",),
+        ("containment", "validationId"),
+        ("recovery", "criteriaId"),
+        ("recovery", "validationId"),
+        ("previous", "closureValidationId"),
+        ("reopening", "newEvidenceId"),
+    )
+    reference_count = 0
+    for i, row in enumerate(data["contrasts"]):
+        for path in reference_paths:
+            try:
+                at(row["input"], path)
+            except TypeError:
+                continue
+            reference_count += 1
+            for label, ref, diagnostic in (
+                ("dangling", "EV-UNKNOWN", "unresolved evidence reference"),
+                (
+                    "wrong-kind",
+                    f"EV-IR19-{i + 1:03}-CONSENT",
+                    "evidence kind/asset binding",
+                ),
+            ):
+                if (
+                    path == ("previous", "closureValidationId")
+                    and row["input"]["previous"]["status"] != "Closed"
+                ):
+                    diagnostic = "closure fields owned by previous Closed status"
+                changed = deepcopy(data)
+                at(changed["contrasts"][i]["input"], path[:-1])[path[-1]] = ref
+                try:
+                    refreshed_model(changed)
+                except ValueError as exc:
+                    ok = diagnostic in str(exc)
+                else:
+                    ok = False
+                check(f"ready-reference-{i}-{path}-{label}", ok)
+        if row["input"]["decision"]["requested"] != "Reopened":
+            changed = deepcopy(data)
+            changed["contrasts"][i]["input"]["reopening"] = deepcopy(
+                data["contrasts"][6]["input"]["reopening"]
+            )
+            try:
+                refreshed_model(changed)
+            except ValueError as exc:
+                ok = "ART25 reopening record requires Reopened request" in str(exc)
+            else:
+                ok = False
+            check(f"ready-reopening-owner-{i}", ok)
+    check("ready-reference-field-inventory", reference_count == 54)
+    # Supplied unknown recovery validation remains a legitimate deferred case.
+    check("ready-unknown-receipt-not-dangling", not refreshed_model(data))
+    # Author self-check within the same bounded Ready remediation: refreshing
+    # BOTH a result and its hash must not preserve a contradictory fixed claim.
+    for i, path in (
+        (1, ("declaration",)),
+        (2, ("preservation",)),
+        (3, ("analysisId",)),
+        (4, ("recovery", "criteriaId")),
+        (5, ("recovery", "validationId")),
+        (6, ("reopening",)),
+    ):
+        changed = deepcopy(data)
+        at(changed["contrasts"][i]["input"], path[:-1])[path[-1]] = None
+        # An adversarial author recomputes the mutable expected result here;
+        # this is a mutation payload, never the independent test oracle.
+        changed["contrasts"][i]["expected"] = evaluate(changed["contrasts"][i]["input"])
+        check(
+            f"ready-claim-result-{i}",
+            any("reviewed judgment/result binding" in e for e in refreshed_model(changed)),
+        )
     # Schema closure at every existing object, not just the canonical root.
     for path, obj in objects(data):
         changed = deepcopy(data)

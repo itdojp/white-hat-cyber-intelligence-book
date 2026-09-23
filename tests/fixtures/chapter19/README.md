@@ -19,3 +19,11 @@ Run `python3 scripts/check_chapter19_contract.py`; `--no-regressions` is the pub
 - `review-closure-*`: 指摘4080321202。現在のclosure欄はrequested Closedだけが所有する。非Closed十対比への混入を拒否し、Closed要求がdeferredになる教材例とReopenedのprevious.closureは保持する。
 - `review-handoff-due-*`: 指摘4080321208。36 HandoffのdueAtが直接参照するdecision時刻より前なら拒否、同時刻は許可。asOf現在で期限超過かどうかとは別の条件である。
 - この三群はmodel-levelでauthoredInputs全hashを更新した直接probe。日本語の再生成を行ったCLI全経路のbefore再現とは主張しない。既存60独立guard期待値、正本Data/Schema/表示snapshot/親章は不変。
+
+## Ready後自動レビューの限定是正
+
+- `ready-reference-*`: 指摘4080625900。八種類のEvidence ID欄を状態の利用条件とは独立して検査。54供給欄のdangling/wrong-kindを拒否し、既知Evidenceのunknown/contradictedという判定やnullによる不足は遷移側の条件と区別する。Closed前のDecision ID照合は別の状態遷移条件である。
+- `ready-reopening-*`: 指摘4080625909。reopeningはrequested Reopenedだけが所有し、その他十一対比への混入を拒否する。
+- 本文/供給JSON/Schema/独立60期待値/表示snapshot/Source/親は変更しない。一回のpost-Ready是正であり、万能IRモデルや構文parserへ拡大しない。
+
+- `ready-claim-result-*`: 同じ限定是正中の作者自己点検。六つの成功例から前提を除去し、expectedとhashを両方再計算しても固定した成功判断文を残せないことを検証。`CLAIM_RESULTS`はその十二文面の意味を結ぶ著者レビュー済み有限表で、独立oracleや新しい汎用評価器とは呼ばない。60独立期待値は変更しない。

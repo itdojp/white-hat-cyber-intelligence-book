@@ -110,3 +110,21 @@ PROFILES = {
         "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。",
     },
 }
+
+# Reviewed meaning of each authored language profile. Editing an expected JSON
+# result must not make a fixed "Declared/Closed/etc." sentence describe a gap.
+# This is a finite authoring contract, not a second general IR evaluator.
+CLAIM_RESULTS = {
+    "ICASE19-001": ("Suspected", ()),
+    "ICASE19-002": ("Declared", ()),
+    "ICASE19-003": ("Contained", ()),
+    "ICASE19-004": ("Investigating", ()),
+    "ICASE19-005": ("Recovering", ()),
+    "ICASE19-006": ("Closed", ()),
+    "ICASE19-007": ("Reopened", ()),
+    "ICASE19-008": ("Suspected", ("declaration-owner-reason-time-criteria",)),
+    "ICASE19-009": ("Suspected", ("declaration-owner-reason-time-criteria",)),
+    "ICASE19-010": ("Suspected", ()),
+    "ICASE19-011": ("Declared", ("containment-not-validated",)),
+    "ICASE19-012": ("Recovering", ("recovery-not-validated",)),
+}
