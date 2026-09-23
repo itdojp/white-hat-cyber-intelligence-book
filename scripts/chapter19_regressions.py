@@ -116,6 +116,88 @@ def run_regressions(data, schema, contract, source, projection):
                 "errorContains" in expected and expected["errorContains"] in str(exc),
             )
         check(case["id"] + "-pure", value == original)
+    # PR153 review: explicit independent field inventory; refreshing authored
+    # snapshots cannot bypass role ownership, closure ownership or due times.
+    owner_paths = [(("notification", "escalationOwner"), "legalPrivacyReviewer")]
+    for i, row in enumerate(data["contrasts"]):
+        for path, role in (
+            (("previous", "owner"), "decisionOwner"),
+            (("decision", "owner"), "decisionOwner"),
+            (("declaration", "owner"), "decisionOwner"),
+            (("preservation", "owner"), "evidenceLead"),
+            (("containment", "authority", "owner"), "incidentCommander"),
+            (("recovery", "owner"), "recoveryOwner"),
+            (("closure", "owner"), "decisionOwner"),
+            (("previous", "closure", "owner"), "decisionOwner"),
+            (("reopening", "owner"), "decisionOwner"),
+        ):
+            try:
+                at(row["input"], path)
+            except TypeError:  # Absent optional object, not an owner assignment.
+                continue
+            owner_paths.append((("contrasts", i, "input", *path), role))
+        for j in range(3):
+            owner_paths.append(
+                (("contrasts", i, "handoffs", j, "owner"), "incidentCommander")
+            )
+    check("review-role-field-inventory", len(owner_paths) == 91)
+
+    def refreshed_model(changed):
+        refreshed = deepcopy(contract)
+        refreshed["authoredInputs"] = {k: digest(v) for k, v in changed.items()}
+        return validate_model(changed, schema, refreshed)
+
+    for path, role in owner_paths:
+        changed = deepcopy(data)
+        at(changed, path[:-1])[path[-1]] = "SYNTH-UNASSIGNED"
+        check(
+            "review-role-owner-" + str(path),
+            any("ART25 role-owner binding:" in e for e in refreshed_model(changed)),
+        )
+    # A coherent edited registry is allowed; these are references, not hidden
+    # hard-coded identities. Blank or mismatched assignment is not coherent.
+    for role in sorted({role for _, role in owner_paths}):
+        changed = deepcopy(data)
+        changed["roles"][role] = "SYNTH-REASSIGNED"
+        check(
+            "review-role-registry-only-" + role,
+            any("ART25 role-owner binding:" in e for e in refreshed_model(changed)),
+        )
+        for path, expected_role in owner_paths:
+            if expected_role == role:
+                at(changed, path[:-1])[path[-1]] = "SYNTH-REASSIGNED"
+        check("review-role-coherent-" + role, not refreshed_model(changed))
+    for i, row in enumerate(data["contrasts"]):
+        if row["input"]["decision"]["requested"] != "Closed":
+            changed = deepcopy(data)
+            changed["contrasts"][i]["input"]["closure"] = deepcopy(
+                data["contrasts"][5]["input"]["closure"]
+            )
+            try:
+                refreshed_model(changed)
+            except ValueError as exc:
+                ok = "ART25 closure record requires Closed request" in str(exc)
+            else:
+                ok = False
+            check(f"review-closure-owner-{i}", ok)
+        for j in range(3):
+            changed = deepcopy(data)
+            changed["contrasts"][i]["handoffs"][j]["dueAt"] = (
+                "2026-09-01T10:59:59Z"
+            )
+            check(
+                f"review-handoff-due-before-{i}-{j}",
+                "ART25 handoff deadline before source decision"
+                in refreshed_model(changed),
+            )
+            changed["contrasts"][i]["handoffs"][j]["dueAt"] = row["input"][
+                "decision"
+            ]["at"]
+            check(
+                f"review-handoff-due-equal-{i}-{j}", not refreshed_model(changed)
+            )
+    # Existing canonical Closed/deferred and Reopened/prior closure remain valid.
+    check("review-closure-canonical-positive", not refreshed_model(data))
     # Schema closure at every existing object, not just the canonical root.
     for path, obj in objects(data):
         changed = deepcopy(data)

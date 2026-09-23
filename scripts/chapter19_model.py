@@ -137,9 +137,45 @@ def case_groups(data):
         )
 
 
+def role_references(data):
+    """Finite global coordination roles, not record-specific residual-risk owners."""
+    yield ("notification", "escalationOwner"), "legalPrivacyReviewer"
+    bindings = (
+        (("previous", "owner"), "decisionOwner"),
+        (("decision", "owner"), "decisionOwner"),
+        (("declaration", "owner"), "decisionOwner"),
+        (("preservation", "owner"), "evidenceLead"),
+        (("containment", "authority", "owner"), "incidentCommander"),
+        (("recovery", "owner"), "recoveryOwner"),
+        (("closure", "owner"), "decisionOwner"),
+        (("previous", "closure", "owner"), "decisionOwner"),
+        (("reopening", "owner"), "decisionOwner"),
+    )
+    for i, row in enumerate(data["contrasts"]):
+        for path, role in bindings:
+            value = row["input"]
+            for key in path:
+                if value is None:
+                    break
+                value = value[key]
+            if value is not None:
+                yield ("contrasts", i, "input", *path), role
+        for j in range(len(row["handoffs"])):
+            yield ("contrasts", i, "handoffs", j, "owner"), "incidentCommander"
+
+
 def validate_model(data, schema, contract):
     validate_schema_instance(data, schema)
     errors = []
+    roles = data["roles"]
+    if any(not value.strip() for value in roles.values()):
+        errors.append("ART25 nonempty coordination role registry")
+    for path, role in role_references(data):
+        value = data
+        for key in path:
+            value = value[key]
+        if value != roles[role]:
+            errors.append("ART25 role-owner binding: " + "/".join(map(str, path)))
     timestamp_fields = {
         "asOf",
         "at",
@@ -236,6 +272,8 @@ def validate_model(data, schema, contract):
             errors.append("ART25 finite handoff routes/order")
         for h, prefix in zip(row["handoffs"], ("TL", "BKL", "CTI")):
             ch = h["targetChapter"]
+            if instant(h["dueAt"]) < instant(inp["decision"]["at"]):
+                errors.append("ART25 handoff deadline before source decision")
             if (
                 h["id"] != f"HOF-IR19-{suf}-{ch}"
                 or h["questionId"] != f"EQ-IR19-{suf}-{ch}"

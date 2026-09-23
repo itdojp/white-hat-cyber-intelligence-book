@@ -80,6 +80,8 @@ def evaluate(data):
         raise ValueError("ART25 observation/previous/decision chronology")
     if current["requested"] not in TRANSITIONS[previous["status"]]:
         raise ValueError("ART25 finite educational transition")
+    if current["requested"] != "Closed" and data["closure"] is not None:
+        raise ValueError("ART25 closure record requires Closed request")
     evidence = {e["id"]: e for e in data["evidence"]}
     if len(evidence) != len(data["evidence"]):
         raise ValueError("ART25 duplicate evidence ID")
