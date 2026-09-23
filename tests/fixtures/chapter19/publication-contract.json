@@ -15,7 +15,7 @@
     "safety": "34000412be6602b82bf79ed24b36eac9bd6bf35f694beb9f5d7d7bac6d697c27",
     "notification": "1c92c6a8e8c08f9c8b3b3d58359756e866b3ac79cf93e779f1f0417478c021f7",
     "options": "398aaf3d914c8e445df4e2e32f78b293c417596b523c7583645f1b4957f87a5e",
-    "contrasts": "17445ce4e80a7521bf9e51bcf6cd0a0f6c0725d1be9f5be4d352bdda8a58015d"
+    "contrasts": "0ef6ad2c5b8b0f34175f11cf4cf93b210c929b9d1387f3139fd59c52592c2602"
   },
   "parentDigests": {
     "WRITING_GUIDE.md": "7de62e48cbb0ca637548f6ff9d8f3c6cde0e9085f5dd42139f34f014820bbd95",
@@ -3224,7 +3224,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-001 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-001 Field Value input/decision/reason 候補の確認を続ける。Huntの支持だけでIncidentを宣言しない。",
           "cases/ch19-incident-action-plan-example.md:L144:F197"
         ],
         [
@@ -4048,7 +4048,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-002 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-002 Field Value input/decision/reason 供給された基準判定と所有者の記録に限ってDeclaredとする。実Incidentの宣言ではない。",
           "cases/ch19-incident-action-plan-example.md:L250:F300"
         ],
         [
@@ -4912,7 +4912,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-003 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-003 Field Value input/decision/reason 供給された対象と時点に限ってContainedとする。侵害の終結ではない。",
           "cases/ch19-incident-action-plan-example.md:L361:F408"
         ],
         [
@@ -5912,7 +5912,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-004 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-004 Field Value input/decision/reason Investigatingとして因果と影響を問う。攻撃者を確定しない。",
           "cases/ch19-incident-action-plan-example.md:L489:F533"
         ],
         [
@@ -6776,7 +6776,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-005 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-005 Field Value input/decision/reason Recoveringへの条件は揃うが、復旧完了とはしない。",
           "cases/ch19-incident-action-plan-example.md:L600:F641"
         ],
         [
@@ -7672,7 +7672,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-006 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-006 Field Value input/decision/reason 供給Scopeの復旧検証と残余リスクの担当を条件にClosedとする。改善完了ではない。",
           "cases/ch19-incident-action-plan-example.md:L715:F753"
         ],
         [
@@ -8648,7 +8648,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-007 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-007 Field Value input/decision/reason 閉鎖後に利用可能となった新しい供給EvidenceでReopenedとする。旧閉鎖記録を消さない。",
           "cases/ch19-incident-action-plan-example.md:L835:F875"
         ],
         [
@@ -9552,7 +9552,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-008 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-008 Field Value input/decision/reason 宣言根拠が不足するためSuspectedを維持する。",
           "cases/ch19-incident-action-plan-example.md:L956:F988"
         ],
         [
@@ -10376,7 +10376,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-009 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-009 Field Value input/decision/reason 正当変更という代替が残り、基準は未確定のためSuspectedを維持する。",
           "cases/ch19-incident-action-plan-example.md:L1062:F1091"
         ],
         [
@@ -11240,7 +11240,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-010 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-010 Field Value input/decision/reason Log不足をUnknownとして残し、Suspectedを維持する。侵害なしとはしない。",
           "cases/ch19-incident-action-plan-example.md:L1173:F1199"
         ],
         [
@@ -12072,7 +12072,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-011 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-011 Field Value input/decision/reason 選択肢の記録だけではContainedに進めず、Declaredを維持する。",
           "cases/ch19-incident-action-plan-example.md:L1280:F1303"
         ],
         [
@@ -13072,7 +13072,7 @@
           "table_row",
           null,
           null,
-          "ICASE19-012 Field Value input/decision/reason 供給記録と対象Scopeに限った教育上の判断。",
+          "ICASE19-012 Field Value input/decision/reason 復旧検証が未確定のためRecoveringを維持する。Closedとしない。",
           "cases/ch19-incident-action-plan-example.md:L1408:F1428"
         ],
         [
@@ -13810,6 +13810,15 @@
     "CHANGELOG.md": [
       "manuscript/19-incident-response.md",
       "ART-25"
+    ],
+    "cases/index.md": [
+      "第19章 Incident Response",
+      "ch19-incident-action-plan-example.md"
+    ],
+    "cases/fixtures/index.md": [
+      "第19章 Incident Response",
+      "ch19-incident-response.json",
+      "ch19-incident-response.schema.json"
     ]
   }
 }

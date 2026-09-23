@@ -73,3 +73,7 @@
 ## 第18章 Threat Hunting
 
 [Hunt Plan and Findings記入例](ch18-hunt-plan-example.md)はART-06の十二の独立対比である。[合成JSON](fixtures/ch18-threat-hunting.json)と[Schema](../schemas/ch18-threat-hunting.schema.json)へ対応し、0件と観測不足を区別する。原DVR/DET/TEL/fixtureと未配達は不変である。
+
+## 第19章 Incident Response
+
+[Incident Action Plan記入例](ch19-incident-action-plan-example.md)はART-25の十二の独立した条件付きSnapshotである。[合成JSON](fixtures/ch19-incident-response.json)と[Schema](../schemas/ch19-incident-response.schema.json)で、七状態、宣言・Scope・保存・復旧検証・残余リスクを分ける。親のEvidence・権限・未配達を継承せず、実操作と通知は0件である。

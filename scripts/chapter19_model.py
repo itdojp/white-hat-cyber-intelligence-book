@@ -6,7 +6,7 @@ import os
 from pathlib import PurePosixPath
 import stat
 
-from scripts.chapter19_decisions import STATES, OPTIONS, evaluate
+from scripts.chapter19_decisions import STATES, OPTIONS, evaluate, instant
 from scripts.chapter19_judgments import PROFILES
 from scripts.check_editorial_input_manifest import (
     _reject_constant,
@@ -140,6 +140,23 @@ def case_groups(data):
 def validate_model(data, schema, contract):
     validate_schema_instance(data, schema)
     errors = []
+    timestamp_fields = {
+        "asOf",
+        "at",
+        "dueAt",
+        "start",
+        "end",
+        "windowStart",
+        "windowEnd",
+        "availableAt",
+        "approvedAt",
+        "expiresAt",
+    }
+    for path, value in leaves(data):
+        if path[-1] in timestamp_fields and isinstance(value, str):
+            instant(value)
+    if tuple(data["record"]["sourceIds"]) != SOURCES:
+        errors.append("ART25 Source identity traceability")
     if tuple(data["record"]["states"]) != STATES:
         errors.append("ART25 seven-state inventory/order")
     # Keep safety assertions meaningful even after authored snapshots are refreshed.
@@ -174,6 +191,8 @@ def validate_model(data, schema, contract):
     for i, row in enumerate(data["contrasts"], 1):
         suf = f"{i:03}"
         inp = row["input"]
+        if instant(inp["decision"]["at"]) > instant(data["record"]["asOf"]):
+            errors.append("ART25 decision after record as-of")
         if (
             inp["incidentId"] != "INC-IR19-" + suf
             or inp["threatQuestionId"] != "THQ-IR19-" + suf
@@ -184,6 +203,19 @@ def validate_model(data, schema, contract):
             errors.append(row["id"] + ": supplied decision does not support claim")
         if row["judgment"] != PROFILES.get(row["id"]):
             errors.append(row["id"] + ": reviewed finite judgment profile")
+        profile = PROFILES.get(row["id"])
+        if profile is None or inp["decision"]["reason"] != profile["conclusion"]:
+            errors.append(row["id"] + ": reviewed decision reason profile")
+        action = inp["containment"]
+        if action is not None:
+            option = OPTIONS[action["optionId"]]
+            if (
+                action["expectedImpact"] != option["business"]
+                or action["rollback"] != option["rollback"]
+            ):
+                errors.append(
+                    row["id"] + ": reviewed containment impact/rollback profile"
+                )
         if (
             inp["context"]["subject"] != "SYNTH-IR19-" + suf
             or inp["context"]["revision"] != "REV-IR19-" + suf

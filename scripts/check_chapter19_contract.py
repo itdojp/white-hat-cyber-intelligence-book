@@ -158,7 +158,8 @@ def parent_errors(data, root):
     ]
     ok = all(a == b for a, b in pairs)
     ok = ok and all(
-        x["status"] == "planned-not-delivered"
+        x["targetChapter"] == 19
+        and x["status"] == "planned-not-delivered"
         and x["receiptId"] is None
         and x["executionAuthorized"] is False
         for x in (th, hh)

@@ -140,7 +140,7 @@
           "requested": "Suspected",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "候補の確認を続ける。Huntの支持だけでIncidentを宣言しない。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",
@@ -400,7 +400,7 @@
           "requested": "Declared",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "供給された基準判定と所有者の記録に限ってDeclaredとする。実Incidentの宣言ではない。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",
@@ -667,7 +667,7 @@
           "requested": "Contained",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "供給された対象と時点に限ってContainedとする。侵害の終結ではない。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",
@@ -955,7 +955,7 @@
           "requested": "Investigating",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "Investigatingとして因果と影響を問う。攻撃者を確定しない。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",
@@ -1222,7 +1222,7 @@
           "requested": "Recovering",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "Recoveringへの条件は揃うが、復旧完了とはしない。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",
@@ -1495,7 +1495,7 @@
           "requested": "Closed",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "供給Scopeの復旧検証と残余リスクの担当を条件にClosedとする。改善完了ではない。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",
@@ -1782,7 +1782,7 @@
           "requested": "Reopened",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "閉鎖後に利用可能となった新しい供給EvidenceでReopenedとする。旧閉鎖記録を消さない。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",
@@ -2056,7 +2056,7 @@
           "requested": "Declared",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "宣言根拠が不足するためSuspectedを維持する。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",
@@ -2318,7 +2318,7 @@
           "requested": "Declared",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "正当変更という代替が残り、基準は未確定のためSuspectedを維持する。"
         },
         "classification": "legitimate-change-possible",
         "severity": "medium",
@@ -2587,7 +2587,7 @@
           "requested": "Suspected",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "Log不足をUnknownとして残し、Suspectedを維持する。侵害なしとはしない。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",
@@ -2846,7 +2846,7 @@
           "requested": "Contained",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "選択肢の記録だけではContainedに進めず、Declaredを維持する。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",
@@ -3136,7 +3136,7 @@
           "requested": "Closed",
           "at": "2026-09-01T11:00:00Z",
           "owner": "SYNTH-IR-DECIDER",
-          "reason": "供給記録と対象Scopeに限った教育上の判断。"
+          "reason": "復旧検証が未確定のためRecoveringを維持する。Closedとしない。"
         },
         "classification": "suspected-policy-violation",
         "severity": "medium",

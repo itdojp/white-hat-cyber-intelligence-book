@@ -218,7 +218,7 @@
 | `input/decision/requested` | `Suspected` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `候補の確認を続ける。Huntの支持だけでIncidentを宣言しない。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -324,7 +324,7 @@
 | `input/decision/requested` | `Declared` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `供給された基準判定と所有者の記録に限ってDeclaredとする。実Incidentの宣言ではない。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -435,7 +435,7 @@
 | `input/decision/requested` | `Contained` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `供給された対象と時点に限ってContainedとする。侵害の終結ではない。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -563,7 +563,7 @@
 | `input/decision/requested` | `Investigating` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `Investigatingとして因果と影響を問う。攻撃者を確定しない。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -674,7 +674,7 @@
 | `input/decision/requested` | `Recovering` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `Recoveringへの条件は揃うが、復旧完了とはしない。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -789,7 +789,7 @@
 | `input/decision/requested` | `Closed` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `供給Scopeの復旧検証と残余リスクの担当を条件にClosedとする。改善完了ではない。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -914,7 +914,7 @@
 | `input/decision/requested` | `Reopened` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `閉鎖後に利用可能となった新しい供給EvidenceでReopenedとする。旧閉鎖記録を消さない。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -1030,7 +1030,7 @@
 | `input/decision/requested` | `Declared` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `宣言根拠が不足するためSuspectedを維持する。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -1136,7 +1136,7 @@
 | `input/decision/requested` | `Declared` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `正当変更という代替が残り、基準は未確定のためSuspectedを維持する。` |
 | `input/classification` | `legitimate-change-possible` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -1247,7 +1247,7 @@
 | `input/decision/requested` | `Suspected` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `Log不足をUnknownとして残し、Suspectedを維持する。侵害なしとはしない。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -1354,7 +1354,7 @@
 | `input/decision/requested` | `Contained` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `選択肢の記録だけではContainedに進めず、Declaredを維持する。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |
@@ -1482,7 +1482,7 @@
 | `input/decision/requested` | `Closed` |
 | `input/decision/at` | `2026-09-01T11:00:00Z` |
 | `input/decision/owner` | `SYNTH-IR-DECIDER` |
-| `input/decision/reason` | `供給記録と対象Scopeに限った教育上の判断。` |
+| `input/decision/reason` | `復旧検証が未確定のためRecoveringを維持する。Closedとしない。` |
 | `input/classification` | `suspected-policy-violation` |
 | `input/severity` | `medium` |
 | `input/priority` | `urgent` |

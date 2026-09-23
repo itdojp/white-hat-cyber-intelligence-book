@@ -145,6 +145,29 @@ def run_regressions(data, schema, contract, source, projection):
                 f"judgment-{i}-{key}",
                 rejected(lambda: validate_model(changed, schema, refreshed)),
             )
+        claims = [(["decision", "reason"], "実Incidentを処理し、実通知も完了した。")]
+        if row["input"]["containment"] is not None:
+            claims += [
+                (
+                    ["containment", "expectedImpact"],
+                    "業務影響と残余リスクはすべて解消した。",
+                ),
+                (["containment", "rollback"], "切戻しに承認と再検証は不要である。"),
+            ]
+        for path, claim in claims:
+            changed = deepcopy(data)
+            at(changed["contrasts"][i]["input"], path[:-1])[path[-1]] = claim
+            refreshed = deepcopy(contract)
+            refreshed["authoredInputs"]["contrasts"] = digest(changed["contrasts"])
+            result = validate_model(changed, schema, refreshed)
+            check(
+                f"input-claim-{i}-{path}",
+                any(
+                    "reviewed decision reason profile" in e
+                    or "reviewed containment impact/rollback profile" in e
+                    for e in result
+                ),
+            )
         for key in (
             "executionAuthorized",
             "notificationDecided",
@@ -189,6 +212,29 @@ def run_regressions(data, schema, contract, source, projection):
         changed = deepcopy(data)
         changed["parents"][key] = True
         check("parent-" + key, bool(parent_errors(changed, ROOT)))
+    changed = deepcopy(data)
+    changed["parents"]["huntHandoffId"] = "HOF-HUNT18-001-1"
+    check("parent-hunt-wrong-target", bool(parent_errors(changed, ROOT)))
+    changed = deepcopy(data)
+    parent = strict(read_regular(ROOT, "cases/fixtures/ch16-telemetry-coverage.json"))
+    wrong = next(h for h in parent["handoffs"] if h["targetChapter"] == 18)
+    changed["parents"]["telemetryHandoffId"] = wrong["id"]
+    changed["parents"]["telemetryRowIds"] = wrong["rowIds"]
+    check("parent-telemetry-wrong-target", bool(parent_errors(changed, ROOT)))
+    for path, value in [
+        (["record", "sourceIds"], ["UNREGISTERED-1", "UNREGISTERED-2"]),
+        (["record", "asOf"], "2026-02-30T00:00:00Z"),
+        (["record", "asOf"], "2026-09-01T10:59:00Z"),
+        (["notification", "dueAt"], "2026-02-30T00:00:00Z"),
+    ]:
+        changed = deepcopy(data)
+        at(changed, path[:-1])[path[-1]] = value
+        refreshed = deepcopy(contract)
+        refreshed["authoredInputs"][path[0]] = digest(changed[path[0]])
+        check(
+            "record-metadata-" + str(path) + str(value),
+            rejected(lambda: validate_model(changed, schema, refreshed)),
+        )
     check("canonical-model", not validate_model(data, schema, contract))
     check("canonical-parent", not parent_errors(data, ROOT))
     # Direct publication selection: preamble/body/tail and new section drift.

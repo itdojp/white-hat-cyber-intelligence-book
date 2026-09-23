@@ -81,3 +81,10 @@
 ## 第18章の合成記録
 
 [Hunt JSON](ch18-threat-hunting.json)と[閉じたSchema](../../schemas/ch18-threat-hunting.schema.json)は、固定合成入力に対する十二の独立対比を示す。Receiptは教育用仮定であり、実Collectorの証拠ではない。[Artifact全欄Case](../ch18-hunt-plan-example.md)へ戻る。
+
+## 第19章 Incident Response
+
+- [供給JSON](ch19-incident-response.json): 十二の独立した合成対象版、前状態、宣言基準、Evidence、選択肢、復旧検証、判断、未配達Handoff。
+- [閉じたSchema](../../schemas/ch19-incident-response.schema.json): 有限語彙と未知Fieldの拒否。実IR自動化や真正性認証ではない。
+
+[全Artifact欄のCase](../ch19-incident-action-plan-example.md)と照合し、詳細Evidence列はJSONを読む。第19章公開前検査を通過しない入力は生成前に拒否する。供給Receiptは教育上の仮定で、親Evidence・権限・未配達を変更しない。
