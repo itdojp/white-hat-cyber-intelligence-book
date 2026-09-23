@@ -1167,6 +1167,12 @@
           "effectiveAt": "2026-09-23",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5790260467",
           "reason": "第19章の唯一候補をbranch作成前に選択。raw不在を隠さず、専用Draftで現行契約から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-23",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/153",
+          "reason": "第19章専用Draft PR#153に本文/ART25/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
         }
       ]
     },

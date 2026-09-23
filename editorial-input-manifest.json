@@ -2047,10 +2047,55 @@
       "targetId": "chapter-19",
       "issue": 42,
       "targetKind": "chapter",
-      "status": "selected-for-intake",
+      "status": "canonical-pr-open",
       "selectedCandidateId": "EIC-0042-3630c01fb55d",
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "canonicalPr": 153,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/153",
+        "packageId": "EIP-0010",
+        "packageSha256": "34a748e0d3373ad842aa512f6510c2ac17242d42588b82e19f377678d255c381",
+        "inputPath": "chapter19-incident-response.predraft.md",
+        "inputSha256": "3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68",
+        "targetIssue": 42,
+        "canonicalPr": 153,
+        "currentMainSha": "3eb82b3905ac7199a3d44ba68f4573e8ee9da6ed",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-23",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0042-3630c01fb55dをimmutable登録来歴としてIssue42comment5790260467でbranch前に選択。"
+        ],
+        "rewrittenSections": [
+          "正式Issue42/凍結契約/現main親15〜18/用途限定NIST一次資料から本文・ART25・全欄Case・完全合成JSON・閉Schema・有限LayerAを新規制作。七状態、十二独立した対象版、宣言/Scope/Evidence/選択肢/復旧検証/残余リスク/再開/未配達Handoffを結ぶ。",
+          "60の独立に記述した有限status/gap/error期待値を使用。日本語判断profileは十二対比とともに新規作成し、独立oracleとは主張しない。元rawを読了・復元した記録ではない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Incident/実組織/実User/実PII/実Credential/外部接続/実収集/実操作/実通知/法的通知の自動決定は不採用。親のEvidence/権限/未配達を変更しない。",
+          "NISTの万能状態機械、全製品IR自動化、任意NLPや章固有rendererの実装、第20章以降の正本先行統合は対象外。",
+          "同梱Chapter18のconsumedと元Intake、全他Target/Package、過去履歴を保持。raw未読/hash実体未照合/直接採用なし。"
+        ],
+        "sourceRevalidation": [
+          "NIST CSF2.0 Final2024-02-26の印刷p.5を六Functionの上位Outcomeと並行性に限定参照。七状態と有限判断契約は本書独自で、規範算法や適合認定とはしない。",
+          "SP800-61r3 Final2025-04-03のpp.1–2/26–34にある宣言基準、triage/分類/優先付け、記録と来歴、通知・共有、封じ込め/根絶、復旧検証を用途限定確認。個別法域・通知要否/期限は判断しない。",
+          "公式HTML二応答/PDF二応答の最終HTTP200とbyteHashを保存。ローカルpdftotext未導入の抽出失敗を記録し、一次PDFのWeb表示で該当箇所を読解。TLS検証無効化なし。二Sourceの09-23確認日/notes追記だけでrootbaseline2026-07-25/旧notes/既存chapter mappingを保持。"
+        ],
+        "canonicalFiles": [
+          "manuscript/19-incident-response.md",
+          "templates/incident-action-plan.md",
+          "cases/ch19-incident-action-plan-example.md",
+          "references/ch19-source-review-2026-09-23.md",
+          "cases/fixtures/ch19-incident-response.json",
+          "schemas/ch19-incident-response.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録4basenameをworkspace19761directoriesで検索しhit0/errors0。symlink先、改名file、archive内部、workspace外は未調査。inputReviewedAtは登録採否確認日でraw読了日ではない。",
+          "供給前状態/基準/承認/保持/Validationは教育上の仮定。固定JSON表現のHashは真正性、実権限、原記録の完全性、実Incidentや受領を証明しない。有限guardは公開前の読解契約で実運用IRツールではない。",
+          "実Incident/操作/収集/通知0。法的通知要否/期限は未決定。全36Handoffはplanned-not-delivered/receipt null/executionAuthorized false。Closedも全改善完了や組織全体の安全を意味しない。",
+          "Intake作成時はPR#153 Draft、通常merge/main公開未完。consumedは公開確認後の別metadata PRで記録する。現在状態はtarget.statusと最新statusHistoryを参照。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0042-3630c01fb55d",
@@ -2074,6 +2119,12 @@
           "effectiveAt": "2026-09-23",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5790260467",
           "reason": "第19章の唯一候補をbranch作成前に選択。raw不在を隠さず、専用Draftで現行契約から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-23",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/153",
+          "reason": "第19章専用Draft PR#153に本文/ART25/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
         }
       ]
     },
