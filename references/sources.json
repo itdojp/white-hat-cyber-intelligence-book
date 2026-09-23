@@ -145,7 +145,7 @@
       "version": "2.0",
       "url": "https://www.nist.gov/cyberframework",
       "publishedAt": "2024-02-26",
-      "checkedAt": "2026-08-08",
+      "checkedAt": "2026-09-23",
       "nextReviewAt": "2026-11-08",
       "reviewTriggers": [
         "NIST CSF revision or errata",
@@ -157,7 +157,7 @@
         19,
         22
       ],
-      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。"
+      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。 2026-09-23用途限定確認: 第19章ではFinal CSWP 29（2024-02-26）印刷p.5の六Functionを上位Outcomeとして参照し、固定直列IR手順・本書七状態の規範算法・適合認定とはしない。"
     },
     {
       "id": "SRC-NIST-RISK-001",
@@ -210,7 +210,7 @@
       "version": "SP 800-61 Rev.3",
       "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
       "publishedAt": "2025-04-03",
-      "checkedAt": "2026-09-22",
+      "checkedAt": "2026-09-23",
       "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
         "NIST revision or supplemental guidance change"
@@ -224,7 +224,7 @@
         20,
         22
       ],
-      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: FinalのDE.AE-08/p26、RS.MA-02/p27、RS.AN-06/07/p29をIncident基準・Triage・記録の来歴に限定参照。本書の五Resultや算法の規範・法的認定ではない。詳細はch18-source-review-2026-09-22.md。"
+      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: FinalのDE.AE-08/p26、RS.MA-02/p27、RS.AN-06/07/p29をIncident基準・Triage・記録の来歴に限定参照。本書の五Resultや算法の規範・法的認定ではない。詳細はch18-source-review-2026-09-22.md。 2026-09-23用途限定確認: 第19章はSP800-61r3 Final（2025-04-03）pp.1–2、DE.AE-08 p.26、RS.MA-02〜05 pp.27–28、RS.AN-06/07 p.29、RS.CO-02/03 pp.30–31、RS.MI-01/02 pp.32–33、RC.RP-01〜06 p.34を宣言・分類・記録・通知照会・復旧検証に参照。七状態と有限判断は本書独自で、実権限・真正性・個別法的通知判断は認定しない。"
     },
     {
       "id": "SRC-BERKELEY-001",

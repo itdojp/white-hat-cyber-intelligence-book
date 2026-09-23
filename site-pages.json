@@ -501,6 +501,34 @@
       "section": "additional",
       "order": 282,
       "title": "第18章 Source Review — 2026-09-22"
+    },
+    {
+      "source": "manuscript/19-incident-response.md",
+      "destination": "chapters/chapter-19/index.md",
+      "section": "chapters",
+      "order": 202,
+      "title": "第19章 CSF 2.0 に接続したIncident Response"
+    },
+    {
+      "source": "templates/incident-action-plan.md",
+      "destination": "templates/incident-action-plan/index.md",
+      "section": "additional",
+      "order": 283,
+      "title": "Incident Action Plan"
+    },
+    {
+      "source": "cases/ch19-incident-action-plan-example.md",
+      "destination": "cases/chapter-19-incident-action-plan/index.md",
+      "section": "additional",
+      "order": 284,
+      "title": "第19章 Incident Action Plan完全合成記入例"
+    },
+    {
+      "source": "references/ch19-source-review-2026-09-23.md",
+      "destination": "references/chapter-19-source-review/index.md",
+      "section": "additional",
+      "order": 285,
+      "title": "第19章 Source Review — 2026-09-23"
     }
   ],
   "directoryRoutes": {
@@ -614,6 +642,14 @@
     {
       "source": "schemas/ch18-threat-hunting.schema.json",
       "destination": "downloads/ch18-threat-hunting.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch19-incident-response.json",
+      "destination": "downloads/ch19-incident-response.json"
+    },
+    {
+      "source": "schemas/ch19-incident-response.schema.json",
+      "destination": "downloads/ch19-incident-response.schema.json"
     }
   ]
 }

@@ -1,0 +1,1359 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "readOnly",
+    "networkRequired",
+    "executionAuthorized",
+    "record",
+    "parents",
+    "roles",
+    "safety",
+    "notification",
+    "options",
+    "contrasts"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true
+    },
+    "readOnly": {
+      "type": "boolean",
+      "const": true
+    },
+    "networkRequired": {
+      "type": "boolean",
+      "const": false
+    },
+    "executionAuthorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactId",
+        "caseId",
+        "parentCaseId",
+        "relation",
+        "asOf",
+        "timeZone",
+        "sourceIds",
+        "states",
+        "decisionRequirement",
+        "actualIncidents",
+        "actualActions",
+        "actualNotifications",
+        "actualCollections"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifactId": {
+          "const": "ART-25"
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "const": "refines"
+        },
+        "asOf": {
+          "type": "string",
+          "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "timeZone": {
+          "const": "UTC"
+        },
+        "sourceIds": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "states": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "enum": [
+              "Suspected",
+              "Declared",
+              "Contained",
+              "Investigating",
+              "Recovering",
+              "Closed",
+              "Reopened"
+            ]
+          }
+        },
+        "decisionRequirement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actualIncidents": {
+          "type": "integer",
+          "const": 0
+        },
+        "actualActions": {
+          "type": "integer",
+          "const": 0
+        },
+        "actualNotifications": {
+          "type": "integer",
+          "const": 0
+        },
+        "actualCollections": {
+          "type": "integer",
+          "const": 0
+        }
+      }
+    },
+    "parents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "telemetryMapId",
+        "telemetryRowIds",
+        "telemetryHandoffId",
+        "detectionRecordId",
+        "detectionId",
+        "huntRecordId",
+        "huntCaseId",
+        "huntFindingId",
+        "huntHandoffId",
+        "parentHandoffStatus",
+        "parentReceiptId",
+        "evidenceRole",
+        "authorityTransferred",
+        "evidenceTransferred",
+        "parentHandoffReceived",
+        "parentStateChanged"
+      ],
+      "properties": {
+        "telemetryMapId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "telemetryRowIds": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "telemetryHandoffId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "detectionRecordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "detectionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "huntRecordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "huntCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "huntFindingId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "huntHandoffId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentHandoffStatus": {
+          "const": "planned-not-delivered"
+        },
+        "parentReceiptId": {
+          "type": "null"
+        },
+        "evidenceRole": {
+          "const": "method-reference-not-evidence-for-new-subject"
+        },
+        "authorityTransferred": {
+          "type": "boolean",
+          "const": false
+        },
+        "evidenceTransferred": {
+          "type": "boolean",
+          "const": false
+        },
+        "parentHandoffReceived": {
+          "type": "boolean",
+          "const": false
+        },
+        "parentStateChanged": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decisionOwner",
+        "incidentCommander",
+        "evidenceLead",
+        "communicationOwner",
+        "recoveryOwner",
+        "legalPrivacyReviewer"
+      ],
+      "properties": {
+        "decisionOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "incidentCommander": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceLead": {
+          "type": "string",
+          "minLength": 1
+        },
+        "communicationOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recoveryOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "legalPrivacyReviewer": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "authority",
+        "stop",
+        "cleanup",
+        "dataClassification",
+        "personalDataIncluded",
+        "notificationAutomaticallyDetermined",
+        "receiptAuthenticityClaimed"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stop": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dataClassification": {
+          "const": "public-synthetic-only"
+        },
+        "personalDataIncluded": {
+          "type": "boolean",
+          "const": false
+        },
+        "notificationAutomaticallyDetermined": {
+          "type": "boolean",
+          "const": false
+        },
+        "receiptAuthenticityClaimed": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "notification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "questionId",
+        "question",
+        "audiences",
+        "escalationOwner",
+        "dueAt",
+        "status",
+        "actualSent"
+      ],
+      "properties": {
+        "questionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "audiences": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "escalationOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dueAt": {
+          "type": "string",
+          "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "status": {
+          "const": "question-only-not-legal-determination"
+        },
+        "actualSent": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "options": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "security",
+          "business",
+          "evidence",
+          "rollback"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "OPT-IR19-DISABLE",
+              "OPT-IR19-RESTRICT",
+              "OPT-IR19-MONITOR"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "security": {
+            "type": "string",
+            "minLength": 1
+          },
+          "business": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rollback": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "contrasts": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "input",
+          "expected",
+          "judgment",
+          "timelineId",
+          "findingId",
+          "controlId",
+          "reassessmentId",
+          "handoffs"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "input": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "context",
+              "previous",
+              "decision",
+              "classification",
+              "severity",
+              "priority",
+              "scope",
+              "evidence",
+              "declaration",
+              "preservation",
+              "containment",
+              "analysisId",
+              "recovery",
+              "closure",
+              "reopening",
+              "incidentId",
+              "threatQuestionId",
+              "evidenceQuestion",
+              "collectionGap",
+              "classificationBasis",
+              "severityBasis",
+              "priorityBasis",
+              "eradicationQuestion"
+            ],
+            "properties": {
+              "context": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "subject",
+                  "revision",
+                  "assets",
+                  "start",
+                  "end"
+                ],
+                "properties": {
+                  "subject": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "revision": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "assets": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 8,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "start": {
+                    "type": "string",
+                    "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                  },
+                  "end": {
+                    "type": "string",
+                    "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                  }
+                }
+              },
+              "previous": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "status",
+                  "at",
+                  "owner",
+                  "reason",
+                  "closureValidationId",
+                  "closure"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "status": {
+                    "enum": [
+                      "Suspected",
+                      "Declared",
+                      "Contained",
+                      "Investigating",
+                      "Recovering",
+                      "Closed",
+                      "Reopened"
+                    ]
+                  },
+                  "at": {
+                    "type": "string",
+                    "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                  },
+                  "owner": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "closureValidationId": {
+                    "oneOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    ]
+                  },
+                  "closure": {
+                    "oneOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "owner",
+                          "at",
+                          "residualRisk",
+                          "riskOwner",
+                          "dueAt",
+                          "asset"
+                        ],
+                        "properties": {
+                          "owner": {
+                            "type": "string"
+                          },
+                          "at": {
+                            "type": "string",
+                            "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                          },
+                          "residualRisk": {
+                            "type": "string"
+                          },
+                          "riskOwner": {
+                            "type": "string"
+                          },
+                          "dueAt": {
+                            "type": "string",
+                            "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                          },
+                          "asset": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "decision": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "requested",
+                  "at",
+                  "owner",
+                  "reason"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "requested": {
+                    "enum": [
+                      "Suspected",
+                      "Declared",
+                      "Contained",
+                      "Investigating",
+                      "Recovering",
+                      "Closed",
+                      "Reopened"
+                    ]
+                  },
+                  "at": {
+                    "type": "string",
+                    "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                  },
+                  "owner": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              },
+              "classification": {
+                "enum": [
+                  "suspected-policy-violation",
+                  "misconfiguration-possible",
+                  "legitimate-change-possible"
+                ]
+              },
+              "severity": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "priority": {
+                "enum": [
+                  "routine",
+                  "urgent"
+                ]
+              },
+              "scope": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "hypothesized",
+                  "confirmed",
+                  "excluded",
+                  "unknown"
+                ],
+                "properties": {
+                  "hypothesized": {
+                    "type": "array",
+                    "minItems": 0,
+                    "maxItems": 8,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "confirmed": {
+                    "type": "array",
+                    "minItems": 0,
+                    "maxItems": 8,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "excluded": {
+                    "type": "array",
+                    "minItems": 0,
+                    "maxItems": 8,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "unknown": {
+                    "type": "array",
+                    "minItems": 0,
+                    "maxItems": 8,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              },
+              "evidence": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 24,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "kind",
+                    "subject",
+                    "revision",
+                    "asset",
+                    "windowStart",
+                    "windowEnd",
+                    "availableAt",
+                    "outcome"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "kind": {
+                      "enum": [
+                        "consent-change",
+                        "workload-access",
+                        "scope-confirmation",
+                        "scope-exclusion",
+                        "declaration-criteria",
+                        "preservation",
+                        "containment-validation",
+                        "analysis",
+                        "recovery-criteria",
+                        "recovery-validation",
+                        "new-evidence"
+                      ]
+                    },
+                    "subject": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "revision": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "asset": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "windowStart": {
+                      "type": "string",
+                      "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                    },
+                    "windowEnd": {
+                      "type": "string",
+                      "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                    },
+                    "availableAt": {
+                      "type": "string",
+                      "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                    },
+                    "outcome": {
+                      "enum": [
+                        "supported",
+                        "unknown",
+                        "failed"
+                      ]
+                    }
+                  }
+                }
+              },
+              "declaration": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "owner",
+                      "reason",
+                      "at",
+                      "criteriaId",
+                      "asset"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "owner": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "at": {
+                        "type": "string",
+                        "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                      },
+                      "criteriaId": {
+                        "oneOf": [
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        ]
+                      },
+                      "asset": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              "preservation": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "owner",
+                      "at",
+                      "evidenceId"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "owner": {
+                        "type": "string"
+                      },
+                      "at": {
+                        "type": "string",
+                        "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                      },
+                      "evidenceId": {
+                        "oneOf": [
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "containment": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "optionId",
+                      "asset",
+                      "at",
+                      "expectedImpact",
+                      "rollback",
+                      "destructive",
+                      "actualExecuted",
+                      "validationId",
+                      "authority"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "optionId": {
+                        "enum": [
+                          "OPT-IR19-DISABLE",
+                          "OPT-IR19-RESTRICT",
+                          "OPT-IR19-MONITOR"
+                        ]
+                      },
+                      "asset": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "at": {
+                        "type": "string",
+                        "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                      },
+                      "expectedImpact": {
+                        "type": "string"
+                      },
+                      "rollback": {
+                        "type": "string"
+                      },
+                      "destructive": {
+                        "type": "boolean",
+                        "const": false
+                      },
+                      "actualExecuted": {
+                        "type": "boolean",
+                        "const": false
+                      },
+                      "validationId": {
+                        "oneOf": [
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        ]
+                      },
+                      "authority": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "id",
+                          "approved",
+                          "owner",
+                          "approvedAt",
+                          "expiresAt",
+                          "subject",
+                          "revision",
+                          "asset",
+                          "realAuthority"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "approved": {
+                            "type": "boolean"
+                          },
+                          "owner": {
+                            "type": "string"
+                          },
+                          "approvedAt": {
+                            "type": "string",
+                            "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                          },
+                          "expiresAt": {
+                            "type": "string",
+                            "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                          },
+                          "subject": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "revision": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "asset": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "realAuthority": {
+                            "type": "boolean",
+                            "const": false
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "analysisId": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                ]
+              },
+              "recovery": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "owner",
+                      "criteriaId",
+                      "validationId",
+                      "asset"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "owner": {
+                        "type": "string"
+                      },
+                      "criteriaId": {
+                        "oneOf": [
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        ]
+                      },
+                      "validationId": {
+                        "oneOf": [
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        ]
+                      },
+                      "asset": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              "closure": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "owner",
+                      "at",
+                      "residualRisk",
+                      "riskOwner",
+                      "dueAt",
+                      "asset"
+                    ],
+                    "properties": {
+                      "owner": {
+                        "type": "string"
+                      },
+                      "at": {
+                        "type": "string",
+                        "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                      },
+                      "residualRisk": {
+                        "type": "string"
+                      },
+                      "riskOwner": {
+                        "type": "string"
+                      },
+                      "dueAt": {
+                        "type": "string",
+                        "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                      },
+                      "asset": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              "reopening": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "closedDecisionId",
+                      "newEvidenceId",
+                      "owner",
+                      "reason",
+                      "at"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "closedDecisionId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "newEvidenceId": {
+                        "oneOf": [
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        ]
+                      },
+                      "owner": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "at": {
+                        "type": "string",
+                        "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                      }
+                    }
+                  }
+                ]
+              },
+              "incidentId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "threatQuestionId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidenceQuestion": {
+                "type": "string",
+                "minLength": 1
+              },
+              "collectionGap": {
+                "type": "string",
+                "minLength": 1
+              },
+              "classificationBasis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "severityBasis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "priorityBasis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "eradicationQuestion": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "status",
+              "decision",
+              "gaps",
+              "limit",
+              "executionAuthorized",
+              "notificationDecided",
+              "noIncidentClaim",
+              "improvementComplete"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "Suspected",
+                  "Declared",
+                  "Contained",
+                  "Investigating",
+                  "Recovering",
+                  "Closed",
+                  "Reopened"
+                ]
+              },
+              "decision": {
+                "enum": [
+                  "accepted",
+                  "deferred"
+                ]
+              },
+              "gaps": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 12,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "limit": {
+                "const": "supplied-synthetic-record-only-not-authority-or-authenticity"
+              },
+              "executionAuthorized": {
+                "type": "boolean",
+                "const": false
+              },
+              "notificationDecided": {
+                "type": "boolean",
+                "const": false
+              },
+              "noIncidentClaim": {
+                "type": "boolean",
+                "const": false
+              },
+              "improvementComplete": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          "judgment": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "conclusion",
+              "alternative",
+              "confidence",
+              "confidenceBasis",
+              "gap",
+              "nextAction",
+              "reassessment"
+            ],
+            "properties": {
+              "conclusion": {
+                "type": "string",
+                "minLength": 1
+              },
+              "alternative": {
+                "type": "string",
+                "minLength": 1
+              },
+              "confidence": {
+                "type": "string",
+                "minLength": 1
+              },
+              "confidenceBasis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gap": {
+                "type": "string",
+                "minLength": 1
+              },
+              "nextAction": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reassessment": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "timelineId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "findingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "controlId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessmentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "handoffs": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "targetChapter",
+                "sourceDecisionId",
+                "questionId",
+                "plannedRecordId",
+                "question",
+                "scope",
+                "owner",
+                "dueAt",
+                "status",
+                "receiptId",
+                "executionAuthorized"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "targetChapter": {
+                  "enum": [
+                    20,
+                    22,
+                    26
+                  ]
+                },
+                "sourceDecisionId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "questionId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "plannedRecordId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "question": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "scope": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "owner": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "dueAt": {
+                  "type": "string",
+                  "pattern": "^2026-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+                },
+                "status": {
+                  "const": "planned-not-delivered"
+                },
+                "receiptId": {
+                  "type": "null"
+                },
+                "executionAuthorized": {
+                  "type": "boolean",
+                  "const": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

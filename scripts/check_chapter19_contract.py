@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Chapter16 finite selection/semantics; shared Projection and Policy own syntax."""
+"""Chapter19 finite selection/semantics; shared Projection and Policy own syntax."""
 
 from __future__ import annotations
 
@@ -13,14 +13,14 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from scripts.chapter16_model import (  # noqa: E402
+from scripts.chapter19_model import (  # noqa: E402
     DATA,
     SCHEMA,
     CONTRACT,
+    CORPUS,
     DOCUMENTS,
     PARENTS,
     SOURCES,
-    STATES,
     strict,
     read_regular,
     validate_model,
@@ -41,13 +41,12 @@ from scripts.publication_projection import (  # noqa: E402
     is_absolute_destination,
 )
 from scripts.source_audit import meets_audit_baseline  # noqa: E402
+from scripts.chapter19_decisions import VERSION as DECISION_VERSION  # noqa: E402
 
 PREFLIGHT = tuple(
     f"python3 scripts/check_chapter{n:02}_contract.py --no-regressions"
-    for n in (6, 7, 8, 9, 10, 12, 13, 14, 15, 16)
+    for n in (6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 18, 19)
 ) + (
-    "python3 scripts/check_chapter18_contract.py --no-regressions",
-    "python3 scripts/check_chapter19_contract.py --no-regressions",
     "python3 scripts/check_part02_contract.py --no-regressions",
     "python3 scripts/sync_book_site.py --output docs",
     "npm run copy:notices",
@@ -99,7 +98,7 @@ def scan_document(document, spec):
 
 
 def case_errors(document, data):
-    """The dedicated full-leaf section owns exactly one row for every JSON leaf."""
+    """The dedicated artifact-leaf section owns exactly one row for every displayed artifact leaf."""
     actual, active = [], False
     for field in document.fields:
         if (
@@ -115,7 +114,7 @@ def case_errors(document, data):
         expected += [
             " ".join((title + " Field Value " + k + " " + v).split()) for k, v in rows
         ]
-    return [] if actual == expected else ["ART24 full JSON leaf / Case field parity"]
+    return [] if actual == expected else ["ART25 artifact leaf / Case field parity"]
 
 
 def document_errors(document, spec, data):
@@ -134,91 +133,103 @@ def document_errors(document, spec, data):
             if is_policy_scan_field(f):
                 (refs if in_refs else body).update(SOURCE_ID_RE.findall(f.text))
         if body != set(SOURCES) or refs != set(SOURCES):
-            errors.append("ART24 body/end-reference Source ownership")
+            errors.append("ART25 body/end-reference Source ownership")
     return errors
 
 
 def parent_errors(data, root):
     p = data["parents"]
-    b, s, f, d = (
-        strict(read_regular(root, path))
-        for path in (
-            "cases/fixtures/ch05-attack-behavior.json",
-            "cases/fixtures/ch06-signal-flow.json",
-            "cases/fixtures/ch15-findings-retest-risk.json",
-            "cases/fixtures/ch17-detection-engineering-fixture.json",
-        )
+    t = strict(read_regular(root, "cases/fixtures/ch16-telemetry-coverage.json"))
+    d = strict(
+        read_regular(root, "cases/fixtures/ch17-detection-engineering-fixture.json")
     )
-    found = next(x for x in f["findings"] if x["id"] == p["findingId"])
-    handoff = next(x for x in f["handoffs"] if x["id"] == p["handoffId"])
+    h = strict(read_regular(root, "cases/fixtures/ch18-threat-hunting.json"))
+    th = next(x for x in t["handoffs"] if x["id"] == p["telemetryHandoffId"])
+    hh = next(x for x in h["contrasts"][0]["handoffs"] if x["id"] == p["huntHandoffId"])
     pairs = [
-        (p["behaviorMapId"], b["mapId"]),
-        (p["signalMapId"], s["mapId"]),
-        (p["findingRecordId"], f["record"]["id"]),
-        (p["findingSubjectId"], found["subjectId"]),
-        (p["findingRevision"], found["subjectRevision"]),
-        (p["handoffStatus"], handoff["status"]),
+        (p["telemetryMapId"], t["record"]["id"]),
+        (p["telemetryRowIds"], th["rowIds"]),
         (p["detectionRecordId"], d["detectionValidationRecordId"]),
         (p["detectionId"], d["detectionId"]),
-        (data["record"]["caseId"], d["caseId"]),
-        (p["telemetryIds"], [x["id"] for x in d["telemetryContracts"]]),
+        (data["record"]["parentCaseId"], d["caseId"]),
+        (p["huntRecordId"], h["record"]["id"]),
+        (p["huntCaseId"], h["record"]["caseId"]),
+        (p["huntFindingId"], h["contrasts"][0]["judgment"]["findingId"]),
     ]
-    ok = (
-        all(a == b for a, b in pairs)
-        and p["behaviorId"] in [x["rowId"] for x in b["rows"]]
-        and p["signalFlowId"] in [x["flowId"] for x in s["flows"]]
-        and data["record"]["subjectId"] != found["subjectId"]
+    ok = all(a == b for a, b in pairs)
+    ok = ok and all(
+        x["targetChapter"] == 19
+        and x["status"] == "planned-not-delivered"
+        and x["receiptId"] is None
+        and x["executionAuthorized"] is False
+        for x in (th, hh)
     )
-    return [] if ok else ["ART24 direct parent links / subject separation"]
+    ok = (
+        ok
+        and p["parentHandoffStatus"] == "planned-not-delivered"
+        and p["parentReceiptId"] is None
+    )
+    ok = ok and all(
+        p[k] is False
+        for k in (
+            "authorityTransferred",
+            "evidenceTransferred",
+            "parentHandoffReceived",
+            "parentStateChanged",
+        )
+    )
+    subjects = [r["input"]["context"]["subject"] for r in data["contrasts"]]
+    ok = ok and not set(subjects) & {t["record"]["subjectId"], h["record"]["subjectId"]}
+    return [] if ok else ["ART25 parent direct IDs / undelivered / non-inheritance"]
 
 
 def repository_errors(data, contract, root=ROOT):
     errors = parent_errors(data, root)
     if list(contract["parentDigests"]) != list(PARENTS):
-        errors.append("ART24 parent inventory")
+        errors.append("ART25 parent inventory")
     for path, expected in contract["parentDigests"].items():
         if hashlib.sha256(read_regular(root, path)).hexdigest() != expected:
             errors.append(path + ": parent/shared modified")
     package = load_json_strict(root / "package.json")["scripts"]
     if (
-        package.get("check:chapter16") != "python3 scripts/check_chapter16_contract.py"
-        or package["test"].split(" && ").count("npm run check:chapter16") != 1
+        package.get("check:chapter19") != "python3 scripts/check_chapter19_contract.py"
+        or package["test"].split(" && ").count("npm run check:chapter19") != 1
         or package["sync:docs"].split(" && ") != list(PREFLIGHT)
     ):
-        errors.append("ART24 root test/preflight exactly once before generation")
+        errors.append("ART25 root test/preflight exactly once before generation")
     routes = load_json_strict(root / "site-pages.json")
     for kind in ("pages", "staticFiles"):
         for route in contract[kind]:
             if routes[kind].count(route) != 1:
-                errors.append("ART24 exact route: " + route["source"])
+                errors.append("ART25 exact route: " + route["source"])
     order = [
-        x["source"]
-        for x in sorted(routes["pages"], key=lambda x: x["order"])
-        if x["section"] == "chapters"
+        p["source"]
+        for p in sorted(routes["pages"], key=lambda p: p["order"])
+        if p["section"] == "chapters"
     ]
     if (
-        not order.index("manuscript/15-findings-retest-risk.md")
+        not order.index("manuscript/18-threat-hunting.md")
         < order.index(DOCUMENTS[0])
-        < order.index("manuscript/17-detection-engineering.md")
+        < order.index("manuscript/25-structured-analysis-attribution.md")
     ):
-        errors.append("ART24 navigation 15/16/17")
+        errors.append("ART25 navigation 18/19/25")
     sources = load_json_strict(root / "references/sources.json")
     if sources["checkedAt"] != "2026-07-25" or {
-        s["id"] for s in sources["sources"] if 16 in s["chapters"]
+        s["id"] for s in sources["sources"] if 19 in s["chapters"]
     } != set(SOURCES):
-        errors.append("ART24 scoped Source mapping/baseline")
+        errors.append("ART25 scoped Source mapping/baseline")
     for sid in SOURCES:
         source = next(s for s in sources["sources"] if s["id"] == sid)
         if any(source[k] != v for k, v in contract["sourceIdentity"][sid].items()):
-            errors.append("ART24 reviewed Source identity: " + sid)
+            errors.append("ART25 reviewed Source identity: " + sid)
         if not meets_audit_baseline(
-            source["checkedAt"], "2026-09-21"
-        ) or not meets_audit_baseline(source["nextReviewAt"], "2026-12-21"):
-            errors.append("ART24 Source review date: " + sid)
+            source["checkedAt"], "2026-09-23"
+        ) or not meets_audit_baseline(source["nextReviewAt"], "2026-11-08"):
+            errors.append("ART25 Source review date: " + sid)
     for path, markers in contract["indices"].items():
         text = (root / path).read_text(encoding="utf-8")
         if any(m not in text for m in markers):
-            errors.append("ART24 index: " + path)
+            errors.append("ART25 index: " + path)
     return errors
 
 
@@ -232,24 +243,27 @@ def main():
         )
         if (
             contract["schemaVersion"] != "1.0.0"
+            or contract["decisionVersion"] != DECISION_VERSION
             or list(contract["documents"]) != list(DOCUMENTS)
             or POLICY_VERSION != "1.2.0"
             or PROJECTION_VERSION != "1.1.0"
             or hashlib.sha256(read_regular(ROOT, SCHEMA)).hexdigest()
             != contract["schemaSha256"]
+            or hashlib.sha256(read_regular(ROOT, CORPUS)).hexdigest()
+            != contract["corpusSha256"]
         ):
-            raise ValueError("ART24 finite inventory/schema/shared versions")
+            raise ValueError("ART25 finite inventory/schema/shared versions")
         errors = validate_model(data, schema, contract)
         errors += repository_errors(data, contract)
         source = {p: read_regular(ROOT, p).decode("utf-8") for p in DOCUMENTS}
         projection = project_documents(source)
         if [d.document_id for d in projection.documents] != list(DOCUMENTS):
-            raise ValueError("ART24 complete document projection order")
+            raise ValueError("ART25 complete document projection order")
         for doc in projection.documents:
             errors += document_errors(doc, contract["documents"][doc.document_id], data)
         count = 0
         if not args.no_regressions:
-            from scripts.chapter16_regressions import run_regressions
+            from scripts.chapter19_regressions import run_regressions
 
             count, problems = run_regressions(
                 data, schema, contract, source, projection
@@ -260,7 +274,7 @@ def main():
                 print("ERROR:", error)
             return 1
         print(
-            f"Chapter 16 contract passed: 4 complete documents; 10 ART-24 contrasts / {len(STATES)} states / 24 receipts; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
+            f"Chapter 19 contract passed: 4 complete documents; 12 ART-25 contrasts / 7 states; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
         )
         return 0
     except (
@@ -272,7 +286,7 @@ def main():
         ManifestError,
         ProjectionRuntimeError,
     ) as exc:
-        print("ERROR: Chapter16 fail closed:", exc)
+        print("ERROR: Chapter19 fail closed:", exc)
         return 1
 
 
