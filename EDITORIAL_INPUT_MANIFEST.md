@@ -15,8 +15,7 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
-| `canonical-pr-open` | 1 |
-| `consumed` | 14 |
+| `consumed` | 15 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 11 |
 
@@ -64,7 +63,7 @@
 | `chapter-16` | #40 | `consumed` | `EIC-0040-38fbe94b39aa` | #147 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/40#issuecomment-5767224085) |
 | `chapter-18` | #41 | `consumed` | `EIC-0041-5a08af6d1ae3` | #150 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5785664929) |
 | `chapter-19` | #42 | `consumed` | `EIC-0042-3630c01fb55d` | #153 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5802428231) |
-| `chapter-20` | #43 | `canonical-pr-open` | `EIC-0043-58dc95fff364` | #156 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/156) |
+| `chapter-20` | #43 | `consumed` | `EIC-0043-58dc95fff364` | #156 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5823341050) |
 | `chapter-21` | #44 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622) |
 | `chapter-22` | #45 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
 | `chapter-23` | #46 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155) |
@@ -171,7 +170,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0043-58dc95fff364` | `EIP-0011` | `chapter20-dfir-timeline-causality.predraft.md` | `58dc95fff36417b259bab6c965d2bfe2289b3d59fa5d4e4f57a2b49806c81078` | `selected` | PR155実main公開とIssue154完了後、Issue43で唯一の登録候補をbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを明示し、現契約と一次資料から再構成する。 |
+| `EIC-0043-58dc95fff364` | `EIP-0011` | `chapter20-dfir-timeline-causality.predraft.md` | `58dc95fff36417b259bab6c965d2bfe2289b3d59fa5d4e4f57a2b49806c81078` | `rewritten` | PR #156でIssue #43とcurrent contract・再検証済み一次資料から第20章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0011/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter21のDispositionは不変。 |
 
 ### `chapter-21` / Issue #44
 
