@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "timelineVersion": "1.0.0",
-  "caseCount": 65,
+  "caseCount": 77,
   "oracle": "Independently authored literal values/errors; not evaluator output; finite teaching cases only.",
   "cases": [
     {
@@ -1177,6 +1177,180 @@
         "errorContains": "change identity"
       },
       "note": "Reference role is validated even before this evidence becomes eligible"
+    },
+    {
+      "id": "DCHECK20-066",
+      "kind": "instant",
+      "input": "2000-01-01T00:00:00+14:00",
+      "expected": {
+        "errorContains": "timestamp UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-067",
+      "kind": "instant",
+      "input": "2099-12-31T23:59:59-14:00",
+      "expected": {
+        "errorContains": "timestamp UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-068",
+      "kind": "instant",
+      "input": "2000-01-01T14:00:00+14:00",
+      "expected": {
+        "value": "2000-01-01T00:00:00Z"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-069",
+      "kind": "instant",
+      "input": "2099-12-31T09:59:59-14:00",
+      "expected": {
+        "value": "2099-12-31T23:59:59Z"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-070",
+      "kind": "instant",
+      "input": "2000-01-01T00:00:00Z",
+      "expected": {
+        "value": "2000-01-01T00:00:00Z"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-071",
+      "kind": "instant",
+      "input": "2099-12-31T23:59:59Z",
+      "expected": {
+        "value": "2099-12-31T23:59:59Z"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-072",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2000-01-01T00:00:00Z",
+        "clock": {
+          "offsetSeconds": 0,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "errorContains": "interval UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-073",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2099-12-31T23:59:59Z",
+        "clock": {
+          "offsetSeconds": 0,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "errorContains": "interval UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-074",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2000-01-01T00:00:01Z",
+        "clock": {
+          "offsetSeconds": 0,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "value": [
+          "2000-01-01T00:00:00Z",
+          "2000-01-01T00:00:02Z"
+        ]
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-075",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2099-12-31T23:59:58Z",
+        "clock": {
+          "offsetSeconds": 0,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "value": [
+          "2099-12-31T23:59:57Z",
+          "2099-12-31T23:59:59Z"
+        ]
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-076",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2000-01-01T00:30:00Z",
+        "clock": {
+          "offsetSeconds": 3600,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "errorContains": "interval UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-077",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2099-12-31T23:30:00Z",
+        "clock": {
+          "offsetSeconds": -3600,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "errorContains": "interval UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
     }
   ]
 }

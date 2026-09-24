@@ -37,7 +37,9 @@ def instant(value):
         "timestamp canonical representation",
     )
     require(abs(parsed.utcoffset()) <= timedelta(hours=14), "timestamp offset range")
-    return parsed.astimezone(UTC)
+    normalized = parsed.astimezone(UTC)
+    require(2000 <= normalized.year <= 2099, "timestamp UTC supported years")
+    return normalized
 
 
 def utc_text(value):
@@ -80,6 +82,7 @@ def interval(row, clocks):
     )
     radius = timedelta(seconds=clock["uncertaintySeconds"])
     low, high = middle - radius, middle + radius
+    require(2000 <= low.year <= high.year <= 2099, "interval UTC supported years")
     require(
         instant(clock["validFrom"]) <= low <= high <= instant(clock["validUntil"]),
         "clock validity window",

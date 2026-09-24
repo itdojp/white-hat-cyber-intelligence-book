@@ -88,9 +88,9 @@ def run_regressions(data, schema, contract, source, projection):
     check("corpus-version", corpus["timelineVersion"] == VERSION)
     check(
         "corpus-owned-inventory",
-        corpus["caseCount"] == len(corpus["cases"]) == 65
+        corpus["caseCount"] == len(corpus["cases"]) == 77
         and [c["id"] for c in corpus["cases"]]
-        == [f"DCHECK20-{i:03}" for i in range(1, 66)]
+        == [f"DCHECK20-{i:03}" for i in range(1, 78)]
         and all(
             c["owner"].startswith("LayerA Chapter20 ") and c["note"]
             for c in corpus["cases"]
