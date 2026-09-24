@@ -88,3 +88,7 @@
 - [閉じたSchema](../../schemas/ch19-incident-response.schema.json): 有限語彙と未知Fieldの拒否。実IR自動化や真正性認証ではない。
 
 [全Artifact欄のCase](../ch19-incident-action-plan-example.md)と照合し、詳細Evidence列はJSONを読む。第19章公開前検査を通過しない入力は生成前に拒否する。供給Receiptは教育上の仮定で、親Evidence・権限・未配達を変更しない。
+
+## 第20章 DFIR
+
+[供給JSON](ch20-dfir-timeline-causality.json)と[閉じたSchema](../../schemas/ch20-dfir-timeline-causality.schema.json)は完全合成の五Receipt、Clock条件、六Claim、二Cutoff、ART-07/26、三つの未配達Handoffを持つ。[全欄Case](../ch20-dfir-timeline-causality-example.md)へ対応し、実収集や原因の自動認定は行わない。原payloadのHashは表現比較だけである。

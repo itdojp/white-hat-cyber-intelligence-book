@@ -145,3 +145,13 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 | T-19-02 | 七状態と結論の上限 | 第19章 |
 | T-19-03 | 合成封じ込め案の比較 | 第19章 |
 | T-19-04 | 判断記録の評価基準 | 第19章 |
+
+## 第20章 DFIR
+
+| ID | 図表 | 参照 |
+|---|---|---|
+| F-20-01 | Evidence QuestionからTimeline・RCA・再評価への接続 | [第20章](manuscript/20-dfir-timeline-causality.md) |
+| T-20-01 | Event・収集・取込・分析時点とCutoff | [第20章](manuscript/20-dfir-timeline-causality.md) |
+| T-20-02 | 原時刻とClockの不確かさを含むUTC区間 | [第20章](manuscript/20-dfir-timeline-causality.md) |
+| T-20-03 | 五つのRelationと根拠 | [第20章](manuscript/20-dfir-timeline-causality.md) |
+| T-20-04 | TimelineとRCAの評価ルーブリック | [第20章](manuscript/20-dfir-timeline-causality.md) |

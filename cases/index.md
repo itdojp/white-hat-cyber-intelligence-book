@@ -77,3 +77,7 @@
 ## 第19章 Incident Response
 
 [Incident Action Plan記入例](ch19-incident-action-plan-example.md)はART-25の十二の独立した条件付きSnapshotである。[合成JSON](fixtures/ch19-incident-response.json)と[Schema](../schemas/ch19-incident-response.schema.json)で、七状態、宣言・Scope・保存・復旧検証・残余リスクを分ける。親のEvidence・権限・未配達を継承せず、実操作と通知は0件である。
+
+## 第20章 DFIR
+
+[TimelineとRCAの全欄Case](ch20-dfir-timeline-causality-example.md)はART-07/26を五Receipt・二Cutoff・六Claimで比較する。[供給JSON](fixtures/ch20-dfir-timeline-causality.json)と[Schema](../schemas/ch20-dfir-timeline-causality.schema.json)に対応し、時刻幅、再送、後着Evidence、代替説明と原因未確定を分ける。親19の未配達・Evidence・実権限を更新しない。

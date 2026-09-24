@@ -1,0 +1,637 @@
+{
+  "schemaVersion": "1.0.0",
+  "timelineVersion": "1.0.0",
+  "schemaSha256": "7036e0396cdda482f66a7d53aadad532457e4091db9e4cf05d9ecfb884aac854",
+  "corpusSha256": "51edaa76d864daf8b0808a07ffe30b76925af63a4384e2c5937d3a7746d9d010",
+  "authoredInputs": {
+    "schemaVersion": "39fe4a40977d0585fd5704359e3685b0ada5cf5ee061e5d97385601d120cd0ec",
+    "synthetic": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "readOnly": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "networkRequired": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "executionAuthorized": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "record": "899abfa68b23826d468ac08e3ca7d1d53a5b74f71ba4b37d292f0f69ce99d9ac",
+    "parent": "253aac4907f73811cbe7e686f4cb205abdc4e85fb54c56b4450397ba461c7e3a",
+    "context": "4b9aedf2811e45e577e5f4d77abec88282592dc0ce002a49fec750ce997d6555",
+    "roles": "fa4415ba7818cf0d5a1df36beb2515a92c96d9c1da0cc14f070a64fd78347dcc",
+    "provenance": "36d8282ee509af899d8eb3d939140e9949b14d6a62f8655821010bd1ece8261e",
+    "sources": "9e7771a853097579ee3542d8728efed37a38d02d79ca990c1e94595a4af73afd",
+    "clocks": "ad29ee780c9b0b77f3d3a2fea61ae9f897e7d0900630fdade5dc99460eda7703",
+    "evidence": "edd8bfb828969dbf36d0ff4a88d8529c04562a86b4bc02f4f65177709581c251",
+    "claims": "522fa0d9b5bbaf44974d92d315465113fd4427c3c1b4bd9c137400ded45142e8",
+    "snapshots": "c186a86872b28621cccf9c2d4d67fb31056ae4ff4dec0d6290dc3ab1ab82473b",
+    "handoffs": "a6d4f4c5a45459213a4f89aba6239c5fde1db9f1d37200894d012c48611099d5",
+    "safety": "4ff7581e0b9f15559141f4c6207a614d3ddead146fbd5eb6b8d0f068284d7e0f"
+  },
+  "parentDigests": {
+    "WRITING_GUIDE.md": "7de62e48cbb0ca637548f6ff9d8f3c6cde0e9085f5dd42139f34f014820bbd95",
+    "SOURCE_POLICY.md": "f32541dcb37160d5194e4d9f8f805e675bebf3e9356a52f219b02bef829515c0",
+    "SAFETY_SCOPE.md": "e8ab5d61712004d16ef96f455d8224162f63296a056663d37cc5403639a184ff",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
+    "manuscript/16-telemetry-evidence-readiness.md": "96994707cac2add8c799298c5a97857e3447803904846c9b086708a843e4d9dc",
+    "cases/fixtures/ch16-telemetry-coverage.json": "e20586ce97dc892b8c965b919623133f122fd717943196153e4bd898f7e23f2c",
+    "manuscript/19-incident-response.md": "cb4bafae4744fcddd87eda21704bc9b8d48822512e532efa2038cd1efcc2ea1c",
+    "templates/incident-action-plan.md": "d1293554307ce374781a4b6eee962f12d7a3145011f06a8ee9144a8f18ea6e80",
+    "cases/ch19-incident-action-plan-example.md": "f72b0311c2acc075063b05003d55ecb323d767b27f449e6ab019d1a5de2118b0",
+    "cases/fixtures/ch19-incident-response.json": "5f400fb8fc9948146eb57d1b2098bd2185bd20f46c3d8bb9fe91a617630760e7",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
+    ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814"
+  },
+  "documents": {
+    "manuscript/20-dfir-timeline-causality.md": {
+      "projectionSha256": "9f00c37fbe5405a96da5569ec78bedaec47eff6e12d707669025ef6c1bd7274f",
+      "fieldCount": 132,
+      "headings": [
+        [
+          1,
+          "第20章 DFIRとタイムライン・因果再構成"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケースまたは判断要求"
+        ],
+        [
+          2,
+          "全体像"
+        ],
+        [
+          2,
+          "1. 問いと原記録の範囲を決める"
+        ],
+        [
+          2,
+          "2. 四つの時点とCutoffを分ける"
+        ],
+        [
+          2,
+          "3. 原時刻を幅のあるUTCへ変換する"
+        ],
+        [
+          2,
+          "4. 到着順、重複、Eventの同一性を分離する"
+        ],
+        [
+          2,
+          "5. Relationと根拠の強さを記録する"
+        ],
+        [
+          2,
+          "6. 代替説明を追加Evidenceで更新する"
+        ],
+        [
+          2,
+          "7. Trigger、原因仮説、寄与要因、影響を分ける"
+        ],
+        [
+          2,
+          "8. 改善案と再評価へ渡す"
+        ],
+        [
+          2,
+          "成果物"
+        ],
+        [
+          2,
+          "安全な演習または分析課題"
+        ],
+        [
+          2,
+          "評価ルーブリック"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "hostProvenance": [
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "7. Trigger、原因仮説、寄与要因、影響を分ける NIST SP 800-61 Rev.3のRS.AN-03は、事象の順序や関係資産を検討し、根底にある原因を調べることを扱う。RS.AN-06/07は調査の記録とDataの来歴・保持を扱う。これを「前に起きたEventが原因」と短絡する根拠にはしない。SRC-IR-001",
+          "manuscript/20-dfir-timeline-causality.md:L121:F77"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "参考文献・Source Note ID SRC-NIST-DFIR-001: NIST SP 800-86 Final、August 2006。§3.1〜3.5の分析・報告・完全性の原則に限定。",
+          "manuscript/20-dfir-timeline-causality.md:L181:F126"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "参考文献・Source Note ID SRC-BERKELEY-001: Berkeley Protocol、2022 edition。VI.C154/155(g,h)、VI.D167〜169の原形式・来歴・作業Copyに限定。",
+          "manuscript/20-dfir-timeline-causality.md:L183:F128"
+        ]
+      ]
+    },
+    "templates/incident-timeline.md": {
+      "projectionSha256": "0670d286e3128cd533105a3b918b15951caac600d36a1beb2c6fa076a8c765bc",
+      "fieldCount": 63,
+      "headings": [
+        [
+          1,
+          "Incident Timeline"
+        ],
+        [
+          2,
+          "基本識別情報と境界"
+        ],
+        [
+          2,
+          "Provenance and time basis"
+        ],
+        [
+          2,
+          "Timeline entries"
+        ],
+        [
+          2,
+          "Confirmed facts"
+        ],
+        [
+          2,
+          "Analytic judgments"
+        ],
+        [
+          2,
+          "Gaps and collection actions"
+        ],
+        [
+          2,
+          "Root cause and contributing factors"
+        ],
+        [
+          2,
+          "Containment, eradication, recovery"
+        ],
+        [
+          2,
+          "Review and cleanup"
+        ]
+      ],
+      "hostProvenance": []
+    },
+    "templates/root-cause-analysis.md": {
+      "projectionSha256": "0ea7b8799ed2c2d902fdc5b299bab0805fd6b60753e33ad6a246fa4873a8e9b3",
+      "fieldCount": 45,
+      "headings": [
+        [
+          1,
+          "Root Cause Analysis"
+        ],
+        [
+          2,
+          "Record and decision requirement"
+        ],
+        [
+          2,
+          "Causal analysis"
+        ],
+        [
+          2,
+          "Control and reassessment"
+        ],
+        [
+          2,
+          "Evidence and safety boundary"
+        ],
+        [
+          2,
+          "Review checklist"
+        ]
+      ],
+      "hostProvenance": []
+    },
+    "cases/ch20-dfir-timeline-causality-example.md": {
+      "projectionSha256": "3cab42529281ab72650c0ce02a125d57616524e102f1ed281dce97a66cb79b21",
+      "fieldCount": 569,
+      "headings": [
+        [
+          1,
+          "第20章 TimelineとRoot Cause Analysis完全合成記入例"
+        ],
+        [
+          2,
+          "読み方と境界"
+        ],
+        [
+          2,
+          "二つのSnapshot"
+        ],
+        [
+          2,
+          "Claimの読み取り"
+        ],
+        [
+          2,
+          "全欄の読み方"
+        ],
+        [
+          3,
+          "schemaVersion"
+        ],
+        [
+          3,
+          "synthetic"
+        ],
+        [
+          3,
+          "readOnly"
+        ],
+        [
+          3,
+          "networkRequired"
+        ],
+        [
+          3,
+          "executionAuthorized"
+        ],
+        [
+          3,
+          "record"
+        ],
+        [
+          3,
+          "parent"
+        ],
+        [
+          3,
+          "context"
+        ],
+        [
+          3,
+          "roles"
+        ],
+        [
+          3,
+          "provenance"
+        ],
+        [
+          3,
+          "SYN-SOURCE20-ID"
+        ],
+        [
+          3,
+          "SYN-SOURCE20-API"
+        ],
+        [
+          3,
+          "SYN-SOURCE20-ADMIN"
+        ],
+        [
+          3,
+          "SYN-SOURCE20-CHANGE"
+        ],
+        [
+          3,
+          "CLK20-ID"
+        ],
+        [
+          3,
+          "CLK20-API"
+        ],
+        [
+          3,
+          "CLK20-ADMIN"
+        ],
+        [
+          3,
+          "CLK20-CHANGE"
+        ],
+        [
+          3,
+          "EV20-001"
+        ],
+        [
+          3,
+          "EV20-002"
+        ],
+        [
+          3,
+          "EV20-003"
+        ],
+        [
+          3,
+          "EV20-004"
+        ],
+        [
+          3,
+          "EV20-005"
+        ],
+        [
+          3,
+          "CLM20-001"
+        ],
+        [
+          3,
+          "CLM20-002"
+        ],
+        [
+          3,
+          "CLM20-003"
+        ],
+        [
+          3,
+          "CLM20-004"
+        ],
+        [
+          3,
+          "CLM20-005"
+        ],
+        [
+          3,
+          "CLM20-006"
+        ],
+        [
+          3,
+          "TL-DFIR20-A"
+        ],
+        [
+          3,
+          "TL-DFIR20-B"
+        ],
+        [
+          3,
+          "HOF-DFIR20-21"
+        ],
+        [
+          3,
+          "HOF-DFIR20-22"
+        ],
+        [
+          3,
+          "HOF-DFIR20-25"
+        ],
+        [
+          3,
+          "safety"
+        ],
+        [
+          2,
+          "提出時の確認"
+        ]
+      ],
+      "hostProvenance": []
+    },
+    "references/ch20-source-review-2026-09-25.md": {
+      "projectionSha256": "1098932a44a5ec7ad38533fd333f5f27eedc12ec30170a815fed9a1c217835fa",
+      "fieldCount": 34,
+      "headings": [
+        [
+          1,
+          "第20章 Source Review — 2026-09-25"
+        ],
+        [
+          2,
+          "確認範囲"
+        ],
+        [
+          2,
+          "SRC-NIST-DFIR-001"
+        ],
+        [
+          2,
+          "SRC-IR-001"
+        ],
+        [
+          2,
+          "SRC-BERKELEY-001"
+        ],
+        [
+          2,
+          "取得証跡と非目標"
+        ],
+        [
+          2,
+          "再確認条件"
+        ]
+      ],
+      "hostProvenance": [
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "SRC-NIST-DFIR-001 NIST SP 800-86 Finalの公表ページはAugust 2006を示す。正確な公開日は未確定としてRegistryのpublishedAt nullを保持し、Publication Historyの日付を推測で代入しない。公式PDFの採用範囲は印刷pp.3-1、3-4、3-6〜3-8である。",
+          "references/ch20-source-review-2026-09-25.md:L9:F7"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://csrc.nist.gov/pubs/sp/800/86/final",
+          "references/ch20-source-review-2026-09-25.md:L9:F8"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-86.pdf",
+          "references/ch20-source-review-2026-09-25.md:L9:F9"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "SRC-IR-001 SP 800-61 Rev.3 Finalは2025-04-03公開である。公式PDFの印刷pp.28〜29、RS.AN-03/06/07を参照した。",
+          "references/ch20-source-review-2026-09-25.md:L15:F13"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+          "references/ch20-source-review-2026-09-25.md:L15:F14"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r3.pdf",
+          "references/ch20-source-review-2026-09-25.md:L15:F15"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source",
+          "references/ch20-source-review-2026-09-25.md:L21:F20"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://humanrights.berkeley.edu/projects/developing-the-berkeley-protocol-on-digital-open-source-investigations/",
+          "references/ch20-source-review-2026-09-25.md:L21:F21"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://humanrights.berkeley.edu/wp-content/uploads/archive/2024/02/Berkeley-Protocol.pdf",
+          "references/ch20-source-review-2026-09-25.md:L21:F22"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "採用箇所はVI.C154/155(g,h)の印刷p.59、VI.D167〜169のp.61である。原形式と変換記録、取得文脈、保存・来歴、作業Copyの区別を参考にする。Digital Open Source調査の資料を一般DFIRの法的適格性の証明や実在人物の調査許可には使わない。",
+          "references/ch20-source-review-2026-09-25.md:L23:F23"
+        ]
+      ]
+    }
+  },
+  "sourceIdentity": {
+    "SRC-NIST-DFIR-001": {
+      "publisher": "NIST",
+      "title": "Guide to Integrating Forensic Techniques into Incident Response",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-86, Final, August 2006",
+      "url": "https://csrc.nist.gov/pubs/sp/800/86/final",
+      "publishedAt": null,
+      "notes": "CSRC Date Published is August 2006; its distinct History date is 09/01/06. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3 and 3.1.2: collection/examination/analysis/reporting, acquisition planning, integrity and handling records. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed. 2026-09-25: Chapter20用途として公式Final landing/PDFを再確認。公表はAugust2006、正確な日付は未確定のためpublishedAt nullを保持。印刷pp.3-1/3-4/3-6〜3-8の収集・検査・分析・報告、完全性と作業Copy、複数Source・結論不能・代替説明の原則だけを採用。旧製品・取得手順・個別法的適格性・全節監査の根拠ではない。有限時刻幅/Cutoff/重複/Claimモデルは本書独自。"
+    },
+    "SRC-IR-001": {
+      "publisher": "NIST",
+      "title": "Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+      "kind": "standard",
+      "status": "final",
+      "version": "SP 800-61 Rev.3",
+      "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+      "publishedAt": "2025-04-03",
+      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: FinalのDE.AE-08/p26、RS.MA-02/p27、RS.AN-06/07/p29をIncident基準・Triage・記録の来歴に限定参照。本書の五Resultや算法の規範・法的認定ではない。詳細はch18-source-review-2026-09-22.md。 2026-09-23用途限定確認: 第19章はSP800-61r3 Final（2025-04-03）pp.1–2、DE.AE-08 p.26、RS.MA-02〜05 pp.27–28、RS.AN-06/07 p.29、RS.CO-02/03 pp.30–31、RS.MI-01/02 pp.32–33、RC.RP-01〜06 p.34を宣言・分類・記録・通知照会・復旧検証に参照。七状態と有限判断は本書独自で、実権限・真正性・個別法的通知判断は認定しない。 2026-09-25: Chapter20用途としてRev3 Final2025-04-03の公式landing/PDFを再確認。印刷pp.28–29のRS.AN-03/06/07を順序・関連資産・根底の原因を問うこと、調査記録、来歴・保持に限定採用。二Eventの相関を原因とせず、有限教材の算法や普遍的保持・法的適格性の根拠にはしない。"
+    },
+    "SRC-BERKELEY-001": {
+      "publisher": "OHCHR / UC Berkeley",
+      "title": "Berkeley Protocol on Digital Open Source Investigations",
+      "kind": "protocol",
+      "status": "published",
+      "version": "2022 edition",
+      "url": "https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source",
+      "publishedAt": null,
+      "notes": "Official publication identifies the 2022 edition; an exact publication day is not recorded here. Chapter 8 scoped recheck on 2026-09-13 uses the official co-publisher 2022 PDF, VI.C 155(g/h) and VI.D 167–169, for time/hash/context, handling history and original/working-copy distinction only. OHCHR landing direct retrieval returned HTTP 403. Exact edition publication day remains unknown; neither the separate 2020 announcement nor the PDF path is substituted. Chapter 25 edition and source-evaluation meaning remain unchanged. No legal admissibility, complete chain-of-custody certification, copied tables, or full cross-chapter audit is claimed. 2026-09-25: Chapter20用途の限定確認。OHCHR landingは403で再読不能、共同発行者UC Berkeley公式projectとlinked PDFは200。表題・版権頁で2022 edition、VI.C154/155(g,h)印刷p.59とVI.D167〜169 p.61の原形式・変換記録・取得文脈・来歴・作業Copyを確認。正確な刊行日不明のpublishedAt nullを保持。Digital Open Source調査の原則を参考にするだけで、一般DFIRの法的適格性・実調査許可・全節監査を認定しない。"
+    }
+  },
+  "pages": [
+    {
+      "source": "manuscript/20-dfir-timeline-causality.md",
+      "destination": "chapters/chapter-20/index.md",
+      "section": "chapters",
+      "order": 203,
+      "title": "第20章 DFIRとタイムライン・因果再構成"
+    },
+    {
+      "source": "templates/root-cause-analysis.md",
+      "destination": "templates/root-cause-analysis/index.md",
+      "section": "additional",
+      "order": 287,
+      "title": "Root Cause Analysis"
+    },
+    {
+      "source": "cases/ch20-dfir-timeline-causality-example.md",
+      "destination": "cases/chapter-20-dfir-timeline-causality/index.md",
+      "section": "additional",
+      "order": 288,
+      "title": "第20章 TimelineとRoot Cause Analysis完全合成記入例"
+    },
+    {
+      "source": "references/ch20-source-review-2026-09-25.md",
+      "destination": "references/chapter-20-source-review/index.md",
+      "section": "additional",
+      "order": 289,
+      "title": "第20章 Source Review — 2026-09-25"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch20-dfir-timeline-causality.json",
+      "destination": "downloads/ch20-dfir-timeline-causality.json"
+    },
+    {
+      "source": "schemas/ch20-dfir-timeline-causality.schema.json",
+      "destination": "downloads/ch20-dfir-timeline-causality.schema.json"
+    }
+  ],
+  "indices": {
+    "artifact-index.md": [
+      "ART-07",
+      "ART-26",
+      "templates/root-cause-analysis.md",
+      "cases/ch20-dfir-timeline-causality-example.md"
+    ],
+    "figure-index.md": [
+      "F-20-01",
+      "T-20-01",
+      "T-20-02",
+      "T-20-03",
+      "T-20-04"
+    ],
+    "glossary.md": [
+      "Evidence cut-off",
+      "Clock uncertainty interval",
+      "Root condition hypothesis"
+    ],
+    "cases/index.md": [
+      "ch20-dfir-timeline-causality-example.md",
+      "ART-07/26"
+    ],
+    "cases/fixtures/index.md": [
+      "ch20-dfir-timeline-causality.json",
+      "ch20-dfir-timeline-causality.schema.json"
+    ],
+    "README.md": [
+      "check:chapter20",
+      "五Receipt・二Cutoff・六Claim"
+    ],
+    "CHANGELOG.md": [
+      "manuscript/20-dfir-timeline-causality.md",
+      "ART-26"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "第20章",
+      "check:chapter20",
+      "二Cutoffと六Claim"
+    ]
+  }
+}

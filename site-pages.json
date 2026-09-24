@@ -529,6 +529,34 @@
       "section": "additional",
       "order": 285,
       "title": "第19章 Source Review — 2026-09-23"
+    },
+    {
+      "source": "manuscript/20-dfir-timeline-causality.md",
+      "destination": "chapters/chapter-20/index.md",
+      "section": "chapters",
+      "order": 203,
+      "title": "第20章 DFIRとタイムライン・因果再構成"
+    },
+    {
+      "source": "templates/root-cause-analysis.md",
+      "destination": "templates/root-cause-analysis/index.md",
+      "section": "additional",
+      "order": 287,
+      "title": "Root Cause Analysis"
+    },
+    {
+      "source": "cases/ch20-dfir-timeline-causality-example.md",
+      "destination": "cases/chapter-20-dfir-timeline-causality/index.md",
+      "section": "additional",
+      "order": 288,
+      "title": "第20章 TimelineとRoot Cause Analysis完全合成記入例"
+    },
+    {
+      "source": "references/ch20-source-review-2026-09-25.md",
+      "destination": "references/chapter-20-source-review/index.md",
+      "section": "additional",
+      "order": 289,
+      "title": "第20章 Source Review — 2026-09-25"
     }
   ],
   "directoryRoutes": {
@@ -650,6 +678,14 @@
     {
       "source": "schemas/ch19-incident-response.schema.json",
       "destination": "downloads/ch19-incident-response.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch20-dfir-timeline-causality.json",
+      "destination": "downloads/ch20-dfir-timeline-causality.json"
+    },
+    {
+      "source": "schemas/ch20-dfir-timeline-causality.schema.json",
+      "destination": "downloads/ch20-dfir-timeline-causality.schema.json"
     }
   ]
 }

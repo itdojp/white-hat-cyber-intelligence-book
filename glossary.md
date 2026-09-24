@@ -196,3 +196,15 @@
 | Reopened | 旧閉鎖を保持し、新Evidenceに基づいて再開する判断 |
 
 [第19章](manuscript/19-incident-response.md)では分類・重大度・優先度・状態を分離する。
+
+## 第20章 DFIRの記録語彙
+
+| 用語 | 本書での意味 |
+|---|---|
+| Evidence cut-off | 判断へ使える入力の締切。原時刻だけでなく利用可能時点を扱う |
+| Clock uncertainty interval | 供給した精度・drift等の総不確かさを含む時刻幅。確信度の百分率ではない |
+| Event identity / receipt | 出来事の識別と受領記録の区別。同じEventの再送もReceiptを保持する |
+| Root condition hypothesis | 結果を可能にした根底の条件についての仮説。Triggerや相関と同義ではない |
+| Contradicted | 特定の主張が根拠と矛盾すること。別の原因の証明やEventの削除ではない |
+
+[第20章](manuscript/20-dfir-timeline-causality.md)と[ART-26](templates/root-cause-analysis.md)で使用する。

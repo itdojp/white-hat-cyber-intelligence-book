@@ -6,6 +6,8 @@
 
 ### Added
 
+- [第20章](manuscript/20-dfir-timeline-causality.md)、ART-07拡張とART-26、五Receipt・二Cutoff・六Claimの完全合成Case、閉Schemaと有限公開前検査を追加。原時刻・不確かさ・後着Evidence・代替説明・原因未確定を分け、親19のEvidence・権限・未配達を保持。三Sourceの用途限定確認を2026-09-25に記録。
+
 - [第19章](manuscript/19-incident-response.md)、ART-25、十二の完全合成対比、七状態の有限判断・公開前検査を追加。宣言・Scope・保存・選択肢・復旧検証・残余リスクを分離し、親のEvidence・権限・未配達を変更しない。二NIST Sourceは第19章用途だけを2026-09-23に再確認し、過去の記録を保持。
 
 - [第18章](manuscript/18-threat-hunting.md)、既存ART-06拡張、十二の完全合成対比、閉Schemaと有限Query/読解契約を追加。五Result、Coverage、Negative Finding、代替説明、Backlog、再評価を接続し、親16/17のEvidence・権限・未配達を変更しない。
