@@ -3,7 +3,7 @@
 このファイルは`editorial-input-manifest.json`から決定的に生成します。機械可読Manifestを更新し、`npm run render:editorial-inputs`を実行してください。このファイルを手編集しないでください。
 
 - Manifest version: `1.0.0`
-- Audit date: `2026-09-23`
+- Audit date: `2026-09-24`
 - Packages / targets / candidates: `14 / 29 / 30`
 - Provenance: [Issue #63](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63) / [Issue #98](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98)
 - External audit artifact: `not-present-in-authorized-workspace`。内容やhash一致を推測しません。
@@ -15,8 +15,7 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
-| `canonical-pr-open` | 1 |
-| `consumed` | 13 |
+| `consumed` | 14 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 12 |
 
@@ -63,7 +62,7 @@
 | `chapter-15` | #39 | `consumed` | `EIC-0039-c168fc29af42` | #142 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5740271229) |
 | `chapter-16` | #40 | `consumed` | `EIC-0040-38fbe94b39aa` | #147 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/40#issuecomment-5767224085) |
 | `chapter-18` | #41 | `consumed` | `EIC-0041-5a08af6d1ae3` | #150 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5785664929) |
-| `chapter-19` | #42 | `canonical-pr-open` | `EIC-0042-3630c01fb55d` | #153 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/153) |
+| `chapter-19` | #42 | `consumed` | `EIC-0042-3630c01fb55d` | #153 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5802428231) |
 | `chapter-20` | #43 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622) |
 | `chapter-21` | #44 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622) |
 | `chapter-22` | #45 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
@@ -165,7 +164,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0042-3630c01fb55d` | `EIP-0010` | `chapter19-incident-response.predraft.md` | `3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68` | `selected` | 前提39/40/41と管理PR152の実main公開完了後、唯一候補をbranch前に選択。登録4basenameの認可workspace所在検索はhit0/errors0、raw未読・実体hash未照合・直接採用なし。現Issue/契約/一次資料から新規制作する。 |
+| `EIC-0042-3630c01fb55d` | `EIP-0010` | `chapter19-incident-response.predraft.md` | `3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68` | `rewritten` | PR #153でIssue #42とcurrent contract・再検証済み一次資料から第19章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0010/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter18のDispositionは不変。 |
 
 ### `chapter-20` / Issue #43
 
