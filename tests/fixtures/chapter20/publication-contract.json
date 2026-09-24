@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "timelineVersion": "1.0.0",
-  "schemaSha256": "376b876dbc4c30c295e2093b59b197709a35f6e7dea7f782725fdc8b1623220d",
+  "schemaSha256": "7036e0396cdda482f66a7d53aadad532457e4091db9e4cf05d9ecfb884aac854",
   "corpusSha256": "f7cfea5cf05306a69048c097abb2aad691515c1db88c9eda87d967fdf8585fbf",
   "authoredInputs": {
     "schemaVersion": "39fe4a40977d0585fd5704359e3685b0ada5cf5ee061e5d97385601d120cd0ec",
@@ -9,7 +9,7 @@
     "readOnly": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
     "networkRequired": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
     "executionAuthorized": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
-    "record": "e192bd0d15e18c404582f86a061315c4cbb068470040460181e88a77223ba783",
+    "record": "899abfa68b23826d468ac08e3ca7d1d53a5b74f71ba4b37d292f0f69ce99d9ac",
     "parent": "253aac4907f73811cbe7e686f4cb205abdc4e85fb54c56b4450397ba461c7e3a",
     "context": "4b9aedf2811e45e577e5f4d77abec88282592dc0ce002a49fec750ce997d6555",
     "roles": "fa4415ba7818cf0d5a1df36beb2515a92c96d9c1da0cc14f070a64fd78347dcc",
@@ -44,7 +44,7 @@
   },
   "documents": {
     "manuscript/20-dfir-timeline-causality.md": {
-      "projectionSha256": "a0b83747ce6d1e39b1dfc2510df2e72d3ead45e6242906998bb106b21917db1d",
+      "projectionSha256": "9f00c37fbe5405a96da5569ec78bedaec47eff6e12d707669025ef6c1bd7274f",
       "fieldCount": 132,
       "headings": [
         [
@@ -234,8 +234,8 @@
       "hostProvenance": []
     },
     "cases/ch20-dfir-timeline-causality-example.md": {
-      "projectionSha256": "0e53f8b4414fa45135e8b49b7536c42ff648c3fa8cde6b11725bfd7b8200091a",
-      "fieldCount": 566,
+      "projectionSha256": "3cab42529281ab72650c0ce02a125d57616524e102f1ed281dce97a66cb79b21",
+      "fieldCount": 569,
       "headings": [
         [
           1,

@@ -71,6 +71,9 @@ EV20-002/004は同一Source・Event ID・payloadの再送である。Receiptは�
 | Field | Value |
 |---|---|
 | `id` | `DFIR-2026-020-001` |
+| `incidentId` | `null` |
+| `incidentReferenceStatus` | `not-declared-in-this-bundle` |
+| `timeStandard` | `UTC; original timezone offsets retained` |
 | `caseId` | `CASE-DFIR-2026-001` |
 | `parentCaseId` | `CASE-IR-2026-001` |
 | `relation` | `refines` |

@@ -46,6 +46,9 @@
       "additionalProperties": false,
       "required": [
         "id",
+        "incidentId",
+        "incidentReferenceStatus",
+        "timeStandard",
         "caseId",
         "parentCaseId",
         "relation",
@@ -61,6 +64,15 @@
         "id": {
           "type": "string",
           "minLength": 1
+        },
+        "incidentId": {
+          "type": "null"
+        },
+        "incidentReferenceStatus": {
+          "const": "not-declared-in-this-bundle"
+        },
+        "timeStandard": {
+          "const": "UTC; original timezone offsets retained"
         },
         "caseId": {
           "type": "string",

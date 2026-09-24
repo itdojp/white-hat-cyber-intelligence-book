@@ -1198,6 +1198,12 @@
           "effectiveAt": "2026-09-25",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5819304826",
           "reason": "PR155実main公開とIssue154完了後、Issue43で唯一の登録候補をbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを明示し、現契約と一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/156",
+          "reason": "第20章専用Draft PR#156に本文/ART07+26/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
         }
       ]
     },

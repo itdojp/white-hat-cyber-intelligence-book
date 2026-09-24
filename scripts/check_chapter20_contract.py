@@ -25,7 +25,14 @@ from scripts.chapter20_model import (  # noqa: E402
     validate_model,
     case_groups,
 )
-from scripts.chapter20_timeline import VERSION, digest  # noqa: E402
+from scripts.chapter20_timeline import (  # noqa: E402
+    VERSION,
+    digest,
+    evaluate,
+    instant,
+    interval,
+    utc_text,
+)
 from scripts.check_editorial_input_manifest import ManifestError  # noqa: E402
 from scripts.check_representative_gate import SOURCE_ID_RE  # noqa: E402
 from scripts.content_safety_policy import (  # noqa: E402
@@ -101,11 +108,69 @@ def scan_document(document, spec):
     return errors
 
 
+def section_table_rows(document, heading):
+    """Select an authored Chapter20 H2 surface from shared projected fields."""
+    active, rows = False, []
+    for field in document.fields:
+        if (
+            field.field_type == "reader_visible_text"
+            and field.element_kind == "heading"
+            and field.metadata_value("level") == 2
+        ):
+            active = field.text == heading
+        if active and is_policy_scan_field(field) and field.element_kind == "table_row":
+            rows.append(field.text)
+    return rows
+
+
+def numeric_example_errors(document, data):
+    """Bind the short numeric reading tables, not just the full Artifact leaves."""
+    errors, expected = [], []
+    if document.document_id == DOCUMENTS[0]:
+        clocks = {c["id"]: c for c in data["clocks"]}
+        rows = {r["id"]: r for r in data["evidence"]}
+        for eid in ("EV20-001", "EV20-002", "EV20-003", "EV20-005"):
+            row = rows[eid]
+            raw = row["payload"]["originalTime"]
+            clock = clocks[row["payload"]["clockId"]]
+            low, high = (utc_text(t) for t in interval(row, clocks))
+            if {raw[:10], low[:10], high[:10]} != {"2026-09-01"}:
+                errors.append("DFIR20 numeric example date scope")
+            offset = f"{clock['offsetSeconds']:+d}" if clock["offsetSeconds"] else "0"
+            expected.append(
+                f"Evidence 原時刻 offset / 不確かさ 正規化区間 UTC {eid} {raw[11:]} "
+                f"{offset}秒 / ±{clock['uncertaintySeconds']}秒 {low[11:19]}〜{high[11:19]}"
+            )
+        if section_table_rows(document, "3. 原時刻を幅のあるUTCへ変換する") != expected:
+            errors.append("DFIR20 manuscript numeric table / supplied time parity")
+    if document.document_id == DOCUMENTS[3]:
+        judgments = {
+            "TL-DFIR20-A": "EV20-005は後着で不採用。特定Changeの範囲は未確定、原因unresolved",
+            "TL-DFIR20-B": "特定CHG20-001はApp BだけでApp Aを覆わない。別の許可と機構は不明、原因unresolved",
+        }
+        for snapshot in data["snapshots"]:
+            result = evaluate(data, snapshot)
+            cutoff, analysis = (
+                utc_text(instant(snapshot[k])) for k in ("cutoff", "analysisAt")
+            )
+            if {cutoff[:10], analysis[:10]} != {"2026-09-01"}:
+                errors.append("DFIR20 summary snapshot date scope")
+            expected.append(
+                f"Timeline Cutoff / Analysis Receipt / Event 保守説明と原因 {snapshot['id']} "
+                f"{cutoff[11:16]} / {analysis[11:16]} {len(result['included'])} Receipt / "
+                f"{len(result['timeline'])} Event {judgments[snapshot['id']]}"
+            )
+        if section_table_rows(document, "二つのSnapshot") != expected:
+            errors.append("DFIR20 Case snapshot summary / input parity")
+    return errors
+
+
 def document_errors(document, spec, data):
-    errors = scan_document(document, spec)
+    errors = scan_document(document, spec) + numeric_example_errors(document, data)
     if (
         digest(inventory(document)) != spec["projectionSha256"]
         or headings(document) != spec["headings"]
+        or len(document.fields) != spec["fieldCount"]
     ):
         errors.append(document.document_id + ": finite fields/order/locations/headings")
     if document.document_id == DOCUMENTS[3]:

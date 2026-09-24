@@ -21,7 +21,7 @@ OWNはEvidence Question、時刻の正規化と不確かさ、Eventの対応付�
 
 架空App Aの同意変更とWorkload API利用が、別々のSourceに記録されている。CollectorはAPIのRecordを先に届けた。一方で保守予定もある。「同意変更がAPI利用の原因であり、正当な保守ではない」と結論してよいだろうか。
 
-`CASE-DFIR-2026-001`は親`CASE-IR-2026-001`を`refines`する。本章の供給対象は独立した`SYNTH-DFIR20-001` / `REV-DFIR20-001`である。親19の`ICASE19-004`、`HOF-IR19-004-20`、`EQ-IR19-004-20`は方法上の参照にすぎない。親の予定`TL-IR19-004`を受領したことにはせず、親Handoffは未配達、Receiptはnull、実行権限はfalseのまま保持する。
+`CASE-DFIR-2026-001`は親`CASE-IR-2026-001`を`refines`する。本章の供給対象は独立した`SYNTH-DFIR20-001` / `REV-DFIR20-001`である。親19の`ICASE19-004`、`HOF-IR19-004-20`、`EQ-IR19-004-20`は方法上の参照にすぎない。親の予定`TL-IR19-004`を受領したことにはせず、親Handoffは未配達、Receiptはnull、実行権限はfalseのまま保持する。本供給Bundle内のIncident宣言は未提供のため、Incident IDもnullとし、親のIncident IDを借用しない。
 
 ## 全体像
 

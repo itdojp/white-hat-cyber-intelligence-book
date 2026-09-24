@@ -34,6 +34,7 @@ from scripts.check_chapter20_contract import (
     headings,
     scan_document,
     document_errors,
+    numeric_example_errors,
     repository_errors,
 )
 from scripts.check_editorial_input_manifest import (
@@ -213,6 +214,9 @@ def run_regressions(data, schema, contract, source, projection):
         (["record", "sourceIds"], ["SRC-UNREGISTERED"]),
         (["record", "asOf"], "2026-02-30T00:00:00Z"),
         (["record", "actualCollections"], 1),
+        (["record", "incidentId"], "INC-IR19-004"),
+        (["record", "incidentReferenceStatus"], "inherited"),
+        (["record", "timeStandard"], "inferred-local-time"),
         (["networkRequired"], True),
         (["executionAuthorized"], True),
     ]
@@ -263,6 +267,50 @@ def run_regressions(data, schema, contract, source, projection):
     check(
         "expected-and-digest-refresh-not-editorial-approval",
         rejected(lambda: validate_model(changed, schema, refreshed(changed))),
+    )
+    main_doc = next(d for d in projection.documents if d.document_id == DOCUMENTS[0])
+    case_doc = next(d for d in projection.documents if d.document_id == DOCUMENTS[3])
+    changed = deepcopy(data)
+    changed["clocks"][0]["offsetSeconds"] = 31
+    for snapshot in changed["snapshots"]:
+        snapshot["expected"] = evaluate(changed, snapshot)
+    check(
+        "numeric-control-valid-model",
+        not validate_model(changed, schema, refreshed(changed)),
+    )
+    check(
+        "numeric-manuscript-not-waived-by-input-refresh",
+        bool(numeric_example_errors(main_doc, changed)),
+    )
+    changed = deepcopy(data)
+    changed["snapshots"][0]["cutoff"] = "2026-09-01T08:11:00Z"
+    check(
+        "summary-control-valid-model",
+        not validate_model(changed, schema, refreshed(changed)),
+    )
+    check(
+        "numeric-summary-not-waived-by-input-refresh",
+        bool(numeric_example_errors(case_doc, changed)),
+    )
+    bad_fields = tuple(
+        replace(
+            f,
+            text=f.text.replace("07:59:40〜08:00:40", "07:59:41〜08:00:40"),
+            normalized_text=f.normalized_text.replace("07:59:40", "07:59:41"),
+        )
+        if f.element_kind == "table_row" and "EV20-001" in f.text
+        else f
+        for f in main_doc.fields
+    )
+    changed_doc = replace(main_doc, fields=bad_fields)
+    refreshed_doc = deepcopy(contract["documents"][DOCUMENTS[0]])
+    refreshed_doc["projectionSha256"] = digest(inventory(changed_doc))
+    check(
+        "numeric-not-waived-by-projection-refresh",
+        any(
+            "numeric table" in e
+            for e in document_errors(changed_doc, refreshed_doc, data)
+        ),
     )
     for path in (
         ["safety", "limitations"],
