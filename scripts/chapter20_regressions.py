@@ -204,6 +204,51 @@ def run_regressions(data, schema, contract, source, projection):
                 rejected(lambda: validate_schema_instance(changed, schema)),
             )
 
+    # PR156 / 4097758254: preserving the result status is not preserving the
+    # authored question. Refresh BOTH snapshot results and input digests, so
+    # these negatives exercise semantic role ownership rather than stale hashes.
+    def validate_recomputed(changed):
+        for snapshot in changed["snapshots"]:
+            snapshot["expected"] = evaluate(changed, snapshot)
+        return validate_model(changed, schema, refreshed(changed))
+
+    check("claim-roles-refreshed-positive", not validate_recomputed(deepcopy(data)))
+    role_mutations = (
+        ("causal-as-order-before", 3, {"kind": "order", "assertedRelation": "Before"}),
+        ("temporal-as-causal", 0, {"kind": "causal-link", "assertedRelation": None}),
+        ("concurrent-as-before", 5, {"assertedRelation": "Before"}),
+        (
+            "supported-role-reversal",
+            1,
+            {"evidenceIds": ["EV20-001", "EV20-003"], "assertedRelation": "After"},
+        ),
+        (
+            "contradicted-role-reversal",
+            4,
+            {"evidenceIds": ["EV20-003", "EV20-002"], "assertedRelation": "After"},
+        ),
+        ("before-as-concurrent", 0, {"assertedRelation": "Concurrent"}),
+        ("causal-substitute-duplicate", 3, {"evidenceIds": ["EV20-001", "EV20-004"]}),
+        ("causal-reversed-control", 3, {"evidenceIds": ["EV20-002", "EV20-001"]}),
+    )
+    for name, index, edit in role_mutations:
+        changed = deepcopy(data)
+        changed["claims"][index].update(edit)
+        check(
+            "authored-claim-roles-" + name,
+            rejected(lambda: validate_recomputed(changed)),
+        )
+    for snapshot in data["snapshots"]:
+        check(
+            "causal-mechanism-alternative-gaps-" + snapshot["id"],
+            evaluate(data, snapshot)["claims"]["CLM20-004"]
+            == {
+                "status": "undetermined",
+                "relation": None,
+                "gaps": ["mechanism-not-supplied", "alternative-not-eliminated"],
+            },
+        )
+
     mutations = [
         (["roles", "analysisOwner"], "SYN-OTHER-OWNER"),
         (["roles", "evidenceLead"], "SYN-OTHER-LEAD"),

@@ -87,6 +87,17 @@ CLAIM_OUTCOMES = {
         "undetermined",
     ),
 }
+# These are the six authored questions, not interchangeable claims that happen
+# to produce the same status. Keep causal, temporal and named-change evidence
+# roles even when a collaborator refreshes expected results and input digests.
+CLAIM_ROLES = (
+    ("order", ("EV20-001", "EV20-002"), "Before", None),
+    ("order", ("EV20-003", "EV20-001"), "Before", None),
+    ("change-covers", ("EV20-005", "EV20-002"), None, "CHG20-001"),
+    ("causal-link", ("EV20-001", "EV20-002"), None, None),
+    ("order", ("EV20-002", "EV20-003"), "Before", None),
+    ("order", ("EV20-001", "EV20-002"), "Concurrent", None),
+)
 
 
 def strict(raw):
@@ -218,6 +229,17 @@ def validate_semantics(data):
     )
     claim_ids = [f"CLM20-{i:03}" for i in range(1, 7)]
     require([c["id"] for c in data["claims"]] == claim_ids, "six finite claims/order")
+    for claim, roles in zip(data["claims"], CLAIM_ROLES):
+        require(
+            (
+                claim["kind"],
+                tuple(claim["evidenceIds"]),
+                claim["assertedRelation"],
+                claim["changeId"],
+            )
+            == roles,
+            "authored claim kind/evidence/relation/change roles: " + claim["id"],
+        )
     require(
         len({c["questionId"] for c in data["claims"]}) == 6, "claim question uniqueness"
     )
