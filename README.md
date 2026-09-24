@@ -140,3 +140,9 @@ npm run check:part02
 ## 第19章の読解契約
 
 [第19章](manuscript/19-incident-response.md)、[ART-25](templates/incident-action-plan.md)、[完全合成Case](cases/ch19-incident-action-plan-example.md)は七状態と宣言・Scope・Evidence・復旧検証・残余リスクを結ぶ。Linux / WSL2、Python 3.12と固定依存導入後の`npm run check:chapter19`は四公開面と十二の独立した供給Snapshotを検査する。実IRの自動化ではなく、実操作・通知・収集は0、親のEvidence・権限・未配達は不変である。Layer Aのみ章固有、構文はProjection 1.1.0、安全文法はPolicy 1.2.0が所有する。
+
+## 第20章 DFIRの有限契約
+
+`npm run check:chapter20`はART-07/26、五つの正本文書全体、閉Schemaと完全合成JSON、五Receipt・二Cutoff・六Claim、親19の直接参照と非継承を検査します。共有Projection 1.1.0とPolicy 1.2.0を使い、章別rendererは持ちません。実収集・実操作・実通知は0件です。
+
+[本文](manuscript/20-dfir-timeline-causality.md) / [全欄Case](cases/ch20-dfir-timeline-causality-example.md) / [Source確認](references/ch20-source-review-2026-09-25.md)。`sync:docs`の生成前にも正本検査を一回行います。時刻幅・Cutoff・同一性・機構不足を扱う有限教材であり、一般DFIRツールや真正性・原因の自動認定ではありません。

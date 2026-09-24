@@ -210,7 +210,7 @@
       "version": "SP 800-61 Rev.3",
       "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
       "publishedAt": "2025-04-03",
-      "checkedAt": "2026-09-23",
+      "checkedAt": "2026-09-25",
       "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
         "NIST revision or supplemental guidance change"
@@ -224,7 +224,7 @@
         20,
         22
       ],
-      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: FinalのDE.AE-08/p26、RS.MA-02/p27、RS.AN-06/07/p29をIncident基準・Triage・記録の来歴に限定参照。本書の五Resultや算法の規範・法的認定ではない。詳細はch18-source-review-2026-09-22.md。 2026-09-23用途限定確認: 第19章はSP800-61r3 Final（2025-04-03）pp.1–2、DE.AE-08 p.26、RS.MA-02〜05 pp.27–28、RS.AN-06/07 p.29、RS.CO-02/03 pp.30–31、RS.MI-01/02 pp.32–33、RC.RP-01〜06 p.34を宣言・分類・記録・通知照会・復旧検証に参照。七状態と有限判断は本書独自で、実権限・真正性・個別法的通知判断は認定しない。"
+      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: FinalのDE.AE-08/p26、RS.MA-02/p27、RS.AN-06/07/p29をIncident基準・Triage・記録の来歴に限定参照。本書の五Resultや算法の規範・法的認定ではない。詳細はch18-source-review-2026-09-22.md。 2026-09-23用途限定確認: 第19章はSP800-61r3 Final（2025-04-03）pp.1–2、DE.AE-08 p.26、RS.MA-02〜05 pp.27–28、RS.AN-06/07 p.29、RS.CO-02/03 pp.30–31、RS.MI-01/02 pp.32–33、RC.RP-01〜06 p.34を宣言・分類・記録・通知照会・復旧検証に参照。七状態と有限判断は本書独自で、実権限・真正性・個別法的通知判断は認定しない。 2026-09-25: Chapter20用途としてRev3 Final2025-04-03の公式landing/PDFを再確認。印刷pp.28–29のRS.AN-03/06/07を順序・関連資産・根底の原因を問うこと、調査記録、来歴・保持に限定採用。二Eventの相関を原因とせず、有限教材の算法や普遍的保持・法的適格性の根拠にはしない。"
     },
     {
       "id": "SRC-BERKELEY-001",
@@ -235,7 +235,7 @@
       "version": "2022 edition",
       "url": "https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source",
       "publishedAt": null,
-      "checkedAt": "2026-09-14",
+      "checkedAt": "2026-09-25",
       "nextReviewAt": "2027-09-14",
       "reviewTriggers": [
         "new edition",
@@ -244,10 +244,11 @@
       "chapters": [
         8,
         10,
+        20,
         24,
         25
       ],
-      "notes": "Official publication identifies the 2022 edition; an exact publication day is not recorded here. Chapter 8 scoped recheck on 2026-09-13 uses the official co-publisher 2022 PDF, VI.C 155(g/h) and VI.D 167–169, for time/hash/context, handling history and original/working-copy distinction only. OHCHR landing direct retrieval returned HTTP 403. Exact edition publication day remains unknown; neither the separate 2020 announcement nor the PDF path is substituted. Chapter 25 edition and source-evaluation meaning remain unchanged. No legal admissibility, complete chain-of-custody certification, copied tables, or full cross-chapter audit is claimed."
+      "notes": "Official publication identifies the 2022 edition; an exact publication day is not recorded here. Chapter 8 scoped recheck on 2026-09-13 uses the official co-publisher 2022 PDF, VI.C 155(g/h) and VI.D 167–169, for time/hash/context, handling history and original/working-copy distinction only. OHCHR landing direct retrieval returned HTTP 403. Exact edition publication day remains unknown; neither the separate 2020 announcement nor the PDF path is substituted. Chapter 25 edition and source-evaluation meaning remain unchanged. No legal admissibility, complete chain-of-custody certification, copied tables, or full cross-chapter audit is claimed. 2026-09-25: Chapter20用途の限定確認。OHCHR landingは403で再読不能、共同発行者UC Berkeley公式projectとlinked PDFは200。表題・版権頁で2022 edition、VI.C154/155(g,h)印刷p.59とVI.D167〜169 p.61の原形式・変換記録・取得文脈・来歴・作業Copyを確認。正確な刊行日不明のpublishedAt nullを保持。Digital Open Source調査の原則を参考にするだけで、一般DFIRの法的適格性・実調査許可・全節監査を認定しない。"
     },
     {
       "id": "SRC-OWASP-TOP10-001",
@@ -816,15 +817,16 @@
       "version": "SP 800-86, Final, August 2006",
       "url": "https://csrc.nist.gov/pubs/sp/800/86/final",
       "publishedAt": null,
-      "checkedAt": "2026-09-13",
+      "checkedAt": "2026-09-25",
       "nextReviewAt": "2027-09-13",
       "reviewTriggers": [
         "Revision, withdrawal, official URL relocation or adopted scope change"
       ],
       "chapters": [
-        8
+        8,
+        20
       ],
-      "notes": "CSRC Date Published is August 2006; its distinct History date is 09/01/06. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3 and 3.1.2: collection/examination/analysis/reporting, acquisition planning, integrity and handling records. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed."
+      "notes": "CSRC Date Published is August 2006; its distinct History date is 09/01/06. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3 and 3.1.2: collection/examination/analysis/reporting, acquisition planning, integrity and handling records. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed. 2026-09-25: Chapter20用途として公式Final landing/PDFを再確認。公表はAugust2006、正確な日付は未確定のためpublishedAt nullを保持。印刷pp.3-1/3-4/3-6〜3-8の収集・検査・分析・報告、完全性と作業Copy、複数Source・結論不能・代替説明の原則だけを採用。旧製品・取得手順・個別法的適格性・全節監査の根拠ではない。有限時刻幅/Cutoff/重複/Claimモデルは本書独自。"
     },
     {
       "id": "SRC-NIST-CONTAINER-001",
