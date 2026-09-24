@@ -1204,6 +1204,12 @@
           "effectiveAt": "2026-09-25",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/156",
           "reason": "第20章専用Draft PR#156に本文/ART07+26/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5823341050",
+          "reason": "PR #156通常merge: c3f8c1565324cb492f050343a54483e7d791c073。最終検証headとmerge tree一致。exact-main Book Contract 36066023441 / Book QA 36066023558 / Deploy Pages 36066023463、deployment 6649547253がsuccess。第20章・ART-07/26・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む80公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象二十四JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter21のDispositionを保持。"
         }
       ]
     },

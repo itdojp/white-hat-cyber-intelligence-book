@@ -2138,7 +2138,7 @@
       "targetId": "chapter-20",
       "issue": 43,
       "targetKind": "chapter",
-      "status": "canonical-pr-open",
+      "status": "consumed",
       "selectedCandidateId": "EIC-0043-58dc95fff364",
       "canonicalPr": 156,
       "intakeRecord": {
@@ -2196,9 +2196,9 @@
           "packageId": "EIP-0011",
           "inputPath": "chapter20-dfir-timeline-causality.predraft.md",
           "inputSha256": "58dc95fff36417b259bab6c965d2bfe2289b3d59fa5d4e4f57a2b49806c81078",
-          "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5819304826",
-          "dispositionReason": "PR155実main公開とIssue154完了後、Issue43で唯一の登録候補をbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを明示し、現契約と一次資料から再構成する。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5823341050",
+          "dispositionReason": "PR #156でIssue #43とcurrent contract・再検証済み一次資料から第20章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0011/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter21のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -2219,6 +2219,12 @@
           "effectiveAt": "2026-09-25",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/156",
           "reason": "第20章専用Draft PR#156に本文/ART07+26/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5823341050",
+          "reason": "PR #156通常merge: c3f8c1565324cb492f050343a54483e7d791c073。最終検証headとmerge tree一致。exact-main Book Contract 36066023441 / Book QA 36066023558 / Deploy Pages 36066023463、deployment 6649547253がsuccess。第20章・ART-07/26・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む80公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象二十四JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter21のDispositionを保持。"
         }
       ]
     },
