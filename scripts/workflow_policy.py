@@ -36,6 +36,7 @@ ALLOWED_WORKFLOW_RUN_COMMANDS = frozenset(
         FORMATTER_VALIDATE_COMMAND,
         NPM_TEST_COMMAND,
         "python3 scripts/check_built_site.py --source docs --site _site",
+        "npm run check:mermaid-browser",
     }
 )
 WORKFLOW_ENVIRONMENT = {

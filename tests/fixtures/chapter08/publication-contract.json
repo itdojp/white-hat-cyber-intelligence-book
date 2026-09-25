@@ -1292,8 +1292,8 @@
     "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
     "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
     "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
-    "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
-    ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814",
+    "package-lock.json": "22b3f2274d543974445811b1f4317aba4779d10728638a51ffce105d7abb8d01",
+    ".book-formatter/revision.json": "71060c07550828b43d34972d448e85339c1b959c6c44623b4431df243d28716d",
     "scripts/check_editorial_input_manifest.py": "187b4061772aa68c4cd57d282cfa458ba9e224a50b9619418573d77f886a28c3"
   },
   "sourceIdentity": {

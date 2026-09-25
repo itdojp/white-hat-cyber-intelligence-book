@@ -6,7 +6,7 @@
   "author": "ITDO Inc.（株式会社アイティードゥ）",
   "license": "(CC-BY-NC-SA-4.0 AND Apache-2.0)",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "check:contract": "python3 scripts/check_contract.py",
@@ -35,7 +35,7 @@
     "check:docs-sync": "python3 scripts/sync_book_site.py --check",
     "build": "npm run sync:docs && bundle exec jekyll build --source docs --config docs/_config.yml --destination _site",
     "serve": "npm run sync:docs && bundle exec jekyll serve --source docs --config docs/_config.yml --destination _site --livereload",
-    "test": "npm run check:contract && npm run check:editorial-inputs && npm run check:content-safety-policy && npm run check:publication-projection && npm run check:chapter1 && npm run check:chapter02 && npm run check:chapter03 && npm run check:chapter04 && npm run check:chapter05 && npm run check:chapter06 && npm run check:chapter07 && npm run check:chapter08 && npm run check:chapter09 && npm run check:chapter10 && npm run check:chapter11 && npm run check:chapter12 && npm run check:chapter13 && npm run check:chapter14 && npm run check:chapter15 && npm run check:chapter16 && npm run check:part02 && npm run check:chapter17 && npm run check:chapter18 && npm run check:chapter19 && npm run check:chapter20 && npm run check:chapter21 && npm run check:chapter17-replay && npm run check:chapter25 && npm run check:representative-gate && npm run check:site-pages-security && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync",
+    "test": "npm run check:contract && npm run check:editorial-inputs && npm run check:content-safety-policy && npm run check:publication-projection && npm run check:chapter1 && npm run check:chapter02 && npm run check:chapter03 && npm run check:chapter04 && npm run check:chapter05 && npm run check:chapter06 && npm run check:chapter07 && npm run check:chapter08 && npm run check:chapter09 && npm run check:chapter10 && npm run check:chapter11 && npm run check:chapter12 && npm run check:chapter13 && npm run check:chapter14 && npm run check:chapter15 && npm run check:chapter16 && npm run check:part02 && npm run check:chapter17 && npm run check:chapter18 && npm run check:chapter19 && npm run check:chapter20 && npm run check:chapter21 && npm run check:chapter17-replay && npm run check:chapter25 && npm run check:representative-gate && npm run check:site-pages-security && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync && npm run check:mermaid",
     "check:chapter05": "python3 scripts/check_chapter05_contract.py",
     "check:chapter06": "python3 scripts/check_chapter06_contract.py",
     "check:chapter07": "python3 scripts/check_chapter07_contract.py",
@@ -51,7 +51,9 @@
     "check:chapter18": "python3 scripts/check_chapter18_contract.py",
     "check:chapter19": "python3 scripts/check_chapter19_contract.py",
     "check:chapter20": "python3 scripts/check_chapter20_contract.py",
-    "check:chapter21": "python3 scripts/check_chapter21_contract.py"
+    "check:chapter21": "python3 scripts/check_chapter21_contract.py",
+    "check:mermaid": "python3 scripts/check_mermaid_contract.py",
+    "check:mermaid-browser": "node scripts/check_mermaid_browser.mjs"
   },
   "repository": {
     "type": "git",
@@ -68,5 +70,8 @@
     "incident-response",
     "osint",
     "security-education"
-  ]
+  ],
+  "devDependencies": {
+    "@mermaid-js/tiny": "12.0.0"
+  }
 }
