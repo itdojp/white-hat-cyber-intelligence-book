@@ -1,0 +1,1114 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "readOnly": true,
+  "networkRequired": false,
+  "executionAuthorized": false,
+  "record": {
+    "id": "CVP-2026-021-001",
+    "caseId": "CASE-CV-2026-001",
+    "parentCaseId": "CASE-DET-2026-001",
+    "relation": "refines",
+    "artifactId": "ART-27",
+    "asOf": "2026-09-25T00:00:00Z",
+    "sourceIds": [
+      "SRC-ATTACK-001",
+      "SRC-ATTACK-DET-001",
+      "SRC-NIST-ASSESS-001",
+      "SRC-IR-001"
+    ],
+    "authoring": "synthetic-authored-not-measured",
+    "actualOperations": 0,
+    "actualCollections": 0,
+    "actualNotifications": 0,
+    "actualDeployments": 0,
+    "actualIncidentDeclarations": 0
+  },
+  "parentReferences": {
+    "use": "method-reference-only",
+    "decisionRequirementId": "DR-DET-2026-001",
+    "threatHypothesisId": "TH-DET-2026-001",
+    "detectionRecordId": "DVR-2026-017-001",
+    "detectionId": "DET-2026-017-001",
+    "telemetryIds": [
+      "TEL-DET-2026-001",
+      "TEL-DET-2026-002",
+      "TEL-DET-2026-003"
+    ],
+    "minimalValidationId": "MIV-2026-014",
+    "telemetryMapId": "TCM-2026-016",
+    "incidentPlanId": "IAP-2026-019-001",
+    "dfirRecordId": "DFIR-2026-020-001",
+    "dfirRcaId": "RCA-DFIR20-B",
+    "dfirControlId": "CTL-DFIR20-001",
+    "dfirControlStatus": "hypothesis-only",
+    "dfirHandoffId": "HOF-DFIR20-21",
+    "dfirHandoffStatus": "planned-not-delivered",
+    "receiptId": null,
+    "parentEvidenceTransferred": false,
+    "parentStateChanged": false,
+    "authorityTransferred": false
+  },
+  "authorityBoundary": {
+    "parentAuthorityId": "AUTH-CASE-2026-001",
+    "parentExpiresAt": "2026-08-19T09:00:00Z",
+    "parentRoeId": "ROE-2026-009",
+    "parentRoeStatus": "Draft",
+    "parentRoeVersion": 1,
+    "parentLabId": "LABPLAN-2026-001",
+    "parentLabRuntimeExecuted": false,
+    "parentExecutionAuthorized": false,
+    "scope": "配布JSONの読解と有限比較のみ。実サービスへ接続しない。実Accountは使用しない。実環境で操作しない。"
+  },
+  "threat": {
+    "behavior": "業務上未承認のscope追加という親17の仮説を方法参照する。",
+    "attackTechniqueId": "T1098",
+    "attackVersion": "19.2",
+    "mappingBasis": "parent17-method-reference",
+    "coverageProof": false,
+    "actorAttribution": "not-assessed"
+  },
+  "roles": {
+    "validationOwner": "SYN-CV-VALIDATION-OWNER",
+    "evidenceReviewer": "SYN-CV-EVIDENCE-REVIEWER",
+    "residualReviewer": "SYN-CV-RESIDUAL-REVIEWER"
+  },
+  "controls": [
+    {
+      "id": "CTL-CV21-001",
+      "objectiveId": "OBJ-CV21-001",
+      "layer": "Prevention",
+      "owner": "SYN-CV-CONTROL-OWNER",
+      "objective": "未承認の追加scopeを拒否する。",
+      "criteria": [
+        {
+          "id": "CRIT-CV21-01-01",
+          "field": "scope-outcome",
+          "expected": "blocked",
+          "partialValues": []
+        }
+      ]
+    },
+    {
+      "id": "CTL-CV21-002",
+      "objectiveId": "OBJ-CV21-002",
+      "layer": "Telemetry",
+      "owner": "SYN-CV-TELEMETRY-OWNER",
+      "objective": "必要な供給監査が対象Window内でConsumerへ届く。",
+      "criteria": [
+        {
+          "id": "CRIT-CV21-02-01",
+          "field": "signal-coverage",
+          "expected": "all-required",
+          "partialValues": [
+            "primary-only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CTL-CV21-003",
+      "objectiveId": "OBJ-CV21-003",
+      "layer": "Detection",
+      "owner": "SYN-CV-DETECTION-OWNER",
+      "objective": "Positiveを検知し正常とBenign-near-missを誤検知しない。",
+      "criteria": [
+        {
+          "id": "CRIT-CV21-03-01",
+          "field": "positive",
+          "expected": "alert",
+          "partialValues": []
+        },
+        {
+          "id": "CRIT-CV21-03-02",
+          "field": "negative",
+          "expected": "no-alert",
+          "partialValues": []
+        },
+        {
+          "id": "CRIT-CV21-03-03",
+          "field": "benign-near-miss",
+          "expected": "no-alert",
+          "partialValues": []
+        }
+      ]
+    },
+    {
+      "id": "CTL-CV21-004",
+      "objectiveId": "OBJ-CV21-004",
+      "layer": "Triage",
+      "owner": "SYN-CV-TRIAGE-OWNER",
+      "objective": "Evidence、Owner、理由を含む供給判定を作る。",
+      "criteria": [
+        {
+          "id": "CRIT-CV21-04-01",
+          "field": "context",
+          "expected": "evidence-owner-reason",
+          "partialValues": [
+            "evidence-only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CTL-CV21-005",
+      "objectiveId": "OBJ-CV21-005",
+      "layer": "Response",
+      "owner": "SYN-CV-RESPONSE-OWNER",
+      "objective": "与えられた権限と保留判断を記録する。実封じ込めを実施しない。",
+      "criteria": [
+        {
+          "id": "CRIT-CV21-05-01",
+          "field": "decision",
+          "expected": "hold-with-owner",
+          "partialValues": []
+        }
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "SCN-CV21-001",
+      "type": "Atomic",
+      "layers": [
+        "Prevention"
+      ],
+      "traceId": "TRACE-CV21-001",
+      "batchId": "BATCH-CV21-PAIR",
+      "subjectId": "SYNTH-CV21-001",
+      "subjectRevision": "REV-CV21-001",
+      "controlRevision": "CTLREV-CV21-001",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "analysisAt": "2026-09-01T09:12:00Z",
+      "mode": "supplied-record-comparison",
+      "suppliedAuthority": true,
+      "stopReason": null,
+      "stepsAfterStop": 0,
+      "observations": [
+        {
+          "id": "EVD-CV21-001-01",
+          "payload": {
+            "scenarioId": "SCN-CV21-001",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-001",
+            "batchId": "BATCH-CV21-PAIR",
+            "layer": "Prevention",
+            "controlId": "CTL-CV21-001",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 1,
+            "recordedAt": "2026-09-01T09:01:00Z",
+            "availableAt": "2026-09-01T09:01:30Z",
+            "values": {
+              "scope-outcome": "blocked"
+            },
+            "present": {
+              "scope-outcome": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+        }
+      ],
+      "expectedLayers": [
+        {
+          "layer": "Prevention",
+          "result": "Passed",
+          "failureClasses": []
+        }
+      ],
+      "note": "同じ供給Batchで防止成功と観測不足を分離する。",
+      "gap": {
+        "id": "GAP-CV21-001",
+        "affectedLayers": [],
+        "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
+        "nextActionId": "ACT-CV21-001"
+      },
+      "improvement": {
+        "id": "ACT-CV21-001",
+        "status": "proposed-not-executed",
+        "owner": "SYN-CV-CONTROL-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "action": "blockedとallowedの対比条件を保持し、防止の問いを変えず再評価する計画。",
+        "retestId": "RT-CV21-001",
+        "acceptance": "対象・版を固定したscope-outcomeの期待値blockedと反証allowedを保持する。監査到達は別に評価する。",
+        "reassessmentId": "REA-CV21-001",
+        "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
+      },
+      "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+    },
+    {
+      "id": "SCN-CV21-002",
+      "type": "Atomic",
+      "layers": [
+        "Telemetry"
+      ],
+      "traceId": "TRACE-CV21-002",
+      "batchId": "BATCH-CV21-PAIR",
+      "subjectId": "SYNTH-CV21-001",
+      "subjectRevision": "REV-CV21-001",
+      "controlRevision": "CTLREV-CV21-001",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "analysisAt": "2026-09-01T09:12:00Z",
+      "mode": "supplied-record-comparison",
+      "suppliedAuthority": true,
+      "stopReason": null,
+      "stepsAfterStop": 0,
+      "observations": [
+        {
+          "id": "EVD-CV21-002-01",
+          "payload": {
+            "scenarioId": "SCN-CV21-002",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-002",
+            "batchId": "BATCH-CV21-PAIR",
+            "layer": "Telemetry",
+            "controlId": "CTL-CV21-002",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 1,
+            "recordedAt": "2026-09-01T09:01:00Z",
+            "availableAt": "2026-09-01T09:01:30Z",
+            "values": {
+              "signal-coverage": "missing-confirmed"
+            },
+            "present": {
+              "signal-coverage": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "produced-and-confirmed-loss"
+          },
+          "payloadSha256": "5ca808114c7d74dd24a64e67611016368666fa14b434e11f215c8a8dc4b5f714"
+        }
+      ],
+      "expectedLayers": [
+        {
+          "layer": "Telemetry",
+          "result": "Failed",
+          "failureClasses": [
+            "Telemetry"
+          ]
+        }
+      ],
+      "note": "生成記録と供給された配送失敗根拠があり、期待した監査は届かない。",
+      "gap": {
+        "id": "GAP-CV21-002",
+        "affectedLayers": [
+          "Telemetry"
+        ],
+        "description": "生成記録と供給された配送失敗根拠があり、期待した監査は届かない。",
+        "nextActionId": "ACT-CV21-002"
+      },
+      "improvement": {
+        "id": "ACT-CV21-002",
+        "status": "proposed-not-executed",
+        "owner": "SYN-CV-TELEMETRY-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "action": "生成記録からConsumerまでの配送失敗箇所と必要channelを供給資料上で照合する計画。実Logは追加収集しない。",
+        "retestId": "RT-CV21-002",
+        "acceptance": "produced-and-confirmed-lossの根拠を保持し、新供給版でsignal-coverageがall-requiredかを比較する。",
+        "reassessmentId": "REA-CV21-002",
+        "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
+      },
+      "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+    },
+    {
+      "id": "SCN-CV21-003",
+      "type": "Atomic",
+      "layers": [
+        "Detection"
+      ],
+      "traceId": "TRACE-CV21-003",
+      "batchId": "BATCH-CV21-DETECTION",
+      "subjectId": "SYNTH-CV21-001",
+      "subjectRevision": "REV-CV21-001",
+      "controlRevision": "CTLREV-CV21-001",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "analysisAt": "2026-09-01T09:12:00Z",
+      "mode": "supplied-record-comparison",
+      "suppliedAuthority": true,
+      "stopReason": null,
+      "stepsAfterStop": 0,
+      "observations": [
+        {
+          "id": "EVD-CV21-003-01",
+          "payload": {
+            "scenarioId": "SCN-CV21-003",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-003",
+            "batchId": "BATCH-CV21-DETECTION",
+            "layer": "Detection",
+            "controlId": "CTL-CV21-003",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 1,
+            "recordedAt": "2026-09-01T09:01:00Z",
+            "availableAt": "2026-09-01T09:01:30Z",
+            "values": {
+              "positive": "no-alert",
+              "negative": "no-alert",
+              "benign-near-miss": "no-alert"
+            },
+            "present": {
+              "positive": true,
+              "negative": true,
+              "benign-near-miss": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "c2212873cf5db70e833715d9d04386e2d27cf4e1bd10c44174e8895c4eec650f"
+        }
+      ],
+      "expectedLayers": [
+        {
+          "layer": "Detection",
+          "result": "Failed",
+          "failureClasses": [
+            "Detection logic"
+          ]
+        }
+      ],
+      "note": "三種入力の存在は確認したがPositiveのAlertが出ないという供給記録。",
+      "gap": {
+        "id": "GAP-CV21-003",
+        "affectedLayers": [
+          "Detection"
+        ],
+        "description": "三種入力の存在は確認したがPositiveのAlertが出ないという供給記録。",
+        "nextActionId": "ACT-CV21-003"
+      },
+      "improvement": {
+        "id": "ACT-CV21-003",
+        "status": "proposed-not-executed",
+        "owner": "SYN-CV-DETECTION-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "action": "Positiveの入力条件と供給Rule出力の差を切り分け、正常とNear-missを残して再比較する計画。実Ruleは変更しない。",
+        "retestId": "RT-CV21-003",
+        "acceptance": "RT-CV21-003でpositive=alert、negativeとbenign-near-miss=no-alertを同一対象・Batch・入力条件で比較する。",
+        "reassessmentId": "REA-CV21-003",
+        "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
+      },
+      "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+    },
+    {
+      "id": "SCN-CV21-004",
+      "type": "Atomic",
+      "layers": [
+        "Triage"
+      ],
+      "traceId": "TRACE-CV21-004",
+      "batchId": "BATCH-CV21-004",
+      "subjectId": "SYNTH-CV21-001",
+      "subjectRevision": "REV-CV21-001",
+      "controlRevision": "CTLREV-CV21-001",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "analysisAt": "2026-09-01T09:12:00Z",
+      "mode": "supplied-record-comparison",
+      "suppliedAuthority": true,
+      "stopReason": null,
+      "stepsAfterStop": 0,
+      "observations": [
+        {
+          "id": "EVD-CV21-004-01",
+          "payload": {
+            "scenarioId": "SCN-CV21-004",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-004",
+            "batchId": "BATCH-CV21-004",
+            "layer": "Triage",
+            "controlId": "CTL-CV21-004",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 1,
+            "recordedAt": "2026-09-01T09:01:00Z",
+            "availableAt": "2026-09-01T09:01:30Z",
+            "values": {
+              "context": "evidence-only"
+            },
+            "present": {
+              "context": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "468352cfcdf838551a443a77c874eccee375140d0ec996b20b323512e355f9aa"
+        }
+      ],
+      "expectedLayers": [
+        {
+          "layer": "Triage",
+          "result": "Partial",
+          "failureClasses": [
+            "Workflow"
+          ]
+        }
+      ],
+      "note": "Evidence参照はあるがOwnerと理由が欠けることが記録されている。",
+      "gap": {
+        "id": "GAP-CV21-004",
+        "affectedLayers": [
+          "Triage"
+        ],
+        "description": "Evidence参照はあるがOwnerと理由が欠けることが記録されている。",
+        "nextActionId": "ACT-CV21-004"
+      },
+      "improvement": {
+        "id": "ACT-CV21-004",
+        "status": "proposed-not-executed",
+        "owner": "SYN-CV-TRIAGE-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "action": "不足するOwnerと理由を明示した供給Triage記録を作る計画。実担当への通知は行わない。",
+        "retestId": "RT-CV21-004",
+        "acceptance": "context=evidence-owner-reasonを根拠IDと照合し、evidence-onlyという旧Partialを残す。",
+        "reassessmentId": "REA-CV21-004",
+        "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
+      },
+      "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+    },
+    {
+      "id": "SCN-CV21-005",
+      "type": "Atomic",
+      "layers": [
+        "Response"
+      ],
+      "traceId": "TRACE-CV21-005",
+      "batchId": "BATCH-CV21-005",
+      "subjectId": "SYNTH-CV21-001",
+      "subjectRevision": "REV-CV21-001",
+      "controlRevision": "CTLREV-CV21-001",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "analysisAt": "2026-09-01T09:12:00Z",
+      "mode": "supplied-record-comparison",
+      "suppliedAuthority": false,
+      "stopReason": "authority-gap",
+      "stepsAfterStop": 0,
+      "observations": [
+        {
+          "id": "EVD-CV21-005-01",
+          "payload": {
+            "scenarioId": "SCN-CV21-005",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-005",
+            "batchId": "BATCH-CV21-005",
+            "layer": "Response",
+            "controlId": "CTL-CV21-005",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 1,
+            "recordedAt": "2026-09-01T09:01:00Z",
+            "availableAt": "2026-09-01T09:01:30Z",
+            "values": {
+              "decision": null
+            },
+            "present": {
+              "decision": false
+            },
+            "inputBasis": "authority-not-supplied",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "034808d8d4e6e9cc40563a1031cf95947dfd85b2c701b6f63196474ab341dbe7"
+        }
+      ],
+      "expectedLayers": [
+        {
+          "layer": "Response",
+          "result": "Stopped",
+          "failureClasses": [
+            "Authority"
+          ]
+        }
+      ],
+      "note": "対応案はあるが供給モデルの権限条件が満たされず停止する。",
+      "gap": {
+        "id": "GAP-CV21-005",
+        "affectedLayers": [
+          "Response"
+        ],
+        "description": "対応案はあるが供給モデルの権限条件が満たされず停止する。",
+        "nextActionId": "ACT-CV21-005"
+      },
+      "improvement": {
+        "id": "ACT-CV21-005",
+        "status": "proposed-not-executed",
+        "owner": "SYN-CV-RESPONSE-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "action": "必要な権限根拠と判断主体を読解資料上で確認する計画。根拠がない間はStoppedを維持し、実許可を推定しない。",
+        "retestId": "RT-CV21-005",
+        "acceptance": "供給権限の不足と停止理由を記録し、後続の比較には別途根拠を必要とする。実行権限falseは変えない。",
+        "reassessmentId": "REA-CV21-005",
+        "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
+      },
+      "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+    },
+    {
+      "id": "SCN-CV21-006",
+      "type": "Atomic",
+      "layers": [
+        "Detection"
+      ],
+      "traceId": "TRACE-CV21-006",
+      "batchId": "BATCH-CV21-006",
+      "subjectId": "SYNTH-CV21-001",
+      "subjectRevision": "REV-CV21-001",
+      "controlRevision": "CTLREV-CV21-001",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "analysisAt": "2026-09-01T09:12:00Z",
+      "mode": "supplied-record-comparison",
+      "suppliedAuthority": true,
+      "stopReason": null,
+      "stepsAfterStop": 0,
+      "observations": [
+        {
+          "id": "EVD-CV21-006-01",
+          "payload": {
+            "scenarioId": "SCN-CV21-006",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-006",
+            "batchId": "BATCH-CV21-006",
+            "layer": "Detection",
+            "controlId": "CTL-CV21-003",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 1,
+            "recordedAt": "2026-09-01T09:01:00Z",
+            "availableAt": "2026-09-01T09:01:30Z",
+            "values": {
+              "positive": null,
+              "negative": "no-alert",
+              "benign-near-miss": "no-alert"
+            },
+            "present": {
+              "positive": false,
+              "negative": true,
+              "benign-near-miss": true
+            },
+            "inputBasis": "fixture-missing",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "af37a6e86660d71814dde990010d73f96975ea4a16572c951d0473bf5d7e5a7e"
+        }
+      ],
+      "expectedLayers": [
+        {
+          "layer": "Detection",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ]
+        }
+      ],
+      "note": "Positive fixture自体が不足し、検知失敗かどうかを評価できない。",
+      "gap": {
+        "id": "GAP-CV21-006",
+        "affectedLayers": [
+          "Detection"
+        ],
+        "description": "Positive fixture自体が不足し、検知失敗かどうかを評価できない。",
+        "nextActionId": "ACT-CV21-006"
+      },
+      "improvement": {
+        "id": "ACT-CV21-006",
+        "status": "proposed-not-executed",
+        "owner": "SYN-CV-VALIDATION-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "action": "不足するPositive fixtureの必要Fieldと比較条件を定義し直す計画。欠測を成功へ書き換えず、実Dataは使わない。",
+        "retestId": "RT-CV21-006",
+        "acceptance": "Positive・Negative・Benign-near-missの入力有無を区別し、足りない間はIndeterminateとNext actionを保持する。",
+        "reassessmentId": "REA-CV21-006",
+        "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
+      },
+      "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+    },
+    {
+      "id": "SCN-CV21-007",
+      "type": "Atomic",
+      "layers": [
+        "Prevention"
+      ],
+      "traceId": "TRACE-CV21-007",
+      "batchId": "BATCH-CV21-007",
+      "subjectId": "SYNTH-CV21-001",
+      "subjectRevision": "REV-CV21-001",
+      "controlRevision": "CTLREV-CV21-001",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "analysisAt": "2026-09-01T09:12:00Z",
+      "mode": "supplied-record-comparison",
+      "suppliedAuthority": true,
+      "stopReason": null,
+      "stepsAfterStop": 0,
+      "observations": [
+        {
+          "id": "EVD-CV21-007-01",
+          "payload": {
+            "scenarioId": "SCN-CV21-007",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-007",
+            "batchId": "BATCH-CV21-007",
+            "layer": "Prevention",
+            "controlId": "CTL-CV21-001",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 1,
+            "recordedAt": "2026-09-01T09:01:00Z",
+            "availableAt": "2026-09-01T09:01:30Z",
+            "values": {
+              "scope-outcome": "allowed"
+            },
+            "present": {
+              "scope-outcome": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "0a49d668ad28f6692851f4090584f14f5daa80e086de8d8125d95cfd543dda13"
+        }
+      ],
+      "expectedLayers": [
+        {
+          "layer": "Prevention",
+          "result": "Failed",
+          "failureClasses": [
+            "Control"
+          ]
+        }
+      ],
+      "note": "未承認scopeを許容したという供給記録で、防止の期待と矛盾する。",
+      "gap": {
+        "id": "GAP-CV21-007",
+        "affectedLayers": [
+          "Prevention"
+        ],
+        "description": "未承認scopeを許容したという供給記録で、防止の期待と矛盾する。",
+        "nextActionId": "ACT-CV21-007"
+      },
+      "improvement": {
+        "id": "ACT-CV21-007",
+        "status": "proposed-not-executed",
+        "owner": "SYN-CV-CONTROL-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "action": "未承認scopeをallowedとした供給条件とControl目的の差を調べる計画。実設定は変更しない。",
+        "retestId": "RT-CV21-007",
+        "acceptance": "同じ問いと対象版でblockedとallowedを比較し、元のFailedを保持する。実有効性へ一般化しない。",
+        "reassessmentId": "REA-CV21-007",
+        "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
+      },
+      "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+    },
+    {
+      "id": "SCN-CV21-008",
+      "type": "End-to-End",
+      "layers": [
+        "Prevention",
+        "Telemetry",
+        "Detection",
+        "Triage",
+        "Response"
+      ],
+      "traceId": "TRACE-CV21-008",
+      "batchId": "BATCH-CV21-008",
+      "subjectId": "SYNTH-CV21-001",
+      "subjectRevision": "REV-CV21-001",
+      "controlRevision": "CTLREV-CV21-001",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "analysisAt": "2026-09-01T09:12:00Z",
+      "mode": "supplied-record-comparison",
+      "suppliedAuthority": true,
+      "stopReason": null,
+      "stepsAfterStop": 0,
+      "observations": [
+        {
+          "id": "EVD-CV21-008-01",
+          "payload": {
+            "scenarioId": "SCN-CV21-008",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-008",
+            "batchId": "BATCH-CV21-008",
+            "layer": "Prevention",
+            "controlId": "CTL-CV21-001",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 1,
+            "recordedAt": "2026-09-01T09:01:00Z",
+            "availableAt": "2026-09-01T09:01:30Z",
+            "values": {
+              "scope-outcome": "blocked"
+            },
+            "present": {
+              "scope-outcome": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "3d2a20f9483516df9827a4b6427b4a3ac98c9864713b8833e6968f8f5a50407e"
+        },
+        {
+          "id": "EVD-CV21-008-02",
+          "payload": {
+            "scenarioId": "SCN-CV21-008",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-008",
+            "batchId": "BATCH-CV21-008",
+            "layer": "Telemetry",
+            "controlId": "CTL-CV21-002",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 2,
+            "recordedAt": "2026-09-01T09:02:00Z",
+            "availableAt": "2026-09-01T09:02:30Z",
+            "values": {
+              "signal-coverage": "all-required"
+            },
+            "present": {
+              "signal-coverage": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "95fd8a87945acb9aa917d51fbf71cbbab0ca238b7ebb33a86a69e377d7e5dc26"
+        },
+        {
+          "id": "EVD-CV21-008-03",
+          "payload": {
+            "scenarioId": "SCN-CV21-008",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-008",
+            "batchId": "BATCH-CV21-008",
+            "layer": "Detection",
+            "controlId": "CTL-CV21-003",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 3,
+            "recordedAt": "2026-09-01T09:03:00Z",
+            "availableAt": "2026-09-01T09:03:30Z",
+            "values": {
+              "positive": "alert",
+              "negative": "no-alert",
+              "benign-near-miss": "no-alert"
+            },
+            "present": {
+              "positive": true,
+              "negative": true,
+              "benign-near-miss": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "d2a46936a0749a073dd2f8111db1767ef1c69f09547d408830a51ca2b268726a"
+        },
+        {
+          "id": "EVD-CV21-008-04",
+          "payload": {
+            "scenarioId": "SCN-CV21-008",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-008",
+            "batchId": "BATCH-CV21-008",
+            "layer": "Triage",
+            "controlId": "CTL-CV21-004",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 4,
+            "recordedAt": "2026-09-01T09:04:00Z",
+            "availableAt": "2026-09-01T09:04:30Z",
+            "values": {
+              "context": "evidence-owner-reason"
+            },
+            "present": {
+              "context": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "50f2c76469b54817ae3b45c4d0991a36408649f21610843cbfa519c9fb9b3eb8"
+        },
+        {
+          "id": "EVD-CV21-008-05",
+          "payload": {
+            "scenarioId": "SCN-CV21-008",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-008",
+            "batchId": "BATCH-CV21-008",
+            "layer": "Response",
+            "controlId": "CTL-CV21-005",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 5,
+            "recordedAt": "2026-09-01T09:05:00Z",
+            "availableAt": "2026-09-01T09:05:30Z",
+            "values": {
+              "decision": "hold-with-owner"
+            },
+            "present": {
+              "decision": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "e1671a27b5248698cd54b14c82a046e5fb3a9db3f4d790a94adc5c3c1a3d146c"
+        }
+      ],
+      "expectedLayers": [
+        {
+          "layer": "Prevention",
+          "result": "Passed",
+          "failureClasses": []
+        },
+        {
+          "layer": "Telemetry",
+          "result": "Passed",
+          "failureClasses": []
+        },
+        {
+          "layer": "Detection",
+          "result": "Passed",
+          "failureClasses": []
+        },
+        {
+          "layer": "Triage",
+          "result": "Passed",
+          "failureClasses": []
+        },
+        {
+          "layer": "Response",
+          "result": "Passed",
+          "failureClasses": []
+        }
+      ],
+      "note": "同一Traceの供給記録を五層で照合する。実攻撃も実IRも行っていない。",
+      "gap": {
+        "id": "GAP-CV21-008",
+        "affectedLayers": [],
+        "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
+        "nextActionId": "ACT-CV21-008"
+      },
+      "improvement": {
+        "id": "ACT-CV21-008",
+        "status": "proposed-not-executed",
+        "owner": "SYN-CV-VALIDATION-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "action": "五層のID・Trace・時刻・比較条件を再評価時にもそろえる計画。別系列の局所成功を寄せ集めない。",
+        "retestId": "RT-CV21-008",
+        "acceptance": "全五層の供給根拠を独立に照合し、どの層の不足も総合Passedで隠さない。",
+        "reassessmentId": "REA-CV21-008",
+        "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
+      },
+      "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+    },
+    {
+      "id": "SCN-CV21-009",
+      "type": "Atomic",
+      "layers": [
+        "Telemetry"
+      ],
+      "traceId": "TRACE-CV21-009",
+      "batchId": "BATCH-CV21-009",
+      "subjectId": "SYNTH-CV21-001",
+      "subjectRevision": "REV-CV21-001",
+      "controlRevision": "CTLREV-CV21-001",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "analysisAt": "2026-09-01T09:12:00Z",
+      "mode": "supplied-record-comparison",
+      "suppliedAuthority": true,
+      "stopReason": null,
+      "stepsAfterStop": 0,
+      "observations": [
+        {
+          "id": "EVD-CV21-009-01",
+          "payload": {
+            "scenarioId": "SCN-CV21-009",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-009",
+            "batchId": "BATCH-CV21-009",
+            "layer": "Telemetry",
+            "controlId": "CTL-CV21-002",
+            "controlRevision": "CTLREV-CV21-001",
+            "step": 1,
+            "recordedAt": "2026-09-01T09:01:00Z",
+            "availableAt": "2026-09-01T09:01:30Z",
+            "values": {
+              "signal-coverage": "primary-only"
+            },
+            "present": {
+              "signal-coverage": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "primary-present-secondary-missing"
+          },
+          "payloadSha256": "1e0d6834c1ba1e2da1094a7ea83b688139e3b55be61514fb6dffbdef4b6c9a0e"
+        }
+      ],
+      "expectedLayers": [
+        {
+          "layer": "Telemetry",
+          "result": "Partial",
+          "failureClasses": [
+            "Telemetry"
+          ]
+        }
+      ],
+      "note": "Primary channelは届くがSecondary channel不足が明示された限定到達。",
+      "gap": {
+        "id": "GAP-CV21-009",
+        "affectedLayers": [
+          "Telemetry"
+        ],
+        "description": "Primary channelは届くがSecondary channel不足が明示された限定到達。",
+        "nextActionId": "ACT-CV21-009"
+      },
+      "improvement": {
+        "id": "ACT-CV21-009",
+        "status": "proposed-not-executed",
+        "owner": "SYN-CV-TELEMETRY-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "action": "Primary到達とSecondary不足を分け、必要channelをそろえる供給検証案を作る。実Collectorは操作しない。",
+        "retestId": "RT-CV21-009",
+        "acceptance": "primary-onlyという観測Partialを保持し、all-requiredへ変わったと主張する場合は新しい供給根拠を比較する。",
+        "reassessmentId": "REA-CV21-009",
+        "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
+      },
+      "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+    },
+    {
+      "id": "SCN-CV21-010",
+      "type": "Atomic",
+      "layers": [
+        "Detection"
+      ],
+      "traceId": "TRACE-CV21-010",
+      "batchId": "BATCH-CV21-DETECTION",
+      "subjectId": "SYNTH-CV21-001",
+      "subjectRevision": "REV-CV21-001",
+      "controlRevision": "CTLREV-CV21-002",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "analysisAt": "2026-09-01T09:12:00Z",
+      "mode": "supplied-record-comparison",
+      "suppliedAuthority": true,
+      "stopReason": null,
+      "stepsAfterStop": 0,
+      "observations": [
+        {
+          "id": "EVD-CV21-010-01",
+          "payload": {
+            "scenarioId": "SCN-CV21-010",
+            "subjectId": "SYNTH-CV21-001",
+            "subjectRevision": "REV-CV21-001",
+            "traceId": "TRACE-CV21-010",
+            "batchId": "BATCH-CV21-DETECTION",
+            "layer": "Detection",
+            "controlId": "CTL-CV21-003",
+            "controlRevision": "CTLREV-CV21-002",
+            "step": 1,
+            "recordedAt": "2026-09-01T09:01:00Z",
+            "availableAt": "2026-09-01T09:01:30Z",
+            "values": {
+              "positive": "alert",
+              "negative": "no-alert",
+              "benign-near-miss": "no-alert"
+            },
+            "present": {
+              "positive": true,
+              "negative": true,
+              "benign-near-miss": true
+            },
+            "inputBasis": "complete-supplied-input",
+            "transportBasis": "not-a-transport-claim"
+          },
+          "payloadSha256": "d0aa603dc0eb47a3bbf6b2a4683a98f5ac28e38e5ab3d3c48c68f9f6590ea200"
+        }
+      ],
+      "expectedLayers": [
+        {
+          "layer": "Detection",
+          "result": "Passed",
+          "failureClasses": []
+        }
+      ],
+      "note": "S03と同一条件で供給Rule版だけを変えたRetest。正常とNear-missも残す。",
+      "gap": {
+        "id": "GAP-CV21-010",
+        "affectedLayers": [],
+        "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
+        "nextActionId": "ACT-CV21-010"
+      },
+      "improvement": {
+        "id": "ACT-CV21-010",
+        "status": "proposed-not-executed",
+        "owner": "SYN-CV-DETECTION-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "action": "供給新版の正常・Near-miss対比を継続し、入力Schemaや期待値の変更時に再評価する計画。実Deployは行わない。",
+        "retestId": "RT-CV21-010",
+        "acceptance": "旧003のFailed、新010の三条件一致と版の差を保持し、追加範囲や実検知率は未評価とする。",
+        "reassessmentId": "REA-CV21-010",
+        "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
+      },
+      "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+    }
+  ],
+  "retest": {
+    "id": "RT-CV21-003",
+    "beforeScenarioId": "SCN-CV21-003",
+    "afterScenarioId": "SCN-CV21-010",
+    "changedField": "controlRevision",
+    "beforeRevision": "CTLREV-CV21-001",
+    "afterRevision": "CTLREV-CV21-002",
+    "sourceActionId": "ACT-CV21-003",
+    "result": "recorded-comparison-only",
+    "beforeRetained": true,
+    "actualChangeExecuted": false,
+    "limitation": "供給Rule版名と出力記録の比較であり、Rule実装を変更・Deploy・実測した証明ではない。"
+  },
+  "handoff": {
+    "id": "HOF-CV21-22",
+    "targetChapter": 22,
+    "sourcePlanId": "CVP-2026-021-001",
+    "actionIds": [
+      "ACT-CV21-001",
+      "ACT-CV21-002",
+      "ACT-CV21-003",
+      "ACT-CV21-004",
+      "ACT-CV21-005",
+      "ACT-CV21-006",
+      "ACT-CV21-007",
+      "ACT-CV21-008",
+      "ACT-CV21-009",
+      "ACT-CV21-010"
+    ],
+    "status": "planned-not-delivered",
+    "receiptId": null,
+    "executionAuthorized": false,
+    "owner": "SYN-CV-VALIDATION-OWNER",
+    "dueAt": "2026-09-30T00:00:00Z",
+    "question": "層別の失敗・不足・限定結果をOwnerと受入基準付きの改善管理へどう接続するか。"
+  },
+  "safety": {
+    "mode": "offline-record-only",
+    "stop": "実Target、実Credential、実Data、外部接続、許可不明の入力が必要なら停止する。",
+    "cleanup": "配布原本は変えず、自分の解答Copyだけを保持条件に従い整理する。実Runtimeは作らない。",
+    "cleanupDisposition": "reading-copy-plan-only",
+    "residualCheck": "実Runtime未作成。実システムの残存影響は測定していない。",
+    "residualDisposition": "not-measured",
+    "limitations": "有限な教材比較であり、実証拠の認証、一般的攻撃Emulation、実IR、NIST適合、全組織の安全性は評価しない。"
+  }
+}

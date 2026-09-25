@@ -2232,19 +2232,67 @@
       "targetId": "chapter-21",
       "issue": 44,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "canonical-pr-open",
+      "selectedCandidateId": "EIC-0044-a729d22fb189",
+      "canonicalPr": 159,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/159",
+        "packageId": "EIP-0011",
+        "packageSha256": "cb9fee8ca0a1ff1b8e2ce6d45f5d0d1cc102303eacaddfec394deca098e83461",
+        "inputPath": "chapter21-purple-team-control-validation.predraft.md",
+        "inputSha256": "a729d22fb1898e62d5ddf0d7bc2ebd1e4794ed82a49d77ff65ddaaf1aff0dbff",
+        "targetIssue": 44,
+        "canonicalPr": 159,
+        "currentMainSha": "82e344c01150b29a41929aacca762ff52286cc88",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-25",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0044-a729d22fb189 / EIP-0011をimmutable登録来歴としてIssue44comment5824263539でbranch前に選択。"
+        ],
+        "rewrittenSections": [
+          "正式Issue44本文と8月8日設計、現main親14/16/17/19/20、用途限定の公式一次資料から本文、ART27、全欄Case、完全合成JSON/閉Schema、有限LayerAを新規制作。",
+          "正式5Result/6Failure/AtomicとEnd-to-Endの2type。十ScenarioでPrevention/Telemetry/Detection/Triage/ResponseのExpected/Actual、対象版/Trace/Cutoff、観測されたPartialとUnknown、停止、Gap/Owner/改善/Retestを分離。59の独立literal期待値は実装出力から生成していない。有限な著者所有の教材であり実Controlの独立検証ではない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "非正本候補のNot testedや追加Failure/typeを正式集合へ加えない。旧計画19.1ではなく現mainで既承認移行済みのATT&CK19.2を参照し、CTI pinとhistorical記録は保持。D3FENDは今回未採用。",
+          "実攻撃/実Credential/実Data/実環境/外部Network/実操作/実収集/実通知/Deploy/Incident宣言を採用しない。親Evidence・実権限・状態・未配達を継承しない。",
+          "一般的Emulation engine、実Rule修正、製品操作、NIST適合認定、全Control catalogue、実証拠認証、章別renderer、第22章正本先行統合は対象外。",
+          "同梱Chapter20のconsumed/rewrittenと元Intake全欄、全他Target/Package/過去履歴を保持。rawの推測復元は行わない。"
+        ],
+        "sourceRevalidation": [
+          "MITRE公式Versions/Updatesのcurrent19.2と日付の文脈、Detection Strategies導入の上位方針/Platform別Analyticsを確認。全Object/Strategy/Analyticsを監査せずmappingを有効性にしない。既存CTI pin/Hashと独立Page版/日付不明のnullを保持。",
+          "NIST SP800-53A Rev5 January2022 FinalとDocument History2022-01-25、公式PDF印刷pp.11〜12 §2.4、p.25 §3.2.3.1、pp.31〜33 §3.3〜3.4を用途限定確認。Planning Note/公式告知Release5.2.0（2025-08-27）を旧PDF刊行日/全文改訂日に置換せず、個別追加procedure/全catalogueは未採用。本書五ResultとNIST S/Oを区別する。",
+          "NIST SP800-61r3 Final2025-04-03の公式landing/PDF、印刷p.13 GV.RR-02、pp.19〜20 ID.IM-01/02/03を役割・権限・評価/演習/運用からの改善に限定確認。実権限や実Incident由来の教訓、個別法的判断を認定しない。",
+          "TLS検証有効の六HTML/二PDFは全HTTP200、取得ByteHashと採用節を保存。公表Pageと一次PDF該当節を既設ローカル抽出も併用して読解。四Sourceの第21章用途のみcheckedAt09-25/notes・mapping、新Source1件。rootbaseline07-25/旧notes/既存pinを保持し全Registry再監査とはしない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/21-purple-team-validation.md",
+          "templates/control-validation-plan.md",
+          "cases/ch21-control-validation-example.md",
+          "references/ch21-source-review-2026-09-25.md",
+          "cases/fixtures/ch21-control-validation.json",
+          "schemas/ch21-control-validation.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録四basenameを認可workspace29170directoriesで検索しhit0/errors0、symlink追跡なし。改名file、archive内部、workspace外、symlink先は未調査。inputReviewedAtは登録採否確認日でraw読了日ではない。raw実体hash未照合・未読・直接採用なし。",
+          "Actual値、対象/版、Trace、時刻、suppliedAuthorityは教育用供給条件であり実測ではない。HashはJSON表現比較だけで真正性・実権限を認定しない。source節は限定読解で全733頁監査ではない。",
+          "Atomicは未選択層を評価せず、End-to-Endは同一Traceの供給比較だけ。Partialは二つの事前定義した観測部分であり、Unknown/nullではない。層内Failedでも残るUnknownのGapを消さず、全層を総合Passedへ潰さない。",
+          "Retestは同一条件の供給版名と出力記録の比較で、実Rule変更/Deploy/測定の証明ではない。実活動0、親14失効Authority/Draft RoE、親16/17/19/20のEvidence/状態/Handoff未配達、親20原因未確定を保持。Handoff22は予定/null/実権限false。",
+          "Intake作成時はPR#159 Draft、通常merge/main公開未完。consumedは公開確認後の別metadata PRで記録する。現在状態はtarget.statusと最新statusHistoryを参照。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0044-a729d22fb189",
           "packageId": "EIP-0011",
           "inputPath": "chapter21-purple-team-control-validation.predraft.md",
           "inputSha256": "a729d22fb1898e62d5ddf0d7bc2ebd1e4794ed82a49d77ff65ddaaf1aff0dbff",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5824263539",
+          "dispositionReason": "PR158実main公開とIssue157完了後、Issue44で唯一の登録候補をbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを明示し、現契約と用途限定の一次資料から再構成する。"
         }
       ],
       "statusHistory": [
@@ -2253,6 +2301,18 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5824263539",
+          "reason": "PR158実main公開とIssue157完了後、Issue44で唯一の登録候補をbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを明示し、現契約と用途限定の一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/159",
+          "reason": "第21章専用Draft PR#159に本文/ART27/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
         }
       ]
     },

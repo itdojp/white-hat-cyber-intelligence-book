@@ -557,6 +557,34 @@
       "section": "additional",
       "order": 289,
       "title": "第20章 Source Review — 2026-09-25"
+    },
+    {
+      "source": "manuscript/21-purple-team-validation.md",
+      "destination": "chapters/chapter-21/index.md",
+      "section": "chapters",
+      "order": 204,
+      "title": "第21章 Purple TeamとControl Validation"
+    },
+    {
+      "source": "templates/control-validation-plan.md",
+      "destination": "templates/control-validation-plan/index.md",
+      "section": "additional",
+      "order": 291,
+      "title": "Control Validation Plan"
+    },
+    {
+      "source": "cases/ch21-control-validation-example.md",
+      "destination": "cases/chapter-21-control-validation/index.md",
+      "section": "additional",
+      "order": 292,
+      "title": "第21章 Control Validation Plan完全合成記入例"
+    },
+    {
+      "source": "references/ch21-source-review-2026-09-25.md",
+      "destination": "references/chapter-21-source-review/index.md",
+      "section": "additional",
+      "order": 293,
+      "title": "第21章 Source Review — 2026-09-25"
     }
   ],
   "directoryRoutes": {
@@ -686,6 +714,14 @@
     {
       "source": "schemas/ch20-dfir-timeline-causality.schema.json",
       "destination": "downloads/ch20-dfir-timeline-causality.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch21-control-validation.json",
+      "destination": "downloads/ch21-control-validation.json"
+    },
+    {
+      "source": "schemas/ch21-control-validation.schema.json",
+      "destination": "downloads/ch21-control-validation.schema.json"
     }
   ]
 }

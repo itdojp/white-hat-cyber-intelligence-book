@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Chapter20 selection/semantics; shared Projection and Policy own all syntax."""
+"""Chapter21 finite selection/semantics; shared Projection and Policy own syntax."""
 
 import argparse
 from collections import Counter
@@ -11,27 +11,22 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from scripts.chapter20_model import (  # noqa: E402
+from scripts.chapter21_model import (  # noqa: E402
+    VERSION,
     DATA,
     SCHEMA,
     CONTRACT,
     CORPUS,
     DOCUMENTS,
-    PARENTS,
     SOURCES,
+    PARENTS,
     INDEX_PATHS,
     strict,
     read_regular,
+    digest,
+    summary,
     validate_model,
     case_groups,
-)
-from scripts.chapter20_timeline import (  # noqa: E402
-    VERSION,
-    digest,
-    evaluate,
-    instant,
-    interval,
-    utc_text,
 )
 from scripts.check_editorial_input_manifest import ManifestError  # noqa: E402
 from scripts.check_representative_gate import SOURCE_ID_RE  # noqa: E402
@@ -48,7 +43,6 @@ from scripts.publication_projection import (  # noqa: E402
     is_absolute_destination,
 )
 from scripts.source_audit import meets_audit_baseline  # noqa: E402
-from scripts.sync_book_site import BASE_PAGES  # noqa: E402
 
 PREFLIGHT = tuple(
     f"python3 scripts/check_chapter{n:02}_contract.py --no-regressions"
@@ -89,6 +83,8 @@ def scan_document(document, spec):
     counts = Counter(
         json.dumps(identity(f), ensure_ascii=False) for f in document.fields
     )
+    if len({json.dumps(p, ensure_ascii=False) for p in provenance}) != len(provenance):
+        errors.append("CV21 duplicate provenance")
     for item in provenance:
         if counts[json.dumps(item, ensure_ascii=False)] != 1:
             errors.append(document.document_id + ": exact provenance cardinality")
@@ -108,8 +104,7 @@ def scan_document(document, spec):
     return errors
 
 
-def section_table_rows(document, heading):
-    """Select an authored Chapter20 H2 surface from shared projected fields."""
+def section_rows(document, heading):
     active, rows = False, []
     for field in document.fields:
         if (
@@ -123,179 +118,185 @@ def section_table_rows(document, heading):
     return rows
 
 
-def numeric_example_errors(document, data):
-    """Bind the short numeric reading tables, not just the full Artifact leaves."""
-    errors, expected = [], []
+def reading_table_errors(document, data):
+    errors = []
+    if document.document_id == DOCUMENTS[2]:
+        expected = [
+            " ".join((title + " Field Value " + key + " " + value).split())
+            for title, rows in case_groups(data)
+            for key, value in rows
+        ]
+        if section_rows(document, "全欄の読み方") != expected:
+            errors.append("CV21 all artifact leaves / Case parity")
+        expected = [
+            f"Scenario Layer Result Failure {s['id']} {r['layer']} {r['result']} "
+            + (", ".join(r["failureClasses"]) or "なし")
+            for s in data["scenarios"]
+            for r in summary(s)
+        ]
+        if section_rows(document, "層別の供給結果") != expected:
+            errors.append("CV21 Case layer summary / evaluated parity")
     if document.document_id == DOCUMENTS[0]:
-        clocks = {c["id"]: c for c in data["clocks"]}
-        rows = {r["id"]: r for r in data["evidence"]}
-        for eid in ("EV20-001", "EV20-002", "EV20-003", "EV20-005"):
-            row = rows[eid]
-            raw = row["payload"]["originalTime"]
-            clock = clocks[row["payload"]["clockId"]]
-            low, high = (utc_text(t) for t in interval(row, clocks))
-            if {raw[:10], low[:10], high[:10]} != {"2026-09-01"}:
-                errors.append("DFIR20 numeric example date scope")
-            offset = f"{clock['offsetSeconds']:+d}" if clock["offsetSeconds"] else "0"
+        notes = (
+            "blockedでも監査到達は別の問い",
+            "同一Batchで配送失敗根拠がある",
+            "Positiveの出力不一致、正常対比は保持",
+            "EvidenceだけではOwnerと理由が足りない",
+            "案はあっても権限根拠がない",
+            "Positive fixture不足を検知失敗にしない",
+            "未承認scopeのallowedは期待と矛盾",
+            "同一Traceの供給比較だけを支持",
+            "Primary到達とSecondary不足を分ける",
+            "003を保持し、版を変えた供給Retest",
+        )
+        expected = []
+        for n, (s, note) in enumerate(zip(data["scenarios"], notes), 1):
+            evaluated = summary(s)
+            layer = "五層" if len(evaluated) == 5 else evaluated[0]["layer"]
+            result = (
+                "各層Passed"
+                if len(evaluated) == 5
+                and all(r["result"] == "Passed" for r in evaluated)
+                else evaluated[0]["result"]
+            )
             expected.append(
-                f"Evidence 原時刻 offset / 不確かさ 正規化区間 UTC {eid} {raw[11:]} "
-                f"{offset}秒 / ±{clock['uncertaintySeconds']}秒 {low[11:19]}〜{high[11:19]}"
+                f"Scenario末尾 Type / 選択層 供給結果 読み取る差 {n:03} {s['type']} / {layer} {result} {note}"
             )
-        if section_table_rows(document, "3. 原時刻を幅のあるUTCへ変換する") != expected:
-            errors.append("DFIR20 manuscript numeric table / supplied time parity")
-    if document.document_id == DOCUMENTS[3]:
-        judgments = {
-            "TL-DFIR20-A": "EV20-005は後着で不採用。特定Changeの範囲は未確定、原因unresolved",
-            "TL-DFIR20-B": "特定CHG20-001はApp BだけでApp Aを覆わない。別の許可と機構は不明、原因unresolved",
-        }
-        for snapshot in data["snapshots"]:
-            result = evaluate(data, snapshot)
-            cutoff, analysis = (
-                utc_text(instant(snapshot[k])) for k in ("cutoff", "analysisAt")
-            )
-            if {cutoff[:10], analysis[:10]} != {"2026-09-01"}:
-                errors.append("DFIR20 summary snapshot date scope")
-            expected.append(
-                f"Timeline Cutoff / Analysis Receipt / Event 保守説明と原因 {snapshot['id']} "
-                f"{cutoff[11:16]} / {analysis[11:16]} {len(result['included'])} Receipt / "
-                f"{len(result['timeline'])} Event {judgments[snapshot['id']]}"
-            )
-        if section_table_rows(document, "二つのSnapshot") != expected:
-            errors.append("DFIR20 Case snapshot summary / input parity")
+        if section_rows(document, "7. 十の供給対比を読む") != expected:
+            errors.append("CV21 manuscript comparison table / evaluated parity")
     return errors
 
 
 def document_errors(document, spec, data):
-    errors = scan_document(document, spec) + numeric_example_errors(document, data)
+    errors = scan_document(document, spec) + reading_table_errors(document, data)
     if (
         digest(inventory(document)) != spec["projectionSha256"]
         or headings(document) != spec["headings"]
         or len(document.fields) != spec["fieldCount"]
     ):
         errors.append(document.document_id + ": finite fields/order/locations/headings")
-    if document.document_id == DOCUMENTS[3]:
-        actual, active = [], False
-        for field in document.fields:
-            if (
-                field.field_type == "reader_visible_text"
-                and field.element_kind == "heading"
-            ):
-                if field.metadata_value("level") == 2:
-                    active = field.text == "全欄の読み方"
-            if (
-                active
-                and is_policy_scan_field(field)
-                and field.element_kind == "table_row"
-            ):
-                actual.append(field.text)
-        expected = [
-            " ".join((title + " Field Value " + k + " " + v).split())
-            for title, rows in case_groups(data)
-            for k, v in rows
-        ]
-        if actual != expected:
-            errors.append("DFIR20 all artifact/evidence leaves / Case parity")
     if document.document_id == DOCUMENTS[0]:
         body, refs, in_refs = set(), set(), False
         for field in document.fields:
-            if field.element_kind == "heading" and field.metadata_value("level") == 2:
-                in_refs = field.text == "参考文献・Source Note ID"
+            if (
+                field.element_kind == "heading"
+                and field.text == "参考文献・Source Note ID"
+            ):
+                in_refs = True
             if is_policy_scan_field(field):
                 (refs if in_refs else body).update(SOURCE_ID_RE.findall(field.text))
         if body != set(SOURCES) or refs != set(SOURCES):
-            errors.append("DFIR20 body/end-reference Source ownership")
+            errors.append("CV21 body/end Source set")
     return errors
 
 
 def repository_errors(data, contract, root=ROOT):
     errors = []
     if list(contract["parentDigests"]) != list(PARENTS):
-        errors.append("DFIR20 fixed parent/shared inventory")
-    else:
-        for path in PARENTS:
-            if (
-                hashlib.sha256(read_regular(root, path)).hexdigest()
-                != contract["parentDigests"][path]
-            ):
-                errors.append(path + ": parent/shared modified")
-    parent = strict(read_regular(root, "cases/fixtures/ch19-incident-response.json"))
-    contrast = next(r for r in parent["contrasts"] if r["id"] == "ICASE19-004")
-    handoff = next(h for h in contrast["handoffs"] if h["targetChapter"] == 20)
-    p = data["parent"]
-    actual = {
-        "recordId": parent["record"]["id"],
-        "contrastId": contrast["id"],
-        "decisionId": handoff["sourceDecisionId"],
-        "handoffId": handoff["id"],
-        "questionId": handoff["questionId"],
-        "plannedTimelineId": handoff["plannedRecordId"],
-        "status": handoff["status"],
-        "receiptId": handoff["receiptId"],
-        "executionAuthorized": handoff["executionAuthorized"],
+        errors.append("CV21 fixed parent inventory")
+    for path in PARENTS:
+        if hashlib.sha256(read_regular(root, path)).hexdigest() != contract[
+            "parentDigests"
+        ].get(path):
+            errors.append("CV21 parent/shared/pin drift: " + path)
+    d14 = strict(
+        read_regular(root, "cases/fixtures/ch14-minimal-impact-validation.json")
+    )
+    d16 = strict(read_regular(root, "cases/fixtures/ch16-telemetry-coverage.json"))
+    d17 = strict(
+        read_regular(root, "cases/fixtures/ch17-detection-engineering-fixture.json")
+    )
+    d19 = strict(read_regular(root, "cases/fixtures/ch19-incident-response.json"))
+    d20 = strict(read_regular(root, "cases/fixtures/ch20-dfir-timeline-causality.json"))
+    h20 = next(h for h in d20["handoffs"] if h["targetChapter"] == 21)
+    rca = next(
+        s["rca"] for s in d20["snapshots"] if s["rca"]["id"] == h20["sourceRcaId"]
+    )
+    expected = {
         "use": "method-reference-only",
+        "decisionRequirementId": d17["decisionRequirementId"],
+        "threatHypothesisId": d17["threatHypotheses"][0]["id"],
+        "detectionRecordId": d17["detectionValidationRecordId"],
+        "detectionId": d17["detectionId"],
+        "telemetryIds": [t["id"] for t in d17["telemetryContracts"]],
+        "minimalValidationId": d14["record"]["id"],
+        "telemetryMapId": d16["record"]["id"],
+        "incidentPlanId": d19["record"]["id"],
+        "dfirRecordId": d20["record"]["id"],
+        "dfirRcaId": rca["id"],
+        "dfirControlId": h20["controlId"],
+        "dfirControlStatus": rca["controlFailureStatus"],
+        "dfirHandoffId": h20["id"],
+        "dfirHandoffStatus": h20["status"],
+        "receiptId": h20["receiptId"],
+        "parentEvidenceTransferred": False,
+        "parentStateChanged": False,
+        "authorityTransferred": False,
     }
     if (
-        p != actual
-        or p["status"] != "planned-not-delivered"
-        or p["receiptId"] is not None
-        or p["executionAuthorized"] is not False
-        or data["record"]["parentCaseId"] != parent["record"]["caseId"]
-        or data["record"]["relation"] != "refines"
-        or data["context"]["subjectId"]
-        in {r["input"]["context"]["subject"] for r in parent["contrasts"]}
-        or p["plannedTimelineId"] in {s["id"] for s in data["snapshots"]}
+        data["parentReferences"] != expected
+        or h20["executionAuthorized"] is not False
+        or h20["status"] != "planned-not-delivered"
+        or h20["receiptId"] is not None
+        or data["record"]["parentCaseId"] != d17["caseId"]
+        or data["threat"]["attackTechniqueId"]
+        not in d17["threatHypotheses"][0]["attackMapping"]
     ):
-        errors.append("DFIR20 direct parent IDs / non-inheritance / undelivered")
+        errors.append("CV21 parent ID/non-inheritance/undelivered boundary")
+    b, p14 = data["authorityBoundary"], d14["parents"]
+    for ours, parent in (
+        ("parentAuthorityId", "authorizationId"),
+        ("parentExpiresAt", "authorizationExpiresAt"),
+        ("parentRoeId", "roeId"),
+        ("parentRoeStatus", "roeStatus"),
+        ("parentRoeVersion", "roeVersion"),
+        ("parentExecutionAuthorized", "roeExecutionAuthorized"),
+    ):
+        if b[ours] != p14[parent]:
+            errors.append("CV21 exact parent Authority: " + ours)
     package = strict(read_regular(root, "package.json"))["scripts"]
     if (
-        package.get("check:chapter20") != "python3 scripts/check_chapter20_contract.py"
-        or package["test"].split(" && ").count("npm run check:chapter20") != 1
+        package.get("check:chapter21") != "python3 scripts/check_chapter21_contract.py"
+        or package["test"].split(" && ").count("npm run check:chapter21") != 1
         or package["sync:docs"].split(" && ") != list(PREFLIGHT)
     ):
-        errors.append("DFIR20 root test/preflight exactly once")
+        errors.append("CV21 root test/preflight exactly once")
     routes = strict(read_regular(root, "site-pages.json"))
-    if (
-        sum(
-            p.source == DOCUMENTS[1]
-            and p.destination == "templates/incident-timeline/index.md"
-            for p in BASE_PAGES
-        )
-        != 1
-    ):
-        errors.append("DFIR20 legacy ART07 public URL")
     for kind in ("pages", "staticFiles"):
         for route in contract[kind]:
             if routes[kind].count(route) != 1:
-                errors.append("DFIR20 exact route: " + route["source"])
+                errors.append("CV21 exact public route: " + route["source"])
     order = [
         p["source"]
         for p in sorted(routes["pages"], key=lambda p: p["order"])
         if p["section"] == "chapters"
     ]
     if not (
-        order.index("manuscript/19-incident-response.md")
+        order.index("manuscript/20-dfir-timeline-causality.md")
         < order.index(DOCUMENTS[0])
         < order.index("manuscript/25-structured-analysis-attribution.md")
     ):
-        errors.append("DFIR20 navigation 19/20/25")
+        errors.append("CV21 navigation 20/21/25")
     sources = strict(read_regular(root, "references/sources.json"))
     if sources["checkedAt"] != "2026-07-25" or {
-        s["id"] for s in sources["sources"] if 20 in s["chapters"]
+        s["id"] for s in sources["sources"] if 21 in s["chapters"]
     } != set(SOURCES):
-        errors.append("DFIR20 scoped Source mapping/baseline")
+        errors.append("CV21 scoped Source mapping/baseline")
+    if set(contract["sourceIdentity"]) != set(SOURCES):
+        errors.append("CV21 frozen Source inventory")
     for sid in SOURCES:
         source = next(s for s in sources["sources"] if s["id"] == sid)
         if any(source[k] != v for k, v in contract["sourceIdentity"][sid].items()):
-            errors.append("DFIR20 reviewed Source identity: " + sid)
+            errors.append("CV21 reviewed Source identity: " + sid)
         if not meets_audit_baseline(source["checkedAt"], "2026-09-25"):
-            errors.append("DFIR20 scoped Source date: " + sid)
+            errors.append("CV21 scoped Source date: " + sid)
     if list(contract["indices"]) != list(INDEX_PATHS):
-        errors.append("DFIR20 index inventory")
+        errors.append("CV21 index inventory")
     else:
         for path in INDEX_PATHS:
             text = read_regular(root, path).decode("utf-8")
-            if any(m not in text for m in contract["indices"][path]):
-                errors.append("DFIR20 index: " + path)
+            if any(marker not in text for marker in contract["indices"][path]):
+                errors.append("CV21 index: " + path)
     return errors
 
 
@@ -309,7 +310,7 @@ def main():
         )
         if (
             contract["schemaVersion"] != "1.0.0"
-            or contract["timelineVersion"] != VERSION
+            or contract["comparisonVersion"] != VERSION
             or list(contract["documents"]) != list(DOCUMENTS)
             or POLICY_VERSION != "1.2.0"
             or PROJECTION_VERSION != "1.1.0"
@@ -318,19 +319,19 @@ def main():
             or hashlib.sha256(read_regular(ROOT, CORPUS)).hexdigest()
             != contract["corpusSha256"]
         ):
-            raise ValueError("DFIR20 frozen inventory/schema/shared versions")
+            raise ValueError("CV21 frozen inventory/schema/shared versions")
         errors = validate_model(data, schema, contract) + repository_errors(
             data, contract
         )
         source = {p: read_regular(ROOT, p).decode("utf-8") for p in DOCUMENTS}
         projection = project_documents(source)
         if [d.document_id for d in projection.documents] != list(DOCUMENTS):
-            raise ValueError("DFIR20 full document projection order")
+            raise ValueError("CV21 complete document order")
         for doc in projection.documents:
             errors += document_errors(doc, contract["documents"][doc.document_id], data)
         count = 0
         if not args.no_regressions:
-            from scripts.chapter20_regressions import run_regressions
+            from scripts.chapter21_regressions import run_regressions
 
             count, problems = run_regressions(
                 data, schema, contract, source, projection
@@ -341,7 +342,7 @@ def main():
                 print("ERROR:", error)
             return 1
         print(
-            f"Chapter 20 contract passed: 5 complete documents; ART-07/26; 5 receipts / 2 cutoffs / 6 claims; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
+            f"Chapter 21 contract passed: 4 complete documents; ART-27; 10 scenarios / 5 layers / 6 failure classes; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
         )
         return 0
     except (
@@ -353,7 +354,7 @@ def main():
         ManifestError,
         ProjectionRuntimeError,
     ) as exc:
-        print("ERROR: Chapter20 fail closed:", exc)
+        print("ERROR: Chapter21 fail closed:", exc)
         return 1
 
 

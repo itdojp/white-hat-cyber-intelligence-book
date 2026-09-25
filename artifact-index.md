@@ -28,6 +28,7 @@
 | ART-24 | Telemetry Coverage Map | 16 | `templates/telemetry-coverage-map.md` |
 | ART-25 | Incident Action Plan | 19 | `templates/incident-action-plan.md` |
 | ART-26 | Root Cause Analysis | 20 | `templates/root-cause-analysis.md` |
+| ART-27 | Control Validation Plan | 21 | `templates/control-validation-plan.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -76,3 +77,5 @@
 `ART-25`は宣言、Scope、Evidence、封じ込め案、通知照会、復旧検証、残余リスク、再開を結ぶ。[第19章Case](cases/ch19-incident-action-plan-example.md)の十二の独立した合成対比で七状態を区別し、親Evidence・実権限・未配達を引き継がない。
 
 `ART-07`は第20章で既存見出し・公開URLを保持して拡張する。`ART-26`と[全欄Case](cases/ch20-dfir-timeline-causality-example.md)で原時刻、Clockの不確かさ、Cutoff、代替説明、原因未確定、限定影響と改善・再評価を結ぶ。五Receipt・二Snapshotは完全合成であり、親のEvidence・権限・未配達を継承しない。
+
+`ART-27`はControl objective、Atomic / End-to-End、五層のExpected/Actual、Failure、Gap、改善とRetestを結ぶ。[第21章Case](cases/ch21-control-validation-example.md)は十の完全合成対比であり、親Evidence・実権限・未配達・原因未確定を変更しない。

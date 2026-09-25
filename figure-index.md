@@ -155,3 +155,14 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 | T-20-02 | 原時刻とClockの不確かさを含むUTC区間 | [第20章](manuscript/20-dfir-timeline-causality.md) |
 | T-20-03 | 五つのRelationと根拠 | [第20章](manuscript/20-dfir-timeline-causality.md) |
 | T-20-04 | TimelineとRCAの評価ルーブリック | [第20章](manuscript/20-dfir-timeline-causality.md) |
+
+## 第21章 Control Validation
+
+| ID | 図表 | 参照 |
+|---|---|---|
+| F-21-01 | 判断・許可・Control・Evidence・改善の接続 | [第21章](manuscript/21-purple-team-validation.md) |
+| T-21-01 | 五層の問いと結論の上限 | 第21章 |
+| T-21-02 | 五Resultと記録条件 | 第21章 |
+| T-21-03 | 六Failure classと改善の問い | 第21章 |
+| T-21-04 | 十の供給対比 | 第21章 |
+| T-21-05 | Control Validationの評価基準 | 第21章 |

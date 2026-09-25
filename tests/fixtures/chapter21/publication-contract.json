@@ -1,0 +1,640 @@
+{
+  "schemaVersion": "1.0.0",
+  "comparisonVersion": "1.0.0",
+  "schemaSha256": "f525f8950404ec42d0c019af99a8d82566ec09002924ae7ee21c3a00e309122a",
+  "corpusSha256": "35fd3e255e08db3e5069bbd5c16994046680d253e700437a4b4f59c5a5030233",
+  "authoredInputs": {
+    "schemaVersion": "39fe4a40977d0585fd5704359e3685b0ada5cf5ee061e5d97385601d120cd0ec",
+    "synthetic": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "readOnly": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "networkRequired": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "executionAuthorized": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "record": "7f43e91fb9bcc087a6284c66eb245841ccc0f9de40d7b89453b9d9d97220402c",
+    "parentReferences": "1db4a5727d72244700476c3a64d73e1c12dff0101615e0e621fd0f85edf048f7",
+    "authorityBoundary": "3b4f35e5287ab61bbab5dd1f4bfa0343d9fba75f230d7c0879bc025284cd9613",
+    "threat": "4f6d88da64f791727dd80e745643298fa5346eb07a91d114fae6d8c12be6dbae",
+    "roles": "1d50f734adb1a0fd43534ea3bc87218761c95ed2c38b5739264d7aa5b1a7057b",
+    "controls": "00282352ddf0e739fd93cd3f5272da28b3ff3d64bbaec85ef6a0fe8206a82c88",
+    "scenarios": "05c36a6c39d16c1a9f4603d8f1a8a46ee578676e583f6e486b0258fe43015476",
+    "retest": "61cbefc7b716ee2bcafd58bcf0d0f07cb1664a14cf390660d5132c4d95a103e9",
+    "handoff": "6ce661559989a48d5779bbea6a92cdd58c5f3138dbaed934cbe3e3ed1a20162b",
+    "safety": "8542a5c07d55b510e7a197563ea0f20ef98435961340e8f169399fea726e9c1c"
+  },
+  "parentDigests": {
+    "WRITING_GUIDE.md": "7de62e48cbb0ca637548f6ff9d8f3c6cde0e9085f5dd42139f34f014820bbd95",
+    "SOURCE_POLICY.md": "f32541dcb37160d5194e4d9f8f805e675bebf3e9356a52f219b02bef829515c0",
+    "SAFETY_SCOPE.md": "e8ab5d61712004d16ef96f455d8224162f63296a056663d37cc5403639a184ff",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
+    "manuscript/14-minimal-impact-validation.md": "86d6d106ab64a38602f41d669bc6c66df47642f0e96cae292d047bf29253a8d3",
+    "cases/fixtures/ch14-minimal-impact-validation.json": "0ef78c7e51a200de200c9293fe047dab95408c2353128bc75c6388448600e7bc",
+    "manuscript/16-telemetry-evidence-readiness.md": "96994707cac2add8c799298c5a97857e3447803904846c9b086708a843e4d9dc",
+    "cases/fixtures/ch16-telemetry-coverage.json": "e20586ce97dc892b8c965b919623133f122fd717943196153e4bd898f7e23f2c",
+    "manuscript/17-detection-engineering.md": "955c4838a65a2fd60f1b0b95f0513979ce957ec44bf7bcc319a9d7a5b4556bef",
+    "cases/fixtures/ch17-detection-engineering-fixture.json": "496a40b1b62fdee21adb1084f329ad4f4c11b35a2522581bbd184967f77c9192",
+    "manuscript/19-incident-response.md": "cb4bafae4744fcddd87eda21704bc9b8d48822512e532efa2038cd1efcc2ea1c",
+    "cases/fixtures/ch19-incident-response.json": "5f400fb8fc9948146eb57d1b2098bd2185bd20f46c3d8bb9fe91a617630760e7",
+    "manuscript/20-dfir-timeline-causality.md": "d4a86d12a844956e1f47d8c6e53348d781e684e4cde7ac266eb80d8fbd73f640",
+    "cases/fixtures/ch20-dfir-timeline-causality.json": "56aac7eb5eab7d080454e983a136489c486244b4ede4ab6be03210b24b439b33",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "f4e2e95c85ab03c98bada2a9fb1c6941c61e1a0930d05a83c2c4792e5c24a869",
+    ".book-formatter/revision.json": "66b8bbb03ad9ed41491a500b3f6c38dbde04c62fef83b93ff593a9c83a54c814"
+  },
+  "documents": {
+    "manuscript/21-purple-team-validation.md": {
+      "projectionSha256": "5bbbecd3c90ecfc1680ff826b8e26f6b4993205f427f96c7d5ea041a774473ad",
+      "fieldCount": 156,
+      "headings": [
+        [
+          1,
+          "第21章 Purple TeamとControl Validation"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケースまたは判断要求"
+        ],
+        [
+          2,
+          "全体像"
+        ],
+        [
+          2,
+          "1. ToolではなくControl objectiveから始める"
+        ],
+        [
+          2,
+          "2. Behaviorの対応付けと有効性を分ける"
+        ],
+        [
+          2,
+          "3. Authorityと停止は成果の強さから独立させる"
+        ],
+        [
+          2,
+          "4. AtomicとEnd-to-Endを使い分ける"
+        ],
+        [
+          2,
+          "5. 五層のExpectedとActualを別欄へ置く"
+        ],
+        [
+          2,
+          "6. 五つのResultと六つのFailure class"
+        ],
+        [
+          2,
+          "7. 十の供給対比を読む"
+        ],
+        [
+          2,
+          "8. 改善ActionとRetestをつなぐ"
+        ],
+        [
+          2,
+          "攻撃者・防御者・分析者・意思決定者の接続"
+        ],
+        [
+          2,
+          "成果物"
+        ],
+        [
+          2,
+          "安全な演習または分析課題"
+        ],
+        [
+          2,
+          "評価基準"
+        ],
+        [
+          2,
+          "よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "hostProvenance": [
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "NIST SP 800-53A Rev.5は、評価対象、方法、目的と判定条件を結び、期待と実際を比較する考え方を示す。対象には仕様・仕組み・活動・人があり、方法にはexamine、interview、testがある。本章はこの区別を参考にするが、人への聞取りや実Controlの試験は行わない。供給記録を比較した結果を、NISTへの適合や全統制の評価完了と呼ばない。SRC-NIST-ASSESS-001",
+          "manuscript/21-purple-team-validation.md:L48:F33"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "2. Behaviorの対応付けと有効性を分ける ATT&CKは行動を共通語彙へ対応付ける入口として使う。現行Sourceで確認した版は19.2であり、親17のT1098対応は方法参照として保持する。掲載されたTechnique数を、本章で検証したControl数や実組織のCoverageへ読み替えない。SRC-ATTACK-001",
+          "manuscript/21-purple-team-validation.md:L54:F37"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "NIST SP 800-61 Rev.3は、IRに関わる役割・責任と必要な権限を組織内で明確にすることを扱う。この背景を、教材の作成者が実権限を付与できるという意味には使わない。個別の法的判断や実運用の承認は組織の手順へ戻す。SRC-IR-001",
+          "manuscript/21-purple-team-validation.md:L66:F44"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "NIST SP 800-53Aは、評価結果を組織のリスク判断へ渡すこと、変更されたControlを再評価することを扱う。結果からリスク受容を自動決定しない。SP 800-61 Rev.3は評価や演習、運用からの改善を区別して扱う。今回の供給対比を、実Incidentで得た教訓と偽って報告しない。SRC-NIST-ASSESS-001 SRC-IR-001",
+          "manuscript/21-purple-team-validation.md:L151:F99"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "参考文献・Source Note ID SRC-NIST-ASSESS-001: NIST SP 800-53A Rev.5、January 2022。§2.4、§3.2.3.1、§3.3〜3.4の対象・方法・結果・再評価に限定。",
+          "manuscript/21-purple-team-validation.md:L214:F151"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "参考文献・Source Note ID SRC-IR-001: NIST SP 800-61 Rev.3 Final、2025-04-03。GV.RR-02とID.IM-01/02/03の役割・権限・改善に限定。",
+          "manuscript/21-purple-team-validation.md:L215:F152"
+        ]
+      ]
+    },
+    "templates/control-validation-plan.md": {
+      "projectionSha256": "dd272eea0d725817a45b8f69f292983b1159a864e28d6660ac98ccecb239924a",
+      "fieldCount": 61,
+      "headings": [
+        [
+          1,
+          "Control Validation Plan"
+        ],
+        [
+          2,
+          "Plan and decision requirement"
+        ],
+        [
+          2,
+          "Authority, scope and safety"
+        ],
+        [
+          2,
+          "Control objective and scenario"
+        ],
+        [
+          2,
+          "Evidence and actual by layer"
+        ],
+        [
+          2,
+          "Improvement, retest and handoff"
+        ],
+        [
+          2,
+          "Review checklist"
+        ]
+      ],
+      "hostProvenance": []
+    },
+    "cases/ch21-control-validation-example.md": {
+      "projectionSha256": "670886980de92b50cf2ec1326ae026016a26556b75ff65bc47c142d329dc525d",
+      "fieldCount": 856,
+      "headings": [
+        [
+          1,
+          "第21章 Control Validation Plan完全合成記入例"
+        ],
+        [
+          2,
+          "読み方と境界"
+        ],
+        [
+          2,
+          "層別の供給結果"
+        ],
+        [
+          2,
+          "Retestと未配達"
+        ],
+        [
+          2,
+          "全欄の読み方"
+        ],
+        [
+          3,
+          "schemaVersion"
+        ],
+        [
+          3,
+          "synthetic"
+        ],
+        [
+          3,
+          "readOnly"
+        ],
+        [
+          3,
+          "networkRequired"
+        ],
+        [
+          3,
+          "executionAuthorized"
+        ],
+        [
+          3,
+          "record"
+        ],
+        [
+          3,
+          "parentReferences"
+        ],
+        [
+          3,
+          "authorityBoundary"
+        ],
+        [
+          3,
+          "threat"
+        ],
+        [
+          3,
+          "roles"
+        ],
+        [
+          3,
+          "CTL-CV21-001"
+        ],
+        [
+          3,
+          "CTL-CV21-002"
+        ],
+        [
+          3,
+          "CTL-CV21-003"
+        ],
+        [
+          3,
+          "CTL-CV21-004"
+        ],
+        [
+          3,
+          "CTL-CV21-005"
+        ],
+        [
+          3,
+          "SCN-CV21-001"
+        ],
+        [
+          3,
+          "SCN-CV21-002"
+        ],
+        [
+          3,
+          "SCN-CV21-003"
+        ],
+        [
+          3,
+          "SCN-CV21-004"
+        ],
+        [
+          3,
+          "SCN-CV21-005"
+        ],
+        [
+          3,
+          "SCN-CV21-006"
+        ],
+        [
+          3,
+          "SCN-CV21-007"
+        ],
+        [
+          3,
+          "SCN-CV21-008"
+        ],
+        [
+          3,
+          "SCN-CV21-009"
+        ],
+        [
+          3,
+          "SCN-CV21-010"
+        ],
+        [
+          3,
+          "retest"
+        ],
+        [
+          3,
+          "handoff"
+        ],
+        [
+          3,
+          "safety"
+        ],
+        [
+          2,
+          "提出時の確認"
+        ]
+      ],
+      "hostProvenance": []
+    },
+    "references/ch21-source-review-2026-09-25.md": {
+      "projectionSha256": "3382f3f0bc25c0d0f113a4cd603911a25ea0480e3308b68ccb8fa661129e3e13",
+      "fieldCount": 40,
+      "headings": [
+        [
+          1,
+          "第21章 Source Review — 2026-09-25"
+        ],
+        [
+          2,
+          "確認範囲"
+        ],
+        [
+          2,
+          "SRC-ATTACK-001"
+        ],
+        [
+          2,
+          "SRC-ATTACK-DET-001"
+        ],
+        [
+          2,
+          "SRC-NIST-ASSESS-001"
+        ],
+        [
+          2,
+          "SRC-IR-001"
+        ],
+        [
+          2,
+          "取得証跡と非目標"
+        ],
+        [
+          2,
+          "再確認条件"
+        ]
+      ],
+      "hostProvenance": [
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "SRC-ATTACK-001 MITRE Version HistoryとUpdatesは現在版19.2を示す。Updatesの2026-08-06という更新開始の文脈と、4月のreleaseの文脈を混同しない。page全体の厳密な公表日を一つに決められないpublishedAt nullを保持する。",
+          "references/ch21-source-review-2026-09-25.md:L9:F7"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://attack.mitre.org/resources/versions/",
+          "references/ch21-source-review-2026-09-25.md:L9:F8"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://attack.mitre.org/resources/updates/",
+          "references/ch21-source-review-2026-09-25.md:L9:F9"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "既存mainが承認済みの19.2を使い、旧設計メモの19.1へ戻さない。第17章のT1098対応は親の方法参照であり、新しいCoverage判定ではない。既存CTI snapshotのcommitとHash、historicalな版の記録は更新しない。今回の確認は版と利用方法の範囲であり、全Object・全変更点を監査したという意味ではない。",
+          "references/ch21-source-review-2026-09-25.md:L11:F10"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://attack.mitre.org/detectionstrategies/",
+          "references/ch21-source-review-2026-09-25.md:L15:F14"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "SRC-NIST-ASSESS-001 NIST SP 800-53A Rev.5公表ページはJanuary 2022 Final、Document Historyは2022-01-25を示す。公式PDFの採用範囲は、印刷pp.11〜12の§2.4、p.25の§3.2.3.1、pp.31〜33の§3.3〜3.4である。",
+          "references/ch21-source-review-2026-09-25.md:L21:F18"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final",
+          "references/ch21-source-review-2026-09-25.md:L21:F19"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53Ar5.pdf",
+          "references/ch21-source-review-2026-09-25.md:L21:F20"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "公表ページのPlanning Noteと公式Release告知はRelease 5.2.0を2025-08-27としている。これをJanuary 2022 PDFの刊行日や全文改訂日へ置き換えない。追加された個別Control assessment procedureやRelease 5.2.0全catalogueを今回採用・監査したとはしない。",
+          "references/ch21-source-review-2026-09-25.md:L25:F22"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://csrc.nist.gov/News/2025/nist-releases-revision-to-sp-800-53-controls",
+          "references/ch21-source-review-2026-09-25.md:L25:F23"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "SRC-IR-001 SP 800-61 Rev.3 Finalは2025-04-03公開である。公式PDFの印刷p.13のGV.RR-02、pp.19〜20のID.IM-01/02/03を参照した。",
+          "references/ch21-source-review-2026-09-25.md:L31:F27"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+          "references/ch21-source-review-2026-09-25.md:L31:F28"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r3.pdf",
+          "references/ch21-source-review-2026-09-25.md:L31:F29"
+        ]
+      ]
+    }
+  },
+  "sourceIdentity": {
+    "SRC-ATTACK-001": {
+      "publisher": "MITRE",
+      "title": "MITRE ATT&CK Version History and August 2026 Updates",
+      "kind": "framework",
+      "status": "current",
+      "version": "19.2",
+      "url": "https://attack.mitre.org/resources/versions/",
+      "publishedAt": null,
+      "notes": "Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration. publishedAt is null because the live Version History page does not establish its own publication timestamp. The related release UTC timestamp and Updates effective/start date above are separate context, not the publication date of this live page. Publication date of the live page is unknown; monitor Version History and Updates on the recorded review triggers rather than guessing a date. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Version History19.2; inherited Chapter5 snapshot retained; behavior mapping is not telemetry coverage. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: 公式Version History current19.2とUpdatesを確認。版付き仮説語彙に限定し、全CTI object監査・Coverage認定・帰属推定ではない。詳細はch18-source-review-2026-09-22.md。 第21章（2026-09-25）では公式Versions/Updatesの現在版19.2と更新日の文脈を確認。既存CTI pin/Hashとhistorical版を保持し、親17のT1098を方法参照とする。全Object監査・Control有効性・Coverageの証明には使わない。"
+    },
+    "SRC-ATTACK-DET-001": {
+      "publisher": "MITRE",
+      "title": "ATT&CK Detection Strategies",
+      "kind": "framework-reference",
+      "status": "current",
+      "version": null,
+      "url": "https://attack.mitre.org/detectionstrategies/",
+      "publishedAt": null,
+      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt. Rechecked for Chapter 5 on 2026-09-06; DET0539 and analytic/data-component references are pinned separately in SRC-ATTACK-T1671-001. No product detection validation is implied. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Introductory definition of strategies grouping platform analytics only; no new object mapping or catalogue count. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: Strategyが複数Analyticsをまとめる導入説明を確認。五Resultと有限Hunt算法は本書独自で、製品Query・取得済みCoverageの証明ではない。詳細はch18-source-review-2026-09-22.md。 第21章（2026-09-25）では公式Page導入の上位方針とPlatform別Analyticsの区別に限定して確認。全Strategy/Analyticsや件数を固定せず、独立Page版・日付不明のnullを保持。掲載やmappingを実検知成功にしない。"
+    },
+    "SRC-NIST-ASSESS-001": {
+      "publisher": "NIST",
+      "title": "Assessing Security and Privacy Controls in Information Systems and Organizations",
+      "kind": "standard",
+      "status": "final",
+      "version": "SP 800-53A Rev.5 (January 2022)",
+      "url": "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final",
+      "publishedAt": "2022-01-25",
+      "notes": "第21章の用途限定確認。January2022 FinalとDocument History2022-01-25を確認。公式PDF印刷pp.11〜12 §2.4、p.25 §3.2.3.1、pp.31〜33 §3.3〜3.4の対象/方法/目的、期待と実際、情報不足、再評価と組織のリスク判断の分離に限定。Planning Note/公式告知のRelease5.2.0（2025-08-27）を旧PDFの刊行日や全文改訂日に置き換えず、追加個別procedure/全catalogueは未採用。原典のsatisfied/other than satisfiedと本書の五Result/六Failureを区別し、有限比較をNIST適合認定にしない。取得PDF SHA-256 75665570048b969ad465a4f4f1db425ce505c374951c2c64e462949c6b21be47。取得Byte識別であり全733頁監査や署名検証ではない。"
+    },
+    "SRC-IR-001": {
+      "publisher": "NIST",
+      "title": "Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+      "kind": "standard",
+      "status": "final",
+      "version": "SP 800-61 Rev.3",
+      "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+      "publishedAt": "2025-04-03",
+      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: FinalのDE.AE-08/p26、RS.MA-02/p27、RS.AN-06/07/p29をIncident基準・Triage・記録の来歴に限定参照。本書の五Resultや算法の規範・法的認定ではない。詳細はch18-source-review-2026-09-22.md。 2026-09-23用途限定確認: 第19章はSP800-61r3 Final（2025-04-03）pp.1–2、DE.AE-08 p.26、RS.MA-02〜05 pp.27–28、RS.AN-06/07 p.29、RS.CO-02/03 pp.30–31、RS.MI-01/02 pp.32–33、RC.RP-01〜06 p.34を宣言・分類・記録・通知照会・復旧検証に参照。七状態と有限判断は本書独自で、実権限・真正性・個別法的通知判断は認定しない。 2026-09-25: Chapter20用途としてRev3 Final2025-04-03の公式landing/PDFを再確認。印刷pp.28–29のRS.AN-03/06/07を順序・関連資産・根底の原因を問うこと、調査記録、来歴・保持に限定採用。二Eventの相関を原因とせず、有限教材の算法や普遍的保持・法的適格性の根拠にはしない。 第21章（2026-09-25）では公式Final/PDFの印刷p.13 GV.RR-02、pp.19〜20 ID.IM-01/02/03に限定し、役割・権限と評価/演習/運用からの改善を確認。供給仮定を実権限や実Incident由来の教訓にせず、実対応手順・個別法的判断は対象外。"
+    }
+  },
+  "pages": [
+    {
+      "source": "manuscript/21-purple-team-validation.md",
+      "destination": "chapters/chapter-21/index.md",
+      "section": "chapters",
+      "order": 204,
+      "title": "第21章 Purple TeamとControl Validation"
+    },
+    {
+      "source": "templates/control-validation-plan.md",
+      "destination": "templates/control-validation-plan/index.md",
+      "section": "additional",
+      "order": 291,
+      "title": "Control Validation Plan"
+    },
+    {
+      "source": "cases/ch21-control-validation-example.md",
+      "destination": "cases/chapter-21-control-validation/index.md",
+      "section": "additional",
+      "order": 292,
+      "title": "第21章 Control Validation Plan完全合成記入例"
+    },
+    {
+      "source": "references/ch21-source-review-2026-09-25.md",
+      "destination": "references/chapter-21-source-review/index.md",
+      "section": "additional",
+      "order": 293,
+      "title": "第21章 Source Review — 2026-09-25"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch21-control-validation.json",
+      "destination": "downloads/ch21-control-validation.json"
+    },
+    {
+      "source": "schemas/ch21-control-validation.schema.json",
+      "destination": "downloads/ch21-control-validation.schema.json"
+    }
+  ],
+  "indices": {
+    "artifact-index.md": [
+      "ART-27",
+      "templates/control-validation-plan.md",
+      "cases/ch21-control-validation-example.md"
+    ],
+    "figure-index.md": [
+      "F-21-01",
+      "T-21-01",
+      "T-21-02",
+      "T-21-03",
+      "T-21-04",
+      "T-21-05"
+    ],
+    "glossary.md": [
+      "Control objective",
+      "Atomic scenario",
+      "End-to-End scenario",
+      "Observed partial",
+      "Retest comparability"
+    ],
+    "cases/index.md": [
+      "ch21-control-validation-example.md",
+      "ART-27"
+    ],
+    "cases/fixtures/index.md": [
+      "ch21-control-validation.json",
+      "ch21-control-validation.schema.json"
+    ],
+    "README.md": [
+      "check:chapter21",
+      "十Scenario・五層・六Failure"
+    ],
+    "CHANGELOG.md": [
+      "manuscript/21-purple-team-validation.md",
+      "ART-27"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "第21章",
+      "check:chapter21",
+      "十Scenarioと五層"
+    ]
+  }
+}
