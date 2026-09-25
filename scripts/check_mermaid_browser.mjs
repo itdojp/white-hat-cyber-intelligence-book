@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
-import { readFile, writeFile, mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, mkdtemp, rm, open } from 'node:fs/promises';
 import { resolve, join, sep, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -44,11 +44,16 @@ const server = createServer(async (request, response) => {
 });
 await new Promise(ok => server.listen(0, '127.0.0.1', ok));
 const origin = `http://127.0.0.1:${server.address().port}`;
+// Unix socket names have a small byte limit. Keep Chrome's temporary files
+// inside the workspace, but use a short directory-FD alias on Linux runners.
+// The parent holds this handle until Chrome exits; no files are created in /proc.
+const tempHandle = process.platform === 'linux' ? await open(tmp, 'r') : null;
+const chromeTmp = tempHandle ? `/proc/${process.pid}/fd/${tempHandle.fd}` : tmp;
 const chrome = spawn(process.env.BOOK_BROWSER_BIN || 'google-chrome', [
   '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-background-networking',
   '--disable-breakpad', '--no-first-run', '--no-default-browser-check',
   `--user-data-dir=${profile}`, '--remote-debugging-port=0', 'about:blank',
-], { env: { ...process.env, HOME: profile, TMPDIR: tmp, XDG_CONFIG_HOME: profile,
+], { env: { ...process.env, HOME: profile, TMPDIR: chromeTmp, XDG_CONFIG_HOME: profile,
   XDG_CACHE_HOME: profile, XDG_DATA_HOME: profile }, stdio: ['ignore', 'ignore', 'pipe'] });
 let stderr = '', socket, launchError;
 chrome.stderr.on('data', data => { stderr += data; });
@@ -59,7 +64,7 @@ try {
   for (let attempt = 0; attempt < 150; attempt++) {
     if (launchError) throw launchError;
     try { port = (await readFile(join(profile, 'DevToolsActivePort'), 'utf8')).split('\n')[0]; break; } catch {}
-    if (chrome.exitCode !== null) throw new Error('Chrome exited: ' + stderr);
+    if (chrome.exitCode !== null || chrome.signalCode !== null) throw new Error('Chrome exited: ' + stderr);
     await sleep(200);
   }
   assert(port, 'Chrome unavailable; set BOOK_BROWSER_BIN to an installed Chrome/Chromium');
@@ -187,7 +192,8 @@ try {
 } finally {
   await writeFile(join(output, 'chrome.log'), stderr);
   socket?.close(); chrome.kill('SIGTERM');
-  await new Promise(ok => { if (chrome.exitCode !== null || launchError) ok(); else chrome.once('exit', ok); });
+  await new Promise(ok => { if (chrome.exitCode !== null || chrome.signalCode !== null || launchError) ok(); else chrome.once('exit', ok); });
+  await tempHandle?.close();
   await new Promise(ok => server.close(ok));
   await rm(profile, { recursive: true, force: true }); // Only this process's mkdtemp.
 }

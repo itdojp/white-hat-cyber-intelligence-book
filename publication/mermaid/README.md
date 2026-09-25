@@ -34,3 +34,7 @@ BOOK_FORMATTER_DIR=../book-formatter npm run check:book-qa
 ```
 
 The full QA includes the browser gate; it requires an installed Chrome/Chromium (`BOOK_BROWSER_BIN` override). `BOOK_BROWSER_TMPDIR` and `BOOK_BROWSER_OUTPUT` must be kept inside the active workspace. Browser screenshots/results are ignored artifacts, not canonical book content. No real target operations or repository settings changes are involved.
+
+### Linux browser temporary paths
+
+Linux Chrome uses Unix sockets with short pathname limits. CI workspace names can exceed that limit even though ordinary files are valid. The browser gate holds an open handle to the workspace-owned temporary directory and uses `/proc/<parent-pid>/fd/<handle>` as Chrome's short `TMPDIR` alias. Actual temporary files stay inside that directory; nothing is written into `/proc` or an out-of-workspace temporary directory. The handle is closed after Chrome exits. Signal-terminated Chrome is treated as a failed launch and cleaned up without waiting for an already-emitted exit event. An absent/unusable browser fails the gate rather than skipping rendering.
