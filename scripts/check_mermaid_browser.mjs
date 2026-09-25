@@ -2,9 +2,10 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
-import { readFile, writeFile, mkdir, mkdtemp, rm, open } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, mkdtemp, open } from 'node:fs/promises';
 import { resolve, join, sep, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { removeBrowserProfile } from './browser_profile_cleanup.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const site = resolve(root, process.env.BOOK_BROWSER_SITE || '_site');
@@ -59,6 +60,7 @@ let stderr = '', socket, launchError;
 chrome.stderr.on('data', data => { stderr += data; });
 chrome.on('error', error => { launchError = error; });
 const results = [], requests = [], external = [], exceptions = [];
+const pages = [];
 try {
   let port;
   for (let attempt = 0; attempt < 150; attempt++) {
@@ -127,7 +129,6 @@ try {
     assert.deepEqual(state.states, expected, JSON.stringify(state));
     return state;
   };
-  const pages = [];
   for (const item of manifest.pages) {
     const path = item.destination.replace(/\.md$/, '.html');
     const html = await readFile(join(site, path), 'utf8');
@@ -188,12 +189,12 @@ try {
   await writeFile(join(output, 'results.json'), JSON.stringify({ version: await call('Browser.getVersion'),
     pages: pages.length, diagrams: pages.reduce((n, page) => n + page.count, 0), results, external, exceptions,
     scope: 'Local Chrome viewport emulation; network interception covers page requests, not OS traffic.' }, null, 2) + '\n');
-  console.log(`Mermaid browser gate passed: ${pages.length} pages / ${pages.reduce((n, p) => n + p.count, 0)} diagrams, desktop/mobile, ${fixtures.length} fixtures, JS-disabled, diagram-free page`);
 } finally {
   await writeFile(join(output, 'chrome.log'), stderr);
   socket?.close(); chrome.kill('SIGTERM');
   await new Promise(ok => { if (chrome.exitCode !== null || chrome.signalCode !== null || launchError) ok(); else chrome.once('exit', ok); });
   await tempHandle?.close();
   await new Promise(ok => server.close(ok));
-  await rm(profile, { recursive: true, force: true }); // Only this process's mkdtemp.
+  await removeBrowserProfile(profile); // Only this process's mkdtemp.
 }
+console.log(`Mermaid browser gate passed: ${pages.length} pages / ${pages.reduce((n, p) => n + p.count, 0)} diagrams, desktop/mobile, ${fixtures.length} fixtures, JS-disabled, diagram-free page`);

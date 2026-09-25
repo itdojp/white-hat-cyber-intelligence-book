@@ -16,6 +16,8 @@ from sync_site_source import transform_shared_component, SiteGenerationError
 
 
 def check_runtime_modes() -> None:
+    subprocess.run(["node", str(ROOT / "scripts/check_browser_profile_cleanup.cjs")],
+                   cwd=ROOT, check=True, timeout=45)
     # Children disable only this subprocess test, never the validation itself.
     probe = "import check_mermaid_contract as c; c.check_runtime_modes = lambda: None; c.main()"
     env = {**os.environ, "PYTHONPATH": str(ROOT / "scripts"),

@@ -38,3 +38,19 @@ The full QA includes the browser gate; it requires an installed Chrome/Chromium 
 ### Linux browser temporary paths
 
 Linux Chrome uses Unix sockets with short pathname limits. CI workspace names can exceed that limit even though ordinary files are valid. The browser gate holds an open handle to the workspace-owned temporary directory and uses `/proc/<parent-pid>/fd/<handle>` as Chrome's short `TMPDIR` alias. Actual temporary files stay inside that directory; nothing is written into `/proc` or an out-of-workspace temporary directory. The handle is closed after Chrome exits. Signal-terminated Chrome is treated as a failed launch and cleaned up without waiting for an already-emitted exit event. An absent/unusable browser fails the gate rather than skipping rendering.
+
+### Profile cleanup failures (Issue #162)
+
+After Chrome exits, `browser_profile_cleanup.mjs` removes only this gate's own
+`mkdtemp` profile. Node's recursive removal retries transient filesystem errors
+up to three times per operation with 100 ms linear backoff; this is not a
+promise that arbitrary directory trees finish within a fixed wall-clock time.
+An already absent profile is allowed, but persistent errors still fail the gate.
+The success message is emitted only after cleanup succeeds. No publication check
+is skipped. See [Node.js 24 fsPromises.rm](https://nodejs.org/docs/latest-v24.x/api/fs.html#fspromisesrmpath-options).
+
+`check:mermaid` also runs five isolated filesystem regressions: ordinary removal,
+already absent profile, the old no-retry race, a recoverable late write, and
+persistent late writes that must reject. All cases preserve a sibling sentinel.
+The test injects real writes before `rmdir` in child processes; it does not depend
+on Chrome timing or a sleep-based race. Each child has a 30-second test deadline.
