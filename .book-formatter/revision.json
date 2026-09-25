@@ -74,7 +74,8 @@
     "_layouts/book.html": [
       "Edit links are gated by site.show_edit_link and target page.source_path instead of generated page.path.",
       "Unused Google Fonts preconnect hints are removed to avoid unnecessary third-party connection hints.",
-      "Favicon links are removed until repository-owned icon files are added, preventing predictable 404 requests."
+      "Favicon links are removed until repository-owned icon files are added, preventing predictable 404 requests.",
+      "Local Mermaid CSS and progressive-enhancement loader are linked; the exact browser distribution is self-hosted independently of the formatter pin."
     ]
   },
   "note": "All Series UX components are fetched from the pinned commit, verified by Git blob SHA, and copied into generated site source. Generated output is restricted to docs/, and the determinism check verifies that all tracked repository files remain unchanged."

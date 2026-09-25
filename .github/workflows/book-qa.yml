@@ -103,6 +103,17 @@ jobs:
       - name: Smoke check built site
         run: python3 scripts/check_built_site.py --source docs --site _site
 
+      - name: Render all publication diagrams in Chrome
+        run: npm run check:mermaid-browser
+
+      - name: Upload diagram browser evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: mermaid-browser-evidence
+          path: .tmp/mermaid-browser
+          if-no-files-found: ignore
+
       - name: Upload built site
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

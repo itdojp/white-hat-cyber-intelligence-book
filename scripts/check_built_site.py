@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from urllib.parse import quote
 
+from publication_assets import load_publication_assets, MERMAID_ASSET
+
 ROOT = Path(__file__).resolve().parents[1]
 NOTICE_SOURCE = ROOT / "THIRD_PARTY_NOTICES.md"
 NOTICE_DESTINATION = "THIRD_PARTY_NOTICES.txt"
@@ -117,6 +119,25 @@ def main() -> int:
         if not path.is_file() or path.stat().st_size == 0:
             errors.append(f"missing or empty asset: {asset}")
 
+    assets = load_publication_assets()
+    expected_assets = [
+        {"target": target, "sha256": hashlib.sha256(data).hexdigest()}
+        for target, data in sorted(assets.items())
+    ]
+    if manifest.get("publicationAssets") != expected_assets:
+        errors.append("publication asset manifest mismatch")
+    for asset, data in assets.items():
+        for directory in (source, site):
+            path = directory / asset
+            if not path.is_file() or path.read_bytes() != data:
+                errors.append(f"missing or altered publication asset: {path}")
+    for page in expected_pages:
+        if page.is_file():
+            html = page.read_text(encoding="utf-8")
+            for asset in ("assets/js/mermaid-loader.js", "assets/css/mermaid-diagrams.css", MERMAID_ASSET):
+                if html.count(asset) != 1:
+                    errors.append(f"{page.relative_to(site)}: missing/duplicate Mermaid asset reference {asset}")
+
     notice_path = site / NOTICE_DESTINATION
     if not NOTICE_SOURCE.is_file():
         errors.append(f"missing canonical third-party notice: {NOTICE_SOURCE}")
@@ -167,7 +188,7 @@ def main() -> int:
     print(
         f"built site smoke check passed: {len(expected_pages)} pages, "
         f"{len(static_files)} static artifact(s), "
-        f"{len(REQUIRED_ASSETS)} assets, 1 third-party notice"
+        f"{len(REQUIRED_ASSETS) + len(assets)} assets, 1 third-party notice"
     )
     return 0
 

@@ -77,6 +77,9 @@ jobs:
       - name: Smoke check built site
         run: python3 scripts/check_built_site.py --source docs --site _site
 
+      - name: Render all publication diagrams in Chrome
+        run: npm run check:mermaid-browser
+
       # Repository Pages enablement is an explicit operator action tracked in Issue #9.
       - name: Configure GitHub Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6

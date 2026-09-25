@@ -15,6 +15,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import quote, unquote, urlparse
 
+from publication_assets import layout_assets, load_publication_assets
+
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "book-config.json"
 REVISION_PATH = ROOT / ".book-formatter" / "revision.json"
@@ -636,6 +638,12 @@ def transform_shared_component(target: str, data: bytes) -> tuple[bytes, list[st
             "remove-missing-favicon-links",
         )
     )
+    if text.count("</head>") != 1 or text.count("</body>") != 1:
+        raise SiteGenerationError("unexpected upstream layout asset insertion points")
+    css, script = layout_assets()
+    text = text.replace("</head>", css + "</head>")
+    text = text.replace("</body>", script + "</body>")
+    transforms.append("add-local-mermaid-progressive-enhancement")
     return text.encode("utf-8"), transforms
 
 
@@ -699,6 +707,7 @@ def generate(
     rewrite_context: PublicationRewriteContext | None = None,
     rewrite_budget: PublicationRewriteBudget | None = None,
 ) -> dict[str, str]:
+    publication_assets = load_publication_assets()
     if output.is_symlink():
         raise SiteGenerationError(f"refusing to replace symlink output: {output}")
     if output.exists():
@@ -764,6 +773,8 @@ def generate(
         }
         for path in canonical_source_paths()
     ]
+    for target, data in publication_assets.items():
+        write_bytes(output, target, data)
     manifest = {
         "schemaVersion": "1.0.0",
         "bookFormatter": {
@@ -775,6 +786,10 @@ def generate(
         "canonicalSources": canonical_manifest,
         "pages": page_manifest,
         "components": component_manifest,
+        "publicationAssets": [
+            {"target": target, "sha256": sha256_bytes(data)}
+            for target, data in sorted(publication_assets.items())
+        ],
     }
     write_bytes(
         output,

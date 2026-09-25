@@ -78,11 +78,12 @@ RegistryのSchemaは`schemas/site-pages.schema.json`で管理する。新しい�
 
 共通layout、include、asset、schemaは、`.book-formatter/revision.json`に固定したrevisionから同期する。全対象ファイルについてGit blob SHAを検証する。
 
-共有`book.html`には、次の3つの決定的な局所変換を適用する。
+共有`book.html`には、次の4つの決定的な局所変換を適用する。
 
 1. 「GitHubで編集」リンクを生成済み`docs/`ではなく`page.source_path`の正本へ向け、`site.show_edit_link`で表示制御する。
 2. 実際には外部Fontを読み込んでいないため、不要なGoogle Fontsのpreconnect hintを除去する。
 3. Repository所有のfaviconをまだ配置していないため、404になるfaviconとapple-touch-iconのLinkを除去する。
+4. Repository所有のMermaid loaderとCSSを読み込む。固定版の描画ライブラリは図があるページだけで遅延読込みし、すべて同一サイトから配信する。
 
 `.book-formatter/revision.json`を局所変換一覧の機械可読な正本とし、変換前の上流Git blob SHA、変換名、変換後SHA-256を生成時の`_data/build-manifest.json`へ記録する。局所変換を追加・変更する場合は、本契約、revision manifest、generator、Book QA、第三者通知を同じPRで更新する。
 
@@ -102,3 +103,11 @@ Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設�
 第20章の`check:chapter20`も生成先削除前に実行する。五つの文書全体、ART-07/26、合成JSON/Schema、二Cutoffと六Claim、親19の非継承・未配達を検査する。構文は共有Projection、Action/Hostは共有Policyだけが所有する。検査不通過の入力を生成へ進めず、原時刻・来歴・Unknownを隠すために原本を変更しない。
 
 第21章の`check:chapter21`も生成先削除前に実行する。本文・ART-27・全欄Case・Sourceの四文書、閉Schema、十Scenarioと五層、親14/16/17/19/20の直接参照・非継承・未配達を検査する。Layer Aの有限比較であり、構文は共有Projection、Action/Hostは共有Policyだけが所有する。入力不足をPartial/Passedへ倒さず、実有効性や実権限を認定しない。
+
+## Mermaidの公開図（Issue #160）
+
+`publication/mermaid/`が共通loaderと表示CSSを所有する。`scripts/publication_assets.py`は`npm ci --ignore-scripts`で導入した`@mermaid-js/tiny@12.0.0`の配布物を版・SHA-256で検証し、生成先の`assets/`へコピーする。formatterの固定commit/上流blobは変更しない。`package-lock.json`のintegrityと生成manifestの`publicationAssets`で追跡する。依存の要件に合わせ、Node.jsは22.12以降（CIは24）とする。
+
+正本のMermaid fenceは書き換えず、Jekyll/Kramdownの`code.language-mermaid`をブラウザでSVGへ段階的に拡張する。描画後も元コードは展開可能な`details`へ保持する。JS無効時や失敗時は元コードと文章代替を残す。本文の見出し、リンク、文章代替、Policy検査surfaceは変更しない。`flowchart`/`graph`のLR/RL/TD/TB/BTを対象とし、構文解析は公式rendererだけが所有する。図内設定、callback/link、図内CSS、resource-bearing shape、`br`以外のHTML、他のdiagram typeは本契約の対象外で、公開前browser gateを失敗させる。
+
+`npm run check:mermaid`は版・integrity・資産・layout・QA接続を検査する。`npm run check:mermaid-browser`はbuild後の全公開図をChromeで描画し、desktop/mobile、複数図、方向、日本語、スクロール/全体表示、JS無効、失敗時の元コード保持を確認する。Book QAとPagesはこのgateをartifact upload前に実行する。ローカルでも既設のChrome/Chromiumが必要で、`BOOK_BROWSER_BIN`で明示できる。browser本体をnpm lifecycleやテストから取得しない。`BOOK_BROWSER_TMPDIR`はworkspace内の短いpathへ設定可能（Linuxのprofile socket長制限対策）。詳細は`publication/mermaid/README.md`を参照する。
