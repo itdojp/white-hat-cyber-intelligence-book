@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "comparisonVersion": "1.0.0",
   "schemaSha256": "f525f8950404ec42d0c019af99a8d82566ec09002924ae7ee21c3a00e309122a",
-  "corpusSha256": "bb8018988ab379a14dfaf8050fcbb6adfe528fbdc5d1a1965420c4740dd0a8bd",
+  "corpusSha256": "1c2e5305ac77e70fe231b8f99c1cd15103c22fbd3d2a1e9d1c86dc20edb6b04d",
   "authoredInputs": {
     "schemaVersion": "39fe4a40977d0585fd5704359e3685b0ada5cf5ee061e5d97385601d120cd0ec",
     "synthetic": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
@@ -15,7 +15,7 @@
     "threat": "4f6d88da64f791727dd80e745643298fa5346eb07a91d114fae6d8c12be6dbae",
     "roles": "1d50f734adb1a0fd43534ea3bc87218761c95ed2c38b5739264d7aa5b1a7057b",
     "controls": "00282352ddf0e739fd93cd3f5272da28b3ff3d64bbaec85ef6a0fe8206a82c88",
-    "scenarios": "f09fcd5fef298c59a325226bcba8a583e66e44f0faceb7be45db4a94d06f0b99",
+    "scenarios": "05c36a6c39d16c1a9f4603d8f1a8a46ee578676e583f6e486b0258fe43015476",
     "retest": "61cbefc7b716ee2bcafd58bcf0d0f07cb1664a14cf390660d5132c4d95a103e9",
     "handoff": "6ce661559989a48d5779bbea6a92cdd58c5f3138dbaed934cbe3e3ed1a20162b",
     "safety": "8542a5c07d55b510e7a197563ea0f20ef98435961340e8f169399fea726e9c1c"
@@ -225,7 +225,7 @@
       "hostProvenance": []
     },
     "cases/ch21-control-validation-example.md": {
-      "projectionSha256": "cc62dcdb297d290476354f510bcbea6a1498fa3557181bcd3eeee9682af84f6f",
+      "projectionSha256": "670886980de92b50cf2ec1326ae026016a26556b75ff65bc47c142d329dc525d",
       "fieldCount": 856,
       "headings": [
         [

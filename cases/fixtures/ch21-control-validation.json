@@ -230,11 +230,11 @@
       "improvement": {
         "id": "ACT-CV21-001",
         "status": "proposed-not-executed",
-        "owner": "SYN-CV-VALIDATION-OWNER",
+        "owner": "SYN-CV-CONTROL-OWNER",
         "dueAt": "2026-09-30T00:00:00Z",
-        "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
+        "action": "blockedとallowedの対比条件を保持し、防止の問いを変えず再評価する計画。",
         "retestId": "RT-CV21-001",
-        "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
+        "acceptance": "対象・版を固定したscope-outcomeの期待値blockedと反証allowedを保持する。監査到達は別に評価する。",
         "reassessmentId": "REA-CV21-001",
         "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
       },
@@ -307,11 +307,11 @@
       "improvement": {
         "id": "ACT-CV21-002",
         "status": "proposed-not-executed",
-        "owner": "SYN-CV-VALIDATION-OWNER",
+        "owner": "SYN-CV-TELEMETRY-OWNER",
         "dueAt": "2026-09-30T00:00:00Z",
-        "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
+        "action": "生成記録からConsumerまでの配送失敗箇所と必要channelを供給資料上で照合する計画。実Logは追加収集しない。",
         "retestId": "RT-CV21-002",
-        "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
+        "acceptance": "produced-and-confirmed-lossの根拠を保持し、新供給版でsignal-coverageがall-requiredかを比較する。",
         "reassessmentId": "REA-CV21-002",
         "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
       },
@@ -388,11 +388,11 @@
       "improvement": {
         "id": "ACT-CV21-003",
         "status": "proposed-not-executed",
-        "owner": "SYN-CV-VALIDATION-OWNER",
+        "owner": "SYN-CV-DETECTION-OWNER",
         "dueAt": "2026-09-30T00:00:00Z",
-        "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
+        "action": "Positiveの入力条件と供給Rule出力の差を切り分け、正常とNear-missを残して再比較する計画。実Ruleは変更しない。",
         "retestId": "RT-CV21-003",
-        "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
+        "acceptance": "RT-CV21-003でpositive=alert、negativeとbenign-near-miss=no-alertを同一対象・Batch・入力条件で比較する。",
         "reassessmentId": "REA-CV21-003",
         "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
       },
@@ -465,11 +465,11 @@
       "improvement": {
         "id": "ACT-CV21-004",
         "status": "proposed-not-executed",
-        "owner": "SYN-CV-VALIDATION-OWNER",
+        "owner": "SYN-CV-TRIAGE-OWNER",
         "dueAt": "2026-09-30T00:00:00Z",
-        "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
+        "action": "不足するOwnerと理由を明示した供給Triage記録を作る計画。実担当への通知は行わない。",
         "retestId": "RT-CV21-004",
-        "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
+        "acceptance": "context=evidence-owner-reasonを根拠IDと照合し、evidence-onlyという旧Partialを残す。",
         "reassessmentId": "REA-CV21-004",
         "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
       },
@@ -542,11 +542,11 @@
       "improvement": {
         "id": "ACT-CV21-005",
         "status": "proposed-not-executed",
-        "owner": "SYN-CV-VALIDATION-OWNER",
+        "owner": "SYN-CV-RESPONSE-OWNER",
         "dueAt": "2026-09-30T00:00:00Z",
-        "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
+        "action": "必要な権限根拠と判断主体を読解資料上で確認する計画。根拠がない間はStoppedを維持し、実許可を推定しない。",
         "retestId": "RT-CV21-005",
-        "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
+        "acceptance": "供給権限の不足と停止理由を記録し、後続の比較には別途根拠を必要とする。実行権限falseは変えない。",
         "reassessmentId": "REA-CV21-005",
         "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
       },
@@ -625,9 +625,9 @@
         "status": "proposed-not-executed",
         "owner": "SYN-CV-VALIDATION-OWNER",
         "dueAt": "2026-09-30T00:00:00Z",
-        "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
+        "action": "不足するPositive fixtureの必要Fieldと比較条件を定義し直す計画。欠測を成功へ書き換えず、実Dataは使わない。",
         "retestId": "RT-CV21-006",
-        "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
+        "acceptance": "Positive・Negative・Benign-near-missの入力有無を区別し、足りない間はIndeterminateとNext actionを保持する。",
         "reassessmentId": "REA-CV21-006",
         "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
       },
@@ -700,11 +700,11 @@
       "improvement": {
         "id": "ACT-CV21-007",
         "status": "proposed-not-executed",
-        "owner": "SYN-CV-VALIDATION-OWNER",
+        "owner": "SYN-CV-CONTROL-OWNER",
         "dueAt": "2026-09-30T00:00:00Z",
-        "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
+        "action": "未承認scopeをallowedとした供給条件とControl目的の差を調べる計画。実設定は変更しない。",
         "retestId": "RT-CV21-007",
-        "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
+        "acceptance": "同じ問いと対象版でblockedとallowedを比較し、元のFailedを保持する。実有効性へ一般化しない。",
         "reassessmentId": "REA-CV21-007",
         "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
       },
@@ -903,9 +903,9 @@
         "status": "proposed-not-executed",
         "owner": "SYN-CV-VALIDATION-OWNER",
         "dueAt": "2026-09-30T00:00:00Z",
-        "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
+        "action": "五層のID・Trace・時刻・比較条件を再評価時にもそろえる計画。別系列の局所成功を寄せ集めない。",
         "retestId": "RT-CV21-008",
-        "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
+        "acceptance": "全五層の供給根拠を独立に照合し、どの層の不足も総合Passedで隠さない。",
         "reassessmentId": "REA-CV21-008",
         "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
       },
@@ -978,11 +978,11 @@
       "improvement": {
         "id": "ACT-CV21-009",
         "status": "proposed-not-executed",
-        "owner": "SYN-CV-VALIDATION-OWNER",
+        "owner": "SYN-CV-TELEMETRY-OWNER",
         "dueAt": "2026-09-30T00:00:00Z",
-        "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
+        "action": "Primary到達とSecondary不足を分け、必要channelをそろえる供給検証案を作る。実Collectorは操作しない。",
         "retestId": "RT-CV21-009",
-        "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
+        "acceptance": "primary-onlyという観測Partialを保持し、all-requiredへ変わったと主張する場合は新しい供給根拠を比較する。",
         "reassessmentId": "REA-CV21-009",
         "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
       },
@@ -1055,11 +1055,11 @@
       "improvement": {
         "id": "ACT-CV21-010",
         "status": "proposed-not-executed",
-        "owner": "SYN-CV-VALIDATION-OWNER",
+        "owner": "SYN-CV-DETECTION-OWNER",
         "dueAt": "2026-09-30T00:00:00Z",
-        "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
+        "action": "供給新版の正常・Near-miss対比を継続し、入力Schemaや期待値の変更時に再評価する計画。実Deployは行わない。",
         "retestId": "RT-CV21-010",
-        "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
+        "acceptance": "旧003のFailed、新010の三条件一致と版の差を保持し、追加範囲や実検知率は未評価とする。",
         "reassessmentId": "REA-CV21-010",
         "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
       },

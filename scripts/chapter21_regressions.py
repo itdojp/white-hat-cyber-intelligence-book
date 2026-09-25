@@ -94,6 +94,29 @@ def run_regressions(data, schema, contract, source, projection):
         ),
     )
     for case in corpus["cases"]:
+        check(
+            case["id"] + "-input-inventory",
+            set(case["input"])
+            == {
+                "id",
+                "type",
+                "layers",
+                "traceId",
+                "batchId",
+                "subjectId",
+                "subjectRevision",
+                "controlRevision",
+                "windowStart",
+                "windowEnd",
+                "cutoff",
+                "analysisAt",
+                "mode",
+                "suppliedAuthority",
+                "stopReason",
+                "stepsAfterStop",
+                "observations",
+            },
+        )
         try:
             actual = evaluate(case["input"])
             ok = case["errorContains"] is None and actual == case["expected"]
@@ -189,12 +212,19 @@ def run_regressions(data, schema, contract, source, projection):
         mutations.extend([(["record", key], 1), (["record", key], False)])
     for i in range(5):
         mutations += [
+            (["controls", i, "owner"], data["roles"]["validationOwner"]),
             (["controls", i, "objectiveId"], "OBJ-FOREIGN"),
             (["controls", i, "criteria", 0, "expected"], "always-passed"),
             (["controls", i, "criteria", 0, "partialValues"], [None]),
         ]
     for i in range(10):
         mutations += [
+            (
+                ["scenarios", i, "improvement", "owner"],
+                data["controls"][0]["owner"]
+                if i in (5, 7)
+                else data["roles"]["validationOwner"],
+            ),
             (["scenarios", i, "subjectId"], "SYNTH-FOREIGN"),
             (["scenarios", i, "traceId"], "TRACE-FOREIGN"),
             (["scenarios", i, "id"], "SCN-FOREIGN"),

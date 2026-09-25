@@ -52,33 +52,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -147,37 +121,7 @@
             },
             "payloadSha256": "5ca808114c7d74dd24a64e67611016368666fa14b434e11f215c8a8dc4b5f714"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Telemetry",
-            "result": "Failed",
-            "failureClasses": [
-              "Telemetry"
-            ]
-          }
-        ],
-        "note": "生成記録と供給された配送失敗根拠があり、期待した監査は届かない。",
-        "gap": {
-          "id": "GAP-CV21-002",
-          "affectedLayers": [
-            "Telemetry"
-          ],
-          "description": "生成記録と供給された配送失敗根拠があり、期待した監査は届かない。",
-          "nextActionId": "ACT-CV21-002"
-        },
-        "improvement": {
-          "id": "ACT-CV21-002",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-002",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-002",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -257,37 +201,7 @@
             },
             "payloadSha256": "c2212873cf5db70e833715d9d04386e2d27cf4e1bd10c44174e8895c4eec650f"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Detection",
-            "result": "Failed",
-            "failureClasses": [
-              "Detection logic"
-            ]
-          }
-        ],
-        "note": "三種入力の存在は確認したがPositiveのAlertが出ないという供給記録。",
-        "gap": {
-          "id": "GAP-CV21-003",
-          "affectedLayers": [
-            "Detection"
-          ],
-          "description": "三種入力の存在は確認したがPositiveのAlertが出ないという供給記録。",
-          "nextActionId": "ACT-CV21-003"
-        },
-        "improvement": {
-          "id": "ACT-CV21-003",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-003",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-003",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -375,37 +289,7 @@
             },
             "payloadSha256": "468352cfcdf838551a443a77c874eccee375140d0ec996b20b323512e355f9aa"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Triage",
-            "result": "Partial",
-            "failureClasses": [
-              "Workflow"
-            ]
-          }
-        ],
-        "note": "Evidence参照はあるがOwnerと理由が欠けることが記録されている。",
-        "gap": {
-          "id": "GAP-CV21-004",
-          "affectedLayers": [
-            "Triage"
-          ],
-          "description": "Evidence参照はあるがOwnerと理由が欠けることが記録されている。",
-          "nextActionId": "ACT-CV21-004"
-        },
-        "improvement": {
-          "id": "ACT-CV21-004",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-004",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-004",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -481,37 +365,7 @@
             },
             "payloadSha256": "034808d8d4e6e9cc40563a1031cf95947dfd85b2c701b6f63196474ab341dbe7"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Response",
-            "result": "Stopped",
-            "failureClasses": [
-              "Authority"
-            ]
-          }
-        ],
-        "note": "対応案はあるが供給モデルの権限条件が満たされず停止する。",
-        "gap": {
-          "id": "GAP-CV21-005",
-          "affectedLayers": [
-            "Response"
-          ],
-          "description": "対応案はあるが供給モデルの権限条件が満たされず停止する。",
-          "nextActionId": "ACT-CV21-005"
-        },
-        "improvement": {
-          "id": "ACT-CV21-005",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-005",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-005",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -591,37 +445,7 @@
             },
             "payloadSha256": "af37a6e86660d71814dde990010d73f96975ea4a16572c951d0473bf5d7e5a7e"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Detection",
-            "result": "Indeterminate",
-            "failureClasses": [
-              "Test design"
-            ]
-          }
-        ],
-        "note": "Positive fixture自体が不足し、検知失敗かどうかを評価できない。",
-        "gap": {
-          "id": "GAP-CV21-006",
-          "affectedLayers": [
-            "Detection"
-          ],
-          "description": "Positive fixture自体が不足し、検知失敗かどうかを評価できない。",
-          "nextActionId": "ACT-CV21-006"
-        },
-        "improvement": {
-          "id": "ACT-CV21-006",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-006",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-006",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -709,37 +533,7 @@
             },
             "payloadSha256": "0a49d668ad28f6692851f4090584f14f5daa80e086de8d8125d95cfd543dda13"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Failed",
-            "failureClasses": [
-              "Control"
-            ]
-          }
-        ],
-        "note": "未承認scopeを許容したという供給記録で、防止の期待と矛盾する。",
-        "gap": {
-          "id": "GAP-CV21-007",
-          "affectedLayers": [
-            "Prevention"
-          ],
-          "description": "未承認scopeを許容したという供給記録で、防止の期待と矛盾する。",
-          "nextActionId": "ACT-CV21-007"
-        },
-        "improvement": {
-          "id": "ACT-CV21-007",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-007",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-007",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -923,53 +717,7 @@
             },
             "payloadSha256": "e1671a27b5248698cd54b14c82a046e5fb3a9db3f4d790a94adc5c3c1a3d146c"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Telemetry",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Detection",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Triage",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Response",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同一Traceの供給記録を五層で照合する。実攻撃も実IRも行っていない。",
-        "gap": {
-          "id": "GAP-CV21-008",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-008"
-        },
-        "improvement": {
-          "id": "ACT-CV21-008",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-008",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-008",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -1106,37 +854,7 @@
             },
             "payloadSha256": "1e0d6834c1ba1e2da1094a7ea83b688139e3b55be61514fb6dffbdef4b6c9a0e"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Telemetry",
-            "result": "Partial",
-            "failureClasses": [
-              "Telemetry"
-            ]
-          }
-        ],
-        "note": "Primary channelは届くがSecondary channel不足が明示された限定到達。",
-        "gap": {
-          "id": "GAP-CV21-009",
-          "affectedLayers": [
-            "Telemetry"
-          ],
-          "description": "Primary channelは届くがSecondary channel不足が明示された限定到達。",
-          "nextActionId": "ACT-CV21-009"
-        },
-        "improvement": {
-          "id": "ACT-CV21-009",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-009",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-009",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -1216,33 +934,7 @@
             },
             "payloadSha256": "d0aa603dc0eb47a3bbf6b2a4683a98f5ac28e38e5ab3d3c48c68f9f6590ea200"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Detection",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "S03と同一条件で供給Rule版だけを変えたRetest。正常とNear-missも残す。",
-        "gap": {
-          "id": "GAP-CV21-010",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-010"
-        },
-        "improvement": {
-          "id": "ACT-CV21-010",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-010",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-010",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -1323,33 +1015,7 @@
             },
             "payloadSha256": "5745f000264d8198b7a4397549059519004db3fc3085419cdf3d795c5a2ba440"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -1418,33 +1084,7 @@
             },
             "payloadSha256": "8fc5073cd89adec40ec8e0f80cad646c714b00f22ebaf473deb4445e2f3535a7"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -1520,33 +1160,7 @@
             },
             "payloadSha256": "daabbf458107ac4e29bff0b311a68a6f7e6336fc5f15f13310d9873e5560d601"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -1622,37 +1236,7 @@
             },
             "payloadSha256": "6ef3a6052889370c322ba651e211b56e32d56f308368d9b788ea67eb9380e4db"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Telemetry",
-            "result": "Partial",
-            "failureClasses": [
-              "Telemetry"
-            ]
-          }
-        ],
-        "note": "Primary channelは届くがSecondary channel不足が明示された限定到達。",
-        "gap": {
-          "id": "GAP-CV21-009",
-          "affectedLayers": [
-            "Telemetry"
-          ],
-          "description": "Primary channelは届くがSecondary channel不足が明示された限定到達。",
-          "nextActionId": "ACT-CV21-009"
-        },
-        "improvement": {
-          "id": "ACT-CV21-009",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-009",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-009",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -1732,37 +1316,7 @@
             },
             "payloadSha256": "4537c93beec59d9b68c06b28cd8468f8c50daaa26b691fbcf02189bf1e279d99"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Detection",
-            "result": "Failed",
-            "failureClasses": [
-              "Detection logic"
-            ]
-          }
-        ],
-        "note": "三種入力の存在は確認したがPositiveのAlertが出ないという供給記録。",
-        "gap": {
-          "id": "GAP-CV21-003",
-          "affectedLayers": [
-            "Detection"
-          ],
-          "description": "三種入力の存在は確認したがPositiveのAlertが出ないという供給記録。",
-          "nextActionId": "ACT-CV21-003"
-        },
-        "improvement": {
-          "id": "ACT-CV21-003",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-003",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-003",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -1859,33 +1413,7 @@
             },
             "payloadSha256": "0bdda3078142d0bcd430480daa0aa4c17aa394751b1ebf88aa646269be329565"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Detection",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "S03と同一条件で供給Rule版だけを変えたRetest。正常とNear-missも残す。",
-        "gap": {
-          "id": "GAP-CV21-010",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-010"
-        },
-        "improvement": {
-          "id": "ACT-CV21-010",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-010",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-010",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -1977,33 +1505,7 @@
             },
             "payloadSha256": "06fe4d69f2b15ddd157a5df08e7b6d6c70e3878ef5f78a11767ae9916b6cbe0a"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Detection",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "S03と同一条件で供給Rule版だけを変えたRetest。正常とNear-missも残す。",
-        "gap": {
-          "id": "GAP-CV21-010",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-010"
-        },
-        "improvement": {
-          "id": "ACT-CV21-010",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-010",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-010",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -2091,37 +1593,7 @@
             },
             "payloadSha256": "f50c471e8643ef0f45db2c8195eddd77cf1dca03a47c3d6ae0c1dce547e6e2a6"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Triage",
-            "result": "Partial",
-            "failureClasses": [
-              "Workflow"
-            ]
-          }
-        ],
-        "note": "Evidence参照はあるがOwnerと理由が欠けることが記録されている。",
-        "gap": {
-          "id": "GAP-CV21-004",
-          "affectedLayers": [
-            "Triage"
-          ],
-          "description": "Evidence参照はあるがOwnerと理由が欠けることが記録されている。",
-          "nextActionId": "ACT-CV21-004"
-        },
-        "improvement": {
-          "id": "ACT-CV21-004",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-004",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-004",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -2197,53 +1669,7 @@
             },
             "payloadSha256": "c33a386bd8947a2bbfda979b5eed05e0e6dd8d955606f0c2a5fbe8b319372e69"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Telemetry",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Detection",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Triage",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Response",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同一Traceの供給記録を五層で照合する。実攻撃も実IRも行っていない。",
-        "gap": {
-          "id": "GAP-CV21-008",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-008"
-        },
-        "improvement": {
-          "id": "ACT-CV21-008",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-008",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-008",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -2319,33 +1745,7 @@
             },
             "payloadSha256": "e88e52388bc7afd02e32e6951c807e9b84f911690c3b8788a034aea5b3c62f85"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -2529,53 +1929,7 @@
             },
             "payloadSha256": "e1671a27b5248698cd54b14c82a046e5fb3a9db3f4d790a94adc5c3c1a3d146c"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Telemetry",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Detection",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Triage",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Response",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同一Traceの供給記録を五層で照合する。実攻撃も実IRも行っていない。",
-        "gap": {
-          "id": "GAP-CV21-008",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-008"
-        },
-        "improvement": {
-          "id": "ACT-CV21-008",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-008",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-008",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": [
         {
@@ -2719,33 +2073,7 @@
             },
             "payloadSha256": "c8e84be9ee0a7b73824912bd07a02785b061860ad0373557ed17241f3508f701"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "evidence binding subjectId"
@@ -2799,33 +2127,7 @@
             },
             "payloadSha256": "395ecd77493586263cd66f27bb98e6d546d80ffb75f9511ca8b8909ea66f0d39"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "evidence binding subjectRevision"
@@ -2879,33 +2181,7 @@
             },
             "payloadSha256": "536db6966f41f5a4694e05ef10c3cb5bb9ac5d228529d0859d7cadb71e0b99d5"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "evidence binding traceId"
@@ -2959,33 +2235,7 @@
             },
             "payloadSha256": "c14bbb8440a4f76ca4ba216e3ae418e9366c0c9d9849acc8fcd4610660155dc1"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "evidence binding batchId"
@@ -3039,33 +2289,7 @@
             },
             "payloadSha256": "09d38afcfc59484a5b3c70618546f9557e3669abdf087b3537b6ad9ef91c00f0"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "evidence binding controlRevision"
@@ -3119,33 +2343,7 @@
             },
             "payloadSha256": "9be7daf6e1b57394ae004c8ce3482ef5f9c596a7231696f1566d6ff71d2909cb"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "scenario/layer evidence binding"
@@ -3199,33 +2397,7 @@
             },
             "payloadSha256": "a067a5c568b6e7c3ddda9eeafae2b286fae2d9cf6a13b917afb81151b2cf2c21"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "scenario/layer evidence binding"
@@ -3279,33 +2451,7 @@
             },
             "payloadSha256": "cfba5afdf0a5be27356481a3abc683340c087a4209f90deae74a86ea7f655ae8"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "Control/layer role"
@@ -3359,33 +2505,7 @@
             },
             "payloadSha256": "60f0a1774fe3e9f64cf369c54eb398773d457cba3b86cf50c6f62ba8306f48a5"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "supplied step order"
@@ -3439,33 +2559,7 @@
             },
             "payloadSha256": "b5c5c5bd5dca1d3efae706f2c415665e7384e5a21f8e1517ebe15370c216df33"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "supplied step order"
@@ -3519,33 +2613,7 @@
             },
             "payloadSha256": "1dedaff348f7f4065923d3409d52f799daa5d26e184af4c1a67a4aff02ca41e6"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "input basis"
@@ -3599,33 +2667,7 @@
             },
             "payloadSha256": "0fb7dd2fee990f9217caf17a1d3ae4b67196057d9acf9192de7cfce0c90adaf9"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "transport basis"
@@ -3679,33 +2721,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "Scenario type"
@@ -3760,33 +2776,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "layer inventory/order"
@@ -3840,33 +2830,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "supplied authority type"
@@ -3920,33 +2884,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "authority stop"
@@ -4000,33 +2938,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "stop reason"
@@ -4080,33 +2992,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "authority reason"
@@ -4160,33 +3046,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "no continuation"
@@ -4240,33 +3100,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "no continuation"
@@ -4320,33 +3154,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "non-execution mode"
@@ -4400,33 +3208,7 @@
             },
             "payloadSha256": "9fadd0304ef0b688346e36128e84956eaf8035eec747e30905ffc3431747aefa"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": ""
@@ -4480,33 +3262,7 @@
             },
             "payloadSha256": "cc478d199ce4a9dba2a750691e3089adfe8b40cebef1ce19c7ad8e7f24dd6146"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": ""
@@ -4560,33 +3316,7 @@
             },
             "payloadSha256": "979544b2d155446cc04e75a5a5532088344a7186276b0b2a3e37ebd90bafb4c0"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": ""
@@ -4640,33 +3370,7 @@
             },
             "payloadSha256": "59803acb22de8c07198eecc505a1b3038863a8a26734f6d97e2cdd1aeed21757"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": ""
@@ -4720,33 +3424,7 @@
             },
             "payloadSha256": "b7c0102f64a93958332086fe1f4ffec33bfdccf3aca4bbedffe76016bcb7b8ee"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": ""
@@ -4800,33 +3478,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "window/cutoff/analysis"
@@ -4880,33 +3532,7 @@
             },
             "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "window/cutoff/analysis"
@@ -4960,33 +3586,7 @@
             },
             "payloadSha256": "b769a7ae35056d0e9500f90a181d47c82609ea3b9693741ade2ba48c474cc737"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "supplied record chronology"
@@ -5148,53 +3748,7 @@
             },
             "payloadSha256": "e1671a27b5248698cd54b14c82a046e5fb3a9db3f4d790a94adc5c3c1a3d146c"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Telemetry",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Detection",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Triage",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Response",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同一Traceの供給記録を五層で照合する。実攻撃も実IRも行っていない。",
-        "gap": {
-          "id": "GAP-CV21-008",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-008"
-        },
-        "improvement": {
-          "id": "ACT-CV21-008",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-008",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-008",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "same-trace supplied order"
@@ -5356,53 +3910,7 @@
             },
             "payloadSha256": "e1671a27b5248698cd54b14c82a046e5fb3a9db3f4d790a94adc5c3c1a3d146c"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Telemetry",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Detection",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Triage",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Response",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同一Traceの供給記録を五層で照合する。実攻撃も実IRも行っていない。",
-        "gap": {
-          "id": "GAP-CV21-008",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-008"
-        },
-        "improvement": {
-          "id": "ACT-CV21-008",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-008",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-008",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "unique evidence"
@@ -5539,53 +4047,7 @@
             },
             "payloadSha256": "50f2c76469b54817ae3b45c4d0991a36408649f21610843cbfa519c9fb9b3eb8"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Telemetry",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Detection",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Triage",
-            "result": "Passed",
-            "failureClasses": []
-          },
-          {
-            "layer": "Response",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同一Traceの供給記録を五層で照合する。実攻撃も実IRも行っていない。",
-        "gap": {
-          "id": "GAP-CV21-008",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-008"
-        },
-        "improvement": {
-          "id": "ACT-CV21-008",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-008",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-008",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "one observation per selected layer"
@@ -5639,33 +4101,7 @@
             },
             "payloadSha256": "0000000000000000000000000000000000000000000000000000000000000000"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "payload representation"
@@ -5719,33 +4155,7 @@
             },
             "payloadSha256": "d50443b6b409e087f2ce97bd6a5c11652dd6473418cfba5f5dea9793f14d54c5"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "presence/value"
@@ -5799,33 +4209,7 @@
             },
             "payloadSha256": "2bd3abb152e52b45ef90342f2319b9c863f379bd31ee700182b26d2525f7e755"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "finite actual value"
@@ -5879,37 +4263,7 @@
             },
             "payloadSha256": "18be440edf5f8ebf579050b6634e7ca47accb89fae0a45c66279dcdba2fd7f6e"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Telemetry",
-            "result": "Failed",
-            "failureClasses": [
-              "Telemetry"
-            ]
-          }
-        ],
-        "note": "生成記録と供給された配送失敗根拠があり、期待した監査は届かない。",
-        "gap": {
-          "id": "GAP-CV21-002",
-          "affectedLayers": [
-            "Telemetry"
-          ],
-          "description": "生成記録と供給された配送失敗根拠があり、期待した監査は届かない。",
-          "nextActionId": "ACT-CV21-002"
-        },
-        "improvement": {
-          "id": "ACT-CV21-002",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-002",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-002",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "transport claim evidence"
@@ -5963,37 +4317,7 @@
             },
             "payloadSha256": "342700a5a5dd1c4ad6028cebba7ac5182b6638793e0f8d79030374c7fd8f3377"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Response",
-            "result": "Stopped",
-            "failureClasses": [
-              "Authority"
-            ]
-          }
-        ],
-        "note": "対応案はあるが供給モデルの権限条件が満たされず停止する。",
-        "gap": {
-          "id": "GAP-CV21-005",
-          "affectedLayers": [
-            "Response"
-          ],
-          "description": "対応案はあるが供給モデルの権限条件が満たされず停止する。",
-          "nextActionId": "ACT-CV21-005"
-        },
-        "improvement": {
-          "id": "ACT-CV21-005",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-005",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-005",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "no observed execution after stop"
@@ -6048,33 +4372,7 @@
             },
             "payloadSha256": "e3188ba7fd323152b4810487f9acf4b5f117a2f6ea368e48e875c1373108b70a"
           }
-        ],
-        "expectedLayers": [
-          {
-            "layer": "Prevention",
-            "result": "Passed",
-            "failureClasses": []
-          }
-        ],
-        "note": "同じ供給Batchで防止成功と観測不足を分離する。",
-        "gap": {
-          "id": "GAP-CV21-001",
-          "affectedLayers": [],
-          "description": "供給された対象・版・Windowだけの比較であり、実有効性と未選択層は未評価。",
-          "nextActionId": "ACT-CV21-001"
-        },
-        "improvement": {
-          "id": "ACT-CV21-001",
-          "status": "proposed-not-executed",
-          "owner": "SYN-CV-VALIDATION-OWNER",
-          "dueAt": "2026-09-30T00:00:00Z",
-          "action": "供給条件と反例を維持して再比較し、実変更は別途承認へ戻す。",
-          "retestId": "RT-CV21-001",
-          "acceptance": "同一対象・問い・反例で期待値とActualを比較し、Gapと未配達を消さない。",
-          "reassessmentId": "REA-CV21-001",
-          "trigger": "入力Schema、対象、Rule版、権限条件、Sourceまたは期待値の変更"
-        },
-        "permittedConclusion": "供給記録の限定した層別結果だけ。全Controlの有効性、侵害なし、実操作許可は認定しない。"
+        ]
       },
       "expected": null,
       "errorContains": "criterion field inventory"

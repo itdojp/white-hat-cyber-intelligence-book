@@ -478,11 +478,19 @@ def validate_semantics(data):
         "separate synthetic roles",
     )
     require(len(data["controls"]) == 5, "five control objectives")
+    control_owners = (
+        "SYN-CV-CONTROL-OWNER",
+        "SYN-CV-TELEMETRY-OWNER",
+        "SYN-CV-DETECTION-OWNER",
+        "SYN-CV-TRIAGE-OWNER",
+        "SYN-CV-RESPONSE-OWNER",
+    )
     for i, (control, layer) in enumerate(zip(data["controls"], LAYERS), 1):
         require(
             control["id"] == f"CTL-CV21-{i:03}"
             and control["objectiveId"] == f"OBJ-CV21-{i:03}"
-            and control["layer"] == layer,
+            and control["layer"] == layer
+            and control["owner"] == control_owners[i - 1],
             "control/objective/layer ownership",
         )
         expected = [
@@ -496,6 +504,9 @@ def validate_semantics(data):
         ]
         require(control["criteria"] == expected, "authored criterion meaning")
     require(len(data["scenarios"]) == 10, "ten authored scenarios")
+    # Missing test-design input (006) and cross-layer reassessment (008)
+    # belong to the coordinator; each other proposal belongs to its Control.
+    action_owner_layers = (0, 1, 2, 3, 4, None, 0, None, 1, 2)
     all_evidence, actions = [], []
     for n, (scenario, role) in enumerate(zip(data["scenarios"], SCENARIO_ROLES), 1):
         require(
@@ -573,8 +584,14 @@ def validate_semantics(data):
         require(
             action["id"] == gap["nextActionId"] == f"ACT-CV21-{n:03}", "Gap/Next action"
         )
+        owner_layer = action_owner_layers[n - 1]
+        action_owner = (
+            roles["validationOwner"]
+            if owner_layer is None
+            else control_owners[owner_layer]
+        )
         require(
-            action["owner"] == roles["validationOwner"]
+            action["owner"] == action_owner
             and action["status"] == "proposed-not-executed",
             "proposed action owner",
         )
