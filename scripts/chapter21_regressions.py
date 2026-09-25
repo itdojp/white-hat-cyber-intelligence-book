@@ -238,6 +238,14 @@ def run_regressions(data, schema, contract, source, projection):
             (["scenarios", i, "improvement", "retestId"], "RT-FOREIGN"),
             (["scenarios", i, "improvement", "reassessmentId"], "REA-FOREIGN"),
         ]
+    for i in range(10):
+        for key in ("action", "acceptance"):
+            mutations.append(
+                (
+                    ["scenarios", i, "improvement", key],
+                    "供給条件を同じまま再比較し、不足を記録する計画。",
+                )
+            )
     for path, value in mutations:
         changed = deepcopy(data)
         at(changed, path[:-1])[path[-1]] = value
@@ -245,6 +253,35 @@ def run_regressions(data, schema, contract, source, projection):
         check(
             "semantic-refreshed-" + str(path) + repr(value),
             rejected(lambda: validate_model(changed, schema, c)),
+        )
+    for label in ("homogenized", "swapped"):
+        changed = deepcopy(data)
+        if label == "homogenized":
+            for scenario in changed["scenarios"]:
+                for key in ("action", "acceptance"):
+                    scenario["improvement"][key] = (
+                        "供給条件を同じまま再比較し、不足を記録する計画。"
+                    )
+        else:
+            first, second = (changed["scenarios"][i]["improvement"] for i in (1, 2))
+            for key in ("action", "acceptance"):
+                first[key], second[key] = second[key], first[key]
+        check(
+            "improvement-content-refreshed-" + label,
+            rejected(lambda: validate_model(changed, schema, refreshed(changed))),
+        )
+    for keys in (("recordedAt",), ("availableAt",), ("recordedAt", "availableAt")):
+        changed = deepcopy(data)
+        payload = changed["scenarios"][9]["observations"][0]["payload"]
+        for key in keys:
+            payload[key] = (
+                "2026-09-01T09:01:01Z"
+                if key == "recordedAt"
+                else "2026-09-01T09:02:01Z"
+            )
+        check(
+            "retest-observation-timing-refreshed-" + str(keys),
+            rejected(lambda: validate_model(changed, schema, refreshed(changed))),
         )
     # Recomputing both expected values and representation digests is not
     # editorial approval to remove a counterexample or swap its teaching role.
@@ -287,13 +324,23 @@ def run_regressions(data, schema, contract, source, projection):
         changed = deepcopy(data)
         at(changed, path[:-1])[path[-1]] = "第三者の本番システムへ接続する。"
         c = refreshed(changed)
-        check(
-            "json-shared-scanner-" + str(path),
-            any(
-                "target.real_or_external" in e
-                for e in validate_model(changed, schema, c)
+        # Even a deliberately updated authored-content contract must not
+        # waive Policy scanning. The preceding probes separately prove that
+        # ordinary digest refresh cannot change the authored content.
+        with patch(
+            "scripts.chapter21_model.IMPROVEMENT_CONTENT",
+            tuple(
+                (s["improvement"]["action"], s["improvement"]["acceptance"])
+                for s in changed["scenarios"]
             ),
-        )
+        ):
+            check(
+                "json-shared-scanner-" + str(path),
+                any(
+                    "target.real_or_external" in e
+                    for e in validate_model(changed, schema, c)
+                ),
+            )
     # Required root publication preflight exactly once, before output deletion.
     package = strict(read_regular(ROOT, "package.json"))
     command = "python3 scripts/check_chapter21_contract.py --no-regressions && "

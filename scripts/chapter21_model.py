@@ -136,6 +136,53 @@ SCENARIO_ROLES = (
 )
 
 
+# The ten reviewed remedy/acceptance pairs are authored teaching content.
+# Updating generated digests alone must not homogenize or swap their meaning.
+# Deliberate editorial revisions require reviewing this contract as well.
+IMPROVEMENT_CONTENT = (
+    (  # SCN-CV21-001
+        "blockedとallowedの対比条件を保持し、防止の問いを変えず再評価する計画。",
+        "対象・版を固定したscope-outcomeの期待値blockedと反証allowedを保持する。監査到達は別に評価する。",
+    ),
+    (  # SCN-CV21-002
+        "生成記録からConsumerまでの配送失敗箇所と必要channelを供給資料上で照合する計画。実Logは追加収集しない。",
+        "produced-and-confirmed-lossの根拠を保持し、新供給版でsignal-coverageがall-requiredかを比較する。",
+    ),
+    (  # SCN-CV21-003
+        "Positiveの入力条件と供給Rule出力の差を切り分け、正常とNear-missを残して再比較する計画。実Ruleは変更しない。",
+        "RT-CV21-003でpositive=alert、negativeとbenign-near-miss=no-alertを同一対象・Batch・入力条件で比較する。",
+    ),
+    (  # SCN-CV21-004
+        "不足するOwnerと理由を明示した供給Triage記録を作る計画。実担当への通知は行わない。",
+        "context=evidence-owner-reasonを根拠IDと照合し、evidence-onlyという旧Partialを残す。",
+    ),
+    (  # SCN-CV21-005
+        "必要な権限根拠と判断主体を読解資料上で確認する計画。根拠がない間はStoppedを維持し、実許可を推定しない。",
+        "供給権限の不足と停止理由を記録し、後続の比較には別途根拠を必要とする。実行権限falseは変えない。",
+    ),
+    (  # SCN-CV21-006
+        "不足するPositive fixtureの必要Fieldと比較条件を定義し直す計画。欠測を成功へ書き換えず、実Dataは使わない。",
+        "Positive・Negative・Benign-near-missの入力有無を区別し、足りない間はIndeterminateとNext actionを保持する。",
+    ),
+    (  # SCN-CV21-007
+        "未承認scopeをallowedとした供給条件とControl目的の差を調べる計画。実設定は変更しない。",
+        "同じ問いと対象版でblockedとallowedを比較し、元のFailedを保持する。実有効性へ一般化しない。",
+    ),
+    (  # SCN-CV21-008
+        "五層のID・Trace・時刻・比較条件を再評価時にもそろえる計画。別系列の局所成功を寄せ集めない。",
+        "全五層の供給根拠を独立に照合し、どの層の不足も総合Passedで隠さない。",
+    ),
+    (  # SCN-CV21-009
+        "Primary到達とSecondary不足を分け、必要channelをそろえる供給検証案を作る。実Collectorは操作しない。",
+        "primary-onlyという観測Partialを保持し、all-requiredへ変わったと主張する場合は新しい供給根拠を比較する。",
+    ),
+    (  # SCN-CV21-010
+        "供給新版の正常・Near-miss対比を継続し、入力Schemaや期待値の変更時に再評価する計画。実Deployは行わない。",
+        "旧003のFailed、新010の三条件一致と版の差を保持し、追加範囲や実検知率は未評価とする。",
+    ),
+)
+
+
 def require(condition, message):
     if not condition:
         raise ValueError("CV21: " + message)
@@ -584,6 +631,10 @@ def validate_semantics(data):
         require(
             action["id"] == gap["nextActionId"] == f"ACT-CV21-{n:03}", "Gap/Next action"
         )
+        require(
+            (action["action"], action["acceptance"]) == IMPROVEMENT_CONTENT[n - 1],
+            "authored scenario improvement content",
+        )
         owner_layer = action_owner_layers[n - 1]
         action_owner = (
             roles["validationOwner"]
@@ -636,6 +687,14 @@ def validate_semantics(data):
         "suppliedAuthority",
     ):
         require(before[key] == after[key], "retest comparability " + key)
+    for old_observation, new_observation in zip(
+        before["observations"], after["observations"]
+    ):
+        for key in ("recordedAt", "availableAt"):
+            require(
+                old_observation["payload"][key] == new_observation["payload"][key],
+                "retest observation timing " + key,
+            )
     h = data["handoff"]
     require(
         h["id"] == "HOF-CV21-22"
