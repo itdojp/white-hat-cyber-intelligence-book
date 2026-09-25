@@ -6,16 +6,16 @@ Registry全体の最終一括監査日: **2026-07-25**
 
 | ID | 発行主体 | 文書 | 版・状態 | 確認日 | 次回確認 | 主な章 |
 |---|---|---|---|---|---|---|
-| SRC-ATTACK-001 | MITRE | [MITRE ATT&CK Version History and August 2026 Updates](https://attack.mitre.org/resources/versions/) | 19.2 / current | 2026-09-22 | 2026-12-21 | 0, 1, 5, 6, 16, 17, 18, 21, 25, 26 |
+| SRC-ATTACK-001 | MITRE | [MITRE ATT&CK Version History and August 2026 Updates](https://attack.mitre.org/resources/versions/) | 19.2 / current | 2026-09-25 | 2026-12-21 | 0, 1, 5, 6, 16, 17, 18, 21, 25, 26 |
 | SRC-ATTACK-DS-001 | MITRE | [ATT&CK Data Sources](https://attack.mitre.org/datasources/) | Deprecated in ATT&CK v18 / deprecated-reference | 2026-09-06 | 2026-12-06 | 5, 17 |
-| SRC-ATTACK-DET-001 | MITRE | [ATT&CK Detection Strategies](https://attack.mitre.org/detectionstrategies/) | current | 2026-09-22 | 2026-12-21 | 5, 6, 16, 17, 18 |
+| SRC-ATTACK-DET-001 | MITRE | [ATT&CK Detection Strategies](https://attack.mitre.org/detectionstrategies/) | current | 2026-09-25 | 2026-12-21 | 5, 6, 16, 17, 18, 21 |
 | SRC-SIGMA-001 | SigmaHQ | [Sigma Rules Specification](https://sigmahq.io/sigma-specification/specification/sigma-rules-specification.html) | 2.1.0 / current | 2026-08-03 | 2027-08-03 | 17 |
 | SRC-NICE-001 | NIST | [Workforce Framework for Cybersecurity (NICE Framework)](https://csrc.nist.gov/pubs/sp/800/181/r1/final) | SP 800-181 Rev.1 / final | 2026-08-05 | 2026-11-05 | 0, 1, 3 |
 | SRC-NICE-COMP-001 | NIST | [NICE Framework Components v2.2.0](https://www.nist.gov/news-events/news/2026/04/nice-releases-nice-framework-components-v220) | 2.2.0 / current | 2026-08-05 | 2026-11-05 | 3 |
 | SRC-CSF-001 | NIST | [Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework) | 2.0 / final | 2026-09-23 | 2026-11-08 | 1, 4, 19, 22 |
 | SRC-NIST-RISK-001 | NIST | [Guide for Conducting Risk Assessments](https://csrc.nist.gov/pubs/sp/800/30/r1/final) | SP 800-30 Rev.1 / final | 2026-08-08 | 2026-11-08 | 4 |
 | SRC-OWASP-TM-001 | OWASP Foundation | [OWASP Threat Modeling Project](https://owasp.org/www-project-threat-modeling/) | maintained-project-guidance | 2026-08-08 | 2026-11-08 | 4 |
-| SRC-IR-001 | NIST | [Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | SP 800-61 Rev.3 / final | 2026-09-25 | 2027-08-03 | 1, 16, 17, 18, 19, 20, 22 |
+| SRC-IR-001 | NIST | [Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | SP 800-61 Rev.3 / final | 2026-09-25 | 2027-08-03 | 1, 16, 17, 18, 19, 20, 21, 22 |
 | SRC-BERKELEY-001 | OHCHR / UC Berkeley | [Berkeley Protocol on Digital Open Source Investigations](https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source) | 2022 edition / published | 2026-09-25 | 2027-09-14 | 8, 10, 20, 24, 25 |
 | SRC-OWASP-TOP10-001 | OWASP | [OWASP Top 10:2025](https://owasp.org/Top10/) | 2025 / released | 2026-09-12 | 2026-12-12 | 7, 11 |
 | SRC-WSTG-001 | OWASP | [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | 4.2; 5.0 under development / stable | 2026-09-17 | 2026-12-17 | 9, 10, 11, 14, 15 |
@@ -60,6 +60,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-NIST-SSDF-001 | NIST | [Secure Software Development Framework](https://csrc.nist.gov/pubs/sp/800/218/final) | SP 800-218 / SSDF 1.1 / final | 2026-09-15 | 2026-12-15 | 13 |
 | SRC-SLSA-001 | SLSA / OpenSSF | [SLSA Specification](https://slsa.dev/spec/v1.2/) | 1.2 / approved | 2026-09-15 | 2026-12-15 | 13 |
 | SRC-SPDX-001 | SPDX / Linux Foundation | [SPDX Specifications](https://spdx.dev/use/specifications/) | Current list 3.0 / versioned HTML 3.0.1 / published | 2026-09-15 | 2026-12-15 | 13 |
+| SRC-NIST-ASSESS-001 | NIST | [Assessing Security and Privacy Controls in Information Systems and Organizations](https://csrc.nist.gov/pubs/sp/800/53/a/r5/final) | SP 800-53A Rev.5 (January 2022) / final | 2026-09-25 | 2027-09-25 | 21 |
 
 ## 運用
 

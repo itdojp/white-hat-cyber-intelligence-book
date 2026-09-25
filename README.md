@@ -146,3 +146,9 @@ npm run check:part02
 `npm run check:chapter20`はART-07/26、五つの正本文書全体、閉Schemaと完全合成JSON、五Receipt・二Cutoff・六Claim、親19の直接参照と非継承を検査します。共有Projection 1.1.0とPolicy 1.2.0を使い、章別rendererは持ちません。実収集・実操作・実通知は0件です。
 
 [本文](manuscript/20-dfir-timeline-causality.md) / [全欄Case](cases/ch20-dfir-timeline-causality-example.md) / [Source確認](references/ch20-source-review-2026-09-25.md)。`sync:docs`の生成前にも正本検査を一回行います。時刻幅・Cutoff・同一性・機構不足を扱う有限教材であり、一般DFIRツールや真正性・原因の自動認定ではありません。
+
+## 第21章 Control Validationの有限契約
+
+`npm run check:chapter21`は四つの正本文書全体、ART-27、十Scenario・五層・六Failure、閉Schema、完全合成JSON、親14/16/17/19/20の参照と非継承を検査します。Linux / WSL2、Python 3とRepositoryの固定Ruby bundleを準備済みの環境を前提とします。依存不足なら停止し、実Targetや実Dataを追加しません。
+
+[本文](manuscript/21-purple-team-validation.md) / [全欄Case](cases/ch21-control-validation-example.md) / [Source確認](references/ch21-source-review-2026-09-25.md)。`sync:docs`の生成前にも正本検査を一回行います。Layer Aのみ章固有であり、構文は共有Projection 1.1.0、Action/HostはPolicy 1.2.0だけが所有します。有限比較の成功は実Controlの有効性や実権限を認定しません。

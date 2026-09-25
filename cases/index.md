@@ -81,3 +81,7 @@
 ## 第20章 DFIR
 
 [TimelineとRCAの全欄Case](ch20-dfir-timeline-causality-example.md)はART-07/26を五Receipt・二Cutoff・六Claimで比較する。[供給JSON](fixtures/ch20-dfir-timeline-causality.json)と[Schema](../schemas/ch20-dfir-timeline-causality.schema.json)に対応し、時刻幅、再送、後着Evidence、代替説明と原因未確定を分ける。親19の未配達・Evidence・実権限を更新しない。
+
+## 第21章 Control Validation
+
+[全欄Case](ch21-control-validation-example.md)はART-27の十Scenarioを五層のExpected/Actual、六Failure、Gap、Owner、Retestへ結ぶ。[供給JSON](fixtures/ch21-control-validation.json)と[Schema](../schemas/ch21-control-validation.schema.json)は完全合成・非実行であり、親のEvidence・実権限・未配達・原因未確定を更新しない。

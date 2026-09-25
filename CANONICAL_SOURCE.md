@@ -100,3 +100,5 @@ Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設�
 第18章の公開前検査も、第II部横断対応表の検査と生成先削除の前に実行する。`check:chapter18`は本文、既存ART-06、Case、Source Noteの全体と、固定合成JSON、Schema、親参照、公開経路を扱う。有限の合成Queryは章固有の問いを比較するだけで、SIEMや任意Query言語ではない。構文と安全文法は共有Projection/Policyが所有する。
 
 第20章の`check:chapter20`も生成先削除前に実行する。五つの文書全体、ART-07/26、合成JSON/Schema、二Cutoffと六Claim、親19の非継承・未配達を検査する。構文は共有Projection、Action/Hostは共有Policyだけが所有する。検査不通過の入力を生成へ進めず、原時刻・来歴・Unknownを隠すために原本を変更しない。
+
+第21章の`check:chapter21`も生成先削除前に実行する。本文・ART-27・全欄Case・Sourceの四文書、閉Schema、十Scenarioと五層、親14/16/17/19/20の直接参照・非継承・未配達を検査する。Layer Aの有限比較であり、構文は共有Projection、Action/Hostは共有Policyだけが所有する。入力不足をPartial/Passedへ倒さず、実有効性や実権限を認定しない。

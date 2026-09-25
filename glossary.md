@@ -208,3 +208,16 @@
 | Contradicted | 特定の主張が根拠と矛盾すること。別の原因の証明やEventの削除ではない |
 
 [第20章](manuscript/20-dfir-timeline-causality.md)と[ART-26](templates/root-cause-analysis.md)で使用する。
+
+## 第21章の検証語彙
+
+| 用語 | 本書での意味 |
+|---|---|
+| Control objective | 特定の対象・版・条件でControlに期待する機能 |
+| Atomic scenario | 一層の限定した問いの比較。未選択層をPassedにしない |
+| End-to-End scenario | 同一対象・版・Traceの層間接続を確認する供給比較 |
+| Observed partial | 事前定義した範囲の部分充足。nullや未観測と別 |
+| Failure class | 改善先の問いを分類する語彙。責任やRoot Causeの認定ではない |
+| Retest comparability | 旧結果を保持し、問い・対象・正常系と変更条件を明示すること |
+
+[第21章](manuscript/21-purple-team-validation.md)と[ART-27](templates/control-validation-plan.md)で使用する。

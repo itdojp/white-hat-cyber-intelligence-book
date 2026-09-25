@@ -92,3 +92,7 @@
 ## 第20章 DFIR
 
 [供給JSON](ch20-dfir-timeline-causality.json)と[閉じたSchema](../../schemas/ch20-dfir-timeline-causality.schema.json)は完全合成の五Receipt、Clock条件、六Claim、二Cutoff、ART-07/26、三つの未配達Handoffを持つ。[全欄Case](../ch20-dfir-timeline-causality-example.md)へ対応し、実収集や原因の自動認定は行わない。原payloadのHashは表現比較だけである。
+
+## 第21章 Control Validation
+
+[供給JSON](ch21-control-validation.json)と[閉じたSchema](../../schemas/ch21-control-validation.schema.json)は十Scenario、五Control、層別期待値と供給Record、改善案、Retest、未配達Handoffを持つ。[全欄Case](../ch21-control-validation-example.md)へ対応し、実攻撃・実操作・実通知は0件である。部分充足とUnknownを分離し、Hashは供給表現の比較だけとする。
