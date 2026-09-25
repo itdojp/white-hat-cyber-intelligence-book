@@ -85,9 +85,9 @@ def run_regressions(data, schema, contract, source, projection):
     check(
         "corpus-inventory",
         corpus["comparisonVersion"] == VERSION
-        and corpus["caseCount"] == len(corpus["cases"]) == 59
+        and corpus["caseCount"] == len(corpus["cases"]) == 63
         and [c["id"] for c in corpus["cases"]]
-        == [f"CVCHECK21-{n:03}" for n in range(1, 60)]
+        == [f"CVCHECK21-{n:03}" for n in range(1, 64)]
         and all(
             c["owner"] == "LayerA Chapter21 supplied comparison" and c["note"]
             for c in corpus["cases"]
@@ -283,6 +283,22 @@ def run_regressions(data, schema, contract, source, projection):
             "retest-observation-timing-refreshed-" + str(keys),
             rejected(lambda: validate_model(changed, schema, refreshed(changed))),
         )
+    for boundary in range(4):
+        changed = deepcopy(data)
+        changed["scenarios"][7]["observations"][boundary]["payload"]["availableAt"] = (
+            "2026-09-01T09:09:00Z"
+        )
+        check(
+            "availability-order-refreshed-" + str(boundary),
+            rejected(lambda: validate_model(changed, schema, refreshed(changed))),
+        )
+    changed = deepcopy(data)
+    for observation in changed["scenarios"][7]["observations"]:
+        observation["payload"]["availableAt"] = "2026-09-01T09:09:00Z"
+    check(
+        "availability-equal-batch-refreshed-positive",
+        not validate_model(changed, schema, refreshed(changed)),
+    )
     # Recomputing both expected values and representation digests is not
     # editorial approval to remove a counterexample or swap its teaching role.
     for i, field, value in (

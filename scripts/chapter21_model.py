@@ -317,7 +317,7 @@ def evaluate(scenario):
     require(
         len({o["id"] for o in observations}) == len(observations), "unique evidence"
     )
-    output, previous_time = [], None
+    output, previous_time, previous_available = [], None, None
     for index, (layer, observation) in enumerate(zip(layers, observations), 1):
         p = observation["payload"]
         require(observation["payloadSha256"] == digest(p), "payload representation")
@@ -346,6 +346,14 @@ def evaluate(scenario):
             "same-trace supplied order",
         )
         previous_time = recorded
+        # A batch receipt can make consecutive layers available together.
+        # This finite supplied chain cannot reverse availability order;
+        # it is not a claim about every real-world telemetry pipeline.
+        require(
+            previous_available is None or previous_available <= available,
+            "same-trace supplied availability order",
+        )
+        previous_available = available
         spec = CRITERIA[layer]
         keys = {row[0] for row in spec}
         require(
