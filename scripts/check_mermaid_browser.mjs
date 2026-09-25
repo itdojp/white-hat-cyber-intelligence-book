@@ -112,7 +112,7 @@ try {
         figures:document.querySelectorAll('.mermaid-view svg').length,
         errors:document.querySelectorAll('.mermaid-error').length,
         sources:[...document.querySelectorAll('code.language-mermaid')].map(x=>x.textContent),
-        overflow:document.documentElement.scrollWidth > innerWidth,
+        overflow:(document.documentElement?.scrollWidth || 0) > innerWidth,
         title:document.querySelector('h1')?.textContent,
         views:[...document.querySelectorAll('.mermaid-view')].map(v=>({width:v.clientWidth,scroll:v.scrollWidth,
           nodes:v.querySelectorAll('g.node').length, edges:v.querySelectorAll('.flowchart-link').length,
