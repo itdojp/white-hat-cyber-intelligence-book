@@ -1782,7 +1782,7 @@
       "version": null,
       "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
       "publishedAt": null,
-      "notes": "Individual entries require use-time checking; unlisted is not unexploited. Chapter 7 pinned official cisagov/kev-data commit acdcfd43102c098c377568b417a42c0e00cc63a5, Catalog 2026.09.11, 1709 entries. Canonical web page returned 403; official mirror README documents synchronization lag. Live catalog publication date and fixed version are not established, so publishedAt/version remain null; dated snapshot is separate. No inference of organization deadlines or legal exemption. Original BOD 26-04 text was inaccessible; the separate SRC-CISA-VRM-001 announcement supports issuance/purpose only."
+      "notes": "Individual entries require use-time checking; unlisted is not unexploited. Chapter 7 pinned official cisagov/kev-data commit acdcfd43102c098c377568b417a42c0e00cc63a5, Catalog 2026.09.11, 1709 entries. Canonical web page returned 403; official mirror README documents synchronization lag. Live catalog publication date and fixed version are not established, so publishedAt/version remain null; dated snapshot is separate. No inference of organization deadlines or legal exemption. Original BOD 26-04 text was inaccessible; the separate SRC-CISA-VRM-001 announcement supports issuance/purpose only. 第22章用途限定確認（2026-09-26）: canonical CatalogはHTTP403。公式cisagov/kev-data READMEのUpdate schedule/Usage/Licenseだけを確認し、継続更新Dataの例と取得時点・適用母集団固定の説明に限定。最新Catalog値・個別CVE・期限・BOD26-04本文・新Snapshotは未確認/不採用。第7章の過去Snapshot、version/publishedAt null、次回確認日を保持し、全件の再監査とはしない。"
     },
     "SRC-CVE-001": {
       "id": "SRC-CVE-001",

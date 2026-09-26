@@ -585,6 +585,34 @@
       "section": "additional",
       "order": 293,
       "title": "第21章 Source Review — 2026-09-25"
+    },
+    {
+      "source": "manuscript/22-measurement-improvement.md",
+      "destination": "chapters/chapter-22/index.md",
+      "section": "chapters",
+      "order": 205,
+      "title": "第22章 測定、優先順位、継続改善"
+    },
+    {
+      "source": "templates/security-improvement-backlog.md",
+      "destination": "templates/security-improvement-backlog/index.md",
+      "section": "additional",
+      "order": 294,
+      "title": "Security Improvement Backlog"
+    },
+    {
+      "source": "cases/ch22-improvement-backlog-example.md",
+      "destination": "cases/chapter-22-improvement-backlog/index.md",
+      "section": "additional",
+      "order": 295,
+      "title": "第22章 Security Improvement Backlog完全合成記入例"
+    },
+    {
+      "source": "references/ch22-source-review-2026-09-26.md",
+      "destination": "references/chapter-22-source-review/index.md",
+      "section": "additional",
+      "order": 296,
+      "title": "第22章 Source Review — 2026-09-26"
     }
   ],
   "directoryRoutes": {
@@ -722,6 +750,14 @@
     {
       "source": "schemas/ch21-control-validation.schema.json",
       "destination": "downloads/ch21-control-validation.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch22-measurement-improvement.json",
+      "destination": "downloads/ch22-measurement-improvement.json"
+    },
+    {
+      "source": "schemas/ch22-measurement-improvement.schema.json",
+      "destination": "downloads/ch22-measurement-improvement.schema.json"
     }
   ]
 }

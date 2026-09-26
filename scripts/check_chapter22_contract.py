@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Chapter21 finite selection/semantics; shared Projection and Policy own syntax."""
+"""Chapter22 finite selection/semantics; shared Projection and Policy own syntax."""
 
 import argparse
 from collections import Counter
@@ -11,7 +11,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from scripts.chapter21_model import (  # noqa: E402
+from scripts.chapter22_model import (  # noqa: E402
     VERSION,
     DATA,
     SCHEMA,
@@ -24,7 +24,6 @@ from scripts.chapter21_model import (  # noqa: E402
     strict,
     read_regular,
     digest,
-    summary,
     validate_model,
     case_groups,
 )
@@ -84,7 +83,7 @@ def scan_document(document, spec):
         json.dumps(identity(f), ensure_ascii=False) for f in document.fields
     )
     if len({json.dumps(p, ensure_ascii=False) for p in provenance}) != len(provenance):
-        errors.append("CV21 duplicate provenance")
+        errors.append("IMP22 duplicate provenance")
     for item in provenance:
         if counts[json.dumps(item, ensure_ascii=False)] != 1:
             errors.append(document.document_id + ": exact provenance cardinality")
@@ -127,43 +126,17 @@ def reading_table_errors(document, data):
             for key, value in rows
         ]
         if section_rows(document, "全欄の読み方") != expected:
-            errors.append("CV21 all artifact leaves / Case parity")
-        expected = [
-            f"Scenario Layer Result Failure {s['id']} {r['layer']} {r['result']} "
-            + (", ".join(r["failureClasses"]) or "なし")
-            for s in data["scenarios"]
-            for r in summary(s)
-        ]
-        if section_rows(document, "層別の供給結果") != expected:
-            errors.append("CV21 Case layer summary / evaluated parity")
+            errors.append("IMP22 all artifact leaves / Case parity")
     if document.document_id == DOCUMENTS[0]:
-        notes = (
-            "blockedでも監査到達は別の問い",
-            "同一Batchで配送失敗根拠がある",
-            "Positiveの出力不一致、正常対比は保持",
-            "EvidenceだけではOwnerと理由が足りない",
-            "案はあっても権限根拠がない",
-            "Positive fixture不足を検知失敗にしない",
-            "未承認scopeのallowedは期待と矛盾",
-            "同一Traceの供給比較だけを支持",
-            "Primary到達とSecondary不足を分ける",
-            "003を保持し、版を変えた供給Retest",
-        )
-        expected = []
-        for n, (s, note) in enumerate(zip(data["scenarios"], notes), 1):
-            evaluated = summary(s)
-            layer = "五層" if len(evaluated) == 5 else evaluated[0]["layer"]
-            result = (
-                "各層Passed"
-                if len(evaluated) == 5
-                and all(r["result"] == "Passed" for r in evaluated)
-                else evaluated[0]["result"]
-            )
-            expected.append(
-                f"Scenario末尾 Type / 選択層 供給結果 読み取る差 {n:03} {s['type']} / {layer} {result} {note}"
-            )
-        if section_rows(document, "7. 十の供給対比を読む") != expected:
-            errors.append("CV21 manuscript comparison table / evaluated parity")
+        expected = [
+            "対比 供給された差 許される結論 Rule数と重要範囲 4→8、2/5→2/5 件数増加。重要範囲の検証拡大は未確認",
+            "対比 供給された差 許される結論 Mappingと検証 9/10と2/10 対応表の広さを有効性へ変換しない",
+            "対比 供給された差 許される結論 時間と根拠品質 平均10→5分、充足5/5→2/5 時間短縮と品質低下を併記する",
+            "対比 供給された差 許される結論 TelemetryとHunt Inconclusive4/10→1/10 同じ供給母集団の限定比較だけ",
+            "対比 供給された差 許される結論 Control再検証 三条件一致2/3→3/3 旧Failedを保持した供給版の比較だけ",
+        ]
+        if section_rows(document, "11. 五つの対比から判断を練習する") != expected:
+            errors.append("IMP22 manuscript five contrasts")
     return errors
 
 
@@ -186,117 +159,167 @@ def document_errors(document, spec, data):
             if is_policy_scan_field(field):
                 (refs if in_refs else body).update(SOURCE_ID_RE.findall(field.text))
         if body != set(SOURCES) or refs != set(SOURCES):
-            errors.append("CV21 body/end Source set")
+            errors.append("IMP22 body/end Source set")
+    return errors
+
+
+def parent_errors(data, parent):
+    errors = []
+    before, after = (
+        next(s for s in parent["scenarios"] if s["id"] == sid)
+        for sid in ("SCN-CV21-003", "SCN-CV21-010")
+    )
+    h = parent["handoff"]
+    expected = {
+        "use": "method-reference-only",
+        "caseIds": ["CASE-2026-001", "CASE-DET-2026-001"],
+        "controlValidationRecordId": parent["record"]["id"],
+        "controlRetestId": parent["retest"]["id"],
+        "beforeScenarioId": before["id"],
+        "afterScenarioId": after["id"],
+        "beforeEvidenceId": before["observations"][0]["id"],
+        "afterEvidenceId": after["observations"][0]["id"],
+        "parentHandoffId": h["id"],
+        "parentHandoffStatus": h["status"],
+        "parentReceiptId": h["receiptId"],
+        "parentEvidenceTransferred": False,
+        "parentStateChanged": False,
+        "authorityTransferred": False,
+    }
+    if (
+        digest(data["parentReferences"]) != digest(expected)
+        or h["status"] != "planned-not-delivered"
+        or h["receiptId"] is not None
+        or h["executionAuthorized"] is not False
+        or h["targetChapter"] != 22
+        or digest(data["authorityBoundary"]) != digest(parent["authorityBoundary"])
+        or parent["executionAuthorized"] is not False
+        or parent["retest"]["beforeRetained"] is not True
+        or parent["retest"]["actualChangeExecuted"] is not False
+    ):
+        errors.append(
+            "IMP22 exact parent method reference/non-inheritance/authority boundary"
+        )
+    for key in (
+        "subjectId",
+        "subjectRevision",
+        "batchId",
+        "windowStart",
+        "windowEnd",
+        "cutoff",
+    ):
+        if before[key] != after[key]:
+            errors.append("IMP22 parent retest same scope/condition: " + key)
+    if before["expectedLayers"] != [
+        {
+            "layer": "Detection",
+            "result": "Failed",
+            "failureClasses": ["Detection logic"],
+        }
+    ] or after["expectedLayers"] != [
+        {"layer": "Detection", "result": "Passed", "failureClasses": []}
+    ]:
+        errors.append("IMP22 parent old Failed/new Passed must both remain")
+    metric = data["metrics"][7]
+    criteria = {
+        "positive": "alert",
+        "negative": "no-alert",
+        "benign-near-miss": "no-alert",
+    }
+    for name, scenario in (("baseline", before), ("current", after)):
+        payload = scenario["observations"][0]["payload"]
+        if (
+            payload["present"] != {key: True for key in criteria}
+            or metric[name]["selectedMembers"]
+            != [
+                key
+                for key, value in criteria.items()
+                if payload["values"][key] == value
+            ]
+            or scenario["improvement"]["status"] != "proposed-not-executed"
+            or any(
+                metric[name][key] != scenario[key]
+                for key in ("windowStart", "windowEnd")
+            )
+            or metric["cutoff"] != scenario["cutoff"]
+        ):
+            errors.append(
+                "IMP22 parent finite control comparison; no actual action completion"
+            )
     return errors
 
 
 def repository_errors(data, contract, root=ROOT):
     errors = []
     if list(contract["parentDigests"]) != list(PARENTS):
-        errors.append("CV21 fixed parent inventory")
+        errors.append("IMP22 fixed parent inventory")
     for path in PARENTS:
         if hashlib.sha256(read_regular(root, path)).hexdigest() != contract[
             "parentDigests"
         ].get(path):
-            errors.append("CV21 parent/shared/pin drift: " + path)
-    d14 = strict(
-        read_regular(root, "cases/fixtures/ch14-minimal-impact-validation.json")
-    )
-    d16 = strict(read_regular(root, "cases/fixtures/ch16-telemetry-coverage.json"))
-    d17 = strict(
-        read_regular(root, "cases/fixtures/ch17-detection-engineering-fixture.json")
-    )
-    d19 = strict(read_regular(root, "cases/fixtures/ch19-incident-response.json"))
-    d20 = strict(read_regular(root, "cases/fixtures/ch20-dfir-timeline-causality.json"))
-    h20 = next(h for h in d20["handoffs"] if h["targetChapter"] == 21)
-    rca = next(
-        s["rca"] for s in d20["snapshots"] if s["rca"]["id"] == h20["sourceRcaId"]
-    )
-    expected = {
-        "use": "method-reference-only",
-        "decisionRequirementId": d17["decisionRequirementId"],
-        "threatHypothesisId": d17["threatHypotheses"][0]["id"],
-        "detectionRecordId": d17["detectionValidationRecordId"],
-        "detectionId": d17["detectionId"],
-        "telemetryIds": [t["id"] for t in d17["telemetryContracts"]],
-        "minimalValidationId": d14["record"]["id"],
-        "telemetryMapId": d16["record"]["id"],
-        "incidentPlanId": d19["record"]["id"],
-        "dfirRecordId": d20["record"]["id"],
-        "dfirRcaId": rca["id"],
-        "dfirControlId": h20["controlId"],
-        "dfirControlStatus": rca["controlFailureStatus"],
-        "dfirHandoffId": h20["id"],
-        "dfirHandoffStatus": h20["status"],
-        "receiptId": h20["receiptId"],
-        "parentEvidenceTransferred": False,
-        "parentStateChanged": False,
-        "authorityTransferred": False,
-    }
-    if (
-        data["parentReferences"] != expected
-        or h20["executionAuthorized"] is not False
-        or h20["status"] != "planned-not-delivered"
-        or h20["receiptId"] is not None
-        or data["record"]["parentCaseId"] != d17["caseId"]
-        or data["threat"]["attackTechniqueId"]
-        not in d17["threatHypotheses"][0]["attackMapping"]
-    ):
-        errors.append("CV21 parent ID/non-inheritance/undelivered boundary")
-    b, p14 = data["authorityBoundary"], d14["parents"]
-    for ours, parent in (
-        ("parentAuthorityId", "authorizationId"),
-        ("parentExpiresAt", "authorizationExpiresAt"),
-        ("parentRoeId", "roeId"),
-        ("parentRoeStatus", "roeStatus"),
-        ("parentRoeVersion", "roeVersion"),
-        ("parentExecutionAuthorized", "roeExecutionAuthorized"),
-    ):
-        if b[ours] != p14[parent]:
-            errors.append("CV21 exact parent Authority: " + ours)
+            errors.append("IMP22 parent/shared/pin drift: " + path)
+    parent = strict(read_regular(root, "cases/fixtures/ch21-control-validation.json"))
+    errors += parent_errors(data, parent)
     package = strict(read_regular(root, "package.json"))["scripts"]
     if (
-        package.get("check:chapter21") != "python3 scripts/check_chapter21_contract.py"
-        or package["test"].split(" && ").count("npm run check:chapter21") != 1
+        package.get("check:chapter22") != "python3 scripts/check_chapter22_contract.py"
+        or package["test"].split(" && ").count("npm run check:chapter22") != 1
         or package["sync:docs"].split(" && ") != list(PREFLIGHT)
     ):
-        errors.append("CV21 root test/preflight exactly once")
+        errors.append("IMP22 root test/preflight exactly once")
     routes = strict(read_regular(root, "site-pages.json"))
     for kind in ("pages", "staticFiles"):
         for route in contract[kind]:
             if routes[kind].count(route) != 1:
-                errors.append("CV21 exact public route: " + route["source"])
+                errors.append("IMP22 exact public route: " + route["source"])
     order = [
         p["source"]
         for p in sorted(routes["pages"], key=lambda p: p["order"])
         if p["section"] == "chapters"
     ]
     if not (
-        order.index("manuscript/20-dfir-timeline-causality.md")
+        order.index("manuscript/21-purple-team-validation.md")
         < order.index(DOCUMENTS[0])
         < order.index("manuscript/25-structured-analysis-attribution.md")
     ):
-        errors.append("CV21 navigation 20/21/25")
+        errors.append("IMP22 navigation 21/22/25")
+    config = strict(read_regular(root, "book-config.json"))
+    chapter = {
+        "id": "ch22-measurement-improvement",
+        "title": "第22章 測定、優先順位、継続改善",
+        "description": "Coverage、品質、対応時間、残存リスクを改善Backlogへ変換する",
+        "objectives": [
+            "有効な測定項目を選べる",
+            "見せかけのCoverageを避けられる",
+            "Security Improvement Backlogを作成できる",
+        ],
+    }
+    if (
+        contract["chapterId"] != chapter["id"]
+        or config["structure"]["chapters"][22] != chapter
+        or sum(c["id"] == chapter["id"] for c in config["structure"]["chapters"]) != 1
+    ):
+        errors.append("IMP22 book configuration identity")
     sources = strict(read_regular(root, "references/sources.json"))
     if sources["checkedAt"] != "2026-07-25" or {
-        s["id"] for s in sources["sources"] if 21 in s["chapters"]
+        s["id"] for s in sources["sources"] if 22 in s["chapters"]
     } != set(SOURCES):
-        errors.append("CV21 scoped Source mapping/baseline")
+        errors.append("IMP22 scoped Source mapping/baseline")
     if set(contract["sourceIdentity"]) != set(SOURCES):
-        errors.append("CV21 frozen Source inventory")
+        errors.append("IMP22 frozen Source inventory")
     for sid in SOURCES:
         source = next(s for s in sources["sources"] if s["id"] == sid)
         if any(source[k] != v for k, v in contract["sourceIdentity"][sid].items()):
-            errors.append("CV21 reviewed Source identity: " + sid)
-        if not meets_audit_baseline(source["checkedAt"], "2026-09-25"):
-            errors.append("CV21 scoped Source date: " + sid)
+            errors.append("IMP22 reviewed Source identity: " + sid)
+        if not meets_audit_baseline(source["checkedAt"], "2026-09-26"):
+            errors.append("IMP22 scoped Source date: " + sid)
     if list(contract["indices"]) != list(INDEX_PATHS):
-        errors.append("CV21 index inventory")
+        errors.append("IMP22 index inventory")
     else:
         for path in INDEX_PATHS:
             text = read_regular(root, path).decode("utf-8")
             if any(marker not in text for marker in contract["indices"][path]):
-                errors.append("CV21 index: " + path)
+                errors.append("IMP22 index: " + path)
     return errors
 
 
@@ -319,19 +342,19 @@ def main():
             or hashlib.sha256(read_regular(ROOT, CORPUS)).hexdigest()
             != contract["corpusSha256"]
         ):
-            raise ValueError("CV21 frozen inventory/schema/shared versions")
+            raise ValueError("IMP22 frozen inventory/schema/shared versions")
         errors = validate_model(data, schema, contract) + repository_errors(
             data, contract
         )
         source = {p: read_regular(ROOT, p).decode("utf-8") for p in DOCUMENTS}
         projection = project_documents(source)
         if [d.document_id for d in projection.documents] != list(DOCUMENTS):
-            raise ValueError("CV21 complete document order")
+            raise ValueError("IMP22 complete document order")
         for doc in projection.documents:
             errors += document_errors(doc, contract["documents"][doc.document_id], data)
         count = 0
         if not args.no_regressions:
-            from scripts.chapter21_regressions import run_regressions
+            from scripts.chapter22_regressions import run_regressions
 
             count, problems = run_regressions(
                 data, schema, contract, source, projection
@@ -342,7 +365,7 @@ def main():
                 print("ERROR:", error)
             return 1
         print(
-            f"Chapter 21 contract passed: 4 complete documents; ART-27; 10 scenarios / 5 layers / 6 failure classes; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
+            f"Chapter 22 contract passed: 4 complete documents; ART-28; 10 metrics / 8 backlog items / 7 statuses; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
         )
         return 0
     except (
@@ -354,7 +377,7 @@ def main():
         ManifestError,
         ProjectionRuntimeError,
     ) as exc:
-        print("ERROR: Chapter21 fail closed:", exc)
+        print("ERROR: Chapter22 fail closed:", exc)
         return 1
 
 

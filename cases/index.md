@@ -85,3 +85,7 @@
 ## 第21章 Control Validation
 
 [全欄Case](ch21-control-validation-example.md)はART-27の十Scenarioを五層のExpected/Actual、六Failure、Gap、Owner、Retestへ結ぶ。[供給JSON](fixtures/ch21-control-validation.json)と[Schema](../schemas/ch21-control-validation.schema.json)は完全合成・非実行であり、親のEvidence・実権限・未配達・原因未確定を更新しない。
+
+## 第22章 Measurement and Improvement
+
+[Security Improvement Backlog全欄Case](ch22-improvement-backlog-example.md)はART-28の十Metric、八Item、七Status、五対比を持つ。[供給JSON](fixtures/ch22-measurement-improvement.json)と[Schema](../schemas/ch22-measurement-improvement.schema.json)で分母・時刻・品質・Validation/Evidence・期限付き受容を照合する。実効果、実権限、親Evidenceの受領は認定しない。

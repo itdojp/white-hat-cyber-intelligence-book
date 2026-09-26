@@ -29,6 +29,7 @@
 | ART-25 | Incident Action Plan | 19 | `templates/incident-action-plan.md` |
 | ART-26 | Root Cause Analysis | 20 | `templates/root-cause-analysis.md` |
 | ART-27 | Control Validation Plan | 21 | `templates/control-validation-plan.md` |
+| ART-28 | Security Improvement Backlog | 22 | `templates/security-improvement-backlog.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -79,3 +80,5 @@
 `ART-07`は第20章で既存見出し・公開URLを保持して拡張する。`ART-26`と[全欄Case](cases/ch20-dfir-timeline-causality-example.md)で原時刻、Clockの不確かさ、Cutoff、代替説明、原因未確定、限定影響と改善・再評価を結ぶ。五Receipt・二Snapshotは完全合成であり、親のEvidence・権限・未配達を継承しない。
 
 `ART-27`はControl objective、Atomic / End-to-End、五層のExpected/Actual、Failure、Gap、改善とRetestを結ぶ。[第21章Case](cases/ch21-control-validation-example.md)は十の完全合成対比であり、親Evidence・実権限・未配達・原因未確定を変更しない。
+
+`ART-28`はMetricの判断目的、母集団、品質、改善担当、Verification、Risk decisionと再評価を結ぶ。[第22章Case](cases/ch22-improvement-backlog-example.md)の十指標・八項目は供給比較だけであり、実効果、実権限、親Evidenceの受領を認定しない。

@@ -221,3 +221,15 @@
 | Retest comparability | 旧結果を保持し、問い・対象・正常系と変更条件を明示すること |
 
 [第21章](manuscript/21-purple-team-validation.md)と[ART-27](templates/control-validation-plan.md)で使用する。
+
+## 第22章の測定・改善語彙
+
+| 用語 | 本書での意味 |
+|---|---|
+| Metric specification | 判断目的、定義、式、単位、母集団、Window、根拠と品質を一緒に記す測定条件 |
+| Goodhart risk | 指標の目標化により、本来の判断目的との関係が弱まる危険 |
+| Telemetry / Detection / Evidence debt | 観測条件、検知比較、判断根拠のそれぞれに残る不足 |
+| Verified / Accepted | 根拠に結び付いた受入条件の照合と、期限・条件付きの残存Risk判断。互いの代わりにしない |
+| Metric retirement | 判断目的を失った指標の廃止。旧値・理由・代替先を保持する |
+
+[第22章](manuscript/22-measurement-improvement.md)と[ART-28](templates/security-improvement-backlog.md)で使用する。有限供給記録の計算は、実効果や実権限の認定ではない。

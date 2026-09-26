@@ -96,3 +96,7 @@
 ## 第21章 Control Validation
 
 [供給JSON](ch21-control-validation.json)と[閉じたSchema](../../schemas/ch21-control-validation.schema.json)は十Scenario、五Control、層別期待値と供給Record、改善案、Retest、未配達Handoffを持つ。[全欄Case](../ch21-control-validation-example.md)へ対応し、実攻撃・実操作・実通知は0件である。部分充足とUnknownを分離し、Hashは供給表現の比較だけとする。
+
+## 第22章 Measurement and Improvement
+
+[供給JSON](ch22-measurement-improvement.json)と[閉じたSchema](../../schemas/ch22-measurement-improvement.schema.json)は、十Metricの二つの供給版と八Backlog項目を持つ。[全欄Case](../ch22-improvement-backlog-example.md)へ対応し、42の独立した算術期待値と章固有の意味負例で検証する。実Log、実Collector、個人Rankingは用いず、欠測を0へ置換しない。

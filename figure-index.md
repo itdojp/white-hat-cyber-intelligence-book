@@ -166,3 +166,13 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 | T-21-03 | 六Failure classと改善の問い | 第21章 |
 | T-21-04 | 十の供給対比 | 第21章 |
 | T-21-05 | Control Validationの評価基準 | 第21章 |
+
+## 第22章 Measurement and Improvement
+
+| ID | 図表 | 正本 |
+|---|---|---|
+| F-22-01 | 判断目的・測定・改善・再評価の読み順 | [第22章](manuscript/22-measurement-improvement.md) |
+| T-22-01 | Outcome・Leading・Process・Qualityの役割 | 第22章 |
+| T-22-02 | Debt、優先理由、依存と次の判断 | 第22章 |
+| T-22-03 | Backlogの七状態と必要な根拠 | 第22章 |
+| T-22-04 | 五つの供給対比と結論の上限 | 第22章 |
