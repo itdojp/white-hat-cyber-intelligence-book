@@ -295,6 +295,7 @@ def evaluate(data):
         require(e["criterionIds"], "evidence criterion required")
     remaining = set()
     answer_counts = []
+    answer_windows = set()
     for r in rs.values():
         require(r["decisionId"] == decision["id"], "requirement decision")
         require(cutoff <= instant(r["deadline"]) <= times[1], "requirement deadline")
@@ -327,6 +328,7 @@ def evaluate(data):
                     "answer evidence criterion",
                 )
                 require(s["quality"] == "reviewed", "answer source quality")
+                answer_windows.add((e["windowStart"], e["windowEnd"]))
                 groups.append(s["independentGroup"])
             require(len(groups) == len(set(groups)), "duplicated independent source")
         missing = set(criteria) - set(answered)
@@ -379,6 +381,9 @@ def evaluate(data):
         else:
             require(not answered and missing, "unfulfilled requirement")
         answer_counts.append(len(answered))
+    # The supplied answers describe one aligned observation window. Different
+    # availability times remain valid; unbound evidence is not an answer.
+    require(len(answer_windows) <= 1, "answer evidence common window")
     require(remaining == set(gs), "unowned gap")
     for fact in data["facts"]:
         require(
@@ -403,6 +408,10 @@ def evaluate(data):
             h["refs"] == refs and instant(h["deadline"]) == times[2],
             "handoff content/deadline",
         )
+    require(
+        {c["status"] for c in cs.values()} == set(STATUSES),
+        "six collection statuses",
+    )
     return {
         "answers": answer_counts,
         "gaps": len(gs),

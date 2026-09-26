@@ -1376,6 +1376,502 @@
       "expected": "rejected",
       "errorContains": "nonblank unpadded field",
       "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E1-windowStart",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E1-windowEnd",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E2-windowStart",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "1",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E2-windowEnd",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "1",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E3-windowStart",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "2",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E3-windowEnd",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "2",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-ALIGNED-windowStart",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        },
+        {
+          "path": [
+            "evidence",
+            "1",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        },
+        {
+          "path": [
+            "evidence",
+            "2",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-UNBOUND-WINDOW-NOT-ANSWER-windowStart",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "3",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-ALIGNED-windowEnd",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        },
+        {
+          "path": [
+            "evidence",
+            "1",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        },
+        {
+          "path": [
+            "evidence",
+            "2",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-UNBOUND-WINDOW-NOT-ANSWER-windowEnd",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "3",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-PLANNED",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "4",
+            "status"
+          ],
+          "value": "Collecting"
+        },
+        {
+          "path": [
+            "collections",
+            "6",
+            "status"
+          ],
+          "value": "Collecting"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-COLLECTING",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "3",
+            "status"
+          ],
+          "value": "Planned"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-SATISFIED",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "status"
+          ],
+          "value": "Partially satisfied"
+        },
+        {
+          "path": [
+            "collections",
+            "1",
+            "status"
+          ],
+          "value": "Partially satisfied"
+        },
+        {
+          "path": [
+            "collections",
+            "0",
+            "deliverableIds"
+          ],
+          "value": [
+            "IR23-D1-A",
+            "IR23-D1-B",
+            "IR23-D1-C"
+          ]
+        },
+        {
+          "path": [
+            "collections",
+            "1",
+            "deliverableIds"
+          ],
+          "value": [
+            "IR23-D2-A",
+            "IR23-D2-B"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-PARTIALLY-SATISFIED",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "2",
+            "status"
+          ],
+          "value": "Satisfied"
+        },
+        {
+          "path": [
+            "collections",
+            "2",
+            "deliverableIds"
+          ],
+          "value": [
+            "IR23-D3-A"
+          ]
+        },
+        {
+          "path": [
+            "sources",
+            "2",
+            "quality"
+          ],
+          "value": "reviewed"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-BLOCKED",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "5",
+            "status"
+          ],
+          "value": "Planned"
+        },
+        {
+          "path": [
+            "collections",
+            "5",
+            "authority"
+          ],
+          "value": "provided-synthetic-only"
+        },
+        {
+          "path": [
+            "collections",
+            "5",
+            "terms"
+          ],
+          "value": "provided-exercise-only"
+        },
+        {
+          "path": [
+            "collections",
+            "5",
+            "blocker"
+          ],
+          "value": null
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-CANCELLED",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "7",
+            "status"
+          ],
+          "value": "Planned"
+        },
+        {
+          "path": [
+            "collections",
+            "7",
+            "cancellationReason"
+          ],
+          "value": null
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-PRESERVED-SWAP",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "3",
+            "status"
+          ],
+          "value": "Planned"
+        },
+        {
+          "path": [
+            "collections",
+            "4",
+            "status"
+          ],
+          "value": "Collecting"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Planned",
+          "Collecting",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
     }
   ]
 }
