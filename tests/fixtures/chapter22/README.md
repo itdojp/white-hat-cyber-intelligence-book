@@ -1,4 +1,4 @@
-# Chapter22 finite publication contract
+# Chapter 22 finite publication contract
 
 Layer A owns the four complete Chapter22 documents, ART-28 identities, ten metrics, twenty supplied snapshots, eight backlog items, seven statuses and the five teaching contrasts. Syntax/visibility belongs only to shared Publication Projection 1.1.0; action/host grammar belongs only to Content Safety Policy 1.2.0.
 
