@@ -158,3 +158,5 @@ npm run check:part02
 `npm run check:chapter22`は本文・ART-28・全欄Case・Sourceの四文書、閉Schema、十Metric・八Item・七Status、42の独立した算術期待値を検査します。Linux / WSL2、Python 3.11以上とRepositoryの固定Ruby bundleを前提とし、依存不足なら停止します。
 
 [本文](manuscript/22-measurement-improvement.md) / [全欄Case](cases/ch22-improvement-backlog-example.md) / [Source確認](references/ch22-source-review-2026-09-26.md)。分母、欠測、時間の統計量、根拠binding、受容期限と廃止を有限Layer Aで扱い、構文は共有Projection 1.1.0、Action/HostはPolicy 1.2.0に委譲します。一般KPI engineや実Risk・実権限の自動認定ではありません。検査範囲は`tests/fixtures/chapter22/README.md`を参照してください。
+
+第III部の[横断読解](cases/part-iii-detection-improvement-map.md)は、七教材の参照・非継承・未配達と限定結論を確認する補助教材です。`npm run check:part03`は有限Layer Aの接続と全公開fieldを検査し、構文と安全文法は共有Projection/Policyへ委譲します。採用根拠と移行は[整理文書](PART_III_RECONCILIATION.md)を参照してください。
