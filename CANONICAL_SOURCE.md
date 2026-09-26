@@ -111,3 +111,5 @@ Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設�
 正本のMermaid fenceは書き換えず、Jekyll/Kramdownの`code.language-mermaid`をブラウザでSVGへ段階的に拡張する。描画後も元コードは展開可能な`details`へ保持する。JS無効時や失敗時は元コードと文章代替を残す。本文の見出し、リンク、文章代替、Policy検査surfaceは変更しない。`flowchart`/`graph`のLR/RL/TD/TB/BTを対象とし、構文解析は公式rendererだけが所有する。図内設定、callback/link、図内CSS、resource-bearing shape、`br`以外のHTML、他のdiagram typeは本契約の対象外で、公開前browser gateを失敗させる。
 
 `npm run check:mermaid`は版・integrity・資産・layout・QA接続を検査する。`npm run check:mermaid-browser`はbuild後の全公開図をChromeで描画し、desktop/mobile、複数図、方向、日本語、スクロール/全体表示、JS無効、失敗時の元コード保持を確認する。Book QAとPagesはこのgateをartifact upload前に実行する。ローカルでも既設のChrome/Chromiumが必要で、`BOOK_BROWSER_BIN`で明示できる。browser本体をnpm lifecycleやテストから取得しない。`BOOK_BROWSER_TMPDIR`はworkspace内の短いpathへ設定可能（Linuxのprofile socket長制限対策）。詳細は`publication/mermaid/README.md`を参照する。
+
+第22章の`check:chapter22`も生成先削除前に一回実行する。本文・ART-28・全欄Case・Sourceの四文書、閉Schema、十Metric・八Item・七Statusを検査し、親21の003/010の旧Failedと新Passed、未配達、期限切れの実権限を保持する。数値の計算、供給Verification、実効果の判断を分離する有限Layer Aであり、章独自のMarkdown/HTML解析は追加しない。

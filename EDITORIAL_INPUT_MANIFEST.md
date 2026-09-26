@@ -15,9 +15,10 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
+| `canonical-pr-open` | 1 |
 | `consumed` | 16 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 10 |
+| `registered-pending-prerequisites` | 9 |
 
 ## Acknowledged collisions
 
@@ -65,7 +66,7 @@
 | `chapter-19` | #42 | `consumed` | `EIC-0042-3630c01fb55d` | #153 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5802428231) |
 | `chapter-20` | #43 | `consumed` | `EIC-0043-58dc95fff364` | #156 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5823341050) |
 | `chapter-21` | #44 | `consumed` | `EIC-0044-a729d22fb189` | #159 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5841619885) |
-| `chapter-22` | #45 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
+| `chapter-22` | #45 | `canonical-pr-open` | `EIC-0045-78813e20d84e` | #166 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/166) |
 | `chapter-23` | #46 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155) |
 | `chapter-24` | #47 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644) |
 | `chapter-26` | #48 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529) |
@@ -182,7 +183,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0045-78813e20d84e` | `EIP-0012` | `chapter22-measurement-improvement.predraft.md` | `78813e20d84e495b2aada2173b50b80a3efe947d9689dd90718e2a617a3bf15c` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0045-78813e20d84e` | `EIP-0012` | `chapter22-measurement-improvement.predraft.md` | `78813e20d84e495b2aada2173b50b80a3efe947d9689dd90718e2a617a3bf15c` | `selected` | 親第7・15・16〜21章のmainと公開Gate完了後、Issue45で唯一候補をbranch前選択。認可workspaceでraw不在・未読・実体hash未照合・直接採用なしを記録し、現契約と用途限定の一次資料から再構成する。第21章consumed管理PR165とは変更所有を分ける。 |
 
 ### `chapter-23` / Issue #46
 

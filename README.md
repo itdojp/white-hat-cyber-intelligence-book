@@ -152,3 +152,9 @@ npm run check:part02
 `npm run check:chapter21`は四つの正本文書全体、ART-27、十Scenario・五層・六Failure、閉Schema、完全合成JSON、親14/16/17/19/20の参照と非継承を検査します。Linux / WSL2、Python 3とRepositoryの固定Ruby bundleを準備済みの環境を前提とします。依存不足なら停止し、実Targetや実Dataを追加しません。
 
 [本文](manuscript/21-purple-team-validation.md) / [全欄Case](cases/ch21-control-validation-example.md) / [Source確認](references/ch21-source-review-2026-09-25.md)。`sync:docs`の生成前にも正本検査を一回行います。Layer Aのみ章固有であり、構文は共有Projection 1.1.0、Action/HostはPolicy 1.2.0だけが所有します。有限比較の成功は実Controlの有効性や実権限を認定しません。
+
+## 第22章 測定と改善の有限契約
+
+`npm run check:chapter22`は本文・ART-28・全欄Case・Sourceの四文書、閉Schema、十Metric・八Item・七Status、42の独立した算術期待値を検査します。Linux / WSL2、Python 3.11以上とRepositoryの固定Ruby bundleを前提とし、依存不足なら停止します。
+
+[本文](manuscript/22-measurement-improvement.md) / [全欄Case](cases/ch22-improvement-backlog-example.md) / [Source確認](references/ch22-source-review-2026-09-26.md)。分母、欠測、時間の統計量、根拠binding、受容期限と廃止を有限Layer Aで扱い、構文は共有Projection 1.1.0、Action/HostはPolicy 1.2.0に委譲します。一般KPI engineや実Risk・実権限の自動認定ではありません。検査範囲は`tests/fixtures/chapter22/README.md`を参照してください。

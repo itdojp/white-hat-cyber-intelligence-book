@@ -50,6 +50,7 @@ PREFLIGHT = tuple(
     "python3 scripts/check_chapter19_contract.py --no-regressions",
     "python3 scripts/check_chapter20_contract.py --no-regressions",
     "python3 scripts/check_chapter21_contract.py --no-regressions",
+    "python3 scripts/check_chapter22_contract.py --no-regressions",
     "python3 scripts/check_part02_contract.py --no-regressions",
     "python3 scripts/sync_book_site.py --output docs",
     "npm run copy:notices",

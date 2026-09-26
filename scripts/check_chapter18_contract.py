@@ -45,7 +45,7 @@ from scripts.chapter18_query import VERSION as QUERY_VERSION  # noqa: E402
 
 PREFLIGHT = tuple(
     f"python3 scripts/check_chapter{n:02}_contract.py --no-regressions"
-    for n in (6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 18, 19, 20, 21)
+    for n in (6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22)
 ) + (
     "python3 scripts/check_part02_contract.py --no-regressions",
     "python3 scripts/sync_book_site.py --output docs",

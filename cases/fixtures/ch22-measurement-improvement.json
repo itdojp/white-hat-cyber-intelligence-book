@@ -1,0 +1,1781 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "readOnly": true,
+  "networkRequired": false,
+  "executionAuthorized": false,
+  "record": {
+    "id": "SIB-2026-022-001",
+    "caseId": "CASE-IMP-2026-001",
+    "artifactId": "ART-28",
+    "asOf": "2026-09-26T00:00:00Z",
+    "authoring": "independent-authored-snapshots-not-a-real-case-timeline",
+    "sourceIds": [
+      "SRC-NIST-MEASURE-001",
+      "SRC-NIST-MEASURE-002",
+      "SRC-CSF-001",
+      "SRC-IR-001",
+      "SRC-KEV-001"
+    ],
+    "actualOperations": 0,
+    "actualCollections": 0,
+    "actualNotifications": 0,
+    "actualDeployments": 0,
+    "actualIncidentDeclarations": 0
+  },
+  "parentReferences": {
+    "use": "method-reference-only",
+    "caseIds": [
+      "CASE-2026-001",
+      "CASE-DET-2026-001"
+    ],
+    "controlValidationRecordId": "CVP-2026-021-001",
+    "controlRetestId": "RT-CV21-003",
+    "beforeScenarioId": "SCN-CV21-003",
+    "afterScenarioId": "SCN-CV21-010",
+    "beforeEvidenceId": "EVD-CV21-003-01",
+    "afterEvidenceId": "EVD-CV21-010-01",
+    "parentHandoffId": "HOF-CV21-22",
+    "parentHandoffStatus": "planned-not-delivered",
+    "parentReceiptId": null,
+    "parentEvidenceTransferred": false,
+    "parentStateChanged": false,
+    "authorityTransferred": false
+  },
+  "authorityBoundary": {
+    "parentAuthorityId": "AUTH-CASE-2026-001",
+    "parentExpiresAt": "2026-08-19T09:00:00Z",
+    "parentRoeId": "ROE-2026-009",
+    "parentRoeStatus": "Draft",
+    "parentRoeVersion": 1,
+    "parentLabId": "LABPLAN-2026-001",
+    "parentLabRuntimeExecuted": false,
+    "parentExecutionAuthorized": false,
+    "scope": "配布JSONの読解と有限比較のみ。実サービスへ接続しない。実Accountは使用しない。実環境で操作しない。"
+  },
+  "metrics": [
+    {
+      "id": "MET-IMP22-001",
+      "type": "Process",
+      "decisionPurpose": "重要行動の検証不足に対し、Rule件数だけの増加を区別する。",
+      "definition": "供給されたRule inventoryのMember数。実製品に導入されたRule数ではない。",
+      "formula": "count",
+      "unit": "件",
+      "populationId": "POP-IMP22-001",
+      "populationRevision": "POP-REV-001",
+      "populationMembers": [
+        "RULE-IMP22-001",
+        "RULE-IMP22-002",
+        "RULE-IMP22-003",
+        "RULE-IMP22-004",
+        "RULE-IMP22-005",
+        "RULE-IMP22-006",
+        "RULE-IMP22-007",
+        "RULE-IMP22-008"
+      ],
+      "populationBasis": "author-selected-finite-teaching-members-not-real-organization",
+      "exclusionReason": "この著者定義の母集団外は未評価。改善のための事後除外はしない。",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "qualityCriterion": "供給入力の有無と既知の不一致を区別し、根拠不足をゼロへ置換しない。",
+      "target": "件数自体の増加を改善目標にしない。",
+      "confidence": "この供給値の計算は再現可能。実効果の確信度は未評価。",
+      "limitation": "実測、実組織の分布、因果効果、未選択範囲は評価していない。",
+      "retirementTrigger": "判断目的の消失、重複、Gaming、Dataの継続取得不能、より適切な代替の出現。",
+      "reassessmentId": "REA-IMP22-001",
+      "baseline": {
+        "id": "SNAP-IMP22-001-baseline",
+        "evidenceId": "EVD-IMP22-M001-baseline",
+        "dataSourceId": "SYNDS-IMP22-001",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-001",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "RULE-IMP22-001",
+          "RULE-IMP22-002",
+          "RULE-IMP22-003",
+          "RULE-IMP22-004"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "count": 4
+        }
+      },
+      "current": {
+        "id": "SNAP-IMP22-001-current",
+        "evidenceId": "EVD-IMP22-M001-current",
+        "dataSourceId": "SYNDS-IMP22-001",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "RULE-IMP22-001",
+          "RULE-IMP22-002",
+          "RULE-IMP22-003",
+          "RULE-IMP22-004",
+          "RULE-IMP22-005",
+          "RULE-IMP22-006",
+          "RULE-IMP22-007",
+          "RULE-IMP22-008"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "count": 8
+        }
+      }
+    },
+    {
+      "id": "MET-IMP22-002",
+      "type": "Leading",
+      "decisionPurpose": "重要な行動の検証範囲を増やす計画を比較する。",
+      "definition": "著者が選んだ五つの重要行動のうち、供給比較条件を満たしたMemberの割合。",
+      "formula": "proportion",
+      "unit": "割合",
+      "populationId": "POP-IMP22-002",
+      "populationRevision": "POP-REV-001",
+      "populationMembers": [
+        "CRIT-IMP22-001",
+        "CRIT-IMP22-002",
+        "CRIT-IMP22-003",
+        "CRIT-IMP22-004",
+        "CRIT-IMP22-005"
+      ],
+      "populationBasis": "author-selected-finite-teaching-members-not-real-organization",
+      "exclusionReason": "この著者定義の母集団外は未評価。改善のための事後除外はしない。",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "qualityCriterion": "供給入力の有無と既知の不一致を区別し、根拠不足をゼロへ置換しない。",
+      "target": "未検証三行動の必要Evidenceを定める。全攻撃行動への比率とはしない。",
+      "confidence": "この供給値の計算は再現可能。実効果の確信度は未評価。",
+      "limitation": "実測、実組織の分布、因果効果、未選択範囲は評価していない。",
+      "retirementTrigger": "判断目的の消失、重複、Gaming、Dataの継続取得不能、より適切な代替の出現。",
+      "reassessmentId": "REA-IMP22-001",
+      "baseline": {
+        "id": "SNAP-IMP22-002-baseline",
+        "evidenceId": "EVD-IMP22-M002-baseline",
+        "dataSourceId": "SYNDS-IMP22-002",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-001",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "CRIT-IMP22-001",
+          "CRIT-IMP22-002"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 2,
+          "denominator": 5,
+          "ratio": [
+            2,
+            5
+          ]
+        }
+      },
+      "current": {
+        "id": "SNAP-IMP22-002-current",
+        "evidenceId": "EVD-IMP22-M002-current",
+        "dataSourceId": "SYNDS-IMP22-002",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "CRIT-IMP22-001",
+          "CRIT-IMP22-002"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 2,
+          "denominator": 5,
+          "ratio": [
+            2,
+            5
+          ]
+        }
+      }
+    },
+    {
+      "id": "MET-IMP22-003",
+      "type": "Leading",
+      "decisionPurpose": "対応表の広さと検証不足を分離する。",
+      "definition": "同じ十仮説のうち、対応表に記載のあるMemberの割合。有効性の測定ではない。",
+      "formula": "proportion",
+      "unit": "割合",
+      "populationId": "POP-IMP22-003",
+      "populationRevision": "POP-REV-001",
+      "populationMembers": [
+        "HYP-IMP22-001",
+        "HYP-IMP22-002",
+        "HYP-IMP22-003",
+        "HYP-IMP22-004",
+        "HYP-IMP22-005",
+        "HYP-IMP22-006",
+        "HYP-IMP22-007",
+        "HYP-IMP22-008",
+        "HYP-IMP22-009",
+        "HYP-IMP22-010"
+      ],
+      "populationBasis": "author-selected-finite-teaching-members-not-real-organization",
+      "exclusionReason": "この著者定義の母集団外は未評価。改善のための事後除外はしない。",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "qualityCriterion": "供給入力の有無と既知の不一致を区別し、根拠不足をゼロへ置換しない。",
+      "target": "対応表から検証済み割合へ自動変換しない。",
+      "confidence": "この供給値の計算は再現可能。実効果の確信度は未評価。",
+      "limitation": "実測、実組織の分布、因果効果、未選択範囲は評価していない。",
+      "retirementTrigger": "判断目的の消失、重複、Gaming、Dataの継続取得不能、より適切な代替の出現。",
+      "reassessmentId": "REA-IMP22-002",
+      "baseline": {
+        "id": "SNAP-IMP22-003-baseline",
+        "evidenceId": "EVD-IMP22-M003-baseline",
+        "dataSourceId": "SYNDS-IMP22-003",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-001",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "HYP-IMP22-001",
+          "HYP-IMP22-002",
+          "HYP-IMP22-003",
+          "HYP-IMP22-004",
+          "HYP-IMP22-005",
+          "HYP-IMP22-006",
+          "HYP-IMP22-007",
+          "HYP-IMP22-008",
+          "HYP-IMP22-009"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 9,
+          "denominator": 10,
+          "ratio": [
+            9,
+            10
+          ]
+        }
+      },
+      "current": {
+        "id": "SNAP-IMP22-003-current",
+        "evidenceId": "EVD-IMP22-M003-current",
+        "dataSourceId": "SYNDS-IMP22-003",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "HYP-IMP22-001",
+          "HYP-IMP22-002",
+          "HYP-IMP22-003",
+          "HYP-IMP22-004",
+          "HYP-IMP22-005",
+          "HYP-IMP22-006",
+          "HYP-IMP22-007",
+          "HYP-IMP22-008",
+          "HYP-IMP22-009"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 9,
+          "denominator": 10,
+          "ratio": [
+            9,
+            10
+          ]
+        }
+      }
+    },
+    {
+      "id": "MET-IMP22-004",
+      "type": "Outcome",
+      "decisionPurpose": "同じ仮説の供給検証がどこまで完了したかを問う。",
+      "definition": "十仮説のうち、供給された正常・異常対比の必須条件を満たしたMemberの割合。",
+      "formula": "proportion",
+      "unit": "割合",
+      "populationId": "POP-IMP22-004",
+      "populationRevision": "POP-REV-001",
+      "populationMembers": [
+        "HYP-IMP22-001",
+        "HYP-IMP22-002",
+        "HYP-IMP22-003",
+        "HYP-IMP22-004",
+        "HYP-IMP22-005",
+        "HYP-IMP22-006",
+        "HYP-IMP22-007",
+        "HYP-IMP22-008",
+        "HYP-IMP22-009",
+        "HYP-IMP22-010"
+      ],
+      "populationBasis": "author-selected-finite-teaching-members-not-real-organization",
+      "exclusionReason": "この著者定義の母集団外は未評価。改善のための事後除外はしない。",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "qualityCriterion": "供給入力の有無と既知の不一致を区別し、根拠不足をゼロへ置換しない。",
+      "target": "未検証八仮説を別に保持する。実検知率とは呼ばない。",
+      "confidence": "この供給値の計算は再現可能。実効果の確信度は未評価。",
+      "limitation": "実測、実組織の分布、因果効果、未選択範囲は評価していない。",
+      "retirementTrigger": "判断目的の消失、重複、Gaming、Dataの継続取得不能、より適切な代替の出現。",
+      "reassessmentId": "REA-IMP22-002",
+      "baseline": {
+        "id": "SNAP-IMP22-004-baseline",
+        "evidenceId": "EVD-IMP22-M004-baseline",
+        "dataSourceId": "SYNDS-IMP22-004",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-001",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "HYP-IMP22-001",
+          "HYP-IMP22-002"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 2,
+          "denominator": 10,
+          "ratio": [
+            1,
+            5
+          ]
+        }
+      },
+      "current": {
+        "id": "SNAP-IMP22-004-current",
+        "evidenceId": "EVD-IMP22-M004-current",
+        "dataSourceId": "SYNDS-IMP22-004",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "HYP-IMP22-001",
+          "HYP-IMP22-002"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 2,
+          "denominator": 10,
+          "ratio": [
+            1,
+            5
+          ]
+        }
+      }
+    },
+    {
+      "id": "MET-IMP22-005",
+      "type": "Process",
+      "decisionPurpose": "判断時間の短縮とEvidence品質の逆行を併せて判断する。",
+      "definition": "供給された判断開始から判断記録までの五つの時間。個人の作業速度を測らない。",
+      "formula": "duration-distribution",
+      "unit": "分",
+      "populationId": "POP-IMP22-005",
+      "populationRevision": "POP-REV-001",
+      "populationMembers": [
+        "REC-IMP22-001",
+        "REC-IMP22-002",
+        "REC-IMP22-003",
+        "REC-IMP22-004",
+        "REC-IMP22-005"
+      ],
+      "populationBasis": "author-selected-finite-teaching-members-not-real-organization",
+      "exclusionReason": "この著者定義の母集団外は未評価。改善のための事後除外はしない。",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "qualityCriterion": "供給入力の有無と既知の不一致を区別し、根拠不足をゼロへ置換しない。",
+      "target": "品質と安全を保たない時間短縮を合格にしない。",
+      "confidence": "この供給値の計算は再現可能。実効果の確信度は未評価。",
+      "limitation": "実測、実組織の分布、因果効果、未選択範囲は評価していない。",
+      "retirementTrigger": "判断目的の消失、重複、Gaming、Dataの継続取得不能、より適切な代替の出現。",
+      "reassessmentId": "REA-IMP22-003",
+      "baseline": {
+        "id": "SNAP-IMP22-005-baseline",
+        "evidenceId": "EVD-IMP22-M005-baseline",
+        "dataSourceId": "SYNDS-IMP22-005",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-001",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [],
+        "samples": [
+          4,
+          5,
+          6,
+          10,
+          25
+        ],
+        "missingMembers": [],
+        "expectedResult": {
+          "n": 5,
+          "mean": [
+            10,
+            1
+          ],
+          "median": [
+            6,
+            1
+          ],
+          "p90": 25,
+          "percentileMethod": "nearest-rank"
+        }
+      },
+      "current": {
+        "id": "SNAP-IMP22-005-current",
+        "evidenceId": "EVD-IMP22-M005-current",
+        "dataSourceId": "SYNDS-IMP22-005",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [],
+        "samples": [
+          1,
+          2,
+          3,
+          4,
+          15
+        ],
+        "missingMembers": [],
+        "expectedResult": {
+          "n": 5,
+          "mean": [
+            5,
+            1
+          ],
+          "median": [
+            3,
+            1
+          ],
+          "p90": 15,
+          "percentileMethod": "nearest-rank"
+        }
+      }
+    },
+    {
+      "id": "MET-IMP22-006",
+      "type": "Quality",
+      "decisionPurpose": "判断に必要なEvidenceを失っていないかを確認する。",
+      "definition": "同じ五判断のうち、必須Evidenceが充足していると供給記録に明示されたMemberの割合。",
+      "formula": "proportion",
+      "unit": "割合",
+      "populationId": "POP-IMP22-006",
+      "populationRevision": "POP-REV-001",
+      "populationMembers": [
+        "REC-IMP22-001",
+        "REC-IMP22-002",
+        "REC-IMP22-003",
+        "REC-IMP22-004",
+        "REC-IMP22-005"
+      ],
+      "populationBasis": "author-selected-finite-teaching-members-not-real-organization",
+      "exclusionReason": "この著者定義の母集団外は未評価。改善のための事後除外はしない。",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "qualityCriterion": "供給入力の有無と既知の不一致を区別し、根拠不足をゼロへ置換しない。",
+      "target": "三記録の不足を隠さず、品質を保つ受入条件を作る。",
+      "confidence": "この供給値の計算は再現可能。実効果の確信度は未評価。",
+      "limitation": "実測、実組織の分布、因果効果、未選択範囲は評価していない。",
+      "retirementTrigger": "判断目的の消失、重複、Gaming、Dataの継続取得不能、より適切な代替の出現。",
+      "reassessmentId": "REA-IMP22-003",
+      "baseline": {
+        "id": "SNAP-IMP22-006-baseline",
+        "evidenceId": "EVD-IMP22-M006-baseline",
+        "dataSourceId": "SYNDS-IMP22-006",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-001",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "REC-IMP22-001",
+          "REC-IMP22-002",
+          "REC-IMP22-003",
+          "REC-IMP22-004",
+          "REC-IMP22-005"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 5,
+          "denominator": 5,
+          "ratio": [
+            1,
+            1
+          ]
+        }
+      },
+      "current": {
+        "id": "SNAP-IMP22-006-current",
+        "evidenceId": "EVD-IMP22-M006-current",
+        "dataSourceId": "SYNDS-IMP22-006",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "REC-IMP22-001",
+          "REC-IMP22-002"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 2,
+          "denominator": 5,
+          "ratio": [
+            2,
+            5
+          ]
+        }
+      }
+    },
+    {
+      "id": "MET-IMP22-007",
+      "type": "Quality",
+      "decisionPurpose": "Telemetry条件の違いが供給Huntの結論保留とどう関係するかを比較する。",
+      "definition": "同じ十件の供給Huntのうち、Inconclusiveと記録されたMemberの割合。実侵害率ではない。",
+      "formula": "proportion",
+      "unit": "割合",
+      "populationId": "POP-IMP22-007",
+      "populationRevision": "POP-REV-001",
+      "populationMembers": [
+        "HUNT-IMP22-001",
+        "HUNT-IMP22-002",
+        "HUNT-IMP22-003",
+        "HUNT-IMP22-004",
+        "HUNT-IMP22-005",
+        "HUNT-IMP22-006",
+        "HUNT-IMP22-007",
+        "HUNT-IMP22-008",
+        "HUNT-IMP22-009",
+        "HUNT-IMP22-010"
+      ],
+      "populationBasis": "author-selected-finite-teaching-members-not-real-organization",
+      "exclusionReason": "この著者定義の母集団外は未評価。改善のための事後除外はしない。",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "qualityCriterion": "供給入力の有無と既知の不一致を区別し、根拠不足をゼロへ置換しない。",
+      "target": "供給比較のInconclusive減少だけを検証し、親Huntの結果を書き換えない。",
+      "confidence": "この供給値の計算は再現可能。実効果の確信度は未評価。",
+      "limitation": "実測、実組織の分布、因果効果、未選択範囲は評価していない。",
+      "retirementTrigger": "判断目的の消失、重複、Gaming、Dataの継続取得不能、より適切な代替の出現。",
+      "reassessmentId": "REA-IMP22-004",
+      "baseline": {
+        "id": "SNAP-IMP22-007-baseline",
+        "evidenceId": "EVD-IMP22-M007-baseline",
+        "dataSourceId": "SYNDS-IMP22-007",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-001",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "HUNT-IMP22-001",
+          "HUNT-IMP22-002",
+          "HUNT-IMP22-003",
+          "HUNT-IMP22-004"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 4,
+          "denominator": 10,
+          "ratio": [
+            2,
+            5
+          ]
+        }
+      },
+      "current": {
+        "id": "SNAP-IMP22-007-current",
+        "evidenceId": "EVD-IMP22-M007-current",
+        "dataSourceId": "SYNDS-IMP22-007",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "HUNT-IMP22-001"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 1,
+          "denominator": 10,
+          "ratio": [
+            1,
+            10
+          ]
+        }
+      }
+    },
+    {
+      "id": "MET-IMP22-008",
+      "type": "Outcome",
+      "decisionPurpose": "親21の同一条件の供給Retestを、限定した改善判断へ接続する。",
+      "definition": "SCN-CV21-003と010で、三つの供給検知出力がControl期待値に一致する割合。",
+      "formula": "proportion",
+      "unit": "割合",
+      "populationId": "POP-IMP22-008",
+      "populationRevision": "POP-REV-001",
+      "populationMembers": [
+        "positive",
+        "negative",
+        "benign-near-miss"
+      ],
+      "populationBasis": "author-selected-finite-teaching-members-not-real-organization",
+      "exclusionReason": "この著者定義の母集団外は未評価。改善のための事後除外はしない。",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "qualityCriterion": "供給入力の有無と既知の不一致を区別し、根拠不足をゼロへ置換しない。",
+      "target": "旧Failedと正常・Near-missを保持した三条件一致。実RuleのDeployは未実施。",
+      "confidence": "この供給値の計算は再現可能。実効果の確信度は未評価。",
+      "limitation": "実測、実組織の分布、因果効果、未選択範囲は評価していない。",
+      "retirementTrigger": "判断目的の消失、重複、Gaming、Dataの継続取得不能、より適切な代替の出現。",
+      "reassessmentId": "REA-IMP22-005",
+      "baseline": {
+        "id": "SNAP-IMP22-008-baseline",
+        "evidenceId": "EVD-IMP22-M008-baseline",
+        "dataSourceId": "SYNDS-IMP22-008",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-001",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "negative",
+          "benign-near-miss"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 2,
+          "denominator": 3,
+          "ratio": [
+            2,
+            3
+          ]
+        }
+      },
+      "current": {
+        "id": "SNAP-IMP22-008-current",
+        "evidenceId": "EVD-IMP22-M008-current",
+        "dataSourceId": "SYNDS-IMP22-008",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "positive",
+          "negative",
+          "benign-near-miss"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "numerator": 3,
+          "denominator": 3,
+          "ratio": [
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "id": "MET-IMP22-009",
+      "type": "Leading",
+      "decisionPurpose": "権限根拠がない条件を、他の数値で補わず停止する。",
+      "definition": "教材内の必要な権限根拠の供給有無。実権限を判定したり付与したりしない。",
+      "formula": "proportion",
+      "unit": "割合",
+      "populationId": "POP-IMP22-009",
+      "populationRevision": "POP-REV-001",
+      "populationMembers": [
+        "AUTHORITY-IMP22-001"
+      ],
+      "populationBasis": "author-selected-finite-teaching-members-not-real-organization",
+      "exclusionReason": "この著者定義の母集団外は未評価。改善のための事後除外はしない。",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "qualityCriterion": "供給入力の有無と既知の不一致を区別し、根拠不足をゼロへ置換しない。",
+      "target": "根拠がない間はBlocked。実操作を行わない。",
+      "confidence": "この供給値の計算は再現可能。実効果の確信度は未評価。",
+      "limitation": "実測、実組織の分布、因果効果、未選択範囲は評価していない。",
+      "retirementTrigger": "判断目的の消失、重複、Gaming、Dataの継続取得不能、より適切な代替の出現。",
+      "reassessmentId": "REA-IMP22-006",
+      "baseline": {
+        "id": "SNAP-IMP22-009-baseline",
+        "evidenceId": "EVD-IMP22-M009-baseline",
+        "dataSourceId": "SYNDS-IMP22-009",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-001",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [],
+        "samples": [],
+        "missingMembers": [
+          "AUTHORITY-IMP22-001"
+        ],
+        "expectedResult": {
+          "unknown": "missing-input"
+        }
+      },
+      "current": {
+        "id": "SNAP-IMP22-009-current",
+        "evidenceId": "EVD-IMP22-M009-current",
+        "dataSourceId": "SYNDS-IMP22-009",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [],
+        "samples": [],
+        "missingMembers": [
+          "AUTHORITY-IMP22-001"
+        ],
+        "expectedResult": {
+          "unknown": "missing-input"
+        }
+      }
+    },
+    {
+      "id": "MET-IMP22-010",
+      "type": "Process",
+      "decisionPurpose": "判断目的を失った活動件数の指標を廃止する理由を記録する。",
+      "definition": "供給された活動記録の件数。数を増やすだけの誘因を点検する旧指標。",
+      "formula": "count",
+      "unit": "件",
+      "populationId": "POP-IMP22-010",
+      "populationRevision": "POP-REV-001",
+      "populationMembers": [
+        "ACTIVITY-IMP22-001",
+        "ACTIVITY-IMP22-002",
+        "ACTIVITY-IMP22-003",
+        "ACTIVITY-IMP22-004",
+        "ACTIVITY-IMP22-005",
+        "ACTIVITY-IMP22-006",
+        "ACTIVITY-IMP22-007",
+        "ACTIVITY-IMP22-008"
+      ],
+      "populationBasis": "author-selected-finite-teaching-members-not-real-organization",
+      "exclusionReason": "この著者定義の母集団外は未評価。改善のための事後除外はしない。",
+      "windowStart": "2026-09-01T09:00:00Z",
+      "windowEnd": "2026-09-01T09:10:00Z",
+      "cutoff": "2026-09-01T09:11:00Z",
+      "qualityCriterion": "供給入力の有無と既知の不一致を区別し、根拠不足をゼロへ置換しない。",
+      "target": "指標をRetiredとし、重要行動とQualityの問いへ戻る。",
+      "confidence": "この供給値の計算は再現可能。実効果の確信度は未評価。",
+      "limitation": "実測、実組織の分布、因果効果、未選択範囲は評価していない。",
+      "retirementTrigger": "判断目的の消失、重複、Gaming、Dataの継続取得不能、より適切な代替の出現。",
+      "reassessmentId": "REA-IMP22-008",
+      "baseline": {
+        "id": "SNAP-IMP22-010-baseline",
+        "evidenceId": "EVD-IMP22-M010-baseline",
+        "dataSourceId": "SYNDS-IMP22-010",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-001",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "ACTIVITY-IMP22-001",
+          "ACTIVITY-IMP22-002",
+          "ACTIVITY-IMP22-003",
+          "ACTIVITY-IMP22-004"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "count": 4
+        }
+      },
+      "current": {
+        "id": "SNAP-IMP22-010-current",
+        "evidenceId": "EVD-IMP22-M010-current",
+        "dataSourceId": "SYNDS-IMP22-010",
+        "origin": "authored-supplied-values-not-measured",
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "populationRevision": "POP-REV-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "availableAt": "2026-09-01T09:10:30Z",
+        "selectedMembers": [
+          "ACTIVITY-IMP22-001",
+          "ACTIVITY-IMP22-002",
+          "ACTIVITY-IMP22-003",
+          "ACTIVITY-IMP22-004",
+          "ACTIVITY-IMP22-005",
+          "ACTIVITY-IMP22-006",
+          "ACTIVITY-IMP22-007",
+          "ACTIVITY-IMP22-008"
+        ],
+        "samples": [],
+        "missingMembers": [],
+        "expectedResult": {
+          "count": 8
+        }
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "BLI-IMP22-001",
+      "caseId": "CASE-IMP-2026-001",
+      "refines": [
+        "CASE-2026-001",
+        "CASE-DET-2026-001"
+      ],
+      "riskObjectiveId": "ROBJ-IMP22-001",
+      "findingId": "FND-IMP22-001",
+      "gapId": "GAP-IMP22-001",
+      "controlId": "CTL-IMP22-001",
+      "metricIds": [
+        "MET-IMP22-001",
+        "MET-IMP22-002"
+      ],
+      "debt": "Detection",
+      "status": "Proposed",
+      "priority": {
+        "label": "供給案を比較",
+        "reason": "重要行動の未検証が残り、Rule追加を先に成功と数えられない。",
+        "automaticScore": false,
+        "cost": "教材の定性的な負荷想定だけ。実費用は未見積り。"
+      },
+      "dependencyIds": [],
+      "action": {
+        "id": "ACT-IMP22-001",
+        "owner": "SYN-IMP22-OWNER-001",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "proposal": "五行動の母集団と三つの未検証条件を固定し、必要Evidenceを列挙する案。",
+        "acceptance": "Rule件数とは別に各行動の正常・異常比較と未検証理由を示す。",
+        "executionAuthorized": false,
+        "actualExecuted": false
+      },
+      "evidenceIds": [
+        "EVD-IMP22-M001-baseline",
+        "EVD-IMP22-M001-current",
+        "EVD-IMP22-M002-baseline",
+        "EVD-IMP22-M002-current"
+      ],
+      "verification": {
+        "id": null,
+        "evidenceId": null,
+        "itemId": "BLI-IMP22-001",
+        "metricIds": [
+          "MET-IMP22-001",
+          "MET-IMP22-002"
+        ],
+        "sourceEvidenceIds": [],
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "recordedAt": null,
+        "method": "finite-supplied-comparison",
+        "result": "not-verified",
+        "realEffectivenessVerified": false
+      },
+      "decision": {
+        "id": "DEC-IMP22-001",
+        "owner": "SYN-IMP22-DECISION-OWNER",
+        "basis": "重要行動の未検証が残り、Rule追加を先に成功と数えられない。",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "executionAuthorized": false
+      },
+      "riskJudgment": {
+        "claim": "Rule件数とは別に各行動の正常・異常比較と未検証理由を示す。",
+        "confidence": "供給記録の限定解釈。実効果は未評価。",
+        "alternative": "実環境では母集団、観測条件、運用、権限が供給設定と異なる可能性。",
+        "gap": "実影響、実効果、未選択範囲は未測定。",
+        "invalidation": "対象版・母集団・定義・Data source・入力品質・権限条件の変更。",
+        "realRiskReductionMeasured": false,
+        "riskZero": false
+      },
+      "residualRisk": {
+        "id": "RES-IMP22-001",
+        "owner": "SYN-IMP22-RISK-OWNER",
+        "description": "供給範囲外と実影響は未知のままであり、無条件の安全とは言えない。"
+      },
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "owner": null,
+        "scope": null,
+        "authorityReference": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "overridesExecutionAuthority": false
+      },
+      "retirement": {
+        "present": false,
+        "reason": null,
+        "replacementMetricIds": [],
+        "historyRetained": true
+      },
+      "reassessment": {
+        "id": "REA-IMP22-001",
+        "owner": "SYN-IMP22-OWNER-001",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "trigger": "対象版・母集団・Schema・Source・品質・依存・権限・受容期限・指標目的の変更。"
+      },
+      "workRecord": {
+        "stage": "plan-proposed",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "note": "計画案だけ。検証は未実施。",
+        "actualOperation": false
+      }
+    },
+    {
+      "id": "BLI-IMP22-002",
+      "caseId": "CASE-IMP-2026-001",
+      "refines": [
+        "CASE-2026-001",
+        "CASE-DET-2026-001"
+      ],
+      "riskObjectiveId": "ROBJ-IMP22-002",
+      "findingId": "FND-IMP22-002",
+      "gapId": "GAP-IMP22-002",
+      "controlId": "CTL-IMP22-002",
+      "metricIds": [
+        "MET-IMP22-003",
+        "MET-IMP22-004"
+      ],
+      "debt": "Detection",
+      "status": "Approved",
+      "priority": {
+        "label": "供給案を比較",
+        "reason": "対応表の9/10と供給検証の2/10の差を可視化する必要がある。",
+        "automaticScore": false,
+        "cost": "教材の定性的な負荷想定だけ。実費用は未見積り。"
+      },
+      "dependencyIds": [
+        "BLI-IMP22-001"
+      ],
+      "action": {
+        "id": "ACT-IMP22-002",
+        "owner": "SYN-IMP22-OWNER-002",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "proposal": "対応付けだけの仮説を分け、正常系を伴う供給検証計画を比較する案。",
+        "acceptance": "同じ十仮説でmappingと検証の集合を別々に追跡し、未検証八件を残す。",
+        "executionAuthorized": false,
+        "actualExecuted": false
+      },
+      "evidenceIds": [
+        "EVD-IMP22-M003-baseline",
+        "EVD-IMP22-M003-current",
+        "EVD-IMP22-M004-baseline",
+        "EVD-IMP22-M004-current"
+      ],
+      "verification": {
+        "id": null,
+        "evidenceId": null,
+        "itemId": "BLI-IMP22-002",
+        "metricIds": [
+          "MET-IMP22-003",
+          "MET-IMP22-004"
+        ],
+        "sourceEvidenceIds": [],
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "recordedAt": null,
+        "method": "finite-supplied-comparison",
+        "result": "not-verified",
+        "realEffectivenessVerified": false
+      },
+      "decision": {
+        "id": "DEC-IMP22-002",
+        "owner": "SYN-IMP22-DECISION-OWNER",
+        "basis": "対応表の9/10と供給検証の2/10の差を可視化する必要がある。",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "executionAuthorized": false
+      },
+      "riskJudgment": {
+        "claim": "同じ十仮説でmappingと検証の集合を別々に追跡し、未検証八件を残す。",
+        "confidence": "供給記録の限定解釈。実効果は未評価。",
+        "alternative": "実環境では母集団、観測条件、運用、権限が供給設定と異なる可能性。",
+        "gap": "実影響、実効果、未選択範囲は未測定。",
+        "invalidation": "対象版・母集団・定義・Data source・入力品質・権限条件の変更。",
+        "realRiskReductionMeasured": false,
+        "riskZero": false
+      },
+      "residualRisk": {
+        "id": "RES-IMP22-002",
+        "owner": "SYN-IMP22-RISK-OWNER",
+        "description": "供給範囲外と実影響は未知のままであり、無条件の安全とは言えない。"
+      },
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "owner": null,
+        "scope": null,
+        "authorityReference": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "overridesExecutionAuthority": false
+      },
+      "retirement": {
+        "present": false,
+        "reason": null,
+        "replacementMetricIds": [],
+        "historyRetained": true
+      },
+      "reassessment": {
+        "id": "REA-IMP22-002",
+        "owner": "SYN-IMP22-OWNER-002",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "trigger": "対象版・母集団・Schema・Source・品質・依存・権限・受容期限・指標目的の変更。"
+      },
+      "workRecord": {
+        "stage": "plan-approved",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "note": "供給計画の条件確認のみ。実操作は承認していない。",
+        "actualOperation": false
+      }
+    },
+    {
+      "id": "BLI-IMP22-003",
+      "caseId": "CASE-IMP-2026-001",
+      "refines": [
+        "CASE-2026-001",
+        "CASE-DET-2026-001"
+      ],
+      "riskObjectiveId": "ROBJ-IMP22-003",
+      "findingId": "FND-IMP22-003",
+      "gapId": "GAP-IMP22-003",
+      "controlId": "CTL-IMP22-003",
+      "metricIds": [
+        "MET-IMP22-005",
+        "MET-IMP22-006"
+      ],
+      "debt": "Evidence",
+      "status": "In progress",
+      "priority": {
+        "label": "条件を先に確認",
+        "reason": "平均時間短縮と根拠充足の悪化が同時に起きている。",
+        "automaticScore": false,
+        "cost": "教材の定性的な負荷想定だけ。実費用は未見積り。"
+      },
+      "dependencyIds": [],
+      "action": {
+        "id": "ACT-IMP22-003",
+        "owner": "SYN-IMP22-OWNER-003",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "proposal": "必須Evidenceを失うWorkflowを供給資料上で見直す計画。実担当への通知は行わない。",
+        "acceptance": "時間の三統計量と同じ五判断の品質を併記し、品質低下を時間目標で正当化しない。",
+        "executionAuthorized": false,
+        "actualExecuted": false
+      },
+      "evidenceIds": [
+        "EVD-IMP22-M005-baseline",
+        "EVD-IMP22-M005-current",
+        "EVD-IMP22-M006-baseline",
+        "EVD-IMP22-M006-current"
+      ],
+      "verification": {
+        "id": null,
+        "evidenceId": null,
+        "itemId": "BLI-IMP22-003",
+        "metricIds": [
+          "MET-IMP22-005",
+          "MET-IMP22-006"
+        ],
+        "sourceEvidenceIds": [],
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "recordedAt": null,
+        "method": "finite-supplied-comparison",
+        "result": "not-verified",
+        "realEffectivenessVerified": false
+      },
+      "decision": {
+        "id": "DEC-IMP22-003",
+        "owner": "SYN-IMP22-DECISION-OWNER",
+        "basis": "平均時間短縮と根拠充足の悪化が同時に起きている。",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "executionAuthorized": false
+      },
+      "riskJudgment": {
+        "claim": "時間の三統計量と同じ五判断の品質を併記し、品質低下を時間目標で正当化しない。",
+        "confidence": "供給記録の限定解釈。実効果は未評価。",
+        "alternative": "実環境では母集団、観測条件、運用、権限が供給設定と異なる可能性。",
+        "gap": "実影響、実効果、未選択範囲は未測定。",
+        "invalidation": "対象版・母集団・定義・Data source・入力品質・権限条件の変更。",
+        "realRiskReductionMeasured": false,
+        "riskZero": false
+      },
+      "residualRisk": {
+        "id": "RES-IMP22-003",
+        "owner": "SYN-IMP22-RISK-OWNER",
+        "description": "供給範囲外と実影響は未知のままであり、無条件の安全とは言えない。"
+      },
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "owner": null,
+        "scope": null,
+        "authorityReference": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "overridesExecutionAuthority": false
+      },
+      "retirement": {
+        "present": false,
+        "reason": null,
+        "replacementMetricIds": [],
+        "historyRetained": true
+      },
+      "reassessment": {
+        "id": "REA-IMP22-003",
+        "owner": "SYN-IMP22-OWNER-003",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "trigger": "対象版・母集団・Schema・Source・品質・依存・権限・受容期限・指標目的の変更。"
+      },
+      "workRecord": {
+        "stage": "record-draft-in-progress",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "note": "供給Workflowの検討用記録が作成途中。品質条件は未充足。",
+        "actualOperation": false
+      }
+    },
+    {
+      "id": "BLI-IMP22-004",
+      "caseId": "CASE-IMP-2026-001",
+      "refines": [
+        "CASE-2026-001",
+        "CASE-DET-2026-001"
+      ],
+      "riskObjectiveId": "ROBJ-IMP22-004",
+      "findingId": "FND-IMP22-004",
+      "gapId": "GAP-IMP22-004",
+      "controlId": "CTL-IMP22-004",
+      "metricIds": [
+        "MET-IMP22-007"
+      ],
+      "debt": "Telemetry",
+      "status": "Verified",
+      "priority": {
+        "label": "供給案を比較",
+        "reason": "同じ供給Huntの条件差を比較し、結論保留が残る一件も追跡する。",
+        "automaticScore": false,
+        "cost": "教材の定性的な負荷想定だけ。実費用は未見積り。"
+      },
+      "dependencyIds": [],
+      "action": {
+        "id": "ACT-IMP22-004",
+        "owner": "SYN-IMP22-OWNER-004",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "proposal": "十件の供給HuntでTelemetry条件とInconclusiveの前後を比較する。実Collectorは操作しない。",
+        "acceptance": "同じ十件で4/10と1/10を照合し、未確定一件と親Huntの未変更を保持する。",
+        "executionAuthorized": false,
+        "actualExecuted": false
+      },
+      "evidenceIds": [
+        "EVD-IMP22-M007-baseline",
+        "EVD-IMP22-M007-current"
+      ],
+      "verification": {
+        "id": "VAL-IMP22-004",
+        "evidenceId": "EVD-IMP22-V004",
+        "itemId": "BLI-IMP22-004",
+        "metricIds": [
+          "MET-IMP22-007"
+        ],
+        "sourceEvidenceIds": [
+          "EVD-IMP22-M007-baseline",
+          "EVD-IMP22-M007-current"
+        ],
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "method": "finite-supplied-comparison",
+        "result": "bounded-supplied-match",
+        "realEffectivenessVerified": false
+      },
+      "decision": {
+        "id": "DEC-IMP22-004",
+        "owner": "SYN-IMP22-DECISION-OWNER",
+        "basis": "同じ供給Huntの条件差を比較し、結論保留が残る一件も追跡する。",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "executionAuthorized": false
+      },
+      "riskJudgment": {
+        "claim": "同じ十件で4/10と1/10を照合し、未確定一件と親Huntの未変更を保持する。",
+        "confidence": "供給記録の限定解釈。実効果は未評価。",
+        "alternative": "実環境では母集団、観測条件、運用、権限が供給設定と異なる可能性。",
+        "gap": "実影響、実効果、未選択範囲は未測定。",
+        "invalidation": "対象版・母集団・定義・Data source・入力品質・権限条件の変更。",
+        "realRiskReductionMeasured": false,
+        "riskZero": false
+      },
+      "residualRisk": {
+        "id": "RES-IMP22-004",
+        "owner": "SYN-IMP22-RISK-OWNER",
+        "description": "供給範囲外と実影響は未知のままであり、無条件の安全とは言えない。"
+      },
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "owner": null,
+        "scope": null,
+        "authorityReference": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "overridesExecutionAuthority": false
+      },
+      "retirement": {
+        "present": false,
+        "reason": null,
+        "replacementMetricIds": [],
+        "historyRetained": true
+      },
+      "reassessment": {
+        "id": "REA-IMP22-004",
+        "owner": "SYN-IMP22-OWNER-004",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "trigger": "対象版・母集団・Schema・Source・品質・依存・権限・受容期限・指標目的の変更。"
+      },
+      "workRecord": {
+        "stage": "supplied-comparison-complete",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "note": "供給Huntの前後照合記録がそろった。実Collectorや親Huntは未変更。",
+        "actualOperation": false
+      }
+    },
+    {
+      "id": "BLI-IMP22-005",
+      "caseId": "CASE-IMP-2026-001",
+      "refines": [
+        "CASE-2026-001",
+        "CASE-DET-2026-001"
+      ],
+      "riskObjectiveId": "ROBJ-IMP22-005",
+      "findingId": "FND-IMP22-005",
+      "gapId": "GAP-IMP22-005",
+      "controlId": "CTL-IMP22-005",
+      "metricIds": [
+        "MET-IMP22-008"
+      ],
+      "debt": "Detection",
+      "status": "Verified",
+      "priority": {
+        "label": "供給案を比較",
+        "reason": "供給Rule版の差を正常・Near-miss対比を失わず再確認する。",
+        "automaticScore": false,
+        "cost": "教材の定性的な負荷想定だけ。実費用は未見積り。"
+      },
+      "dependencyIds": [],
+      "action": {
+        "id": "ACT-IMP22-005",
+        "owner": "SYN-IMP22-OWNER-005",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "proposal": "親21の003と010を方法参照として照合し、旧Failedと供給新版の一致を両方残す。",
+        "acceptance": "同一対象・Batch・時間条件で三出力を比較し、2/3から3/3の限定差だけを支持する。",
+        "executionAuthorized": false,
+        "actualExecuted": false
+      },
+      "evidenceIds": [
+        "EVD-IMP22-M008-baseline",
+        "EVD-IMP22-M008-current"
+      ],
+      "verification": {
+        "id": "VAL-IMP22-005",
+        "evidenceId": "EVD-IMP22-V005",
+        "itemId": "BLI-IMP22-005",
+        "metricIds": [
+          "MET-IMP22-008"
+        ],
+        "sourceEvidenceIds": [
+          "EVD-IMP22-M008-baseline",
+          "EVD-IMP22-M008-current"
+        ],
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "method": "finite-supplied-comparison",
+        "result": "bounded-supplied-match",
+        "realEffectivenessVerified": false
+      },
+      "decision": {
+        "id": "DEC-IMP22-005",
+        "owner": "SYN-IMP22-DECISION-OWNER",
+        "basis": "供給Rule版の差を正常・Near-miss対比を失わず再確認する。",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "executionAuthorized": false
+      },
+      "riskJudgment": {
+        "claim": "同一対象・Batch・時間条件で三出力を比較し、2/3から3/3の限定差だけを支持する。",
+        "confidence": "供給記録の限定解釈。実効果は未評価。",
+        "alternative": "実環境では母集団、観測条件、運用、権限が供給設定と異なる可能性。",
+        "gap": "実影響、実効果、未選択範囲は未測定。",
+        "invalidation": "対象版・母集団・定義・Data source・入力品質・権限条件の変更。",
+        "realRiskReductionMeasured": false,
+        "riskZero": false
+      },
+      "residualRisk": {
+        "id": "RES-IMP22-005",
+        "owner": "SYN-IMP22-RISK-OWNER",
+        "description": "供給範囲外と実影響は未知のままであり、無条件の安全とは言えない。"
+      },
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "owner": null,
+        "scope": null,
+        "authorityReference": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "overridesExecutionAuthority": false
+      },
+      "retirement": {
+        "present": false,
+        "reason": null,
+        "replacementMetricIds": [],
+        "historyRetained": true
+      },
+      "reassessment": {
+        "id": "REA-IMP22-005",
+        "owner": "SYN-IMP22-OWNER-005",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "trigger": "対象版・母集団・Schema・Source・品質・依存・権限・受容期限・指標目的の変更。"
+      },
+      "workRecord": {
+        "stage": "supplied-comparison-complete",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "note": "親21の供給Retestを照合した記録だけ。親Actionを実施済みにしない。",
+        "actualOperation": false
+      }
+    },
+    {
+      "id": "BLI-IMP22-006",
+      "caseId": "CASE-IMP-2026-001",
+      "refines": [
+        "CASE-2026-001",
+        "CASE-DET-2026-001"
+      ],
+      "riskObjectiveId": "ROBJ-IMP22-006",
+      "findingId": "FND-IMP22-006",
+      "gapId": "GAP-IMP22-006",
+      "controlId": "CTL-IMP22-006",
+      "metricIds": [
+        "MET-IMP22-009"
+      ],
+      "debt": "Authority",
+      "status": "Blocked",
+      "priority": {
+        "label": "条件を先に確認",
+        "reason": "権限根拠不足は、品質や件数の良さで補えない。",
+        "automaticScore": false,
+        "cost": "教材の定性的な負荷想定だけ。実費用は未見積り。"
+      },
+      "dependencyIds": [],
+      "action": {
+        "id": "ACT-IMP22-006",
+        "owner": "SYN-IMP22-OWNER-006",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "proposal": "必要な権限根拠と判断主体を資料上で明示する案。根拠不足の間は停止を保持する。",
+        "acceptance": "供給不足をunknownとBlockedで残し、親の期限切れ権限やDraft RoEを実許可に変えない。",
+        "executionAuthorized": false,
+        "actualExecuted": false
+      },
+      "evidenceIds": [
+        "EVD-IMP22-M009-baseline",
+        "EVD-IMP22-M009-current"
+      ],
+      "verification": {
+        "id": null,
+        "evidenceId": null,
+        "itemId": "BLI-IMP22-006",
+        "metricIds": [
+          "MET-IMP22-009"
+        ],
+        "sourceEvidenceIds": [],
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "recordedAt": null,
+        "method": "finite-supplied-comparison",
+        "result": "not-verified",
+        "realEffectivenessVerified": false
+      },
+      "decision": {
+        "id": "DEC-IMP22-006",
+        "owner": "SYN-IMP22-DECISION-OWNER",
+        "basis": "権限根拠不足は、品質や件数の良さで補えない。",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "executionAuthorized": false
+      },
+      "riskJudgment": {
+        "claim": "供給不足をunknownとBlockedで残し、親の期限切れ権限やDraft RoEを実許可に変えない。",
+        "confidence": "供給記録の限定解釈。実効果は未評価。",
+        "alternative": "実環境では母集団、観測条件、運用、権限が供給設定と異なる可能性。",
+        "gap": "実影響、実効果、未選択範囲は未測定。",
+        "invalidation": "対象版・母集団・定義・Data source・入力品質・権限条件の変更。",
+        "realRiskReductionMeasured": false,
+        "riskZero": false
+      },
+      "residualRisk": {
+        "id": "RES-IMP22-006",
+        "owner": "SYN-IMP22-RISK-OWNER",
+        "description": "供給範囲外と実影響は未知のままであり、無条件の安全とは言えない。"
+      },
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "owner": null,
+        "scope": null,
+        "authorityReference": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "overridesExecutionAuthority": false
+      },
+      "retirement": {
+        "present": false,
+        "reason": null,
+        "replacementMetricIds": [],
+        "historyRetained": true
+      },
+      "reassessment": {
+        "id": "REA-IMP22-006",
+        "owner": "SYN-IMP22-OWNER-006",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "trigger": "対象版・母集団・Schema・Source・品質・依存・権限・受容期限・指標目的の変更。"
+      },
+      "workRecord": {
+        "stage": "blocked",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "note": "供給権限根拠が不足し、後続の実操作は0。",
+        "actualOperation": false
+      }
+    },
+    {
+      "id": "BLI-IMP22-007",
+      "caseId": "CASE-IMP-2026-001",
+      "refines": [
+        "CASE-2026-001",
+        "CASE-DET-2026-001"
+      ],
+      "riskObjectiveId": "ROBJ-IMP22-007",
+      "findingId": "FND-IMP22-007",
+      "gapId": "GAP-IMP22-007",
+      "controlId": "CTL-IMP22-007",
+      "metricIds": [
+        "MET-IMP22-002"
+      ],
+      "debt": "Evidence",
+      "status": "Accepted",
+      "priority": {
+        "label": "供給案を比較",
+        "reason": "未検証範囲の知識不足を、実Riskゼロとせず期限付きの供給判断へ残す。",
+        "automaticScore": false,
+        "cost": "教材の定性的な負荷想定だけ。実費用は未見積り。"
+      },
+      "dependencyIds": [],
+      "action": {
+        "id": "ACT-IMP22-007",
+        "owner": "SYN-IMP22-OWNER-007",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "proposal": "限定した供給計画の残存不確実性を、Risk ownerと期限付きで再評価する案。",
+        "acceptance": "受容の範囲・理由・担当・期限・再評価を残す。実操作許可や検証成功にはしない。",
+        "executionAuthorized": false,
+        "actualExecuted": false
+      },
+      "evidenceIds": [
+        "EVD-IMP22-M002-baseline",
+        "EVD-IMP22-M002-current"
+      ],
+      "verification": {
+        "id": null,
+        "evidenceId": null,
+        "itemId": "BLI-IMP22-007",
+        "metricIds": [
+          "MET-IMP22-002"
+        ],
+        "sourceEvidenceIds": [],
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "recordedAt": null,
+        "method": "finite-supplied-comparison",
+        "result": "not-verified",
+        "realEffectivenessVerified": false
+      },
+      "decision": {
+        "id": "DEC-IMP22-007",
+        "owner": "SYN-IMP22-DECISION-OWNER",
+        "basis": "未検証範囲の知識不足を、実Riskゼロとせず期限付きの供給判断へ残す。",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "executionAuthorized": false
+      },
+      "riskJudgment": {
+        "claim": "受容の範囲・理由・担当・期限・再評価を残す。実操作許可や検証成功にはしない。",
+        "confidence": "供給記録の限定解釈。実効果は未評価。",
+        "alternative": "実環境では母集団、観測条件、運用、権限が供給設定と異なる可能性。",
+        "gap": "実影響、実効果、未選択範囲は未測定。",
+        "invalidation": "対象版・母集団・定義・Data source・入力品質・権限条件の変更。",
+        "realRiskReductionMeasured": false,
+        "riskZero": false
+      },
+      "residualRisk": {
+        "id": "RES-IMP22-007",
+        "owner": "SYN-IMP22-RISK-OWNER",
+        "description": "供給範囲外と実影響は未知のままであり、無条件の安全とは言えない。"
+      },
+      "acceptance": {
+        "present": true,
+        "id": "ACC-IMP22-007",
+        "owner": "SYN-IMP22-RISK-OWNER",
+        "scope": "この供給計画の未検証範囲に関する知識不足だけ。実事業Riskや実作業の許可ではない。",
+        "authorityReference": "SYN-RISK-MANDATE-IMP22",
+        "decidedAt": "2026-09-26T00:00:00Z",
+        "expiresAt": "2026-10-01T00:00:00Z",
+        "overridesExecutionAuthority": false
+      },
+      "retirement": {
+        "present": false,
+        "reason": null,
+        "replacementMetricIds": [],
+        "historyRetained": true
+      },
+      "reassessment": {
+        "id": "REA-IMP22-007",
+        "owner": "SYN-IMP22-OWNER-007",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "trigger": "対象版・母集団・Schema・Source・品質・依存・権限・受容期限・指標目的の変更。"
+      },
+      "workRecord": {
+        "stage": "risk-decision-recorded",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "note": "知識不足を残す供給判断のみ。修正や検証の完了ではない。",
+        "actualOperation": false
+      }
+    },
+    {
+      "id": "BLI-IMP22-008",
+      "caseId": "CASE-IMP-2026-001",
+      "refines": [
+        "CASE-2026-001",
+        "CASE-DET-2026-001"
+      ],
+      "riskObjectiveId": "ROBJ-IMP22-008",
+      "findingId": "FND-IMP22-008",
+      "gapId": "GAP-IMP22-008",
+      "controlId": "CTL-IMP22-008",
+      "metricIds": [
+        "MET-IMP22-010"
+      ],
+      "debt": "Evidence",
+      "status": "Retired",
+      "priority": {
+        "label": "供給案を比較",
+        "reason": "活動件数だけを増やす指標は現在の判断目的を失っている。",
+        "automaticScore": false,
+        "cost": "教材の定性的な負荷想定だけ。実費用は未見積り。"
+      },
+      "dependencyIds": [],
+      "action": {
+        "id": "ACT-IMP22-008",
+        "owner": "SYN-IMP22-OWNER-008",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "proposal": "旧活動件数の定義と値を保持して廃止し、重要行動と根拠品質の問いへ置き換える。",
+        "acceptance": "旧値を削除せず、廃止理由とMET-IMP22-002/006への代替参照を残す。",
+        "executionAuthorized": false,
+        "actualExecuted": false
+      },
+      "evidenceIds": [
+        "EVD-IMP22-M010-baseline",
+        "EVD-IMP22-M010-current"
+      ],
+      "verification": {
+        "id": null,
+        "evidenceId": null,
+        "itemId": "BLI-IMP22-008",
+        "metricIds": [
+          "MET-IMP22-010"
+        ],
+        "sourceEvidenceIds": [],
+        "subjectId": "SYNTH-IMP22-001",
+        "subjectRevision": "INPUT-REV-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "recordedAt": null,
+        "method": "finite-supplied-comparison",
+        "result": "not-verified",
+        "realEffectivenessVerified": false
+      },
+      "decision": {
+        "id": "DEC-IMP22-008",
+        "owner": "SYN-IMP22-DECISION-OWNER",
+        "basis": "活動件数だけを増やす指標は現在の判断目的を失っている。",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "executionAuthorized": false
+      },
+      "riskJudgment": {
+        "claim": "旧値を削除せず、廃止理由とMET-IMP22-002/006への代替参照を残す。",
+        "confidence": "供給記録の限定解釈。実効果は未評価。",
+        "alternative": "実環境では母集団、観測条件、運用、権限が供給設定と異なる可能性。",
+        "gap": "実影響、実効果、未選択範囲は未測定。",
+        "invalidation": "対象版・母集団・定義・Data source・入力品質・権限条件の変更。",
+        "realRiskReductionMeasured": false,
+        "riskZero": false
+      },
+      "residualRisk": {
+        "id": "RES-IMP22-008",
+        "owner": "SYN-IMP22-RISK-OWNER",
+        "description": "供給範囲外と実影響は未知のままであり、無条件の安全とは言えない。"
+      },
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "owner": null,
+        "scope": null,
+        "authorityReference": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "overridesExecutionAuthority": false
+      },
+      "retirement": {
+        "present": true,
+        "reason": "活動件数だけの目標が判断目的を失い、Gamingを招く。旧記録を保持する。",
+        "replacementMetricIds": [
+          "MET-IMP22-002",
+          "MET-IMP22-006"
+        ],
+        "historyRetained": true
+      },
+      "reassessment": {
+        "id": "REA-IMP22-008",
+        "owner": "SYN-IMP22-OWNER-008",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "trigger": "対象版・母集団・Schema・Source・品質・依存・権限・受容期限・指標目的の変更。"
+      },
+      "workRecord": {
+        "stage": "metric-retired-in-record",
+        "recordedAt": "2026-09-26T00:00:00Z",
+        "note": "指標の役割終了を記録した。旧値と根拠は削除していない。",
+        "actualOperation": false
+      }
+    }
+  ],
+  "handoff": {
+    "id": "HOF-IMP22-26",
+    "targetChapter": 26,
+    "itemIds": [
+      "BLI-IMP22-001",
+      "BLI-IMP22-002",
+      "BLI-IMP22-003",
+      "BLI-IMP22-004",
+      "BLI-IMP22-005",
+      "BLI-IMP22-006",
+      "BLI-IMP22-007",
+      "BLI-IMP22-008"
+    ],
+    "status": "planned-not-delivered",
+    "receiptId": null,
+    "owner": "SYN-IMP22-DECISION-OWNER",
+    "dueAt": "2026-09-30T00:00:00Z",
+    "executionAuthorized": false,
+    "purpose": "選択肢、費用仮定、依存、根拠と限界を比較する計画。実受領や判断を認定しない。"
+  },
+  "safety": {
+    "purpose": "完全合成記録の計算と改善判断を学ぶ。",
+    "prerequisite": "章内の定義と親章の方法参照のみ。",
+    "authorityAndScope": "供給記録の読解とローカルCopyだけ。実操作の許可は含まない。",
+    "expectedEvidence": "分母、統計量、品質、IDの照合と限界を記した解答。",
+    "impact": "解答Copyのみ。親正本・実設定・実担当を変更しない。",
+    "stop": "実Data混入、意味・品質・範囲・権限不明で停止し、外部接続や追加実操作をしない。",
+    "cleanup": "解答Copyの整理計画と残存確認。実Runtimeは作っていない。",
+    "individualMonitoring": false,
+    "publicRanking": false,
+    "punitiveKpi": false
+  }
+}

@@ -1,0 +1,698 @@
+{
+  "schemaVersion": "1.0.0",
+  "comparisonVersion": "1.0.0",
+  "chapterId": "ch22-measurement-improvement",
+  "schemaSha256": "e022c40d8b2d423e66ad4241c1093fcacfdb935ab4cbf7d9c6edb98dba53f8f3",
+  "corpusSha256": "a678d844cb77789acada3de32d4e3d21609bd81a1254d98448f0a61f4f608461",
+  "authoredInputs": {
+    "schemaVersion": "39fe4a40977d0585fd5704359e3685b0ada5cf5ee061e5d97385601d120cd0ec",
+    "synthetic": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "readOnly": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "networkRequired": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "executionAuthorized": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "record": "a669cc457fb91c0ba51c71c67266ed9e6b4e20d983fba6f7da8b346711b1b05b",
+    "parentReferences": "0169f2a2d0739a137df06a628ae9a91cb39bd28cff852c6d4b472d81cbbaf0f5",
+    "authorityBoundary": "3b4f35e5287ab61bbab5dd1f4bfa0343d9fba75f230d7c0879bc025284cd9613",
+    "metrics": "8f88530a99fa7ee930842f193efdce8cf7beb3b8f14ce9b0b27274c8e5731afa",
+    "items": "ffbb4a0a80f43df73f7c1662dd9ea3341c0dc31ec469e7063ed9b1a40aa302b6",
+    "handoff": "e394389920ba30f5438c7e0fe2d4a675962cfb75381675af90c4cf7cb5569ccf",
+    "safety": "71fddc391e4d6e09fb1bd9dd71f2667b587e9d9a6878e86b0d7f10dcb0743905"
+  },
+  "parentDigests": {
+    "WRITING_GUIDE.md": "7de62e48cbb0ca637548f6ff9d8f3c6cde0e9085f5dd42139f34f014820bbd95",
+    "SOURCE_POLICY.md": "f32541dcb37160d5194e4d9f8f805e675bebf3e9356a52f219b02bef829515c0",
+    "SAFETY_SCOPE.md": "e8ab5d61712004d16ef96f455d8224162f63296a056663d37cc5403639a184ff",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
+    "manuscript/07-vulnerability-prioritization.md": "4af916c955a6d5e9b3824389570cd72951e7e0cd87be318c45f0ddc07162f3be",
+    "cases/fixtures/ch07-vulnerability-prioritization.json": "37e6fac74e3b30560704a2db13ba2abfb8fd025c1dcbae6f6fbe5f213b6f3d32",
+    "cases/fixtures/ch07-source-snapshot.json": "38ee030f2c6af8707d25d16ad480c50b23710a10cb6b8a914d5d19040869b21d",
+    "cases/fixtures/ch14-minimal-impact-validation.json": "0ef78c7e51a200de200c9293fe047dab95408c2353128bc75c6388448600e7bc",
+    "manuscript/15-findings-retest-risk.md": "b48342c06453786eec1c05aa6dbf1c3061628199ad6dfc12db55d2b6555f6c15",
+    "cases/fixtures/ch15-findings-retest-risk.json": "b2bba3f39fbdeb74686411fc54221879bd804d0257f7259f4d9337d1712793a0",
+    "manuscript/16-telemetry-evidence-readiness.md": "96994707cac2add8c799298c5a97857e3447803904846c9b086708a843e4d9dc",
+    "cases/fixtures/ch16-telemetry-coverage.json": "e20586ce97dc892b8c965b919623133f122fd717943196153e4bd898f7e23f2c",
+    "manuscript/17-detection-engineering.md": "955c4838a65a2fd60f1b0b95f0513979ce957ec44bf7bcc319a9d7a5b4556bef",
+    "cases/fixtures/ch17-detection-engineering-fixture.json": "496a40b1b62fdee21adb1084f329ad4f4c11b35a2522581bbd184967f77c9192",
+    "manuscript/18-threat-hunting.md": "0a94e45afabc2e28d52cda181afa0e2f55ea315d103bbdea87ca34ed18c4d3e1",
+    "cases/fixtures/ch18-threat-hunting.json": "d03020cf27f669ba270ec2b42b952f2050f0ca3fca313070aee4a69950129405",
+    "manuscript/19-incident-response.md": "cb4bafae4744fcddd87eda21704bc9b8d48822512e532efa2038cd1efcc2ea1c",
+    "cases/fixtures/ch19-incident-response.json": "5f400fb8fc9948146eb57d1b2098bd2185bd20f46c3d8bb9fe91a617630760e7",
+    "manuscript/20-dfir-timeline-causality.md": "d4a86d12a844956e1f47d8c6e53348d781e684e4cde7ac266eb80d8fbd73f640",
+    "cases/fixtures/ch20-dfir-timeline-causality.json": "56aac7eb5eab7d080454e983a136489c486244b4ede4ab6be03210b24b439b33",
+    "manuscript/21-purple-team-validation.md": "627988f7ba12dfac6203ccf73028ea8277ef0a9427c25c5d20e9f78c63f6694d",
+    "cases/fixtures/ch21-control-validation.json": "58056ae3558db879df43d7fbddca3453198093456ce518c9bacb8dc6565f1078",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "22b3f2274d543974445811b1f4317aba4779d10728638a51ffce105d7abb8d01",
+    ".book-formatter/revision.json": "71060c07550828b43d34972d448e85339c1b959c6c44623b4431df243d28716d"
+  },
+  "documents": {
+    "manuscript/22-measurement-improvement.md": {
+      "projectionSha256": "4bcea4e07048b07680e2c1251683d968341dfd431c02e48c45179d7171e99fab",
+      "fieldCount": 138,
+      "headings": [
+        [
+          1,
+          "第22章 測定、優先順位、継続改善"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケースまたは判断要求"
+        ],
+        [
+          2,
+          "全体像"
+        ],
+        [
+          2,
+          "1. Metricより先にDecisionを置く"
+        ],
+        [
+          2,
+          "2. Outcome・Leading・Process・Qualityを分ける"
+        ],
+        [
+          2,
+          "3. 分母・母集団・Windowを固定する"
+        ],
+        [
+          2,
+          "4. 平均・中央値・Percentileを混同しない"
+        ],
+        [
+          2,
+          "5. 欠測・Bias・Goodhart riskを残す"
+        ],
+        [
+          2,
+          "6. CoverageとEffectivenessを分離する"
+        ],
+        [
+          2,
+          "7. Debtを優先順位とDependencyへ変える"
+        ],
+        [
+          2,
+          "8. Actionと七状態を結ぶ"
+        ],
+        [
+          2,
+          "9. VerificationとRisk reductionを別々に判断する"
+        ],
+        [
+          2,
+          "10. 再評価とMetric retirementを計画する"
+        ],
+        [
+          2,
+          "11. 五つの対比から判断を練習する"
+        ],
+        [
+          2,
+          "安全な演習または分析課題"
+        ],
+        [
+          2,
+          "成果物と評価基準"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "hostProvenance": [
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "1. Metricより先にDecisionを置く Measureは何をどの方法で数値化したか、Metricはその値をどの目標や判断へ使うかという問いを含む。NIST SP 800-55v1の§1.4と§3.1.1は、目的、範囲、式、根拠、時間基準、責任者を結んで測定を記録する。数値だけを再利用せず、定義も一緒に渡す。SRC-NIST-MEASURE-001",
+          "manuscript/22-measurement-improvement.md:L47:F30"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "CSF 2.0のOrganizational Profileは、現在と目標のOutcomeの差から優先的な行動計画を作る上位文脈として用いる。本章のMetricや七状態をCSFの規定と呼ばず、Profileへのmappingも有効性の証明にしない。SRC-CSF-001",
+          "manuscript/22-measurement-improvement.md:L51:F32"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "4. 平均・中央値・Percentileを混同しない 五つの供給時間[4, 5, 6, 10, 25]分の平均は10分、中央値は6分である。本教材のp90はnearest-rank方式で、昇順の第ceil(0.90 × n)番を選ぶため25分になる。比較側[1, 2, 3, 4, 15]分では平均5分、中央値3分、p90は15分である。小標本なのでp90が最大値に一致しており、実業務の裾の分布を推定できたとはいえない。",
+          "manuscript/22-measurement-improvement.md:L76:F48"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "5. 欠測・Bias・Goodhart riskを残す Data qualityの確認は、数値の計算より前に行う。報告された一部だけを母集団とする選択Bias、失敗例だけが未収集になる欠測、定義の異なる記録の混在を、桁数の多い平均値で補わない。NIST SP 800-55v1の§3.1.3〜3.1.5は、Data管理・品質・不確実性を測定の設計事項として扱う。本教材では欠測を推測値で補完せず、数値と結論の限界を別欄に残す。SRC-NIST-MEASURE-001",
+          "manuscript/22-measurement-improvement.md:L84:F53"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "NIST SP 800-61 Rev.3のID.IM-01〜03は、評価、演習、運用から改善を得る文脈を示す。本教材は供給比較だけなので、実Incidentから得た教訓を記録したとはしない。SRC-IR-001",
+          "manuscript/22-measurement-improvement.md:L136:F86"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "NIST SP 800-55v2の§3は、目的と現状の評価から指標選択、分析、是正、再評価へつなぐ反復的な流れを示す。§3.1.4では指標の見直しや廃止も扱う。すべての組織に同じ数値目標や固定順序を要求するものとして使わない。SRC-NIST-MEASURE-002",
+          "manuscript/22-measurement-improvement.md:L144:F91"
+        ]
+      ]
+    },
+    "templates/security-improvement-backlog.md": {
+      "projectionSha256": "ed49e508a58d228a082b60b219b55c34bf8193beb9d4baa034b3ec2867c5744d",
+      "fieldCount": 71,
+      "headings": [
+        [
+          1,
+          "Security Improvement Backlog"
+        ],
+        [
+          2,
+          "Record and decision purpose"
+        ],
+        [
+          2,
+          "Metric specification"
+        ],
+        [
+          2,
+          "Priority and action"
+        ],
+        [
+          2,
+          "Verification and risk decision"
+        ],
+        [
+          2,
+          "Seven statuses"
+        ],
+        [
+          2,
+          "Reassessment and metric retirement"
+        ],
+        [
+          2,
+          "Authority, scope and safety"
+        ]
+      ],
+      "hostProvenance": []
+    },
+    "cases/ch22-improvement-backlog-example.md": {
+      "projectionSha256": "3ccfaeacbf9b4d8a554dea913a8542949a071f2f352d7fc4910b88049fd3fe9d",
+      "fieldCount": 1414,
+      "headings": [
+        [
+          1,
+          "測定と改善判断の完全合成例"
+        ],
+        [
+          2,
+          "読み方と実権限の境界"
+        ],
+        [
+          2,
+          "五つの対比"
+        ],
+        [
+          2,
+          "八項目の状態と次の判断"
+        ],
+        [
+          2,
+          "全欄の読み方"
+        ],
+        [
+          3,
+          "schemaVersion"
+        ],
+        [
+          3,
+          "synthetic"
+        ],
+        [
+          3,
+          "readOnly"
+        ],
+        [
+          3,
+          "networkRequired"
+        ],
+        [
+          3,
+          "executionAuthorized"
+        ],
+        [
+          3,
+          "record"
+        ],
+        [
+          3,
+          "parentReferences"
+        ],
+        [
+          3,
+          "authorityBoundary"
+        ],
+        [
+          3,
+          "MET-IMP22-001"
+        ],
+        [
+          3,
+          "MET-IMP22-002"
+        ],
+        [
+          3,
+          "MET-IMP22-003"
+        ],
+        [
+          3,
+          "MET-IMP22-004"
+        ],
+        [
+          3,
+          "MET-IMP22-005"
+        ],
+        [
+          3,
+          "MET-IMP22-006"
+        ],
+        [
+          3,
+          "MET-IMP22-007"
+        ],
+        [
+          3,
+          "MET-IMP22-008"
+        ],
+        [
+          3,
+          "MET-IMP22-009"
+        ],
+        [
+          3,
+          "MET-IMP22-010"
+        ],
+        [
+          3,
+          "BLI-IMP22-001"
+        ],
+        [
+          3,
+          "BLI-IMP22-002"
+        ],
+        [
+          3,
+          "BLI-IMP22-003"
+        ],
+        [
+          3,
+          "BLI-IMP22-004"
+        ],
+        [
+          3,
+          "BLI-IMP22-005"
+        ],
+        [
+          3,
+          "BLI-IMP22-006"
+        ],
+        [
+          3,
+          "BLI-IMP22-007"
+        ],
+        [
+          3,
+          "BLI-IMP22-008"
+        ],
+        [
+          3,
+          "handoff"
+        ],
+        [
+          3,
+          "safety"
+        ],
+        [
+          2,
+          "安全な分析と終了条件"
+        ]
+      ],
+      "hostProvenance": []
+    },
+    "references/ch22-source-review-2026-09-26.md": {
+      "projectionSha256": "dd76f359dcb8d0d9cfa1dbeb232c23265204da10bbe5f14137c077a6333e4bee",
+      "fieldCount": 65,
+      "headings": [
+        [
+          1,
+          "第22章 Source Review — 2026-09-26"
+        ],
+        [
+          2,
+          "確認範囲と判定"
+        ],
+        [
+          2,
+          "SRC-NIST-MEASURE-001 — 指標の定義と選択"
+        ],
+        [
+          2,
+          "SRC-NIST-MEASURE-002 — Measurement Programと改善"
+        ],
+        [
+          2,
+          "SRC-CSF-001 — 現在と目標のOutcome"
+        ],
+        [
+          2,
+          "SRC-IR-001 — 評価と運用からの改善"
+        ],
+        [
+          2,
+          "SRC-KEV-001 — 継続更新Dataの限定例"
+        ],
+        [
+          2,
+          "Reader-facing implications"
+        ]
+      ],
+      "hostProvenance": [
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "SRC-NIST-MEASURE-001 — 指標の定義と選択 版・状態: SP 800-55v1、Final。公式Document HistoryのFinal日は2024-12-04。SP 800-55 Rev.1を置き換える。今回のFinal landingに後継版や廃止の告知は確認されなかった。",
+          "references/ch22-source-review-2026-09-26.md:L13:F11"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://csrc.nist.gov/pubs/sp/800/55/v1/final",
+          "references/ch22-source-review-2026-09-26.md:L14:F13"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-55v1.pdf",
+          "references/ch22-source-review-2026-09-26.md:L14:F14"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "SRC-NIST-MEASURE-001 — 指標の定義と選択 採用: §1.4印刷p.2のMeasure / Metricの区別、§3.1.1〜3.1.5印刷pp.12〜16の記録・報告・Data管理・品質・不確実性、§3.3印刷pp.17〜18の測定の種類、§4印刷pp.19〜23の選択・優先・継続評価。",
+          "references/ch22-source-review-2026-09-26.md:L16:F16"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "SRC-NIST-MEASURE-001 — 指標の定義と選択 不採用: 普遍的な数値目標、実組織の効果推定、財務Riskモデル。NISTのImplementation / Effectiveness / Efficiency / Impactと本書のOutcome / Leading / Process / Qualityを同一分類としない。§4.4のFalse positive rateの表現を、既存章の混同行列や分母定義へ転用しない。",
+          "references/ch22-source-review-2026-09-26.md:L17:F17"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "SRC-NIST-MEASURE-002 — Measurement Programと改善 版・状態: SP 800-55v2、Final。公式Document HistoryのFinal日は2024-12-04。SP 800-55 Rev.1を置き換える。今回のFinal landingに後継版や廃止の告知は確認されなかった。",
+          "references/ch22-source-review-2026-09-26.md:L24:F23"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://csrc.nist.gov/pubs/sp/800/55/v2/final",
+          "references/ch22-source-review-2026-09-26.md:L25:F25"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-55v2.pdf",
+          "references/ch22-source-review-2026-09-26.md:L25:F26"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "SRC-NIST-MEASURE-002 — Measurement Programと改善 採用: §3印刷pp.12〜22の目的・現状評価、指標の選択、Data分析、是正案、実施後の反復的な測定。§3.1.4印刷p.15の、活動や成果物の変化に応じた指標の見直し・廃止。",
+          "references/ch22-source-review-2026-09-26.md:L27:F28"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://csrc.nist.gov/pubs/cswp/29/the-nist-cybersecurity-framework-csf-20/final",
+          "references/ch22-source-review-2026-09-26.md:L34:F35"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+          "references/ch22-source-review-2026-09-26.md:L34:F36"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "SRC-CSF-001 — 現在と目標のOutcome 採用: §3.1印刷pp.6〜7のCurrent / Target Organizational Profile、Gap分析、優先的な行動計画。",
+          "references/ch22-source-review-2026-09-26.md:L36:F38"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "SRC-IR-001 — 評価と運用からの改善 発行主体・版: NIST SP 800-61 Rev.3、Final2025-04-03。Rev.2を置き換える。",
+          "references/ch22-source-review-2026-09-26.md:L42:F43"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+          "references/ch22-source-review-2026-09-26.md:L43:F45"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r3.pdf",
+          "references/ch22-source-review-2026-09-26.md:L43:F46"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "SRC-IR-001 — 評価と運用からの改善 採用: ID.IM-01〜03、印刷pp.19〜20。評価、演習、運用から改善を見つける文脈。",
+          "references/ch22-source-review-2026-09-26.md:L45:F48"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+          "references/ch22-source-review-2026-09-26.md:L52:F55"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://github.com/cisagov/kev-data",
+          "references/ch22-source-review-2026-09-26.md:L53:F57"
+        ]
+      ]
+    }
+  },
+  "sourceIdentity": {
+    "SRC-NIST-MEASURE-001": {
+      "publisher": "NIST",
+      "title": "Measurement Guide for Information Security: Volume 1 — Identifying and Selecting Measures",
+      "kind": "standard",
+      "status": "final",
+      "version": "SP 800-55v1",
+      "url": "https://csrc.nist.gov/pubs/sp/800/55/v1/final",
+      "publishedAt": "2024-12-04",
+      "notes": "Chapter22 scoped review: official Final landing and PDF, §1.4 p.2, §3 pp.12–18 and §4 pp.19–23: definitions, goals/scope/formula/time/source/roles, data quality/uncertainty, measure selection and review. Final date from Document History; supersedes SP800-55 Rev.1. Book metric roles/statuses/algorithms and supplied numbers are not NIST normative categories or real effectiveness proof. No FPR denominator change or financial model adopted. Scope and PDF identifier: references/ch22-source-review-2026-09-26.md."
+    },
+    "SRC-NIST-MEASURE-002": {
+      "publisher": "NIST",
+      "title": "Measurement Guide for Information Security: Volume 2 — Developing an Information Security Measurement Program",
+      "kind": "standard",
+      "status": "final",
+      "version": "SP 800-55v2",
+      "url": "https://csrc.nist.gov/pubs/sp/800/55/v2/final",
+      "publishedAt": "2024-12-04",
+      "notes": "Chapter22 scoped review: official Final landing and PDF, §3 pp.12–22, especially §3.1.4 p.15: goals/current program, measure selection, analysis, corrective action, iterative review and retirement. Final date from Document History; supersedes SP800-55 Rev.1. Not a compulsory maturity ladder, HR ranking, universal threshold or certification of actual implementation/effectiveness. Scope and PDF identifier: references/ch22-source-review-2026-09-26.md."
+    },
+    "SRC-CSF-001": {
+      "publisher": "NIST",
+      "title": "Cybersecurity Framework 2.0",
+      "kind": "framework",
+      "status": "final",
+      "version": "2.0",
+      "url": "https://www.nist.gov/cyberframework",
+      "publishedAt": "2024-02-26",
+      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。 2026-09-23用途限定確認: 第19章ではFinal CSWP 29（2024-02-26）印刷p.5の六Functionを上位Outcomeとして参照し、固定直列IR手順・本書七状態の規範算法・適合認定とはしない。 第22章用途限定確認（2026-09-26）: CSWP29 Final2024-02-26の公式landing/PDF、§3.1印刷pp.6〜7のCurrent/Target Profile、Gap、優先行動計画を確認。Metric/七状態の規範算法やmappingからの効果証明ではない。既存章notesと次回確認日を保持。"
+    },
+    "SRC-IR-001": {
+      "publisher": "NIST",
+      "title": "Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+      "kind": "standard",
+      "status": "final",
+      "version": "SP 800-61 Rev.3",
+      "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+      "publishedAt": "2025-04-03",
+      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: FinalのDE.AE-08/p26、RS.MA-02/p27、RS.AN-06/07/p29をIncident基準・Triage・記録の来歴に限定参照。本書の五Resultや算法の規範・法的認定ではない。詳細はch18-source-review-2026-09-22.md。 2026-09-23用途限定確認: 第19章はSP800-61r3 Final（2025-04-03）pp.1–2、DE.AE-08 p.26、RS.MA-02〜05 pp.27–28、RS.AN-06/07 p.29、RS.CO-02/03 pp.30–31、RS.MI-01/02 pp.32–33、RC.RP-01〜06 p.34を宣言・分類・記録・通知照会・復旧検証に参照。七状態と有限判断は本書独自で、実権限・真正性・個別法的通知判断は認定しない。 2026-09-25: Chapter20用途としてRev3 Final2025-04-03の公式landing/PDFを再確認。印刷pp.28–29のRS.AN-03/06/07を順序・関連資産・根底の原因を問うこと、調査記録、来歴・保持に限定採用。二Eventの相関を原因とせず、有限教材の算法や普遍的保持・法的適格性の根拠にはしない。 第21章（2026-09-25）では公式Final/PDFの印刷p.13 GV.RR-02、pp.19〜20 ID.IM-01/02/03に限定し、役割・権限と評価/演習/運用からの改善を確認。供給仮定を実権限や実Incident由来の教訓にせず、実対応手順・個別法的判断は対象外。 第22章用途限定確認（2026-09-26）: Rev3 Final2025-04-03の公式landing/PDF、ID.IM-01〜03印刷pp.19〜20の評価・演習・運用からの改善を参照。供給比較を実Incident教訓や実Risk reductionとしない。既存章notesと次回確認日を保持。"
+    },
+    "SRC-KEV-001": {
+      "publisher": "CISA",
+      "title": "Known Exploited Vulnerabilities Catalog",
+      "kind": "continuous-data",
+      "status": "continuously-updated",
+      "version": null,
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "publishedAt": null,
+      "notes": "Individual entries require use-time checking; unlisted is not unexploited. Chapter 7 pinned official cisagov/kev-data commit acdcfd43102c098c377568b417a42c0e00cc63a5, Catalog 2026.09.11, 1709 entries. Canonical web page returned 403; official mirror README documents synchronization lag. Live catalog publication date and fixed version are not established, so publishedAt/version remain null; dated snapshot is separate. No inference of organization deadlines or legal exemption. Original BOD 26-04 text was inaccessible; the separate SRC-CISA-VRM-001 announcement supports issuance/purpose only. 第22章用途限定確認（2026-09-26）: canonical CatalogはHTTP403。公式cisagov/kev-data READMEのUpdate schedule/Usage/Licenseだけを確認し、継続更新Dataの例と取得時点・適用母集団固定の説明に限定。最新Catalog値・個別CVE・期限・BOD26-04本文・新Snapshotは未確認/不採用。第7章の過去Snapshot、version/publishedAt null、次回確認日を保持し、全件の再監査とはしない。"
+    }
+  },
+  "pages": [
+    {
+      "source": "manuscript/22-measurement-improvement.md",
+      "destination": "chapters/chapter-22/index.md",
+      "section": "chapters",
+      "order": 205,
+      "title": "第22章 測定、優先順位、継続改善"
+    },
+    {
+      "source": "templates/security-improvement-backlog.md",
+      "destination": "templates/security-improvement-backlog/index.md",
+      "section": "additional",
+      "order": 294,
+      "title": "Security Improvement Backlog"
+    },
+    {
+      "source": "cases/ch22-improvement-backlog-example.md",
+      "destination": "cases/chapter-22-improvement-backlog/index.md",
+      "section": "additional",
+      "order": 295,
+      "title": "第22章 Security Improvement Backlog完全合成記入例"
+    },
+    {
+      "source": "references/ch22-source-review-2026-09-26.md",
+      "destination": "references/chapter-22-source-review/index.md",
+      "section": "additional",
+      "order": 296,
+      "title": "第22章 Source Review — 2026-09-26"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch22-measurement-improvement.json",
+      "destination": "downloads/ch22-measurement-improvement.json"
+    },
+    {
+      "source": "schemas/ch22-measurement-improvement.schema.json",
+      "destination": "downloads/ch22-measurement-improvement.schema.json"
+    }
+  ],
+  "indices": {
+    "artifact-index.md": [
+      "ART-28",
+      "templates/security-improvement-backlog.md",
+      "cases/ch22-improvement-backlog-example.md"
+    ],
+    "figure-index.md": [
+      "F-22-01",
+      "T-22-01",
+      "T-22-02",
+      "T-22-03",
+      "T-22-04"
+    ],
+    "glossary.md": [
+      "Metric specification",
+      "Goodhart risk",
+      "Metric retirement"
+    ],
+    "cases/index.md": [
+      "ch22-improvement-backlog-example.md",
+      "ART-28"
+    ],
+    "cases/fixtures/index.md": [
+      "ch22-measurement-improvement.json",
+      "ch22-measurement-improvement.schema.json"
+    ],
+    "README.md": [
+      "check:chapter22",
+      "十Metric・八Item・七Status",
+      "tests/fixtures/chapter22/README.md"
+    ],
+    "CHANGELOG.md": [
+      "manuscript/22-measurement-improvement.md",
+      "ART-28"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "第22章",
+      "check:chapter22",
+      "十Metric・八Item・七Status"
+    ]
+  }
+}
