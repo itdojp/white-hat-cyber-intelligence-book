@@ -89,3 +89,7 @@
 ## 第22章 Measurement and Improvement
 
 [Security Improvement Backlog全欄Case](ch22-improvement-backlog-example.md)はART-28の十Metric、八Item、七Status、五対比を持つ。[供給JSON](fixtures/ch22-measurement-improvement.json)と[Schema](../schemas/ch22-measurement-improvement.schema.json)で分母・時刻・品質・Validation/Evidence・期限付き受容を照合する。実効果、実権限、親Evidenceの受領は認定しない。
+
+## 第III部の横断読解
+
+[観測から改善判断への対応表](part-iii-detection-improvement-map.md)で、第16〜22章の直接ID参照、方法参照、非継承、未配達とGapを確認する。新しい実施Caseではなく、七教材を読み直す補助教材である。

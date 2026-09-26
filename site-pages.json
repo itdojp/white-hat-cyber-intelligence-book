@@ -613,6 +613,13 @@
       "section": "additional",
       "order": 296,
       "title": "第22章 Source Review — 2026-09-26"
+    },
+    {
+      "source": "cases/part-iii-detection-improvement-map.md",
+      "destination": "cases/part-iii-detection-improvement-map/index.md",
+      "section": "additional",
+      "order": 320,
+      "title": "第III部 横断読解：観測から改善判断へ"
     }
   ],
   "directoryRoutes": {
