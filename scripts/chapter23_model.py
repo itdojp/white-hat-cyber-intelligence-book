@@ -298,7 +298,7 @@ def evaluate(data):
     answer_windows = set()
     for r in rs.values():
         require(r["decisionId"] == decision["id"], "requirement decision")
-        require(cutoff <= instant(r["deadline"]) <= times[1], "requirement deadline")
+        require(times[0] <= instant(r["deadline"]) <= times[1], "requirement deadline")
         require(
             r["reassessmentId"] == data["feedback"]["reassessmentId"],
             "requirement reassessment",

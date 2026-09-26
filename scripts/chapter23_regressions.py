@@ -89,6 +89,28 @@ def run_regressions(data, schema, contract, source, projection):
         else:
             check(row["id"], error is None and actual == row["expectedResult"])
 
+    # Published schema and semantic guards both require evidence-backed answers
+    # and criterion-bound evidence, without banning legitimate empty collections.
+    nonempty_refs = [
+        ("requirements", i, "answerBindings", j, "evidenceIds")
+        for i, row in enumerate(data["requirements"])
+        for j, _ in enumerate(row["answerBindings"])
+    ] + [("evidence", i, "criterionIds") for i in range(len(data["evidence"]))]
+    for path in nonempty_refs:
+        empty = deepcopy(data)
+        at(empty, path[:-1])[path[-1]] = []
+        check(
+            "empty-schema-ref:" + str(path),
+            rejected(lambda: validate_schema_instance(empty, schema)),
+        )
+        check("empty-semantic-ref:" + str(path), rejected(lambda: evaluate(empty)))
+        single = deepcopy(data)
+        at(single, path[:-1])[path[-1]] = at(data, path)[:1]
+        check(
+            "single-schema-ref:" + str(path),
+            not rejected(lambda: validate_schema_instance(single, schema)),
+        )
+
     # Required / closed object shape, independently of the content snapshot.
     for path, obj in objects(data):
         for key in obj:

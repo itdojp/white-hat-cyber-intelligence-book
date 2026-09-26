@@ -3,8 +3,8 @@
   "comparisonVersion": "1.0.0",
   "chapterId": "ch23-intelligence-requirements",
   "dataSha256": "7765ef35d0d7ff2fa992685e4eb7fda5d50697fbc1cb84ff0984172fec793f92",
-  "schemaSha256": "f924a73abeca724383172a301730707a4120028537de2fd41a11cf899d843055",
-  "corpusSha256": "be595c3e9245be5c4677e9f9d56639fba43ff6f21b477316b3fd155c24959e5f",
+  "schemaSha256": "a81df1a7433f75527fdfc7aad398003543847ba3ea8b9f3592e5cc932f05f765",
+  "corpusSha256": "d8418adbc73a9f65ab0f005115c8571a89fd045a9aef92e11606d4becdb40134",
   "documents": {
     "manuscript/23-intelligence-requirements.md": {
       "projectionSha256": "ab6493ad907e245107feb8fd267565f65365f39cd9e427191cafaab22922721a",
