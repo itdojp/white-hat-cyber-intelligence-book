@@ -90,3 +90,7 @@
 ## 第9章の成果物
 
 [第9章 Engagement DesignとRules of Engagement](manuscript/09-engagement-roe.md) / [ART-02](templates/rules-of-engagement.md) / [完全合成Case](cases/ch09-engagement-roe-example.md) / [計画JSON](cases/fixtures/ch09-engagement-roe.json)。親の許可期限を保持したDraftで、作業を始めない判断と再承認を学ぶ。
+
+## Intelligence Requirementから収集計画へ
+
+[第23章](manuscript/23-intelligence-requirements.md)、[ART-29](templates/intelligence-requirement-collection-plan.md)、[完全合成例](cases/ch23-intelligence-requirements-example.md)で、判断期限と未解決Gapを辿る。

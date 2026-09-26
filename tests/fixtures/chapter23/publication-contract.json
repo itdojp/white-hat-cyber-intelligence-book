@@ -1,0 +1,592 @@
+{
+  "schemaVersion": "1.0.0",
+  "comparisonVersion": "1.0.0",
+  "chapterId": "ch23-intelligence-requirements",
+  "dataSha256": "585300a5ca0dd4e6973d1a564f81765d7de8eea5c0d6f69b5471fadc72990906",
+  "schemaSha256": "f924a73abeca724383172a301730707a4120028537de2fd41a11cf899d843055",
+  "corpusSha256": "df628b743a76ebe2af586f9312bc64ef0b751f715860c7447917a5975ea6be1b",
+  "documents": {
+    "manuscript/23-intelligence-requirements.md": {
+      "projectionSha256": "bd0b63cbad9cfd64c542abf79890dffae9885463cbd5d2fedda4f7bb9a09b52a",
+      "headings": [
+        [
+          1,
+          "第23章 Intelligence Requirementsと収集計画"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケースまたは判断要求"
+        ],
+        [
+          2,
+          "全体像"
+        ],
+        [
+          2,
+          "1. DecisionとIntelligence Requirementを分ける"
+        ],
+        [
+          2,
+          "2. 答えられる問いと回答基準を作る"
+        ],
+        [
+          2,
+          "3. Fact・Assumption・Gap・Indicator・Signpostを区別する"
+        ],
+        [
+          2,
+          "4. 時間軸と優先順位を判断へ結ぶ"
+        ],
+        [
+          2,
+          "5. RequirementとCollectionを多対多で結ぶ"
+        ],
+        [
+          2,
+          "6. 収集境界と六状態を記録する"
+        ],
+        [
+          2,
+          "7. 処理・分析・配布まで期限を逆算する"
+        ],
+        [
+          2,
+          "8. Feedback・無効化・再評価を計画する"
+        ],
+        [
+          2,
+          "攻撃者・防御者・分析者・意思決定者の接続"
+        ],
+        [
+          2,
+          "安全な演習または分析課題"
+        ],
+        [
+          2,
+          "作成する成果物"
+        ],
+        [
+          2,
+          "評価基準"
+        ],
+        [
+          2,
+          "よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "fieldCount": 126,
+      "hostProvenance": [
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://itdojp.github.io/practical-auth-book/",
+          "manuscript/23-intelligence-requirements.md:L7:F8"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://itdojp.github.io/pentest-learning-book/",
+          "manuscript/23-intelligence-requirements.md:L7:F9"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
+          "manuscript/23-intelligence-requirements.md:L171:F121"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.odni.gov/files/ODNI/documents/IC_OSINT_Strategy.pdf",
+          "manuscript/23-intelligence-requirements.md:L172:F123"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "ICD 203のD.6.cは利用者の要求と優先順位に応じた適時性、D.6.dは重要な情報ギャップと収集への接続を扱う。本章は分析品質の参考として用い、米国ICの指令を民間の収集権限やART-29の規格として扱わない。SRC-ICD203-001",
+          "manuscript/23-intelligence-requirements.md:L56:F39"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "最小確信度は回答の受入条件であり、Sourceの種類だけで自動計算しない。確信度は高・中・低を用い、根拠品質、代替説明、Gapと合わせて記す。ICD 203のD.6.e.1〜4はSource品質、不確実性、事実と仮定・判断の区別、代替説明を扱う。書類の完成と分析上の確実性は別である。SRC-ICD203-001",
+          "manuscript/23-intelligence-requirements.md:L66:F45"
+        ]
+      ]
+    },
+    "templates/intelligence-requirement-collection-plan.md": {
+      "projectionSha256": "9ec8c4ce45edaccdcae45240620e767089b8d89a8a63dcd4ea44ca439086c167",
+      "headings": [
+        [
+          1,
+          "Intelligence Requirement and Collection Plan"
+        ],
+        [
+          2,
+          "利用境界"
+        ],
+        [
+          2,
+          "記入順序"
+        ],
+        [
+          2,
+          "有限StatusとPriority"
+        ],
+        [
+          2,
+          "記入例と差戻し"
+        ],
+        [
+          2,
+          "Handoff"
+        ],
+        [
+          2,
+          "提出前確認"
+        ]
+      ],
+      "fieldCount": 41,
+      "hostProvenance": []
+    },
+    "cases/ch23-intelligence-requirements-example.md": {
+      "projectionSha256": "d3a39cb895a7d7b16f168b1bf77e3a419929046dbf5db995bc774a16f681866d",
+      "headings": [
+        [
+          1,
+          "第23章 完全合成例：Intelligence Requirement and Collection Plan"
+        ],
+        [
+          2,
+          "読み方と境界"
+        ],
+        [
+          2,
+          "判断と五つの問い"
+        ],
+        [
+          2,
+          "全欄の読み方"
+        ],
+        [
+          3,
+          "schemaVersion"
+        ],
+        [
+          3,
+          "synthetic"
+        ],
+        [
+          3,
+          "readOnly"
+        ],
+        [
+          3,
+          "networkRequired"
+        ],
+        [
+          3,
+          "executionAuthorized"
+        ],
+        [
+          3,
+          "record"
+        ],
+        [
+          3,
+          "parents"
+        ],
+        [
+          3,
+          "decision"
+        ],
+        [
+          3,
+          "FACT-IR23-1"
+        ],
+        [
+          3,
+          "FACT-IR23-2"
+        ],
+        [
+          3,
+          "FACT-IR23-3"
+        ],
+        [
+          3,
+          "ASSUMP-IR23-001"
+        ],
+        [
+          3,
+          "IR23-R1"
+        ],
+        [
+          3,
+          "IR23-R2"
+        ],
+        [
+          3,
+          "IR23-R3"
+        ],
+        [
+          3,
+          "IR23-R4"
+        ],
+        [
+          3,
+          "IR23-R5"
+        ],
+        [
+          3,
+          "COL-IR23-001"
+        ],
+        [
+          3,
+          "COL-IR23-002"
+        ],
+        [
+          3,
+          "COL-IR23-003"
+        ],
+        [
+          3,
+          "COL-IR23-004"
+        ],
+        [
+          3,
+          "COL-IR23-005"
+        ],
+        [
+          3,
+          "COL-IR23-006"
+        ],
+        [
+          3,
+          "COL-IR23-007"
+        ],
+        [
+          3,
+          "COL-IR23-008"
+        ],
+        [
+          3,
+          "SNOTE-IR23-1"
+        ],
+        [
+          3,
+          "SNOTE-IR23-2"
+        ],
+        [
+          3,
+          "SNOTE-IR23-3"
+        ],
+        [
+          3,
+          "IR23-E1"
+        ],
+        [
+          3,
+          "IR23-E2"
+        ],
+        [
+          3,
+          "IR23-E3"
+        ],
+        [
+          3,
+          "IR23-E4"
+        ],
+        [
+          3,
+          "GAP-IR23-R2-B"
+        ],
+        [
+          3,
+          "GAP-IR23-R3-A"
+        ],
+        [
+          3,
+          "GAP-IR23-R3-B"
+        ],
+        [
+          3,
+          "GAP-IR23-R4-A"
+        ],
+        [
+          3,
+          "GAP-IR23-R4-B"
+        ],
+        [
+          3,
+          "GAP-IR23-R5-A"
+        ],
+        [
+          3,
+          "GAP-IR23-R5-B"
+        ],
+        [
+          3,
+          "pipeline"
+        ],
+        [
+          3,
+          "feedback"
+        ],
+        [
+          3,
+          "HOF-IR23-24"
+        ],
+        [
+          3,
+          "HOF-IR23-25"
+        ],
+        [
+          3,
+          "HOF-IR23-26"
+        ],
+        [
+          2,
+          "失敗例と再評価"
+        ]
+      ],
+      "fieldCount": 630,
+      "hostProvenance": []
+    },
+    "references/ch23-source-review-2026-09-27.md": {
+      "projectionSha256": "55143c8b3c12c46e758d4c3d97ab42d33e420b98e5817b762fe328bb78c80774",
+      "headings": [
+        [
+          1,
+          "第23章 Source再監査（2026-09-27）"
+        ],
+        [
+          2,
+          "ICD 203"
+        ],
+        [
+          2,
+          "IC OSINT Strategy 2024–2026"
+        ],
+        [
+          2,
+          "採用しない内容と出版影響"
+        ]
+      ],
+      "fieldCount": 22,
+      "hostProvenance": [
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
+          "references/ch23-source-review-2026-09-27.md:L7:F7"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.intelligence.gov/mission/our-values/objectivity",
+          "references/ch23-source-review-2026-09-27.md:L9:F9"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.odni.gov/files/ODNI/documents/IC_OSINT_Strategy.pdf",
+          "references/ch23-source-review-2026-09-27.md:L13:F13"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.cia.gov/stories/story/ic-osint-strategy-rollout/",
+          "references/ch23-source-review-2026-09-27.md:L15:F15"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://archive.dni.gov/index.php/newsroom/press-releases/press-releases-2024/3784-odni-and-cia-release-the-intelligence-community-osint-strategy-for-2024-2026",
+          "references/ch23-source-review-2026-09-27.md:L15:F16"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "ICD 203 SRC-ICD203-001の公式PDFをweb readerで取得した抽出本文で再確認した。D.6.cの適時性、D.6.dの情報ギャップ、D.6.e.1〜5のSource品質、不確実性、事実・仮定・判断の区別、代替説明、利用者との関連性に用途を限定する。",
+          "references/ch23-source-review-2026-09-27.md:L7:F6"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "IC OSINT Strategy 2024–2026 SRC-ODNI-OSINT-001として公式PDFの当該公開版を採用する。本文p.1の優先順位・要求・Gap、p.3〜4の収集管理とGap analysisを、要求起点の設計例として要約する。資料の対象は米国ICであり、民間CTIの法的規範やTool操作手順ではない。",
+          "references/ch23-source-review-2026-09-27.md:L13:F12"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "最初のdni.gov側PDF取得後、部分再取得にtimeoutがあった。別の公式odni.gov URLから本文を確認した範囲だけを採用し、アクセス制限回避や署名画像・PDF byteの照合を行ったという記録にはしない。",
+          "references/ch23-source-review-2026-09-27.md:L17:F17"
+        ]
+      ]
+    }
+  },
+  "parentDigests": {
+    "WRITING_GUIDE.md": "7de62e48cbb0ca637548f6ff9d8f3c6cde0e9085f5dd42139f34f014820bbd95",
+    "SOURCE_POLICY.md": "f32541dcb37160d5194e4d9f8f805e675bebf3e9356a52f219b02bef829515c0",
+    "SAFETY_SCOPE.md": "e8ab5d61712004d16ef96f455d8224162f63296a056663d37cc5403639a184ff",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
+    "manuscript/04-assets-boundaries-threat-model.md": "b20d25c51f0fa27c0404a8c5d2a4753a0a5b96a7152df67be985479590940084",
+    "manuscript/16-telemetry-evidence-readiness.md": "96994707cac2add8c799298c5a97857e3447803904846c9b086708a843e4d9dc",
+    "cases/fixtures/ch16-telemetry-coverage.json": "e20586ce97dc892b8c965b919623133f122fd717943196153e4bd898f7e23f2c",
+    "manuscript/19-incident-response.md": "cb4bafae4744fcddd87eda21704bc9b8d48822512e532efa2038cd1efcc2ea1c",
+    "cases/fixtures/ch19-incident-response.json": "5f400fb8fc9948146eb57d1b2098bd2185bd20f46c3d8bb9fe91a617630760e7",
+    "manuscript/25-structured-analysis-attribution.md": "55a451fd6bbfd683ecd920b0d16d292532e65b4c73c417ee40047a9d056e3be0",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "22b3f2274d543974445811b1f4317aba4779d10728638a51ffce105d7abb8d01",
+    ".book-formatter/revision.json": "71060c07550828b43d34972d448e85339c1b959c6c44623b4431df243d28716d"
+  },
+  "sourceIdentity": {
+    "SRC-ICD203-001": {
+      "id": "SRC-ICD203-001",
+      "publisher": "ODNI",
+      "title": "ICD 203 Analytic Standards / Objectivity",
+      "kind": "analytic-standard",
+      "status": "official",
+      "version": "signed 2015-01-02; technical amendment effective 2022-01-21; official summary revision 2023-06 (signature day unverified)",
+      "url": "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
+      "publishedAt": "2015-01-02",
+      "nextReviewAt": "2027-08-03"
+    },
+    "SRC-ODNI-OSINT-001": {
+      "id": "SRC-ODNI-OSINT-001",
+      "publisher": "ODNI / CIA",
+      "title": "The IC OSINT Strategy 2024–2026",
+      "kind": "strategy",
+      "status": "official",
+      "version": "2024–2026 published edition",
+      "url": "https://www.odni.gov/files/ODNI/documents/IC_OSINT_Strategy.pdf",
+      "publishedAt": "2024-03-08",
+      "nextReviewAt": "2026-12-31"
+    }
+  },
+  "routes": {
+    "pages": [
+      {
+        "source": "manuscript/23-intelligence-requirements.md",
+        "destination": "chapters/chapter-23/index.md",
+        "section": "chapters",
+        "order": 206,
+        "title": "第23章 Intelligence Requirementsと収集計画"
+      },
+      {
+        "source": "templates/intelligence-requirement-collection-plan.md",
+        "destination": "templates/intelligence-requirement-collection-plan/index.md",
+        "section": "additional",
+        "order": 322,
+        "title": "Intelligence Requirement and Collection Plan"
+      },
+      {
+        "source": "cases/ch23-intelligence-requirements-example.md",
+        "destination": "cases/chapter-23-intelligence-requirements/index.md",
+        "section": "additional",
+        "order": 323,
+        "title": "第23章 Intelligence Requirement and Collection Plan完全合成例"
+      },
+      {
+        "source": "references/ch23-source-review-2026-09-27.md",
+        "destination": "references/chapter-23-source-review/index.md",
+        "section": "additional",
+        "order": 324,
+        "title": "第23章 Source Review — 2026-09-27"
+      }
+    ],
+    "staticFiles": [
+      {
+        "source": "cases/fixtures/ch23-intelligence-requirements.json",
+        "destination": "downloads/ch23-intelligence-requirements.json"
+      },
+      {
+        "source": "schemas/ch23-intelligence-requirements.schema.json",
+        "destination": "downloads/ch23-intelligence-requirements.schema.json"
+      }
+    ]
+  },
+  "indices": {
+    "artifact-index.md": [
+      "| ART-29 |"
+    ],
+    "figure-index.md": [
+      "| F-23-01 |"
+    ],
+    "glossary.md": [
+      "## Intelligence Requirement / Collection Requirement"
+    ],
+    "cases/index.md": [
+      "ch23-intelligence-requirements-example.md"
+    ],
+    "cases/fixtures/index.md": [
+      "ch23-intelligence-requirements.json"
+    ],
+    "README.md": [
+      "manuscript/23-intelligence-requirements.md"
+    ],
+    "CHANGELOG.md": [
+      "manuscript/23-intelligence-requirements.md"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "check_chapter23_contract.py"
+    ]
+  }
+}

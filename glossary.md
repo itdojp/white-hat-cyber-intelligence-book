@@ -233,3 +233,7 @@
 | Metric retirement | 判断目的を失った指標の廃止。旧値・理由・代替先を保持する |
 
 [第22章](manuscript/22-measurement-improvement.md)と[ART-28](templates/security-improvement-backlog.md)で使用する。有限供給記録の計算は、実効果や実権限の認定ではない。
+
+## Intelligence Requirement / Collection Requirement
+
+Intelligence Requirementは判断に必要な不確実性を減らす問い、Collection Requirementは不足を埋めるために必要な情報の種類と取得・利用条件を定める要求。本書では回答条件とDeliverableを区別する。[第23章](manuscript/23-intelligence-requirements.md)を参照。

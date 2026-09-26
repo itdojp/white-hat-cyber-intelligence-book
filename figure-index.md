@@ -176,3 +176,10 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 | T-22-02 | Debt、優先理由、依存と次の判断 | 第22章 |
 | T-22-03 | Backlogの七状態と必要な根拠 | 第22章 |
 | T-22-04 | 五つの供給対比と結論の上限 | 第22章 |
+
+## 第23章 Intelligence Requirements
+
+| ID | 図表 | 正本 | 状態 |
+|---|---|---|---|
+| F-23-01 | 判断要求から収集・配布・再評価への読み順 | `manuscript/23-intelligence-requirements.md` | Implemented |
+| T-23-01 | Requirement / Collectionの六状態 | `manuscript/23-intelligence-requirements.md` | Implemented |

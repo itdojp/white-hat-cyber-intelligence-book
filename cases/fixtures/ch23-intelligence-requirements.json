@@ -1,0 +1,740 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "readOnly": true,
+  "networkRequired": false,
+  "executionAuthorized": false,
+  "record": {
+    "id": "IRCP-2026-023-001",
+    "artifactId": "ART-29",
+    "caseId": "CASE-IRP-2026-001",
+    "subjectId": "APP-IR23-001",
+    "revision": "IR23-REV-001",
+    "asOf": "2026-10-02T12:00:00Z",
+    "actualCollections": 0,
+    "actualActions": 0,
+    "actualNotifications": 0
+  },
+  "parents": {
+    "relation": "refines",
+    "use": "method-reference-only",
+    "caseId": "CASE-2026-001",
+    "threatModelId": "TM-2026-001",
+    "telemetryRecordId": "TCM-2026-016",
+    "incidentRecordId": "IAP-2026-019-001",
+    "subjectInherited": false,
+    "evidenceTransferred": false,
+    "authorityTransferred": false,
+    "incidentDeclared": false,
+    "parentStateChanged": false
+  },
+  "decision": {
+    "id": "DEC-IR23-001",
+    "owner": "ROLE-IR23-DECISION-OWNER",
+    "question": "48時間以内に外部連携を停止すべきか",
+    "openedAt": "2026-10-01T00:00:00Z",
+    "deadline": "2026-10-03T00:00:00Z",
+    "options": [
+      {
+        "id": "OPT-IR23-STOP",
+        "text": "停止を提案する",
+        "reversibility": "復旧条件の確認が必要"
+      },
+      {
+        "id": "OPT-IR23-LIMIT",
+        "text": "制限付き継続を提案する",
+        "reversibility": "制限を再評価する条件が必要"
+      }
+    ],
+    "recommendation": "未充足の問いを意思決定者へ提示し条件付き案を比較する。実停止は行わない",
+    "judgmentConfidence": "低",
+    "alternative": "正常変更または誤設定の説明も未排除"
+  },
+  "facts": [
+    {
+      "id": "FACT-IR23-1",
+      "evidenceId": "IR23-E1",
+      "text": "対象は架空の請求連携一件"
+    },
+    {
+      "id": "FACT-IR23-2",
+      "evidenceId": "IR23-E2",
+      "text": "供給記録に同期処理一件が記載される"
+    },
+    {
+      "id": "FACT-IR23-3",
+      "evidenceId": "IR23-E3",
+      "text": "供給仕様例は参照機能と更新機能を区別する"
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASSUMP-IR23-001",
+      "text": "教材上、判断主体は同じ48時間の期限を保つ",
+      "validation": "期限変更の供給指示で再評価する"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "IR23-R1",
+      "decisionId": "DEC-IR23-001",
+      "priority": "P0 Decision blocking",
+      "timeHorizon": "Tactical",
+      "question": "影響対象と権限範囲",
+      "supportingQuestion": "対象を同定するには何が不足しているか",
+      "criteria": [
+        {
+          "id": "IR23-R1-A",
+          "text": "対象を同定する"
+        },
+        {
+          "id": "IR23-R1-B",
+          "text": "許可された機能の範囲を区別する"
+        }
+      ],
+      "minimumConfidence": "中",
+      "status": "Satisfied",
+      "collectionIds": [
+        "COL-IR23-001",
+        "COL-IR23-002"
+      ],
+      "answerBindings": [
+        {
+          "criterionId": "IR23-R1-A",
+          "evidenceIds": [
+            "IR23-E1"
+          ],
+          "confidence": "中"
+        },
+        {
+          "criterionId": "IR23-R1-B",
+          "evidenceIds": [
+            "IR23-E3"
+          ],
+          "confidence": "中"
+        }
+      ],
+      "gapIds": [],
+      "owner": "ROLE-IR23-ANALYST-1",
+      "deadline": "2026-10-02T20:00:00Z",
+      "judgmentConfidence": "中",
+      "judgment": "供給された対象・版・Window内の二条件だけ回答可能",
+      "alternative": "供給例以外の対象や条件では結論が変わり得る",
+      "invalidation": "対象・版・Scope・Source品質・権限条件が変化したとき",
+      "reassessmentId": "REASS-IR23-001",
+      "cancellationReason": null,
+      "blocker": null
+    },
+    {
+      "id": "IR23-R2",
+      "decisionId": "DEC-IR23-001",
+      "priority": "P0 Decision blocking",
+      "timeHorizon": "Tactical",
+      "question": "実行された操作のEvidence",
+      "supportingQuestion": "供給記録内の操作を特定するには何が不足しているか",
+      "criteria": [
+        {
+          "id": "IR23-R2-A",
+          "text": "供給記録内の操作を特定する"
+        },
+        {
+          "id": "IR23-R2-B",
+          "text": "操作の結果を別の根拠で確認する"
+        }
+      ],
+      "minimumConfidence": "中",
+      "status": "Partially satisfied",
+      "collectionIds": [
+        "COL-IR23-001",
+        "COL-IR23-003"
+      ],
+      "answerBindings": [
+        {
+          "criterionId": "IR23-R2-A",
+          "evidenceIds": [
+            "IR23-E2"
+          ],
+          "confidence": "中"
+        }
+      ],
+      "gapIds": [
+        "GAP-IR23-R2-B"
+      ],
+      "owner": "ROLE-IR23-ANALYST-2",
+      "deadline": "2026-10-02T20:00:00Z",
+      "judgmentConfidence": "低",
+      "judgment": "未充足の問いを残し結論を限定する",
+      "alternative": "供給例以外の対象や条件では結論が変わり得る",
+      "invalidation": "対象・版・Scope・Source品質・権限条件が変化したとき",
+      "reassessmentId": "REASS-IR23-001",
+      "cancellationReason": null,
+      "blocker": null
+    },
+    {
+      "id": "IR23-R3",
+      "decisionId": "DEC-IR23-001",
+      "priority": "P1 Required",
+      "timeHorizon": "Tactical",
+      "question": "代替説明",
+      "supportingQuestion": "正常な変更で説明できる条件を示すには何が不足しているか",
+      "criteria": [
+        {
+          "id": "IR23-R3-A",
+          "text": "正常な変更で説明できる条件を示す"
+        },
+        {
+          "id": "IR23-R3-B",
+          "text": "誤設定で説明できる条件を示す"
+        }
+      ],
+      "minimumConfidence": "中",
+      "status": "Collecting",
+      "collectionIds": [
+        "COL-IR23-002",
+        "COL-IR23-003",
+        "COL-IR23-004"
+      ],
+      "answerBindings": [],
+      "gapIds": [
+        "GAP-IR23-R3-A",
+        "GAP-IR23-R3-B"
+      ],
+      "owner": "ROLE-IR23-ANALYST-3",
+      "deadline": "2026-10-02T20:00:00Z",
+      "judgmentConfidence": "低",
+      "judgment": "未充足の問いを残し結論を限定する",
+      "alternative": "供給例以外の対象や条件では結論が変わり得る",
+      "invalidation": "対象・版・Scope・Source品質・権限条件が変化したとき",
+      "reassessmentId": "REASS-IR23-001",
+      "cancellationReason": null,
+      "blocker": null
+    },
+    {
+      "id": "IR23-R4",
+      "decisionId": "DEC-IR23-001",
+      "priority": "P1 Required",
+      "timeHorizon": "Tactical",
+      "question": "Controlの有効性",
+      "supportingQuestion": "期待する抑止条件を示すには何が不足しているか",
+      "criteria": [
+        {
+          "id": "IR23-R4-A",
+          "text": "期待する抑止条件を示す"
+        },
+        {
+          "id": "IR23-R4-B",
+          "text": "同じ条件の正常対比を示す"
+        }
+      ],
+      "minimumConfidence": "中",
+      "status": "Planned",
+      "collectionIds": [
+        "COL-IR23-005",
+        "COL-IR23-007"
+      ],
+      "answerBindings": [],
+      "gapIds": [
+        "GAP-IR23-R4-A",
+        "GAP-IR23-R4-B"
+      ],
+      "owner": "ROLE-IR23-ANALYST-4",
+      "deadline": "2026-10-02T20:00:00Z",
+      "judgmentConfidence": "低",
+      "judgment": "未充足の問いを残し結論を限定する",
+      "alternative": "供給例以外の対象や条件では結論が変わり得る",
+      "invalidation": "対象・版・Scope・Source品質・権限条件が変化したとき",
+      "reassessmentId": "REASS-IR23-001",
+      "cancellationReason": null,
+      "blocker": null
+    },
+    {
+      "id": "IR23-R5",
+      "decisionId": "DEC-IR23-001",
+      "priority": "P0 Decision blocking",
+      "timeHorizon": "Tactical",
+      "question": "停止の事業影響",
+      "supportingQuestion": "停止で中断する業務を特定するには何が不足しているか",
+      "criteria": [
+        {
+          "id": "IR23-R5-A",
+          "text": "停止で中断する業務を特定する"
+        },
+        {
+          "id": "IR23-R5-B",
+          "text": "復旧可能な時間を確認する"
+        }
+      ],
+      "minimumConfidence": "中",
+      "status": "Blocked",
+      "collectionIds": [
+        "COL-IR23-006",
+        "COL-IR23-007",
+        "COL-IR23-008"
+      ],
+      "answerBindings": [],
+      "gapIds": [
+        "GAP-IR23-R5-A",
+        "GAP-IR23-R5-B"
+      ],
+      "owner": "ROLE-IR23-ANALYST-5",
+      "deadline": "2026-10-02T20:00:00Z",
+      "judgmentConfidence": "低",
+      "judgment": "未充足の問いを残し結論を限定する",
+      "alternative": "供給例以外の対象や条件では結論が変わり得る",
+      "invalidation": "対象・版・Scope・Source品質・権限条件が変化したとき",
+      "reassessmentId": "REASS-IR23-001",
+      "cancellationReason": null,
+      "blocker": "架空Owner回答の利用条件が未確認"
+    }
+  ],
+  "collections": [
+    {
+      "id": "COL-IR23-001",
+      "requirementIds": [
+        "IR23-R1",
+        "IR23-R2"
+      ],
+      "sourceClass": "provided-telemetry",
+      "methodClass": "provided-data-review",
+      "authority": "provided-synthetic-only",
+      "terms": "provided-exercise-only",
+      "classification": "synthetic-public",
+      "privacy": "no-real-person-data",
+      "retention": "exercise-record-only",
+      "cost": "供給資料の読解15分以内という教材上の見積り",
+      "owner": "ROLE-IR23-COLLECTOR-1",
+      "deadline": "2026-10-02T16:00:00Z",
+      "status": "Satisfied",
+      "deliverableIds": [
+        "IR23-D1-A",
+        "IR23-D1-B"
+      ],
+      "evidenceIds": [
+        "IR23-E1",
+        "IR23-E2"
+      ],
+      "stop": "Authority・Terms・Classification不明なら停止。外部接続・実Data混入時も停止",
+      "blocker": null,
+      "cancellationReason": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "COL-IR23-002",
+      "requirementIds": [
+        "IR23-R1",
+        "IR23-R3"
+      ],
+      "sourceClass": "provided-public-document",
+      "methodClass": "provided-data-review",
+      "authority": "provided-synthetic-only",
+      "terms": "provided-exercise-only",
+      "classification": "synthetic-public",
+      "privacy": "no-real-person-data",
+      "retention": "exercise-record-only",
+      "cost": "供給資料の読解15分以内という教材上の見積り",
+      "owner": "ROLE-IR23-COLLECTOR-2",
+      "deadline": "2026-10-02T16:00:00Z",
+      "status": "Satisfied",
+      "deliverableIds": [
+        "IR23-D2-A"
+      ],
+      "evidenceIds": [
+        "IR23-E3"
+      ],
+      "stop": "Authority・Terms・Classification不明なら停止。外部接続・実Data混入時も停止",
+      "blocker": null,
+      "cancellationReason": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "COL-IR23-003",
+      "requirementIds": [
+        "IR23-R2",
+        "IR23-R3"
+      ],
+      "sourceClass": "provided-owner-confirmation",
+      "methodClass": "provided-data-review",
+      "authority": "provided-synthetic-only",
+      "terms": "provided-exercise-only",
+      "classification": "synthetic-public",
+      "privacy": "no-real-person-data",
+      "retention": "exercise-record-only",
+      "cost": "供給資料の読解15分以内という教材上の見積り",
+      "owner": "ROLE-IR23-COLLECTOR-3",
+      "deadline": "2026-10-02T16:00:00Z",
+      "status": "Partially satisfied",
+      "deliverableIds": [
+        "IR23-D3-A",
+        "IR23-D3-B"
+      ],
+      "evidenceIds": [
+        "IR23-E4"
+      ],
+      "stop": "Authority・Terms・Classification不明なら停止。外部接続・実Data混入時も停止",
+      "blocker": null,
+      "cancellationReason": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "COL-IR23-004",
+      "requirementIds": [
+        "IR23-R3"
+      ],
+      "sourceClass": "provided-telemetry",
+      "methodClass": "provided-data-review",
+      "authority": "provided-synthetic-only",
+      "terms": "provided-exercise-only",
+      "classification": "synthetic-public",
+      "privacy": "no-real-person-data",
+      "retention": "exercise-record-only",
+      "cost": "供給資料の読解15分以内という教材上の見積り",
+      "owner": "ROLE-IR23-COLLECTOR-4",
+      "deadline": "2026-10-02T16:00:00Z",
+      "status": "Collecting",
+      "deliverableIds": [
+        "IR23-D4-A"
+      ],
+      "evidenceIds": [],
+      "stop": "Authority・Terms・Classification不明なら停止。外部接続・実Data混入時も停止",
+      "blocker": null,
+      "cancellationReason": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "COL-IR23-005",
+      "requirementIds": [
+        "IR23-R4"
+      ],
+      "sourceClass": "provided-telemetry",
+      "methodClass": "provided-data-review",
+      "authority": "provided-synthetic-only",
+      "terms": "provided-exercise-only",
+      "classification": "synthetic-public",
+      "privacy": "no-real-person-data",
+      "retention": "exercise-record-only",
+      "cost": "供給資料の読解15分以内という教材上の見積り",
+      "owner": "ROLE-IR23-COLLECTOR-5",
+      "deadline": "2026-10-02T16:00:00Z",
+      "status": "Planned",
+      "deliverableIds": [
+        "IR23-D5-A"
+      ],
+      "evidenceIds": [],
+      "stop": "Authority・Terms・Classification不明なら停止。外部接続・実Data混入時も停止",
+      "blocker": null,
+      "cancellationReason": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "COL-IR23-006",
+      "requirementIds": [
+        "IR23-R5"
+      ],
+      "sourceClass": "provided-owner-confirmation",
+      "methodClass": "provided-data-review",
+      "authority": "unknown",
+      "terms": "unknown",
+      "classification": "synthetic-public",
+      "privacy": "no-real-person-data",
+      "retention": "exercise-record-only",
+      "cost": "供給資料の読解15分以内という教材上の見積り",
+      "owner": "ROLE-IR23-COLLECTOR-6",
+      "deadline": "2026-10-02T16:00:00Z",
+      "status": "Blocked",
+      "deliverableIds": [
+        "IR23-D6-A"
+      ],
+      "evidenceIds": [],
+      "stop": "Authority・Terms・Classification不明なら停止。外部接続・実Data混入時も停止",
+      "blocker": "AuthorityとTermsが不明のため読解開始不可",
+      "cancellationReason": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "COL-IR23-007",
+      "requirementIds": [
+        "IR23-R4",
+        "IR23-R5"
+      ],
+      "sourceClass": "provided-public-document",
+      "methodClass": "provided-data-review",
+      "authority": "provided-synthetic-only",
+      "terms": "provided-exercise-only",
+      "classification": "synthetic-public",
+      "privacy": "no-real-person-data",
+      "retention": "exercise-record-only",
+      "cost": "供給資料の読解15分以内という教材上の見積り",
+      "owner": "ROLE-IR23-COLLECTOR-7",
+      "deadline": "2026-10-02T16:00:00Z",
+      "status": "Planned",
+      "deliverableIds": [
+        "IR23-D7-A"
+      ],
+      "evidenceIds": [],
+      "stop": "Authority・Terms・Classification不明なら停止。外部接続・実Data混入時も停止",
+      "blocker": null,
+      "cancellationReason": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "COL-IR23-008",
+      "requirementIds": [
+        "IR23-R5"
+      ],
+      "sourceClass": "provided-owner-confirmation",
+      "methodClass": "provided-data-review",
+      "authority": "provided-synthetic-only",
+      "terms": "provided-exercise-only",
+      "classification": "synthetic-public",
+      "privacy": "no-real-person-data",
+      "retention": "exercise-record-only",
+      "cost": "供給資料の読解15分以内という教材上の見積り",
+      "owner": "ROLE-IR23-COLLECTOR-8",
+      "deadline": "2026-10-02T16:00:00Z",
+      "status": "Cancelled",
+      "deliverableIds": [
+        "IR23-D8-A"
+      ],
+      "evidenceIds": [],
+      "stop": "Authority・Terms・Classification不明なら停止。外部接続・実Data混入時も停止",
+      "blocker": null,
+      "cancellationReason": "別のCollectionと目的が重複した旧案。未実施のまま保持",
+      "executionAuthorized": false
+    }
+  ],
+  "sources": [
+    {
+      "id": "SNOTE-IR23-1",
+      "sourceClass": "provided-telemetry",
+      "quality": "reviewed",
+      "qualityReason": "供給範囲・版・来歴を教材内で照合",
+      "origin": "PROVIDED-IR23-1",
+      "synthetic": true,
+      "independentGroup": "GROUP-IR23-1"
+    },
+    {
+      "id": "SNOTE-IR23-2",
+      "sourceClass": "provided-public-document",
+      "quality": "reviewed",
+      "qualityReason": "供給範囲・版・来歴を教材内で照合",
+      "origin": "PROVIDED-IR23-2",
+      "synthetic": true,
+      "independentGroup": "GROUP-IR23-2"
+    },
+    {
+      "id": "SNOTE-IR23-3",
+      "sourceClass": "provided-owner-confirmation",
+      "quality": "pending",
+      "qualityReason": "架空回答の独立確認が未了",
+      "origin": "PROVIDED-IR23-3",
+      "synthetic": true,
+      "independentGroup": "GROUP-IR23-3"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "IR23-E1",
+      "collectionId": "COL-IR23-001",
+      "deliverableId": "IR23-D1-A",
+      "sourceId": "SNOTE-IR23-1",
+      "subjectId": "APP-IR23-001",
+      "revision": "IR23-REV-001",
+      "windowStart": "2026-10-01T00:00:00Z",
+      "windowEnd": "2026-10-02T10:00:00Z",
+      "availableAt": "2026-10-02T11:00:00Z",
+      "criterionIds": [
+        "IR23-R1-A"
+      ],
+      "observation": "対象は架空の請求連携一件"
+    },
+    {
+      "id": "IR23-E2",
+      "collectionId": "COL-IR23-001",
+      "deliverableId": "IR23-D1-B",
+      "sourceId": "SNOTE-IR23-1",
+      "subjectId": "APP-IR23-001",
+      "revision": "IR23-REV-001",
+      "windowStart": "2026-10-01T00:00:00Z",
+      "windowEnd": "2026-10-02T10:00:00Z",
+      "availableAt": "2026-10-02T11:00:00Z",
+      "criterionIds": [
+        "IR23-R2-A"
+      ],
+      "observation": "供給記録に同期処理一件が記載される"
+    },
+    {
+      "id": "IR23-E3",
+      "collectionId": "COL-IR23-002",
+      "deliverableId": "IR23-D2-A",
+      "sourceId": "SNOTE-IR23-2",
+      "subjectId": "APP-IR23-001",
+      "revision": "IR23-REV-001",
+      "windowStart": "2026-10-01T00:00:00Z",
+      "windowEnd": "2026-10-02T10:00:00Z",
+      "availableAt": "2026-10-02T11:00:00Z",
+      "criterionIds": [
+        "IR23-R1-B"
+      ],
+      "observation": "供給仕様例は参照機能と更新機能を区別する"
+    },
+    {
+      "id": "IR23-E4",
+      "collectionId": "COL-IR23-003",
+      "deliverableId": "IR23-D3-A",
+      "sourceId": "SNOTE-IR23-3",
+      "subjectId": "APP-IR23-001",
+      "revision": "IR23-REV-001",
+      "windowStart": "2026-10-01T00:00:00Z",
+      "windowEnd": "2026-10-02T10:00:00Z",
+      "availableAt": "2026-10-02T11:00:00Z",
+      "criterionIds": [
+        "IR23-R2-B"
+      ],
+      "observation": "架空Owner回答案だけでは操作結果を確定できない"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "GAP-IR23-R2-B",
+      "requirementId": "IR23-R2",
+      "criterionId": "IR23-R2-B",
+      "reason": "回答条件を満たす評価済みSourceのEvidenceが未供給",
+      "owner": "ROLE-IR23-ANALYST-2",
+      "deadline": "2026-10-02T20:00:00Z",
+      "confidenceLimit": "低",
+      "reassessmentId": "REASS-IR23-001"
+    },
+    {
+      "id": "GAP-IR23-R3-A",
+      "requirementId": "IR23-R3",
+      "criterionId": "IR23-R3-A",
+      "reason": "回答条件を満たす評価済みSourceのEvidenceが未供給",
+      "owner": "ROLE-IR23-ANALYST-3",
+      "deadline": "2026-10-02T20:00:00Z",
+      "confidenceLimit": "低",
+      "reassessmentId": "REASS-IR23-001"
+    },
+    {
+      "id": "GAP-IR23-R3-B",
+      "requirementId": "IR23-R3",
+      "criterionId": "IR23-R3-B",
+      "reason": "回答条件を満たす評価済みSourceのEvidenceが未供給",
+      "owner": "ROLE-IR23-ANALYST-3",
+      "deadline": "2026-10-02T20:00:00Z",
+      "confidenceLimit": "低",
+      "reassessmentId": "REASS-IR23-001"
+    },
+    {
+      "id": "GAP-IR23-R4-A",
+      "requirementId": "IR23-R4",
+      "criterionId": "IR23-R4-A",
+      "reason": "回答条件を満たす評価済みSourceのEvidenceが未供給",
+      "owner": "ROLE-IR23-ANALYST-4",
+      "deadline": "2026-10-02T20:00:00Z",
+      "confidenceLimit": "低",
+      "reassessmentId": "REASS-IR23-001"
+    },
+    {
+      "id": "GAP-IR23-R4-B",
+      "requirementId": "IR23-R4",
+      "criterionId": "IR23-R4-B",
+      "reason": "回答条件を満たす評価済みSourceのEvidenceが未供給",
+      "owner": "ROLE-IR23-ANALYST-4",
+      "deadline": "2026-10-02T20:00:00Z",
+      "confidenceLimit": "低",
+      "reassessmentId": "REASS-IR23-001"
+    },
+    {
+      "id": "GAP-IR23-R5-A",
+      "requirementId": "IR23-R5",
+      "criterionId": "IR23-R5-A",
+      "reason": "回答条件を満たす評価済みSourceのEvidenceが未供給",
+      "owner": "ROLE-IR23-ANALYST-5",
+      "deadline": "2026-10-02T20:00:00Z",
+      "confidenceLimit": "低",
+      "reassessmentId": "REASS-IR23-001"
+    },
+    {
+      "id": "GAP-IR23-R5-B",
+      "requirementId": "IR23-R5",
+      "criterionId": "IR23-R5-B",
+      "reason": "回答条件を満たす評価済みSourceのEvidenceが未供給",
+      "owner": "ROLE-IR23-ANALYST-5",
+      "deadline": "2026-10-02T20:00:00Z",
+      "confidenceLimit": "低",
+      "reassessmentId": "REASS-IR23-001"
+    }
+  ],
+  "pipeline": {
+    "processingOwner": "ROLE-IR23-PROCESSOR",
+    "processingDeadline": "2026-10-02T18:00:00Z",
+    "analysisOwner": "ROLE-IR23-ANALYSIS",
+    "analysisDeadline": "2026-10-02T21:00:00Z",
+    "distributionAudience": "ROLE-IR23-DECISION-OWNER",
+    "distributionDeadline": "2026-10-02T22:00:00Z",
+    "deliveryStatus": "planned-not-delivered",
+    "receiptId": null
+  },
+  "feedback": {
+    "id": "FB-IR23-001",
+    "question": "回答が選択肢の比較に使えるか。期限と不足は伝わったか",
+    "owner": "ROLE-IR23-DECISION-OWNER",
+    "invalidation": [
+      "対象または版の変更",
+      "Source品質または利用条件の変更",
+      "期限または選択肢の変更"
+    ],
+    "reassessmentId": "REASS-IR23-001",
+    "reassessmentAt": "2026-10-03T00:00:00Z",
+    "stop": "未確認の権限を優先度や期限で上書きしない"
+  },
+  "handoffs": [
+    {
+      "id": "HOF-IR23-24",
+      "targetChapter": 24,
+      "purpose": "Sourceと来歴・品質の確認条件",
+      "refs": [
+        "SNOTE-IR23-1",
+        "SNOTE-IR23-2",
+        "SNOTE-IR23-3"
+      ],
+      "owner": "ROLE-IR23-ANALYSIS",
+      "audience": "ROLE-CH24-READER",
+      "deadline": "2026-10-02T22:00:00Z",
+      "status": "planned-not-delivered",
+      "receiptId": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-IR23-25",
+      "targetChapter": 25,
+      "purpose": "代替説明・仮説・未充足の問い",
+      "refs": [
+        "IR23-R2",
+        "IR23-R3",
+        "IR23-R4",
+        "IR23-R5"
+      ],
+      "owner": "ROLE-IR23-ANALYSIS",
+      "audience": "ROLE-CH25-READER",
+      "deadline": "2026-10-02T22:00:00Z",
+      "status": "planned-not-delivered",
+      "receiptId": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-IR23-26",
+      "targetChapter": 26,
+      "purpose": "判断主体・選択肢・期限",
+      "refs": [
+        "DEC-IR23-001"
+      ],
+      "owner": "ROLE-IR23-ANALYSIS",
+      "audience": "ROLE-CH26-READER",
+      "deadline": "2026-10-02T22:00:00Z",
+      "status": "planned-not-delivered",
+      "receiptId": null,
+      "executionAuthorized": false
+    }
+  ]
+}

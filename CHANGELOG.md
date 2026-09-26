@@ -11,6 +11,8 @@
 
 ### Added
 
+- [第23章](manuscript/23-intelligence-requirements.md)、ART-29、五Requirement・八Collection・六Statusの完全合成教材と有限公開前検査を追加。Gap、確信度、期限、未配達Handoffを保持し、ICD203/OSINT公表版の用途限定監査を記録。
+
 - [第22章](manuscript/22-measurement-improvement.md)、ART-28、十Metric・八Item・七Statusの完全合成Case、閉Schemaと有限公開前検査を追加。母集団、欠測、時間の統計量、品質、検証とRisk判断を分離し、親の実権限・未配達・旧Failedを保持。五Sourceの用途限定確認を2026-09-26に記録。
 
 - [第21章](manuscript/21-purple-team-validation.md)、ART-27、十Scenario・五層・六Failureの完全合成Case、閉Schemaと有限公開前検査を追加。Expected/Actual、観測された部分充足とUnknown、権限停止、比較可能なRetestを分離し、親のEvidence・実権限・未配達・原因未確定を保持。四Sourceの用途限定確認を2026-09-25に記録。
