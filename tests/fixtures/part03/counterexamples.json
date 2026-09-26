@@ -1,0 +1,516 @@
+{
+  "version": "1.0.0",
+  "records": [
+    {
+      "id": "P3-AUTHORITY",
+      "invariant": "No inherited execution permission",
+      "mutations": [
+        {
+          "chapter": 22,
+          "path": [
+            "authorityBoundary",
+            "parentExecutionAuthorized"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-AUTH-BOOL",
+      "invariant": "False must not equal zero",
+      "mutations": [
+        {
+          "chapter": 22,
+          "path": [
+            "executionAuthorized"
+          ],
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "P3-DRAFT",
+      "invariant": "Historical Draft unchanged",
+      "mutations": [
+        {
+          "chapter": 21,
+          "path": [
+            "authorityBoundary",
+            "parentRoeStatus"
+          ],
+          "value": "Approved"
+        }
+      ]
+    },
+    {
+      "id": "P3-EXPIRY",
+      "invariant": "Do not renew authority",
+      "mutations": [
+        {
+          "chapter": 22,
+          "path": [
+            "authorityBoundary",
+            "parentExpiresAt"
+          ],
+          "value": "2027-08-19T09:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "P3-ROE-VERSION",
+      "invariant": "Version integer is not boolean",
+      "mutations": [
+        {
+          "chapter": 21,
+          "path": [
+            "authorityBoundary",
+            "parentRoeVersion"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-RECEIPT",
+      "invariant": "Do not invent receipt",
+      "mutations": [
+        {
+          "chapter": 18,
+          "path": [
+            "parents",
+            "handoffReceiptId"
+          ],
+          "value": "RECEIPT-INVENTED"
+        }
+      ]
+    },
+    {
+      "id": "P3-DELIVERY",
+      "invariant": "Handoff remains undelivered",
+      "mutations": [
+        {
+          "chapter": 21,
+          "path": [
+            "handoff",
+            "status"
+          ],
+          "value": "delivered"
+        }
+      ]
+    },
+    {
+      "id": "P3-TRANSFER",
+      "invariant": "No evidence transfer",
+      "mutations": [
+        {
+          "chapter": 22,
+          "path": [
+            "parentReferences",
+            "parentEvidenceTransferred"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-PARENT-STATE",
+      "invariant": "Do not rewrite parents",
+      "mutations": [
+        {
+          "chapter": 19,
+          "path": [
+            "parents",
+            "parentStateChanged"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-FIXTURE",
+      "invariant": "Reference actual Chapter17 fixture set",
+      "mutations": [
+        {
+          "chapter": 18,
+          "path": [
+            "parents",
+            "fixtureSetId"
+          ],
+          "value": "FXSET-OTHER"
+        }
+      ]
+    },
+    {
+      "id": "P3-HUNT-FINDING",
+      "invariant": "IR refers to specified supported example",
+      "mutations": [
+        {
+          "chapter": 19,
+          "path": [
+            "parents",
+            "huntFindingId"
+          ],
+          "value": "FND-HUNT18-003"
+        }
+      ]
+    },
+    {
+      "id": "P3-PARENT-QUESTION",
+      "invariant": "Exact parent question",
+      "mutations": [
+        {
+          "chapter": 20,
+          "path": [
+            "parent",
+            "questionId"
+          ],
+          "value": "EQ-OTHER"
+        }
+      ]
+    },
+    {
+      "id": "P3-BORROW-INCIDENT",
+      "invariant": "Do not borrow parent incident",
+      "mutations": [
+        {
+          "chapter": 20,
+          "path": [
+            "record",
+            "incidentId"
+          ],
+          "value": "INC-IR19-004"
+        }
+      ]
+    },
+    {
+      "id": "P3-SUBJECT",
+      "invariant": "DFIR subject is separate",
+      "mutations": [
+        {
+          "chapter": 20,
+          "path": [
+            "context",
+            "subjectId"
+          ],
+          "value": "SYNTH-IR19-004"
+        }
+      ]
+    },
+    {
+      "id": "P3-NEGATIVE-GAP",
+      "invariant": "Producer gap is inconclusive",
+      "mutations": [
+        {
+          "chapter": 18,
+          "path": [
+            "contrasts",
+            4,
+            "judgment",
+            "result"
+          ],
+          "value": "Negative finding"
+        }
+      ]
+    },
+    {
+      "id": "P3-NO-COMPROMISE",
+      "invariant": "Limited negative is not absence of compromise",
+      "mutations": [
+        {
+          "chapter": 18,
+          "path": [
+            "contrasts",
+            2,
+            "judgment",
+            "noCompromiseClaim"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-DETECTION-GAP",
+      "invariant": "Telemetry gap is indeterminate",
+      "mutations": [
+        {
+          "chapter": 17,
+          "path": [
+            "coverageGapExample",
+            "expectedOutcome"
+          ],
+          "value": "no_alert"
+        }
+      ]
+    },
+    {
+      "id": "P3-CAUSE",
+      "invariant": "Causality remains undetermined",
+      "mutations": [
+        {
+          "chapter": 20,
+          "path": [
+            "snapshots",
+            1,
+            "expected",
+            "claims",
+            "CLM20-004",
+            "status"
+          ],
+          "value": "supported"
+        }
+      ]
+    },
+    {
+      "id": "P3-OLD-FAILED",
+      "invariant": "Keep old failure",
+      "mutations": [
+        {
+          "chapter": 21,
+          "path": [
+            "scenarios",
+            2,
+            "expectedLayers",
+            0,
+            "result"
+          ],
+          "value": "Passed"
+        }
+      ]
+    },
+    {
+      "id": "P3-REAL-CHANGE",
+      "invariant": "Supplied comparison is not actual change",
+      "mutations": [
+        {
+          "chapter": 21,
+          "path": [
+            "retest",
+            "actualChangeExecuted"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-REAL-RISK",
+      "invariant": "Verified is not measured risk reduction",
+      "mutations": [
+        {
+          "chapter": 22,
+          "path": [
+            "items",
+            4,
+            "riskJudgment",
+            "realRiskReductionMeasured"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-HOF-CONFLATION",
+      "invariant": "Required-field contract is not received handoff",
+      "mutations": [
+        {
+          "chapter": 17,
+          "path": [
+            "incidentHandoff",
+            "handoffId"
+          ],
+          "value": "HOF-TCM16-17"
+        }
+      ]
+    },
+    {
+      "id": "P3-FALSE-NUMBER",
+      "invariant": "Typed false invariant",
+      "mutations": [
+        {
+          "chapter": 22,
+          "path": [
+            "items",
+            4,
+            "verification",
+            "realEffectivenessVerified"
+          ],
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "P3-BOTH-ENDS-FORGED",
+      "invariant": "Producer literal identity and consumer reference must both be verified",
+      "mutations": [
+        {
+          "chapter": 21,
+          "path": [
+            "retest",
+            "id"
+          ],
+          "value": "RT-FORGED"
+        },
+        {
+          "chapter": 22,
+          "path": [
+            "parentReferences",
+            "controlRetestId"
+          ],
+          "value": "RT-FORGED"
+        }
+      ]
+    },
+    {
+      "id": "P3-PARENT-RUNTIME-21",
+      "invariant": "Parent lab runtime remains false independently of execution permission and coordinated chapter fixture changes",
+      "mutations": [
+        {
+          "chapter": 21,
+          "path": [
+            "authorityBoundary",
+            "parentLabRuntimeExecuted"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-PARENT-RUNTIME-22",
+      "invariant": "Parent lab runtime remains false independently of execution permission and coordinated chapter fixture changes",
+      "mutations": [
+        {
+          "chapter": 22,
+          "path": [
+            "authorityBoundary",
+            "parentLabRuntimeExecuted"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-PARENT-RUNTIME-COORDINATED",
+      "invariant": "Parent lab runtime remains false independently of execution permission and coordinated chapter fixture changes",
+      "mutations": [
+        {
+          "chapter": 21,
+          "path": [
+            "authorityBoundary",
+            "parentLabRuntimeExecuted"
+          ],
+          "value": true
+        },
+        {
+          "chapter": 22,
+          "path": [
+            "authorityBoundary",
+            "parentLabRuntimeExecuted"
+          ],
+          "value": true
+        }
+      ]
+    }
+  ],
+  "publication": [
+    {
+      "id": "P3-PUB-BODY",
+      "source": "# 接続\n\n実サービスへ接続する。",
+      "unsafe": true,
+      "invariant": "Direct action reaches shared policy",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P3-PUB-SAFE",
+      "source": "# 接続\n\n実サービスへ接続しない。",
+      "unsafe": false,
+      "invariant": "Explicit prohibition",
+      "diagnosticCodes": [],
+      "findingCategory": null
+    },
+    {
+      "id": "P3-PUB-BOUNDED",
+      "source": "# 境界\n\n合成資料の比較だけを行い、実操作は行わない。",
+      "unsafe": false,
+      "invariant": "Bounded read-only analysis with explicit operation prohibition; not generic risk grammar",
+      "diagnosticCodes": [],
+      "findingCategory": null
+    },
+    {
+      "id": "P3-PUB-TAIL",
+      "source": "# 接続\n\n供給記録を読む。\n\n実サービスへ接続する。",
+      "unsafe": true,
+      "invariant": "Tail is included",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P3-PUB-PREAMBLE",
+      "source": "実サービスへ接続する。\n\n# 接続\n\n供給記録だけ。",
+      "unsafe": true,
+      "invariant": "Preamble is included",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P3-PUB-LINK",
+      "source": "[参照](https://production.company.co.jp/path)",
+      "unsafe": true,
+      "invariant": "External non-example host",
+      "diagnosticCodes": [],
+      "findingCategory": "network.host_or_address"
+    },
+    {
+      "id": "P3-PUB-SAFE-LINK",
+      "source": "[合成](https://system.example/path)",
+      "unsafe": false,
+      "invariant": "Reserved example destination",
+      "diagnosticCodes": [],
+      "findingCategory": null
+    },
+    {
+      "id": "P3-PUB-TITLE",
+      "source": "[説明](#scope \"実サービスへ接続する。\")",
+      "unsafe": true,
+      "invariant": "Reader title reaches policy",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P3-PUB-TABLE",
+      "source": "| 条件 | 判断 |\n|---|---|\n| 対象 | 実サービスへ接続する。 |",
+      "unsafe": true,
+      "invariant": "Visible table field",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P3-PUB-CODE",
+      "source": "`実サービスへ接続する。`",
+      "unsafe": true,
+      "invariant": "Visible code field",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P3-PUB-HIDDEN",
+      "source": "<!-- 実サービスへ接続する。 -->\n\n供給記録だけを読む。",
+      "unsafe": true,
+      "invariant": "Frozen shared Projection rejects raw HTML comments with PP1001; no local interpretation",
+      "diagnosticCodes": [
+        "PP1001",
+        "PP1001"
+      ],
+      "findingCategory": null
+    },
+    {
+      "id": "P3-PUB-UNSUPPORTED",
+      "source": "{% include remote.md %}",
+      "unsafe": true,
+      "invariant": "Interpreted unsupported syntax fails closed",
+      "diagnosticCodes": [
+        "PP1001"
+      ],
+      "findingCategory": null
+    }
+  ]
+}
