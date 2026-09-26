@@ -2326,7 +2326,7 @@
       "targetId": "chapter-22",
       "issue": 45,
       "targetKind": "chapter",
-      "status": "canonical-pr-open",
+      "status": "consumed",
       "selectedCandidateId": "EIC-0045-78813e20d84e",
       "canonicalPr": 166,
       "intakeRecord": {
@@ -2384,9 +2384,9 @@
           "packageId": "EIP-0012",
           "inputPath": "chapter22-measurement-improvement.predraft.md",
           "inputSha256": "78813e20d84e495b2aada2173b50b80a3efe947d9689dd90718e2a617a3bf15c",
-          "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5841655629",
-          "dispositionReason": "親第7・15・16〜21章のmainと公開Gate完了後、Issue45で唯一候補をbranch前選択。認可workspaceでraw不在・未読・実体hash未照合・直接採用なしを記録し、現契約と用途限定の一次資料から再構成する。第21章consumed管理PR165とは変更所有を分ける。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5843964406",
+          "dispositionReason": "PR166の利用者による通常merge、実mainのCI/Pagesと全公開面・図の検証を確認しIssue45を完了。登録rawは不在・未読・実体hash未照合・直接採用なしのまま、現行契約と一次資料から再構成した正本の公開完了だけを記録する。"
         }
       ],
       "statusHistory": [
@@ -2407,6 +2407,12 @@
           "effectiveAt": "2026-09-26",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/166",
           "reason": "第22章専用Draft PR166に本文/ART-28/完全合成Case・JSON/閉Schema/Source/有限Layer AとIntakeを結ぶ。章全体QA・独立Review・通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5843964406",
+          "reason": "PR166は利用者が通常merge。実main 94c06a88fa4dd2f19105d30ebc38897b718f5dda のBook Contract36222833430 / Book QA36222833448 / Pages36222833390成功、成功artifactと165公開filesのbyte一致、全14ページ19図と新四面のdesktop/mobile確認、review未解決/mismatch/missing0/0/0を確認しIssue45を完了。元IntakeのPR166・作成時main d16f680・2026-09-26・42 literal・raw未読等は全欄保持し、consumedと対応するcheckpointだけ末尾追記する。"
         }
       ]
     },
