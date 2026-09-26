@@ -227,6 +227,7 @@ def boundary_checks(data):
             ("parentRoeVersion", 1),
             ("parentExpiresAt", "2026-08-19T09:00:00Z"),
             ("parentExecutionAuthorized", False),
+            ("parentLabRuntimeExecuted", False),
         ]:
             expected(n, ("authorityBoundary", key), v, f"{n}-{key}")
     for n, p in [(16, ("handoffs", i)) for i in range(4)] + [
@@ -536,9 +537,9 @@ def regressions(data, document, contract, corpus):
     )
     check(
         "corpus-count",
-        len(corpus["records"]) == 24 and len(corpus["publication"]) == 12,
+        len(corpus["records"]) == 27 and len(corpus["publication"]) == 12,
     )
-    check("boundary-count", len(boundary_checks(data)) == 208)
+    check("boundary-count", len(boundary_checks(data)) == 210)
     # Fixed-file reader failures are tested under this worktree, never in /tmp.
     scratch = ROOT / ".tmp"
     scratch.mkdir(exist_ok=True)

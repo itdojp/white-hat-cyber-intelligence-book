@@ -3,10 +3,11 @@
 Issue #168 / `scripts/check_part03_contract.py`が所有する有限Layer Aのfixture。
 
 - `publication-contract.json`: 第III部横断ページ全体の共有Projection 1.1.0による型付き順序付きfield一覧。正本文の投影snapshotであり、独立した意味判定期待値やrenderer自体の正当性証明ではない。
-- `counterexamples.json`: 24件の独立した参照・非継承・Gap・型差の変更例と、12件の共有Projection/Policy到達例。各IDに不変条件を記録する。
+- `counterexamples.json`: 27件の独立した参照・非継承・Gap・型差の変更例と、12件の共有Projection/Policy到達例。各IDに不変条件を記録する。
 - producerのIDは独立literal、consumerはproducerの実欄へ照合する。双方のIDを同時に偽造する対比も含める。
-- 208の境界観測には同じproducerを別consumerから参照する重複観測を含む。208の独立した意味判定器ではない。すべてに欄削除と値/型変更の負例がある。
+- 210の境界観測には同じproducerを別consumerから参照する重複観測を含む。210の独立した意味判定器ではない。すべてに欄削除と値/型変更の負例がある。
 - ページの全field欠落、正本JSONの読取境界（重複key/非有限数/UTF-8/size/symlink/FIFO/未登録path）を検査する。並行した敵対的filesystem変更のsandboxとは主張しない。
+- `P3-PARENT-RUNTIME-21/22/COORDINATED`は、実行許可と別に親ラボ未実行を検査する。両章のruntime欄を同時に変更しても受理しない。
 - 第17章のreplayや各章の状態・算術・因果判定は再実装しない。既存章checkerが所有する。
 - Source本文、章の供給JSON、Policy 1.2.0、共有Projection、formatterや依存は変更しない。
 

@@ -358,6 +358,56 @@
           "value": "RT-FORGED"
         }
       ]
+    },
+    {
+      "id": "P3-PARENT-RUNTIME-21",
+      "invariant": "Parent lab runtime remains false independently of execution permission and coordinated chapter fixture changes",
+      "mutations": [
+        {
+          "chapter": 21,
+          "path": [
+            "authorityBoundary",
+            "parentLabRuntimeExecuted"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-PARENT-RUNTIME-22",
+      "invariant": "Parent lab runtime remains false independently of execution permission and coordinated chapter fixture changes",
+      "mutations": [
+        {
+          "chapter": 22,
+          "path": [
+            "authorityBoundary",
+            "parentLabRuntimeExecuted"
+          ],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "P3-PARENT-RUNTIME-COORDINATED",
+      "invariant": "Parent lab runtime remains false independently of execution permission and coordinated chapter fixture changes",
+      "mutations": [
+        {
+          "chapter": 21,
+          "path": [
+            "authorityBoundary",
+            "parentLabRuntimeExecuted"
+          ],
+          "value": true
+        },
+        {
+          "chapter": 22,
+          "path": [
+            "authorityBoundary",
+            "parentLabRuntimeExecuted"
+          ],
+          "value": true
+        }
+      ]
     }
   ],
   "publication": [
