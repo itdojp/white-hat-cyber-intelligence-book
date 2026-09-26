@@ -397,13 +397,14 @@
       "title": "ICD 203 Analytic Standards / Objectivity",
       "kind": "analytic-standard",
       "status": "official",
-      "version": "signed 2015-01-02; technical amendment effective 2022-01-21",
+      "version": "signed 2015-01-02; technical amendment effective 2022-01-21; official summary revision 2023-06 (signature day unverified)",
       "url": "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
       "publishedAt": "2015-01-02",
-      "checkedAt": "2026-08-03",
+      "checkedAt": "2026-09-26",
       "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
-        "ODNI directive amendment or replacement"
+        "ODNI directive amendment or replacement",
+        "verify exact signature date of the officially summarized June 2023 revision when primary evidence becomes available"
       ],
       "chapters": [
         1,
@@ -412,7 +413,7 @@
         25,
         26
       ],
-      "notes": "Official PDF shows ICD 203 signed on 2015-01-02 and a technical amendment effective on 2022-01-21. Used for source quality, uncertainty/confidence, assumptions, alternatives, and logical argumentation."
+      "notes": "Official PDF shows ICD 203 signed on 2015-01-02 and a technical amendment effective on 2022-01-21. Used for source quality, uncertainty/confidence, assumptions, alternatives, and logical argumentation. Scoped review 2026-09-26: the official Objectivity page (https://www.intelligence.gov/mission/our-values/objectivity) identifies revision/revalidation/approval in June 2023. The current eight-page official PDF also has a leading annual-training amendment. The exact 2023 signature day remains unverified (null), not inferred from search indexing; publishedAt retains the original 2015 directive date. Web-reader text and the official summary were inspected, not PDF signature images or downloaded-byte hashes. Existing Chapter 1/25 uses of D.6 remain unchanged; no civilian collection authority or analytic correctness is conferred. The historical Chapter 25 audit baseline 2026-08-03 and nextReviewAt 2027-08-03 are retained. Future mapped chapters are not certified by this scoped review; see references/icd203-source-review-2026-09-26.md."
     },
     {
       "id": "SRC-CIA-SAT-001",
