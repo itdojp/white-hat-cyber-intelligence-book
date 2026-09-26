@@ -2,12 +2,12 @@
   "schemaVersion": "1.0.0",
   "comparisonVersion": "1.0.0",
   "chapterId": "ch23-intelligence-requirements",
-  "dataSha256": "585300a5ca0dd4e6973d1a564f81765d7de8eea5c0d6f69b5471fadc72990906",
+  "dataSha256": "7765ef35d0d7ff2fa992685e4eb7fda5d50697fbc1cb84ff0984172fec793f92",
   "schemaSha256": "f924a73abeca724383172a301730707a4120028537de2fd41a11cf899d843055",
   "corpusSha256": "ecd2f085f7a87dfe884bcf2b09b5b854c986bdf2a09eec4fc4855073b69c88fa",
   "documents": {
     "manuscript/23-intelligence-requirements.md": {
-      "projectionSha256": "bd0b63cbad9cfd64c542abf79890dffae9885463cbd5d2fedda4f7bb9a09b52a",
+      "projectionSha256": "ab6493ad907e245107feb8fd267565f65365f39cd9e427191cafaab22922721a",
       "headings": [
         [
           1,
@@ -98,7 +98,7 @@
           "参考文献・Source Note ID"
         ]
       ],
-      "fieldCount": 126,
+      "fieldCount": 127,
       "hostProvenance": [
         [
           "destination",
@@ -122,7 +122,7 @@
           "href",
           null,
           "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
-          "manuscript/23-intelligence-requirements.md:L171:F121"
+          "manuscript/23-intelligence-requirements.md:L173:F122"
         ],
         [
           "destination",
@@ -130,7 +130,7 @@
           "href",
           null,
           "https://www.odni.gov/files/ODNI/documents/IC_OSINT_Strategy.pdf",
-          "manuscript/23-intelligence-requirements.md:L172:F123"
+          "manuscript/23-intelligence-requirements.md:L174:F124"
         ],
         [
           "reader_visible_text",
@@ -186,7 +186,7 @@
       "hostProvenance": []
     },
     "cases/ch23-intelligence-requirements-example.md": {
-      "projectionSha256": "d3a39cb895a7d7b16f168b1bf77e3a419929046dbf5db995bc774a16f681866d",
+      "projectionSha256": "95fbf45c65af5eb26714a411a5b0628991f0a2a6fbc529d9759e1313e71d145f",
       "headings": [
         [
           1,
