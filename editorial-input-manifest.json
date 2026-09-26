@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "manifestVersion": "1.0.0",
-  "auditedAt": "2026-09-25",
+  "auditedAt": "2026-09-26",
   "source": {
     "repository": "https://github.com/itdojp/white-hat-cyber-intelligence-book",
     "registrationIssue": 63,
@@ -2232,7 +2232,7 @@
       "targetId": "chapter-21",
       "issue": 44,
       "targetKind": "chapter",
-      "status": "canonical-pr-open",
+      "status": "consumed",
       "selectedCandidateId": "EIC-0044-a729d22fb189",
       "canonicalPr": 159,
       "intakeRecord": {
@@ -2290,9 +2290,9 @@
           "packageId": "EIP-0011",
           "inputPath": "chapter21-purple-team-control-validation.predraft.md",
           "inputSha256": "a729d22fb1898e62d5ddf0d7bc2ebd1e4794ed82a49d77ff65ddaaf1aff0dbff",
-          "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5824263539",
-          "dispositionReason": "PR158実main公開とIssue157完了後、Issue44で唯一の登録候補をbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを明示し、現契約と用途限定の一次資料から再構成する。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5841619885",
+          "dispositionReason": "PR159の利用者による通常mergeとmain公開を確認。共通Mermaid修正PR161・cleanup再発防止PR163のmerge後、全公開面と図の描画を再検証しIssue44を完了。登録rawは不在・未読・実体hash未照合・直接採用なしのまま、current契約と一次資料から再構成した正本の完了だけを記録する。"
         }
       ],
       "statusHistory": [
@@ -2313,6 +2313,12 @@
           "effectiveAt": "2026-09-25",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/159",
           "reason": "第21章専用Draft PR#159に本文/ART27/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5841619885",
+          "reason": "PR159は利用者が通常merge。Mermaid修正PR161・cleanup再発防止PR163もmerge後、実main d16f680e2b69fab8251ca0a98952edec0155e161 のBook Contract36196112632 / Book QA36196112566 / Pages36196112584成功、成功artifactと159公開fileのbyte一致、全13ページ18図desktop/mobile実描画、review未解決/mismatch/missing0/0/0を確認しIssue44を完了。元IntakeのPR159・作成時main82e344c・2026-09-25・raw未読等は全欄保持し、consumedとmatching checkpointだけ末尾追加する。"
         }
       ]
     },
