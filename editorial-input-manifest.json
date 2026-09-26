@@ -2318,7 +2318,7 @@
           "status": "consumed",
           "effectiveAt": "2026-09-26",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5841619885",
-          "reason": "PR159は利用者が通常merge。Mermaid修正PR161・cleanup再発防止PR163もmerge後、実main d16f680e2b69fab8251ca0a98952edec0155e161 のBook Contract36196112632 / Book QA36196112566 / Pages36196112584成功、成功artifactと159公開fileのbyte一致、全13ページ18図desktop/mobile実描画、review未解決/mismatch/missing0/0/0を確認しIssue44を完了。元IntakeのPR159・作成時main82e344c・2026-09-25・raw未読等は全欄保持し、consumedとmatchingcheckpointだけ末尾追加する。"
+          "reason": "PR159は利用者が通常merge。Mermaid修正PR161・cleanup再発防止PR163もmerge後、実main d16f680e2b69fab8251ca0a98952edec0155e161 のBook Contract36196112632 / Book QA36196112566 / Pages36196112584成功、成功artifactと159公開fileのbyte一致、全13ページ18図desktop/mobile実描画、review未解決/mismatch/missing0/0/0を確認しIssue44を完了。元IntakeのPR159・作成時main82e344c・2026-09-25・raw未読等は全欄保持し、consumedとmatching checkpointだけ末尾追加する。"
         }
       ]
     },
