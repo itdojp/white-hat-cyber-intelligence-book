@@ -1331,6 +1331,51 @@
       "expected": "rejected",
       "errorContains": "unknown boundary blocked",
       "expectedResult": null
+    },
+    {
+      "id": "IR23-COORDINATED-BLANK-OWNER",
+      "changes": [
+        {
+          "path": [
+            "decision",
+            "owner"
+          ],
+          "value": " "
+        },
+        {
+          "path": [
+            "pipeline",
+            "distributionAudience"
+          ],
+          "value": " "
+        },
+        {
+          "path": [
+            "feedback",
+            "owner"
+          ],
+          "value": " "
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "nonblank unpadded field",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-PADDED-OWNER",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "owner"
+          ],
+          "value": " ROLE-IR23-COLLECTOR-1 "
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "nonblank unpadded field",
+      "expectedResult": null
     }
   ]
 }

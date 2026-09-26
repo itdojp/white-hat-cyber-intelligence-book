@@ -416,6 +416,10 @@ def validate_model(data, schema, contract=None):
     errors = []
     for path, value in leaves(data):
         if isinstance(value, str):
+            require(
+                bool(value.strip()) and value == value.strip(),
+                "nonblank unpadded field",
+            )
             location = DATA + ":" + "/".join(path)
             errors += [
                 f"{location}: {f.category}: {f.reason}"
