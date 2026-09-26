@@ -17,7 +17,8 @@
 | `blueprint-only` | 1 |
 | `consumed` | 17 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 9 |
+| `registered-pending-prerequisites` | 8 |
+| `selected-for-intake` | 1 |
 
 ## Acknowledged collisions
 
@@ -66,7 +67,7 @@
 | `chapter-20` | #43 | `consumed` | `EIC-0043-58dc95fff364` | #156 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5823341050) |
 | `chapter-21` | #44 | `consumed` | `EIC-0044-a729d22fb189` | #159 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5841619885) |
 | `chapter-22` | #45 | `consumed` | `EIC-0045-78813e20d84e` | #166 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5843964406) |
-| `chapter-23` | #46 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155) |
+| `chapter-23` | #46 | `selected-for-intake` | `EIC-0046-29d20db7f44a` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/46#issuecomment-5850389131) |
 | `chapter-24` | #47 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644) |
 | `chapter-26` | #48 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529) |
 | `chapter-27` | #49 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541) |
@@ -188,7 +189,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0046-29d20db7f44a` | `EIP-0002` | `chapter23-intelligence-requirements.predraft.md` | `29d20db7f44a073d8aa3b8d1c18db109f479297da79cec787edc5e8b4e5b9493` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0046-29d20db7f44a` | `EIP-0002` | `chapter23-intelligence-requirements.predraft.md` | `29d20db7f44a073d8aa3b8d1c18db109f479297da79cec787edc5e8b4e5b9493` | `selected` | 前提第4/16/19章とSource更新PR172の実main f930・公開Gate完了後、Issue46で唯一候補をbranch前選択。認可workspaceでraw不在・未読・実体hash未照合・直接採用なしを記録し、Issue/current contractと用途限定の一次資料から新規制作する。 |
 
 ### `chapter-24` / Issue #47
 
