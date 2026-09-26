@@ -9,7 +9,7 @@
 - [ODNI公式PDF](https://www.dni.gov/files/documents/ICD/ICD-203.pdf): web readerで8ページを確認。2015-01-02署名の本文、旧改訂頁の2022-01-21という記載、先頭の年次研修に関する改訂頁を区別する。旧頁内部の日付順序を推測で修正しない。
 - [IC公式Objectivity](https://www.intelligence.gov/mission/our-values/objectivity): 2015年1月に加え、2023年6月の改訂・再承認を明示する。今回はこの月精度までを版情報に補う。
 - 2023年改訂の正確な署名日は未確認（null扱い）。検索索引の候補日を確定値にせず、月初の日付も補わない。Registryの`publishedAt: 2015-01-02`は元本文の日付であり、最新改訂の公開日ではない。
-- PDFの直接取得はHTTP403だった。今回の確認は公式web readerの抽出本文と公式説明による。署名画像の目視、取得PDFのbyte同一性やSHA-256確認は主張しない。
+- PDFの直接取得はHTTP403だった。今回の確認は公式PDFをweb readerで取得した抽出本文と公式説明による。署名画像の目視、取得PDFのbyte同一性やSHA-256確認は主張しない。
 
 ## 既存章への影響
 
