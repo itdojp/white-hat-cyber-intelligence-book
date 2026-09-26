@@ -396,7 +396,9 @@ REQUIRED_SOURCE_IDS = (
 )
 CHAPTER25_SOURCE_CHECKED_AT = {
     "SRC-ATTACK-001": "2026-08-03",
-    "SRC-ICD203-001": "2026-08-03",
+    # The 2026-08-03 audit remains historical context in the Source Review;
+    # the completed scoped refresh must not be rolled back to that old date.
+    "SRC-ICD203-001": "2026-09-26",
     "SRC-CIA-SAT-001": "2026-08-03",
     "SRC-BERKELEY-001": "2026-07-25",
     "SRC-IANA-TLD-001": "2026-08-03",
@@ -404,7 +406,7 @@ CHAPTER25_SOURCE_CHECKED_AT = {
 
 
 def source_review_date_is_valid(source_id: str, value: object) -> bool:
-    """Preserve historical audits while allowing explicitly scoped refreshes.
+    """Enforce retained review minima while allowing scoped refreshes.
 
     Date ordering alone does not establish source version, scope or meaning.
     Those still require the source-specific checks and independent review.
@@ -3490,8 +3492,11 @@ def main() -> int:
     # Literal expectations exercise the same predicate used for the registry.
     # Adding ICD203 must not silently enable refreshes for every source.
     date_cases = (
-        ("SRC-ICD203-001", "2026-08-03", True),
+        ("SRC-ICD203-001", "2026-08-03", False),
+        ("SRC-ICD203-001", "2026-09-01", False),
+        ("SRC-ICD203-001", "2026-09-25", False),
         ("SRC-ICD203-001", "2026-09-26", True),
+        ("SRC-ICD203-001", "2026-09-27", True),
         ("SRC-ICD203-001", "2026-08-02", False),
         ("SRC-ICD203-001", "2026-9-26", False),
         ("SRC-ICD203-001", "2026-09-31", False),
