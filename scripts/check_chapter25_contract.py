@@ -396,11 +396,25 @@ REQUIRED_SOURCE_IDS = (
 )
 CHAPTER25_SOURCE_CHECKED_AT = {
     "SRC-ATTACK-001": "2026-08-03",
-    "SRC-ICD203-001": "2026-08-03",
+    # The 2026-08-03 audit remains historical context in the Source Review;
+    # the completed scoped refresh must not be rolled back to that old date.
+    "SRC-ICD203-001": "2026-09-26",
     "SRC-CIA-SAT-001": "2026-08-03",
     "SRC-BERKELEY-001": "2026-07-25",
     "SRC-IANA-TLD-001": "2026-08-03",
 }
+
+
+def source_review_date_is_valid(source_id: str, value: object) -> bool:
+    """Enforce retained review minima while allowing scoped refreshes.
+
+    Date ordering alone does not establish source version, scope or meaning.
+    Those still require the source-specific checks and independent review.
+    """
+    baseline = CHAPTER25_SOURCE_CHECKED_AT[source_id]
+    if source_id in ("SRC-ATTACK-001", "SRC-BERKELEY-001", "SRC-ICD203-001"):
+        return meets_audit_baseline(value, baseline)
+    return value == baseline
 
 
 def error(message: str) -> None:
@@ -3475,6 +3489,36 @@ def check_no_forbidden_confidence(relative: str, text: str) -> None:
 
 
 def main() -> int:
+    # Literal expectations exercise the same predicate used for the registry.
+    # Adding ICD203 must not silently enable refreshes for every source.
+    date_cases = (
+        ("SRC-ICD203-001", "2026-08-03", False),
+        ("SRC-ICD203-001", "2026-09-01", False),
+        ("SRC-ICD203-001", "2026-09-25", False),
+        ("SRC-ICD203-001", "2026-09-26", True),
+        ("SRC-ICD203-001", "2026-09-27", True),
+        ("SRC-ICD203-001", "2026-08-02", False),
+        ("SRC-ICD203-001", "2026-9-26", False),
+        ("SRC-ICD203-001", "2026-09-31", False),
+        ("SRC-ICD203-001", "20260926", False),
+        ("SRC-ICD203-001", "2026-09-26T00:00:00Z", False),
+        ("SRC-ICD203-001", "2026-09-26 ", False),
+        ("SRC-ICD203-001", None, False),
+        ("SRC-ICD203-001", True, False),
+        ("SRC-ICD203-001", 20260926, False),
+        ("SRC-ICD203-001", [], False),
+        ("SRC-ICD203-001", {}, False),
+        ("SRC-ATTACK-001", "2026-09-26", True),
+        ("SRC-BERKELEY-001", "2026-09-26", True),
+        ("SRC-BERKELEY-001", "2026-07-24", False),
+        ("SRC-CIA-SAT-001", "2026-08-03", True),
+        ("SRC-CIA-SAT-001", "2026-09-26", False),
+        ("SRC-IANA-TLD-001", "2026-08-03", True),
+        ("SRC-IANA-TLD-001", "2026-09-26", False),
+    )
+    for source_id, value, expected in date_cases:
+        if source_review_date_is_valid(source_id, value) is not expected:
+            error(f"source review date regression: {source_id} / {value!r}")
     required_files = (
         "manuscript/25-structured-analysis-attribution.md",
         "templates/analytic-judgment-record.md",
@@ -5678,13 +5722,8 @@ def main() -> int:
         error("references/sources.json: SRC-BERKELEY-001 publishedAt must remain null when the exact date is uncertain")
     for source_id, checked_at in CHAPTER25_SOURCE_CHECKED_AT.items():
         source = source_items.get(source_id, {})
-        if source_id in ("SRC-ATTACK-001", "SRC-BERKELEY-001"):
-            # Keep the historical Chapter 25 audit while allowing a separately
-            # documented, scoped source review for a later chapter.
-            if not meets_audit_baseline(source.get("checkedAt"), checked_at):
-                error(f"references/sources.json: {source_id} predates the Chapter 25 audit baseline")
-        elif source.get("checkedAt") != checked_at:
-            error(f"references/sources.json: {source_id} checkedAt must be {checked_at} for its Chapter 25 Source Note")
+        if not source_review_date_is_valid(source_id, source.get("checkedAt")):
+            error(f"references/sources.json: {source_id} violates the retained Chapter 25 source review date contract ({checked_at})")
         if 25 not in source.get("chapters", []):
             error(f"references/sources.json: {source_id} must map to chapter 25 when cited")
     attack = source_items.get("SRC-ATTACK-001", {})
