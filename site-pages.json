@@ -620,6 +620,13 @@
       "section": "additional",
       "order": 320,
       "title": "第III部 横断読解：観測から改善判断へ"
+    },
+    {
+      "source": "references/icd203-source-review-2026-09-26.md",
+      "destination": "references/icd203-source-review-2026-09-26/index.md",
+      "section": "additional",
+      "order": 321,
+      "title": "ICD 203 Source Review — 2026-09-26"
     }
   ],
   "directoryRoutes": {
