@@ -114,8 +114,9 @@ def boundary_checks(data):
         checks.append((label, (n, *p), v))
 
     def link(n, p, parent, q, literal):
-        expected(parent, q, literal, f"producer-{len(checks) + 1}")
-        expected(n, p, at(data[parent], q), f"consumer-{len(checks) + 1}")
+        pair_id = len(checks) + 1
+        expected(parent, q, literal, f"producer-{pair_id}")
+        expected(n, p, at(data[parent], q), f"consumer-{pair_id}")
 
     for n in (16, 18, 19):
         link(
@@ -493,6 +494,17 @@ def regressions(data, document, contract, corpus):
     )
     check("source-order", not boundary_errors(dict(reversed(list(data.items())))))
     check("typed-json", not same(False, 0) and not same(True, 1))
+    labels = [label for label, _, _ in boundary_checks(data)]
+    check("unique-boundary-labels", len(labels) == len(set(labels)))
+    check(
+        "paired-reference-labels",
+        all(
+            i + 1 < len(labels)
+            and labels[i + 1] == "consumer-" + label.removeprefix("producer-")
+            for i, label in enumerate(labels)
+            if label.startswith("producer-")
+        ),
+    )
     # Every declared boundary has a deletion and a wrong-type/value counterexample.
     for label, path, value in boundary_checks(data):
         changed = deepcopy(data)
