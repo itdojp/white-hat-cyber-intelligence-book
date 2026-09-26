@@ -1266,6 +1266,12 @@
           "effectiveAt": "2026-09-26",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/166",
           "reason": "第22章専用Draft PR166に本文/ART-28/完全合成Case・JSON/閉Schema/Source/有限Layer AとIntakeを結ぶ。章全体QA・独立Review・通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5843964406",
+          "reason": "PR166は利用者が通常merge。実main 94c06a88fa4dd2f19105d30ebc38897b718f5dda のBook Contract36222833430 / Book QA36222833448 / Pages36222833390成功、成功artifactと165公開filesのbyte一致、全14ページ19図と新四面のdesktop/mobile確認、review未解決/mismatch/missing0/0/0を確認しIssue45を完了。元IntakeのPR166・作成時main d16f680・2026-09-26・42 literal・raw未読等は全欄保持し、consumedと対応するcheckpointだけ末尾追記する。"
         }
       ]
     },
