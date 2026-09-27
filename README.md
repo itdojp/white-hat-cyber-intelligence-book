@@ -160,3 +160,7 @@ npm run check:part02
 [本文](manuscript/22-measurement-improvement.md) / [全欄Case](cases/ch22-improvement-backlog-example.md) / [Source確認](references/ch22-source-review-2026-09-26.md)。分母、欠測、時間の統計量、根拠binding、受容期限と廃止を有限Layer Aで扱い、構文は共有Projection 1.1.0、Action/HostはPolicy 1.2.0に委譲します。一般KPI engineや実Risk・実権限の自動認定ではありません。検査範囲は`tests/fixtures/chapter22/README.md`を参照してください。
 
 第III部の[横断読解](cases/part-iii-detection-improvement-map.md)は、七教材の参照・非継承・未配達と限定結論を確認する補助教材です。`npm run check:part03`は有限Layer Aの接続と全公開fieldを検査し、構文と安全文法は共有Projection/Policyへ委譲します。採用根拠と移行は[整理文書](PART_III_RECONCILIATION.md)を参照してください。
+
+## 第23章の制作成果
+
+[第23章](manuscript/23-intelligence-requirements.md)は判断要求からART-29、Collection、Gap、再評価を接続する。[完全合成例](cases/ch23-intelligence-requirements-example.md)は実収集なしで読解できる。

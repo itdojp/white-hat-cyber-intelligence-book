@@ -627,6 +627,34 @@
       "section": "additional",
       "order": 321,
       "title": "ICD 203 Source Review — 2026-09-26"
+    },
+    {
+      "source": "manuscript/23-intelligence-requirements.md",
+      "destination": "chapters/chapter-23/index.md",
+      "section": "chapters",
+      "order": 206,
+      "title": "第23章 Intelligence Requirementsと収集計画"
+    },
+    {
+      "source": "templates/intelligence-requirement-collection-plan.md",
+      "destination": "templates/intelligence-requirement-collection-plan/index.md",
+      "section": "additional",
+      "order": 322,
+      "title": "Intelligence Requirement and Collection Plan"
+    },
+    {
+      "source": "cases/ch23-intelligence-requirements-example.md",
+      "destination": "cases/chapter-23-intelligence-requirements/index.md",
+      "section": "additional",
+      "order": 323,
+      "title": "第23章 Intelligence Requirement and Collection Plan完全合成例"
+    },
+    {
+      "source": "references/ch23-source-review-2026-09-27.md",
+      "destination": "references/chapter-23-source-review/index.md",
+      "section": "additional",
+      "order": 324,
+      "title": "第23章 Source Review — 2026-09-27"
     }
   ],
   "directoryRoutes": {
@@ -772,6 +800,14 @@
     {
       "source": "schemas/ch22-measurement-improvement.schema.json",
       "destination": "downloads/ch22-measurement-improvement.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch23-intelligence-requirements.json",
+      "destination": "downloads/ch23-intelligence-requirements.json"
+    },
+    {
+      "source": "schemas/ch23-intelligence-requirements.schema.json",
+      "destination": "downloads/ch23-intelligence-requirements.schema.json"
     }
   ]
 }

@@ -400,7 +400,7 @@
       "version": "signed 2015-01-02; technical amendment effective 2022-01-21; official summary revision 2023-06 (signature day unverified)",
       "url": "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
       "publishedAt": "2015-01-02",
-      "checkedAt": "2026-09-26",
+      "checkedAt": "2026-09-27",
       "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
         "ODNI directive amendment or replacement",
@@ -413,7 +413,7 @@
         25,
         26
       ],
-      "notes": "Official PDF shows ICD 203 signed on 2015-01-02 and a technical amendment effective on 2022-01-21. Used for source quality, uncertainty/confidence, assumptions, alternatives, and logical argumentation. Scoped review 2026-09-26: the official Objectivity page (https://www.intelligence.gov/mission/our-values/objectivity) identifies revision/revalidation/approval in June 2023. The current eight-page official PDF also has a leading annual-training amendment. The exact 2023 signature day remains unverified (null), not inferred from search indexing; publishedAt retains the original 2015 directive date. Web-reader text and the official summary were inspected, not PDF signature images or downloaded-byte hashes. Existing Chapter 1/25 uses of D.6 remain unchanged; no civilian collection authority or analytic correctness is conferred. The historical Chapter 25 audit baseline 2026-08-03 and nextReviewAt 2027-08-03 are retained. Future mapped chapters are not certified by this scoped review; see references/icd203-source-review-2026-09-26.md."
+      "notes": "Official PDF shows ICD 203 signed on 2015-01-02 and a technical amendment effective on 2022-01-21. Used for source quality, uncertainty/confidence, assumptions, alternatives, and logical argumentation. Scoped review 2026-09-26: the official Objectivity page (https://www.intelligence.gov/mission/our-values/objectivity) identifies revision/revalidation/approval in June 2023. The current eight-page official PDF also has a leading annual-training amendment. The exact 2023 signature day remains unverified (null), not inferred from search indexing; publishedAt retains the original 2015 directive date. Web-reader text and the official summary were inspected, not PDF signature images or downloaded-byte hashes. Existing Chapter 1/25 uses of D.6 remain unchanged; no civilian collection authority or analytic correctness is conferred. The historical Chapter 25 audit baseline 2026-08-03 and nextReviewAt 2027-08-03 are retained. Future mapped chapters are not certified by this scoped review; see references/icd203-source-review-2026-09-26.md. Chapter23 scoped review 2026-09-27: D.6.c/d/e supports timely customer requirements, critical gaps, source quality, uncertainty, assumptions and alternatives only. Rechecked official extracted PDF text and Objectivity; prior version precision and unverified signature day/images/byte hashes remain unchanged. ART-29 statuses, priorities and supplied evidence are author-designed, not ICD requirements or civilian collection authority. See references/ch23-source-review-2026-09-27.md; other future mapped chapters remain unreviewed here."
     },
     {
       "id": "SRC-CIA-SAT-001",
@@ -1168,6 +1168,27 @@
         22
       ],
       "notes": "Chapter22 scoped review: official Final landing and PDF, §3 pp.12–22, especially §3.1.4 p.15: goals/current program, measure selection, analysis, corrective action, iterative review and retirement. Final date from Document History; supersedes SP800-55 Rev.1. Not a compulsory maturity ladder, HR ranking, universal threshold or certification of actual implementation/effectiveness. Scope and PDF identifier: references/ch22-source-review-2026-09-26.md."
+    },
+    {
+      "id": "SRC-ODNI-OSINT-001",
+      "publisher": "ODNI / CIA",
+      "title": "The IC OSINT Strategy 2024–2026",
+      "kind": "strategy",
+      "status": "official",
+      "version": "2024–2026 published edition",
+      "url": "https://www.odni.gov/files/ODNI/documents/IC_OSINT_Strategy.pdf",
+      "publishedAt": "2024-03-08",
+      "checkedAt": "2026-09-27",
+      "nextReviewAt": "2026-12-31",
+      "reviewTriggers": [
+        "official correction, replacement or withdrawal",
+        "successor strategy or period-end status confirmed",
+        "Chapter23 adopted requirement/gap claim changes"
+      ],
+      "chapters": [
+        23
+      ],
+      "notes": "Scoped historical-edition use: printed pp.1 and 3–4 connect priorities, requirements, gaps and collection management. Official CIA rollout and ODNI archived release identify 2024-03-08. Successor/current status was not established; no claim of absence, latest guidance, civilian legal applicability or collection authority. Official web-reader extracted text inspected; PDF-byte hash and signature images not verified. See references/ch23-source-review-2026-09-27.md."
     }
   ]
 }

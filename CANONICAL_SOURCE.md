@@ -115,3 +115,7 @@ Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設�
 第22章の`check:chapter22`も生成先削除前に一回実行する。本文・ART-28・全欄Case・Sourceの四文書、閉Schema、十Metric・八Item・七Statusを検査し、親21の003/010の旧Failedと新Passed、未配達、期限切れの実権限を保持する。数値の計算、供給Verification、実効果の判断を分離する有限Layer Aであり、章独自のMarkdown/HTML解析は追加しない。
 
 第III部横断読解の`check:part03`は第II部横断検査の直前、生成先削除前に一回実行する。固定七教材の参照と非継承・未配達、および新頁全体の有限公開面を検査し、各章の意味判定を複製しない。構文と安全文法は共有Projection/Policyだけが所有する。
+
+## 第23章の公開前検査
+
+`python3 scripts/check_chapter23_contract.py --no-regressions`は同期前に全四文書を共有Publication Projectionへ渡し、Policy 1.2.0で検査する。有限Layer AはART-29のDecision、回答条件、Collection多対多、Source/Evidence、Gap、期限、未配達Handoffを検証する。構文・安全文法・現実の合法性の認定は所有しない。完全検査は`npm run check:chapter23`で実行する。

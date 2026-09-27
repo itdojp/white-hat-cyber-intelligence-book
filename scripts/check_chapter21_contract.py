@@ -46,7 +46,7 @@ from scripts.source_audit import meets_audit_baseline  # noqa: E402
 
 PREFLIGHT = tuple(
     f"python3 scripts/check_chapter{n:02}_contract.py --no-regressions"
-    for n in (6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22)
+    for n in (6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22, 23)
 ) + (
     "python3 scripts/check_part03_contract.py --no-regressions",
     "python3 scripts/check_part02_contract.py --no-regressions",

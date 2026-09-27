@@ -93,3 +93,7 @@
 ## 第III部の横断読解
 
 [観測から改善判断への対応表](part-iii-detection-improvement-map.md)で、第16〜22章の直接ID参照、方法参照、非継承、未配達とGapを確認する。新しい実施Caseではなく、七教材を読み直す補助教材である。
+
+## 第23章 Intelligence Requirements
+
+[完全合成例](ch23-intelligence-requirements-example.md)はART-29の五Requirement・八Collection・七Gapを追跡する。実収集を行わず、未配達Handoffを保持する。

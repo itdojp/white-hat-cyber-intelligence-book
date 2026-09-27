@@ -100,3 +100,7 @@
 ## 第22章 Measurement and Improvement
 
 [供給JSON](ch22-measurement-improvement.json)と[閉じたSchema](../../schemas/ch22-measurement-improvement.schema.json)は、十Metricの二つの供給版と八Backlog項目を持つ。[全欄Case](../ch22-improvement-backlog-example.md)へ対応し、42の独立した算術期待値と章固有の意味負例で検証する。実Log、実Collector、個人Rankingは用いず、欠測を0へ置換しない。
+
+## 第23章 Intelligence Requirements
+
+[供給JSON](ch23-intelligence-requirements.json)と[閉Schema](../../schemas/ch23-intelligence-requirements.schema.json)は、五Requirement・八Collection・三Source・四Evidence・七Gapを持つ。[全欄Case](../ch23-intelligence-requirements-example.md)と照合し、実収集や法的権限の自動認定は行わない。
