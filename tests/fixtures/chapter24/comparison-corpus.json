@@ -3001,6 +3001,147 @@
       ],
       "expected": "rejected",
       "errorContains": "minItems"
+    },
+    {
+      "id": "EV24-HANDOFF-CHAPTER-SWAP",
+      "owner": "Layer A source-evaluation",
+      "notes": "Fixed recipient IDs must retain their chapter binding, even after coordinated edits and refreshed digest.",
+      "changes": [
+        {
+          "path": [
+            "handoffs",
+            "0",
+            "chapter"
+          ],
+          "value": 26
+        },
+        {
+          "path": [
+            "handoffs",
+            "1",
+            "chapter"
+          ],
+          "value": 25
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "handoff identity/chapter binding"
+    },
+    {
+      "id": "EV24-HANDOFF-ORDER-PRESERVED",
+      "owner": "Layer A source-evaluation",
+      "notes": "Record order is not recipient identity; consistently paired handoffs may be reordered.",
+      "changes": [
+        {
+          "path": [
+            "handoffs"
+          ],
+          "value": [
+            {
+              "id": "HOF-EV24-26",
+              "chapter": 26,
+              "audience": "SYNTH-DISTRIBUTION-READER",
+              "status": "planned-not-delivered",
+              "receipt": null,
+              "executionAuthorized": false,
+              "evidenceIds": [
+                "EV-EV24-001",
+                "EV-EV24-002",
+                "EV-EV24-003",
+                "EV-EV24-004",
+                "EV-EV24-005",
+                "EV-EV24-006",
+                "EV-EV24-007",
+                "EV-EV24-008",
+                "EV-EV24-009",
+                "EV-EV24-010"
+              ],
+              "gapIds": [
+                "GAP-EV24-001",
+                "GAP-EV24-002",
+                "GAP-EV24-003",
+                "GAP-EV24-004",
+                "GAP-EV24-005",
+                "GAP-EV24-006",
+                "GAP-EV24-007",
+                "GAP-EV24-008",
+                "GAP-EV24-009",
+                "GAP-EV24-010"
+              ],
+              "deadline": "2026-10-05T01:00:00Z",
+              "limitation": "制約と除外も記録として渡す予定。既存Caseへ根拠を自動投入せず実配布しない。"
+            },
+            {
+              "id": "HOF-EV24-25",
+              "chapter": 25,
+              "audience": "SYNTH-ANALYSIS-READER",
+              "status": "planned-not-delivered",
+              "receipt": null,
+              "executionAuthorized": false,
+              "evidenceIds": [
+                "EV-EV24-001",
+                "EV-EV24-002",
+                "EV-EV24-003",
+                "EV-EV24-004",
+                "EV-EV24-005",
+                "EV-EV24-006",
+                "EV-EV24-007",
+                "EV-EV24-008",
+                "EV-EV24-009",
+                "EV-EV24-010"
+              ],
+              "gapIds": [
+                "GAP-EV24-001",
+                "GAP-EV24-002",
+                "GAP-EV24-003",
+                "GAP-EV24-004",
+                "GAP-EV24-005",
+                "GAP-EV24-006",
+                "GAP-EV24-007",
+                "GAP-EV24-008",
+                "GAP-EV24-009",
+                "GAP-EV24-010"
+              ],
+              "deadline": "2026-10-05T01:00:00Z",
+              "limitation": "制約と除外も記録として渡す予定。既存Caseへ根拠を自動投入せず実配布しない。"
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "expectedResult": {
+        "useCounts": {
+          "Direct evidence": 4,
+          "Context": 3,
+          "Lead": 1,
+          "Unverified": 1,
+          "Excluded": 1
+        },
+        "currentClaimOrigins": {
+          "CLM-EV24-002": {
+            "supports": [
+              "OBS-EV24-001"
+            ],
+            "contradicts": []
+          },
+          "CLM-EV24-003": {
+            "supports": [
+              "OBS-EV24-003"
+            ],
+            "contradicts": []
+          },
+          "CLM-EV24-004": {
+            "supports": [],
+            "contradicts": [
+              "OBS-EV24-003"
+            ]
+          }
+        },
+        "independentOriginCount": 2,
+        "circularCitationEdges": 2,
+        "actualCollections": 0,
+        "handoffsDelivered": 0
+      }
     }
   ]
 }

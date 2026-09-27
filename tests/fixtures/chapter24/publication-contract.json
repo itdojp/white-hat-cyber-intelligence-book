@@ -4,7 +4,7 @@
   "chapterId": "ch24-osint-provenance-sources",
   "dataSha256": "40abe67db9303cdfadbb8a510cceff40ee5707a2fe7f422609034fb14ab2b0c7",
   "schemaSha256": "acd03f30e2fdb3bb6ade9994a97c018d01f92adb115575417b384128bb817289",
-  "corpusSha256": "13ee67c750f1c85fc11799f27a45113c0aaf6d23fee3da46a944aa6d1911e099",
+  "corpusSha256": "a191442ac2ab6b03ba3da105bd276d7f7995bf0e9ce441d23832d4ebe56f3759",
   "documents": {
     "manuscript/24-osint-provenance-sources.md": {
       "projectionSha256": "705e718e5723c2ce5bd902795b1528eae2620091a34b524263f59d36fd2c3a97",

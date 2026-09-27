@@ -589,6 +589,10 @@ def evaluate(data):
     )
     for h in hs.values():
         require(
+            h["id"] == "HOF-EV24-" + str(h["chapter"]),
+            "handoff identity/chapter binding",
+        )
+        require(
             h["status"] == "planned-not-delivered"
             and h["receipt"] is None
             and h["executionAuthorized"] is False,
