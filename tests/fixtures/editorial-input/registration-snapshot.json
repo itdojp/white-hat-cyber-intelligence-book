@@ -1297,6 +1297,12 @@
           "effectiveAt": "2026-09-27",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/173",
           "reason": "第23章専用Draft PR173へ本文/ART-29/全欄合成Case・JSON/閉Schema/Source/有限Layer Aと正式Intakeを結ぶ。全QA・独立review・通常merge/main公開前なのでconsumedとしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/46#issuecomment-5853206831",
+          "reason": "PR173利用者通常merge。実main 8f37aaa3c83948c105b069696531fd0e609b4cf7 のBook Contract36297624661 / Book QA36297624698 / Pages36297624671・deploy success、173公開files byte一致、全15頁20図と新四面desktop/mobile、全localQA/四seed/49review対比と21schema probes、review未解決/mismatch/missing0/0/0を確認しIssue46 completed。元Intakeの作成時main f930・PR173・日付・raw未読/実体hash未照合/直接採用なしを全欄保持し、consumed履歴/checkpointだけを末尾追記する。"
         }
       ]
     },
