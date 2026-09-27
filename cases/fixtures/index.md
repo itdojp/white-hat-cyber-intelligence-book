@@ -107,4 +107,4 @@
 
 ## 第24章 Source Evaluation
 
-[供給JSON](ch24-source-evaluation.json)と[閉Schema](../../schemas/ch24-source-evaluation.schema.json)は五Source・九Item・五Transform・四Claim・十Evaluationを持つ。[全欄Case](../ch24-source-evaluation-example.md)へ対応し、Hashはcontent文字列のUTF-8 byteだけを比較する。実収集や真正性の認定はしない。
+[供給JSON](ch24-source-evaluation.json)と[閉Schema](../../schemas/ch24-source-evaluation.schema.json)は五Source・九Item・五Transform・四Claim・十一Evaluationを持つ。[全欄Case](../ch24-source-evaluation-example.md)へ対応し、Hashはcontent文字列のUTF-8 byteだけを比較する。実収集や真正性の認定はしない。

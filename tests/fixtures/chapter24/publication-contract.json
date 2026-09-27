@@ -2,12 +2,12 @@
   "schemaVersion": "1.0.0",
   "comparisonVersion": "1.0.0",
   "chapterId": "ch24-osint-provenance-sources",
-  "dataSha256": "07f8ab11700b37bbbbff95f0900ccf03ec3596227f2ba13ab691b59039083963",
+  "dataSha256": "c7b439b7a0f7ee477304dc3eac0f2c2df3fcdb1ccb0d4b22eaa02955173e4d7c",
   "schemaSha256": "9642ef0d12986bd1b847ef78a2cc4ae40da287477aeabc75fce76429861d5803",
-  "corpusSha256": "5a93369aba08340cbc2353ea2dd13bb2b0cc8b1beeb63fd1cb355f2d5e008bda",
+  "corpusSha256": "9412e9ae68b05a080de8e73e7a45e643b1be42b302e2bdbe0bc080ca51c0fa23",
   "documents": {
     "manuscript/24-osint-provenance-sources.md": {
-      "projectionSha256": "75cd62154ee2d2fdc10ebf138c793200cf550a2cb7d55d37cc31039fcd5a7d82",
+      "projectionSha256": "6c9d01dc2907e38ff2b4c49bd8ad6384a214185bec6853da11157600d4dccb27",
       "headings": [
         [
           1,
@@ -126,7 +126,7 @@
       "hostProvenance": []
     },
     "cases/ch24-source-evaluation-example.md": {
-      "projectionSha256": "85ca0d1a29e8b30f7364dc7311bb7004b9e09d0f11a2eec5124ba197178bf95b",
+      "projectionSha256": "91ad0de991835857be8b616efd624ce166d71e6c669b10d217d01842d973b665",
       "headings": [
         [
           1,
@@ -338,6 +338,10 @@
         ],
         [
           3,
+          "EV-EV24-011"
+        ],
+        [
+          3,
           "GAP-EV24-001"
         ],
         [
@@ -378,6 +382,10 @@
         ],
         [
           3,
+          "GAP-EV24-011"
+        ],
+        [
+          3,
           "HYP-EV24-001"
         ],
         [
@@ -397,7 +405,7 @@
           "再評価と提出"
         ]
       ],
-      "fieldCount": 890,
+      "fieldCount": 921,
       "hostProvenance": []
     },
     "references/ch24-source-review-2026-09-27.md": {

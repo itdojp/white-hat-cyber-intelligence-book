@@ -279,7 +279,7 @@ def main():
                 print("ERROR:", error)
             return 1
         print(
-            f"Chapter 24 contract passed: 4 complete documents; ART-30; 5 sources / 9 items / 5 transforms / 4 claims / 10 evaluations; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
+            f"Chapter 24 contract passed: 4 complete documents; ART-30; 5 sources / 9 items / 5 transforms / 4 claims / {len(data['evaluations'])} evaluations; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
         )
         return 0
     except (

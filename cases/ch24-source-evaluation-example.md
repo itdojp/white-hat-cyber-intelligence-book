@@ -10,11 +10,11 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 
 ## 原典と主張の対応
 
-五Source、九Item、五Transform、四Claim、十Evaluationです。Vendorの旧v1と訂正v2は同じAdvisoryを別Itemで保持します。BlogとNewsの掲載先は異なっても原典v1は同じです。内容の変換履歴自体はv1→Blog→Newsです。相互引用は取得済みItemの本文ではなく、別の著者供給イベントとして記録します。ITEM-EV24-003は00:20、004は00:35取得のまま保持し、Resource003→004のリンク追加は00:40/記録00:45、逆向きは00:50/記録00:55です（同日UTC）。contextItemIdsはそれ以前の取得物を文脈として参照するだけで、当時の内容に後のリンクがあったとは主張しません。イベントは新しいClaim観測でも実収集の記録でもありません。
+五Source、九Item、五Transform、四Claim、十一Evaluationです。Vendorの旧v1と訂正v2は同じAdvisoryを別Itemで保持します。BlogとNewsの掲載先は異なっても原典v1は同じです。内容の変換履歴自体はv1→Blog→Newsです。相互引用は取得済みItemの本文ではなく、別の著者供給イベントとして記録します。ITEM-EV24-003は00:20、004は00:35取得のまま保持し、Resource003→004のリンク追加は00:40/記録00:45、逆向きは00:50/記録00:55です（同日UTC）。contextItemIdsはそれ以前の取得物を文脈として参照するだけで、当時の内容に後のリンクがあったとは主張しません。イベントは新しいClaim観測でも実収集の記録でもありません。
 
 現行v2のBatch条件では「可能性がある」までです。供給Labのinteractive二十件で遅延零件という観測は、全sessionで実際に遅延したという全称Claimには反しますが、Batch条件の可能性を反証しません。Postの発行役割を記入したことと、そのClaimを検証したことは別です。
 
-作業訳は原語のmodalityを保ち、元の観測groupへ戻します。意図的な誤AI要約は全称・確定へ強まるためExcluded、Review未完の抽出はLeadです。Hash一致で内容の真実性を認定しません。Source reliabilityと個別credibilityの値は著者の教材設定で、単一Scoreではありません。
+作業訳は原語のmodalityを保ち、元の観測groupへ戻します。意図的な誤AI要約は全称・確定へ強まるためExcluded、Review未完の抽出は、支持と矛盾の両方を別のLeadとして残し、各GapとHandoffへ結びます。独立観測や確認済み根拠へ昇格するわけではありません。Hash一致で内容の真実性を認定しません。Source reliabilityと個別credibilityの値は著者の教材設定で、単一Scoreではありません。
 
 ## 期待する限定結果
 
@@ -22,7 +22,8 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 |---|---|---|
 | Direct evidence | 四評価 | Vendorと訳は同じgroupで重複する |
 | Context | 三評価 | 旧版とその派生を現行根拠へ足さない |
-| Lead / Unverified / Excluded | 各一評価 | 不足、未検証、誤変換を隠さない |
+| Lead | 二評価 | Review未完の同じ抽出物の支持と矛盾をそれぞれ記録する |
+| Unverified / Excluded | 各一評価 | 未検証、誤変換を隠さない |
 | CLM-EV24-002の支持 | OBS-EV24-001一group | Batchの可能性だけ |
 | CLM-EV24-003の支持 | OBS-EV24-003一group | 供給二十件内だけ |
 | CLM-EV24-004の矛盾 | OBS-EV24-003一group | 同じLab観測を別groupへ数えない |
@@ -872,6 +873,26 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 | `gapId` | `GAP-EV24-010` |
 | `reassessmentId` | `REV-EV24-010` |
 
+### EV-EV24-011
+
+| Field | Value |
+|---|---|
+| `id` | `EV-EV24-011` |
+| `itemId` | `ITEM-EV24-009` |
+| `claimId` | `CLM-EV24-004` |
+| `relation` | `contradicts` |
+| `use` | `Lead` |
+| `credibility/value` | `limited` |
+| `credibility/reason` | `作業抽出のreview未完。判断根拠へ追加しない。` |
+| `independence/value` | `same-origin` |
+| `independence/observationGroups/0` | `OBS-EV24-003` |
+| `independence/reason` | `供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。` |
+| `limitations` | `作業抽出のreview未完。判断根拠へ追加しない。` |
+| `hypothesisIds/0` | `HYP-EV24-001` |
+| `hypothesisIds/1` | `HYP-EV24-002` |
+| `gapId` | `GAP-EV24-011` |
+| `reassessmentId` | `REV-EV24-011` |
+
 ### GAP-EV24-001
 
 | Field | Value |
@@ -992,6 +1013,18 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 | `invalidation` | `新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。` |
 | `reassessmentId` | `REV-EV24-010` |
 
+### GAP-EV24-011
+
+| Field | Value |
+|---|---|
+| `id` | `GAP-EV24-011` |
+| `evaluationId` | `EV-EV24-011` |
+| `owner` | `SYNTH-ANALYSIS-OWNER` |
+| `deadline` | `2026-10-05T00:00:00Z` |
+| `reason` | `作業抽出のreview未完。判断根拠へ追加しない。` |
+| `invalidation` | `新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。` |
+| `reassessmentId` | `REV-EV24-011` |
+
 ### HYP-EV24-001
 
 | Field | Value |
@@ -1028,6 +1061,7 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 | `evidenceIds/7` | `EV-EV24-008` |
 | `evidenceIds/8` | `EV-EV24-009` |
 | `evidenceIds/9` | `EV-EV24-010` |
+| `evidenceIds/10` | `EV-EV24-011` |
 | `gapIds/0` | `GAP-EV24-001` |
 | `gapIds/1` | `GAP-EV24-002` |
 | `gapIds/2` | `GAP-EV24-003` |
@@ -1038,6 +1072,7 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 | `gapIds/7` | `GAP-EV24-008` |
 | `gapIds/8` | `GAP-EV24-009` |
 | `gapIds/9` | `GAP-EV24-010` |
+| `gapIds/10` | `GAP-EV24-011` |
 | `deadline` | `2026-10-05T01:00:00Z` |
 | `limitation` | `制約と除外も記録として渡す予定。既存Caseへ根拠を自動投入せず実配布しない。` |
 
@@ -1061,6 +1096,7 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 | `evidenceIds/7` | `EV-EV24-008` |
 | `evidenceIds/8` | `EV-EV24-009` |
 | `evidenceIds/9` | `EV-EV24-010` |
+| `evidenceIds/10` | `EV-EV24-011` |
 | `gapIds/0` | `GAP-EV24-001` |
 | `gapIds/1` | `GAP-EV24-002` |
 | `gapIds/2` | `GAP-EV24-003` |
@@ -1071,6 +1107,7 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 | `gapIds/7` | `GAP-EV24-008` |
 | `gapIds/8` | `GAP-EV24-009` |
 | `gapIds/9` | `GAP-EV24-010` |
+| `gapIds/10` | `GAP-EV24-011` |
 | `deadline` | `2026-10-05T01:00:00Z` |
 | `limitation` | `制約と除外も記録として渡す予定。既存Caseへ根拠を自動投入せず実配布しない。` |
 

@@ -844,6 +844,31 @@
       ],
       "gapId": "GAP-EV24-010",
       "reassessmentId": "REV-EV24-010"
+    },
+    {
+      "id": "EV-EV24-011",
+      "itemId": "ITEM-EV24-009",
+      "claimId": "CLM-EV24-004",
+      "relation": "contradicts",
+      "use": "Lead",
+      "credibility": {
+        "value": "limited",
+        "reason": "作業抽出のreview未完。判断根拠へ追加しない。"
+      },
+      "independence": {
+        "value": "same-origin",
+        "observationGroups": [
+          "OBS-EV24-003"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "作業抽出のreview未完。判断根拠へ追加しない。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-011",
+      "reassessmentId": "REV-EV24-011"
     }
   ],
   "gaps": [
@@ -936,6 +961,15 @@
       "reason": "供給二十件の値は、教材の全称Claimと矛盾する。Batch条件は未観測。",
       "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
       "reassessmentId": "REV-EV24-010"
+    },
+    {
+      "id": "GAP-EV24-011",
+      "evaluationId": "EV-EV24-011",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "作業抽出のreview未完。判断根拠へ追加しない。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-011"
     }
   ],
   "hypotheses": [
@@ -968,7 +1002,8 @@
         "EV-EV24-007",
         "EV-EV24-008",
         "EV-EV24-009",
-        "EV-EV24-010"
+        "EV-EV24-010",
+        "EV-EV24-011"
       ],
       "gapIds": [
         "GAP-EV24-001",
@@ -980,7 +1015,8 @@
         "GAP-EV24-007",
         "GAP-EV24-008",
         "GAP-EV24-009",
-        "GAP-EV24-010"
+        "GAP-EV24-010",
+        "GAP-EV24-011"
       ],
       "deadline": "2026-10-05T01:00:00Z",
       "limitation": "制約と除外も記録として渡す予定。既存Caseへ根拠を自動投入せず実配布しない。"
@@ -1002,7 +1038,8 @@
         "EV-EV24-007",
         "EV-EV24-008",
         "EV-EV24-009",
-        "EV-EV24-010"
+        "EV-EV24-010",
+        "EV-EV24-011"
       ],
       "gapIds": [
         "GAP-EV24-001",
@@ -1014,7 +1051,8 @@
         "GAP-EV24-007",
         "GAP-EV24-008",
         "GAP-EV24-009",
-        "GAP-EV24-010"
+        "GAP-EV24-010",
+        "GAP-EV24-011"
       ],
       "deadline": "2026-10-05T01:00:00Z",
       "limitation": "制約と除外も記録として渡す予定。既存Caseへ根拠を自動投入せず実配布しない。"

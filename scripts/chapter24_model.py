@@ -250,8 +250,8 @@ def evaluate(data):
         (claims, "CLM", 4),
         (items, "ITEM", 9),
         (transforms, "TRF", 5),
-        (evaluations, "EV", 10),
-        (gaps, "GAP", 10),
+        (evaluations, "EV", 11),
+        (gaps, "GAP", 11),
         (hypotheses, "HYP", 2),
     ):
         require(
@@ -401,6 +401,12 @@ def evaluate(data):
         visiting.remove(iid)
         return group
 
+    # Derived captures retain their authored publisher identity; a vendor
+    # lineage root does not make its republishers the vendor.
+    derived_sources = {
+        identifier("ITEM", item): identifier("OSRC", source)
+        for item, source in {3: 2, 4: 3, 7: 1, 8: 1, 9: 5}.items()
+    }
     for iid, row in items.items():
         require(
             row["sourceId"] in sources
@@ -408,6 +414,11 @@ def evaluate(data):
             and row["version"] in {"v1", "v2"},
             "item source/subject/version",
         )
+        if iid not in roots:
+            require(
+                row["sourceId"] == derived_sources[iid],
+                "authored derived source binding",
+            )
         require(row["originKind"] in {"original", "derived"}, "item origin kind")
         require(
             row["contentSha256"] == text_hash(row["content"]), "exact UTF8 content hash"
@@ -586,7 +597,15 @@ def evaluate(data):
         )
         require(asof < instant(gap["deadline"]) <= deadline, "gap deadline")
         counts[e["use"]] += 1
-    require({i for i, _, _ in seen} == set(items), "all items evaluated")
+    require(
+        seen
+        == {
+            (iid, a["claimId"], a["relation"])
+            for iid, row in items.items()
+            for a in row["assertions"]
+        },
+        "every item assertion evaluated",
+    )
     require(
         {e["gapId"] for e in evaluations.values()} == set(gaps)
         and len({e["reassessmentId"] for e in evaluations.values()})
