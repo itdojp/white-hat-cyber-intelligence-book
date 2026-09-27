@@ -43,6 +43,8 @@ def objects(value, path=()):
 def run_regressions(data, bundle, taxii, schemas, contract, source, projection):
     from scripts.check_chapter26_contract import (
         ROOT,
+        STIX_REVIEW_TRIGGERS,
+        stix_trigger_errors,
         chapter_order_errors,
         identity,
         document_errors,
@@ -156,6 +158,28 @@ def run_regressions(data, bundle, taxii, schemas, contract, source, projection):
         check(
             "navigation:before-or-equal-25:" + str(value),
             bool(chapter_order_errors(changed)),
+        )
+    # Review 4117146440: source revalidation promises must survive a snapshot
+    # refresh and must not depend on the order of independent trigger strings.
+    for label, triggers, accepted in (
+        ("canonical", list(STIX_REVIEW_TRIGGERS), True),
+        ("reordered", list(reversed(STIX_REVIEW_TRIGGERS)), True),
+        ("extended", [*STIX_REVIEW_TRIGGERS, "additional scoped review"], True),
+        ("standard-only", ["new OASIS Standard"], False),
+        ("not-list", None, False),
+        ("not-text", [*STIX_REVIEW_TRIGGERS, 1], False),
+        *(
+            (
+                "missing-" + str(i),
+                [t for j, t in enumerate(STIX_REVIEW_TRIGGERS) if j != i],
+                False,
+            )
+            for i in range(len(STIX_REVIEW_TRIGGERS))
+        ),
+    ):
+        check(
+            "source-stix-trigger:" + label,
+            (not stix_trigger_errors({"reviewTriggers": triggers})) is accepted,
         )
     # Shared scanner reachability, full preamble/body/tail and heading selection.
     for path in DOCUMENTS:

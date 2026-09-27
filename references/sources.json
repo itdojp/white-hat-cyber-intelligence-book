@@ -365,7 +365,9 @@
       "checkedAt": "2026-09-28",
       "nextReviewAt": "2028-07-25",
       "reviewTriggers": [
-        "new OASIS Standard"
+        "new OASIS Standard",
+        "STIX Errata draft, Committee Specification, or Approved Errata stage change",
+        "correction to ID, common/version, object, relationship, domain-name or Bundle properties used by the Chapter26 finite profile"
       ],
       "chapters": [
         26

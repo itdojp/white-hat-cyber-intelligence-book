@@ -56,6 +56,26 @@ PREFLIGHT = tuple(
     "npm run copy:notices",
 )
 
+STIX_REVIEW_TRIGGERS = (
+    "new OASIS Standard",
+    "STIX Errata draft, Committee Specification, or Approved Errata stage change",
+    "correction to ID, common/version, object, relationship, domain-name or Bundle properties used by the Chapter26 finite profile",
+)
+
+
+def stix_trigger_errors(source):
+    """Keep the scoped Source Note's revalidation promises in the registry."""
+    triggers = source.get("reviewTriggers")
+    if (
+        not isinstance(triggers, list)
+        or not all(isinstance(value, str) for value in triggers)
+        or not set(STIX_REVIEW_TRIGGERS).issubset(triggers)
+    ):
+        return [
+            "CTI26 STIX review triggers must cover Standard, Errata stage and used properties"
+        ]
+    return []
+
 
 def identity(field):
     return [
@@ -254,6 +274,8 @@ def repository_errors(data, contract, root=ROOT):
         errors.append("CTI26 frozen source inventory")
     for sid in SOURCES:
         s = next(s for s in sources["sources"] if s["id"] == sid)
+        if sid == "SRC-STIX-001":
+            errors += stix_trigger_errors(s)
         if any(
             s[k] != v for k, v in contract["sourceIdentity"][sid].items()
         ) or not meets_audit_baseline(s["checkedAt"], "2026-09-28"):
