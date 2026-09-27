@@ -11,7 +11,7 @@
       "version": "19.2",
       "url": "https://attack.mitre.org/resources/versions/",
       "publishedAt": null,
-      "checkedAt": "2026-09-25",
+      "checkedAt": "2026-09-28",
       "nextReviewAt": "2026-12-21",
       "reviewTriggers": [
         "ATT&CK major or minor release",
@@ -29,7 +29,7 @@
         25,
         26
       ],
-      "notes": "Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration. publishedAt is null because the live Version History page does not establish its own publication timestamp. The related release UTC timestamp and Updates effective/start date above are separate context, not the publication date of this live page. Publication date of the live page is unknown; monitor Version History and Updates on the recorded review triggers rather than guessing a date. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Version History19.2; inherited Chapter5 snapshot retained; behavior mapping is not telemetry coverage. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: 公式Version History current19.2とUpdatesを確認。版付き仮説語彙に限定し、全CTI object監査・Coverage認定・帰属推定ではない。詳細はch18-source-review-2026-09-22.md。 第21章（2026-09-25）では公式Versions/Updatesの現在版19.2と更新日の文脈を確認。既存CTI pin/Hashとhistorical版を保持し、親17のT1098を方法参照とする。全Object監査・Control有効性・Coverageの証明には使わない。"
+      "notes": "Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration. publishedAt is null because the live Version History page does not establish its own publication timestamp. The related release UTC timestamp and Updates effective/start date above are separate context, not the publication date of this live page. Publication date of the live page is unknown; monitor Version History and Updates on the recorded review triggers rather than guessing a date. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Version History19.2; inherited Chapter5 snapshot retained; behavior mapping is not telemetry coverage. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: 公式Version History current19.2とUpdatesを確認。版付き仮説語彙に限定し、全CTI object監査・Coverage認定・帰属推定ではない。詳細はch18-source-review-2026-09-22.md。 第21章（2026-09-25）では公式Versions/Updatesの現在版19.2と更新日の文脈を確認。既存CTI pin/Hashとhistorical版を保持し、親17のT1098を方法参照とする。全Object監査・Control有効性・Coverageの証明には使わない。 Chapter26 scoped review 2026-09-28 JST: official Versions/Updates still identify 19.2. Existing snapshot commit/hash, publication-date precision and historical Chapter25 v19.1 wording remain unchanged. Use is behavior vocabulary only, not object-wide audit, coverage/effectiveness or attribution proof. The independent STIX teaching example does not copy current ATT&CK objects. See references/ch26-source-review-2026-09-28.md."
     },
     {
       "id": "SRC-ATTACK-DS-001",
@@ -362,7 +362,7 @@
       "version": "2.1",
       "url": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
       "publishedAt": "2021-06-10",
-      "checkedAt": "2026-07-25",
+      "checkedAt": "2026-09-28",
       "nextReviewAt": "2028-07-25",
       "reviewTriggers": [
         "new OASIS Standard"
@@ -370,7 +370,7 @@
       "chapters": [
         26
       ],
-      "notes": ""
+      "notes": " Chapter26 scoped review 2026-09-28 JST: fixed OS title/citation remains STIX 2.1 OASIS Standard, 10 June 2021. Live latest is 02 April 2025 Draft 01 of Errata 01 with Committee Specification Draft 01 citation, not treated here as Approved Errata. Checked selected ID/common/version, eight object types, Relationship, Domain Name and Bundle properties for the independent 13-object teaching profile only. No universal conformance, arbitrary pattern parser, analytic truth or authority claim. See references/ch26-source-review-2026-09-28.md."
     },
     {
       "id": "SRC-TAXII-001",
@@ -381,7 +381,7 @@
       "version": "2.1",
       "url": "https://docs.oasis-open.org/cti/taxii/v2.1/os/taxii-v2.1-os.html",
       "publishedAt": "2021-06-10",
-      "checkedAt": "2026-07-25",
+      "checkedAt": "2026-09-28",
       "nextReviewAt": "2028-07-25",
       "reviewTriggers": [
         "new OASIS Standard"
@@ -389,7 +389,7 @@
       "chapters": [
         26
       ],
-      "notes": ""
+      "notes": " Chapter26 scoped review 2026-09-28 JST: fixed OS title/citation is TAXII 2.1 OASIS Standard, 10 June 2021; latest HTML was byte-identical at retrieval. Checked Discovery/API Root/Collection, Manifest/Objects/Status and media version negotiation. Channel keywords reserved but services not defined in 2.1. Supplied Collection/GET envelope is offline, not a server response, delivery or permission proof. See references/ch26-source-review-2026-09-28.md."
     },
     {
       "id": "SRC-ICD203-001",
@@ -400,7 +400,7 @@
       "version": "signed 2015-01-02; technical amendment effective 2022-01-21; official summary revision 2023-06 (signature day unverified)",
       "url": "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
       "publishedAt": "2015-01-02",
-      "checkedAt": "2026-09-27",
+      "checkedAt": "2026-09-28",
       "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
         "ODNI directive amendment or replacement",
@@ -413,7 +413,7 @@
         25,
         26
       ],
-      "notes": "Official PDF shows ICD 203 signed on 2015-01-02 and a technical amendment effective on 2022-01-21. Used for source quality, uncertainty/confidence, assumptions, alternatives, and logical argumentation. Scoped review 2026-09-26: the official Objectivity page (https://www.intelligence.gov/mission/our-values/objectivity) identifies revision/revalidation/approval in June 2023. The current eight-page official PDF also has a leading annual-training amendment. The exact 2023 signature day remains unverified (null), not inferred from search indexing; publishedAt retains the original 2015 directive date. Web-reader text and the official summary were inspected, not PDF signature images or downloaded-byte hashes. Existing Chapter 1/25 uses of D.6 remain unchanged; no civilian collection authority or analytic correctness is conferred. The historical Chapter 25 audit baseline 2026-08-03 and nextReviewAt 2027-08-03 are retained. Future mapped chapters are not certified by this scoped review; see references/icd203-source-review-2026-09-26.md. Chapter23 scoped review 2026-09-27: D.6.c/d/e supports timely customer requirements, critical gaps, source quality, uncertainty, assumptions and alternatives only. Rechecked official extracted PDF text and Objectivity; prior version precision and unverified signature day/images/byte hashes remain unchanged. ART-29 statuses, priorities and supplied evidence are author-designed, not ICD requirements or civilian collection authority. See references/ch23-source-review-2026-09-27.md; other future mapped chapters remain unreviewed here. Chapter24 scoped review 2026-09-27: official web-reader D6.e(1)–(3) and Objectivity rechecked for source quality, uncertainty and information/assumption/judgment separation only. Direct PDF download returned HTTP 403; signature day/images/downloaded-PDF byte hash remain unverified. Existing edition history and other chapter uses are retained. ART-30 finite categories and supplied relations are author-designed, not IC rules or civilian authority. See references/ch24-source-review-2026-09-27.md."
+      "notes": "Official PDF shows ICD 203 signed on 2015-01-02 and a technical amendment effective on 2022-01-21. Used for source quality, uncertainty/confidence, assumptions, alternatives, and logical argumentation. Scoped review 2026-09-26: the official Objectivity page (https://www.intelligence.gov/mission/our-values/objectivity) identifies revision/revalidation/approval in June 2023. The current eight-page official PDF also has a leading annual-training amendment. The exact 2023 signature day remains unverified (null), not inferred from search indexing; publishedAt retains the original 2015 directive date. Web-reader text and the official summary were inspected, not PDF signature images or downloaded-byte hashes. Existing Chapter 1/25 uses of D.6 remain unchanged; no civilian collection authority or analytic correctness is conferred. The historical Chapter 25 audit baseline 2026-08-03 and nextReviewAt 2027-08-03 are retained. Future mapped chapters are not certified by this scoped review; see references/icd203-source-review-2026-09-26.md. Chapter23 scoped review 2026-09-27: D.6.c/d/e supports timely customer requirements, critical gaps, source quality, uncertainty, assumptions and alternatives only. Rechecked official extracted PDF text and Objectivity; prior version precision and unverified signature day/images/byte hashes remain unchanged. ART-29 statuses, priorities and supplied evidence are author-designed, not ICD requirements or civilian collection authority. See references/ch23-source-review-2026-09-27.md; other future mapped chapters remain unreviewed here. Chapter24 scoped review 2026-09-27: official web-reader D6.e(1)–(3) and Objectivity rechecked for source quality, uncertainty and information/assumption/judgment separation only. Direct PDF download returned HTTP 403; signature day/images/downloaded-PDF byte hash remain unverified. Existing edition history and other chapter uses are retained. ART-30 finite categories and supplied relations are author-designed, not IC rules or civilian authority. See references/ch24-source-review-2026-09-27.md. Chapter26 scoped review 2026-09-28 JST: official web-reader D6.c/d/e and Objectivity rechecked for timeliness, source quality, uncertainty, assumptions/judgments and alternatives. Direct PDF and summary HTTP requests returned 403; exact signature day/images/downloaded-PDF byte hash remain unverified. Existing edition history, original publication date and other chapter meanings retained. No civilian collection authority or universal legal duty is inferred. ART08/09 lifecycle and supplied decisions are author-designed. See references/ch26-source-review-2026-09-28.md."
     },
     {
       "id": "SRC-CIA-SAT-001",
@@ -1189,6 +1189,26 @@
         23
       ],
       "notes": "Scoped historical-edition use: printed pp.1 and 3–4 connect priorities, requirements, gaps and collection management. Official CIA rollout and ODNI archived release identify 2024-03-08. Successor/current status was not established; no claim of absence, latest guidance, civilian legal applicability or collection authority. Official web-reader extracted text inspected; PDF-byte hash and signature images not verified. See references/ch23-source-review-2026-09-27.md."
+    },
+    {
+      "id": "SRC-TLP-001",
+      "publisher": "FIRST",
+      "title": "Traffic Light Protocol (TLP) — Version 2.0",
+      "kind": "standard",
+      "status": "current",
+      "version": "2.0",
+      "url": "https://www.first.org/tlp/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-28",
+      "nextReviewAt": "2027-09-28",
+      "reviewTriggers": [
+        "FIRST TLP version or sharing-label definitions change",
+        "Change to the scoped Chapter26 sharing or exchange profile"
+      ],
+      "chapters": [
+        26
+      ],
+      "notes": "Official page identifies 2.0 as current and authoritative from August 2022. publishedAt is null because the live page publication day is unknown; the effective month is not substituted for it. Scoped Chapter26 review: sharing boundaries, AMBER+STRICT, wider-sharing permission and separation from classification/licensing/encryption only. No table reproduction, retention/action authorization inference or automatic STIX TLP mapping. See references/ch26-source-review-2026-09-28.md."
     }
   ]
 }

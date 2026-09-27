@@ -168,3 +168,7 @@ npm run check:part02
 ## 第24章の制作成果
 
 [第24章](manuscript/24-osint-provenance-sources.md)はART-30へ原典・変換・個別Claimの用途と限界を記録する。[完全合成例](cases/ch24-source-evaluation-example.md)と`npm run check:chapter24`は供給値の有限比較で、構文は共有Projection1.1.0、Action/HostはPolicy1.2.0に委譲する。実収集・実判断の認定ではない。
+
+## 第26章の制作成果
+
+[第26章](manuscript/26-cti-distribution.md)はART-08 / ART-09の二Productを三KJ、Decision、Feedbackへ接続する。`npm run check:chapter26`は有限Layer Aと共有Projection1.1.0 / Policy1.2.0で供給記録と独立STIX/TAXII構造例を検査し、外部接続や権限認定をしない。

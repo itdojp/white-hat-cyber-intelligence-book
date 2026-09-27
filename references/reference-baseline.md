@@ -6,7 +6,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 
 | ID | 発行主体 | 文書 | 版・状態 | 確認日 | 次回確認 | 主な章 |
 |---|---|---|---|---|---|---|
-| SRC-ATTACK-001 | MITRE | [MITRE ATT&CK Version History and August 2026 Updates](https://attack.mitre.org/resources/versions/) | 19.2 / current | 2026-09-25 | 2026-12-21 | 0, 1, 5, 6, 16, 17, 18, 21, 25, 26 |
+| SRC-ATTACK-001 | MITRE | [MITRE ATT&CK Version History and August 2026 Updates](https://attack.mitre.org/resources/versions/) | 19.2 / current | 2026-09-28 | 2026-12-21 | 0, 1, 5, 6, 16, 17, 18, 21, 25, 26 |
 | SRC-ATTACK-DS-001 | MITRE | [ATT&CK Data Sources](https://attack.mitre.org/datasources/) | Deprecated in ATT&CK v18 / deprecated-reference | 2026-09-06 | 2026-12-06 | 5, 17 |
 | SRC-ATTACK-DET-001 | MITRE | [ATT&CK Detection Strategies](https://attack.mitre.org/detectionstrategies/) | current | 2026-09-25 | 2026-12-21 | 5, 6, 16, 17, 18, 21 |
 | SRC-SIGMA-001 | SigmaHQ | [Sigma Rules Specification](https://sigmahq.io/sigma-specification/specification/sigma-rules-specification.html) | 2.1.0 / current | 2026-08-03 | 2027-08-03 | 17 |
@@ -22,9 +22,9 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-API-001 | OWASP | [OWASP API Security Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/) | 2023 / released | 2026-08-03 | 2027-01-25 | 11 |
 | SRC-EPSS-001 | FIRST | [Exploit Prediction Scoring System](https://www.first.org/epss/) | v5 (model identifier v2026.06.15) / current | 2026-09-12 | 2026-12-12 | 7 |
 | SRC-KEV-001 | CISA | [Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | continuously-updated | 2026-09-26 | 2026-12-12 | 7, 22 |
-| SRC-STIX-001 | OASIS | [STIX Version 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html) | 2.1 / OASIS Standard | 2026-07-25 | 2028-07-25 | 26 |
-| SRC-TAXII-001 | OASIS | [TAXII Version 2.1](https://docs.oasis-open.org/cti/taxii/v2.1/os/taxii-v2.1-os.html) | 2.1 / OASIS Standard | 2026-07-25 | 2028-07-25 | 26 |
-| SRC-ICD203-001 | ODNI | [ICD 203 Analytic Standards / Objectivity](https://www.dni.gov/files/documents/ICD/ICD-203.pdf) | signed 2015-01-02; technical amendment effective 2022-01-21; official summary revision 2023-06 (signature day unverified) / official | 2026-09-27 | 2027-08-03 | 1, 23, 24, 25, 26 |
+| SRC-STIX-001 | OASIS | [STIX Version 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html) | 2.1 / OASIS Standard | 2026-09-28 | 2028-07-25 | 26 |
+| SRC-TAXII-001 | OASIS | [TAXII Version 2.1](https://docs.oasis-open.org/cti/taxii/v2.1/os/taxii-v2.1-os.html) | 2.1 / OASIS Standard | 2026-09-28 | 2028-07-25 | 26 |
+| SRC-ICD203-001 | ODNI | [ICD 203 Analytic Standards / Objectivity](https://www.dni.gov/files/documents/ICD/ICD-203.pdf) | signed 2015-01-02; technical amendment effective 2022-01-21; official summary revision 2023-06 (signature day unverified) / official | 2026-09-28 | 2027-08-03 | 1, 23, 24, 25, 26 |
 | SRC-CIA-SAT-001 | CIA Center for the Study of Intelligence | [A Tradecraft Primer: Structured Analytic Techniques for Improving Intelligence Analysis](https://www.cia.gov/resources/csi/static/Tradecraft-Primer-apr09.pdf) | March 2009 / official | 2026-08-03 | 2029-08-03 | 25 |
 | SRC-AIRMF-001 | NIST | [Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile](https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence) | NIST AI 600-1 / final | 2026-07-25 | 2027-04-08 | 27, 28 |
 | SRC-AML-001 | NIST | [Adversarial Machine Learning: A Taxonomy and Terminology of Attacks and Mitigations](https://www.nist.gov/publications/adversarial-machine-learning-taxonomy-and-terminology-attacks-and-mitigations-0) | NIST AI 100-2e2025 / final | 2026-07-25 | 2026-10-25 | 27, 28 |
@@ -64,6 +64,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-NIST-MEASURE-001 | NIST | [Measurement Guide for Information Security: Volume 1 — Identifying and Selecting Measures](https://csrc.nist.gov/pubs/sp/800/55/v1/final) | SP 800-55v1 / final | 2026-09-26 | 2027-09-26 | 22 |
 | SRC-NIST-MEASURE-002 | NIST | [Measurement Guide for Information Security: Volume 2 — Developing an Information Security Measurement Program](https://csrc.nist.gov/pubs/sp/800/55/v2/final) | SP 800-55v2 / final | 2026-09-26 | 2027-09-26 | 22 |
 | SRC-ODNI-OSINT-001 | ODNI / CIA | [The IC OSINT Strategy 2024–2026](https://www.odni.gov/files/ODNI/documents/IC_OSINT_Strategy.pdf) | 2024–2026 published edition / official | 2026-09-27 | 2026-12-31 | 23 |
+| SRC-TLP-001 | FIRST | [Traffic Light Protocol (TLP) — Version 2.0](https://www.first.org/tlp/) | 2.0 / current | 2026-09-28 | 2027-09-28 | 26 |
 
 ## 運用
 

@@ -2593,10 +2593,60 @@
       "targetId": "chapter-26",
       "issue": 48,
       "targetKind": "chapter",
-      "status": "selected-for-intake",
+      "status": "canonical-pr-open",
       "selectedCandidateId": "EIC-0048-38a432a5daf5",
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "canonicalPr": 179,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/179",
+        "packageId": "EIP-0004",
+        "packageSha256": "956a321088abed3058e59c58ceeda3d5fd57a9d12a6715240185d0d7c445d86f",
+        "inputPath": "chapter26-cti-distribution.predraft.md",
+        "inputSha256": "38a432a5daf5477a3b986f8c19307d89a9565edf2f0d3a25ea9815126bb5bf32",
+        "targetIssue": 48,
+        "canonicalPr": 179,
+        "currentMainSha": "9f814f7e7a134233172986f763a7e20ddc0bf592",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-28",
+        "adoptedSections": [
+          "rawから直接採用なし。唯一候補EIC-0048-38a432a5daf5をbranch前に選択: https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5859592764"
+        ],
+        "rewrittenSections": [
+          "現行Issue48/契約と用途限定の一次資料から本文、ART08/09、完全記入例、三JSON/閉Schemaと有限Layer Aを新規制作する。",
+          "親25の同じCaseをrefinesする三KJ/二Product/三Option、焦点質問を分けた代替説明、未配達/未受領/非実行を保持する。独立STIX構造例13Objectは親Evidenceへ採用しない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Feed/TAXII/AI API接続、実在Actor・国家帰属、実操作・配達、独立STIX例を親Evidenceへ昇格することを採用しない。",
+          "一般STIX/Pattern/URL/Markdown/HTML parser、全仕様validator、共有Policy/Projection/formatter pin・依存の変更、第IV部横断review/第27章は対象外。",
+          "同梱第8章・他Target/Package/旧履歴は保持。Chapter24consumedは別管理PR178で、こちらへ複製しない。"
+        ],
+        "sourceRevalidation": [
+          "STIX2.1固定OS/2021-06-10を保持。latest2025-04-02はDraft01 of Errata01/CSD01でApproved Errataとして扱わない。ID/型/関係/時刻の有限profileだけを確認。",
+          "TAXII2.1固定OS/latestはbyte同一、Channelsサービス未仕様を確認。FIRST公式TLP2.0 currentを共有境界へ限定。",
+          "ATT&CK19.2の公式Versions/Updatesを再確認し既存pin/hash/日付精度と親25の歴史19.1を保持。ICD公式web-reader/Objectivity限定確認、直接HTTP403/署名day/画像/PDFdownloadhash未確認を保持。",
+          "確認JST2026-09-28、取得UTC09-27。全Source/全Object監査ではない。NISTsharing候補はlanding探索のみで未読本文を採用しない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/26-cti-distribution.md",
+          "templates/cti-report.md",
+          "templates/executive-brief.md",
+          "cases/ch26-cti-distribution-example.md",
+          "references/ch26-source-review-2026-09-28.md",
+          "cases/fixtures/ch26-cti-distribution.json",
+          "schemas/ch26-cti-distribution.schema.json",
+          "cases/fixtures/ch26-stix-bundle.json",
+          "schemas/ch26-stix-bundle.schema.json",
+          "cases/fixtures/ch26-taxii-exchange.json",
+          "schemas/ch26-taxii-exchange.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録3basename69338directoriesでhits0/errors0、symlink非追跡。改名/Archive内部/workspace外未探索。raw未読・実体hash未照合・直接採用なし。inputReviewedAtは採否記録日で原文読了日ではない。",
+          "供給値・日時・判断・独立13Object関係は教材設計で実測ではない。有限profileは一般準拠・真偽・権限・合法性を認定しない。",
+          "Intake作成時はPR179 Draft、全QA/独立review/通常merge/main公開未完。現在状態はtarget.statusと末尾statusHistoryを参照。consumedは実公開後の別管理PRで記録する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0048-38a432a5daf5",
@@ -2620,6 +2670,12 @@
           "effectiveAt": "2026-09-28",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5859592764",
           "reason": "前提23/24/25の実main公開と現行契約/一次資料を確認しIssue48でbranch前選択。raw登録3basename69338directories不在、未読/実体hash未照合/直接採用なし。Productは親25refines、独立STIX構造例はEvidence非採用。別管理Chapter24consumedを混在させない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-28",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/179",
+          "reason": "第26章専用Draft PR179へ本文/ART08・09/完全記入例・三JSON/閉Schema/Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開前なのでconsumedとしない。"
         }
       ]
     },

@@ -1,0 +1,3410 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "finite-authored-product-and-independent-exchange-not-general-standard-or-truth",
+  "fixtures": [
+    {
+      "id": "CTI26-CANONICAL",
+      "changes": [],
+      "expected": "accepted",
+      "invariant": "canonical",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-METHODREFERENCES-ORDER",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "methodReferences"
+          ],
+          "value": [
+            {
+              "id": "MREF-CTI26-024",
+              "chapter": 24,
+              "artifactId": "ART-30",
+              "recordId": "EST-2026-024-001",
+              "relation": "method-only",
+              "evidenceReceived": false,
+              "receiptId": null
+            },
+            {
+              "id": "MREF-CTI26-023",
+              "chapter": 23,
+              "artifactId": "ART-29",
+              "recordId": "IRCP-2026-023-001",
+              "relation": "method-only",
+              "evidenceReceived": false,
+              "receiptId": null
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "methodreferences-order",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-EVIDENCE-ORDER",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "evidence"
+          ],
+          "value": [
+            {
+              "id": "EVD-2026-025-008",
+              "sourceId": "SN-2026-025-008",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-INT-003",
+              "synthetic": true,
+              "limitation": "2026-07-23〜29のsummaryのみ。前半二日と詳細token issuanceは欠落。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-007",
+              "sourceId": "SN-2026-025-007",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-002",
+              "synthetic": true,
+              "limitation": "同じbulletinの再要約。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-006",
+              "sourceId": "SN-2026-025-006",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-003",
+              "synthetic": true,
+              "limitation": "原文全文・発言者が未確認。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-005",
+              "sourceId": "SN-2026-025-005",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-002",
+              "synthetic": true,
+              "limitation": "独自観測のない再掲。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-004",
+              "sourceId": "SN-2026-025-004",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-002",
+              "synthetic": true,
+              "limitation": "bulletin revision履歴がない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-003",
+              "sourceId": "SN-2026-025-003",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-001",
+              "synthetic": true,
+              "limitation": "登録者は判定できない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-002",
+              "sourceId": "SN-2026-025-002",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-INT-002",
+              "synthetic": true,
+              "limitation": "後段の成功・失敗はこの観測に含まない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-001",
+              "sourceId": "SN-2026-025-001",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-INT-001",
+              "synthetic": true,
+              "limitation": "Mail bodyは要約保持、archive完全性は別証跡がない。",
+              "newObservation": false
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "evidence-order",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-JUDGMENTS-ORDER",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments"
+          ],
+          "value": [
+            {
+              "id": "KJ-CTI26-003",
+              "parentJudgmentId": "SEJ-2026-025-001",
+              "statement": "bulletin・repost・recapの三報告は一つの原典群であり、三件の独立裏付けとは扱わない。",
+              "confidence": "中",
+              "evidenceIds": [
+                "EVD-2026-025-004",
+                "EVD-2026-025-005",
+                "EVD-2026-025-007"
+              ],
+              "sourceIds": [
+                "SN-2026-025-004",
+                "SN-2026-025-005",
+                "SN-2026-025-007"
+              ],
+              "gapIds": [
+                "GAP-2026-025-002"
+              ],
+              "alternativeIds": [
+                "ALT-CTI26-NEW-ORIGIN"
+              ],
+              "invalidation": "各報告が別原典や独自観測を持つという来歴が確認される場合。",
+              "attributionLevel": "L2",
+              "successDetermined": false,
+              "stixConfidence": null,
+              "independentOrigins": 1
+            },
+            {
+              "id": "KJ-CTI26-002",
+              "parentJudgmentId": "AJ-2026-025",
+              "statement": "観測範囲では成功痕跡を確認していないが、保持外と詳細Telemetry欠落のため成功可否は判定できない。",
+              "confidence": "低",
+              "evidenceIds": [
+                "EVD-2026-025-008"
+              ],
+              "sourceIds": [
+                "SN-2026-025-008"
+              ],
+              "gapIds": [
+                "GAP-2026-025-001"
+              ],
+              "alternativeIds": [
+                "ALT-CTI26-SUCCESS",
+                "ALT-CTI26-NO-SUCCESS"
+              ],
+              "invalidation": "親Gap001に相当する追加の独立観測が得られ、Coverageと成功可否を再評価できる場合。",
+              "attributionLevel": "L2",
+              "successDetermined": false,
+              "stixConfidence": null,
+              "independentOrigins": 1
+            },
+            {
+              "id": "KJ-CTI26-001",
+              "parentJudgmentId": "AJ-2026-025",
+              "statement": "観測事象は技術クラスタと整合する。Campaign・Operator・国家の断定は支持しない。",
+              "confidence": "中",
+              "evidenceIds": [
+                "EVD-2026-025-001",
+                "EVD-2026-025-002",
+                "EVD-2026-025-003",
+                "EVD-2026-025-004"
+              ],
+              "sourceIds": [
+                "SN-2026-025-001",
+                "SN-2026-025-002",
+                "SN-2026-025-003",
+                "SN-2026-025-004"
+              ],
+              "gapIds": [
+                "GAP-2026-025-003",
+                "GAP-2026-025-004"
+              ],
+              "alternativeIds": [
+                "ALT-2026-025-001",
+                "ALT-2026-025-002",
+                "ALT-2026-025-003"
+              ],
+              "invalidation": "承認済みSSO保守が事象全体を説明する、またはshared toolingの説明が強くなる場合。",
+              "attributionLevel": "L2",
+              "successDetermined": false,
+              "stixConfidence": null,
+              "independentOrigins": 4
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "judgments-order",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-RECOMMENDATIONS-ORDER",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "recommendations"
+          ],
+          "value": [
+            {
+              "id": "REC-CTI26-003",
+              "judgmentIds": [
+                "KJ-CTI26-003"
+              ],
+              "purpose": "strategic",
+              "owner": "SYNTH-CISO",
+              "statement": "原典不足と残余リスクを費用判断へ明示し、親の限定通知案を実配達済みとせず再評価期限を設定する。",
+              "executionStatus": "not-executed",
+              "authorityGranted": false,
+              "parentRecommendationId": "REC-2026-025-003"
+            },
+            {
+              "id": "REC-CTI26-002",
+              "judgmentIds": [
+                "KJ-CTI26-002"
+              ],
+              "purpose": "operational",
+              "owner": "SYNTH-Identity Lead",
+              "statement": "詳細Telemetryの保持不足を優先Gapとして記録し、追加収集には別の承認・Scope審査を要求する。",
+              "executionStatus": "not-executed",
+              "authorityGranted": false,
+              "parentRecommendationId": "REC-2026-025-002"
+            },
+            {
+              "id": "REC-CTI26-001",
+              "judgmentIds": [
+                "KJ-CTI26-001"
+              ],
+              "purpose": "tactical",
+              "owner": "SYNTH-SOC Lead",
+              "statement": "供給された合成Domain二件に限定する親DecisionのBlock案を、検知仮説・誤通知条件・停止条件の紙上レビューへ渡す。",
+              "executionStatus": "not-executed",
+              "authorityGranted": false,
+              "parentRecommendationId": "REC-2026-025-001"
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "recommendations-order",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-PRODUCTS-ORDER",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products"
+          ],
+          "value": [
+            {
+              "id": "PRD-CTI26-EXEC",
+              "artifactId": "ART-09",
+              "requirementId": "IR-2026-025",
+              "audience": "SYNTH-CISO",
+              "purpose": "strategic",
+              "version": 1,
+              "status": "prepared-not-delivered",
+              "cutoff": "2026-07-29T09:00:00Z",
+              "preparedAt": "2026-07-29T10:00:00Z",
+              "deadline": "2026-07-30T01:00:00Z",
+              "expiresAt": "2026-07-30T01:00:00Z",
+              "judgmentIds": [
+                "KJ-CTI26-001",
+                "KJ-CTI26-002",
+                "KJ-CTI26-003"
+              ],
+              "recommendationIds": [
+                "REC-CTI26-001",
+                "REC-CTI26-002",
+                "REC-CTI26-003"
+              ],
+              "implication": "過小評価と過剰な範囲拡大の両方を避け、業務影響・費用・残余リスク・可逆性を比較する。",
+              "classification": "教育用公開合成資料",
+              "sharingLabel": "TLP:CLEAR",
+              "license": "CC BY-NC-SA 4.0; 商用利用は別契約",
+              "encryption": "offline教材。暗号化や配送を実証しない。",
+              "retention": "供給資料は教材として保持、演習で作ったCopyのみ終了時に整理。",
+              "actionPermission": false,
+              "delivered": false,
+              "receiptId": null,
+              "feedbackId": "FDB-CTI26-EXEC",
+              "reassessmentId": "REA-CTI26-001",
+              "supersedes": null,
+              "stixObjectIds": []
+            },
+            {
+              "id": "PRD-CTI26-TECH",
+              "artifactId": "ART-08",
+              "requirementId": "IR-2026-025",
+              "audience": "SYNTH-SOC Lead",
+              "purpose": "tactical-operational",
+              "version": 1,
+              "status": "prepared-not-delivered",
+              "cutoff": "2026-07-29T09:00:00Z",
+              "preparedAt": "2026-07-29T10:00:00Z",
+              "deadline": "2026-07-30T01:00:00Z",
+              "expiresAt": "2026-07-30T01:00:00Z",
+              "judgmentIds": [
+                "KJ-CTI26-001",
+                "KJ-CTI26-002",
+                "KJ-CTI26-003"
+              ],
+              "recommendationIds": [
+                "REC-CTI26-001",
+                "REC-CTI26-002",
+                "REC-CTI26-003"
+              ],
+              "implication": "Domain対応付けだけで検知の有効性を保証せず、ScopeとCoverageを添えて紙上の検証計画へ渡す。",
+              "classification": "教育用公開合成資料",
+              "sharingLabel": "TLP:CLEAR",
+              "license": "CC BY-NC-SA 4.0; 商用利用は別契約",
+              "encryption": "offline教材。暗号化や配送を実証しない。",
+              "retention": "供給資料は教材として保持、演習で作ったCopyのみ終了時に整理。",
+              "actionPermission": false,
+              "delivered": false,
+              "receiptId": null,
+              "feedbackId": "FDB-CTI26-TECH",
+              "reassessmentId": "REA-CTI26-001",
+              "supersedes": null,
+              "stixObjectIds": []
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "products-order",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-OPTIONS-ORDER",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "options"
+          ],
+          "value": [
+            {
+              "id": "OPT-CTI26-C",
+              "label": "不確実性を理由に全説明を保留する案を棄却する",
+              "benefit": "断定の誤りは避けやすい。",
+              "cost": "判断期限を逃す。",
+              "disruption": "本教材では実操作なしだが、担当者への情報提供も遅れる。",
+              "residualRisk": "限定的に言える事実とGapが意思決定へ渡らない。",
+              "reversibility": "失われた判断時間は回復できない。",
+              "parentDecisionPreserved": false
+            },
+            {
+              "id": "OPT-CTI26-B",
+              "label": "広い対象を一括で扱う案を棄却する",
+              "benefit": "実効性は未検証で、広い範囲が有効という証拠はない。",
+              "cost": "許可・Scope・誤検知の追加審査が必要。",
+              "disruption": "第三者や無関係な業務へ影響する懸念がある。",
+              "residualRisk": "帰属や成功可否のGapは解消しない。",
+              "reversibility": "誤通知の影響を完全には戻せない。",
+              "parentDecisionPreserved": false
+            },
+            {
+              "id": "OPT-CTI26-A",
+              "label": "親Decisionの限定案を説明する",
+              "benefit": "二つの合成Domainだけを対象とする案とL2表現を保持できる。",
+              "cost": "SYNTH-SOC/Identityによる確認と誤通知審査の時間が必要。",
+              "disruption": "紙上案では停止なし。実施時の影響評価・承認は別途未取得。",
+              "residualRisk": "成功したfollow-on accessは未確認のまま。",
+              "reversibility": "紙上案の訂正は可能。実通知の回収や実Blockの解除を実証したわけではない。",
+              "parentDecisionPreserved": true
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "options-order",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-FEEDBACK-ORDER",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "feedback"
+          ],
+          "value": [
+            {
+              "id": "FDB-CTI26-EXEC",
+              "productId": "PRD-CTI26-EXEC",
+              "audience": "SYNTH-CISO",
+              "status": "planned-not-received",
+              "question": "残余リスクと可逆性を踏まえて、親Decisionの案と実行承認が別であると理解できるか。",
+              "answer": null,
+              "receiptId": null
+            },
+            {
+              "id": "FDB-CTI26-TECH",
+              "productId": "PRD-CTI26-TECH",
+              "audience": "SYNTH-SOC Lead",
+              "status": "planned-not-received",
+              "question": "Coverageの欠落と、検知対応付けが有効性の証明でないことを読者が区別できるか。",
+              "answer": null,
+              "receiptId": null
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "feedback-order",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-ALTERNATIVES-ORDER",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "alternatives"
+          ],
+          "value": [
+            {
+              "id": "ALT-CTI26-NEW-ORIGIN",
+              "focusQuestion": "Q-CTI26-ORIGINS",
+              "parentHypothesisId": "SEH-2026-025-001",
+              "statement": "各報告に別原典や独自観測が存在する可能性を再評価条件として残す。供給lineageでは未支持。",
+              "evidenceIds": [
+                "EVD-2026-025-004",
+                "EVD-2026-025-005",
+                "EVD-2026-025-007"
+              ],
+              "gapIds": [
+                "GAP-2026-025-002"
+              ],
+              "disposition": "not-supported-by-supplied-lineage"
+            },
+            {
+              "id": "ALT-CTI26-NO-SUCCESS",
+              "focusQuestion": "Q-CTI26-FOLLOWON",
+              "parentHypothesisId": "TH-2026-025-003",
+              "statement": "実際には成功していなかった可能性。供給summaryの不検出だけで確定しない。",
+              "evidenceIds": [
+                "EVD-2026-025-008"
+              ],
+              "gapIds": [
+                "GAP-2026-025-001"
+              ],
+              "disposition": "unresolved"
+            },
+            {
+              "id": "ALT-CTI26-SUCCESS",
+              "focusQuestion": "Q-CTI26-FOLLOWON",
+              "parentHypothesisId": "TH-2026-025-003",
+              "statement": "実際には成功したが、保持外または詳細Telemetryの欠落により確認できていない可能性。",
+              "evidenceIds": [
+                "EVD-2026-025-008"
+              ],
+              "gapIds": [
+                "GAP-2026-025-001"
+              ],
+              "disposition": "unresolved"
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "alternatives-order",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-STIX-OBJECT-ORDER",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects"
+          ],
+          "value": [
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--b65f4f93-74b5-470c-9510-2612246218ab",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "indicates",
+              "source_ref": "indicator--0ac09c72-7c9c-450f-a789-0389c726ba10",
+              "target_ref": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--8637a454-e325-4b02-8916-5c277fda42d9",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "uses",
+              "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "target_ref": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--b4332286-4ab9-4647-91b8-596a3729d743",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "uses",
+              "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "target_ref": "infrastructure--2d5912eb-2462-48a0-92e3-1c1f65f110fc"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--fdaba7d7-b877-4d25-95af-3bcf1ce03087",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "uses",
+              "source_ref": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4",
+              "target_ref": "malware--6b504777-6bcb-424b-870a-73e28d981fad"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--71fbba92-c181-45aa-9ae8-6be9310f509a",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "attributed-to",
+              "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "target_ref": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4"
+            },
+            {
+              "type": "attack-pattern",
+              "spec_version": "2.1",
+              "id": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Behavior",
+              "description": "Fictional vocabulary example, not an ATT&CK coverage claim."
+            },
+            {
+              "type": "indicator",
+              "spec_version": "2.1",
+              "id": "indicator--0ac09c72-7c9c-450f-a789-0389c726ba10",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Pattern",
+              "description": "Fictional equality pattern; no detection effectiveness claim.",
+              "pattern": "[domain-name:value = 'relay-demo.example']",
+              "pattern_type": "stix",
+              "pattern_version": "2.1",
+              "valid_from": "2026-10-06T00:00:00.000Z",
+              "valid_until": "2026-10-07T00:00:00.000Z"
+            },
+            {
+              "type": "observed-data",
+              "spec_version": "2.1",
+              "id": "observed-data--907457b7-b097-45dc-8bf8-df7ba74f1ebc",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "first_observed": "2026-10-06T00:00:00.000Z",
+              "last_observed": "2026-10-06T00:00:00.000Z",
+              "number_observed": 1,
+              "object_refs": [
+                "domain-name--7471572f-90bd-5053-9550-edb807c1ab17"
+              ]
+            },
+            {
+              "type": "domain-name",
+              "spec_version": "2.1",
+              "id": "domain-name--7471572f-90bd-5053-9550-edb807c1ab17",
+              "value": "relay-demo.example"
+            },
+            {
+              "type": "infrastructure",
+              "spec_version": "2.1",
+              "id": "infrastructure--2d5912eb-2462-48a0-92e3-1c1f65f110fc",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Infrastructure",
+              "description": "Fictional representation only; not a deployed service.",
+              "infrastructure_types": [
+                "unknown"
+              ]
+            },
+            {
+              "type": "malware",
+              "spec_version": "2.1",
+              "id": "malware--6b504777-6bcb-424b-870a-73e28d981fad",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Malware Label",
+              "description": "Non-executable fictional label; no code or sample is provided.",
+              "is_family": false,
+              "malware_types": [
+                "unknown"
+              ]
+            },
+            {
+              "type": "campaign",
+              "spec_version": "2.1",
+              "id": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Campaign",
+              "description": "Independent fictional campaign, not a claim about the parent product."
+            },
+            {
+              "type": "threat-actor",
+              "spec_version": "2.1",
+              "id": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Actor",
+              "description": "Independent fictional type example, not an actor attribution for CASE-2026-025.",
+              "threat_actor_types": [
+                "unknown"
+              ]
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "stix-object-order",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-TAXII-OBJECT-ORDER",
+      "changes": [
+        {
+          "target": "taxii",
+          "path": [
+            "response",
+            "envelope",
+            "objects"
+          ],
+          "value": [
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--b65f4f93-74b5-470c-9510-2612246218ab",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "indicates",
+              "source_ref": "indicator--0ac09c72-7c9c-450f-a789-0389c726ba10",
+              "target_ref": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--8637a454-e325-4b02-8916-5c277fda42d9",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "uses",
+              "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "target_ref": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--b4332286-4ab9-4647-91b8-596a3729d743",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "uses",
+              "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "target_ref": "infrastructure--2d5912eb-2462-48a0-92e3-1c1f65f110fc"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--fdaba7d7-b877-4d25-95af-3bcf1ce03087",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "uses",
+              "source_ref": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4",
+              "target_ref": "malware--6b504777-6bcb-424b-870a-73e28d981fad"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--71fbba92-c181-45aa-9ae8-6be9310f509a",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "attributed-to",
+              "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "target_ref": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4"
+            },
+            {
+              "type": "attack-pattern",
+              "spec_version": "2.1",
+              "id": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Behavior",
+              "description": "Fictional vocabulary example, not an ATT&CK coverage claim."
+            },
+            {
+              "type": "indicator",
+              "spec_version": "2.1",
+              "id": "indicator--0ac09c72-7c9c-450f-a789-0389c726ba10",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Pattern",
+              "description": "Fictional equality pattern; no detection effectiveness claim.",
+              "pattern": "[domain-name:value = 'relay-demo.example']",
+              "pattern_type": "stix",
+              "pattern_version": "2.1",
+              "valid_from": "2026-10-06T00:00:00.000Z",
+              "valid_until": "2026-10-07T00:00:00.000Z"
+            },
+            {
+              "type": "observed-data",
+              "spec_version": "2.1",
+              "id": "observed-data--907457b7-b097-45dc-8bf8-df7ba74f1ebc",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "first_observed": "2026-10-06T00:00:00.000Z",
+              "last_observed": "2026-10-06T00:00:00.000Z",
+              "number_observed": 1,
+              "object_refs": [
+                "domain-name--7471572f-90bd-5053-9550-edb807c1ab17"
+              ]
+            },
+            {
+              "type": "domain-name",
+              "spec_version": "2.1",
+              "id": "domain-name--7471572f-90bd-5053-9550-edb807c1ab17",
+              "value": "relay-demo.example"
+            },
+            {
+              "type": "infrastructure",
+              "spec_version": "2.1",
+              "id": "infrastructure--2d5912eb-2462-48a0-92e3-1c1f65f110fc",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Infrastructure",
+              "description": "Fictional representation only; not a deployed service.",
+              "infrastructure_types": [
+                "unknown"
+              ]
+            },
+            {
+              "type": "malware",
+              "spec_version": "2.1",
+              "id": "malware--6b504777-6bcb-424b-870a-73e28d981fad",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Malware Label",
+              "description": "Non-executable fictional label; no code or sample is provided.",
+              "is_family": false,
+              "malware_types": [
+                "unknown"
+              ]
+            },
+            {
+              "type": "campaign",
+              "spec_version": "2.1",
+              "id": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Campaign",
+              "description": "Independent fictional campaign, not a claim about the parent product."
+            },
+            {
+              "type": "threat-actor",
+              "spec_version": "2.1",
+              "id": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Actor",
+              "description": "Independent fictional type example, not an actor attribution for CASE-2026-025.",
+              "threat_actor_types": [
+                "unknown"
+              ]
+            }
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "taxii-object-order",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-AUTHORITY",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "executionAuthorized"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "authority",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "safety flags"
+    },
+    {
+      "id": "CTI26-NETWORK",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "networkRequired"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "network",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "safety flags"
+    },
+    {
+      "id": "CTI26-SYNTHETIC",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "synthetic"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "synthetic",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "safety flags"
+    },
+    {
+      "id": "CTI26-READONLY",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "readOnly"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "readonly",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "safety flags"
+    },
+    {
+      "id": "CTI26-PARENT-CASEID",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "record",
+            "caseId"
+          ],
+          "value": "CASE-STIX26-DEMO"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "parent-caseid",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "parent identity / attribution"
+    },
+    {
+      "id": "CTI26-PARENT-RELATION",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "record",
+            "relation"
+          ],
+          "value": "supersedes"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "parent-relation",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "parent identity / attribution"
+    },
+    {
+      "id": "CTI26-PARENT-PARENTARTIFACTID",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "record",
+            "parentArtifactId"
+          ],
+          "value": "ART-30"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "parent-parentartifactid",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "parent identity / attribution"
+    },
+    {
+      "id": "CTI26-PARENT-ATTRIBUTIONCEILING",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "record",
+            "attributionCeiling"
+          ],
+          "value": "L3"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "parent-attributionceiling",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "parent identity / attribution"
+    },
+    {
+      "id": "CTI26-CUTOFF",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "record",
+            "cutoff"
+          ],
+          "value": "2026-07-30T09:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "cutoff",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "parent cutoff/deadline"
+    },
+    {
+      "id": "CTI26-ASOF-LATE",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "record",
+            "asOf"
+          ],
+          "value": "2026-07-30T02:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "asof-late",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "record time order"
+    },
+    {
+      "id": "CTI26-REQUIREMENT",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "requirement",
+            "id"
+          ],
+          "value": "IR-2026-023"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "requirement",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "requirement identity"
+    },
+    {
+      "id": "CTI26-METHOD-RECEIVED",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "methodReferences",
+            1,
+            "evidenceReceived"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "method-received",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "method-only noninheritance"
+    },
+    {
+      "id": "CTI26-METHOD-COORDINATED-SWAP",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "methodReferences",
+            0,
+            "chapter"
+          ],
+          "value": 24
+        },
+        {
+          "target": "data",
+          "path": [
+            "methodReferences",
+            1,
+            "chapter"
+          ],
+          "value": 23
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "method-coordinated-swap",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "method-only noninheritance"
+    },
+    {
+      "id": "CTI26-EVIDENCE-MISSING",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "evidence"
+          ],
+          "value": [
+            {
+              "id": "EVD-2026-025-001",
+              "sourceId": "SN-2026-025-001",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-INT-001",
+              "synthetic": true,
+              "limitation": "Mail bodyは要約保持、archive完全性は別証跡がない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-002",
+              "sourceId": "SN-2026-025-002",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-INT-002",
+              "synthetic": true,
+              "limitation": "後段の成功・失敗はこの観測に含まない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-003",
+              "sourceId": "SN-2026-025-003",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-001",
+              "synthetic": true,
+              "limitation": "登録者は判定できない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-004",
+              "sourceId": "SN-2026-025-004",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-002",
+              "synthetic": true,
+              "limitation": "bulletin revision履歴がない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-005",
+              "sourceId": "SN-2026-025-005",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-002",
+              "synthetic": true,
+              "limitation": "独自観測のない再掲。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-006",
+              "sourceId": "SN-2026-025-006",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-003",
+              "synthetic": true,
+              "limitation": "原文全文・発言者が未確認。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-007",
+              "sourceId": "SN-2026-025-007",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-002",
+              "synthetic": true,
+              "limitation": "同じbulletinの再要約。",
+              "newObservation": false
+            }
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "evidence-missing",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "parent evidence inventory"
+    },
+    {
+      "id": "CTI26-EVIDENCE-DUPLICATE",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "evidence"
+          ],
+          "value": [
+            {
+              "id": "EVD-2026-025-001",
+              "sourceId": "SN-2026-025-001",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-INT-001",
+              "synthetic": true,
+              "limitation": "Mail bodyは要約保持、archive完全性は別証跡がない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-002",
+              "sourceId": "SN-2026-025-002",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-INT-002",
+              "synthetic": true,
+              "limitation": "後段の成功・失敗はこの観測に含まない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-003",
+              "sourceId": "SN-2026-025-003",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-001",
+              "synthetic": true,
+              "limitation": "登録者は判定できない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-004",
+              "sourceId": "SN-2026-025-004",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-002",
+              "synthetic": true,
+              "limitation": "bulletin revision履歴がない。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-005",
+              "sourceId": "SN-2026-025-005",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-002",
+              "synthetic": true,
+              "limitation": "独自観測のない再掲。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-006",
+              "sourceId": "SN-2026-025-006",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-003",
+              "synthetic": true,
+              "limitation": "原文全文・発言者が未確認。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-007",
+              "sourceId": "SN-2026-025-007",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-EXT-002",
+              "synthetic": true,
+              "limitation": "同じbulletinの再要約。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-008",
+              "sourceId": "SN-2026-025-008",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-INT-003",
+              "synthetic": true,
+              "limitation": "2026-07-23〜29のsummaryのみ。前半二日と詳細token issuanceは欠落。",
+              "newObservation": false
+            },
+            {
+              "id": "EVD-2026-025-001",
+              "sourceId": "SN-2026-025-001",
+              "parentArtifactId": "ART-12",
+              "independenceGroupId": "IG-INT-001",
+              "synthetic": true,
+              "limitation": "Mail bodyは要約保持、archive完全性は別証跡がない。",
+              "newObservation": false
+            }
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "evidence-duplicate",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "evidence unique refs"
+    },
+    {
+      "id": "CTI26-REPOST-NEW-ORIGIN",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "evidence",
+            4,
+            "independenceGroupId"
+          ],
+          "value": "IG-NEW-005"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "repost-new-origin",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "evidence/source/origin binding"
+    },
+    {
+      "id": "CTI26-SOURCE-SWAP",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "evidence",
+            0,
+            "sourceId"
+          ],
+          "value": "SN-2026-025-002"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "source-swap",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "evidence/source/origin binding"
+    },
+    {
+      "id": "CTI26-NEW-OBSERVATION",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "evidence",
+            0,
+            "newObservation"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "new-observation",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "evidence/source/origin binding"
+    },
+    {
+      "id": "CTI26-JUDGMENT-EVIDENCEIDS",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments",
+            1,
+            "evidenceIds"
+          ],
+          "value": [
+            "EVD-2026-025-001"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "judgment-evidenceids",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "judgment evidence/source binding"
+    },
+    {
+      "id": "CTI26-JUDGMENT-SOURCEIDS",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments",
+            1,
+            "sourceIds"
+          ],
+          "value": [
+            "SN-2026-025-001"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "judgment-sourceids",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "judgment evidence/source binding"
+    },
+    {
+      "id": "CTI26-GAP-EMPTY",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments",
+            1,
+            "gapIds"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "gap-empty",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema minItems violation"
+    },
+    {
+      "id": "CTI26-GAP-WRONG",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments",
+            1,
+            "gapIds"
+          ],
+          "value": [
+            "GAP-2026-025-004"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "gap-wrong",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "judgment gap/alternative binding"
+    },
+    {
+      "id": "CTI26-ALTERNATIVE-FOCUS",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments",
+            1,
+            "alternativeIds"
+          ],
+          "value": [
+            "ALT-2026-025-001"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "alternative-focus",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "judgment gap/alternative binding"
+    },
+    {
+      "id": "CTI26-ALTERNATIVE-QUESTION",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "alternatives",
+            0,
+            "focusQuestion"
+          ],
+          "value": "Q-CTI26-ORIGINS"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "alternative-question",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "alternative focus/binding"
+    },
+    {
+      "id": "CTI26-ALTERNATIVE-CERTAIN",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "alternatives",
+            0,
+            "disposition"
+          ],
+          "value": "confirmed"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "alternative-certain",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "alternative focus/binding"
+    },
+    {
+      "id": "CTI26-SOURCE-HYPOTHESIS-FOCUS",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "alternatives",
+            2,
+            "parentHypothesisId"
+          ],
+          "value": "TH-2026-025-001"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "source-hypothesis-focus",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "alternative focus/binding"
+    },
+    {
+      "id": "CTI26-FALSE-SUCCESS",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments",
+            1,
+            "successDetermined"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "false-success",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "judgment boundary/confidence"
+    },
+    {
+      "id": "CTI26-CONFIDENCE-HIGH",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments",
+            1,
+            "confidence"
+          ],
+          "value": "高"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "confidence-high",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "judgment boundary/confidence"
+    },
+    {
+      "id": "CTI26-NUMERIC-CONFIDENCE",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments",
+            0,
+            "stixConfidence"
+          ],
+          "value": 80
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "numeric-confidence",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema type mismatch; expected ['null']"
+    },
+    {
+      "id": "CTI26-THREE-REPOST-ORIGINS",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments",
+            2,
+            "independentOrigins"
+          ],
+          "value": 3
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "three-repost-origins",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "independent origin count"
+    },
+    {
+      "id": "CTI26-FALSE-COUNT-BOOL",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments",
+            2,
+            "independentOrigins"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "false-count-bool",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema type mismatch; expected ['integer']"
+    },
+    {
+      "id": "CTI26-RECOMMENDATION-AS-EXECUTION",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "recommendations",
+            0,
+            "executionStatus"
+          ],
+          "value": "executed"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "recommendation-as-execution",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "recommendation not authority"
+    },
+    {
+      "id": "CTI26-RECOMMENDATION-AUTHORITY",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "recommendations",
+            0,
+            "authorityGranted"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "recommendation-authority",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "recommendation not authority"
+    },
+    {
+      "id": "CTI26-RECOMMENDATION-OWNER",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "recommendations",
+            0,
+            "owner"
+          ],
+          "value": "SYNTH-CISO"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "recommendation-owner",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "recommendation binding"
+    },
+    {
+      "id": "CTI26-PRODUCT-AUDIENCE-COORDINATED-SWAP",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products",
+            0,
+            "audience"
+          ],
+          "value": "SYNTH-CISO"
+        },
+        {
+          "target": "data",
+          "path": [
+            "products",
+            1,
+            "audience"
+          ],
+          "value": "SYNTH-SOC Lead"
+        },
+        {
+          "target": "data",
+          "path": [
+            "feedback",
+            0,
+            "audience"
+          ],
+          "value": "SYNTH-CISO"
+        },
+        {
+          "target": "data",
+          "path": [
+            "feedback",
+            1,
+            "audience"
+          ],
+          "value": "SYNTH-SOC Lead"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "product-audience-coordinated-swap",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "product audience/artifact/purpose"
+    },
+    {
+      "id": "CTI26-PRODUCT-ARTIFACT",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products",
+            0,
+            "artifactId"
+          ],
+          "value": "ART-09"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "product-artifact",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "product audience/artifact/purpose"
+    },
+    {
+      "id": "CTI26-PRODUCT-DELIVERED",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products",
+            0,
+            "delivered"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "product-delivered",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "product not delivered/authorized"
+    },
+    {
+      "id": "CTI26-TLP-AS-PERMISSION",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products",
+            0,
+            "actionPermission"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "tlp-as-permission",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "product not delivered/authorized"
+    },
+    {
+      "id": "CTI26-PRODUCT-LATE",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products",
+            0,
+            "preparedAt"
+          ],
+          "value": "2026-07-30T02:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "product-late",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "product temporal boundary"
+    },
+    {
+      "id": "CTI26-PRODUCT-EXPIRED",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products",
+            0,
+            "expiresAt"
+          ],
+          "value": "2026-07-29T10:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "product-expired",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "product temporal boundary"
+    },
+    {
+      "id": "CTI26-EXEC-HIDES-GAP-JUDGMENT",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products",
+            1,
+            "judgmentIds"
+          ],
+          "value": [
+            "KJ-CTI26-001"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "exec-hides-gap-judgment",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "same evidence two products"
+    },
+    {
+      "id": "CTI26-PRODUCT-OBJECT-EVIDENCE",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products",
+            0,
+            "stixObjectIds"
+          ],
+          "value": [
+            "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "product-object-evidence",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema maxItems violation"
+    },
+    {
+      "id": "CTI26-TLP-WIDENED",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products",
+            0,
+            "sharingLabel"
+          ],
+          "value": "TLP:AMBER"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "tlp-widened",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "authored public sharing boundary"
+    },
+    {
+      "id": "CTI26-WRONG-FEEDBACK",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products",
+            0,
+            "feedbackId"
+          ],
+          "value": "FDB-CTI26-EXEC"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "wrong-feedback",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "product lifecycle binding"
+    },
+    {
+      "id": "CTI26-FALSE-FEEDBACK",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "feedback",
+            0,
+            "status"
+          ],
+          "value": "received"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "false-feedback",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "feedback not received"
+    },
+    {
+      "id": "CTI26-FORGED-RECEIPT",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "feedback",
+            0,
+            "receiptId"
+          ],
+          "value": "SYNTH-RECEIPT"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "forged-receipt",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema type mismatch; expected ['null']"
+    },
+    {
+      "id": "CTI26-OPTION-RESIDUAL-BLANK",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "options",
+            0,
+            "residualRisk"
+          ],
+          "value": " "
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "option-residual-blank",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "nonblank bounded text"
+    },
+    {
+      "id": "CTI26-OPTION-REVERSIBILITY-BLANK",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "options",
+            0,
+            "reversibility"
+          ],
+          "value": ""
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "option-reversibility-blank",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "minLength"
+    },
+    {
+      "id": "CTI26-WRONG-OPTION",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "decision",
+            "selectedOptionId"
+          ],
+          "value": "OPT-CTI26-B"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "wrong-option",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "decision binding"
+    },
+    {
+      "id": "CTI26-FALSE-DECISION-APPROVAL",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "decision",
+            "authorityGranted"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "false-decision-approval",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "decision not execution"
+    },
+    {
+      "id": "CTI26-REA-LATE",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "reassessment",
+            "at"
+          ],
+          "value": "2026-07-30T01:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "rea-late",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "reassessment before expiry"
+    },
+    {
+      "id": "CTI26-PRODUCT-AS-REVOCATION",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "reassessment",
+            "stixObjectRevoked"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "product-as-revocation",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "product correction not STIX revocation"
+    },
+    {
+      "id": "CTI26-HANDOFF-WRONG-AUDIENCE",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "handoff",
+            "audience"
+          ],
+          "value": "SYNTH-SOC Lead"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "handoff-wrong-audience",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "handoff binding"
+    },
+    {
+      "id": "CTI26-FALSE-HANDOFF",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "handoff",
+            "status"
+          ],
+          "value": "delivered"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "false-handoff",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "handoff not delivered"
+    },
+    {
+      "id": "CTI26-DEMO-RELATION",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "exchangeExample",
+            "relation"
+          ],
+          "value": "refines"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "demo-relation",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "independent exchange boundary"
+    },
+    {
+      "id": "CTI26-DEMO-JUDGMENT",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "exchangeExample",
+            "contributesToJudgment"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "demo-judgment",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "independent exchange boundary"
+    },
+    {
+      "id": "CTI26-UNSAFE-DIRECT",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "requirement",
+            "question"
+          ],
+          "value": "第三者の本番システムへ接続する。"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "unsafe-direct",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "target.real_or_external"
+    },
+    {
+      "id": "CTI26-SAFE-PROHIBITION",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "requirement",
+            "successCondition"
+          ],
+          "value": "第三者の本番システムへ接続しない。"
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "safe-prohibition",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-SAFE-RISK",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "requirement",
+            "successCondition"
+          ],
+          "value": "analyze the risk of collecting PII"
+        }
+      ],
+      "expected": "accepted",
+      "invariant": "safe-risk",
+      "owner": "Chapter26 finite product/exchange profile",
+      "expectedResult": {
+        "products": [
+          "PRD-CTI26-EXEC",
+          "PRD-CTI26-TECH"
+        ],
+        "judgments": [
+          "KJ-CTI26-001",
+          "KJ-CTI26-002",
+          "KJ-CTI26-003"
+        ],
+        "origins": {
+          "KJ-CTI26-001": 4,
+          "KJ-CTI26-002": 1,
+          "KJ-CTI26-003": 1
+        },
+        "delivered": 0,
+        "executed": 0,
+        "attributionCeiling": "L2",
+        "demoEvidenceAdopted": 0
+      }
+    },
+    {
+      "id": "CTI26-BUNDLE-VERSION",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "spec_version"
+          ],
+          "value": "2.1"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "bundle-version",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema additional property: spec_version"
+    },
+    {
+      "id": "CTI26-STIX-DUPLICATE-ID",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            1,
+            "id"
+          ],
+          "value": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "stix-duplicate-id",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "STIX objects unique refs"
+    },
+    {
+      "id": "CTI26-STIX-BAD-UUID",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            0,
+            "id"
+          ],
+          "value": "threat-actor--not-a-uuid"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "stix-bad-uuid",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "badly formed"
+    },
+    {
+      "id": "CTI26-STIX-WRONG-PREFIX",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            0,
+            "id"
+          ],
+          "value": "campaign--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "stix-wrong-prefix",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "STIX identifier/version"
+    },
+    {
+      "id": "CTI26-STIX-WRONG-VERSION",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            0,
+            "spec_version"
+          ],
+          "value": "2.0"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "stix-wrong-version",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "STIX specification version"
+    },
+    {
+      "id": "CTI26-STIX-MODIFIED-EARLY",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            0,
+            "modified"
+          ],
+          "value": "2026-10-05T00:00:00.000Z"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "stix-modified-early",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "STIX modified before created"
+    },
+    {
+      "id": "CTI26-STIX-NAIVE-TIME",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            0,
+            "created"
+          ],
+          "value": "2026-10-06T00:00:00"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "stix-naive-time",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "does not match format"
+    },
+    {
+      "id": "CTI26-SCO-DOMAIN",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            4,
+            "value"
+          ],
+          "value": "other.example"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "sco-domain",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "reserved demo domain"
+    },
+    {
+      "id": "CTI26-SCO-UUID",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            4,
+            "id"
+          ],
+          "value": "domain-name--00000000-0000-5000-8000-000000000000"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "sco-uuid",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "SCO deterministic identity"
+    },
+    {
+      "id": "CTI26-OBS-COUNT-ZERO",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            5,
+            "number_observed"
+          ],
+          "value": 0
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "obs-count-zero",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "observed data binding/count"
+    },
+    {
+      "id": "CTI26-OBS-COUNT-BOOL",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            5,
+            "number_observed"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "obs-count-bool",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema oneOf matched 0 branches"
+    },
+    {
+      "id": "CTI26-OBS-REVERSED",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            5,
+            "last_observed"
+          ],
+          "value": "2026-10-05T00:00:00.000Z"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "obs-reversed",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "observation time"
+    },
+    {
+      "id": "CTI26-OBS-WRONG-REF",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            5,
+            "object_refs"
+          ],
+          "value": [
+            "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "obs-wrong-ref",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "observed data binding/count"
+    },
+    {
+      "id": "CTI26-INDICATOR-PATTERN",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            6,
+            "pattern"
+          ],
+          "value": "[domain-name:value = 'other.example']"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "indicator-pattern",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "finite pattern equality"
+    },
+    {
+      "id": "CTI26-INDICATOR-VALIDITY",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            6,
+            "valid_until"
+          ],
+          "value": "2026-10-06T00:00:00.000Z"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "indicator-validity",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "indicator validity window"
+    },
+    {
+      "id": "CTI26-MALWARE-INSTANCE-FAMILY",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            2,
+            "is_family"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "malware-instance-family",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "fictional types not capabilities"
+    },
+    {
+      "id": "CTI26-ENTITY-REAL-NAME",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            0,
+            "name"
+          ],
+          "value": "An asserted real actor"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "entity-real-name",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "synthetic entity name"
+    },
+    {
+      "id": "CTI26-RELATION-DANGLING",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            8,
+            "target_ref"
+          ],
+          "value": "threat-actor--00000000-0000-4000-8000-000000000000"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "relation-dangling",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "relationship endpoints"
+    },
+    {
+      "id": "CTI26-RELATION-WRONG-SEMANTICS",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            8,
+            "relationship_type"
+          ],
+          "value": "uses"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "relation-wrong-semantics",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "finite relationship semantics"
+    },
+    {
+      "id": "CTI26-RELATION-DUPLICATE",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            9,
+            "source_ref"
+          ],
+          "value": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "relation-duplicate",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "finite relationship semantics"
+    },
+    {
+      "id": "CTI26-RELATION-COORDINATED-DUPLICATE",
+      "changes": [
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            9,
+            "source_ref"
+          ],
+          "value": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b"
+        },
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            9,
+            "target_ref"
+          ],
+          "value": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4"
+        },
+        {
+          "target": "bundle",
+          "path": [
+            "objects",
+            9,
+            "relationship_type"
+          ],
+          "value": "attributed-to"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "relation-coordinated-duplicate",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "finite relationship semantics"
+    },
+    {
+      "id": "CTI26-TAXII-NETWORK",
+      "changes": [
+        {
+          "target": "taxii",
+          "path": [
+            "networkExecuted"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "taxii-network",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "offline TAXII boundary"
+    },
+    {
+      "id": "CTI26-TAXII-CROSS-CASE",
+      "changes": [
+        {
+          "target": "taxii",
+          "path": [
+            "caseId"
+          ],
+          "value": "CASE-2026-025"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "taxii-cross-case",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "offline TAXII boundary"
+    },
+    {
+      "id": "CTI26-TAXII-PERMISSION",
+      "changes": [
+        {
+          "target": "taxii",
+          "path": [
+            "collection",
+            "can_write"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "taxii-permission",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "finite collection"
+    },
+    {
+      "id": "CTI26-TAXII-EXTERNAL",
+      "changes": [
+        {
+          "target": "taxii",
+          "path": [
+            "request",
+            "url"
+          ],
+          "value": "https://example.com/taxii2/"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "taxii-external",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "reserved offline request"
+    },
+    {
+      "id": "CTI26-TAXII-MEDIA-VERSION",
+      "changes": [
+        {
+          "target": "taxii",
+          "path": [
+            "request",
+            "accept"
+          ],
+          "value": "application/taxii+json;version=2.0"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "taxii-media-version",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "reserved offline request"
+    },
+    {
+      "id": "CTI26-TAXII-MORE",
+      "changes": [
+        {
+          "target": "taxii",
+          "path": [
+            "response",
+            "envelope",
+            "more"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "taxii-more",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "offline response metadata"
+    },
+    {
+      "id": "CTI26-TAXII-MISSING-OBJECT",
+      "changes": [
+        {
+          "target": "taxii",
+          "path": [
+            "response",
+            "envelope",
+            "objects"
+          ],
+          "value": [
+            {
+              "type": "threat-actor",
+              "spec_version": "2.1",
+              "id": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Actor",
+              "description": "Independent fictional type example, not an actor attribution for CASE-2026-025.",
+              "threat_actor_types": [
+                "unknown"
+              ]
+            },
+            {
+              "type": "campaign",
+              "spec_version": "2.1",
+              "id": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Campaign",
+              "description": "Independent fictional campaign, not a claim about the parent product."
+            },
+            {
+              "type": "malware",
+              "spec_version": "2.1",
+              "id": "malware--6b504777-6bcb-424b-870a-73e28d981fad",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Malware Label",
+              "description": "Non-executable fictional label; no code or sample is provided.",
+              "is_family": false,
+              "malware_types": [
+                "unknown"
+              ]
+            },
+            {
+              "type": "infrastructure",
+              "spec_version": "2.1",
+              "id": "infrastructure--2d5912eb-2462-48a0-92e3-1c1f65f110fc",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Infrastructure",
+              "description": "Fictional representation only; not a deployed service.",
+              "infrastructure_types": [
+                "unknown"
+              ]
+            },
+            {
+              "type": "domain-name",
+              "spec_version": "2.1",
+              "id": "domain-name--7471572f-90bd-5053-9550-edb807c1ab17",
+              "value": "relay-demo.example"
+            },
+            {
+              "type": "observed-data",
+              "spec_version": "2.1",
+              "id": "observed-data--907457b7-b097-45dc-8bf8-df7ba74f1ebc",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "first_observed": "2026-10-06T00:00:00.000Z",
+              "last_observed": "2026-10-06T00:00:00.000Z",
+              "number_observed": 1,
+              "object_refs": [
+                "domain-name--7471572f-90bd-5053-9550-edb807c1ab17"
+              ]
+            },
+            {
+              "type": "indicator",
+              "spec_version": "2.1",
+              "id": "indicator--0ac09c72-7c9c-450f-a789-0389c726ba10",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Pattern",
+              "description": "Fictional equality pattern; no detection effectiveness claim.",
+              "pattern": "[domain-name:value = 'relay-demo.example']",
+              "pattern_type": "stix",
+              "pattern_version": "2.1",
+              "valid_from": "2026-10-06T00:00:00.000Z",
+              "valid_until": "2026-10-07T00:00:00.000Z"
+            },
+            {
+              "type": "attack-pattern",
+              "spec_version": "2.1",
+              "id": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "labels": [
+                "synthetic-structure-only"
+              ],
+              "name": "SYNTH-Training Behavior",
+              "description": "Fictional vocabulary example, not an ATT&CK coverage claim."
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--71fbba92-c181-45aa-9ae8-6be9310f509a",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "attributed-to",
+              "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "target_ref": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--fdaba7d7-b877-4d25-95af-3bcf1ce03087",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "uses",
+              "source_ref": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4",
+              "target_ref": "malware--6b504777-6bcb-424b-870a-73e28d981fad"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--b4332286-4ab9-4647-91b8-596a3729d743",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "uses",
+              "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "target_ref": "infrastructure--2d5912eb-2462-48a0-92e3-1c1f65f110fc"
+            },
+            {
+              "type": "relationship",
+              "spec_version": "2.1",
+              "id": "relationship--8637a454-e325-4b02-8916-5c277fda42d9",
+              "created": "2026-10-06T00:00:00.000Z",
+              "modified": "2026-10-06T00:00:00.000Z",
+              "lang": "en",
+              "description": "Independent synthetic structure example only.",
+              "relationship_type": "uses",
+              "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+              "target_ref": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c"
+            }
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "taxii-missing-object",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "TAXII objects equality"
+    },
+    {
+      "id": "CTI26-TAXII-BUNDLE-WRAPPED",
+      "changes": [
+        {
+          "target": "taxii",
+          "path": [
+            "response",
+            "envelope",
+            "objects"
+          ],
+          "value": [
+            {
+              "type": "bundle",
+              "id": "bundle--2e2ba4f9-3ce8-4fd5-9f99-71a7c4f7a42c",
+              "objects": [
+                {
+                  "type": "threat-actor",
+                  "spec_version": "2.1",
+                  "id": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "labels": [
+                    "synthetic-structure-only"
+                  ],
+                  "name": "SYNTH-Training Actor",
+                  "description": "Independent fictional type example, not an actor attribution for CASE-2026-025.",
+                  "threat_actor_types": [
+                    "unknown"
+                  ]
+                },
+                {
+                  "type": "campaign",
+                  "spec_version": "2.1",
+                  "id": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "labels": [
+                    "synthetic-structure-only"
+                  ],
+                  "name": "SYNTH-Training Campaign",
+                  "description": "Independent fictional campaign, not a claim about the parent product."
+                },
+                {
+                  "type": "malware",
+                  "spec_version": "2.1",
+                  "id": "malware--6b504777-6bcb-424b-870a-73e28d981fad",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "labels": [
+                    "synthetic-structure-only"
+                  ],
+                  "name": "SYNTH-Training Malware Label",
+                  "description": "Non-executable fictional label; no code or sample is provided.",
+                  "is_family": false,
+                  "malware_types": [
+                    "unknown"
+                  ]
+                },
+                {
+                  "type": "infrastructure",
+                  "spec_version": "2.1",
+                  "id": "infrastructure--2d5912eb-2462-48a0-92e3-1c1f65f110fc",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "labels": [
+                    "synthetic-structure-only"
+                  ],
+                  "name": "SYNTH-Training Infrastructure",
+                  "description": "Fictional representation only; not a deployed service.",
+                  "infrastructure_types": [
+                    "unknown"
+                  ]
+                },
+                {
+                  "type": "domain-name",
+                  "spec_version": "2.1",
+                  "id": "domain-name--7471572f-90bd-5053-9550-edb807c1ab17",
+                  "value": "relay-demo.example"
+                },
+                {
+                  "type": "observed-data",
+                  "spec_version": "2.1",
+                  "id": "observed-data--907457b7-b097-45dc-8bf8-df7ba74f1ebc",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "labels": [
+                    "synthetic-structure-only"
+                  ],
+                  "first_observed": "2026-10-06T00:00:00.000Z",
+                  "last_observed": "2026-10-06T00:00:00.000Z",
+                  "number_observed": 1,
+                  "object_refs": [
+                    "domain-name--7471572f-90bd-5053-9550-edb807c1ab17"
+                  ]
+                },
+                {
+                  "type": "indicator",
+                  "spec_version": "2.1",
+                  "id": "indicator--0ac09c72-7c9c-450f-a789-0389c726ba10",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "labels": [
+                    "synthetic-structure-only"
+                  ],
+                  "name": "SYNTH-Training Pattern",
+                  "description": "Fictional equality pattern; no detection effectiveness claim.",
+                  "pattern": "[domain-name:value = 'relay-demo.example']",
+                  "pattern_type": "stix",
+                  "pattern_version": "2.1",
+                  "valid_from": "2026-10-06T00:00:00.000Z",
+                  "valid_until": "2026-10-07T00:00:00.000Z"
+                },
+                {
+                  "type": "attack-pattern",
+                  "spec_version": "2.1",
+                  "id": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "labels": [
+                    "synthetic-structure-only"
+                  ],
+                  "name": "SYNTH-Training Behavior",
+                  "description": "Fictional vocabulary example, not an ATT&CK coverage claim."
+                },
+                {
+                  "type": "relationship",
+                  "spec_version": "2.1",
+                  "id": "relationship--71fbba92-c181-45aa-9ae8-6be9310f509a",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "description": "Independent synthetic structure example only.",
+                  "relationship_type": "attributed-to",
+                  "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+                  "target_ref": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4"
+                },
+                {
+                  "type": "relationship",
+                  "spec_version": "2.1",
+                  "id": "relationship--fdaba7d7-b877-4d25-95af-3bcf1ce03087",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "description": "Independent synthetic structure example only.",
+                  "relationship_type": "uses",
+                  "source_ref": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4",
+                  "target_ref": "malware--6b504777-6bcb-424b-870a-73e28d981fad"
+                },
+                {
+                  "type": "relationship",
+                  "spec_version": "2.1",
+                  "id": "relationship--b4332286-4ab9-4647-91b8-596a3729d743",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "description": "Independent synthetic structure example only.",
+                  "relationship_type": "uses",
+                  "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+                  "target_ref": "infrastructure--2d5912eb-2462-48a0-92e3-1c1f65f110fc"
+                },
+                {
+                  "type": "relationship",
+                  "spec_version": "2.1",
+                  "id": "relationship--8637a454-e325-4b02-8916-5c277fda42d9",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "description": "Independent synthetic structure example only.",
+                  "relationship_type": "uses",
+                  "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+                  "target_ref": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c"
+                },
+                {
+                  "type": "relationship",
+                  "spec_version": "2.1",
+                  "id": "relationship--b65f4f93-74b5-470c-9510-2612246218ab",
+                  "created": "2026-10-06T00:00:00.000Z",
+                  "modified": "2026-10-06T00:00:00.000Z",
+                  "lang": "en",
+                  "description": "Independent synthetic structure example only.",
+                  "relationship_type": "indicates",
+                  "source_ref": "indicator--0ac09c72-7c9c-450f-a789-0389c726ba10",
+                  "target_ref": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "taxii-bundle-wrapped",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "oneOf matched 0"
+    },
+    {
+      "id": "CTI26-TAXII-OBJECT-ALTERED",
+      "changes": [
+        {
+          "target": "taxii",
+          "path": [
+            "response",
+            "envelope",
+            "objects",
+            0,
+            "name"
+          ],
+          "value": "SYNTH-Training Other"
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "taxii-object-altered",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "TAXII objects equality"
+    },
+    {
+      "id": "CTI26-EMPTY-EVIDENCE",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "evidence"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "empty-evidence",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema minItems violation"
+    },
+    {
+      "id": "CTI26-EMPTY-JUDGMENTS",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "judgments"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "empty-judgments",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema minItems violation"
+    },
+    {
+      "id": "CTI26-EMPTY-RECOMMENDATIONS",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "recommendations"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "empty-recommendations",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema minItems violation"
+    },
+    {
+      "id": "CTI26-EMPTY-PRODUCTS",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "products"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "empty-products",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema minItems violation"
+    },
+    {
+      "id": "CTI26-EMPTY-OPTIONS",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "options"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "empty-options",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema minItems violation"
+    },
+    {
+      "id": "CTI26-EMPTY-FEEDBACK",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "feedback"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "empty-feedback",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema minItems violation"
+    },
+    {
+      "id": "CTI26-EMPTY-METHODREFERENCES",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "methodReferences"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "empty-methodreferences",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema minItems violation"
+    },
+    {
+      "id": "CTI26-EMPTY-ALTERNATIVES",
+      "changes": [
+        {
+          "target": "data",
+          "path": [
+            "alternatives"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "invariant": "empty-alternatives",
+      "owner": "Chapter26 finite product/exchange profile",
+      "errorContains": "JSON Schema minItems violation"
+    }
+  ]
+}

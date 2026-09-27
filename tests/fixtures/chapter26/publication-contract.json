@@ -1,0 +1,821 @@
+{
+  "schemaVersion": "1.0.0",
+  "comparisonVersion": "1.0.0",
+  "chapterId": "ch26-cti-structure-distribution",
+  "dataDigests": {
+    "cases/fixtures/ch26-cti-distribution.json": "b0cd715a96505fc1696e0f9576f20f2af2625a523b75711661048c3d5b12b76d",
+    "cases/fixtures/ch26-stix-bundle.json": "1476310022853b426b5b633604c25cbfa38fd222b25e24c3d155db380e6a456b",
+    "cases/fixtures/ch26-taxii-exchange.json": "787c807063d64cf183b500b4138669cc4ecc946b1d395a7c6406030c7fdfcef4"
+  },
+  "schemaDigests": {
+    "schemas/ch26-cti-distribution.schema.json": "a1014762a17050c199cb73a90471b1b120d74d5c47b4f88e016d0d38bd0082d6",
+    "schemas/ch26-stix-bundle.schema.json": "3c12e850e3067914c3bad5ee6405e477097ece057f2d8f96a791ba6f321fdcc9",
+    "schemas/ch26-taxii-exchange.schema.json": "4c5043f1e8f47184b1585e5cd782bd235b7c628e5d7e78899d10a50a53217e0a"
+  },
+  "corpusSha256": "ed0a833ee583c7d8d668162c58bbd5a19eebefb97e7e56fb5730f1940484ec6a",
+  "documents": {
+    "manuscript/26-cti-distribution.md": {
+      "projectionSha256": "71ad5e344d0bc9cd460fd9efdb2586cac506d5634bd48f274f29b1d62bc0855a",
+      "headings": [
+        [
+          1,
+          "第26章 CTIを構造化し、技術・経営へ配布する"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          3,
+          "OWN / BRIDGE / DELEGATE"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケース：短くしても判断の境界を失わない"
+        ],
+        [
+          2,
+          "全体像"
+        ],
+        [
+          2,
+          "26.1 Productは形式ではなく判断目的から決める"
+        ],
+        [
+          2,
+          "26.2 Fact・Judgment・Recommendation・Implicationを分ける"
+        ],
+        [
+          2,
+          "26.3 EntityとRelationshipにも主張の強さがある"
+        ],
+        [
+          2,
+          "26.4 STIXは構造化の言語で、分析の正しさではない"
+        ],
+        [
+          3,
+          "版と確信度の境界"
+        ],
+        [
+          2,
+          "26.5 TAXIIは交換手段で、Trustや権限の代替ではない"
+        ],
+        [
+          2,
+          "26.6 技術者向けReportと経営向けBrief"
+        ],
+        [
+          2,
+          "26.7 配布境界、期限、受領を分ける"
+        ],
+        [
+          2,
+          "26.8 Feedback、訂正、差替え"
+        ],
+        [
+          2,
+          "安全な演習：二つの読者へ同じ根拠を渡す"
+        ],
+        [
+          2,
+          "作成する成果物"
+        ],
+        [
+          2,
+          "評価基準"
+        ],
+        [
+          2,
+          "よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "fieldCount": 142,
+      "hostProvenance": [
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://itdojp.github.io/incident-response-basics-book/",
+          "manuscript/26-cti-distribution.md:L13:F14"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "SRC-ATTACK-001 の挙動語彙は、検知・Huntとの対応付けを話し合う共通語として使います。現在のRegistryは19.2で、親25の歴史的な19.1記述はそのまま保持します。対応付けだけではCoverage、Controlの有効性、同一Actor、国家の関与を証明しません。本章の独立STIX例は実在ATT&CK objectの新規監査や写しではありません。",
+          "manuscript/26-cti-distribution.md:L82:F54"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "26.5 TAXIIは交換手段で、Trustや権限の代替ではない SRC-TAXII-001 のTAXII 2.1では、DiscoveryからAPI Rootを知り、CollectionのObjectを扱います。ManifestはObjectの版などの一覧、Statusは追加要求の処理状況を扱う資源です。Content negotiationで交換する版を明示します。Channelsのキーワードは予約されていますが、2.1はChannelサービスを定義していません。",
+          "manuscript/26-cti-distribution.md:L108:F73"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "26.7 配布境界、期限、受領を分ける SRC-TLP-001 のTLP 2.0は共有相手の境界を示します。RED / AMBER / GREEN / CLEARと、組織内に限定するAMBER+STRICTを区別し、受領元の指定より広げる場合は明示の許可を得ます。これは機密分類、ライセンス、暗号化、保持、技術的な操作許可の代替ではありません。",
+          "manuscript/26-cti-distribution.md:L124:F84"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "参考文献・Source Note ID SRC-STIX-001: STIX 2.1固定OS。型、参照、版と有限交換profile。",
+          "manuscript/26-cti-distribution.md:L204:F137"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "参考文献・Source Note ID SRC-TAXII-001: TAXII 2.1固定OS。Collection、envelopeと交換の限界。",
+          "manuscript/26-cti-distribution.md:L205:F138"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "参考文献・Source Note ID SRC-TLP-001: TLP 2.0の共有境界。ライセンスや操作許可とは別。",
+          "manuscript/26-cti-distribution.md:L208:F141"
+        ]
+      ]
+    },
+    "templates/cti-report.md": {
+      "projectionSha256": "4b1310763e83e2d162a6ada810bf6cebae7b9b51d7145a792faf846c68fc9a75",
+      "headings": [
+        [
+          1,
+          "Cyber Threat Intelligence Report"
+        ],
+        [
+          2,
+          "このTemplateの使い方"
+        ],
+        [
+          2,
+          "Document Control / Scope"
+        ],
+        [
+          2,
+          "Intelligence requirement"
+        ],
+        [
+          2,
+          "Key judgments"
+        ],
+        [
+          2,
+          "Confidence and uncertainty"
+        ],
+        [
+          2,
+          "Evidence and source evaluation"
+        ],
+        [
+          2,
+          "Analysis / Alternatives"
+        ],
+        [
+          2,
+          "Technical recommendations / Implications"
+        ],
+        [
+          2,
+          "Business / strategic implications"
+        ],
+        [
+          2,
+          "Distribution boundaries"
+        ],
+        [
+          2,
+          "Feedback / Correction / Supersede"
+        ],
+        [
+          2,
+          "有限Statusと教材の範囲"
+        ]
+      ],
+      "fieldCount": 67,
+      "hostProvenance": []
+    },
+    "templates/executive-brief.md": {
+      "projectionSha256": "476e3a1c5e8570721edb60488ee82990ef8f793358b3e551f81d3dd4a2653ec2",
+      "headings": [
+        [
+          1,
+          "Executive Decision Brief"
+        ],
+        [
+          2,
+          "このTemplateの使い方"
+        ],
+        [
+          2,
+          "Decision required"
+        ],
+        [
+          2,
+          "Key judgments"
+        ],
+        [
+          2,
+          "Business exposure"
+        ],
+        [
+          2,
+          "Options"
+        ],
+        [
+          2,
+          "Recommendation / Decision"
+        ],
+        [
+          2,
+          "Conditions and triggers"
+        ],
+        [
+          2,
+          "Distribution / Feedback"
+        ],
+        [
+          2,
+          "安全境界と有限Status"
+        ]
+      ],
+      "fieldCount": 55,
+      "hostProvenance": []
+    },
+    "cases/ch26-cti-distribution-example.md": {
+      "projectionSha256": "b9c20e289867ae75df075a7c41c7382d6b5942caab01721a3b12987239acc35b",
+      "headings": [
+        [
+          1,
+          "第26章 完全記入例：同じ根拠を技術・経営へ渡す"
+        ],
+        [
+          2,
+          "この記入例の扱い"
+        ],
+        [
+          2,
+          "二つの教材を結合しない"
+        ],
+        [
+          2,
+          "ART-08：技術・運用向けに読む"
+        ],
+        [
+          2,
+          "ART-09：経営判断へ向けて読む"
+        ],
+        [
+          2,
+          "全欄の読み方"
+        ],
+        [
+          3,
+          "schemaVersion"
+        ],
+        [
+          3,
+          "synthetic"
+        ],
+        [
+          3,
+          "readOnly"
+        ],
+        [
+          3,
+          "networkRequired"
+        ],
+        [
+          3,
+          "executionAuthorized"
+        ],
+        [
+          3,
+          "record"
+        ],
+        [
+          3,
+          "requirement"
+        ],
+        [
+          3,
+          "MREF-CTI26-023"
+        ],
+        [
+          3,
+          "MREF-CTI26-024"
+        ],
+        [
+          3,
+          "EVD-2026-025-001"
+        ],
+        [
+          3,
+          "EVD-2026-025-002"
+        ],
+        [
+          3,
+          "EVD-2026-025-003"
+        ],
+        [
+          3,
+          "EVD-2026-025-004"
+        ],
+        [
+          3,
+          "EVD-2026-025-005"
+        ],
+        [
+          3,
+          "EVD-2026-025-006"
+        ],
+        [
+          3,
+          "EVD-2026-025-007"
+        ],
+        [
+          3,
+          "EVD-2026-025-008"
+        ],
+        [
+          3,
+          "KJ-CTI26-001"
+        ],
+        [
+          3,
+          "KJ-CTI26-002"
+        ],
+        [
+          3,
+          "KJ-CTI26-003"
+        ],
+        [
+          3,
+          "REC-CTI26-001"
+        ],
+        [
+          3,
+          "REC-CTI26-002"
+        ],
+        [
+          3,
+          "REC-CTI26-003"
+        ],
+        [
+          3,
+          "PRD-CTI26-TECH"
+        ],
+        [
+          3,
+          "PRD-CTI26-EXEC"
+        ],
+        [
+          3,
+          "OPT-CTI26-A"
+        ],
+        [
+          3,
+          "OPT-CTI26-B"
+        ],
+        [
+          3,
+          "OPT-CTI26-C"
+        ],
+        [
+          3,
+          "decision"
+        ],
+        [
+          3,
+          "FDB-CTI26-TECH"
+        ],
+        [
+          3,
+          "FDB-CTI26-EXEC"
+        ],
+        [
+          3,
+          "reassessment"
+        ],
+        [
+          3,
+          "handoff"
+        ],
+        [
+          3,
+          "exchangeExample"
+        ],
+        [
+          3,
+          "ALT-CTI26-SUCCESS"
+        ],
+        [
+          3,
+          "ALT-CTI26-NO-SUCCESS"
+        ],
+        [
+          3,
+          "ALT-CTI26-NEW-ORIGIN"
+        ],
+        [
+          2,
+          "独立STIX構造例のObject一覧"
+        ],
+        [
+          2,
+          "検査結果の意味と安全な対比"
+        ],
+        [
+          2,
+          "Handoffと再評価"
+        ]
+      ],
+      "fieldCount": 456,
+      "hostProvenance": []
+    },
+    "references/ch26-source-review-2026-09-28.md": {
+      "projectionSha256": "f7a2f8a3a2df62641bff4e1f763e815340b90241f8ec42ea6d0c8be6e58fa96c",
+      "headings": [
+        [
+          1,
+          "第26章 Source再監査（2026-09-28）"
+        ],
+        [
+          2,
+          "STIX 2.1の固定基準とErrataの段階"
+        ],
+        [
+          2,
+          "TAXII 2.1とoffline fixture"
+        ],
+        [
+          2,
+          "ATT&CKと親Caseの版"
+        ],
+        [
+          2,
+          "ICD 203"
+        ],
+        [
+          2,
+          "TLP 2.0"
+        ],
+        [
+          2,
+          "記録の限界と再確認"
+        ]
+      ],
+      "fieldCount": 40,
+      "hostProvenance": [
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "STIX 2.1の固定基準とErrataの段階 SRC-STIX-001 はOASISの固定OSの表題・citationが示す2.1 / OASIS Standard / 2021-06-10を保持します。latestは2025-04-02のDraft 01 of Errata 01を取り込んだ文書で、citationはCommittee Specification Draft 01です。版固定のDraftも確認し、Approved Errataとして扱いません。",
+          "references/ch26-source-review-2026-09-28.md:L7:F6"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
+          "references/ch26-source-review-2026-09-28.md:L7:F7"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://docs.oasis-open.org/cti/stix/v2.1/stix-v2.1.html",
+          "references/ch26-source-review-2026-09-28.md:L7:F8"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://docs.oasis-open.org/cti/stix/v2.1/errata01/csd01/stix-v2.1-errata01-csd01-complete.md",
+          "references/ch26-source-review-2026-09-28.md:L7:F9"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "TAXII 2.1とoffline fixture SRC-TAXII-001 の固定OSは2.1 / OASIS Standard / 2021-06-10です。latestは取得時に固定OSとbyte同一でした。",
+          "references/ch26-source-review-2026-09-28.md:L15:F14"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://docs.oasis-open.org/cti/taxii/v2.1/os/taxii-v2.1-os.html",
+          "references/ch26-source-review-2026-09-28.md:L15:F15"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://docs.oasis-open.org/cti/taxii/v2.1/taxii-v2.1.html",
+          "references/ch26-source-review-2026-09-28.md:L15:F16"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "Discovery / API Root / Collection、Manifest / Objects / Status、版を含むMedia Typeとenvelopeを確認しました。2.1ではChannels用語が予約されてもサービスは定義されていません。fixtureはCollectionと一回のGETの静的request/responseだけを採用し、DiscoveryやStatus APIの完全実装・適合性を主張しません。",
+          "references/ch26-source-review-2026-09-28.md:L17:F17"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "ATT&CKと親Caseの版 SRC-ATTACK-001 の公式Versionsはcurrent 19.2、UpdatesはAugust 2026の19.2を示しました。既存RegistryのCommit / Hash / 公開日精度を保持します。Versionsの表示期間とUpdatesの開始日を、そのlive Page自体の公開日に置き換えません。",
+          "references/ch26-source-review-2026-09-28.md:L23:F21"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://attack.mitre.org/resources/versions/",
+          "references/ch26-source-review-2026-09-28.md:L23:F22"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://attack.mitre.org/resources/updates/",
+          "references/ch26-source-review-2026-09-28.md:L23:F23"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "本章は版付きの挙動語彙という用途だけで、全ObjectやRelationshipの再監査をしていません。古いIssue設計の19.1を現在値として優先せず、親第25章が歴史的な19.1を使った記述は変更しません。ATT&CK対応付けをCoverage、Control効果、Actor帰属の証明にはしません。",
+          "references/ch26-source-review-2026-09-28.md:L25:F24"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
+          "references/ch26-source-review-2026-09-28.md:L29:F28"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.intelligence.gov/mission/our-values/objectivity",
+          "references/ch26-source-review-2026-09-28.md:L29:F29"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "TLP 2.0 SRC-TLP-001 はFIRST公式定義が示す現行2.0を採用します。2022年8月以降有効との説明を確認しましたが、同live Page自体の正確な公開日は特定せずpublishedAtはnullです。",
+          "references/ch26-source-review-2026-09-28.md:L35:F33"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.first.org/tlp/",
+          "references/ch26-source-review-2026-09-28.md:L35:F34"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "採用は共有の境界、AMBER+STRICT、指定より広い共有に必要な明示許可、分類・ライセンス・暗号化との違いに限定します。ラベルや色表を転載した図は作りません。TLP 2.0を古いSTIXのTLP Propertyへ機械的に当てはめる実装、全組織の情報分類規則、保持義務、実操作の許可は対象外です。",
+          "references/ch26-source-review-2026-09-28.md:L37:F35"
+        ]
+      ]
+    }
+  },
+  "parentDigests": {
+    "WRITING_GUIDE.md": "7de62e48cbb0ca637548f6ff9d8f3c6cde0e9085f5dd42139f34f014820bbd95",
+    "SOURCE_POLICY.md": "f32541dcb37160d5194e4d9f8f805e675bebf3e9356a52f219b02bef829515c0",
+    "SAFETY_SCOPE.md": "e8ab5d61712004d16ef96f455d8224162f63296a056663d37cc5403639a184ff",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
+    "manuscript/23-intelligence-requirements.md": "3c74c4d23f1dfffd303e43ed170acc9addd7adf076cdab05faae69c21436370a",
+    "cases/fixtures/ch23-intelligence-requirements.json": "2c6dd62239366eba35d2498de8585ab3e8110355ded39a4b347cd5e675c0dd8c",
+    "manuscript/24-osint-provenance-sources.md": "7fd5c0bde0ef8b393107f037d95188e4fefa929eb32be30d4bbdec3eb40512a7",
+    "cases/fixtures/ch24-source-evaluation.json": "b0aaffca0207d26662e2a506b0c8e4c8f0f381ce41199ff6951527399ff84e24",
+    "manuscript/25-structured-analysis-attribution.md": "55a451fd6bbfd683ecd920b0d16d292532e65b4c73c417ee40047a9d056e3be0",
+    "cases/fixtures/ch25-structured-analysis-attribution-dataset.json": "5d1c76f9ea8f2f9af05e4859514b270f9ff5a02ea732232d192011865f224c81",
+    "cases/ch25-structured-analysis-attribution-example.md": "cd78f9a491106b458b41291986c92085b8ab04886070e8ba9e8dc59336a20b49",
+    "templates/analytic-judgment-record.md": "12b27ed1edc3c55f035019573a12ffe2c259c38325b2c1ddd9e7329e318652e8",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "scripts/sync_site_source.py": "79c1cd062a8d416153f588051565cdc6b93cf06327da284618f5d6b4701725be",
+    "scripts/sync_book_site.py": "9cfeb3465557fd63c9e24031ef4ca2354edd4d5d9e617f540698e679867d7ef0",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "22b3f2274d543974445811b1f4317aba4779d10728638a51ffce105d7abb8d01",
+    ".book-formatter/revision.json": "71060c07550828b43d34972d448e85339c1b959c6c44623b4431df243d28716d"
+  },
+  "sourceIdentity": {
+    "SRC-STIX-001": {
+      "id": "SRC-STIX-001",
+      "publisher": "OASIS",
+      "title": "STIX Version 2.1",
+      "kind": "standard",
+      "status": "OASIS Standard",
+      "version": "2.1",
+      "url": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
+      "publishedAt": "2021-06-10",
+      "nextReviewAt": "2028-07-25"
+    },
+    "SRC-TAXII-001": {
+      "id": "SRC-TAXII-001",
+      "publisher": "OASIS",
+      "title": "TAXII Version 2.1",
+      "kind": "standard",
+      "status": "OASIS Standard",
+      "version": "2.1",
+      "url": "https://docs.oasis-open.org/cti/taxii/v2.1/os/taxii-v2.1-os.html",
+      "publishedAt": "2021-06-10",
+      "nextReviewAt": "2028-07-25"
+    },
+    "SRC-ATTACK-001": {
+      "id": "SRC-ATTACK-001",
+      "publisher": "MITRE",
+      "title": "MITRE ATT&CK Version History and August 2026 Updates",
+      "kind": "framework",
+      "status": "current",
+      "version": "19.2",
+      "url": "https://attack.mitre.org/resources/versions/",
+      "publishedAt": null,
+      "nextReviewAt": "2026-12-21"
+    },
+    "SRC-ICD203-001": {
+      "id": "SRC-ICD203-001",
+      "publisher": "ODNI",
+      "title": "ICD 203 Analytic Standards / Objectivity",
+      "kind": "analytic-standard",
+      "status": "official",
+      "version": "signed 2015-01-02; technical amendment effective 2022-01-21; official summary revision 2023-06 (signature day unverified)",
+      "url": "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
+      "publishedAt": "2015-01-02",
+      "nextReviewAt": "2027-08-03"
+    },
+    "SRC-TLP-001": {
+      "id": "SRC-TLP-001",
+      "publisher": "FIRST",
+      "title": "Traffic Light Protocol (TLP) — Version 2.0",
+      "kind": "standard",
+      "status": "current",
+      "version": "2.0",
+      "url": "https://www.first.org/tlp/",
+      "publishedAt": null,
+      "nextReviewAt": "2027-09-28"
+    }
+  },
+  "routes": {
+    "pages": [
+      {
+        "source": "manuscript/26-cti-distribution.md",
+        "destination": "chapters/chapter-26/index.md",
+        "section": "chapters",
+        "order": 208,
+        "title": "第26章 CTIを構造化し、技術・経営へ配布する"
+      },
+      {
+        "source": "cases/ch26-cti-distribution-example.md",
+        "destination": "cases/chapter-26-cti-distribution/index.md",
+        "section": "additional",
+        "order": 328,
+        "title": "第26章 CTI Report / Executive Brief完全合成例"
+      },
+      {
+        "source": "references/ch26-source-review-2026-09-28.md",
+        "destination": "references/chapter-26-source-review/index.md",
+        "section": "additional",
+        "order": 329,
+        "title": "第26章 Source Review — 2026-09-28"
+      }
+    ],
+    "staticFiles": [
+      {
+        "source": "cases/fixtures/ch26-cti-distribution.json",
+        "destination": "downloads/ch26-cti-distribution.json"
+      },
+      {
+        "source": "schemas/ch26-cti-distribution.schema.json",
+        "destination": "downloads/ch26-cti-distribution.schema.json"
+      },
+      {
+        "source": "cases/fixtures/ch26-stix-bundle.json",
+        "destination": "downloads/ch26-stix-bundle.json"
+      },
+      {
+        "source": "schemas/ch26-stix-bundle.schema.json",
+        "destination": "downloads/ch26-stix-bundle.schema.json"
+      },
+      {
+        "source": "cases/fixtures/ch26-taxii-exchange.json",
+        "destination": "downloads/ch26-taxii-exchange.json"
+      },
+      {
+        "source": "schemas/ch26-taxii-exchange.schema.json",
+        "destination": "downloads/ch26-taxii-exchange.schema.json"
+      }
+    ]
+  },
+  "legacyTemplateRoutes": [
+    {
+      "source": "templates/cti-report.md",
+      "destination": "templates/cti-report/index.md",
+      "section": "additional",
+      "order": 200,
+      "title": null
+    },
+    {
+      "source": "templates/executive-brief.md",
+      "destination": "templates/executive-brief/index.md",
+      "section": "additional",
+      "order": 210,
+      "title": null
+    }
+  ],
+  "indices": {
+    "artifact-index.md": [
+      "| ART-08 |",
+      "| ART-09 |",
+      "第26章"
+    ],
+    "figure-index.md": [
+      "F-26-01:"
+    ],
+    "glossary.md": [
+      "## 第26章の用語"
+    ],
+    "cases/index.md": [
+      "ch26-cti-distribution-example.md"
+    ],
+    "cases/fixtures/index.md": [
+      "ch26-cti-distribution.json",
+      "ch26-stix-bundle.json",
+      "ch26-taxii-exchange.json"
+    ],
+    "README.md": [
+      "manuscript/26-cti-distribution.md"
+    ],
+    "CHANGELOG.md": [
+      "第26章のART-08 / ART-09"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "check:chapter26"
+    ]
+  }
+}

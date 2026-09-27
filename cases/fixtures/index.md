@@ -108,3 +108,7 @@
 ## 第24章 Source Evaluation
 
 [供給JSON](ch24-source-evaluation.json)と[閉Schema](../../schemas/ch24-source-evaluation.schema.json)は五Source・九Item・五Transform・四Claim・十一Evaluationを持つ。[全欄Case](../ch24-source-evaluation-example.md)へ対応し、Hashはcontent文字列のUTF-8 byteだけを比較する。実収集や真正性の認定はしない。
+
+## 第26章 CTI / Exchange
+
+[Product record](ch26-cti-distribution.json)、[独立STIX Bundle](ch26-stix-bundle.json)、[offline TAXII例](ch26-taxii-exchange.json)と各閉Schemaを[完全記入例](../ch26-cti-distribution-example.md)から辿る。供給13Objectの有限profileで、一般STIX検証・外部接続・実配達ではない。
