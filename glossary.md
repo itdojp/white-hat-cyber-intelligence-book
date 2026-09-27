@@ -237,3 +237,9 @@
 ## Intelligence Requirement / Collection Requirement
 
 Intelligence Requirementは判断に必要な不確実性を減らす問い、Collection Requirementは不足を埋めるために必要な情報の種類と取得・利用条件を定める要求。本書では回答条件とDeliverableを区別する。[第23章](manuscript/23-intelligence-requirements.md)を参照。
+
+## 第24章の用語
+
+- **Source / Item / Claim:** 発行・観測主体、版と取得済み表現、対象と条件を伴う個別主張を分ける。
+- **Observation group:** 本教材で同じ根底の観測を束ねるID。別URLや訳文を新しい独立観測にしない。
+- **Evidence use:** Direct evidence / Context / Lead / Unverified / Excludedという本書の有限用途。法的証拠区分ではない。

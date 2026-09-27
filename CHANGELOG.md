@@ -129,3 +129,5 @@
 - ART-04を既存見出し・URLを保持して拡張。六Status/五ResultとClosedの二経路を分離し、権限不足を受容で上書きしない。IPA2024/WSTG4.2 Reporting/CVSS4.0の限定採用scopeを過去Source notesへ追記。親本文/許可/Evidence、共有Policy/Projection、formatter pin/依存は変更しない。
 
 - 第15章独立レビューの指摘により、受容対象版、独立した供給Delegation、構造化Temporaryレビューを直接参照する。裸のIDや同一欄の自己申告だけでAccepted/Closed/Mitigatedにしない。
+
+- 第24章のART-30、完全合成Source評価、原典・版・変換・三軸・用途・未配達を扱う有限Layer Aと共有Projection/Policy consumerを追加。

@@ -97,3 +97,7 @@
 ## 第23章 Intelligence Requirements
 
 [完全合成例](ch23-intelligence-requirements-example.md)はART-29の五Requirement・八Collection・七Gapを追跡する。実収集を行わず、未配達Handoffを保持する。
+
+## 第24章 Source Evaluation
+
+[ART-30完全合成例](ch24-source-evaluation-example.md)は九Itemの原典・変換・個別Claimと五用途を分ける。独立Caseで、親Evidenceや許可を継承しない。

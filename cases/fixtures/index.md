@@ -104,3 +104,7 @@
 ## 第23章 Intelligence Requirements
 
 [供給JSON](ch23-intelligence-requirements.json)と[閉Schema](../../schemas/ch23-intelligence-requirements.schema.json)は、五Requirement・八Collection・三Source・四Evidence・七Gapを持つ。[全欄Case](../ch23-intelligence-requirements-example.md)と照合し、実収集や法的権限の自動認定は行わない。
+
+## 第24章 Source Evaluation
+
+[供給JSON](ch24-source-evaluation.json)と[閉Schema](../../schemas/ch24-source-evaluation.schema.json)は五Source・九Item・五Transform・四Claim・十Evaluationを持つ。[全欄Case](../ch24-source-evaluation-example.md)へ対応し、Hashはcontent文字列のUTF-8 byteだけを比較する。実収集や真正性の認定はしない。

@@ -183,3 +183,11 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 |---|---|---|---|
 | F-23-01 | 判断要求から収集・配布・再評価への読み順 | `manuscript/23-intelligence-requirements.md` | Implemented |
 | T-23-01 | Requirement / Collectionの六状態 | `manuscript/23-intelligence-requirements.md` | Implemented |
+
+## 第24章
+
+- F-24-01: 資料から利用可能な限定Evidenceまで（本文24.1）。
+- T-24-01: Source / Item / Claimの分離。
+- T-24-02: 三つの評価軸。
+- T-24-03: 有限なEvidence用途。
+- T-24-04: ART-30 Rubric。

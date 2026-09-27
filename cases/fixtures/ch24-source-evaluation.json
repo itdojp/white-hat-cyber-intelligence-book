@@ -1,0 +1,1007 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "readOnly": true,
+  "networkRequired": false,
+  "executionAuthorized": false,
+  "record": {
+    "id": "EST-2026-024-001",
+    "artifactId": "ART-30",
+    "caseId": "CASE-OS24-001",
+    "relationship": "independent",
+    "decisionId": "DR-OS24-001",
+    "decisionOwner": "SYNTH-DECISION-OWNER",
+    "question": "供給資料の通知遅延の説明をどの版と条件に限定して判断へ渡せるか。",
+    "asOf": "2026-10-04T03:00:00Z",
+    "decisionDeadline": "2026-10-05T03:00:00Z",
+    "actualCollections": 0,
+    "actualActions": 0,
+    "actualNotifications": 0,
+    "parentEvidenceInherited": false,
+    "parentAuthorityInherited": false,
+    "realWorldTruthCertified": false,
+    "retention": "own working copies within 24 hours after exercise",
+    "custodian": "SYNTH-CUSTODIAN"
+  },
+  "methodReferences": [
+    {
+      "id": "REF-EV24-010",
+      "chapter": 10,
+      "recordId": "ASR-2026-010",
+      "relationship": "method-reference-only",
+      "received": false
+    },
+    {
+      "id": "REF-EV24-023",
+      "chapter": 23,
+      "recordId": "IRCP-2026-023-001",
+      "relationship": "method-reference-only",
+      "received": false
+    },
+    {
+      "id": "REF-EV24-025",
+      "chapter": 25,
+      "recordId": "ART-12",
+      "relationship": "method-reference-only",
+      "received": false
+    }
+  ],
+  "collections": [
+    {
+      "id": "COL-EV24-001",
+      "question": "訂正版の範囲と供給観測を比較する。",
+      "subject": "SYNTH-NOTIFY",
+      "currentVersion": "v2",
+      "owner": "SYNTH-COLLECTION-OWNER",
+      "deadline": "2026-10-04T03:00:00Z",
+      "authority": "supplied-only",
+      "terms": "supplied-only",
+      "classification": "synthetic-public",
+      "method": "supplied-record-reading",
+      "stop": "未知入力、Terms不明、個人情報、Hash不一致なら追加処理を止める。"
+    },
+    {
+      "id": "COL-EV24-002",
+      "question": "旧版と引用・訂正の来歴を分離する。",
+      "subject": "SYNTH-NOTIFY",
+      "currentVersion": "v2",
+      "owner": "SYNTH-COLLECTION-OWNER",
+      "deadline": "2026-10-04T03:00:00Z",
+      "authority": "supplied-only",
+      "terms": "supplied-only",
+      "classification": "synthetic-public",
+      "method": "supplied-record-reading",
+      "stop": "未知入力、Terms不明、個人情報、Hash不一致なら追加処理を止める。"
+    }
+  ],
+  "sources": [
+    {
+      "id": "OSRC-EV24-001",
+      "publisher": "SYNTH-VENDOR",
+      "author": "SYNTH-VENDOR-EDITOR",
+      "kind": "original",
+      "reliability": {
+        "value": "bounded",
+        "reason": "教材内の発行系列と訂正を供給。実発行者の認証ではない。"
+      },
+      "authority": "supplied-only",
+      "terms": "supplied-only",
+      "classification": "synthetic-public",
+      "allowedUse": "offline-reading-only"
+    },
+    {
+      "id": "OSRC-EV24-002",
+      "publisher": "SYNTH-BLOG",
+      "author": "SYNTH-BLOG-EDITOR",
+      "kind": "secondary",
+      "reliability": {
+        "value": "limited",
+        "reason": "Advisoryの引用だけで独立観測なし。"
+      },
+      "authority": "supplied-only",
+      "terms": "supplied-only",
+      "classification": "synthetic-public",
+      "allowedUse": "offline-reading-only"
+    },
+    {
+      "id": "OSRC-EV24-003",
+      "publisher": "SYNTH-NEWS",
+      "author": "SYNTH-NEWS-EDITOR",
+      "kind": "aggregator",
+      "reliability": {
+        "value": "limited",
+        "reason": "Blogの再掲で独立観測なし。"
+      },
+      "authority": "supplied-only",
+      "terms": "supplied-only",
+      "classification": "synthetic-public",
+      "allowedUse": "offline-reading-only"
+    },
+    {
+      "id": "OSRC-EV24-004",
+      "publisher": "SYNTH-POST",
+      "author": "SYNTH-POST-EDITOR",
+      "kind": "post",
+      "reliability": {
+        "value": "unknown",
+        "reason": "供給された投稿役割だけが既知で、内容の検証履歴なし。"
+      },
+      "authority": "supplied-only",
+      "terms": "supplied-only",
+      "classification": "synthetic-public",
+      "allowedUse": "offline-reading-only"
+    },
+    {
+      "id": "OSRC-EV24-005",
+      "publisher": "SYNTH-LAB",
+      "author": "SYNTH-LAB-EDITOR",
+      "kind": "observation",
+      "reliability": {
+        "value": "bounded",
+        "reason": "二十件の供給観測だけ。実測や完全性を認定しない。"
+      },
+      "authority": "supplied-only",
+      "terms": "supplied-only",
+      "classification": "synthetic-public",
+      "allowedUse": "offline-reading-only"
+    }
+  ],
+  "claims": [
+    {
+      "id": "CLM-EV24-001",
+      "collectionId": "COL-EV24-002",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v1",
+      "scope": "unspecified-load",
+      "text": "通知遅延が発生する可能性があるという初期説明。",
+      "modality": "possible",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ]
+    },
+    {
+      "id": "CLM-EV24-002",
+      "collectionId": "COL-EV24-001",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v2",
+      "scope": "batch-load",
+      "text": "Batch条件で通知遅延が発生する可能性がある。",
+      "modality": "possible",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ]
+    },
+    {
+      "id": "CLM-EV24-003",
+      "collectionId": "COL-EV24-001",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v2",
+      "scope": "interactive-20-sample",
+      "text": "供給されたinteractive二十件では通知遅延が零件。",
+      "modality": "observed",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ]
+    },
+    {
+      "id": "CLM-EV24-004",
+      "collectionId": "COL-EV24-001",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v2",
+      "scope": "all-sessions",
+      "text": "すべてのsessionで実際に通知遅延が発生したという未検証主張。",
+      "modality": "confirmed",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "ITEM-EV24-001",
+      "sourceId": "OSRC-EV24-001",
+      "resourceId": "advisory",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v1",
+      "originKind": "original",
+      "observationGroup": "OBS-EV24-001",
+      "parentItemId": null,
+      "canonicalUrl": "https://source-1.example/advisory",
+      "acquiredUrl": "https://source-1.example/advisory",
+      "publishedAt": "2026-10-04T00:00:00Z",
+      "acquiredAt": "2026-10-04T00:05:00Z",
+      "timezone": "UTC",
+      "acquisitionMethod": "author-supplied-not-network-acquisition",
+      "archiveRef": "ARCH-EV24-001",
+      "mediaType": "text/plain; charset=utf-8",
+      "language": "en",
+      "content": "SYNTH advisory v1: Notification delivery may be delayed. Scope is preliminary.",
+      "contentSha256": "c69a9e4562b636598193d4f00a423b1055e7cff60e93c59914deddd764d95360",
+      "assertions": [
+        {
+          "claimId": "CLM-EV24-001",
+          "relation": "supports",
+          "modality": "possible"
+        }
+      ]
+    },
+    {
+      "id": "ITEM-EV24-002",
+      "sourceId": "OSRC-EV24-001",
+      "resourceId": "advisory",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v2",
+      "originKind": "original",
+      "observationGroup": "OBS-EV24-001",
+      "parentItemId": null,
+      "canonicalUrl": "https://source-1.example/advisory",
+      "acquiredUrl": "https://source-1.example/advisory",
+      "publishedAt": "2026-10-04T01:00:00Z",
+      "acquiredAt": "2026-10-04T01:05:00Z",
+      "timezone": "UTC",
+      "acquisitionMethod": "author-supplied-not-network-acquisition",
+      "archiveRef": "ARCH-EV24-002",
+      "mediaType": "text/plain; charset=utf-8",
+      "language": "en",
+      "content": "SYNTH advisory v2: Notification delivery may be delayed under batch load. Interactive workload is not established by this advisory.",
+      "contentSha256": "432658d93cdae4d8c50117d72aa0f38e8915da49d1736632aa61f603bc6c0bab",
+      "assertions": [
+        {
+          "claimId": "CLM-EV24-002",
+          "relation": "supports",
+          "modality": "possible"
+        }
+      ]
+    },
+    {
+      "id": "ITEM-EV24-003",
+      "sourceId": "OSRC-EV24-002",
+      "resourceId": "RESOURCE-EV24-003",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v1",
+      "originKind": "derived",
+      "observationGroup": "OBS-EV24-001",
+      "parentItemId": "ITEM-EV24-001",
+      "canonicalUrl": "https://source-2.example/item-3",
+      "acquiredUrl": "https://source-2.example/item-3",
+      "publishedAt": "2026-10-04T00:15:00Z",
+      "acquiredAt": "2026-10-04T00:20:00Z",
+      "timezone": "UTC",
+      "acquisitionMethod": "author-supplied-not-network-acquisition",
+      "archiveRef": "ARCH-EV24-003",
+      "mediaType": "text/plain; charset=utf-8",
+      "language": "en",
+      "content": "SYNTH blog cites advisory v1: Notification delivery may be delayed.",
+      "contentSha256": "f7261233a7f2c2efc76cc880a13617e0aa9e1c47efb5ad8fe5553a62e6f3b499",
+      "assertions": [
+        {
+          "claimId": "CLM-EV24-001",
+          "relation": "supports",
+          "modality": "possible"
+        }
+      ]
+    },
+    {
+      "id": "ITEM-EV24-004",
+      "sourceId": "OSRC-EV24-003",
+      "resourceId": "RESOURCE-EV24-004",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v1",
+      "originKind": "derived",
+      "observationGroup": "OBS-EV24-001",
+      "parentItemId": "ITEM-EV24-003",
+      "canonicalUrl": "https://source-3.example/item-4",
+      "acquiredUrl": "https://source-3.example/item-4",
+      "publishedAt": "2026-10-04T00:30:00Z",
+      "acquiredAt": "2026-10-04T00:35:00Z",
+      "timezone": "UTC",
+      "acquisitionMethod": "author-supplied-not-network-acquisition",
+      "archiveRef": "ARCH-EV24-004",
+      "mediaType": "text/plain; charset=utf-8",
+      "language": "en",
+      "content": "SYNTH news republishes the SYNTH blog statement about advisory v1.",
+      "contentSha256": "c44bf3da1ad023769f1401b28b590ecd34b184854f05f7c92cd15232dbeeb3da",
+      "assertions": [
+        {
+          "claimId": "CLM-EV24-001",
+          "relation": "supports",
+          "modality": "possible"
+        }
+      ]
+    },
+    {
+      "id": "ITEM-EV24-005",
+      "sourceId": "OSRC-EV24-004",
+      "resourceId": "RESOURCE-EV24-005",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v2",
+      "originKind": "original",
+      "observationGroup": "OBS-EV24-002",
+      "parentItemId": null,
+      "canonicalUrl": "https://source-4.example/item-5",
+      "acquiredUrl": "https://source-4.example/item-5",
+      "publishedAt": "2026-10-04T01:15:00Z",
+      "acquiredAt": "2026-10-04T01:20:00Z",
+      "timezone": "UTC",
+      "acquisitionMethod": "author-supplied-not-network-acquisition",
+      "archiveRef": "ARCH-EV24-005",
+      "mediaType": "text/plain; charset=utf-8",
+      "language": "en",
+      "content": "SYNTH unverified post claims all sessions experienced notification delays. No supporting observations are supplied.",
+      "contentSha256": "2f32d54ece0d1d106fe917c811c44f01f97c4c2e694061bd85a500d5adf404bc",
+      "assertions": [
+        {
+          "claimId": "CLM-EV24-004",
+          "relation": "supports",
+          "modality": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "ITEM-EV24-006",
+      "sourceId": "OSRC-EV24-005",
+      "resourceId": "RESOURCE-EV24-006",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v2",
+      "originKind": "original",
+      "observationGroup": "OBS-EV24-003",
+      "parentItemId": null,
+      "canonicalUrl": "https://source-5.example/item-6",
+      "acquiredUrl": "https://source-5.example/item-6",
+      "publishedAt": "2026-10-04T01:30:00Z",
+      "acquiredAt": "2026-10-04T01:35:00Z",
+      "timezone": "UTC",
+      "acquisitionMethod": "author-supplied-not-network-acquisition",
+      "archiveRef": "ARCH-EV24-006",
+      "mediaType": "text/plain; charset=utf-8",
+      "language": "en",
+      "content": "SYNTH supplied observation: 0 delayed notifications in 20 interactive sessions. No observation of batch workload is supplied.",
+      "contentSha256": "42bd1d32a8646267ac2543d7cbe9bde26af54f61cb23a68b2d3ebb0cf3b092e9",
+      "assertions": [
+        {
+          "claimId": "CLM-EV24-003",
+          "relation": "supports",
+          "modality": "observed"
+        },
+        {
+          "claimId": "CLM-EV24-004",
+          "relation": "contradicts",
+          "modality": "observed"
+        }
+      ]
+    },
+    {
+      "id": "ITEM-EV24-007",
+      "sourceId": "OSRC-EV24-001",
+      "resourceId": "RESOURCE-EV24-007",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v2",
+      "originKind": "derived",
+      "observationGroup": "OBS-EV24-001",
+      "parentItemId": "ITEM-EV24-002",
+      "canonicalUrl": "https://source-1.example/item-7",
+      "acquiredUrl": "https://source-1.example/item-7",
+      "publishedAt": "2026-10-04T01:40:00Z",
+      "acquiredAt": "2026-10-04T01:45:00Z",
+      "timezone": "UTC",
+      "acquisitionMethod": "author-supplied-not-network-acquisition",
+      "archiveRef": "ARCH-EV24-007",
+      "mediaType": "text/plain; charset=utf-8",
+      "language": "ja",
+      "content": "合成Advisory v2の作業訳: Batch条件で通知遅延が発生する可能性がある。interactiveについて、このAdvisoryでは確認していない。",
+      "contentSha256": "e161581e00ee9e9cdbd90431e5964fb6f72490a89842c1134a509d2fd2243a62",
+      "assertions": [
+        {
+          "claimId": "CLM-EV24-002",
+          "relation": "supports",
+          "modality": "possible"
+        }
+      ]
+    },
+    {
+      "id": "ITEM-EV24-008",
+      "sourceId": "OSRC-EV24-001",
+      "resourceId": "RESOURCE-EV24-008",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v2",
+      "originKind": "derived",
+      "observationGroup": "OBS-EV24-001",
+      "parentItemId": "ITEM-EV24-002",
+      "canonicalUrl": "https://source-1.example/item-8",
+      "acquiredUrl": "https://source-1.example/item-8",
+      "publishedAt": "2026-10-04T01:50:00Z",
+      "acquiredAt": "2026-10-04T01:55:00Z",
+      "timezone": "UTC",
+      "acquisitionMethod": "author-supplied-not-network-acquisition",
+      "archiveRef": "ARCH-EV24-008",
+      "mediaType": "text/plain; charset=utf-8",
+      "language": "en",
+      "content": "SYNTH intentionally incorrect AI summary: all sessions experienced notification delays.",
+      "contentSha256": "1a3c2c08a4947a4072a1c4889c36b759b8a76d07bc9e499d100ba3e5f7bc3610",
+      "assertions": [
+        {
+          "claimId": "CLM-EV24-004",
+          "relation": "supports",
+          "modality": "confirmed"
+        }
+      ]
+    },
+    {
+      "id": "ITEM-EV24-009",
+      "sourceId": "OSRC-EV24-005",
+      "resourceId": "RESOURCE-EV24-009",
+      "subject": "SYNTH-NOTIFY",
+      "version": "v2",
+      "originKind": "derived",
+      "observationGroup": "OBS-EV24-003",
+      "parentItemId": "ITEM-EV24-006",
+      "canonicalUrl": "https://source-5.example/item-9",
+      "acquiredUrl": "https://source-5.example/item-9",
+      "publishedAt": "2026-10-04T02:00:00Z",
+      "acquiredAt": "2026-10-04T02:05:00Z",
+      "timezone": "UTC",
+      "acquisitionMethod": "author-supplied-not-network-acquisition",
+      "archiveRef": "ARCH-EV24-009",
+      "mediaType": "text/plain; charset=utf-8",
+      "language": "en",
+      "content": "SYNTH working extraction, review pending: 0 delayed notifications in 20 supplied interactive sessions.",
+      "contentSha256": "7f7b276db5cdca039d60b50125955c8612e775d75621b8e1c33c74b81ef549f4",
+      "assertions": [
+        {
+          "claimId": "CLM-EV24-003",
+          "relation": "supports",
+          "modality": "observed"
+        },
+        {
+          "claimId": "CLM-EV24-004",
+          "relation": "contradicts",
+          "modality": "observed"
+        }
+      ]
+    }
+  ],
+  "transforms": [
+    {
+      "id": "TRF-EV24-001",
+      "kind": "republication",
+      "inputItemId": "ITEM-EV24-001",
+      "outputItemId": "ITEM-EV24-003",
+      "inputSha256": "c69a9e4562b636598193d4f00a423b1055e7cff60e93c59914deddd764d95360",
+      "outputSha256": "f7261233a7f2c2efc76cc880a13617e0aa9e1c47efb5ad8fe5553a62e6f3b499",
+      "agent": "SYNTH-EDITOR",
+      "toolVersion": "authored-fixture-1",
+      "performedAt": "2026-10-04T00:15:00Z",
+      "originalLanguage": "en",
+      "outputLanguage": "en",
+      "reviewer": "SYNTH-REVIEWER",
+      "reviewState": "reviewed",
+      "meaning": "preserved",
+      "ambiguousTerm": "not-applicable",
+      "limitations": "作業Copyだけ。原本の上書きなし。意味対応は著者の有限供給条件。"
+    },
+    {
+      "id": "TRF-EV24-002",
+      "kind": "republication",
+      "inputItemId": "ITEM-EV24-003",
+      "outputItemId": "ITEM-EV24-004",
+      "inputSha256": "f7261233a7f2c2efc76cc880a13617e0aa9e1c47efb5ad8fe5553a62e6f3b499",
+      "outputSha256": "c44bf3da1ad023769f1401b28b590ecd34b184854f05f7c92cd15232dbeeb3da",
+      "agent": "SYNTH-EDITOR",
+      "toolVersion": "authored-fixture-1",
+      "performedAt": "2026-10-04T00:30:00Z",
+      "originalLanguage": "en",
+      "outputLanguage": "en",
+      "reviewer": "SYNTH-REVIEWER",
+      "reviewState": "reviewed",
+      "meaning": "preserved",
+      "ambiguousTerm": "not-applicable",
+      "limitations": "作業Copyだけ。原本の上書きなし。意味対応は著者の有限供給条件。"
+    },
+    {
+      "id": "TRF-EV24-003",
+      "kind": "translation",
+      "inputItemId": "ITEM-EV24-002",
+      "outputItemId": "ITEM-EV24-007",
+      "inputSha256": "432658d93cdae4d8c50117d72aa0f38e8915da49d1736632aa61f603bc6c0bab",
+      "outputSha256": "e161581e00ee9e9cdbd90431e5964fb6f72490a89842c1134a509d2fd2243a62",
+      "agent": "SYNTH-EDITOR",
+      "toolVersion": "authored-fixture-1",
+      "performedAt": "2026-10-04T01:40:00Z",
+      "originalLanguage": "en",
+      "outputLanguage": "ja",
+      "reviewer": "SYNTH-REVIEWER",
+      "reviewState": "reviewed",
+      "meaning": "preserved",
+      "ambiguousTerm": "may / 可能性。発生の断定へ強めない。",
+      "limitations": "作業Copyだけ。原本の上書きなし。意味対応は著者の有限供給条件。"
+    },
+    {
+      "id": "TRF-EV24-004",
+      "kind": "ai-summary",
+      "inputItemId": "ITEM-EV24-002",
+      "outputItemId": "ITEM-EV24-008",
+      "inputSha256": "432658d93cdae4d8c50117d72aa0f38e8915da49d1736632aa61f603bc6c0bab",
+      "outputSha256": "1a3c2c08a4947a4072a1c4889c36b759b8a76d07bc9e499d100ba3e5f7bc3610",
+      "agent": "SYNTH-AI-ILLUSTRATION",
+      "toolVersion": "authored-fixture-1",
+      "performedAt": "2026-10-04T01:50:00Z",
+      "originalLanguage": "en",
+      "outputLanguage": "en",
+      "reviewer": "SYNTH-REVIEWER",
+      "reviewState": "rejected",
+      "meaning": "changed",
+      "ambiguousTerm": "not-applicable",
+      "limitations": "作業Copyだけ。原本の上書きなし。意味対応は著者の有限供給条件。"
+    },
+    {
+      "id": "TRF-EV24-005",
+      "kind": "extraction",
+      "inputItemId": "ITEM-EV24-006",
+      "outputItemId": "ITEM-EV24-009",
+      "inputSha256": "42bd1d32a8646267ac2543d7cbe9bde26af54f61cb23a68b2d3ebb0cf3b092e9",
+      "outputSha256": "7f7b276db5cdca039d60b50125955c8612e775d75621b8e1c33c74b81ef549f4",
+      "agent": "SYNTH-EDITOR",
+      "toolVersion": "authored-fixture-1",
+      "performedAt": "2026-10-04T02:00:00Z",
+      "originalLanguage": "en",
+      "outputLanguage": "en",
+      "reviewer": "SYNTH-REVIEWER",
+      "reviewState": "pending",
+      "meaning": "preserved",
+      "ambiguousTerm": "not-applicable",
+      "limitations": "作業Copyだけ。原本の上書きなし。意味対応は著者の有限供給条件。"
+    }
+  ],
+  "citationLinks": [
+    {
+      "id": "CITE-EV24-001",
+      "fromItemId": "ITEM-EV24-003",
+      "toItemId": "ITEM-EV24-004",
+      "meaning": "later-mutual-reference-no-new-observation"
+    },
+    {
+      "id": "CITE-EV24-002",
+      "fromItemId": "ITEM-EV24-004",
+      "toItemId": "ITEM-EV24-003",
+      "meaning": "later-mutual-reference-no-new-observation"
+    }
+  ],
+  "versionChanges": [
+    {
+      "id": "VER-EV24-001",
+      "previousItemId": "ITEM-EV24-001",
+      "currentItemId": "ITEM-EV24-002",
+      "reason": "同じAdvisoryの供給訂正。原本を保持して対象条件を限定する。"
+    }
+  ],
+  "evaluations": [
+    {
+      "id": "EV-EV24-001",
+      "itemId": "ITEM-EV24-001",
+      "claimId": "CLM-EV24-001",
+      "relation": "supports",
+      "use": "Context",
+      "credibility": {
+        "value": "limited",
+        "reason": "旧版の初期説明で現行v2の直接裏付けではない。"
+      },
+      "independence": {
+        "value": "independent-in-supplied-model",
+        "observationGroups": [
+          "OBS-EV24-001"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "旧版の初期説明で現行v2の直接裏付けではない。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-001",
+      "reassessmentId": "REV-EV24-001"
+    },
+    {
+      "id": "EV-EV24-002",
+      "itemId": "ITEM-EV24-002",
+      "claimId": "CLM-EV24-002",
+      "relation": "supports",
+      "use": "Direct evidence",
+      "credibility": {
+        "value": "supported",
+        "reason": "供給v2のBatch条件の可能性だけ。発生確定ではない。"
+      },
+      "independence": {
+        "value": "independent-in-supplied-model",
+        "observationGroups": [
+          "OBS-EV24-001"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "供給v2のBatch条件の可能性だけ。発生確定ではない。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-002",
+      "reassessmentId": "REV-EV24-002"
+    },
+    {
+      "id": "EV-EV24-003",
+      "itemId": "ITEM-EV24-003",
+      "claimId": "CLM-EV24-001",
+      "relation": "supports",
+      "use": "Context",
+      "credibility": {
+        "value": "limited",
+        "reason": "旧Advisoryの引用で追加の独立観測なし。"
+      },
+      "independence": {
+        "value": "same-origin",
+        "observationGroups": [
+          "OBS-EV24-001"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "旧Advisoryの引用で追加の独立観測なし。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-003",
+      "reassessmentId": "REV-EV24-003"
+    },
+    {
+      "id": "EV-EV24-004",
+      "itemId": "ITEM-EV24-004",
+      "claimId": "CLM-EV24-001",
+      "relation": "supports",
+      "use": "Context",
+      "credibility": {
+        "value": "limited",
+        "reason": "同じ旧原典の転載。相互引用を新根拠にしない。"
+      },
+      "independence": {
+        "value": "same-origin",
+        "observationGroups": [
+          "OBS-EV24-001"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "同じ旧原典の転載。相互引用を新根拠にしない。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-004",
+      "reassessmentId": "REV-EV24-004"
+    },
+    {
+      "id": "EV-EV24-005",
+      "itemId": "ITEM-EV24-005",
+      "claimId": "CLM-EV24-004",
+      "relation": "supports",
+      "use": "Unverified",
+      "credibility": {
+        "value": "unverified",
+        "reason": "記入済みの発行役割と個別Claimの裏付けを区別する。"
+      },
+      "independence": {
+        "value": "unknown",
+        "observationGroups": [
+          "OBS-EV24-002"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "記入済みの発行役割と個別Claimの裏付けを区別する。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-005",
+      "reassessmentId": "REV-EV24-005"
+    },
+    {
+      "id": "EV-EV24-006",
+      "itemId": "ITEM-EV24-006",
+      "claimId": "CLM-EV24-003",
+      "relation": "supports",
+      "use": "Direct evidence",
+      "credibility": {
+        "value": "supported",
+        "reason": "供給20件内の零件だけ。全体やBatchの不存在は示さない。"
+      },
+      "independence": {
+        "value": "independent-in-supplied-model",
+        "observationGroups": [
+          "OBS-EV24-003"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "供給20件内の零件だけ。全体やBatchの不存在は示さない。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-006",
+      "reassessmentId": "REV-EV24-006"
+    },
+    {
+      "id": "EV-EV24-007",
+      "itemId": "ITEM-EV24-007",
+      "claimId": "CLM-EV24-002",
+      "relation": "supports",
+      "use": "Direct evidence",
+      "credibility": {
+        "value": "supported",
+        "reason": "可能性のまま訳し、元と同じ観測group一件に束ねる。"
+      },
+      "independence": {
+        "value": "same-origin",
+        "observationGroups": [
+          "OBS-EV24-001"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "可能性のまま訳し、元と同じ観測group一件に束ねる。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-007",
+      "reassessmentId": "REV-EV24-007"
+    },
+    {
+      "id": "EV-EV24-008",
+      "itemId": "ITEM-EV24-008",
+      "claimId": "CLM-EV24-004",
+      "relation": "supports",
+      "use": "Excluded",
+      "credibility": {
+        "value": "unverified",
+        "reason": "原典にない全sessionの確定へ強まった誤要約。"
+      },
+      "independence": {
+        "value": "same-origin",
+        "observationGroups": [
+          "OBS-EV24-001"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "原典にない全sessionの確定へ強まった誤要約。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-008",
+      "reassessmentId": "REV-EV24-008"
+    },
+    {
+      "id": "EV-EV24-009",
+      "itemId": "ITEM-EV24-009",
+      "claimId": "CLM-EV24-003",
+      "relation": "supports",
+      "use": "Lead",
+      "credibility": {
+        "value": "limited",
+        "reason": "作業抽出のreview未完。判断根拠へ追加しない。"
+      },
+      "independence": {
+        "value": "same-origin",
+        "observationGroups": [
+          "OBS-EV24-003"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "作業抽出のreview未完。判断根拠へ追加しない。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-009",
+      "reassessmentId": "REV-EV24-009"
+    },
+    {
+      "id": "EV-EV24-010",
+      "itemId": "ITEM-EV24-006",
+      "claimId": "CLM-EV24-004",
+      "relation": "contradicts",
+      "use": "Direct evidence",
+      "credibility": {
+        "value": "supported",
+        "reason": "供給二十件の値は、教材の全称Claimと矛盾する。Batch条件は未観測。"
+      },
+      "independence": {
+        "value": "independent-in-supplied-model",
+        "observationGroups": [
+          "OBS-EV24-003"
+        ],
+        "reason": "供給された内容の親子関係をたどる。別URLや記事数から独立性を推定しない。"
+      },
+      "limitations": "供給二十件の値は、教材の全称Claimと矛盾する。Batch条件は未観測。",
+      "hypothesisIds": [
+        "HYP-EV24-001",
+        "HYP-EV24-002"
+      ],
+      "gapId": "GAP-EV24-010",
+      "reassessmentId": "REV-EV24-010"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "GAP-EV24-001",
+      "evaluationId": "EV-EV24-001",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "旧版の初期説明で現行v2の直接裏付けではない。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-001"
+    },
+    {
+      "id": "GAP-EV24-002",
+      "evaluationId": "EV-EV24-002",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "供給v2のBatch条件の可能性だけ。発生確定ではない。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-002"
+    },
+    {
+      "id": "GAP-EV24-003",
+      "evaluationId": "EV-EV24-003",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "旧Advisoryの引用で追加の独立観測なし。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-003"
+    },
+    {
+      "id": "GAP-EV24-004",
+      "evaluationId": "EV-EV24-004",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "同じ旧原典の転載。相互引用を新根拠にしない。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-004"
+    },
+    {
+      "id": "GAP-EV24-005",
+      "evaluationId": "EV-EV24-005",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "記入済みの発行役割と個別Claimの裏付けを区別する。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-005"
+    },
+    {
+      "id": "GAP-EV24-006",
+      "evaluationId": "EV-EV24-006",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "供給20件内の零件だけ。全体やBatchの不存在は示さない。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-006"
+    },
+    {
+      "id": "GAP-EV24-007",
+      "evaluationId": "EV-EV24-007",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "可能性のまま訳し、元と同じ観測group一件に束ねる。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-007"
+    },
+    {
+      "id": "GAP-EV24-008",
+      "evaluationId": "EV-EV24-008",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "原典にない全sessionの確定へ強まった誤要約。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-008"
+    },
+    {
+      "id": "GAP-EV24-009",
+      "evaluationId": "EV-EV24-009",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "作業抽出のreview未完。判断根拠へ追加しない。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-009"
+    },
+    {
+      "id": "GAP-EV24-010",
+      "evaluationId": "EV-EV24-010",
+      "owner": "SYNTH-ANALYSIS-OWNER",
+      "deadline": "2026-10-05T00:00:00Z",
+      "reason": "供給二十件の値は、教材の全称Claimと矛盾する。Batch条件は未観測。",
+      "invalidation": "新しい版、独立観測、訳語、Terms変更を受けたら根拠と用途を再評価する。",
+      "reassessmentId": "REV-EV24-010"
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "HYP-EV24-001",
+      "text": "Batchに限定した条件で説明できる可能性。",
+      "decision": "not-concluded"
+    },
+    {
+      "id": "HYP-EV24-002",
+      "text": "供給資料にない条件が残る可能性。",
+      "decision": "not-concluded"
+    }
+  ],
+  "handoffs": [
+    {
+      "id": "HOF-EV24-25",
+      "chapter": 25,
+      "audience": "SYNTH-ANALYSIS-READER",
+      "status": "planned-not-delivered",
+      "receipt": null,
+      "executionAuthorized": false,
+      "evidenceIds": [
+        "EV-EV24-001",
+        "EV-EV24-002",
+        "EV-EV24-003",
+        "EV-EV24-004",
+        "EV-EV24-005",
+        "EV-EV24-006",
+        "EV-EV24-007",
+        "EV-EV24-008",
+        "EV-EV24-009",
+        "EV-EV24-010"
+      ],
+      "gapIds": [
+        "GAP-EV24-001",
+        "GAP-EV24-002",
+        "GAP-EV24-003",
+        "GAP-EV24-004",
+        "GAP-EV24-005",
+        "GAP-EV24-006",
+        "GAP-EV24-007",
+        "GAP-EV24-008",
+        "GAP-EV24-009",
+        "GAP-EV24-010"
+      ],
+      "deadline": "2026-10-05T01:00:00Z",
+      "limitation": "制約と除外も記録として渡す予定。既存Caseへ根拠を自動投入せず実配布しない。"
+    },
+    {
+      "id": "HOF-EV24-26",
+      "chapter": 26,
+      "audience": "SYNTH-DISTRIBUTION-READER",
+      "status": "planned-not-delivered",
+      "receipt": null,
+      "executionAuthorized": false,
+      "evidenceIds": [
+        "EV-EV24-001",
+        "EV-EV24-002",
+        "EV-EV24-003",
+        "EV-EV24-004",
+        "EV-EV24-005",
+        "EV-EV24-006",
+        "EV-EV24-007",
+        "EV-EV24-008",
+        "EV-EV24-009",
+        "EV-EV24-010"
+      ],
+      "gapIds": [
+        "GAP-EV24-001",
+        "GAP-EV24-002",
+        "GAP-EV24-003",
+        "GAP-EV24-004",
+        "GAP-EV24-005",
+        "GAP-EV24-006",
+        "GAP-EV24-007",
+        "GAP-EV24-008",
+        "GAP-EV24-009",
+        "GAP-EV24-010"
+      ],
+      "deadline": "2026-10-05T01:00:00Z",
+      "limitation": "制約と除外も記録として渡す予定。既存Caseへ根拠を自動投入せず実配布しない。"
+    }
+  ]
+}

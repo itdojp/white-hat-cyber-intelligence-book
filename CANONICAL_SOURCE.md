@@ -119,3 +119,5 @@ Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設�
 ## 第23章の公開前検査
 
 `python3 scripts/check_chapter23_contract.py --no-regressions`は同期前に全四文書を共有Publication Projectionへ渡し、Policy 1.2.0で検査する。有限Layer AはART-29のDecision、回答条件、Collection多対多、Source/Evidence、Gap、期限、未配達Handoffを検証する。構文・安全文法・現実の合法性の認定は所有しない。完全検査は`npm run check:chapter23`で実行する。
+
+第24章の`check:chapter24`も生成先削除前に一回実行する。本文・ART-30・全欄Case・Sourceの四文書、閉Schema、五Source・九Item・五Transform・四Claim・十Evaluationを検査する。Hashは供給UTF-8表現、意味判定は有限Layer Aのみで、構文は共有Projection、Action/Hostは共有Policyに委譲する。実収集、自然言語の真偽、実権限、法的証拠能力を認定しない。
