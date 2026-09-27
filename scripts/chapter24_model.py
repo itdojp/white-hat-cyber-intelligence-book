@@ -464,22 +464,46 @@ def evaluate(data):
             "distinct retained versions",
         )
     citations = by_id(data["citationLinks"], "citations")
-    require(
-        {(c["fromItemId"], c["toItemId"]) for c in citations.values()}
-        == {
-            (identifier("ITEM", 3), identifier("ITEM", 4)),
-            (identifier("ITEM", 4), identifier("ITEM", 3)),
-        }
-        and len(citations) == 2,
-        "supplied circular citations",
-    )
-    require(
-        all(
-            c["meaning"] == "later-mutual-reference-no-new-observation"
-            for c in citations.values()
+    event_context = {identifier("ITEM", 3), identifier("ITEM", 4)}
+    event_resources = {
+        identifier("CITE", 1): (
+            items[identifier("ITEM", 3)]["resourceId"],
+            items[identifier("ITEM", 4)]["resourceId"],
         ),
-        "citation is not observation",
-    )
+        identifier("CITE", 2): (
+            items[identifier("ITEM", 4)]["resourceId"],
+            items[identifier("ITEM", 3)]["resourceId"],
+        ),
+    }
+    require(set(citations) == set(event_resources), "finite citation event identities")
+    for cid, event in citations.items():
+        require(
+            event["kind"] == "later-citation-event"
+            and event["recordingMethod"] == "author-supplied-not-network-observation",
+            "authored later citation event",
+        )
+        require(
+            (event["fromResourceId"], event["toResourceId"]) == event_resources[cid]
+            and event["fromResourceId"] != event["toResourceId"],
+            "citation resource binding",
+        )
+        require(
+            idset(event["contextItemIds"], "citation context") == event_context,
+            "citation context item binding",
+        )
+        # These are separately supplied later link events; earlier captured
+        # content/hashes stay immutable. They are not extra Claim observations.
+        require(
+            max(instant(items[i]["acquiredAt"]) for i in event_context)
+            < instant(event["occurredAt"])
+            <= instant(event["recordedAt"])
+            <= asof,
+            "citation event chronology/cutoff",
+        )
+        require(
+            event["meaning"] == "later-mutual-reference-no-new-observation",
+            "citation is not observation",
+        )
     seen = set()
     direct = set()
     observations = {}
@@ -591,6 +615,14 @@ def evaluate(data):
         require(
             h["id"] == "HOF-EV24-" + str(h["chapter"]),
             "handoff identity/chapter binding",
+        )
+        require(
+            h["audience"]
+            == {
+                "HOF-EV24-25": "SYNTH-ANALYSIS-READER",
+                "HOF-EV24-26": "SYNTH-DISTRIBUTION-READER",
+            }[h["id"]],
+            "handoff identity/audience binding",
         )
         require(
             h["status"] == "planned-not-delivered"

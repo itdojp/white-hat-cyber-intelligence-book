@@ -559,14 +559,30 @@
   "citationLinks": [
     {
       "id": "CITE-EV24-001",
-      "fromItemId": "ITEM-EV24-003",
-      "toItemId": "ITEM-EV24-004",
+      "kind": "later-citation-event",
+      "fromResourceId": "RESOURCE-EV24-003",
+      "toResourceId": "RESOURCE-EV24-004",
+      "contextItemIds": [
+        "ITEM-EV24-003",
+        "ITEM-EV24-004"
+      ],
+      "occurredAt": "2026-10-04T00:40:00Z",
+      "recordedAt": "2026-10-04T00:45:00Z",
+      "recordingMethod": "author-supplied-not-network-observation",
       "meaning": "later-mutual-reference-no-new-observation"
     },
     {
       "id": "CITE-EV24-002",
-      "fromItemId": "ITEM-EV24-004",
-      "toItemId": "ITEM-EV24-003",
+      "kind": "later-citation-event",
+      "fromResourceId": "RESOURCE-EV24-004",
+      "toResourceId": "RESOURCE-EV24-003",
+      "contextItemIds": [
+        "ITEM-EV24-003",
+        "ITEM-EV24-004"
+      ],
+      "occurredAt": "2026-10-04T00:50:00Z",
+      "recordedAt": "2026-10-04T00:55:00Z",
+      "recordingMethod": "author-supplied-not-network-observation",
       "meaning": "later-mutual-reference-no-new-observation"
     }
   ],

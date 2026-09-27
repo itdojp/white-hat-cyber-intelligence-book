@@ -2773,14 +2773,30 @@
           "value": [
             {
               "id": "CITE-EV24-002",
-              "fromItemId": "ITEM-EV24-004",
-              "toItemId": "ITEM-EV24-003",
+              "kind": "later-citation-event",
+              "fromResourceId": "RESOURCE-EV24-004",
+              "toResourceId": "RESOURCE-EV24-003",
+              "contextItemIds": [
+                "ITEM-EV24-003",
+                "ITEM-EV24-004"
+              ],
+              "occurredAt": "2026-10-04T00:50:00Z",
+              "recordedAt": "2026-10-04T00:55:00Z",
+              "recordingMethod": "author-supplied-not-network-observation",
               "meaning": "later-mutual-reference-no-new-observation"
             },
             {
               "id": "CITE-EV24-001",
-              "fromItemId": "ITEM-EV24-003",
-              "toItemId": "ITEM-EV24-004",
+              "kind": "later-citation-event",
+              "fromResourceId": "RESOURCE-EV24-003",
+              "toResourceId": "RESOURCE-EV24-004",
+              "contextItemIds": [
+                "ITEM-EV24-003",
+                "ITEM-EV24-004"
+              ],
+              "occurredAt": "2026-10-04T00:40:00Z",
+              "recordedAt": "2026-10-04T00:45:00Z",
+              "recordingMethod": "author-supplied-not-network-observation",
               "meaning": "later-mutual-reference-no-new-observation"
             }
           ]
@@ -3142,6 +3158,471 @@
         "actualCollections": 0,
         "handoffsDelivered": 0
       }
+    },
+    {
+      "id": "EV24-REVIEW-UNTIMED-CAPTURE-EDGE",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0"
+          ],
+          "value": {
+            "id": "CITE-EV24-001",
+            "fromItemId": "ITEM-EV24-003",
+            "toItemId": "ITEM-EV24-004",
+            "meaning": "later-mutual-reference-no-new-observation"
+          }
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "JSON Schema missing keys"
+    },
+    {
+      "id": "EV24-REVIEW-BEFORE-TARGET-PUBLICATION",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "occurredAt"
+          ],
+          "value": "2026-10-04T00:25:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "citation event chronology/cutoff"
+    },
+    {
+      "id": "EV24-REVIEW-AT-CONTEXT-CAPTURE",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "occurredAt"
+          ],
+          "value": "2026-10-04T00:35:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "citation event chronology/cutoff"
+    },
+    {
+      "id": "EV24-REVIEW-AFTER-CUTOFF",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "occurredAt"
+          ],
+          "value": "2026-10-04T03:00:01Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "citation event chronology/cutoff"
+    },
+    {
+      "id": "EV24-REVIEW-RECORD-BEFORE-EVENT",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "recordedAt"
+          ],
+          "value": "2026-10-04T00:39:59Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "citation event chronology/cutoff"
+    },
+    {
+      "id": "EV24-REVIEW-RECORD-AFTER-CUTOFF",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "recordedAt"
+          ],
+          "value": "2026-10-04T03:00:01Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "citation event chronology/cutoff"
+    },
+    {
+      "id": "EV24-REVIEW-WRONG-CITATION-RESOURCE",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "fromResourceId"
+          ],
+          "value": "RESOURCE-EV24-004"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "citation resource binding"
+    },
+    {
+      "id": "EV24-REVIEW-EMPTY-CITATION-CONTEXT",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "contextItemIds"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minItems"
+    },
+    {
+      "id": "EV24-REVIEW-DUPLICATE-CITATION-CONTEXT",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "contextItemIds"
+          ],
+          "value": [
+            "ITEM-EV24-003",
+            "ITEM-EV24-003"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "citation context unique refs"
+    },
+    {
+      "id": "EV24-REVIEW-UNKNOWN-CITATION-CONTEXT",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "contextItemIds"
+          ],
+          "value": [
+            "ITEM-EV24-003",
+            "ITEM-EV24-099"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "citation context item binding"
+    },
+    {
+      "id": "EV24-REVIEW-NOT-SUPPLIED-CITATION",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "recordingMethod"
+          ],
+          "value": "live-network-observation"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "authored later citation event"
+    },
+    {
+      "id": "EV24-REVIEW-LATER-VALID-CITATION",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "occurredAt"
+          ],
+          "value": "2026-10-04T02:10:00Z"
+        },
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "recordedAt"
+          ],
+          "value": "2026-10-04T02:15:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "expectedResult": {
+        "useCounts": {
+          "Direct evidence": 4,
+          "Context": 3,
+          "Lead": 1,
+          "Unverified": 1,
+          "Excluded": 1
+        },
+        "currentClaimOrigins": {
+          "CLM-EV24-002": {
+            "supports": [
+              "OBS-EV24-001"
+            ],
+            "contradicts": []
+          },
+          "CLM-EV24-003": {
+            "supports": [
+              "OBS-EV24-003"
+            ],
+            "contradicts": []
+          },
+          "CLM-EV24-004": {
+            "supports": [],
+            "contradicts": [
+              "OBS-EV24-003"
+            ]
+          }
+        },
+        "independentOriginCount": 2,
+        "circularCitationEdges": 2,
+        "actualCollections": 0,
+        "handoffsDelivered": 0
+      }
+    },
+    {
+      "id": "EV24-REVIEW-CITATION-RECORD-AT-CUTOFF",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "recordedAt"
+          ],
+          "value": "2026-10-04T03:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "expectedResult": {
+        "useCounts": {
+          "Direct evidence": 4,
+          "Context": 3,
+          "Lead": 1,
+          "Unverified": 1,
+          "Excluded": 1
+        },
+        "currentClaimOrigins": {
+          "CLM-EV24-002": {
+            "supports": [
+              "OBS-EV24-001"
+            ],
+            "contradicts": []
+          },
+          "CLM-EV24-003": {
+            "supports": [
+              "OBS-EV24-003"
+            ],
+            "contradicts": []
+          },
+          "CLM-EV24-004": {
+            "supports": [],
+            "contradicts": [
+              "OBS-EV24-003"
+            ]
+          }
+        },
+        "independentOriginCount": 2,
+        "circularCitationEdges": 2,
+        "actualCollections": 0,
+        "handoffsDelivered": 0
+      }
+    },
+    {
+      "id": "EV24-REVIEW-CITATION-CONTEXT-ORDER",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ1"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "citationLinks",
+            "0",
+            "contextItemIds"
+          ],
+          "value": [
+            "ITEM-EV24-004",
+            "ITEM-EV24-003"
+          ]
+        }
+      ],
+      "expected": "accepted",
+      "expectedResult": {
+        "useCounts": {
+          "Direct evidence": 4,
+          "Context": 3,
+          "Lead": 1,
+          "Unverified": 1,
+          "Excluded": 1
+        },
+        "currentClaimOrigins": {
+          "CLM-EV24-002": {
+            "supports": [
+              "OBS-EV24-001"
+            ],
+            "contradicts": []
+          },
+          "CLM-EV24-003": {
+            "supports": [
+              "OBS-EV24-003"
+            ],
+            "contradicts": []
+          },
+          "CLM-EV24-004": {
+            "supports": [],
+            "contradicts": [
+              "OBS-EV24-003"
+            ]
+          }
+        },
+        "independentOriginCount": 2,
+        "circularCitationEdges": 2,
+        "actualCollections": 0,
+        "handoffsDelivered": 0
+      }
+    },
+    {
+      "id": "EV24-REVIEW-AUDIENCE-SWAP",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ3"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "handoffs",
+            "0",
+            "audience"
+          ],
+          "value": "SYNTH-DISTRIBUTION-READER"
+        },
+        {
+          "path": [
+            "handoffs",
+            "1",
+            "audience"
+          ],
+          "value": "SYNTH-ANALYSIS-READER"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "handoff identity/audience binding"
+    },
+    {
+      "id": "EV24-REVIEW-ANALYSIS-AUDIENCE-WRONG",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ3"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "handoffs",
+            "0",
+            "audience"
+          ],
+          "value": "SYNTH-DISTRIBUTION-READER"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "handoff identity/audience binding"
+    },
+    {
+      "id": "EV24-REVIEW-DISTRIBUTION-AUDIENCE-WRONG",
+      "owner": "Layer A source-evaluation",
+      "originatingThreadIds": [
+        "PRRT_kwDOTi9cus6mYRQ3"
+      ],
+      "notes": "Independent finite provenance/routing contrast; refresh data snapshot, do not rely on stale hash.",
+      "changes": [
+        {
+          "path": [
+            "handoffs",
+            "1",
+            "audience"
+          ],
+          "value": "SYNTH-ANALYSIS-READER"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "handoff identity/audience binding"
     }
   ]
 }

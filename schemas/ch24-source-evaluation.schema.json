@@ -617,8 +617,13 @@
         "additionalProperties": false,
         "required": [
           "id",
-          "fromItemId",
-          "toItemId",
+          "kind",
+          "fromResourceId",
+          "toResourceId",
+          "contextItemIds",
+          "occurredAt",
+          "recordedAt",
+          "recordingMethod",
           "meaning"
         ],
         "properties": {
@@ -626,11 +631,36 @@
             "type": "string",
             "minLength": 1
           },
-          "fromItemId": {
+          "kind": {
             "type": "string",
             "minLength": 1
           },
-          "toItemId": {
+          "fromResourceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "toResourceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contextItemIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "occurredAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recordedAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recordingMethod": {
             "type": "string",
             "minLength": 1
           },

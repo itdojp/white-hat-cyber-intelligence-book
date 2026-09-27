@@ -10,7 +10,7 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 
 ## 原典と主張の対応
 
-五Source、九Item、五Transform、四Claim、十Evaluationです。Vendorの旧v1と訂正v2は同じAdvisoryを別Itemで保持します。BlogとNewsの掲載先は異なっても原典v1は同じです。後から追加された相互引用は独立観測ではなく、内容の変換履歴自体はv1→Blog→Newsです。
+五Source、九Item、五Transform、四Claim、十Evaluationです。Vendorの旧v1と訂正v2は同じAdvisoryを別Itemで保持します。BlogとNewsの掲載先は異なっても原典v1は同じです。内容の変換履歴自体はv1→Blog→Newsです。相互引用は取得済みItemの本文ではなく、別の著者供給イベントとして記録します。ITEM-EV24-003は00:20、004は00:35取得のまま保持し、Resource003→004のリンク追加は00:40/記録00:45、逆向きは00:50/記録00:55です（同日UTC）。contextItemIdsはそれ以前の取得物を文脈として参照するだけで、当時の内容に後のリンクがあったとは主張しません。イベントは新しいClaim観測でも実収集の記録でもありません。
 
 現行v2のBatch条件では「可能性がある」までです。供給Labのinteractive二十件で遅延零件という観測は、全sessionで実際に遅延したという全称Claimには反しますが、Batch条件の可能性を反証しません。Postの発行役割を記入したことと、そのClaimを検証したことは別です。
 
@@ -638,8 +638,14 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 | Field | Value |
 |---|---|
 | `id` | `CITE-EV24-001` |
-| `fromItemId` | `ITEM-EV24-003` |
-| `toItemId` | `ITEM-EV24-004` |
+| `kind` | `later-citation-event` |
+| `fromResourceId` | `RESOURCE-EV24-003` |
+| `toResourceId` | `RESOURCE-EV24-004` |
+| `contextItemIds/0` | `ITEM-EV24-003` |
+| `contextItemIds/1` | `ITEM-EV24-004` |
+| `occurredAt` | `2026-10-04T00:40:00Z` |
+| `recordedAt` | `2026-10-04T00:45:00Z` |
+| `recordingMethod` | `author-supplied-not-network-observation` |
 | `meaning` | `later-mutual-reference-no-new-observation` |
 
 ### CITE-EV24-002
@@ -647,8 +653,14 @@ Purposeは供給資料の来歴と個別Claimの用途を読むこと、Prerequi
 | Field | Value |
 |---|---|
 | `id` | `CITE-EV24-002` |
-| `fromItemId` | `ITEM-EV24-004` |
-| `toItemId` | `ITEM-EV24-003` |
+| `kind` | `later-citation-event` |
+| `fromResourceId` | `RESOURCE-EV24-004` |
+| `toResourceId` | `RESOURCE-EV24-003` |
+| `contextItemIds/0` | `ITEM-EV24-003` |
+| `contextItemIds/1` | `ITEM-EV24-004` |
+| `occurredAt` | `2026-10-04T00:50:00Z` |
+| `recordedAt` | `2026-10-04T00:55:00Z` |
+| `recordingMethod` | `author-supplied-not-network-observation` |
 | `meaning` | `later-mutual-reference-no-new-observation` |
 
 ### VER-EV24-001

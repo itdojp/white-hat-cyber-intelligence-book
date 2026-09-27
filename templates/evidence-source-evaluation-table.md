@@ -20,7 +20,7 @@ Purposeは供給資料の限定評価、Prerequisiteは完全合成教材、Auth
 | Translation | 原語/訳語、Reviewer、Review状態、曖昧な語、意味/限界 | 可能性を確定へ強めない |
 | Claim | ID、対象・版・条件、命題、modality、仮説 | 記事全体の要約で置換しない |
 | Evaluation | Evidence ID、Item/Claim、支持/矛盾、credibilityと理由 | 発行者の評判だけで昇格しない |
-| Independence | 根底の観測group、派生元、引用関係、理由 | 相互引用と変換の親子を分ける |
+| Independence | 根底の観測group、派生元、引用Resource、文脈Item、引用イベントの発生/記録時刻、理由 | 相互引用と変換の親子を分け、取得済み内容へ後のリンクを混入しない |
 | Use / Limit | 用途、制約、Gap、Owner、再評価ID/期限/条件 | 除外を記録の削除と混同しない |
 | Handoff | 受け手、Evidence/Gap、制限、期限、Status、Receipt | planned-not-delivered/null/権限false |
 
