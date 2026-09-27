@@ -159,6 +159,24 @@ def document_errors(document, spec, data):
     return errors
 
 
+def chapter_order_errors(pages):
+    """Finite reading sequence, independent of the frozen route snapshot."""
+    names = (
+        "manuscript/24-osint-provenance-sources.md",
+        "manuscript/25-structured-analysis-attribution.md",
+        DOCUMENTS[0],
+    )
+    selected = [p for p in pages if p["source"] in names]
+    orders = {p["source"]: p["order"] for p in selected}
+    if (
+        len(selected) != 3
+        or len(orders) != 3
+        or not orders[names[0]] < orders[names[1]] < orders[names[2]]
+    ):
+        return ["CTI26 reading order must be Chapter24 < Chapter25 < Chapter26"]
+    return []
+
+
 def repository_errors(data, contract, root=ROOT):
     errors = []
     if list(contract["parentDigests"]) != list(PARENTS):
@@ -192,6 +210,7 @@ def repository_errors(data, contract, root=ROOT):
     ):
         errors.append("CTI26 test/preflight entrypoint")
     site = strict(read_regular(root, "site-pages.json"))
+    errors += chapter_order_errors(site["pages"])
     for key in ("pages", "staticFiles"):
         for row in contract["routes"][key]:
             if (

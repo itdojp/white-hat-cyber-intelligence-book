@@ -43,6 +43,7 @@ def objects(value, path=()):
 def run_regressions(data, bundle, taxii, schemas, contract, source, projection):
     from scripts.check_chapter26_contract import (
         ROOT,
+        chapter_order_errors,
         identity,
         document_errors,
         scan_document,
@@ -143,6 +144,19 @@ def run_regressions(data, bundle, taxii, schemas, contract, source, projection):
         with patch.object(os, flag, create=True):
             delattr(os, flag)
             check("platform:" + flag, rejected(lambda: read_regular(ROOT, DATA)))
+    pages = strict(read_regular(ROOT, "site-pages.json"))["pages"]
+    check("navigation:canonical", not chapter_order_errors(pages))
+    check(
+        "navigation:registry-order-independent",
+        not chapter_order_errors(list(reversed(pages))),
+    )
+    for value in (208, 210):
+        changed = deepcopy(pages)
+        next(p for p in changed if p["source"] == DOCUMENTS[0])["order"] = value
+        check(
+            "navigation:before-or-equal-25:" + str(value),
+            bool(chapter_order_errors(changed)),
+        )
     # Shared scanner reachability, full preamble/body/tail and heading selection.
     for path in DOCUMENTS:
         variants = {
