@@ -61,20 +61,32 @@ STIX_REVIEW_TRIGGERS = (
     "STIX Errata draft, Committee Specification, or Approved Errata stage change",
     "correction to ID, common/version, object, relationship, domain-name or Bundle properties used by the Chapter26 finite profile",
 )
+TAXII_REVIEW_TRIGGERS = (
+    "new OASIS Standard",
+    "TAXII Errata draft, Committee Specification, or Approved Errata stage change",
+    "correction to Discovery, API Root, Collection, Manifest, Objects envelope, Status or media-type properties used by Chapter26",
+)
 
 
-def stix_trigger_errors(source):
-    """Keep the scoped Source Note's revalidation promises in the registry."""
+def standard_source_errors(source, standard):
+    """Keep the two scoped standard Source Notes' promises in the registry."""
+    required = {"STIX": STIX_REVIEW_TRIGGERS, "TAXII": TAXII_REVIEW_TRIGGERS}[standard]
+    errors = []
     triggers = source.get("reviewTriggers")
     if (
         not isinstance(triggers, list)
         or not all(isinstance(value, str) for value in triggers)
-        or not set(STIX_REVIEW_TRIGGERS).issubset(triggers)
+        or not set(required).issubset(triggers)
     ):
-        return [
-            "CTI26 STIX review triggers must cover Standard, Errata stage and used properties"
-        ]
-    return []
+        errors.append(
+            f"CTI26 {standard} review triggers must cover Standard, Errata stage and used properties"
+        )
+    notes = source.get("notes")
+    if not isinstance(notes, str) or notes != notes.lstrip():
+        errors.append(
+            f"CTI26 {standard} Source notes must be text without leading whitespace"
+        )
+    return errors
 
 
 def identity(field):
@@ -274,8 +286,9 @@ def repository_errors(data, contract, root=ROOT):
         errors.append("CTI26 frozen source inventory")
     for sid in SOURCES:
         s = next(s for s in sources["sources"] if s["id"] == sid)
-        if sid == "SRC-STIX-001":
-            errors += stix_trigger_errors(s)
+        standard = {"SRC-STIX-001": "STIX", "SRC-TAXII-001": "TAXII"}.get(sid)
+        if standard:
+            errors += standard_source_errors(s, standard)
         if any(
             s[k] != v for k, v in contract["sourceIdentity"][sid].items()
         ) or not meets_audit_baseline(s["checkedAt"], "2026-09-28"):

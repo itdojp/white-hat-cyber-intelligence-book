@@ -372,7 +372,7 @@
       "chapters": [
         26
       ],
-      "notes": " Chapter26 scoped review 2026-09-28 JST: fixed OS title/citation remains STIX 2.1 OASIS Standard, 10 June 2021. Live latest is 02 April 2025 Draft 01 of Errata 01 with Committee Specification Draft 01 citation, not treated here as Approved Errata. Checked selected ID/common/version, eight object types, Relationship, Domain Name and Bundle properties for the independent 13-object teaching profile only. No universal conformance, arbitrary pattern parser, analytic truth or authority claim. See references/ch26-source-review-2026-09-28.md."
+      "notes": "Chapter26 scoped review 2026-09-28 JST: fixed OS title/citation remains STIX 2.1 OASIS Standard, 10 June 2021. Live latest is 02 April 2025 Draft 01 of Errata 01 with Committee Specification Draft 01 citation, not treated here as Approved Errata. Checked selected ID/common/version, eight object types, Relationship, Domain Name and Bundle properties for the independent 13-object teaching profile only. No universal conformance, arbitrary pattern parser, analytic truth or authority claim. See references/ch26-source-review-2026-09-28.md."
     },
     {
       "id": "SRC-TAXII-001",
@@ -386,12 +386,14 @@
       "checkedAt": "2026-09-28",
       "nextReviewAt": "2028-07-25",
       "reviewTriggers": [
-        "new OASIS Standard"
+        "new OASIS Standard",
+        "TAXII Errata draft, Committee Specification, or Approved Errata stage change",
+        "correction to Discovery, API Root, Collection, Manifest, Objects envelope, Status or media-type properties used by Chapter26"
       ],
       "chapters": [
         26
       ],
-      "notes": " Chapter26 scoped review 2026-09-28 JST: fixed OS title/citation is TAXII 2.1 OASIS Standard, 10 June 2021; latest HTML was byte-identical at retrieval. Checked Discovery/API Root/Collection, Manifest/Objects/Status and media version negotiation. Channel keywords reserved but services not defined in 2.1. Supplied Collection/GET envelope is offline, not a server response, delivery or permission proof. See references/ch26-source-review-2026-09-28.md."
+      "notes": "Chapter26 scoped review 2026-09-28 JST: fixed OS title/citation is TAXII 2.1 OASIS Standard, 10 June 2021; latest HTML was byte-identical at retrieval. Checked Discovery/API Root/Collection, Manifest/Objects/Status and media version negotiation. Channel keywords reserved but services not defined in 2.1. Supplied Collection/GET envelope is offline, not a server response, delivery or permission proof. See references/ch26-source-review-2026-09-28.md."
     },
     {
       "id": "SRC-ICD203-001",

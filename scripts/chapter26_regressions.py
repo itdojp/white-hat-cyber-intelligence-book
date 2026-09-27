@@ -44,7 +44,8 @@ def run_regressions(data, bundle, taxii, schemas, contract, source, projection):
     from scripts.check_chapter26_contract import (
         ROOT,
         STIX_REVIEW_TRIGGERS,
-        stix_trigger_errors,
+        TAXII_REVIEW_TRIGGERS,
+        standard_source_errors,
         chapter_order_errors,
         identity,
         document_errors,
@@ -159,28 +160,54 @@ def run_regressions(data, bundle, taxii, schemas, contract, source, projection):
             "navigation:before-or-equal-25:" + str(value),
             bool(chapter_order_errors(changed)),
         )
-    # Review 4117146440: source revalidation promises must survive a snapshot
-    # refresh and must not depend on the order of independent trigger strings.
-    for label, triggers, accepted in (
-        ("canonical", list(STIX_REVIEW_TRIGGERS), True),
-        ("reordered", list(reversed(STIX_REVIEW_TRIGGERS)), True),
-        ("extended", [*STIX_REVIEW_TRIGGERS, "additional scoped review"], True),
-        ("standard-only", ["new OASIS Standard"], False),
-        ("not-list", None, False),
-        ("not-text", [*STIX_REVIEW_TRIGGERS, 1], False),
-        *(
-            (
-                "missing-" + str(i),
-                [t for j, t in enumerate(STIX_REVIEW_TRIGGERS) if j != i],
-                False,
-            )
-            for i in range(len(STIX_REVIEW_TRIGGERS))
-        ),
+    # Reviews 4117146440 / 4117288138 / 4117295893: the two scoped
+    # standards retain stage/property revalidation and clean new note prefixes.
+    for standard, required in (
+        ("STIX", STIX_REVIEW_TRIGGERS),
+        ("TAXII", TAXII_REVIEW_TRIGGERS),
     ):
-        check(
-            "source-stix-trigger:" + label,
-            (not stix_trigger_errors({"reviewTriggers": triggers})) is accepted,
-        )
+        for label, triggers, accepted in (
+            ("canonical", list(required), True),
+            ("reordered", list(reversed(required)), True),
+            ("extended", [*required, "additional scoped review"], True),
+            ("standard-only", ["new OASIS Standard"], False),
+            ("not-list", None, False),
+            ("not-text", [*required, 1], False),
+            *(
+                (
+                    "missing-" + str(i),
+                    [t for j, t in enumerate(required) if j != i],
+                    False,
+                )
+                for i in range(len(required))
+            ),
+        ):
+            check(
+                "source-" + standard.lower() + "-trigger:" + label,
+                (
+                    not standard_source_errors(
+                        {
+                            "reviewTriggers": triggers,
+                            "notes": "Chapter26 scoped review",
+                        },
+                        standard,
+                    )
+                )
+                is accepted,
+            )
+        for label, prefix in (("space", " "), ("tab", "\t")):
+            check(
+                "source-" + standard.lower() + "-notes:" + label,
+                bool(
+                    standard_source_errors(
+                        {
+                            "reviewTriggers": list(required),
+                            "notes": prefix + "Chapter26 scoped review",
+                        },
+                        standard,
+                    )
+                ),
+            )
     # Shared scanner reachability, full preamble/body/tail and heading selection.
     for path in DOCUMENTS:
         variants = {
