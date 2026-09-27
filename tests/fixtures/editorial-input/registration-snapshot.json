@@ -1310,6 +1310,12 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/47#issuecomment-5853214772",
+          "reason": "前提第10/23章のactual-main/Pages完了後、Issue47で唯一候補をbranch前選択。認可workspace61002directoriesでraw登録五basename hits0/errors0、未読・実体hash未照合・直接採用なしを保持し、現行Issue/契約と再確認した一次資料から新規制作する。別管理PR175のChapter23 consumedを混在させない。"
         }
       ]
     },
