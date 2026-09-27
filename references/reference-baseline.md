@@ -16,7 +16,7 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-NIST-RISK-001 | NIST | [Guide for Conducting Risk Assessments](https://csrc.nist.gov/pubs/sp/800/30/r1/final) | SP 800-30 Rev.1 / final | 2026-08-08 | 2026-11-08 | 4 |
 | SRC-OWASP-TM-001 | OWASP Foundation | [OWASP Threat Modeling Project](https://owasp.org/www-project-threat-modeling/) | maintained-project-guidance | 2026-08-08 | 2026-11-08 | 4 |
 | SRC-IR-001 | NIST | [Incident Response Recommendations and Considerations for Cybersecurity Risk Management](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | SP 800-61 Rev.3 / final | 2026-09-26 | 2027-08-03 | 1, 16, 17, 18, 19, 20, 21, 22 |
-| SRC-BERKELEY-001 | OHCHR / UC Berkeley | [Berkeley Protocol on Digital Open Source Investigations](https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source) | 2022 edition / published | 2026-09-25 | 2027-09-14 | 8, 10, 20, 24, 25 |
+| SRC-BERKELEY-001 | OHCHR / UC Berkeley | [Berkeley Protocol on Digital Open Source Investigations](https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source) | 2022 edition / published | 2026-09-27 | 2027-09-14 | 8, 10, 20, 24, 25 |
 | SRC-OWASP-TOP10-001 | OWASP | [OWASP Top 10:2025](https://owasp.org/Top10/) | 2025 / released | 2026-09-12 | 2026-12-12 | 7, 11 |
 | SRC-WSTG-001 | OWASP | [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | 4.2; 5.0 under development / stable | 2026-09-17 | 2026-12-17 | 9, 10, 11, 14, 15 |
 | SRC-API-001 | OWASP | [OWASP API Security Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/) | 2023 / released | 2026-08-03 | 2027-01-25 | 11 |

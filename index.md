@@ -94,3 +94,7 @@
 ## Intelligence Requirementから収集計画へ
 
 [第23章](manuscript/23-intelligence-requirements.md)、[ART-29](templates/intelligence-requirement-collection-plan.md)、[完全合成例](cases/ch23-intelligence-requirements-example.md)で、判断期限と未解決Gapを辿る。
+
+## 第24章の制作成果
+
+[OSINT、Provenance、情報源評価](manuscript/24-osint-provenance-sources.md)は、ART-30と完全合成資料で原典、版、変換、三つの評価軸とEvidence用途を学ぶ。

@@ -655,6 +655,34 @@
       "section": "additional",
       "order": 324,
       "title": "第23章 Source Review — 2026-09-27"
+    },
+    {
+      "source": "manuscript/24-osint-provenance-sources.md",
+      "destination": "chapters/chapter-24/index.md",
+      "section": "chapters",
+      "order": 207,
+      "title": "第24章 OSINT、Provenance、情報源評価"
+    },
+    {
+      "source": "templates/evidence-source-evaluation-table.md",
+      "destination": "templates/evidence-source-evaluation-table/index.md",
+      "section": "additional",
+      "order": 325,
+      "title": "Evidence and Source Evaluation Table"
+    },
+    {
+      "source": "cases/ch24-source-evaluation-example.md",
+      "destination": "cases/chapter-24-source-evaluation/index.md",
+      "section": "additional",
+      "order": 326,
+      "title": "第24章 Evidence and Source Evaluation Table完全合成例"
+    },
+    {
+      "source": "references/ch24-source-review-2026-09-27.md",
+      "destination": "references/chapter-24-source-review/index.md",
+      "section": "additional",
+      "order": 327,
+      "title": "第24章 Source Review — 2026-09-27"
     }
   ],
   "directoryRoutes": {
@@ -808,6 +836,14 @@
     {
       "source": "schemas/ch23-intelligence-requirements.schema.json",
       "destination": "downloads/ch23-intelligence-requirements.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch24-source-evaluation.json",
+      "destination": "downloads/ch24-source-evaluation.json"
+    },
+    {
+      "source": "schemas/ch24-source-evaluation.schema.json",
+      "destination": "downloads/ch24-source-evaluation.schema.json"
     }
   ]
 }

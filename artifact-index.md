@@ -31,6 +31,7 @@
 | ART-27 | Control Validation Plan | 21 | `templates/control-validation-plan.md` |
 | ART-28 | Security Improvement Backlog | 22 | `templates/security-improvement-backlog.md` |
 | ART-29 | Intelligence Requirement and Collection Plan | 23 | `templates/intelligence-requirement-collection-plan.md` |
+| ART-30 | Evidence and Source Evaluation Table | 24 | `templates/evidence-source-evaluation-table.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 

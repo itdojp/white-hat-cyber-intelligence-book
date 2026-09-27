@@ -1,0 +1,595 @@
+{
+  "schemaVersion": "1.0.0",
+  "comparisonVersion": "1.0.0",
+  "chapterId": "ch24-osint-provenance-sources",
+  "dataSha256": "c7b439b7a0f7ee477304dc3eac0f2c2df3fcdb1ccb0d4b22eaa02955173e4d7c",
+  "schemaSha256": "9642ef0d12986bd1b847ef78a2cc4ae40da287477aeabc75fce76429861d5803",
+  "corpusSha256": "9412e9ae68b05a080de8e73e7a45e643b1be42b302e2bdbe0bc080ca51c0fa23",
+  "documents": {
+    "manuscript/24-osint-provenance-sources.md": {
+      "projectionSha256": "6c9d01dc2907e38ff2b4c49bd8ad6384a214185bec6853da11157600d4dccb27",
+      "headings": [
+        [
+          1,
+          "第24章 OSINT、Provenance、情報源評価"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          3,
+          "OWN / BRIDGE / DELEGATE"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "24.1 問いと利用目的を先に固定する"
+        ],
+        [
+          2,
+          "24.2 公開情報と利用できる情報を分ける"
+        ],
+        [
+          2,
+          "24.3 Source、Item、Claimを分離する"
+        ],
+        [
+          2,
+          "24.4 取得・保存とHashの意味を限定する"
+        ],
+        [
+          2,
+          "24.5 変換と翻訳を原典に戻せる形で残す"
+        ],
+        [
+          2,
+          "24.6 三つの評価軸を混ぜない"
+        ],
+        [
+          2,
+          "24.7 同じ原典、循環参照、矛盾を読む"
+        ],
+        [
+          2,
+          "24.8 Evidenceの用途とHandoffを限定する"
+        ],
+        [
+          2,
+          "24.9 完全合成演習と評価基準"
+        ],
+        [
+          3,
+          "四つの実務視点"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "fieldCount": 115,
+      "hostProvenance": [
+        [
+          "reader_visible_text",
+          "codeblock",
+          null,
+          null,
+          "python3 scripts/check_chapter24_contract.py --no-regressions",
+          "manuscript/24-osint-provenance-sources.md:L135:F87"
+        ]
+      ]
+    },
+    "templates/evidence-source-evaluation-table.md": {
+      "projectionSha256": "fc6a55a2e3c44aab578521cfd604e8cd88db3e5a8b16f1bcf09570844590f2a0",
+      "headings": [
+        [
+          1,
+          "Evidence and Source Evaluation Table"
+        ],
+        [
+          2,
+          "利用境界"
+        ],
+        [
+          2,
+          "記入欄"
+        ],
+        [
+          2,
+          "有限な評価区分"
+        ],
+        [
+          2,
+          "記入例と差戻し"
+        ],
+        [
+          2,
+          "提出前確認"
+        ]
+      ],
+      "fieldCount": 36,
+      "hostProvenance": []
+    },
+    "cases/ch24-source-evaluation-example.md": {
+      "projectionSha256": "91ad0de991835857be8b616efd624ce166d71e6c669b10d217d01842d973b665",
+      "headings": [
+        [
+          1,
+          "第24章 完全合成例：Evidence and Source Evaluation Table"
+        ],
+        [
+          2,
+          "読み方と境界"
+        ],
+        [
+          2,
+          "原典と主張の対応"
+        ],
+        [
+          2,
+          "期待する限定結果"
+        ],
+        [
+          2,
+          "全欄の読み方"
+        ],
+        [
+          3,
+          "schemaVersion"
+        ],
+        [
+          3,
+          "synthetic"
+        ],
+        [
+          3,
+          "readOnly"
+        ],
+        [
+          3,
+          "networkRequired"
+        ],
+        [
+          3,
+          "executionAuthorized"
+        ],
+        [
+          3,
+          "record"
+        ],
+        [
+          3,
+          "REF-EV24-010"
+        ],
+        [
+          3,
+          "REF-EV24-023"
+        ],
+        [
+          3,
+          "REF-EV24-025"
+        ],
+        [
+          3,
+          "COL-EV24-001"
+        ],
+        [
+          3,
+          "COL-EV24-002"
+        ],
+        [
+          3,
+          "OSRC-EV24-001"
+        ],
+        [
+          3,
+          "OSRC-EV24-002"
+        ],
+        [
+          3,
+          "OSRC-EV24-003"
+        ],
+        [
+          3,
+          "OSRC-EV24-004"
+        ],
+        [
+          3,
+          "OSRC-EV24-005"
+        ],
+        [
+          3,
+          "CLM-EV24-001"
+        ],
+        [
+          3,
+          "CLM-EV24-002"
+        ],
+        [
+          3,
+          "CLM-EV24-003"
+        ],
+        [
+          3,
+          "CLM-EV24-004"
+        ],
+        [
+          3,
+          "ITEM-EV24-001"
+        ],
+        [
+          3,
+          "ITEM-EV24-002"
+        ],
+        [
+          3,
+          "ITEM-EV24-003"
+        ],
+        [
+          3,
+          "ITEM-EV24-004"
+        ],
+        [
+          3,
+          "ITEM-EV24-005"
+        ],
+        [
+          3,
+          "ITEM-EV24-006"
+        ],
+        [
+          3,
+          "ITEM-EV24-007"
+        ],
+        [
+          3,
+          "ITEM-EV24-008"
+        ],
+        [
+          3,
+          "ITEM-EV24-009"
+        ],
+        [
+          3,
+          "TRF-EV24-001"
+        ],
+        [
+          3,
+          "TRF-EV24-002"
+        ],
+        [
+          3,
+          "TRF-EV24-003"
+        ],
+        [
+          3,
+          "TRF-EV24-004"
+        ],
+        [
+          3,
+          "TRF-EV24-005"
+        ],
+        [
+          3,
+          "CITE-EV24-001"
+        ],
+        [
+          3,
+          "CITE-EV24-002"
+        ],
+        [
+          3,
+          "VER-EV24-001"
+        ],
+        [
+          3,
+          "EV-EV24-001"
+        ],
+        [
+          3,
+          "EV-EV24-002"
+        ],
+        [
+          3,
+          "EV-EV24-003"
+        ],
+        [
+          3,
+          "EV-EV24-004"
+        ],
+        [
+          3,
+          "EV-EV24-005"
+        ],
+        [
+          3,
+          "EV-EV24-006"
+        ],
+        [
+          3,
+          "EV-EV24-007"
+        ],
+        [
+          3,
+          "EV-EV24-008"
+        ],
+        [
+          3,
+          "EV-EV24-009"
+        ],
+        [
+          3,
+          "EV-EV24-010"
+        ],
+        [
+          3,
+          "EV-EV24-011"
+        ],
+        [
+          3,
+          "GAP-EV24-001"
+        ],
+        [
+          3,
+          "GAP-EV24-002"
+        ],
+        [
+          3,
+          "GAP-EV24-003"
+        ],
+        [
+          3,
+          "GAP-EV24-004"
+        ],
+        [
+          3,
+          "GAP-EV24-005"
+        ],
+        [
+          3,
+          "GAP-EV24-006"
+        ],
+        [
+          3,
+          "GAP-EV24-007"
+        ],
+        [
+          3,
+          "GAP-EV24-008"
+        ],
+        [
+          3,
+          "GAP-EV24-009"
+        ],
+        [
+          3,
+          "GAP-EV24-010"
+        ],
+        [
+          3,
+          "GAP-EV24-011"
+        ],
+        [
+          3,
+          "HYP-EV24-001"
+        ],
+        [
+          3,
+          "HYP-EV24-002"
+        ],
+        [
+          3,
+          "HOF-EV24-25"
+        ],
+        [
+          3,
+          "HOF-EV24-26"
+        ],
+        [
+          2,
+          "再評価と提出"
+        ]
+      ],
+      "fieldCount": 921,
+      "hostProvenance": []
+    },
+    "references/ch24-source-review-2026-09-27.md": {
+      "projectionSha256": "29d8cf4f34b0a58fc169544abf98c9b769894f84c14b358814b3ceb4b6cd284c",
+      "headings": [
+        [
+          1,
+          "第24章 Source再監査（2026-09-27）"
+        ],
+        [
+          2,
+          "Berkeley Protocol"
+        ],
+        [
+          2,
+          "ICD 203"
+        ],
+        [
+          2,
+          "採用しない内容と再評価"
+        ]
+      ],
+      "fieldCount": 23,
+      "hostProvenance": [
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://humanrights.berkeley.edu/projects/developing-the-berkeley-protocol-on-digital-open-source-investigations/",
+          "references/ch24-source-review-2026-09-27.md:L7:F7"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://humanrights.berkeley.edu/publications/berkeley-protocol-on-digital-open-source-investigations/",
+          "references/ch24-source-review-2026-09-27.md:L7:F8"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://humanrights.berkeley.edu/wp-content/uploads/archive/2024/02/Berkeley-Protocol.pdf",
+          "references/ch24-source-review-2026-09-27.md:L7:F9"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "採用はVI.B147〜152の関連性と事前検討、VI.C154〜155の原形式・変換・取得文脈、VI.D167〜169の来歴・作業Copy、VI.E176〜178・187・192〜194のSource/Item/Contentと文脈・循環・検証、VI.F196〜197の処理記録に限定します。印刷頁では57〜65です。本書の五用途、三軸の有限区分、Hash算法、合成Claimの関係は著者設計で、Protocolの正式採点規則ではありません。",
+          "references/ch24-source-review-2026-09-27.md:L9:F10"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
+          "references/ch24-source-review-2026-09-27.md:L17:F16"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.intelligence.gov/mission/our-values/objectivity",
+          "references/ch24-source-review-2026-09-27.md:L17:F17"
+        ]
+      ]
+    }
+  },
+  "parentDigests": {
+    "WRITING_GUIDE.md": "7de62e48cbb0ca637548f6ff9d8f3c6cde0e9085f5dd42139f34f014820bbd95",
+    "SOURCE_POLICY.md": "f32541dcb37160d5194e4d9f8f805e675bebf3e9356a52f219b02bef829515c0",
+    "SAFETY_SCOPE.md": "e8ab5d61712004d16ef96f455d8224162f63296a056663d37cc5403639a184ff",
+    "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
+    "manuscript/10-recon-osint-boundary.md": "122287e232c1b07468f7b0ecdc3e1ee6f4a2a7e8a3252ea8d73c6e8e681b04b7",
+    "cases/fixtures/ch10-attack-surface.json": "84247ed0d7bd12547cd94f00f9f7faf2df58a9dee1947badf7c68dfd741b5f90",
+    "manuscript/23-intelligence-requirements.md": "3c74c4d23f1dfffd303e43ed170acc9addd7adf076cdab05faae69c21436370a",
+    "cases/fixtures/ch23-intelligence-requirements.json": "2c6dd62239366eba35d2498de8585ab3e8110355ded39a4b347cd5e675c0dd8c",
+    "manuscript/25-structured-analysis-attribution.md": "55a451fd6bbfd683ecd920b0d16d292532e65b4c73c417ee40047a9d056e3be0",
+    "scripts/content_safety_policy.py": "9f800515ec2ba2728c69e1dcd21ed757444f99e76c231bc1956ecd6f264809cc",
+    "CONTENT_SAFETY_POLICY.md": "33f71fb5b89c2ca84d4db5d3567ef7cc001d35a9ec3104f7cfb36bbf68f4092a",
+    "scripts/publication_projection.py": "6df3ab877a694ebb43afea44c65c64f112d7d46031af9babf77eec44eb565202",
+    "scripts/_publication_projection_renderer.rb": "07152ff83eaa50cd72f139534fdc465c42ad158e01b91627799006de58969529",
+    "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
+    "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
+    "package-lock.json": "22b3f2274d543974445811b1f4317aba4779d10728638a51ffce105d7abb8d01",
+    ".book-formatter/revision.json": "71060c07550828b43d34972d448e85339c1b959c6c44623b4431df243d28716d"
+  },
+  "sourceIdentity": {
+    "SRC-BERKELEY-001": {
+      "id": "SRC-BERKELEY-001",
+      "publisher": "OHCHR / UC Berkeley",
+      "title": "Berkeley Protocol on Digital Open Source Investigations",
+      "kind": "protocol",
+      "status": "published",
+      "version": "2022 edition",
+      "url": "https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source",
+      "publishedAt": null,
+      "nextReviewAt": "2027-09-14"
+    },
+    "SRC-ICD203-001": {
+      "id": "SRC-ICD203-001",
+      "publisher": "ODNI",
+      "title": "ICD 203 Analytic Standards / Objectivity",
+      "kind": "analytic-standard",
+      "status": "official",
+      "version": "signed 2015-01-02; technical amendment effective 2022-01-21; official summary revision 2023-06 (signature day unverified)",
+      "url": "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
+      "publishedAt": "2015-01-02",
+      "nextReviewAt": "2027-08-03"
+    }
+  },
+  "routes": {
+    "pages": [
+      {
+        "source": "manuscript/24-osint-provenance-sources.md",
+        "destination": "chapters/chapter-24/index.md",
+        "section": "chapters",
+        "order": 207,
+        "title": "第24章 OSINT、Provenance、情報源評価"
+      },
+      {
+        "source": "templates/evidence-source-evaluation-table.md",
+        "destination": "templates/evidence-source-evaluation-table/index.md",
+        "section": "additional",
+        "order": 325,
+        "title": "Evidence and Source Evaluation Table"
+      },
+      {
+        "source": "cases/ch24-source-evaluation-example.md",
+        "destination": "cases/chapter-24-source-evaluation/index.md",
+        "section": "additional",
+        "order": 326,
+        "title": "第24章 Evidence and Source Evaluation Table完全合成例"
+      },
+      {
+        "source": "references/ch24-source-review-2026-09-27.md",
+        "destination": "references/chapter-24-source-review/index.md",
+        "section": "additional",
+        "order": 327,
+        "title": "第24章 Source Review — 2026-09-27"
+      }
+    ],
+    "staticFiles": [
+      {
+        "source": "cases/fixtures/ch24-source-evaluation.json",
+        "destination": "downloads/ch24-source-evaluation.json"
+      },
+      {
+        "source": "schemas/ch24-source-evaluation.schema.json",
+        "destination": "downloads/ch24-source-evaluation.schema.json"
+      }
+    ]
+  },
+  "indices": {
+    "artifact-index.md": [
+      "| ART-30 |"
+    ],
+    "figure-index.md": [
+      "F-24-01:"
+    ],
+    "glossary.md": [
+      "## 第24章の用語"
+    ],
+    "cases/index.md": [
+      "ch24-source-evaluation-example.md"
+    ],
+    "cases/fixtures/index.md": [
+      "ch24-source-evaluation.json"
+    ],
+    "README.md": [
+      "manuscript/24-osint-provenance-sources.md"
+    ],
+    "CHANGELOG.md": [
+      "第24章のART-30"
+    ],
+    "CANONICAL_SOURCE.md": [
+      "check:chapter24"
+    ]
+  }
+}
