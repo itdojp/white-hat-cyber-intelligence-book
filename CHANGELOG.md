@@ -11,6 +11,8 @@
 
 ### Added
 
+- [第IV部の横断読解](cases/part-iv-intelligence-decision-map.md)と有限契約を追加。方法参照と親25→子26の直接参照、origin、L2、未配達・非実行、独立交換例の非採用を区別し、既存章の正文・教材・Sourceは保持する。
+
 - [第23章](manuscript/23-intelligence-requirements.md)、ART-29、五Requirement・八Collection・六Statusの完全合成教材と有限公開前検査を追加。Gap、確信度、期限、未配達Handoffを保持し、ICD203/OSINT公表版の用途限定監査を記録。
 
 - [第22章](manuscript/22-measurement-improvement.md)、ART-28、十Metric・八Item・七Statusの完全合成Case、閉Schemaと有限公開前検査を追加。母集団、欠測、時間の統計量、品質、検証とRisk判断を分離し、親の実権限・未配達・旧Failedを保持。五Sourceの用途限定確認を2026-09-26に記録。

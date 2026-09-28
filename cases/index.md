@@ -105,3 +105,7 @@
 ## 第26章 CTI Product
 
 [二Audienceの完全記入例](ch26-cti-distribution-example.md)は親CASE-2026-025をrefinesする。独立したCASE-STIX26-DEMOは構造教材だけで、親のEvidence・Actor帰属を追加しない。
+
+## 第IV部の横断読解
+
+[要求から配布と判断への対応表](part-iv-intelligence-decision-map.md)で、第23〜26章の方法参照と直接参照、情報源評価・origin、限定判断、二Productと未受領Handoffを確認する。別Caseを架空の一連の調査へ結合せず、交換構造をEvidenceや権限の証明にしない。

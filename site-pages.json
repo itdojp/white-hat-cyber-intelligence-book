@@ -704,6 +704,13 @@
       "section": "additional",
       "order": 329,
       "title": "第26章 Source Review — 2026-09-28"
+    },
+    {
+      "source": "cases/part-iv-intelligence-decision-map.md",
+      "destination": "cases/part-iv-intelligence-decision-map/index.md",
+      "section": "additional",
+      "order": 330,
+      "title": "第IV部 横断読解：要求から配布と判断へ"
     }
   ],
   "directoryRoutes": {
