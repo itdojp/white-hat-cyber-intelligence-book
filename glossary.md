@@ -243,3 +243,9 @@ Intelligence Requirementは判断に必要な不確実性を減らす問い、Co
 - **Source / Item / Claim:** 発行・観測主体、版と取得済み表現、対象と条件を伴う個別主張を分ける。
 - **Observation group:** 本教材で同じ根底の観測を束ねるID。別URLや訳文を新しい独立観測にしない。
 - **Evidence use:** Direct evidence / Context / Lead / Unverified / Excludedという本書の有限用途。法的証拠区分ではない。
+
+## 第26章の用語
+
+- **CTI Product:** 要求に対する判断と根拠、不確実性、読者、期限を結ぶ成果物。交換形式だけでは成立しない。
+- **Product expiry / Correction:** 配布対象から外す期限と、訂正理由・影響判断を伴う更新。STIX Objectの版やrevocationとは別。
+- **Sharing boundary:** 再共有の相手の範囲。分類、ライセンス、暗号化、保持、技術操作の許可とは区別する。

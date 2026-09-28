@@ -98,3 +98,7 @@
 ## 第24章の制作成果
 
 [OSINT、Provenance、情報源評価](manuscript/24-osint-provenance-sources.md)は、ART-30と完全合成資料で原典、版、変換、三つの評価軸とEvidence用途を学ぶ。
+
+## 第26章の制作成果
+
+[CTIを構造化し、技術・経営へ配布する](manuscript/26-cti-distribution.md)では、同じ根拠からART-08 / ART-09を作り、未配達・Gap・再評価を保持する。

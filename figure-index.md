@@ -191,3 +191,10 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 - T-24-02: 三つの評価軸。
 - T-24-03: 有限なEvidence用途。
 - T-24-04: ART-30 Rubric。
+
+## 第26章
+
+- F-26-01: Requirementから二Product、Decision、Feedbackへの流れ（本文「全体像」）。
+- T-26-01: Tactical / Operational / Strategicの判断用途。
+- T-26-02: Fact / Judgment / Recommendation / Implicationの分離。
+- T-26-03: 二Productと配布・再評価のRubric。

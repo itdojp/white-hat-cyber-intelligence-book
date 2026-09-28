@@ -1,0 +1,462 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "readOnly": true,
+  "networkRequired": false,
+  "executionAuthorized": false,
+  "record": {
+    "id": "CDP-2026-026-001",
+    "caseId": "CASE-2026-025",
+    "parentCaseId": "CASE-2026-025",
+    "relation": "refines",
+    "parentArtifactId": "ART-12",
+    "parentJudgmentId": "AJ-2026-025",
+    "parentDecisionId": "DEC-2026-025",
+    "asOf": "2026-07-29T11:00:00Z",
+    "cutoff": "2026-07-29T09:00:00Z",
+    "deadline": "2026-07-30T01:00:00Z",
+    "attributionCeiling": "L2",
+    "syntheticSetting": "第25章の同じ判断時点を配布面から詳細化する教材設定。実観測・実承認・実通知ではない。"
+  },
+  "requirement": {
+    "id": "IR-2026-025",
+    "decisionRequirementId": "DR-2026-025",
+    "question": "観測した事象をTechnical clusterとして扱うべきか。CampaignやOperatorを示唆してよいか",
+    "owner": "SYNTH-CISO",
+    "successCondition": "二Productから同じKJ・Evidence・Gapを辿れ、実配達や実操作の許可と混同しない。"
+  },
+  "methodReferences": [
+    {
+      "id": "MREF-CTI26-023",
+      "chapter": 23,
+      "artifactId": "ART-29",
+      "recordId": "IRCP-2026-023-001",
+      "relation": "method-only",
+      "evidenceReceived": false,
+      "receiptId": null
+    },
+    {
+      "id": "MREF-CTI26-024",
+      "chapter": 24,
+      "artifactId": "ART-30",
+      "recordId": "EST-2026-024-001",
+      "relation": "method-only",
+      "evidenceReceived": false,
+      "receiptId": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVD-2026-025-001",
+      "sourceId": "SN-2026-025-001",
+      "parentArtifactId": "ART-12",
+      "independenceGroupId": "IG-INT-001",
+      "synthetic": true,
+      "limitation": "Mail bodyは要約保持、archive完全性は別証跡がない。",
+      "newObservation": false
+    },
+    {
+      "id": "EVD-2026-025-002",
+      "sourceId": "SN-2026-025-002",
+      "parentArtifactId": "ART-12",
+      "independenceGroupId": "IG-INT-002",
+      "synthetic": true,
+      "limitation": "後段の成功・失敗はこの観測に含まない。",
+      "newObservation": false
+    },
+    {
+      "id": "EVD-2026-025-003",
+      "sourceId": "SN-2026-025-003",
+      "parentArtifactId": "ART-12",
+      "independenceGroupId": "IG-EXT-001",
+      "synthetic": true,
+      "limitation": "登録者は判定できない。",
+      "newObservation": false
+    },
+    {
+      "id": "EVD-2026-025-004",
+      "sourceId": "SN-2026-025-004",
+      "parentArtifactId": "ART-12",
+      "independenceGroupId": "IG-EXT-002",
+      "synthetic": true,
+      "limitation": "bulletin revision履歴がない。",
+      "newObservation": false
+    },
+    {
+      "id": "EVD-2026-025-005",
+      "sourceId": "SN-2026-025-005",
+      "parentArtifactId": "ART-12",
+      "independenceGroupId": "IG-EXT-002",
+      "synthetic": true,
+      "limitation": "独自観測のない再掲。",
+      "newObservation": false
+    },
+    {
+      "id": "EVD-2026-025-006",
+      "sourceId": "SN-2026-025-006",
+      "parentArtifactId": "ART-12",
+      "independenceGroupId": "IG-EXT-003",
+      "synthetic": true,
+      "limitation": "原文全文・発言者が未確認。",
+      "newObservation": false
+    },
+    {
+      "id": "EVD-2026-025-007",
+      "sourceId": "SN-2026-025-007",
+      "parentArtifactId": "ART-12",
+      "independenceGroupId": "IG-EXT-002",
+      "synthetic": true,
+      "limitation": "同じbulletinの再要約。",
+      "newObservation": false
+    },
+    {
+      "id": "EVD-2026-025-008",
+      "sourceId": "SN-2026-025-008",
+      "parentArtifactId": "ART-12",
+      "independenceGroupId": "IG-INT-003",
+      "synthetic": true,
+      "limitation": "2026-07-23〜29のsummaryのみ。前半二日と詳細token issuanceは欠落。",
+      "newObservation": false
+    }
+  ],
+  "judgments": [
+    {
+      "id": "KJ-CTI26-001",
+      "parentJudgmentId": "AJ-2026-025",
+      "statement": "観測事象は技術クラスタと整合する。Campaign・Operator・国家の断定は支持しない。",
+      "confidence": "中",
+      "evidenceIds": [
+        "EVD-2026-025-001",
+        "EVD-2026-025-002",
+        "EVD-2026-025-003",
+        "EVD-2026-025-004"
+      ],
+      "sourceIds": [
+        "SN-2026-025-001",
+        "SN-2026-025-002",
+        "SN-2026-025-003",
+        "SN-2026-025-004"
+      ],
+      "gapIds": [
+        "GAP-2026-025-003",
+        "GAP-2026-025-004"
+      ],
+      "alternativeIds": [
+        "ALT-2026-025-001",
+        "ALT-2026-025-002",
+        "ALT-2026-025-003"
+      ],
+      "invalidation": "承認済みSSO保守が事象全体を説明する、またはshared toolingの説明が強くなる場合。",
+      "attributionLevel": "L2",
+      "successDetermined": false,
+      "stixConfidence": null,
+      "independentOrigins": 4
+    },
+    {
+      "id": "KJ-CTI26-002",
+      "parentJudgmentId": "AJ-2026-025",
+      "statement": "観測範囲では成功痕跡を確認していないが、保持外と詳細Telemetry欠落のため成功可否は判定できない。",
+      "confidence": "低",
+      "evidenceIds": [
+        "EVD-2026-025-008"
+      ],
+      "sourceIds": [
+        "SN-2026-025-008"
+      ],
+      "gapIds": [
+        "GAP-2026-025-001"
+      ],
+      "alternativeIds": [
+        "ALT-CTI26-SUCCESS",
+        "ALT-CTI26-NO-SUCCESS"
+      ],
+      "invalidation": "親Gap001に相当する追加の独立観測が得られ、Coverageと成功可否を再評価できる場合。",
+      "attributionLevel": "L2",
+      "successDetermined": false,
+      "stixConfidence": null,
+      "independentOrigins": 1
+    },
+    {
+      "id": "KJ-CTI26-003",
+      "parentJudgmentId": "SEJ-2026-025-001",
+      "statement": "bulletin・repost・recapの三報告は一つの原典群であり、三件の独立裏付けとは扱わない。",
+      "confidence": "中",
+      "evidenceIds": [
+        "EVD-2026-025-004",
+        "EVD-2026-025-005",
+        "EVD-2026-025-007"
+      ],
+      "sourceIds": [
+        "SN-2026-025-004",
+        "SN-2026-025-005",
+        "SN-2026-025-007"
+      ],
+      "gapIds": [
+        "GAP-2026-025-002"
+      ],
+      "alternativeIds": [
+        "ALT-CTI26-NEW-ORIGIN"
+      ],
+      "invalidation": "各報告が別原典や独自観測を持つという来歴が確認される場合。",
+      "attributionLevel": "L2",
+      "successDetermined": false,
+      "stixConfidence": null,
+      "independentOrigins": 1
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "REC-CTI26-001",
+      "judgmentIds": [
+        "KJ-CTI26-001"
+      ],
+      "purpose": "tactical",
+      "owner": "SYNTH-SOC Lead",
+      "statement": "供給された合成Domain二件に限定する親DecisionのBlock案を、検知仮説・誤通知条件・停止条件の紙上レビューへ渡す。",
+      "executionStatus": "not-executed",
+      "authorityGranted": false,
+      "parentRecommendationId": "REC-2026-025-001"
+    },
+    {
+      "id": "REC-CTI26-002",
+      "judgmentIds": [
+        "KJ-CTI26-002"
+      ],
+      "purpose": "operational",
+      "owner": "SYNTH-Identity Lead",
+      "statement": "詳細Telemetryの保持不足を優先Gapとして記録し、追加収集には別の承認・Scope審査を要求する。",
+      "executionStatus": "not-executed",
+      "authorityGranted": false,
+      "parentRecommendationId": "REC-2026-025-002"
+    },
+    {
+      "id": "REC-CTI26-003",
+      "judgmentIds": [
+        "KJ-CTI26-003"
+      ],
+      "purpose": "strategic",
+      "owner": "SYNTH-CISO",
+      "statement": "原典不足と残余リスクを費用判断へ明示し、親の限定通知案を実配達済みとせず再評価期限を設定する。",
+      "executionStatus": "not-executed",
+      "authorityGranted": false,
+      "parentRecommendationId": "REC-2026-025-003"
+    }
+  ],
+  "products": [
+    {
+      "id": "PRD-CTI26-TECH",
+      "artifactId": "ART-08",
+      "requirementId": "IR-2026-025",
+      "audience": "SYNTH-SOC Lead",
+      "purpose": "tactical-operational",
+      "version": 1,
+      "status": "prepared-not-delivered",
+      "cutoff": "2026-07-29T09:00:00Z",
+      "preparedAt": "2026-07-29T10:00:00Z",
+      "deadline": "2026-07-30T01:00:00Z",
+      "expiresAt": "2026-07-30T01:00:00Z",
+      "judgmentIds": [
+        "KJ-CTI26-001",
+        "KJ-CTI26-002",
+        "KJ-CTI26-003"
+      ],
+      "recommendationIds": [
+        "REC-CTI26-001",
+        "REC-CTI26-002",
+        "REC-CTI26-003"
+      ],
+      "implication": "Domain対応付けだけで検知の有効性を保証せず、ScopeとCoverageを添えて紙上の検証計画へ渡す。",
+      "classification": "教育用公開合成資料",
+      "sharingLabel": "TLP:CLEAR",
+      "license": "CC BY-NC-SA 4.0; 商用利用は別契約",
+      "encryption": "offline教材。暗号化や配送を実証しない。",
+      "retention": "供給資料は教材として保持、演習で作ったCopyのみ終了時に整理。",
+      "actionPermission": false,
+      "delivered": false,
+      "receiptId": null,
+      "feedbackId": "FDB-CTI26-TECH",
+      "reassessmentId": "REA-CTI26-001",
+      "supersedes": null,
+      "stixObjectIds": []
+    },
+    {
+      "id": "PRD-CTI26-EXEC",
+      "artifactId": "ART-09",
+      "requirementId": "IR-2026-025",
+      "audience": "SYNTH-CISO",
+      "purpose": "strategic",
+      "version": 1,
+      "status": "prepared-not-delivered",
+      "cutoff": "2026-07-29T09:00:00Z",
+      "preparedAt": "2026-07-29T10:00:00Z",
+      "deadline": "2026-07-30T01:00:00Z",
+      "expiresAt": "2026-07-30T01:00:00Z",
+      "judgmentIds": [
+        "KJ-CTI26-001",
+        "KJ-CTI26-002",
+        "KJ-CTI26-003"
+      ],
+      "recommendationIds": [
+        "REC-CTI26-001",
+        "REC-CTI26-002",
+        "REC-CTI26-003"
+      ],
+      "implication": "過小評価と過剰な範囲拡大の両方を避け、業務影響・費用・残余リスク・可逆性を比較する。",
+      "classification": "教育用公開合成資料",
+      "sharingLabel": "TLP:CLEAR",
+      "license": "CC BY-NC-SA 4.0; 商用利用は別契約",
+      "encryption": "offline教材。暗号化や配送を実証しない。",
+      "retention": "供給資料は教材として保持、演習で作ったCopyのみ終了時に整理。",
+      "actionPermission": false,
+      "delivered": false,
+      "receiptId": null,
+      "feedbackId": "FDB-CTI26-EXEC",
+      "reassessmentId": "REA-CTI26-001",
+      "supersedes": null,
+      "stixObjectIds": []
+    }
+  ],
+  "options": [
+    {
+      "id": "OPT-CTI26-A",
+      "label": "親Decisionの限定案を説明する",
+      "benefit": "二つの合成Domainだけを対象とする案とL2表現を保持できる。",
+      "cost": "SYNTH-SOC/Identityによる確認と誤通知審査の時間が必要。",
+      "disruption": "紙上案では停止なし。実施時の影響評価・承認は別途未取得。",
+      "residualRisk": "成功したfollow-on accessは未確認のまま。",
+      "reversibility": "紙上案の訂正は可能。実通知の回収や実Blockの解除を実証したわけではない。",
+      "parentDecisionPreserved": true
+    },
+    {
+      "id": "OPT-CTI26-B",
+      "label": "広い対象を一括で扱う案を棄却する",
+      "benefit": "実効性は未検証で、広い範囲が有効という証拠はない。",
+      "cost": "許可・Scope・誤検知の追加審査が必要。",
+      "disruption": "第三者や無関係な業務へ影響する懸念がある。",
+      "residualRisk": "帰属や成功可否のGapは解消しない。",
+      "reversibility": "誤通知の影響を完全には戻せない。",
+      "parentDecisionPreserved": false
+    },
+    {
+      "id": "OPT-CTI26-C",
+      "label": "不確実性を理由に全説明を保留する案を棄却する",
+      "benefit": "断定の誤りは避けやすい。",
+      "cost": "判断期限を逃す。",
+      "disruption": "本教材では実操作なしだが、担当者への情報提供も遅れる。",
+      "residualRisk": "限定的に言える事実とGapが意思決定へ渡らない。",
+      "reversibility": "失われた判断時間は回復できない。",
+      "parentDecisionPreserved": false
+    }
+  ],
+  "decision": {
+    "id": "DEC-CTI26-001",
+    "parentDecisionId": "DEC-2026-025",
+    "status": "synthetic-representation",
+    "selectedOptionId": "OPT-CTI26-A",
+    "owner": "SYNTH-CISO",
+    "productId": "PRD-CTI26-EXEC",
+    "authorityGranted": false,
+    "executed": false,
+    "rationale": "親Decisionを別の選択へ上書きせず、限定案・非帰属・未確定の成功可否を二Productで同じ意味に保つ。"
+  },
+  "feedback": [
+    {
+      "id": "FDB-CTI26-TECH",
+      "productId": "PRD-CTI26-TECH",
+      "audience": "SYNTH-SOC Lead",
+      "status": "planned-not-received",
+      "question": "Coverageの欠落と、検知対応付けが有効性の証明でないことを読者が区別できるか。",
+      "answer": null,
+      "receiptId": null
+    },
+    {
+      "id": "FDB-CTI26-EXEC",
+      "productId": "PRD-CTI26-EXEC",
+      "audience": "SYNTH-CISO",
+      "status": "planned-not-received",
+      "question": "残余リスクと可逆性を踏まえて、親Decisionの案と実行承認が別であると理解できるか。",
+      "answer": null,
+      "receiptId": null
+    }
+  ],
+  "reassessment": {
+    "id": "REA-CTI26-001",
+    "parentReassessmentId": "REA-2026-025",
+    "at": "2026-07-30T00:30:00Z",
+    "triggerGapIds": [
+      "GAP-2026-025-001",
+      "GAP-2026-025-002",
+      "GAP-2026-025-003",
+      "GAP-2026-025-004"
+    ],
+    "invalidation": "独立した追加観測、Source訂正、Coverage欠落の拡大、翻訳の原文確認が判断を変える場合は再評価する。",
+    "onChange": "旧版を配布対象から外し、訂正理由と影響KJを記録して新Product版を審査する。",
+    "supersedingProductId": null,
+    "stixObjectRevoked": false
+  },
+  "handoff": {
+    "id": "HOF-CTI26-029",
+    "chapter": 29,
+    "audience": "SYNTH-Capstone coordinator",
+    "productIds": [
+      "PRD-CTI26-TECH",
+      "PRD-CTI26-EXEC"
+    ],
+    "status": "planned-not-delivered",
+    "receiptId": null,
+    "authorityGranted": false
+  },
+  "exchangeExample": {
+    "id": "CASE-STIX26-DEMO",
+    "relation": "independent",
+    "purpose": "structure-only-not-evidence",
+    "adoptedEvidenceIds": [],
+    "contributesToJudgment": false,
+    "networkExecuted": false,
+    "bundleProfile": "STIX21-STRUCTURE-ONLY",
+    "taxiiProfile": "TAXII21-OFFLINE-ONLY"
+  },
+  "alternatives": [
+    {
+      "id": "ALT-CTI26-SUCCESS",
+      "focusQuestion": "Q-CTI26-FOLLOWON",
+      "parentHypothesisId": "TH-2026-025-003",
+      "statement": "実際には成功したが、保持外または詳細Telemetryの欠落により確認できていない可能性。",
+      "evidenceIds": [
+        "EVD-2026-025-008"
+      ],
+      "gapIds": [
+        "GAP-2026-025-001"
+      ],
+      "disposition": "unresolved"
+    },
+    {
+      "id": "ALT-CTI26-NO-SUCCESS",
+      "focusQuestion": "Q-CTI26-FOLLOWON",
+      "parentHypothesisId": "TH-2026-025-003",
+      "statement": "実際には成功していなかった可能性。供給summaryの不検出だけで確定しない。",
+      "evidenceIds": [
+        "EVD-2026-025-008"
+      ],
+      "gapIds": [
+        "GAP-2026-025-001"
+      ],
+      "disposition": "unresolved"
+    },
+    {
+      "id": "ALT-CTI26-NEW-ORIGIN",
+      "focusQuestion": "Q-CTI26-ORIGINS",
+      "parentHypothesisId": "SEH-2026-025-001",
+      "statement": "各報告に別原典や独自観測が存在する可能性を再評価条件として残す。供給lineageでは未支持。",
+      "evidenceIds": [
+        "EVD-2026-025-004",
+        "EVD-2026-025-005",
+        "EVD-2026-025-007"
+      ],
+      "gapIds": [
+        "GAP-2026-025-002"
+      ],
+      "disposition": "not-supported-by-supplied-lineage"
+    }
+  ]
+}

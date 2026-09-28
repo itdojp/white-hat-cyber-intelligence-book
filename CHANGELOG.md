@@ -131,3 +131,5 @@
 - 第15章独立レビューの指摘により、受容対象版、独立した供給Delegation、構造化Temporaryレビューを直接参照する。裸のIDや同一欄の自己申告だけでAccepted/Closed/Mitigatedにしない。
 
 - 第24章のART-30、完全合成Source評価、原典・版・変換・三軸・用途・未配達を扱う有限Layer Aと共有Projection/Policy consumerを追加。
+
+- 第26章のART-08 / ART-09、同じ三KJから二Audienceへ渡す完全合成例と、独立した有限STIX/TAXII構造例を追加。STIX/TAXII固定OSとTLP2.0等を用途限定で再確認し、共有Projection/Policyを使用。実配達・実操作の権限は付与しない。

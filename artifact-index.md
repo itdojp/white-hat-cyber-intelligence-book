@@ -84,3 +84,7 @@
 `ART-27`はControl objective、Atomic / End-to-End、五層のExpected/Actual、Failure、Gap、改善とRetestを結ぶ。[第21章Case](cases/ch21-control-validation-example.md)は十の完全合成対比であり、親Evidence・実権限・未配達・原因未確定を変更しない。
 
 `ART-28`はMetricの判断目的、母集団、品質、改善担当、Verification、Risk decisionと再評価を結ぶ。[第22章Case](cases/ch22-improvement-backlog-example.md)の十指標・八項目は供給比較だけであり、実効果、実権限、親Evidenceの受領を認定しない。
+
+## 第26章の二Product
+
+ART-08 / ART-09は[第26章の完全合成記入例](cases/ch26-cti-distribution-example.md)で同じ三KJを技術・経営の読者へ接続する。親25をrefinesし、独立STIX構造例はEvidenceへ採用しない。

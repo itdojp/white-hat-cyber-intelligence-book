@@ -683,6 +683,27 @@
       "section": "additional",
       "order": 327,
       "title": "第24章 Source Review — 2026-09-27"
+    },
+    {
+      "source": "manuscript/26-cti-distribution.md",
+      "destination": "chapters/chapter-26/index.md",
+      "section": "chapters",
+      "order": 211,
+      "title": "第26章 CTIを構造化し、技術・経営へ配布する"
+    },
+    {
+      "source": "cases/ch26-cti-distribution-example.md",
+      "destination": "cases/chapter-26-cti-distribution/index.md",
+      "section": "additional",
+      "order": 328,
+      "title": "第26章 CTI Report / Executive Brief完全合成例"
+    },
+    {
+      "source": "references/ch26-source-review-2026-09-28.md",
+      "destination": "references/chapter-26-source-review/index.md",
+      "section": "additional",
+      "order": 329,
+      "title": "第26章 Source Review — 2026-09-28"
     }
   ],
   "directoryRoutes": {
@@ -844,6 +865,30 @@
     {
       "source": "schemas/ch24-source-evaluation.schema.json",
       "destination": "downloads/ch24-source-evaluation.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch26-cti-distribution.json",
+      "destination": "downloads/ch26-cti-distribution.json"
+    },
+    {
+      "source": "schemas/ch26-cti-distribution.schema.json",
+      "destination": "downloads/ch26-cti-distribution.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch26-stix-bundle.json",
+      "destination": "downloads/ch26-stix-bundle.json"
+    },
+    {
+      "source": "schemas/ch26-stix-bundle.schema.json",
+      "destination": "downloads/ch26-stix-bundle.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch26-taxii-exchange.json",
+      "destination": "downloads/ch26-taxii-exchange.json"
+    },
+    {
+      "source": "schemas/ch26-taxii-exchange.schema.json",
+      "destination": "downloads/ch26-taxii-exchange.schema.json"
     }
   ]
 }

@@ -101,3 +101,7 @@
 ## 第24章 Source Evaluation
 
 [ART-30完全合成例](ch24-source-evaluation-example.md)は九Itemの原典・変換・個別Claimと五用途を分ける。独立Caseで、親Evidenceや許可を継承しない。
+
+## 第26章 CTI Product
+
+[二Audienceの完全記入例](ch26-cti-distribution-example.md)は親CASE-2026-025をrefinesする。独立したCASE-STIX26-DEMOは構造教材だけで、親のEvidence・Actor帰属を追加しない。

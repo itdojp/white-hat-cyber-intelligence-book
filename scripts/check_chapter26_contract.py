@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Chapter24 finite selection/semantics; shared Projection and Policy own syntax."""
+"""Chapter26 finite selection/semantics; shared Projection and Policy own syntax."""
 
 import argparse
 from collections import Counter
@@ -11,10 +11,13 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from scripts.chapter24_model import (  # noqa: E402
+from scripts.chapter26_model import (  # noqa: E402
     VERSION,
     DATA,
-    SCHEMA,
+    BUNDLE,
+    TAXII,
+    SCHEMAS,
+    PARENT_DATA,
     CONTRACT,
     CORPUS,
     DOCUMENTS,
@@ -53,6 +56,38 @@ PREFLIGHT = tuple(
     "npm run copy:notices",
 )
 
+STIX_REVIEW_TRIGGERS = (
+    "new OASIS Standard",
+    "STIX Errata draft, Committee Specification, or Approved Errata stage change",
+    "correction to ID, common/version, object, relationship, domain-name or Bundle properties used by the Chapter26 finite profile",
+)
+TAXII_REVIEW_TRIGGERS = (
+    "new OASIS Standard",
+    "TAXII Errata draft, Committee Specification, or Approved Errata stage change",
+    "correction to Discovery, API Root, Collection, Manifest, Objects envelope, Status or media-type properties used by Chapter26",
+)
+
+
+def standard_source_errors(source, standard):
+    """Keep the two scoped standard Source Notes' promises in the registry."""
+    required = {"STIX": STIX_REVIEW_TRIGGERS, "TAXII": TAXII_REVIEW_TRIGGERS}[standard]
+    errors = []
+    triggers = source.get("reviewTriggers")
+    if (
+        not isinstance(triggers, list)
+        or not all(isinstance(value, str) for value in triggers)
+        or not set(required).issubset(triggers)
+    ):
+        errors.append(
+            f"CTI26 {standard} review triggers must cover Standard, Errata stage and used properties"
+        )
+    notes = source.get("notes")
+    if not isinstance(notes, str) or notes != notes.lstrip():
+        errors.append(
+            f"CTI26 {standard} Source notes must be text without leading whitespace"
+        )
+    return errors
+
 
 def identity(field):
     return [
@@ -84,7 +119,7 @@ def scan_document(document, spec):
         json.dumps(identity(f), ensure_ascii=False) for f in document.fields
     )
     if len({json.dumps(p, ensure_ascii=False) for p in provenance}) != len(provenance):
-        errors.append("EV24 duplicate provenance")
+        errors.append("CTI26 duplicate provenance")
     for item in provenance:
         if counts[json.dumps(item, ensure_ascii=False)] != 1:
             errors.append(document.document_id + ": exact provenance cardinality")
@@ -119,7 +154,7 @@ def section_rows(document, heading):
 
 
 def reading_table_errors(document, data):
-    if document.document_id != DOCUMENTS[2]:
+    if document.document_id != DOCUMENTS[3]:
         return []
     expected = [
         " ".join((title + " Field Value " + key + " " + value).split())
@@ -129,7 +164,7 @@ def reading_table_errors(document, data):
     return (
         []
         if section_rows(document, "全欄の読み方") == expected
-        else ["EV24 all artifact leaves / Case parity"]
+        else ["CTI26 all artifact leaves / Case parity"]
     )
 
 
@@ -152,40 +187,62 @@ def document_errors(document, spec, data):
             if is_policy_scan_field(field):
                 (refs if in_refs else body).update(SOURCE_ID_RE.findall(field.text))
         if body != set(SOURCES) or refs != set(SOURCES):
-            errors.append("EV24 body/end Source set")
+            errors.append("CTI26 body/end Source set")
     return errors
+
+
+def chapter_order_errors(pages):
+    """Finite reading sequence, independent of the frozen route snapshot."""
+    names = (
+        "manuscript/24-osint-provenance-sources.md",
+        "manuscript/25-structured-analysis-attribution.md",
+        DOCUMENTS[0],
+    )
+    selected = [p for p in pages if p["source"] in names]
+    orders = {p["source"]: p["order"] for p in selected}
+    if (
+        len(selected) != 3
+        or len(orders) != 3
+        or not orders[names[0]] < orders[names[1]] < orders[names[2]]
+    ):
+        return ["CTI26 reading order must be Chapter24 < Chapter25 < Chapter26"]
+    return []
 
 
 def repository_errors(data, contract, root=ROOT):
     errors = []
     if list(contract["parentDigests"]) != list(PARENTS):
-        errors.append("EV24 fixed parent inventory")
+        errors.append("CTI26 fixed parent inventory")
     for path in PARENTS:
         if hashlib.sha256(read_regular(root, path)).hexdigest() != contract[
             "parentDigests"
         ].get(path):
-            errors.append("EV24 parent/shared/pin drift: " + path)
-    parent10 = strict(read_regular(root, "cases/fixtures/ch10-attack-surface.json"))
-    parent23 = strict(
-        read_regular(root, "cases/fixtures/ch23-intelligence-requirements.json")
-    )
+            errors.append("CTI26 parent/shared/pin drift: " + path)
+    parent = strict(read_regular(root, PARENT_DATA))
     if (
-        parent10["record"]["registerId"] != "ASR-2026-010"
-        or parent10["executionAuthorized"] is not False
-        or parent23["record"]["id"] != "IRCP-2026-023-001"
-        or parent23["executionAuthorized"] is not False
-        or parent23["networkRequired"] is not False
-        or parent23["readOnly"] is not True
+        parent["caseId"] != data["record"]["caseId"]
+        or parent["analyticJudgmentId"] != data["record"]["parentJudgmentId"]
+        or parent["decisionId"] != data["decision"]["parentDecisionId"]
+        or parent["synthetic"] is not True
     ):
-        errors.append("EV24 parent identity/safety")
+        errors.append("CTI26 parent identity")
+    for e in data["evidence"]:
+        pe = next(x for x in parent["evidence"] if x["id"] == e["id"])
+        sn = next(x for x in parent["sourceNotes"] if x["id"] == pe["sourceNoteId"])
+        if (
+            e["sourceId"] != pe["sourceNoteId"]
+            or e["independenceGroupId"] != sn["independenceGroupId"]
+        ):
+            errors.append("CTI26 parent evidence/source exact binding")
     package = strict(read_regular(root, "package.json"))["scripts"]
     if (
-        package.get("check:chapter24") != "python3 scripts/check_chapter24_contract.py"
-        or package["test"].split(" && ").count("npm run check:chapter24") != 1
+        package.get("check:chapter26") != "python3 scripts/check_chapter26_contract.py"
+        or package["test"].split(" && ").count("npm run check:chapter26") != 1
         or package["sync:docs"].split(" && ") != list(PREFLIGHT)
     ):
-        errors.append("EV24 test/preflight entrypoint")
+        errors.append("CTI26 test/preflight entrypoint")
     site = strict(read_regular(root, "site-pages.json"))
+    errors += chapter_order_errors(site["pages"])
     for key in ("pages", "staticFiles"):
         for row in contract["routes"][key]:
             if (
@@ -197,43 +254,52 @@ def repository_errors(data, contract, root=ROOT):
                 )
                 != 1
             ):
-                errors.append("EV24 canonical publication route")
+                errors.append("CTI26 canonical publication route")
+    from dataclasses import asdict
+    from scripts.sync_site_source import PAGES
+
+    legacy = [asdict(p) for p in PAGES if p.source in DOCUMENTS[1:3]]
+    if legacy != contract["legacyTemplateRoutes"]:
+        errors.append("CTI26 existing template route identity")
     config = strict(read_regular(root, "book-config.json"))
     chapter = {
-        "id": "ch24-osint-provenance-sources",
-        "title": "第24章 OSINT、Provenance、情報源評価",
-        "description": "公開情報を再現可能に収集し、出典と確からしさを評価する",
+        "id": "ch26-cti-structure-distribution",
+        "title": "第26章 CTIを構造化し、技術・経営へ配布する",
+        "description": "STIX/TAXIIと分析文書を用途別成果物へ変換する",
         "objectives": [
-            "一次情報へ遡及できる",
-            "Provenanceを記録できる",
-            "Evidence and Source Tableを作成できる",
+            "CTIオブジェクトを関係付けられる",
+            "対象読者別に配布物を作れる",
+            "CTI Reportを作成できる",
         ],
     }
     if (
-        config["structure"]["chapters"][24] != chapter
+        config["structure"]["chapters"][26] != chapter
         or contract["chapterId"] != chapter["id"]
     ):
-        errors.append("EV24 chapter identity")
+        errors.append("CTI26 chapter identity")
     sources = strict(read_regular(root, "references/sources.json"))
     if sources["checkedAt"] != "2026-07-25" or {
-        s["id"] for s in sources["sources"] if 24 in s["chapters"]
+        s["id"] for s in sources["sources"] if 26 in s["chapters"]
     } != set(SOURCES):
-        errors.append("EV24 scoped Source mapping/baseline")
+        errors.append("CTI26 scoped Source mapping/baseline")
     if set(contract["sourceIdentity"]) != set(SOURCES):
-        errors.append("EV24 frozen source inventory")
+        errors.append("CTI26 frozen source inventory")
     for sid in SOURCES:
         s = next(s for s in sources["sources"] if s["id"] == sid)
+        standard = {"SRC-STIX-001": "STIX", "SRC-TAXII-001": "TAXII"}.get(sid)
+        if standard:
+            errors += standard_source_errors(s, standard)
         if any(
             s[k] != v for k, v in contract["sourceIdentity"][sid].items()
-        ) or not meets_audit_baseline(s["checkedAt"], "2026-09-27"):
-            errors.append("EV24 scoped source identity/date: " + sid)
+        ) or not meets_audit_baseline(s["checkedAt"], "2026-09-28"):
+            errors.append("CTI26 scoped source identity/date: " + sid)
     if list(contract["indices"]) != list(INDEX_PATHS):
-        errors.append("EV24 index inventory")
+        errors.append("CTI26 index inventory")
     else:
         for path, markers in contract["indices"].items():
             text = read_regular(root, path).decode("utf-8")
             if any(marker not in text for marker in markers):
-                errors.append("EV24 index: " + path)
+                errors.append("CTI26 index: " + path)
     return errors
 
 
@@ -242,36 +308,37 @@ def main():
     parser.add_argument("--no-regressions", action="store_true")
     args = parser.parse_args()
     try:
-        data, schema, contract = (
-            strict(read_regular(ROOT, p)) for p in (DATA, SCHEMA, CONTRACT)
+        data, bundle, taxii, contract = (
+            strict(read_regular(ROOT, p)) for p in (DATA, BUNDLE, TAXII, CONTRACT)
         )
+        schemas = [strict(read_regular(ROOT, p)) for p in SCHEMAS]
         if (
             contract["schemaVersion"] != "1.0.0"
             or contract["comparisonVersion"] != VERSION
             or list(contract["documents"]) != list(DOCUMENTS)
             or POLICY_VERSION != "1.2.0"
             or PROJECTION_VERSION != "1.1.0"
-            or hashlib.sha256(read_regular(ROOT, SCHEMA)).hexdigest()
-            != contract["schemaSha256"]
+            or {p: hashlib.sha256(read_regular(ROOT, p)).hexdigest() for p in SCHEMAS}
+            != contract["schemaDigests"]
             or hashlib.sha256(read_regular(ROOT, CORPUS)).hexdigest()
             != contract["corpusSha256"]
         ):
-            raise ValueError("EV24 frozen inventory/schema/shared versions")
-        errors = validate_model(data, schema, contract) + repository_errors(
-            data, contract
-        )
+            raise ValueError("CTI26 frozen inventory/schema/shared versions")
+        errors = validate_model(
+            data, bundle, taxii, schemas, contract
+        ) + repository_errors(data, contract)
         source = {p: read_regular(ROOT, p).decode("utf-8") for p in DOCUMENTS}
         projection = project_documents(source)
         if [d.document_id for d in projection.documents] != list(DOCUMENTS):
-            raise ValueError("EV24 complete document order")
+            raise ValueError("CTI26 complete document order")
         for doc in projection.documents:
             errors += document_errors(doc, contract["documents"][doc.document_id], data)
         count = 0
         if not args.no_regressions:
-            from scripts.chapter24_regressions import run_regressions
+            from scripts.chapter26_regressions import run_regressions
 
             count, problems = run_regressions(
-                data, schema, contract, source, projection
+                data, bundle, taxii, schemas, contract, source, projection
             )
             errors += problems
         if errors:
@@ -279,7 +346,7 @@ def main():
                 print("ERROR:", error)
             return 1
         print(
-            f"Chapter 24 contract passed: 4 complete documents; ART-30; 5 sources / 9 items / 5 transforms / 4 claims / {len(data['evaluations'])} evaluations; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
+            f"Chapter 26 contract passed: 5 complete documents; ART-08 / ART-09; 3 judgments / 2 products / 13 independent STIX objects; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
         )
         return 0
     except (
@@ -291,7 +358,7 @@ def main():
         ManifestError,
         ProjectionRuntimeError,
     ) as exc:
-        print("ERROR: Chapter24 fail closed:", exc)
+        print("ERROR: Chapter26 fail closed:", exc)
         return 1
 
 
