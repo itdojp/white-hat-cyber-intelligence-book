@@ -226,7 +226,7 @@
       "p",
       null,
       null,
-      "HOF-IR23-24はSource確認条件、HOF-IR23-25は未充足の問い、HOF-IR23-26は判断主体・選択肢・期限を渡す予定である。三件ともplanned-not-delivered、receiptId=null、executionAuthorized=false。処理期限、分析期限、配布期限を経た後にも受領を示す証拠はない。実収集・実操作・実通知は各0である。"
+      "HOF-IR23-24はSource確認条件、HOF-IR23-25は未充足の問い、HOF-IR23-26は判断主体・選択肢・期限を渡す予定である。三件ともplanned-not-delivered、receiptId=null、executionAuthorized=false。記録のasOfは合成時刻2026-10-02T12:00:00Zで、この時点で受領を示す証拠はない。処理18:00Z、分析21:00Z、配布22:00Zの各期限はいずれも同日中の将来の予定であり、期限経過後の結果は記録されていない。実収集・実操作・実通知は各0である。"
     ],
     [
       "reader_visible_text",

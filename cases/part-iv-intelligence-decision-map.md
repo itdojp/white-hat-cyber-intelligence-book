@@ -37,7 +37,7 @@ Source reliabilityとinformation credibilityは別軸である。第24章の`use
 
 `IR23-R1`は`Satisfied`、R2は`Partially satisfied`、R3は`Collecting`、R4は`Planned`、R5は`Blocked`である。要求がある、収集を計画した、資料がある、回答基準を満たした、の四段階を飛ばさない。八Collectionには`Cancelled`もあり、未充足や中止を完了へ丸めない。
 
-`HOF-IR23-24`はSource確認条件、`HOF-IR23-25`は未充足の問い、`HOF-IR23-26`は判断主体・選択肢・期限を渡す予定である。三件とも`planned-not-delivered`、`receiptId=null`、`executionAuthorized=false`。処理期限、分析期限、配布期限を経た後にも受領を示す証拠はない。実収集・実操作・実通知は各0である。
+`HOF-IR23-24`はSource確認条件、`HOF-IR23-25`は未充足の問い、`HOF-IR23-26`は判断主体・選択肢・期限を渡す予定である。三件とも`planned-not-delivered`、`receiptId=null`、`executionAuthorized=false`。記録のasOfは合成時刻`2026-10-02T12:00:00Z`で、この時点で受領を示す証拠はない。処理18:00Z、分析21:00Z、配布22:00Zの各期限はいずれも同日中の将来の予定であり、期限経過後の結果は記録されていない。実収集・実操作・実通知は各0である。
 
 この要求IDを第25章の`IR-2026-025`へ改名して連結してはならない。前者は収集計画教材、後者は別Caseの分析要求であり、第26章が直接引き継ぐのは後者である。
 

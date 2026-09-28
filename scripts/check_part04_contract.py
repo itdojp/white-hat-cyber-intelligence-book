@@ -151,6 +151,7 @@ def boundaries(data):
         id="IRCP-2026-023-001",
         artifactId="ART-29",
         caseId="CASE-IRP-2026-001",
+        asOf="2026-10-02T12:00:00Z",
         actualCollections=0,
         actualActions=0,
         actualNotifications=0,
@@ -694,9 +695,9 @@ def regressions(data, document, contract, corpus):
     )
     check(
         "corpus-count",
-        len(corpus["records"]) == 42 and len(corpus["publication"]) == 12,
+        len(corpus["records"]) == 46 and len(corpus["publication"]) == 12,
     )
-    check("boundary-count", len(labels) == 442)
+    check("boundary-count", len(labels) == 443)
     scratch = ROOT / ".tmp"
     scratch.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="part04-input-", dir=scratch) as directory:

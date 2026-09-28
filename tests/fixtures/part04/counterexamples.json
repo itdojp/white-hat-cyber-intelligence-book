@@ -758,6 +758,70 @@
         }
       ],
       "expectedCode": "P4-26/judgments/2/alternativeIds"
+    },
+    {
+      "id": "P4-CH23-PENDING-ASOF",
+      "invariant": "The supplied asOf precedes all three deadlines; no later receipt result is observed",
+      "originatingThread": "PRRT_kwDOTi9cus6mv_I4",
+      "mutations": [
+        {
+          "source": 23,
+          "path": [
+            "record",
+            "asOf"
+          ],
+          "value": "2026-10-03T12:00:00Z"
+        }
+      ],
+      "expectedCode": "P4-23/record/asOf"
+    },
+    {
+      "id": "P4-CH23-PENDING-PROCESSING",
+      "invariant": "The supplied asOf precedes all three deadlines; no later receipt result is observed",
+      "originatingThread": "PRRT_kwDOTi9cus6mv_I4",
+      "mutations": [
+        {
+          "source": 23,
+          "path": [
+            "pipeline",
+            "processingDeadline"
+          ],
+          "value": "2026-10-02T11:00:00Z"
+        }
+      ],
+      "expectedCode": "P4-23/pipeline/processingDeadline"
+    },
+    {
+      "id": "P4-CH23-PENDING-ANALYSIS",
+      "invariant": "The supplied asOf precedes all three deadlines; no later receipt result is observed",
+      "originatingThread": "PRRT_kwDOTi9cus6mv_I4",
+      "mutations": [
+        {
+          "source": 23,
+          "path": [
+            "pipeline",
+            "analysisDeadline"
+          ],
+          "value": "2026-10-02T11:00:00Z"
+        }
+      ],
+      "expectedCode": "P4-23/pipeline/analysisDeadline"
+    },
+    {
+      "id": "P4-CH23-PENDING-DISTRIBUTION",
+      "invariant": "The supplied asOf precedes all three deadlines; no later receipt result is observed",
+      "originatingThread": "PRRT_kwDOTi9cus6mv_I4",
+      "mutations": [
+        {
+          "source": 23,
+          "path": [
+            "pipeline",
+            "distributionDeadline"
+          ],
+          "value": "2026-10-02T11:00:00Z"
+        }
+      ],
+      "expectedCode": "P4-23/pipeline/distributionDeadline"
     }
   ],
   "publication": [
