@@ -1384,6 +1384,12 @@
           "effectiveAt": "2026-09-29",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5878166655",
           "reason": "唯一登録候補をIssue49でbranch前に明示選択。原Package/他Target/同梱第28章/旧履歴は保持し、実体不在を推測再構成しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-29",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/183",
+          "reason": "第27章専用Draft PR183へ本文/ART31/全欄Case/合成JSON/閉Schema/Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開前なのでconsumedとしない。"
         }
       ]
     },
