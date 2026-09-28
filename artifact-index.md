@@ -32,6 +32,7 @@
 | ART-28 | Security Improvement Backlog | 22 | `templates/security-improvement-backlog.md` |
 | ART-29 | Intelligence Requirement and Collection Plan | 23 | `templates/intelligence-requirement-collection-plan.md` |
 | ART-30 | Evidence and Source Evaluation Table | 24 | `templates/evidence-source-evaluation-table.md` |
+| ART-31 | AI / Agent Threat Model | 27 | `templates/ai-agent-threat-model.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -88,3 +89,5 @@
 ## 第26章の二Product
 
 ART-08 / ART-09は[第26章の完全合成記入例](cases/ch26-cti-distribution-example.md)で同じ三KJを技術・経営の読者へ接続する。親25をrefinesし、独立STIX構造例はEvidenceへ採用しない。
+
+`ART-31 AI / Agent Threat Model`はInstruction / Data / Memory / Tool / Approval / Evidenceを結び、[空Template](templates/ai-agent-threat-model.md)と[第27章完全合成Case](cases/ch27-ai-agent-threat-model-example.md)で六状態と停止・非実行境界を記録する。

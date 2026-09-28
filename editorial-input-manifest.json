@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "manifestVersion": "1.0.0",
-  "auditedAt": "2026-09-28",
+  "auditedAt": "2026-09-29",
   "source": {
     "repository": "https://github.com/itdojp/white-hat-cyber-intelligence-book",
     "registrationIssue": 63,
@@ -2695,19 +2695,64 @@
       "targetId": "chapter-27",
       "issue": 49,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "canonical-pr-open",
+      "selectedCandidateId": "EIC-0049-32e8846cf56d",
+      "canonicalPr": 183,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/183",
+        "packageId": "EIP-0007",
+        "packageSha256": "2ac28571912725ed838d4895779e3921b8138b52a66f2d5938c5776e46f3ff69",
+        "inputPath": "chapter27-ai-agent-security.predraft.md",
+        "inputSha256": "32e8846cf56d741ba7fc28ca36df288132192e48d8f142dc8c32d433da375fed",
+        "targetIssue": 49,
+        "canonicalPr": 183,
+        "currentMainSha": "b5967301cffbcfb5818733e3d730eb970797c423",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-29",
+        "adoptedSections": [
+          "rawから直接採用なし。branch前選択: https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5878166655"
+        ],
+        "rewrittenSections": [
+          "現行Issue49/契約と用途限定の一次資料から本文、ART31、全欄Case、958leaf完全合成JSON/閉Schema、Source、有限Layer Aを新規制作。",
+          "六Component状態と六要求、承認/停止/監査/証拠/Control/再評価を結合。CASE2026001の教育上refinesで親のAI稼働観測・権限・Evidenceを発明しない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Model/API/key/Tenant/実Data、外部Network/Shell/File mutation/Credential accessは使わない。親RoE/失効を更新せず、全要求executed=false。",
+          "一般Prompt分類器・Markdown/HTML/URL parser・AISVS準拠認証・Issue67・formatter pin/依存変更・第28章以降は対象外。",
+          "同梱第28章、他Target/Package/旧履歴を保持。第26章consumedはmerge済みPR181のまま変更しない。"
+        ],
+        "sourceRevalidation": [
+          "NIST AI600-1 final/2024-07-26とAI100-2e2025 final/2025-03-24の公式PDF/採用節を限定確認。2025-04-01訂正告知、06-03 potential updatesは正式本文更新と区別。",
+          "OWASP LLM Top10 2026の公式実体/番号変更を確認。resource08-03、blog09-01、press本文09-02を区別しPDFday placeholderを補完しない。Agentic2026はDecember2025版・resource/blog12-09とpress本文12-10を区別。",
+          "AISVS locked1.0 commit aedffade1817238a493ff4d63c28d0d3855c98db のC6/8/9/12採用要件とPDFを確認。1.01-dev/researchは根拠外。June2026まで確認し旧06-24 dayは再確認できないためpublishedAt null・旧notes保持。",
+          "各実体SHAと用途/限界をSource reviewへ記録。確認日2026-09-29 JST。PDF表紙画像を直接目視した監査や全仕様/全研究調査は未実施。"
+        ],
+        "canonicalFiles": [
+          "manuscript/27-ai-agent-security.md",
+          "templates/ai-agent-threat-model.md",
+          "cases/ch27-ai-agent-threat-model-example.md",
+          "cases/fixtures/ch27-ai-agent-threat-model.json",
+          "schemas/ch27-ai-agent-threat-model.schema.json",
+          "references/ch27-source-review-2026-09-29.md"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録5basename87822directories不在、symlink非追跡。改名/Archive内部/workspace外未探索。raw未読・実体hash未照合・直接採用なし。inputReviewedAtは採否記録日で原文読了日ではない。",
+          "合成descriptor Digestはラベルhashで実Artifact測定ではない。Allowed-in-modelは固定記録の条件一致だけでModel/Toolを実行しない。Component六状態とLab八状態は別。実停止・復旧・署名・安全性能・規範準拠を認定しない。",
+          "Intake作成時はPR183 Draft、全QA/独立review/通常merge/main公開未完。現在状態はtarget.statusと末尾statusHistoryを参照。consumedは実公開後の別管理PRで記録する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0049-32e8846cf56d",
           "packageId": "EIP-0007",
           "inputPath": "chapter27-ai-agent-security.predraft.md",
           "inputSha256": "32e8846cf56d741ba7fc28ca36df288132192e48d8f142dc8c32d433da375fed",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5878166655",
+          "dispositionReason": "前提4/6/13/26のmain達成後、Issue49でbranch前選択。raw登録5basename87822directories不在、未読/実体hash未照合/直接採用なし。current契約と一次資料から新規制作する。"
         }
       ],
       "statusHistory": [
@@ -2716,6 +2761,18 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-29",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5878166655",
+          "reason": "唯一登録候補をIssue49でbranch前に明示選択。原Package/他Target/同梱第28章/旧履歴は保持し、実体不在を推測再構成しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-29",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/183",
+          "reason": "第27章専用Draft PR183へ本文/ART31/全欄Case/合成JSON/閉Schema/Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開前なのでconsumedとしない。"
         }
       ]
     },

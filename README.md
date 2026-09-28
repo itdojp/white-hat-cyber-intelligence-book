@@ -174,3 +174,5 @@ npm run check:part02
 [第26章](manuscript/26-cti-distribution.md)はART-08 / ART-09の二Productを三KJ、Decision、Feedbackへ接続する。`npm run check:chapter26`は有限Layer Aと共有Projection1.1.0 / Policy1.2.0で供給記録と独立STIX/TAXII構造例を検査し、外部接続や権限認定をしない。
 
 第IV部の[横断読解](cases/part-iv-intelligence-decision-map.md)は、要求・来歴評価・判断・用途別配布の接続を読む補助教材です。`npm run check:part04`は固定Layer Aと頁全体を検査し、既存章の内部意味判定や共有構文/安全文法は再実装しません。
+
+第27章の[AI / Agent Threat Model](manuscript/27-ai-agent-security.md)は完全合成の非実行教材です。`npm run check:chapter27`が有限の境界・参照・公開面を検証します。
