@@ -447,16 +447,16 @@
       "version": "NIST AI 600-1",
       "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
       "publishedAt": "2024-07-26",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2027-04-08",
+      "checkedAt": "2026-09-29",
+      "nextReviewAt": "2026-12-29",
       "reviewTriggers": [
-        "NIST update or successor profile"
+        "NIST update or successor profile",
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
       ],
       "chapters": [
-        27,
-        28
+        27
       ],
-      "notes": "Official page was updated 2026-04-08."
+      "notes": "Official page was updated 2026-04-08. Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. "
     },
     {
       "id": "SRC-AML-001",
@@ -467,16 +467,16 @@
       "version": "NIST AI 100-2e2025",
       "url": "https://www.nist.gov/publications/adversarial-machine-learning-taxonomy-and-terminology-attacks-and-mitigations-0",
       "publishedAt": "2025-03-24",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-09-29",
+      "nextReviewAt": "2026-12-29",
       "reviewTriggers": [
-        "annual NIST AML update"
+        "annual NIST AML update",
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
       ],
       "chapters": [
-        27,
-        28
+        27
       ],
-      "notes": "NIST states an intent to update the report annually."
+      "notes": "NIST states an intent to update the report annually. Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. CSRC final 2025-03-24; corrected PDF announced 2025-04-01. Potential updates dated 2025-06-03 concern page x taxonomy index and are proposed, not official document changes. Sections 3.3/3.4 used for taxonomy only."
     },
     {
       "id": "SRC-OWASP-LLM-001",
@@ -484,19 +484,19 @@
       "title": "Top 10 for LLM and GenAI Applications",
       "kind": "awareness",
       "status": "released",
-      "version": "2025",
-      "url": "https://genai.owasp.org/llm-top-10/",
-      "publishedAt": "2024-11-17",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "version": "2026",
+      "url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-29",
+      "nextReviewAt": "2026-12-29",
       "reviewTriggers": [
-        "new Top 10 release or correction"
+        "new Top 10 release or correction",
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
       ],
       "chapters": [
-        27,
-        28
+        27
       ],
-      "notes": ""
+      "notes": " Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. Previous registered edition 2025 / publishedAt 2024-11-17. 2026 PDF publication date remains a placeholder: resource date 2026-08-03, announcement page 2026-09-01 and press-body 2026-09-02 are distinct, not a verified PDF release day. Risk IDs changed; all Chapter27 surfaces use versioned 2026 IDs."
     },
     {
       "id": "SRC-OWASP-AGENT-001",
@@ -507,35 +507,36 @@
       "version": "2026 guidance",
       "url": "https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/",
       "publishedAt": "2025-12-10",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-09-29",
+      "nextReviewAt": "2026-12-29",
       "reviewTriggers": [
-        "Agentic Top 10 update"
+        "Agentic Top 10 update",
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
       ],
       "chapters": [
-        27,
-        28
+        27
       ],
-      "notes": ""
+      "notes": " Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. Version 2026 PDF states December 2025; publishedAt retains press-body 2025-12-10, not PDF day. Blog/resource date 2025-12-09 is distinct. Risk vocabulary, not runtime effectiveness proof."
     },
     {
       "id": "SRC-AISVS-001",
       "publisher": "OWASP",
       "title": "Artificial Intelligence Security Verification Standard",
       "kind": "verification-standard",
-      "status": "live",
+      "status": "released",
       "version": "1.0",
-      "url": "https://owasp.org/www-project-artificial-intelligence-security-verification-standard-aisvs-docs/",
-      "publishedAt": "2026-06-24",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "url": "https://owasp.org/projects/artificial-intelligence-security-verification-standard-aisvs-docs",
+      "publishedAt": null,
+      "checkedAt": "2026-09-29",
+      "nextReviewAt": "2026-12-29",
       "reviewTriggers": [
-        "AISVS release or errata"
+        "AISVS release or errata",
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
       ],
       "chapters": [
         27
       ],
-      "notes": "Official page states AISVS 1.0 was released 2026-06-24."
+      "notes": "Official page states AISVS 1.0 was released 2026-06-24. Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. The earlier June 24 day statement above is historical and was not reconfirmed. Current official stable 1.0 locked source/PDF/header verify June 2026 only, so publishedAt is null. Pin aedffade1817238a493ff4d63c28d0d3855c98db / 1.0. Never use 1.01-dev or AI-generated research as 1.0 requirement text."
     },
     {
       "id": "SRC-JP-LAW-001",

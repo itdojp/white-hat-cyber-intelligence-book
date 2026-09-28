@@ -249,3 +249,7 @@ Intelligence Requirementは判断に必要な不確実性を減らす問い、Co
 - **CTI Product:** 要求に対する判断と根拠、不確実性、読者、期限を結ぶ成果物。交換形式だけでは成立しない。
 - **Product expiry / Correction:** 配布対象から外す期限と、訂正理由・影響判断を伴う更新。STIX Objectの版やrevocationとは別。
 - **Sharing boundary:** 再共有の相手の範囲。分類、ライセンス、暗号化、保持、技術操作の許可とは区別する。
+
+## AI支援の境界（第27章）
+
+Instruction boundaryは指示と出自付きDataの扱いの境界、Excessive Agencyは必要以上の機能・権限・自律性に関するリスクである。ComponentのDeclared / Observed / Validated / Restricted / Disabled / Unknownは本書の六状態で、Lab八状態や外部標準の適合Levelとは別である。[第27章](manuscript/27-ai-agent-security.md)を参照。

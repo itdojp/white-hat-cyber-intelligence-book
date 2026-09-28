@@ -125,3 +125,5 @@ Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設�
 第26章の`check:chapter26`は生成先削除前に一回実行する。本文・二Template・全欄Case・Sourceの五文書と、Product / 独立STIX / offline TAXIIの三JSON・各閉Schemaを検査する。一般STIX/Pattern/URL/rendererは実装せず、有限Layer Aと共有Projection1.1.0 / Policy1.2.0を使う。親25の判断・Decision、23/24の方法参照と未配達を保持し、独立構造例を親Evidenceへ採用しない。
 
 第IV部横断読解の`check:part04`は第III部横断検査の直前、生成先削除前に一回実行する。固定した第23〜26章と独立交換例の参照・非継承・未配達・有限境界、および新頁全体の公開fieldを検査する。各章の内部評価や一般STIX/TAXII適合性を再実装せず、構文と安全文法は共有Projection/Policyへ委譲する。
+
+第27章は`scripts/check_chapter27_contract.py`がART-31の合成記録と全公開面を共有Publication Projection / Policyへ渡す。`sync:docs`は生成先削除前に`check_chapter27_contract.py --no-regressions`を実行し、未知入力・参照/型/状態漂流を拒否する。

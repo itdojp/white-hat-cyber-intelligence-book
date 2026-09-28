@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Chapter23 finite selection/semantics; shared Projection and Policy own syntax."""
+"""Chapter27 authored selection/semantics; shared owners handle renderer and Policy."""
 
 import argparse
 from collections import Counter
@@ -11,7 +11,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from scripts.chapter23_model import (  # noqa: E402
+from scripts.chapter27_model import (  # noqa: E402
     VERSION,
     DATA,
     SCHEMA,
@@ -85,7 +85,7 @@ def scan_document(document, spec):
         json.dumps(identity(f), ensure_ascii=False) for f in document.fields
     )
     if len({json.dumps(p, ensure_ascii=False) for p in provenance}) != len(provenance):
-        errors.append("IR23 duplicate provenance")
+        errors.append("AI27 duplicate provenance")
     for item in provenance:
         if counts[json.dumps(item, ensure_ascii=False)] != 1:
             errors.append(document.document_id + ": exact provenance cardinality")
@@ -130,7 +130,7 @@ def reading_table_errors(document, data):
     return (
         []
         if section_rows(document, "全欄の読み方") == expected
-        else ["IR23 all artifact leaves / Case parity"]
+        else ["AI27 all artifact leaves / Case parity"]
     )
 
 
@@ -153,39 +153,26 @@ def document_errors(document, spec, data):
             if is_policy_scan_field(field):
                 (refs if in_refs else body).update(SOURCE_ID_RE.findall(field.text))
         if body != set(SOURCES) or refs != set(SOURCES):
-            errors.append("IR23 body/end Source set")
+            errors.append("AI27 body/end Source set")
     return errors
 
 
-def repository_errors(data, contract, root=ROOT):
+def repository_errors(contract, root=ROOT):
     errors = []
     if list(contract["parentDigests"]) != list(PARENTS):
-        errors.append("IR23 fixed parent inventory")
+        errors.append("AI27 fixed parent inventory")
     for path in PARENTS:
         if hashlib.sha256(read_regular(root, path)).hexdigest() != contract[
             "parentDigests"
         ].get(path):
-            errors.append("IR23 parent/shared/pin drift: " + path)
-    for path, expected in (
-        ("cases/fixtures/ch16-telemetry-coverage.json", "TCM-2026-016"),
-        ("cases/fixtures/ch19-incident-response.json", "IAP-2026-019-001"),
-    ):
-        parent = strict(read_regular(root, path))
-        if (
-            parent["record"]["id"] != expected
-            or parent["executionAuthorized"] is not False
-            or parent["networkRequired"] is not False
-            or parent["readOnly"] is not True
-            or parent["synthetic"] is not True
-        ):
-            errors.append("IR23 parent reference/safety: " + path)
-    package = strict(read_regular(root, "package.json"))["scripts"]
+            errors.append("AI27 parent/shared/pin drift: " + path)
+    scripts = strict(read_regular(root, "package.json"))["scripts"]
     if (
-        package.get("check:chapter23") != "python3 scripts/check_chapter23_contract.py"
-        or package["test"].split(" && ").count("npm run check:chapter23") != 1
-        or package["sync:docs"].split(" && ") != list(PREFLIGHT)
+        scripts.get("check:chapter27") != "python3 scripts/check_chapter27_contract.py"
+        or scripts["test"].split(" && ").count("npm run check:chapter27") != 1
+        or scripts["sync:docs"].split(" && ") != list(PREFLIGHT)
     ):
-        errors.append("IR23 test/preflight entrypoint")
+        errors.append("AI27 test/preflight entrypoint")
     site = strict(read_regular(root, "site-pages.json"))
     for key in ("pages", "staticFiles"):
         for row in contract["routes"][key]:
@@ -198,43 +185,32 @@ def repository_errors(data, contract, root=ROOT):
                 )
                 != 1
             ):
-                errors.append("IR23 canonical publication route")
-    config = strict(read_regular(root, "book-config.json"))
-    chapter = {
-        "id": "ch23-intelligence-requirements",
-        "title": "第23章 Intelligence Requirementsと収集計画",
-        "description": "判断主体、期限、情報ギャップから収集と分析を設計する",
-        "objectives": [
-            "Intelligence Requirementを定義できる",
-            "収集計画を作成できる",
-            "Collection Planを作成できる",
-        ],
-    }
-    if (
-        config["structure"]["chapters"][23] != chapter
-        or contract["chapterId"] != chapter["id"]
-    ):
-        errors.append("IR23 chapter identity")
+                errors.append("AI27 canonical route")
+    chapter = strict(read_regular(root, "book-config.json"))["structure"]["chapters"][
+        27
+    ]
+    if chapter != contract["chapter"] or chapter["id"] != "ch27-ai-agent-security":
+        errors.append("AI27 chapter identity")
     sources = strict(read_regular(root, "references/sources.json"))
     if sources["checkedAt"] != "2026-07-25" or {
-        s["id"] for s in sources["sources"] if 23 in s["chapters"]
+        s["id"] for s in sources["sources"] if 27 in s["chapters"]
     } != set(SOURCES):
-        errors.append("IR23 scoped Source mapping/baseline")
+        errors.append("AI27 Source mapping/baseline")
     if set(contract["sourceIdentity"]) != set(SOURCES):
-        errors.append("IR23 frozen source inventory")
+        errors.append("AI27 scoped Source inventory")
     for sid in SOURCES:
-        s = next(s for s in sources["sources"] if s["id"] == sid)
+        s = next(x for x in sources["sources"] if x["id"] == sid)
         if any(
             s[k] != v for k, v in contract["sourceIdentity"][sid].items()
-        ) or not meets_audit_baseline(s["checkedAt"], "2026-09-27"):
-            errors.append("IR23 scoped source identity/date: " + sid)
+        ) or not meets_audit_baseline(s["checkedAt"], "2026-09-29"):
+            errors.append("AI27 source identity/date: " + sid)
     if list(contract["indices"]) != list(INDEX_PATHS):
-        errors.append("IR23 index inventory")
+        errors.append("AI27 index inventory")
     else:
         for path, markers in contract["indices"].items():
-            text = read_regular(root, path).decode("utf-8")
+            text = read_regular(root, path).decode()
             if any(marker not in text for marker in markers):
-                errors.append("IR23 index: " + path)
+                errors.append("AI27 index: " + path)
     return errors
 
 
@@ -257,19 +233,17 @@ def main():
             or hashlib.sha256(read_regular(ROOT, CORPUS)).hexdigest()
             != contract["corpusSha256"]
         ):
-            raise ValueError("IR23 frozen inventory/schema/shared versions")
-        errors = validate_model(data, schema, contract) + repository_errors(
-            data, contract
-        )
-        source = {p: read_regular(ROOT, p).decode("utf-8") for p in DOCUMENTS}
+            raise ValueError("AI27 frozen inventory/schema/shared versions")
+        errors = validate_model(data, schema, contract) + repository_errors(contract)
+        source = {p: read_regular(ROOT, p).decode() for p in DOCUMENTS}
         projection = project_documents(source)
         if [d.document_id for d in projection.documents] != list(DOCUMENTS):
-            raise ValueError("IR23 complete document order")
+            raise ValueError("AI27 complete document order")
         for doc in projection.documents:
             errors += document_errors(doc, contract["documents"][doc.document_id], data)
         count = 0
         if not args.no_regressions:
-            from scripts.chapter23_regressions import run_regressions
+            from scripts.chapter27_regressions import run_regressions
 
             count, problems = run_regressions(
                 data, schema, contract, source, projection
@@ -280,7 +254,7 @@ def main():
                 print("ERROR:", error)
             return 1
         print(
-            f"Chapter 23 contract passed: 4 complete documents; ART-29; 5 requirements / 8 collections / 6 statuses / 7 gaps; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; offline record-only / executionAuthorized=false"
+            f"Chapter27 contract passed: 4 complete documents; ART-31; 6 components / 6 requests; {count} regressions; Policy {POLICY_VERSION}; Projection {PROJECTION_VERSION}; no model/tool execution"
         )
         return 0
     except (
@@ -292,7 +266,7 @@ def main():
         ManifestError,
         ProjectionRuntimeError,
     ) as exc:
-        print("ERROR: Chapter23 fail closed:", exc)
+        print("ERROR: Chapter27 fail closed:", exc)
         return 1
 
 

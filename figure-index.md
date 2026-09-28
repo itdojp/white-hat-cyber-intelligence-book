@@ -198,3 +198,9 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 - T-26-01: Tactical / Operational / Strategicの判断用途。
 - T-26-02: Fact / Judgment / Recommendation / Implicationの分離。
 - T-26-03: 二Productと配布・再評価のRubric。
+
+## 第27章
+
+| ID | 図表 | 正本 | 状態 |
+|---|---|---|---|
+| F-27-01 | AI支援のInstruction・Data・効果の境界 | `manuscript/27-ai-agent-security.md` | Implemented |

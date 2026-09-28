@@ -711,6 +711,34 @@
       "section": "additional",
       "order": 330,
       "title": "第IV部 横断読解：要求から配布と判断へ"
+    },
+    {
+      "source": "manuscript/27-ai-agent-security.md",
+      "destination": "chapters/chapter-27/index.md",
+      "section": "chapters",
+      "order": 212,
+      "title": "第27章 AI・LLM・Agent Security"
+    },
+    {
+      "source": "templates/ai-agent-threat-model.md",
+      "destination": "templates/ai-agent-threat-model/index.md",
+      "section": "additional",
+      "order": 331,
+      "title": "ART-31 AI / Agent Threat Model"
+    },
+    {
+      "source": "cases/ch27-ai-agent-threat-model-example.md",
+      "destination": "cases/chapter-27-ai-agent-threat-model/index.md",
+      "section": "additional",
+      "order": 332,
+      "title": "第27章 AI / Agent Threat Model完全合成例"
+    },
+    {
+      "source": "references/ch27-source-review-2026-09-29.md",
+      "destination": "references/chapter-27-source-review/index.md",
+      "section": "additional",
+      "order": 333,
+      "title": "第27章 Source Review — 2026-09-29"
     }
   ],
   "directoryRoutes": {
@@ -896,6 +924,14 @@
     {
       "source": "schemas/ch26-taxii-exchange.schema.json",
       "destination": "downloads/ch26-taxii-exchange.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch27-ai-agent-threat-model.json",
+      "destination": "downloads/ch27-ai-agent-threat-model.json"
+    },
+    {
+      "source": "schemas/ch27-ai-agent-threat-model.schema.json",
+      "destination": "downloads/ch27-ai-agent-threat-model.schema.json"
     }
   ]
 }
