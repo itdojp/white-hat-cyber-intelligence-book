@@ -15,8 +15,7 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
-| `canonical-pr-open` | 1 |
-| `consumed` | 19 |
+| `consumed` | 20 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 6 |
 
@@ -69,7 +68,7 @@
 | `chapter-22` | #45 | `consumed` | `EIC-0045-78813e20d84e` | #166 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5843964406) |
 | `chapter-23` | #46 | `consumed` | `EIC-0046-29d20db7f44a` | #173 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/46#issuecomment-5853206831) |
 | `chapter-24` | #47 | `consumed` | `EIC-0047-b1b83a6735ac` | #176 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/47#issuecomment-5859589801) |
-| `chapter-26` | #48 | `canonical-pr-open` | `EIC-0048-38a432a5daf5` | #179 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/179) |
+| `chapter-26` | #48 | `consumed` | `EIC-0048-38a432a5daf5` | #179 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5871968211) |
 | `chapter-27` | #49 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541) |
 | `chapter-28` | #50 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541) |
 | `chapter-29` | #51 | `blueprint-only` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
@@ -201,7 +200,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0048-38a432a5daf5` | `EIP-0004` | `chapter26-cti-distribution.predraft.md` | `38a432a5daf5477a3b986f8c19307d89a9565edf2f0d3a25ea9815126bb5bf32` | `selected` | 前提23/24/25の実main公開と現行契約/一次資料を確認しIssue48でbranch前選択。raw登録3basename69338directories不在、未読/実体hash未照合/直接採用なし。Productは親25refines、独立STIX構造例はEvidence非採用。別管理Chapter24consumedを混在させない。 |
+| `EIC-0048-38a432a5daf5` | `EIP-0004` | `chapter26-cti-distribution.predraft.md` | `38a432a5daf5477a3b986f8c19307d89a9565edf2f0d3a25ea9815126bb5bf32` | `rewritten` | PR179の利用者通常mergeと実main CI/Pages・全公開面/図/レビュー根拠を確認しIssue48を完了。raw未読・実体hash未照合・直接採用なしを保持し、現行契約と一次資料から新規制作した正本の公開完了だけを記録する。 |
 
 ### `chapter-27` / Issue #49
 
