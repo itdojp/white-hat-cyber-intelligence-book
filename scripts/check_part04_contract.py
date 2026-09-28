@@ -376,6 +376,28 @@ def boundaries(data):
             25,
             ("sourceNotes", i, "independenceGroupId"),
         )
+    # KJ001 carries all three parent alternatives. KJ002/003 are supplied
+    # child-local alternatives, not additional Chapter 25 hypotheses.
+    for i in range(3):
+        fixed(
+            25,
+            ("alternativeHypotheses", i),
+            id=f"ALT-2026-025-{i + 1:03}",
+        )
+        link(
+            26,
+            ("judgments", 0, "alternativeIds", i),
+            25,
+            ("alternativeHypotheses", i, "id"),
+        )
+    for i, alternatives in enumerate(
+        (
+            [f"ALT-2026-025-{j:03}" for j in (1, 2, 3)],
+            ["ALT-CTI26-SUCCESS", "ALT-CTI26-NO-SUCCESS"],
+            ["ALT-CTI26-NEW-ORIGIN"],
+        )
+    ):
+        fixed(26, ("judgments", i), alternativeIds=alternatives)
     for i, parent, confidence, evidence, gaps, origins in (
         (0, "AJ-2026-025", "中", (1, 2, 3, 4), (3, 4), 4),
         (1, "AJ-2026-025", "低", (8,), (1,), 1),
@@ -522,6 +544,7 @@ def boundary_errors(data):
             (24, "evaluations", 11),
             (24, "handoffs", 2),
             (25, "evidence", 8),
+            (25, "alternativeHypotheses", 3),
             (26, "evidence", 8),
             (26, "products", 2),
             (26, "judgments", 3),
@@ -671,9 +694,9 @@ def regressions(data, document, contract, corpus):
     )
     check(
         "corpus-count",
-        len(corpus["records"]) == 30 and len(corpus["publication"]) == 12,
+        len(corpus["records"]) == 42 and len(corpus["publication"]) == 12,
     )
-    check("boundary-count", len(labels) == 433)
+    check("boundary-count", len(labels) == 442)
     scratch = ROOT / ".tmp"
     scratch.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="part04-input-", dir=scratch) as directory:

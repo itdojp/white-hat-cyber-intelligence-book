@@ -521,6 +521,243 @@
         }
       ],
       "expectedCode": "P4-exchange-object-binding"
+    },
+    {
+      "id": "P4-ALTERNATIVE-COORDINATED-1",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            0,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        },
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            0
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-25/alternativeHypotheses/0/id"
+    },
+    {
+      "id": "P4-ALTERNATIVE-PARENT-1",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            0,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/0"
+    },
+    {
+      "id": "P4-ALTERNATIVE-CONSUMER-1",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            0
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/0"
+    },
+    {
+      "id": "P4-ALTERNATIVE-EMPTY-1",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds"
+          ],
+          "value": []
+        }
+      ],
+      "expectedCode": "P4-26/judgments/0/alternativeIds"
+    },
+    {
+      "id": "P4-ALTERNATIVE-COORDINATED-2",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            1,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        },
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            1
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-25/alternativeHypotheses/1/id"
+    },
+    {
+      "id": "P4-ALTERNATIVE-PARENT-2",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            1,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/1"
+    },
+    {
+      "id": "P4-ALTERNATIVE-CONSUMER-2",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            1
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/1"
+    },
+    {
+      "id": "P4-ALTERNATIVE-EMPTY-2",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            1,
+            "alternativeIds"
+          ],
+          "value": []
+        }
+      ],
+      "expectedCode": "P4-26/judgments/1/alternativeIds"
+    },
+    {
+      "id": "P4-ALTERNATIVE-COORDINATED-3",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            2,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        },
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            2
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-25/alternativeHypotheses/2/id"
+    },
+    {
+      "id": "P4-ALTERNATIVE-PARENT-3",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            2,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/2"
+    },
+    {
+      "id": "P4-ALTERNATIVE-CONSUMER-3",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            2
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/2"
+    },
+    {
+      "id": "P4-ALTERNATIVE-EMPTY-3",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            2,
+            "alternativeIds"
+          ],
+          "value": []
+        }
+      ],
+      "expectedCode": "P4-26/judgments/2/alternativeIds"
     }
   ],
   "publication": [
