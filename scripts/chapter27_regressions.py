@@ -215,6 +215,32 @@ def run_regressions(data, schema, contract, source, projection):
             "semantic-with-refreshed-snapshot:" + group + ":" + key,
             any(diagnostic in error for error in validate_model(changed, schema, spec)),
         )
+    # PR183 P2 threads: response binding and complete reassessment reachability.
+    # Refresh only the authored leaf snapshot to prove semantics, not frozen bytes.
+    review_changes = [
+        ("tools", i, "responseId", "ABSENT", "tool/response binding")
+        for i in range(len(data["tools"]))
+    ] + [("mockResponses", 0, "version", "2.0", "tool/response binding")]
+    review_changes += [
+        (group, i, "reassessmentId", "REA-BOGUS", "threat/control/gap reassessment")
+        for group in ("threats", "controls", "gaps")
+        for i in range(len(data[group]))
+    ]
+    for group, row, key, value, diagnostic in review_changes:
+        changed = deepcopy(data)
+        changed[group][row][key] = value
+        spec = deepcopy(contract)
+        spec["authoredLeaves"] = [[list(p), v] for p, v in leaves(changed)]
+        check(
+            "review-binding:" + group + ":" + str(row) + ":" + key,
+            any(diagnostic in error for error in validate_model(changed, schema, spec)),
+        )
+    changed = deepcopy(data)
+    changed["mockResponses"].append(deepcopy(changed["mockResponses"][0]))
+    check(
+        "review-binding:duplicate-response-id",
+        rejected(lambda: request_disposition(changed, changed["requests"][0])),
+    )
     for path in DOCUMENTS:
         variants = {
             "preamble": "未レビューの前文。\n\n" + source[path],

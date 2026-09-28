@@ -225,6 +225,7 @@ def request_disposition(data, request):
     tools, components = index(data["tools"]), index(data["components"])
     instructions, memories = index(data["instructions"]), index(data["memory"])
     approvals, sources = index(data["approvals"]), index(data["sources"])
+    responses = index(data["mockResponses"])
     check(
         r["userId"] == "AI27-USER" and r["caseId"] == "CASE-AI-2026-027",
         "request-scope",
@@ -245,6 +246,19 @@ def request_disposition(data, request):
             "tool-effect",
         )
         check(set(t["scope"]) == {r["caseId"], *r["sourceIds"]}, "tool-scope")
+    if t:
+        response = responses.get(t["responseId"])
+        check(response is not None, "response-present")
+        if response:
+            check(
+                response["version"] == t["version"] == r["toolVersion"],
+                "response-version",
+            )
+            check(
+                response["sha256"]
+                == hashlib.sha256(response["body"].encode()).hexdigest(),
+                "response-integrity",
+            )
     instruction = instructions.get(r["instructionId"])
     check(
         instruction is not None
@@ -412,6 +426,19 @@ def validate_model(data, schema, contract):
                 != hashlib.sha256(c["provenance"]["label"].encode()).hexdigest()
             ):
                 errors.append("AI27 synthetic label digest")
+        responses = index(data["mockResponses"])
+        for tool in data["tools"]:
+            response = responses.get(tool["responseId"])
+            require(
+                response is not None and response["version"] == tool["version"],
+                "tool/response binding",
+            )
+        for group in ("threats", "controls", "gaps"):
+            for record in data[group]:
+                require(
+                    record["reassessmentId"] == data["reassessment"]["id"],
+                    "threat/control/gap reassessment",
+                )
         for response in data["mockResponses"]:
             if (
                 response["sha256"]

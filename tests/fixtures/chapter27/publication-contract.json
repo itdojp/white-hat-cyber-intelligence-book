@@ -7770,7 +7770,7 @@
     ]
   ],
   "schemaSha256": "7e9c4def9f8983ec85c7fa8291afcf2e76a87e23475fe25fa486d8d952f759b9",
-  "corpusSha256": "a47a1bbeb47921b43a008bb08146b4c79530444574ff7de0d3915c11fc9e02cb",
+  "corpusSha256": "0f8731307b91dfe9f63daf1f0211da89d51a5c2c49245bd76aa762f31f8fddb8",
   "documents": {
     "manuscript/27-ai-agent-security.md": {
       "projectionSha256": "1e7c41d9a89f0d49ed05607ec680aa99b2aa98a0bcc918a1e67aff34b350d795",

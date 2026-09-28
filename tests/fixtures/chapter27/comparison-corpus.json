@@ -1078,6 +1078,57 @@
       ],
       "expected": "Disabled",
       "reason": null
+    },
+    {
+      "id": "AI27-RESPONSE-MISSING",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "tools",
+            0,
+            "responseId"
+          ],
+          "value": "ABSENT"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "response-present"
+    },
+    {
+      "id": "AI27-RESPONSE-VERSION",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "mockResponses",
+            0,
+            "version"
+          ],
+          "value": "2.0"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "response-version"
+    },
+    {
+      "id": "AI27-RESPONSE-INTEGRITY",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "mockResponses",
+            0,
+            "body"
+          ],
+          "value": "different fixed response"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "response-integrity"
     }
   ]
 }
