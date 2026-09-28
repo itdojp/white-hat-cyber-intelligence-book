@@ -310,6 +310,7 @@ def request_disposition(data, request):
             and a["effect"] == r["requestedEffect"],
             "approval-action-binding",
         )
+        check(instant(a["validFrom"]) < instant(a["validUntil"]), "approval-interval")
         check(
             instant(a["validFrom"]) <= instant(r["asOf"]) < instant(a["validUntil"]),
             "approval-window",
@@ -416,6 +417,20 @@ def validate_model(data, schema, contract):
             "gaps",
         ):
             index(data[group])
+        validations = index([c["validation"] for c in data["components"]])
+        components = index(data["components"])
+        sources = index(data["sources"])
+        output_sources = data["modelOutput"]["sourceIds"]
+        require(
+            len(output_sources) == len(set(output_sources))
+            and all(sid in sources for sid in output_sources),
+            "model output source binding",
+        )
+        for approval in data["approvals"]:
+            require(
+                instant(approval["validFrom"]) < instant(approval["validUntil"]),
+                "approval interval ordering",
+            )
         if tuple(c["status"] for c in data["components"]) != STATES:
             errors.append("AI27 six-state inventory")
         for c in data["components"]:
@@ -502,6 +517,18 @@ def validate_model(data, schema, contract):
                 == (["AI27-VAL-3"] if r["id"] == "AI27-REQUEST-1" else []),
                 "finding validation limit",
             )
+            for validation_id in f["validationIds"]:
+                validation = validations.get(validation_id)
+                component = components.get(r["toolId"])
+                require(
+                    validation is not None
+                    and component is not None
+                    and validation is component["validation"]
+                    and component_state(component, r["asOf"]) == "Validated"
+                    and validation["target"] == r["toolId"]
+                    and validation["version"] == r["toolVersion"],
+                    "finding validation binding",
+                )
             if (
                 a["requestId"],
                 a["targetId"],

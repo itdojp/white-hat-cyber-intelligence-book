@@ -2827,7 +2827,7 @@
         "1",
         "validFrom"
       ],
-      "2026-09-20T09:00:00Z"
+      "2026-09-19T09:00:00Z"
     ],
     [
       [
@@ -7770,7 +7770,7 @@
     ]
   ],
   "schemaSha256": "7e9c4def9f8983ec85c7fa8291afcf2e76a87e23475fe25fa486d8d952f759b9",
-  "corpusSha256": "0f8731307b91dfe9f63daf1f0211da89d51a5c2c49245bd76aa762f31f8fddb8",
+  "corpusSha256": "19c0d98bd60d6326bef92cc93f7f25536a69c1ffa2498bd3e293cdb9311a7e4f",
   "documents": {
     "manuscript/27-ai-agent-security.md": {
       "projectionSha256": "1e7c41d9a89f0d49ed05607ec680aa99b2aa98a0bcc918a1e67aff34b350d795",
@@ -7948,7 +7948,7 @@
       "hostProvenance": []
     },
     "cases/ch27-ai-agent-threat-model-example.md": {
-      "projectionSha256": "6a211e145d9b674dc7da2b9e08d8e9494a1806734801aeb3509803fd5e6de567",
+      "projectionSha256": "e4fe62ccf88437f49775f543f5509e8d607cb986be1abccb9ed6cceca966ba13",
       "headings": [
         [
           1,

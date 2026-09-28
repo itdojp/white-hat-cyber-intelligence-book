@@ -1129,6 +1129,73 @@
       ],
       "expected": "Blocked",
       "reason": "response-integrity"
+    },
+    {
+      "id": "AI27-APPROVAL-ORDER-EQUAL",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "validFrom"
+          ],
+          "value": "2026-09-20T11:00:00Z"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-interval"
+    },
+    {
+      "id": "AI27-APPROVAL-ORDER-REVERSED",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "validFrom"
+          ],
+          "value": "2026-09-21T09:00:00Z"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-interval"
+    },
+    {
+      "id": "AI27-APPROVAL-EXPIRED-ORDERED",
+      "kind": "request",
+      "row": 1,
+      "changes": [],
+      "expected": "Blocked",
+      "reason": "approval-window"
+    },
+    {
+      "id": "AI27-APPROVAL-ISOLATED-EXPIRY",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "validFrom"
+          ],
+          "value": "2026-09-19T09:00:00Z"
+        },
+        {
+          "path": [
+            "approvals",
+            0,
+            "validUntil"
+          ],
+          "value": "2026-09-19T11:00:00Z"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-window"
     }
   ]
 }

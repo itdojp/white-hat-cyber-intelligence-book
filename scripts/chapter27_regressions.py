@@ -8,6 +8,7 @@ from scripts.chapter27_model import (
     DOCUMENTS,
     STATES,
     component_state,
+    instant,
     request_disposition,
     leaves,
     strict,
@@ -240,6 +241,99 @@ def run_regressions(data, schema, contract, source, projection):
     check(
         "review-binding:duplicate-response-id",
         rejected(lambda: request_disposition(changed, changed["requests"][0])),
+    )
+    # Ready-review bindings: independently refreshed snapshots cannot hide dangling IDs.
+    checks = []
+    for i, approval in enumerate(data["approvals"]):
+        for label, value in (
+            ("empty", approval["validUntil"]),
+            ("reversed", "2026-09-21T09:00:00Z"),
+        ):
+            checks.append(
+                (
+                    f"approval-{i}-{label}",
+                    ["approvals", i, "validFrom"],
+                    value,
+                    "approval interval ordering",
+                )
+            )
+    checks += [
+        (
+            "validation-renamed",
+            ["components", 2, "validation", "id"],
+            "ABSENT",
+            "finding validation binding",
+        ),
+        (
+            "validation-duplicate",
+            ["components", 1, "validation", "id"],
+            "AI27-VAL-3",
+            "unique IDs",
+        ),
+        (
+            "validation-wrong-component",
+            ["findings", 0, "validationIds"],
+            ["AI27-VAL-2"],
+            "finding validation limit",
+        ),
+    ]
+    for i in range(len(data["modelOutput"]["sourceIds"])):
+        checks.append(
+            (
+                f"output-source-{i}",
+                ["modelOutput", "sourceIds", i],
+                "ABSENT",
+                "model output source binding",
+            )
+        )
+    checks.append(
+        (
+            "output-source-duplicate",
+            ["modelOutput", "sourceIds"],
+            ["AI27-SOURCE-1", "AI27-SOURCE-1"],
+            "uniqueItems violation",
+        )
+    )
+    for label, path, value, diagnostic in checks:
+        changed = deepcopy(data)
+        at(changed, path[:-1])[path[-1]] = value
+        spec = deepcopy(contract)
+        spec["authoredLeaves"] = [[list(p), v] for p, v in leaves(changed)]
+        check(
+            "ready-binding:" + label,
+            any(diagnostic in e for e in validate_model(changed, schema, spec)),
+        )
+    # Coordinated validation-ID movement must not rebind a finding to another component.
+    changed = deepcopy(data)
+    (
+        changed["components"][1]["validation"]["id"],
+        changed["components"][2]["validation"]["id"],
+    ) = (
+        changed["components"][2]["validation"]["id"],
+        changed["components"][1]["validation"]["id"],
+    )
+    spec = deepcopy(contract)
+    spec["authoredLeaves"] = [[list(p), v] for p, v in leaves(changed)]
+    check(
+        "ready-binding:validation-swapped",
+        any(
+            "finding validation binding" in e
+            for e in validate_model(changed, schema, spec)
+        ),
+    )
+    expired = data["approvals"][1]
+
+    check(
+        "ready-binding:ordered-expired-baseline",
+        instant(expired["validFrom"])
+        < instant(expired["validUntil"])
+        < instant(data["requests"][1]["asOf"]),
+    )
+    check(
+        "ready-binding:expiry-not-malformation",
+        "approval-window" in request_disposition(data, data["requests"][1])[1]
+        and "approval-interval"
+        not in request_disposition(data, data["requests"][1])[1],
     )
     for path in DOCUMENTS:
         variants = {
