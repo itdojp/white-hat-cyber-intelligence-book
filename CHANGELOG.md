@@ -139,3 +139,8 @@
 ## 2026-09-29 — 第27章 AI・LLM・Agent Security
 
 ART-31、六Component・六要求の固定合成Case、閉Schema、有限Layer Aを追加。LLM Top10を公式2026版へ用途限定で更新し番号を版付きに変更、AISVS stable1.0と1.01-devを分離。PDFの未確定刊行dayを推測せずnullとし履歴を保持。五Sourceの第28章予定mappingは実使用する次章PRへ移す。共有Policy/Projection、親正文、formatter pin・依存は不変。
+
+## 第28章 初期Draft（Issue #50）
+
+- Source→Input→Claim→Verification→Human Decisionの本文設計、ART-32空Template、四一次資料の用途限定確認を追加。
+- 正式五Claim Status、25/26 Case refinement、24/27方法参照と非継承を明示。全欄Case/閉Schema/有限Layer Aは制作中であり、完成を意味しない。

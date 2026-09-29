@@ -739,6 +739,27 @@
       "section": "additional",
       "order": 333,
       "title": "第27章 Source Review — 2026-09-29"
+    },
+    {
+      "source": "manuscript/28-ai-assisted-analysis-assurance.md",
+      "destination": "chapters/chapter-28/index.md",
+      "section": "chapters",
+      "order": 213,
+      "title": "第28章 AIを使って分析するときの検証と汚染対策"
+    },
+    {
+      "source": "templates/ai-assisted-analysis-assurance-record.md",
+      "destination": "templates/ai-assisted-analysis-assurance-record/index.md",
+      "section": "additional",
+      "order": 334,
+      "title": "ART-32 AI-Assisted Analysis Assurance Record"
+    },
+    {
+      "source": "references/ch28-source-review-2026-09-30.md",
+      "destination": "references/chapter-28-source-review/index.md",
+      "section": "additional",
+      "order": 336,
+      "title": "第28章 Source Review — 2026-09-30"
     }
   ],
   "directoryRoutes": {

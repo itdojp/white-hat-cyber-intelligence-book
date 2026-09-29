@@ -1403,6 +1403,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-30",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/50#issuecomment-5901149340",
+          "reason": "唯一登録候補をbranch前に明示選択。Package/同梱27/他Target/元履歴とraw不在・未読未照合・直接採用なしを保持。"
         }
       ]
     },

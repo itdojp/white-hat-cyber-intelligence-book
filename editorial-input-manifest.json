@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "manifestVersion": "1.0.0",
-  "auditedAt": "2026-09-29",
+  "auditedAt": "2026-09-30",
   "source": {
     "repository": "https://github.com/itdojp/white-hat-cyber-intelligence-book",
     "registrationIssue": 63,
@@ -2780,8 +2780,8 @@
       "targetId": "chapter-28",
       "issue": 50,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
+      "status": "selected-for-intake",
+      "selectedCandidateId": "EIC-0050-313c092a3659",
       "canonicalPr": null,
       "intakeRecord": null,
       "candidates": [
@@ -2790,9 +2790,9 @@
           "packageId": "EIP-0007",
           "inputPath": "chapter28-ai-assisted-analysis-assurance.predraft.md",
           "inputSha256": "313c092a3659c566f85061efeb23a103fa2a7d3fd68845b76de72a7e6f29016a",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/50#issuecomment-5901149340",
+          "dispositionReason": "正式前提47/48/49actualmain/Pages達成後にIssue50でbranch前選択。登録6basename95407dirs不在、raw未読・実体hash未照合・直接採用なし。現行契約と一次資料から新規制作する。"
         }
       ],
       "statusHistory": [
@@ -2801,6 +2801,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-30",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/50#issuecomment-5901149340",
+          "reason": "唯一登録候補をbranch前に明示選択。Package/同梱27/他Target/元履歴とraw不在・未読未照合・直接採用なしを保持。"
         }
       ]
     },
