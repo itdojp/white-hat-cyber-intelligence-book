@@ -1409,6 +1409,12 @@
           "effectiveAt": "2026-09-30",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/50#issuecomment-5901149340",
           "reason": "唯一登録候補をbranch前に明示選択。Package/同梱27/他Target/元履歴とraw不在・未読未照合・直接採用なしを保持。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-30",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/187",
+          "reason": "専用Draft PR187へ初期本文/空ART32/四Source用途限定確認とformalIntakeを結合。全欄Case/Schema/有限Layer A/全Gate未完、consumed/完成/実公開ではない。"
         }
       ]
     },

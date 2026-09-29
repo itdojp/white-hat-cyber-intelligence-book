@@ -15,11 +15,10 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
-| `canonical-pr-open` | 1 |
+| `canonical-pr-open` | 2 |
 | `consumed` | 20 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 4 |
-| `selected-for-intake` | 1 |
 
 ## Acknowledged collisions
 
@@ -72,7 +71,7 @@
 | `chapter-24` | #47 | `consumed` | `EIC-0047-b1b83a6735ac` | #176 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/47#issuecomment-5859589801) |
 | `chapter-26` | #48 | `consumed` | `EIC-0048-38a432a5daf5` | #179 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5871968211) |
 | `chapter-27` | #49 | `canonical-pr-open` | `EIC-0049-32e8846cf56d` | #183 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/183) |
-| `chapter-28` | #50 | `selected-for-intake` | `EIC-0050-313c092a3659` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/50#issuecomment-5901149340) |
+| `chapter-28` | #50 | `canonical-pr-open` | `EIC-0050-313c092a3659` | #187 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/187) |
 | `chapter-29` | #51 | `blueprint-only` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
 | `appendix-a` | #52 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215) |
 | `appendix-d` | #52 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215) |
