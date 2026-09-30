@@ -180,3 +180,5 @@ npm run check:part02
 ## 第28章（初期Draft / Issue #50）
 
 [本文](manuscript/28-ai-assisted-analysis-assurance.md)、[ART-32 Template](templates/ai-assisted-analysis-assurance-record.md)、[用途限定Source確認](references/ch28-source-review-2026-09-30.md)を制作中。全欄Case/JSON/閉Schema/有限Layer A/比較Corpusは未実装、verified Ready/実公開ではありません。
+
+第28章Draftは七Claimの全欄Case・JSON/閉Schema・有限比較を同梱する。`npm run check:chapter28`は記録照合であり、実AI性能/検出耐性/法的承認の検証ではない。独立レビュー・main公開は未達。

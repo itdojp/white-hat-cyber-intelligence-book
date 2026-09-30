@@ -259,3 +259,5 @@ Instruction boundaryは指示と出自付きDataの扱いの境界、Excessive A
 - **Claim Status**: 本書独自のUnverified / Supported / Partially supported / Contradicted / Rejected。Human Decisionや実操作許可と異なる。
 - **Grounding mode**: Direct / Composite / Inferenceで原句・各構成箇所・推論の限界を分ける記録。
 - **AI-Assisted Analysis Assurance Record**: ART-32。SourceからClaim、Verification、Human Decisionと再評価を辿る成果物。
+
+- **Approved Source Set**: 指定cutoff・版・原典・Evidence ID・限界を持つ承認済み合成Source在庫。Model出力や未受領Productを自動追加しない。

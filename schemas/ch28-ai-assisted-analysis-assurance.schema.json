@@ -1,0 +1,1791 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Chapter28 finite offline Assurance Record",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "readOnly",
+    "networkRequired",
+    "executionAuthorized",
+    "realPIIUsed",
+    "realSecretUsed",
+    "record",
+    "task",
+    "sourceSet",
+    "approvedSources",
+    "passages",
+    "model",
+    "instruction",
+    "input",
+    "output",
+    "claims",
+    "verifications",
+    "humanDecisions",
+    "audit",
+    "contaminationSamples",
+    "reproduction",
+    "methodReferences",
+    "reassessment",
+    "handoff",
+    "limitations"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[\\s\\S]{1,4096}$",
+      "const": "1.0.0"
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true
+    },
+    "readOnly": {
+      "type": "boolean",
+      "const": true
+    },
+    "networkRequired": {
+      "type": "boolean",
+      "const": false
+    },
+    "executionAuthorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "realPIIUsed": {
+      "type": "boolean",
+      "const": false
+    },
+    "realSecretUsed": {
+      "type": "boolean",
+      "const": false
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "id",
+        "caseId",
+        "parentCaseId",
+        "relation",
+        "artifactId",
+        "parentArtifactId",
+        "parentDistributionId",
+        "asOf",
+        "cutoff",
+        "reviewDeadline",
+        "attributionCeiling",
+        "setting"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "parentCaseId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$",
+          "const": "refines"
+        },
+        "artifactId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "parentArtifactId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "parentDistributionId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "asOf": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "cutoff": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "reviewDeadline": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "attributionCeiling": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$",
+          "const": "L2"
+        },
+        "setting": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "required": [
+        "id",
+        "requirementId",
+        "intelligenceRequirementId",
+        "judgmentId",
+        "decisionId",
+        "ownerId",
+        "purpose",
+        "successCondition"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "requirementId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "intelligenceRequirementId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "judgmentId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "decisionId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "successCondition": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        }
+      }
+    },
+    "sourceSet": {
+      "type": "object",
+      "required": [
+        "id",
+        "version",
+        "sourceIds",
+        "sha256",
+        "classification",
+        "hashMeaning"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "sourceIds": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "classification": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$",
+          "const": "fully-synthetic"
+        },
+        "hashMeaning": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        }
+      }
+    },
+    "approvedSources": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "origin",
+          "version",
+          "independenceGroupId",
+          "reference",
+          "collectedAt",
+          "validUntil",
+          "evidenceIds",
+          "educationalEvidenceHash",
+          "limitation",
+          "newObservation"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "origin": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "independenceGroupId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "reference": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "collectedAt": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "validUntil": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "evidenceIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[\\s\\S]{1,4096}$"
+            }
+          },
+          "educationalEvidenceHash": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "newObservation": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      }
+    },
+    "passages": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "comparedStatement",
+          "sourceIds",
+          "outcome",
+          "parentDocument",
+          "parentPaths",
+          "parentValuesHash",
+          "meaning"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "comparedStatement": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "sourceIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[\\s\\S]{1,4096}$"
+            }
+          },
+          "outcome": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "parentDocument": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "parentPaths": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 4,
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              }
+            }
+          },
+          "parentValuesHash": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": [
+        "id",
+        "version",
+        "runtime",
+        "endpoint",
+        "modelExecuted",
+        "toolCapability",
+        "networkEnabled"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "runtime": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$",
+          "const": "offline-authored-not-model-runtime"
+        },
+        "endpoint": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$",
+          "const": "none"
+        },
+        "modelExecuted": {
+          "type": "boolean",
+          "const": false
+        },
+        "toolCapability": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$",
+          "const": "none"
+        },
+        "networkEnabled": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "instruction": {
+      "type": "object",
+      "required": [
+        "id",
+        "text",
+        "sha256",
+        "layer"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "layer": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": [
+        "id",
+        "text",
+        "sha256",
+        "sourceSetId",
+        "sourceIds",
+        "classification",
+        "redaction",
+        "transformation",
+        "contaminationSampleIds",
+        "contaminationIncludedInApprovedSources"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "sourceSetId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "sourceIds": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        },
+        "classification": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$",
+          "const": "fully-synthetic"
+        },
+        "redaction": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "transformation": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "contaminationSampleIds": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        },
+        "contaminationIncludedInApprovedSources": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": [
+        "id",
+        "version",
+        "at",
+        "authoredOffline",
+        "modelExecuted",
+        "text",
+        "sha256",
+        "claimIds"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "at": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "authoredOffline": {
+          "type": "boolean",
+          "const": true
+        },
+        "modelExecuted": {
+          "type": "boolean",
+          "const": false
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "claimIds": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "textHash",
+          "claimType",
+          "grounding",
+          "citations",
+          "parts",
+          "contaminated",
+          "proposedAttribution",
+          "modelSelfConfidence",
+          "verificationId",
+          "decisionId",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "textHash": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "claimType": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$",
+            "enum": [
+              "confirmed-fact",
+              "assumption",
+              "judgment",
+              "forecast",
+              "recommendation"
+            ]
+          },
+          "grounding": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$",
+            "enum": [
+              "Direct",
+              "Composite",
+              "Inference"
+            ]
+          },
+          "citations": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[\\s\\S]{1,4096}$"
+            }
+          },
+          "parts": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "object",
+              "required": [
+                "statement",
+                "sourceText",
+                "passageId",
+                "sourceIds",
+                "outcome"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "statement": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[\\s\\S]{1,4096}$"
+                },
+                "sourceText": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[\\s\\S]{1,4096}$"
+                },
+                "passageId": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "sourceIds": {
+                  "type": "array",
+                  "minItems": 0,
+                  "maxItems": 4,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[\\s\\S]{1,4096}$"
+                  }
+                },
+                "outcome": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[\\s\\S]{1,4096}$"
+                }
+              }
+            }
+          },
+          "contaminated": {
+            "type": "boolean",
+            "const": false
+          },
+          "proposedAttribution": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "modelSelfConfidence": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "verificationId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "decisionId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$",
+            "enum": [
+              "Unverified",
+              "Supported",
+              "Partially supported",
+              "Contradicted",
+              "Rejected"
+            ]
+          }
+        }
+      }
+    },
+    "verifications": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "target",
+          "complete",
+          "at",
+          "originGroups",
+          "independentOriginCount",
+          "crossCheck",
+          "independentObservationAdded",
+          "reasons"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "target": {
+            "type": "object",
+            "required": [
+              "claimId",
+              "claimHash",
+              "sourceSetId",
+              "sourceSetVersion",
+              "sourceSetHash",
+              "modelId",
+              "modelVersion",
+              "runtime",
+              "instructionId",
+              "instructionHash",
+              "inputId",
+              "inputHash",
+              "outputId",
+              "outputVersion",
+              "outputHash"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "claimId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "claimHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "modelId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "modelVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "runtime": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$",
+                "const": "offline-authored-not-model-runtime"
+              },
+              "instructionId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "instructionHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "inputId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "inputHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              }
+            }
+          },
+          "complete": {
+            "type": "boolean"
+          },
+          "at": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "originGroups": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[\\s\\S]{1,4096}$"
+            }
+          },
+          "independentOriginCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "crossCheck": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "independentObservationAdded": {
+            "type": "boolean",
+            "const": false
+          },
+          "reasons": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[\\s\\S]{1,4096}$"
+            }
+          }
+        }
+      }
+    },
+    "humanDecisions": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "target",
+          "verificationId",
+          "reviewerId",
+          "reviewedAt",
+          "validUntil",
+          "disposition",
+          "acceptedWording",
+          "rationale",
+          "analyticConfidence",
+          "confidenceSource",
+          "modelConfidenceCopied",
+          "attributionCeiling",
+          "judgmentId",
+          "alternativeIds",
+          "gapIds",
+          "auditId",
+          "reassessmentId"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "target": {
+            "type": "object",
+            "required": [
+              "claimId",
+              "claimHash",
+              "sourceSetId",
+              "sourceSetVersion",
+              "sourceSetHash",
+              "modelId",
+              "modelVersion",
+              "runtime",
+              "instructionId",
+              "instructionHash",
+              "inputId",
+              "inputHash",
+              "outputId",
+              "outputVersion",
+              "outputHash"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "claimId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "claimHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "modelId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "modelVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "runtime": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$",
+                "const": "offline-authored-not-model-runtime"
+              },
+              "instructionId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "instructionHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "inputId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "inputHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              }
+            }
+          },
+          "verificationId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "reviewerId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "reviewedAt": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "validUntil": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "disposition": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$",
+            "enum": [
+              "Accept",
+              "Revise",
+              "Reject",
+              "Escalate"
+            ]
+          },
+          "acceptedWording": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "analyticConfidence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$",
+            "enum": [
+              "高",
+              "中",
+              "低",
+              "未判定"
+            ]
+          },
+          "confidenceSource": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$",
+            "const": "human-evidence-alternatives-gaps"
+          },
+          "modelConfidenceCopied": {
+            "type": "boolean",
+            "const": false
+          },
+          "attributionCeiling": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$",
+            "const": "L2"
+          },
+          "judgmentId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "alternativeIds": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[\\s\\S]{1,4096}$"
+            }
+          },
+          "gapIds": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[\\s\\S]{1,4096}$"
+            }
+          },
+          "auditId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "reassessmentId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        }
+      }
+    },
+    "audit": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "target",
+          "decisionId",
+          "at",
+          "disposition",
+          "ownerId",
+          "retainUntil"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "target": {
+            "type": "object",
+            "required": [
+              "claimId",
+              "claimHash",
+              "sourceSetId",
+              "sourceSetVersion",
+              "sourceSetHash",
+              "modelId",
+              "modelVersion",
+              "runtime",
+              "instructionId",
+              "instructionHash",
+              "inputId",
+              "inputHash",
+              "outputId",
+              "outputVersion",
+              "outputHash"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "claimId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "claimHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "modelId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "modelVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "runtime": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$",
+                "const": "offline-authored-not-model-runtime"
+              },
+              "instructionId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "instructionHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "inputId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "inputHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              }
+            }
+          },
+          "decisionId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "at": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "disposition": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$",
+            "enum": [
+              "Accept",
+              "Revise",
+              "Reject",
+              "Escalate"
+            ]
+          },
+          "ownerId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "retainUntil": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        }
+      }
+    },
+    "contaminationSamples": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "text",
+          "sha256",
+          "conclusion",
+          "method",
+          "adopted",
+          "authorityGranted",
+          "executed"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "sha256": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "conclusion": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$",
+            "const": "untrusted-authority-self-claim"
+          },
+          "method": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$",
+            "const": "author-labelled-fixed-sample-not-detector"
+          },
+          "adopted": {
+            "type": "boolean",
+            "const": false
+          },
+          "authorityGranted": {
+            "type": "boolean",
+            "const": false
+          },
+          "executed": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      }
+    },
+    "reproduction": {
+      "type": "object",
+      "required": [
+        "id",
+        "method",
+        "modelExecuted",
+        "generalizationProven",
+        "targets",
+        "limitation"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$",
+          "const": "offline-record-equality"
+        },
+        "modelExecuted": {
+          "type": "boolean",
+          "const": false
+        },
+        "generalizationProven": {
+          "type": "boolean",
+          "const": false
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "type": "object",
+            "required": [
+              "claimId",
+              "claimHash",
+              "sourceSetId",
+              "sourceSetVersion",
+              "sourceSetHash",
+              "modelId",
+              "modelVersion",
+              "runtime",
+              "instructionId",
+              "instructionHash",
+              "inputId",
+              "inputHash",
+              "outputId",
+              "outputVersion",
+              "outputHash"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "claimId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "claimHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "sourceSetHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "modelId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "modelVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "runtime": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$",
+                "const": "offline-authored-not-model-runtime"
+              },
+              "instructionId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "instructionHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "inputId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "inputHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputVersion": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              },
+              "outputHash": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\s\\S]{1,4096}$"
+              }
+            }
+          }
+        },
+        "limitation": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        }
+      }
+    },
+    "methodReferences": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "caseId",
+          "relation",
+          "evidenceInherited"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "caseId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "relation": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          },
+          "evidenceInherited": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      }
+    },
+    "reassessment": {
+      "type": "object",
+      "required": [
+        "id",
+        "ownerId",
+        "dueAt",
+        "triggers",
+        "claimIds",
+        "decisionIds",
+        "auditIds",
+        "effect"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "dueAt": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "triggers": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        },
+        "claimIds": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        },
+        "decisionIds": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        },
+        "auditIds": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        },
+        "effect": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "required": [
+        "id",
+        "targetChapter",
+        "receipt",
+        "acceptedDecisionIds",
+        "unadoptedDecisionIds",
+        "executionAuthorized",
+        "unreceivedCTIProductAdopted"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "targetChapter": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "receipt": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$",
+          "const": "not-received"
+        },
+        "acceptedDecisionIds": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        },
+        "unadoptedDecisionIds": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\s\\S]{1,4096}$"
+          }
+        },
+        "executionAuthorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "unreceivedCTIProductAdopted": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "limitations": {
+      "type": "object",
+      "required": [
+        "id",
+        "modelPerformanceMeasured",
+        "standardConformanceCertified",
+        "injectionCoverageProven",
+        "realAuthorityGranted",
+        "coverageGapId",
+        "negativeFindingId",
+        "note"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "modelPerformanceMeasured": {
+          "type": "boolean",
+          "const": false
+        },
+        "standardConformanceCertified": {
+          "type": "boolean",
+          "const": false
+        },
+        "injectionCoverageProven": {
+          "type": "boolean",
+          "const": false
+        },
+        "realAuthorityGranted": {
+          "type": "boolean",
+          "const": false
+        },
+        "coverageGapId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "negativeFindingId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\s\\S]{1,4096}$"
+        }
+      }
+    }
+  },
+  "$id": "https://itdojp.github.io/white-hat-cyber-intelligence-book/downloads/ch28-ai-assisted-analysis-assurance.schema.json"
+}

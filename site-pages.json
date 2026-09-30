@@ -760,6 +760,13 @@
       "section": "additional",
       "order": 336,
       "title": "第28章 Source Review — 2026-09-30"
+    },
+    {
+      "source": "cases/ch28-ai-assisted-analysis-assurance-example.md",
+      "destination": "cases/chapter-28-ai-assisted-analysis-assurance/index.md",
+      "section": "additional",
+      "order": 335,
+      "title": "第28章 合成AI支援分析の保証記録"
     }
   ],
   "directoryRoutes": {
@@ -953,6 +960,14 @@
     {
       "source": "schemas/ch27-ai-agent-threat-model.schema.json",
       "destination": "downloads/ch27-ai-agent-threat-model.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch28-ai-assisted-analysis-assurance.json",
+      "destination": "downloads/ch28-ai-assisted-analysis-assurance.json"
+    },
+    {
+      "source": "schemas/ch28-ai-assisted-analysis-assurance.schema.json",
+      "destination": "downloads/ch28-ai-assisted-analysis-assurance.schema.json"
     }
   ]
 }

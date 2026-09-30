@@ -5,9 +5,9 @@ description: Source、入力、出力Claim、検証、人間の採否を分け�
 
 # 第28章　AIを使って分析するときの検証と汚染対策
 
-## 制作中の範囲
+## 公開前Draftの扱い
 
-Issue #50の初期Draftです。本文・空Template・用途限定Source確認を先に記録しています。全欄Case、供給JSON/閉Schema、有限Layer A、比較Corpusと公開前安全検査の接続は未実装です。以下の供給演習は完成時の設計であり、まだ配布していません。章DoD/verified Ready/実公開を主張しません。
+本文・ART-32 Template・全欄Case・完全合成JSON・閉Schema・有限Layer Aを同じDraftで制作する。教材はオフラインの記録照合に限定する。独立レビューと通常merge、実main/Pages gateを経るまで章DoD/verified Ready/実公開を主張しない。
 
 ## この章の位置付け
 
@@ -118,7 +118,7 @@ ASI01の目標変更、ASI06のMemory/Context汚染、ASI09の人間の過信を
 
 記録したSource Set、Input、Instruction、Model descriptor、Outputのhashや版が変われば、以前のVerificationを使い回さない。Comparison resultは対象Claimと版に結び、単にPassedという欄を置かない。
 
-完成時の比較は固定文字列と記入値のオフライン照合に限定する。同じPromptから実APIが同じ出力を返す、未知入力にも同じ精度がある、という証明ではない。狭い試験からの汎化を避けるというMS-2.5-001の観点を適用する。`SRC-AIRMF-001`
+供給例の比較は固定文字列と記入値のオフライン照合に限定する。同じPromptから実APIが同じ出力を返す、未知入力にも同じ精度がある、という証明ではない。狭い試験からの汎化を避けるというMS-2.5-001の観点を適用する。`SRC-AIRMF-001`
 
 ## 8. Human review、監査、再評価
 
@@ -131,6 +131,8 @@ Review時点、対象版、理由、判断ID、Owner、期限を残す。Source�
 Purposeは、固定Outputの各Claimを原典へ戻し、採否と不足を説明すること。Prerequisiteは親Case25/26と本章の有限契約を読むこと。Authority/Scopeは、供給する完全合成ファイルの読み取りと紙上記入だけであり、実操作の許可ではない。
 
 Expected evidenceはClaim→Source→Verification→HumanDecision→再評価の対応表である。Impactは教材記録の編集だけとし、Model/API、外部Network、Shell/Tool実行、実Credential、実PIIを使わない。実Data混入、由来喪失、版・時点の不一致、承認不明がStop条件。Cleanupは実Dataを持ち込んでいないことと、実行機能を増やしていないことの再確認である。
+
+[全欄Case](../cases/ch28-ai-assisted-analysis-assurance-example.md)と[ART-32 Template](../templates/ai-assisted-analysis-assurance-record.md)から、[固定JSON](../cases/fixtures/ch28-ai-assisted-analysis-assurance.json)と[閉Schema](../schemas/ch28-ai-assisted-analysis-assurance.schema.json)を読む。AI28-CLAIM-1〜7は順にSupported / Partially supported / Contradicted / Rejected / Unverified / Rejected / Rejectedで、採否はAccept / Revise / Reject / Reject / Escalate / Reject / Rejectである。CLAIM2の採用句はmailの存在だけであり、成功または不存在の確定ではない。
 
 読者は支持できる句とできない句を分け、同原典の三再掲、EVD008の限界、未受領Product、別CaseのEvidenceを確認する。実データを追加してGapを埋める演習ではない。
 
