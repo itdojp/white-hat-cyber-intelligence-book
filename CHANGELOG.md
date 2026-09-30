@@ -143,6 +143,6 @@ ART-31、六Component・六要求の固定合成Case、閉Schema、有限Layer A
 ## 第28章 初期Draft（Issue #50）
 
 - Source→Input→Claim→Verification→Human Decisionの本文設計、ART-32空Template、四一次資料の用途限定確認を追加。
-- 正式五Claim Status、25/26 Case refinement、24/27方法参照と非継承を明示。全欄Case/閉Schema/有限Layer Aは制作中であり、完成を意味しない。
+- 正式五Claim Status、25/26 Case refinement、24/27方法参照と非継承を明示。その後、全欄Case/完全合成JSON/閉Schema/有限Layer A/比較Corpusを追加済み。実装の存在は独立レビュー・章DoD・実公開の完了を意味しない。
 
-第28章Draftへ全欄Case・完全合成JSON/閉Schema・七Claim/五Status・有限Layer Aと16意味族の対比を追加。共有Policy/Projection/formatter pinと親正文は不変。独立レビュー・merge・実公開は未達。
+第28章Draftへ全欄Case・完全合成JSON/閉Schema・七Claim/五Status・有限Layer Aと16意味族の対比を追加。共有Policy/Projection/formatter pinと親正文は不変。独立レビュー・通常merge・実main/Pagesの達成はIssue #50 / PR #187で追跡する。

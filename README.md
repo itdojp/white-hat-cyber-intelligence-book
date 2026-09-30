@@ -177,8 +177,8 @@ npm run check:part02
 
 第27章の[AI / Agent Threat Model](manuscript/27-ai-agent-security.md)は完全合成の非実行教材です。`npm run check:chapter27`が有限の境界・参照・公開面を検証します。
 
-## 第28章（初期Draft / Issue #50）
+## 第28章（Draft / Issue #50）
 
-[本文](manuscript/28-ai-assisted-analysis-assurance.md)、[ART-32 Template](templates/ai-assisted-analysis-assurance-record.md)、[用途限定Source確認](references/ch28-source-review-2026-09-30.md)を制作中。全欄Case/JSON/閉Schema/有限Layer A/比較Corpusは未実装、verified Ready/実公開ではありません。
+[本文](manuscript/28-ai-assisted-analysis-assurance.md)、[ART-32 Template](templates/ai-assisted-analysis-assurance-record.md)、[用途限定Source確認](references/ch28-source-review-2026-09-30.md)を同梱しています。全欄Case/完全合成JSON/閉Schema/有限Layer A/比較Corpusを追加済みです。実装の存在だけでverified Ready・章DoD・実公開の完了を意味しません。
 
-第28章Draftは七Claimの全欄Case・JSON/閉Schema・有限比較を同梱する。`npm run check:chapter28`は記録照合であり、実AI性能/検出耐性/法的承認の検証ではない。独立レビュー・main公開は未達。
+第28章Draftは七Claimの全欄Case・JSON/閉Schema・有限比較を同梱する。`npm run check:chapter28`は記録照合であり、実AI性能/検出耐性/法的承認の検証ではない。独立レビュー・通常merge・実main/Pagesの達成はIssue #50 / PR #187で追跡します。
