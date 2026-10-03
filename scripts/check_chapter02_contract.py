@@ -1836,6 +1836,65 @@ def verify_chapter02_adapter(
         )
 
 
+def chapter02_source_metadata_errors(source_entries: dict[str, dict]) -> list[str]:
+    """Layer A: retained Source identity and audited edition, not legal validity."""
+    errors: list[str] = []
+    expected_source_metadata = {
+        "SRC-JP-LAW-001": {
+            "version": "current display effective 2025-06-01",
+            "checkedAt": "2026-08-05",
+            "nextReviewAt": "2026-11-05",
+            "noteMarkers": (
+                "e-Gov current display was rechecked on 2026-08-05",
+                "law effective from 2025-06-01",
+                "confirm current text before publication",
+                "book is not legal advice",
+            ),
+        },
+        "SRC-IPA-VDP-001": {
+            "version": "2026 edition",
+            "status": "current-guidance",
+            "publishedAt": "2026-10-01",
+            "checkedAt": "2026-10-03",
+            "nextReviewAt": "2027-01-03",
+            "noteMarkers": (
+                "official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05",
+                "official page showed last update 2026-04-06",
+                "current page and linked guideline must be rechecked at publication time",
+                "2026-10-03 limited edition migration (Issue #189)",
+                "Current 64-page PDF SHA256 9c55ba412db2c38c0ce3e463e6273e5ba371ab6647664b109651493f5761ea39",
+                "references/ipa-vdp-source-review-2026-10-03.md",
+            ),
+        },
+    }
+    for source_id, expected in expected_source_metadata.items():
+        entry = source_entries.get(source_id)
+        if entry is None:
+            errors.append(f"references/sources.json: missing {source_id}")
+            continue
+        if entry.get("version") != expected["version"]:
+            errors.append(f"references/sources.json: {source_id}.version must be {expected['version']!r}")
+        for field in ("status", "publishedAt"):
+            if field in expected and entry.get(field) != expected[field]:
+                errors.append(f"references/sources.json: {source_id}.{field} must be {expected[field]!r}")
+        # Later scoped audits may advance dates, but edition changes require
+        # their own Issue and migration; dated historical notes stay intact.
+        for field in ("checkedAt", "nextReviewAt"):
+            if not meets_audit_baseline(entry.get(field), expected[field]):
+                errors.append(f"references/sources.json: {source_id}.{field} must meet retained baseline {expected[field]!r}")
+        notes = entry.get("notes")
+        if not isinstance(notes, str):
+            errors.append(f"references/sources.json: {source_id}.notes must be a string")
+            continue
+        for marker in expected["noteMarkers"]:
+            if marker not in notes:
+                errors.append(
+                    f"references/sources.json: {source_id}.notes missing marker {marker!r}"
+                )
+
+    return errors
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Validate the Chapter 2 contract")
     parser.add_argument("--selection-fixture", choices=SELECTION_FIXTURE_IDS)
@@ -1862,6 +1921,7 @@ def main(argv: list[str] | None = None) -> int:
         "references/sources.json",
         "references/reference-baseline.md",
         "references/ch02-source-review-2026-08-05.md",
+        "references/ipa-vdp-source-review-2026-10-03.md",
         "package.json",
     )
     for relative in required_files:
@@ -2215,55 +2275,14 @@ def main(argv: list[str] | None = None) -> int:
     for source_id in sorted(expected_source_ids):
         entry = source_entries.get(source_id)
         if entry is None:
-            error(f"references/sources.json: missing {source_id}")
+            # The metadata owner below emits the single missing-Source diagnostic.
             continue
         chapters = entry.get("chapters", [])
         if 2 not in chapters:
             error(f"references/sources.json: {source_id} does not map chapter 2")
 
-    expected_source_metadata = {
-        "SRC-JP-LAW-001": {
-            "version": "current display effective 2025-06-01",
-            "checkedAt": "2026-08-05",
-            "nextReviewAt": "2026-11-05",
-            "noteMarkers": (
-                "e-Gov current display was rechecked on 2026-08-05",
-                "law effective from 2025-06-01",
-                "confirm current text before publication",
-                "book is not legal advice",
-            ),
-        },
-        "SRC-IPA-VDP-001": {
-            "version": "2024 edition",
-            "checkedAt": "2026-08-05",
-            "nextReviewAt": "2026-11-05",
-            "noteMarkers": (
-                "official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05",
-                "official page showed last update 2026-04-06",
-                "current page and linked guideline must be rechecked at publication time",
-            ),
-        },
-    }
-    for source_id, expected in expected_source_metadata.items():
-        entry = source_entries.get(source_id)
-        if entry is None:
-            continue
-        if entry.get("version") != expected["version"]:
-            error(f"references/sources.json: {source_id}.version must be {expected['version']!r}")
-        # A later scoped audit may advance dates without rewriting this
-        # chapter's retained historical note, source version or meaning.
-        for field in ("checkedAt", "nextReviewAt"):
-            if not meets_audit_baseline(entry.get(field), expected[field]):
-                error(f"references/sources.json: {source_id}.{field} must meet retained baseline {expected[field]!r}")
-        notes = entry.get("notes")
-        if not isinstance(notes, str):
-            error(f"references/sources.json: {source_id}.notes must be a string")
-            continue
-        for marker in expected["noteMarkers"]:
-            if marker not in notes:
-                error(
-                    f"references/sources.json: {source_id}.notes missing marker {marker!r}"
-                )
+    for message in chapter02_source_metadata_errors(source_entries):
+        error(message)
 
     audit_note_path = "references/ch02-source-review-2026-08-05.md"
     audit_note = read_text(audit_note_path)
@@ -2277,6 +2296,21 @@ def main(argv: list[str] | None = None) -> int:
             "2024年版",
             "2026-04-06",
             "Checked at | 2026-08-05",
+        ),
+    )
+
+    edition_note_path = "references/ipa-vdp-source-review-2026-10-03.md"
+    require_tokens(
+        edition_note_path,
+        read_text(edition_note_path),
+        (
+            "SRC-IPA-VDP-001",
+            "2026-10-01",
+            "2026-10-03",
+            "9c55ba412db2c38c0ce3e463e6273e5ba371ab6647664b109651493f5761ea39",
+            "98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458",
+            "partnership_guideline_2024.pdf",
+            "個別の法的適用や新しい検査権限を本書へ導入しない",
         ),
     )
 

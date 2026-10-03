@@ -739,6 +739,13 @@
       "section": "additional",
       "order": 333,
       "title": "第27章 Source Review — 2026-09-29"
+    },
+    {
+      "source": "references/ipa-vdp-source-review-2026-10-03.md",
+      "destination": "references/ipa-vdp-2026/index.md",
+      "section": "additional",
+      "order": 700,
+      "title": "IPA早期警戒ガイドライン Source Review — 2026-10-03"
     }
   ],
   "directoryRoutes": {
