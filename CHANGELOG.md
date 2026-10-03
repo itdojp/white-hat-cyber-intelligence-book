@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-03 — IPAガイドライン2026版の限定Source移行（Issue #189）
+
+- `SRC-IPA-VDP-001`を公式の2026-10-01公開版へ同期し、第2・9・15章の出典IdentityとSource Baselineを更新する。用途限定の監査記録を追加し、2024版の過去の監査と現行版を区別する。
+- 既存章本文、Template、合成Caseの判断・許可失効・Finding状態、共有Policy/Projection、formatter pinは変更しない。NICT/内閣府の追加対応を個別法的適用や新しい検査権限として採用しない。
+- この変更だけで付録・初版Releaseや実環境の合法性・安全性を認定しない。
+
 ## 第III部横断読解（Issue #168）
 
 - 七教材の直接ID参照、方法参照、非継承、未配達、Gapと改善判断を読む補助教材を追加。
