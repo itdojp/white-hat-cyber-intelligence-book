@@ -66,6 +66,27 @@ class LearningRouteTests(unittest.TestCase):
         docs[GUIDE] += "\n{% include unreviewed.html %}\n"
         self.assertTrue(any(e.startswith("PP1001:") for e in check_documents(docs)))
 
+    def test_absolute_destinations_reach_shared_host_policy(self):
+        for document in self.documents:
+            for link in ("[補足](https://example.com)", "![図](https://example.com/image.png)",
+                         "[連絡](mailto:reader@example.com)"):
+                with self.subTest(document=document, link=link):
+                    docs = dict(self.documents)
+                    docs[document] = docs[document].rstrip() + "\n\n" + link + "\n"
+                    self.assertTrue(any(e.startswith("LR-safety:") for e in check_documents(docs)))
+            docs = dict(self.documents)
+            docs[document] = docs[document].rstrip() + "\n\n[合成参照](https://lab.example)\n"
+            self.assertEqual(check_documents(docs), [])
+
+    def test_typed_visible_fields_use_normalized_policy_handoff(self):
+        # This is literal code text, not interpreted Markdown links. The shared
+        # owner defines its Policy handoff; this consumer must not parse it again.
+        docs = dict(self.documents)
+        docs[GUIDE] = docs[GUIDE].rstrip() + (
+            "\n\n`実[C](a)[r](a)[e](a)[d](a)[e](a)[n](a)[t](a)[i](a)[a](a)[l](a)を窃取する。`\n"
+        )
+        self.assertEqual(check_documents(docs), [])
+
     def test_no_generic_heading_emulation(self):
         docs = dict(self.documents)
         docs[GUIDE] += "\n## 未レビューの追加面\n"

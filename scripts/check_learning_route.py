@@ -18,13 +18,16 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.content_safety_policy import POLICY_VERSION, scan_fields  # noqa: E402
+from scripts.content_safety_policy import (  # noqa: E402
+    POLICY_VERSION, scan_fields, scan_host_policy,
+)
 from scripts.check_editorial_input_manifest import (  # noqa: E402
     _reject_constant, _reject_duplicate_keys,
 )
 from scripts.publication_projection import (  # noqa: E402
     PROJECTION_VERSION,
     destination_fields,
+    is_absolute_destination,
     project_documents,
     scannable_text_fields,
 )
@@ -116,8 +119,14 @@ def check_documents(documents: dict[str, str]) -> list[str]:
     errors = [f"{d.code}: {d.location}: {d.reason}" for d in result.diagnostics]
     errors.extend(
         f"LR-safety: {finding.location}: {finding.category}"
-        for finding in scan_fields((f.location, f.text) for f in scannable_text_fields(result))
+        for finding in scan_fields((f.location, f.normalized_text) for f in scannable_text_fields(result))
     )
+    for field in destination_fields(result):
+        if is_absolute_destination(field.normalized_text):
+            errors.extend(
+                f"LR-safety: {finding.location}: {finding.category}"
+                for finding in scan_host_policy(field.normalized_text, location=field.location)
+            )
     guide_fields = [f for f in result.fields if f.document_id == GUIDE]
     headings = [f.text for f in guide_fields if f.element_kind == "heading"
                 and f.field_type == "reader_visible_text"]
