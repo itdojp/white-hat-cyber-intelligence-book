@@ -9,6 +9,10 @@
 
 ## Unreleased
 
+### Changed
+
+- formatterを通常マージ済み `83a322da5013e74e9dbf1b0afbee85b8617ffce5` へ固定し、依存修復と共有検索JSのDOM-text修正（shared 3.2.4）を取り込む。公開部品のblob・workflow・第三者通知・章fixtureのpin checksumを同期し、本文・合成教材・Source・Policy/Projectionの意味は変更しない（Issue #188 / #184）。
+
 ### Added
 
 - Quick Startから[最小の学習用読解](cases/first-artifact-walkthrough.md)、既存ART-10の空Template、第1章の完全合成Caseへ進む三段階の導線を追加。最初の提出物を学習メモ一つとし、記入順と自己点検へ節番号付きのページリンクで接続する。未収集・Inconclusive・Partialを保持した自己点検と誤例の訂正を示す。既存Caseや実務契約を短縮・更新せず、実読者の試行と所要時間の実測は未実施（Issue #110）。
