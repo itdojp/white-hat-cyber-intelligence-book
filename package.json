@@ -35,7 +35,7 @@
     "check:docs-sync": "python3 scripts/sync_book_site.py --check",
     "build": "npm run sync:docs && bundle exec jekyll build --source docs --config docs/_config.yml --destination _site",
     "serve": "npm run sync:docs && bundle exec jekyll serve --source docs --config docs/_config.yml --destination _site --livereload",
-    "test": "npm run check:contract && npm run check:editorial-inputs && npm run check:content-safety-policy && npm run check:publication-projection && npm run check:chapter1 && npm run check:chapter02 && npm run check:chapter03 && npm run check:chapter04 && npm run check:chapter05 && npm run check:chapter06 && npm run check:chapter07 && npm run check:chapter08 && npm run check:chapter09 && npm run check:chapter10 && npm run check:chapter11 && npm run check:chapter12 && npm run check:chapter13 && npm run check:chapter14 && npm run check:chapter15 && npm run check:chapter16 && npm run check:part02 && npm run check:chapter17 && npm run check:chapter18 && npm run check:chapter19 && npm run check:chapter20 && npm run check:chapter21 && npm run check:chapter22 && npm run check:chapter23 && npm run check:chapter24 && npm run check:part03 && npm run check:chapter17-replay && npm run check:chapter25 && npm run check:chapter26 && npm run check:chapter27 && npm run check:chapter28 && npm run check:part04 && npm run check:representative-gate && npm run check:site-pages-security && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync && npm run check:mermaid",
+    "test": "npm run check:contract && npm run check:learning-route && npm run check:editorial-inputs && npm run check:content-safety-policy && npm run check:publication-projection && npm run check:chapter1 && npm run check:chapter02 && npm run check:chapter03 && npm run check:chapter04 && npm run check:chapter05 && npm run check:chapter06 && npm run check:chapter07 && npm run check:chapter08 && npm run check:chapter09 && npm run check:chapter10 && npm run check:chapter11 && npm run check:chapter12 && npm run check:chapter13 && npm run check:chapter14 && npm run check:chapter15 && npm run check:chapter16 && npm run check:part02 && npm run check:chapter17 && npm run check:chapter18 && npm run check:chapter19 && npm run check:chapter20 && npm run check:chapter21 && npm run check:chapter22 && npm run check:chapter23 && npm run check:chapter24 && npm run check:part03 && npm run check:chapter17-replay && npm run check:chapter25 && npm run check:chapter26 && npm run check:chapter27 && npm run check:chapter28 && npm run check:part04 && npm run check:representative-gate && npm run check:site-pages-security && npm run check:shared-version && npm run check:workflows && npm run check:sources && npm run check:notices && npm run check:docs-sync && npm run check:mermaid",
     "check:chapter05": "python3 scripts/check_chapter05_contract.py",
     "check:chapter06": "python3 scripts/check_chapter06_contract.py",
     "check:chapter07": "python3 scripts/check_chapter07_contract.py",
@@ -61,7 +61,8 @@
     "check:chapter26": "python3 scripts/check_chapter26_contract.py",
     "check:part04": "python3 scripts/check_part04_contract.py",
     "check:chapter27": "python3 scripts/check_chapter27_contract.py",
-    "check:chapter28": "python3 scripts/check_chapter28_contract.py"
+    "check:chapter28": "python3 scripts/check_chapter28_contract.py",
+    "check:learning-route": "python3 scripts/check_learning_route.py && python3 tests/test_learning_route.py"
   },
   "repository": {
     "type": "git",
