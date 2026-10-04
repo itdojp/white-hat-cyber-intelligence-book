@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from scripts.check_learning_route import (  # noqa: E402
     GUIDE, MARKERS, ROOT, ROUTE, check_documents, check_route, read_input,
 )
+from scripts.publication_projection import destination_fields, project_documents  # noqa: E402
 
 
 class LearningRouteTests(unittest.TestCase):
@@ -47,6 +48,20 @@ class LearningRouteTests(unittest.TestCase):
                 docs = dict(self.documents)
                 docs[document] = docs[document].replace(f"]({target})", "](missing-learning-route.md)")
                 self.assertTrue(any(e.startswith("LR-link:") for e in check_documents(docs)))
+
+    def test_minimal_submission_section_handoffs(self):
+        actual = {f.text for f in destination_fields(project_documents(self.documents))
+                  if f.document_id == "quickstart.md"}
+        for fragment in ("2-空templateへ必要な欄から戻る", "4-提出と自己点検"):
+            target = f"../cases/first-artifact-walkthrough/#{fragment}"
+            with self.subTest(fragment=fragment):
+                self.assertIn(target, actual)
+                source = f"cases/first-artifact-walkthrough.md#{fragment}"
+                for replacement in ("cases/first-artifact-walkthrough.md",
+                                    "cases/first-artifact-walkthrough.md#missing-section"):
+                    docs = dict(self.documents)
+                    docs["quickstart.md"] = docs["quickstart.md"].replace(source, replacement)
+                    self.assertIn(f"LR-link: quickstart.md: {target}", check_documents(docs))
 
     def test_preamble_body_tail_reach_shared_safety(self):
         for document in self.documents:

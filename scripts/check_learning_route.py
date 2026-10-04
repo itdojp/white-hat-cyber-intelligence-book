@@ -58,6 +58,8 @@ MARKERS = (
 DESTINATIONS = {
     "quickstart.md": (
         "../cases/first-artifact-walkthrough/",
+        "../cases/first-artifact-walkthrough/#2-空templateへ必要な欄から戻る",
+        "../cases/first-artifact-walkthrough/#4-提出と自己点検",
         "../templates/integrated-security-case-map/",
         "../cases/chapter-01-integrated-security-case/",
         "../reading-guide/", "../chapters/chapter-01/",
