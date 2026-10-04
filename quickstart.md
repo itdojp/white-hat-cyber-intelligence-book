@@ -36,7 +36,7 @@ CTOは48時間以内に、特定の外部連携を停止すべきか判断する
 
 ## 3. 学習メモを自己点検する
 
-提出物は、[空Templateへの記入順](cases/first-artifact-walkthrough.md#2-空templateへ必要な欄から戻る)に沿って六つの対応を説明した学習メモ一つである。原記録とTemplateの節参照を添え、[提出と自己点検](cases/first-artifact-walkthrough.md#4-提出と自己点検)で不足を確認する。この段階では、別のEvidence PlanやDecision Briefを作成する必要はない。
+提出物は、[空Templateへの記入順（読解の2節）](cases/first-artifact-walkthrough.md)に沿って六つの対応を説明した学習メモ一つである。原記録とTemplateの節参照を添え、[提出と自己点検（読解の4節）](cases/first-artifact-walkthrough.md)で不足を確認する。この段階では、別のEvidence PlanやDecision Briefを作成する必要はない。
 
 ## 4. 第0章と第1章を読む
 

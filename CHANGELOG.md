@@ -11,7 +11,7 @@
 
 ### Added
 
-- Quick Startから[最小の学習用読解](cases/first-artifact-walkthrough.md)、既存ART-10の空Template、第1章の完全合成Caseへ進む三段階の導線を追加。最初の提出物を学習メモ一つとし、記入順と自己点検へ節リンクで接続する。未収集・Inconclusive・Partialを保持した自己点検と誤例の訂正を示す。既存Caseや実務契約を短縮・更新せず、実読者の試行と所要時間の実測は未実施（Issue #110）。
+- Quick Startから[最小の学習用読解](cases/first-artifact-walkthrough.md)、既存ART-10の空Template、第1章の完全合成Caseへ進む三段階の導線を追加。最初の提出物を学習メモ一つとし、記入順と自己点検へ節番号付きのページリンクで接続する。未収集・Inconclusive・Partialを保持した自己点検と誤例の訂正を示す。既存Caseや実務契約を短縮・更新せず、実読者の試行と所要時間の実測は未実施（Issue #110）。
 
 - [第IV部の横断読解](cases/part-iv-intelligence-decision-map.md)と有限契約を追加。方法参照と親25→子26の直接参照、origin、L2、未配達・非実行、独立交換例の非採用を区別し、既存章の正文・教材・Sourceは保持する。
 

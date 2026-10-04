@@ -55,11 +55,13 @@ MARKERS = (
     "実務上の必須欄を免除したことにはならない", "誤った例", "Reassessment Due",
     "読者による試行は未実施", "AIのレビューやCI成功を読者試行として数えない",
 )
+QUICKSTART_MARKERS = (
+    "学習メモ一つ", "空Templateへの記入順（読解の2節）", "提出と自己点検（読解の4節）",
+    "別のEvidence PlanやDecision Briefを作成する必要はない",
+)
 DESTINATIONS = {
     "quickstart.md": (
         "../cases/first-artifact-walkthrough/",
-        "../cases/first-artifact-walkthrough/#2-空templateへ必要な欄から戻る",
-        "../cases/first-artifact-walkthrough/#4-提出と自己点検",
         "../templates/integrated-security-case-map/",
         "../cases/chapter-01-integrated-security-case/",
         "../reading-guide/", "../chapters/chapter-01/",
@@ -137,6 +139,12 @@ def check_documents(documents: dict[str, str]) -> list[str]:
         errors.append("LR-heading-inventory: reviewed reader surface changed")
     visible = "\n".join(f.text for f in guide_fields if f.field_type == "reader_visible_text")
     errors.extend(f"LR-boundary-marker: {token}" for token in MARKERS if token not in visible)
+    quickstart_visible = "\n".join(
+        f.text for f in result.fields
+        if f.document_id == "quickstart.md" and f.field_type == "reader_visible_text"
+    )
+    errors.extend(f"LR-submission-marker: {token}" for token in QUICKSTART_MARKERS
+                  if token not in quickstart_visible)
     for document_id, required in DESTINATIONS.items():
         actual = {f.text for f in destination_fields(result) if f.document_id == document_id}
         errors.extend(f"LR-link: {document_id}: {target}" for target in required if target not in actual)
