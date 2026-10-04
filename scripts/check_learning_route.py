@@ -98,7 +98,8 @@ def check_route(registry: dict, package: dict) -> list[str]:
         errors.append("LR-route: learning route missing, duplicated or changed")
     if sum(p.get("destination") == ROUTE["destination"] for p in pages) != 1:
         errors.append("LR-destination: route must have one owner")
-    if sum((p.get("section"), p.get("order")) == ("additional", 340) for p in pages) != 1:
+    if sum((p.get("section"), p.get("order")) == (ROUTE["section"], ROUTE["order"])
+           for p in pages) != 1:
         errors.append("LR-order: navigation order must have one owner")
     scripts = package.get("scripts", {})
     if not isinstance(scripts, dict) or not isinstance(scripts.get("test", ""), str):

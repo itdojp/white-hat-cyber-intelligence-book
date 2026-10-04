@@ -7,12 +7,13 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 from scripts.check_learning_route import (  # noqa: E402
-    GUIDE, MARKERS, ROOT, check_documents, check_route, read_input,
+    GUIDE, MARKERS, ROOT, ROUTE, check_documents, check_route, read_input,
 )
 
 
@@ -117,6 +118,18 @@ class LearningRouteTests(unittest.TestCase):
                 else:
                     package["scripts"]["check:learning-route"] = "echo skipped"
                 self.assertTrue(check_route(self.registry, package))
+
+    def test_route_order_has_one_constant_owner(self):
+        # Simulate a reviewed contract update, not a runtime registry exemption.
+        with patch.dict(ROUTE, {"order": 341}):
+            registry = deepcopy(self.registry)
+            next(p for p in registry["pages"] if p["source"] == GUIDE)["order"] = 341
+            self.assertEqual(check_route(registry, self.package), [])
+            registry["pages"].append({
+                **ROUTE, "source": "cases/other.md", "destination": "cases/other/index.md",
+            })
+            self.assertIn("LR-order: navigation order must have one owner",
+                          check_route(registry, self.package))
 
     def test_invalid_document_inventory(self):
         self.assertTrue(check_documents({GUIDE: self.documents[GUIDE]}))
