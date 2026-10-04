@@ -739,6 +739,13 @@
       "section": "additional",
       "order": 333,
       "title": "第27章 Source Review — 2026-09-29"
+    },
+    {
+      "source": "cases/first-artifact-walkthrough.md",
+      "destination": "cases/first-artifact-walkthrough/index.md",
+      "section": "additional",
+      "order": 340,
+      "title": "最初の成果物：判断と証拠不足の読解"
     }
   ],
   "directoryRoutes": {
