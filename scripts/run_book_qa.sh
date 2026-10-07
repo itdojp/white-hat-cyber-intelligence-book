@@ -55,4 +55,5 @@ PAGES_REPO_NWO=itdojp/white-hat-cyber-intelligence-book \
     --trace
 
 python3 scripts/check_built_site.py --source docs --site _site
+npm run check:mermaid-browser
 echo "Book QA passed with book-formatter@$ACTUAL_FORMATTER_SHA"

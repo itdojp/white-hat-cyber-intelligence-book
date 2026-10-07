@@ -23,6 +23,34 @@
 | T-04-02 | 似て見える用語の違い | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
 | T-04-03 | Control assurance states | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
 | T-04-04 | Knowledge stateとHypothesis statusの分離 | `manuscript/04-assets-boundaries-threat-model.md` | Implemented |
+| F-05-01 | Behavior Mapの追跡構造 | `manuscript/05-attack-behavior.md` | Implemented |
+| T-05-01 | オブジェクトと判断上の役割 | `manuscript/05-attack-behavior.md` | Implemented |
+| T-05-02 | 本章で使うDetectionの参照関係 | `manuscript/05-attack-behavior.md` | Implemented |
+| T-05-03 | Statusと受入条件 | `manuscript/05-attack-behavior.md` | Implemented |
+| F-06-01 | Signal Flowと観測経路 | `manuscript/06-observable-systems.md` | Implemented |
+| T-06-01 | Human / Workload / Serviceの比較 | `manuscript/06-observable-systems.md` | Implemented |
+| T-06-02 | Coverage statusの意味 | `manuscript/06-observable-systems.md` | Implemented |
+| F-07-01 | 優先順位判断の接続 | `manuscript/07-vulnerability-prioritization.md` | Implemented |
+| T-07-01 | 異なる問いへ答える入力 | `manuscript/07-vulnerability-prioritization.md` | Implemented |
+| T-07-02 | 環境条件と判断の分離 | `manuscript/07-vulnerability-prioritization.md` | Implemented |
+| F-08-01 | Lab SafetyとEvidenceの追跡順 | `manuscript/08-safe-lab-evidence.md` | Implemented |
+| T-08-01 | 抽象設計の境界 | `manuscript/08-safe-lab-evidence.md` | Implemented |
+| T-08-02 | 八状態と入口条件 | `manuscript/08-safe-lab-evidence.md` | Implemented |
+| T-08-03 | 三つのRunの判定と終了状態 | `manuscript/08-safe-lab-evidence.md` | Implemented |
+| T-08-04 | ART-18のRubric | `manuscript/08-safe-lab-evidence.md` | Implemented |
+| T-09-01 | 三つの記録の役割 | `manuscript/09-engagement-roe.md` | Implemented |
+| T-09-02 | Scopeと不明時の判断 | `manuscript/09-engagement-roe.md` | Implemented |
+| T-09-03 | 教育用の作用量予算 | `manuscript/09-engagement-roe.md` | Implemented |
+| T-09-04 | 八つのRoE状態 | `manuscript/09-engagement-roe.md` | Implemented |
+| T-09-05 | Assessment・Retest・Control ValidationへのHandoff | `manuscript/09-engagement-roe.md` | Implemented |
+| T-09-06 | ART-02のRubric | `manuscript/09-engagement-roe.md` | Implemented |
+| F-09-01 | Stopから再審査への接続 | `manuscript/09-engagement-roe.md` | Implemented |
+| F-10-01 | 候補発見から承認不足の記録まで | `manuscript/10-recon-osint-boundary.md` | Implemented |
+| T-10-01 | Collection classと本演習の制限 | `manuscript/10-recon-osint-boundary.md` | Implemented |
+| T-10-02 | Sourceと残るGap | `manuscript/10-recon-osint-boundary.md` | Implemented |
+| T-10-03 | 五つのVerification state | `manuscript/10-recon-osint-boundary.md` | Implemented |
+| T-10-04 | 誤判断と修正 | `manuscript/10-recon-osint-boundary.md` | Implemented |
+| T-10-05 | ART-19 Rubric | `manuscript/10-recon-osint-boundary.md` | Implemented |
 | F-11-01 | DecisionからDetectionまでの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | F-11-02 | Request・Evidence・Telemetry・Decisionの接続 | `manuscript/11-web-api-hypothesis.md` | Implemented |
 | T-11-01 | ChecklistとHypothesis Packの違い | `manuscript/11-web-api-hypothesis.md` | Implemented |
@@ -40,3 +68,139 @@
 | F-25-03 | Reassessmentと無効化条件 | `manuscript/25-structured-analysis-attribution.md` | Implemented |
 
 Mermaid図は、図だけを見なくても意味を理解できる文章代替を直後に置く。表は、列の意味と判断への使い方を本文で説明する。
+
+## 第12章の図表
+
+| ID | 内容 | 正本 | 状態 |
+|---|---|---|---|
+| F-12-01 | 権限関係と判断の接続 | `manuscript/12-enterprise-identity.md` | Implemented |
+| F-12-02 | Federation条件の読み方 | `manuscript/12-enterprise-identity.md` | Implemented |
+| T-12-01 | 四Principal classes | `manuscript/12-enterprise-identity.md` | Implemented |
+| T-12-02 | 認証・認可・Federation・実施許可 | `manuscript/12-enterprise-identity.md` | Implemented |
+| T-12-03 | 六Path states | `manuscript/12-enterprise-identity.md` | Implemented |
+| T-12-04 | 次章Handoff | `manuscript/12-enterprise-identity.md` | Implemented |
+| T-12-05 | ART-20 Rubric | `manuscript/12-enterprise-identity.md` | Implemented |
+
+## 第13章の図表
+
+| ID | 内容 | 正本 | 状態 |
+|---|---|---|---|
+| F-13-01 | Sourceから判断までの対応 | `manuscript/13-platform-supply-chain.md` | Implemented |
+| T-13-01 | 三Plane | `manuscript/13-platform-supply-chain.md` | Implemented |
+| T-13-02 | Digestと署名と出所とSBOM | `manuscript/13-platform-supply-chain.md` | Implemented |
+| T-13-03 | 五状態 | `manuscript/13-platform-supply-chain.md` | Implemented |
+| T-13-04 | ART21 Rubric | `manuscript/13-platform-supply-chain.md` | Implemented |
+| T-13-05 | ART21記入欄 | `templates/platform-supply-chain-assessment.md` | Implemented |
+
+## 第14章の図表
+
+| ID | 内容 | 正本 | 状態 |
+|---|---|---|---|
+| F-14-01 | 問いから停止・残存確認まで | `manuscript/14-minimal-impact-validation.md` | Implemented |
+| T-14-01 | 四Methodと主張上限 | `manuscript/14-minimal-impact-validation.md` | Implemented |
+| T-14-02 | 六Resultと必要説明 | `manuscript/14-minimal-impact-validation.md` | Implemented |
+| T-14-03 | 四つの視点 | `manuscript/14-minimal-impact-validation.md` | Implemented |
+| T-14-04 | ART22 Rubric | `manuscript/14-minimal-impact-validation.md` | Implemented |
+| T-14-05 | ART22記入欄 | `templates/minimal-impact-validation-record.md` | Implemented |
+
+## 第15章の図表
+
+| ID | 内容 | 正本 | 状態 |
+|---|---|---|---|
+| F-15-01 | Findingから再評価まで | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-01 | 症状・根本条件・影響 | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-02 | 三種類の対策 | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-03 | 五Retest Result | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-04 | 六Finding Status | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-05 | 四つの視点 | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-06 | 六観点Rubric | `manuscript/15-findings-retest-risk.md` | Implemented |
+| T-15-07 | Retest Record記入欄 | `templates/retest-record.md` | Implemented |
+
+## 第16章
+
+| ID | 図表 | 正本 |
+|---|---|---|
+| F-16-01 | 問いから再評価への設計順序 | `manuscript/16-telemetry-evidence-readiness.md` |
+| T-16-01 | Fieldと目的 | 同上 |
+| T-16-02 | 七つのCoverage状態 | 同上 |
+| T-16-03 | Consumer別の結論上限 | 同上 |
+| T-16-04 | 読解の評価基準 | 同上 |
+| T-16-05 | CoverageとValidationの最小欄 | `templates/telemetry-coverage-map.md` |
+
+## 第18章
+
+| ID | 図表 | 正本 |
+|---|---|---|
+| F-18-01 | 問いから再評価まで | `manuscript/18-threat-hunting.md` |
+| T-18-01 | 有限Queryの範囲と境界 | 同上 |
+| T-18-02 | 五つのResultと許されない飛躍 | 同上 |
+| T-18-03 | 読解の評価基準 | 同上 |
+
+## 第19章
+
+| ID | 内容 | 所在 |
+|---|---|---|
+| F-19-01 | 判断項目と再評価の接続。実操作や固定直列手順ではない | [第19章](manuscript/19-incident-response.md) |
+| T-19-01 | CSF Functionと判断の対応付け | 第19章 |
+| T-19-02 | 七状態と結論の上限 | 第19章 |
+| T-19-03 | 合成封じ込め案の比較 | 第19章 |
+| T-19-04 | 判断記録の評価基準 | 第19章 |
+
+## 第20章 DFIR
+
+| ID | 図表 | 参照 |
+|---|---|---|
+| F-20-01 | Evidence QuestionからTimeline・RCA・再評価への接続 | [第20章](manuscript/20-dfir-timeline-causality.md) |
+| T-20-01 | Event・収集・取込・分析時点とCutoff | [第20章](manuscript/20-dfir-timeline-causality.md) |
+| T-20-02 | 原時刻とClockの不確かさを含むUTC区間 | [第20章](manuscript/20-dfir-timeline-causality.md) |
+| T-20-03 | 五つのRelationと根拠 | [第20章](manuscript/20-dfir-timeline-causality.md) |
+| T-20-04 | TimelineとRCAの評価ルーブリック | [第20章](manuscript/20-dfir-timeline-causality.md) |
+
+## 第21章 Control Validation
+
+| ID | 図表 | 参照 |
+|---|---|---|
+| F-21-01 | 判断・許可・Control・Evidence・改善の接続 | [第21章](manuscript/21-purple-team-validation.md) |
+| T-21-01 | 五層の問いと結論の上限 | 第21章 |
+| T-21-02 | 五Resultと記録条件 | 第21章 |
+| T-21-03 | 六Failure classと改善の問い | 第21章 |
+| T-21-04 | 十の供給対比 | 第21章 |
+| T-21-05 | Control Validationの評価基準 | 第21章 |
+
+## 第22章 Measurement and Improvement
+
+| ID | 図表 | 正本 |
+|---|---|---|
+| F-22-01 | 判断目的・測定・改善・再評価の読み順 | [第22章](manuscript/22-measurement-improvement.md) |
+| T-22-01 | Outcome・Leading・Process・Qualityの役割 | 第22章 |
+| T-22-02 | Debt、優先理由、依存と次の判断 | 第22章 |
+| T-22-03 | Backlogの七状態と必要な根拠 | 第22章 |
+| T-22-04 | 五つの供給対比と結論の上限 | 第22章 |
+
+## 第23章 Intelligence Requirements
+
+| ID | 図表 | 正本 | 状態 |
+|---|---|---|---|
+| F-23-01 | 判断要求から収集・配布・再評価への読み順 | `manuscript/23-intelligence-requirements.md` | Implemented |
+| T-23-01 | Requirement / Collectionの六状態 | `manuscript/23-intelligence-requirements.md` | Implemented |
+
+## 第24章
+
+- F-24-01: 資料から利用可能な限定Evidenceまで（本文24.1）。
+- T-24-01: Source / Item / Claimの分離。
+- T-24-02: 三つの評価軸。
+- T-24-03: 有限なEvidence用途。
+- T-24-04: ART-30 Rubric。
+
+## 第26章
+
+- F-26-01: Requirementから二Product、Decision、Feedbackへの流れ（本文「全体像」）。
+- T-26-01: Tactical / Operational / Strategicの判断用途。
+- T-26-02: Fact / Judgment / Recommendation / Implicationの分離。
+- T-26-03: 二Productと配布・再評価のRubric。
+
+## 第27章
+
+| ID | 図表 | 正本 | 状態 |
+|---|---|---|---|
+| F-27-01 | AI支援のInstruction・Data・効果の境界 | `manuscript/27-ai-agent-security.md` | Implemented |

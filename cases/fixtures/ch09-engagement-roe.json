@@ -1,0 +1,299 @@
+{
+  "schemaVersion": "1.0.0",
+  "modelVersion": "1.0.0",
+  "synthetic": true,
+  "executionAuthorized": false,
+  "record": {
+    "artifactId": "ART-02",
+    "roeId": "ROE-2026-009",
+    "version": 1,
+    "status": "Draft",
+    "asOf": "2026-09-13T09:00:00Z",
+    "relation": "refines",
+    "parentCaseId": "CASE-2026-001",
+    "supersedes": null
+  },
+  "parents": {
+    "authorizationRecordId": "AUTH-CASE-2026-001",
+    "authorizationDecisionId": "DEC-AUTH-2026-001",
+    "authorizationDecisionRequirementId": "DR-AUTH-2026-001",
+    "authorizationHistoricalOutcome": "Proceed with conditions",
+    "authorizationExpiresAt": "2026-08-19T09:00:00Z",
+    "authorizationConditions": [
+      "COND-AUTH-2026-001 Open",
+      "COND-AUTH-2026-002 Satisfied",
+      "COND-AUTH-2026-003 Open"
+    ],
+    "threatModelId": "TM-2026-001",
+    "threatModelStatus": "Needs Evidence",
+    "threatHypothesisId": "TH-2026-002",
+    "assetIds": [
+      "ASSET-2026-002",
+      "ASSET-2026-003"
+    ],
+    "boundaryIds": [
+      "TB-2026-001",
+      "TB-2026-003"
+    ],
+    "flowIds": [
+      "FLOW-2026-002",
+      "FLOW-2026-004"
+    ],
+    "labPlanId": "LABPLAN-2026-001",
+    "labExecutionAuthorized": false,
+    "labEvidenceId": "EVD-LAB08-001",
+    "parentReassessmentId": "REA-2026-001",
+    "parentStateChanged": false,
+    "authorizationWindowStartsAt": "2026-08-06T00:00:00Z",
+    "authorizationWindowEndsAt": "2026-08-06T08:00:00Z"
+  },
+  "decision": {
+    "requirementId": "DR-2026-001",
+    "owner": "SYNTH-DECISION-OWNER",
+    "historicalDeadline": "2026-07-22T00:00:00Z",
+    "question": "合成OAuth設定とEventの矛盾を検討するため、許可・範囲・停止・Evidenceの計画はそろうか。",
+    "plannedDecisionId": "DEC-ROE09-001",
+    "informationGapId": "GAP-ROE09-001",
+    "gap": "親Authorizationの期限経過。新しい判断期限・Authorization・実施承認は未確定。",
+    "decisionUseful": "not-assessed"
+  },
+  "scope": {
+    "scopeId": "SCOPE-ROE09-001",
+    "defaultDenied": true,
+    "environment": "ENV-ROE09-SYNTHETIC",
+    "identity": "IDENTITY-ROE09-SYNTHETIC-READER",
+    "inScope": [
+      {
+        "objectId": "OBJ-ROE09-CONFIG",
+        "kind": "OAuth configuration",
+        "owner": "SYNTH-SYSTEM-OWNER",
+        "classification": "synthetic-only",
+        "thirdParty": false
+      },
+      {
+        "objectId": "OBJ-ROE09-EVENT",
+        "kind": "Authored event",
+        "owner": "SYNTH-DATA-OWNER",
+        "classification": "synthetic-only",
+        "thirdParty": false
+      },
+      {
+        "objectId": "OBJ-ROE09-POLICY",
+        "kind": "Policy snapshot",
+        "owner": "SYNTH-SYSTEM-OWNER",
+        "classification": "synthetic-only",
+        "thirdParty": false
+      }
+    ],
+    "outOfScope": [
+      "all-unlisted-objects",
+      "production-assets",
+      "real-identities",
+      "third-party-services",
+      "credential-material",
+      "personal-data"
+    ],
+    "thirdPartyDependency": "none-required"
+  },
+  "objects": [
+    {
+      "objectId": "OBJ-ROE09-CONFIG",
+      "synthetic": true,
+      "value": "App label billing-bridge; requested permission read-fixture-summary; approval record absent."
+    },
+    {
+      "objectId": "OBJ-ROE09-EVENT",
+      "synthetic": true,
+      "value": "Authored event: consent-record absent; no real request or observation occurred."
+    },
+    {
+      "objectId": "OBJ-ROE09-POLICY",
+      "synthetic": true,
+      "value": "Author policy: only supplied synthetic records; all unlisted operations denied."
+    }
+  ],
+  "methods": {
+    "methodId": "METHOD-ROE09-001",
+    "permitted": [
+      "read-supplied-json",
+      "compare-synthetic-fields",
+      "write-bounded-summary"
+    ],
+    "conditional": [],
+    "prohibited": [
+      "external-communicationは禁止する。",
+      "active-scanningは禁止する。",
+      "authentication-attemptは禁止する。",
+      "credential-reuseは禁止する。",
+      "dosは禁止する。",
+      "persistenceは禁止する。",
+      "evasionは禁止する。",
+      "log-deletionは禁止する。",
+      "destructive-changeは禁止する。"
+    ]
+  },
+  "window": {
+    "timezone": "UTC",
+    "startsAt": "2026-09-14T00:00:00Z",
+    "endsAt": "2026-09-14T00:30:00Z",
+    "status": "proposed-not-authorized"
+  },
+  "limits": {
+    "networkRequests": 0,
+    "records": 100,
+    "evidenceBytes": 65536,
+    "concurrency": 1,
+    "retries": 0,
+    "minutes": 30,
+    "onLimit": "stop-and-record-gap"
+  },
+  "data": {
+    "dataId": "DATA-ROE09-001",
+    "classification": "synthetic-only",
+    "credentialMaterial": "none",
+    "storage": "SYNTH-DEDICATED-WORK-COPY",
+    "custodian": "SYNTH-EVIDENCE-CUSTODIAN",
+    "retentionHours": 24,
+    "retentionStarts": "hypothetical-session-end",
+    "destructionOwner": "SYNTH-RECOVERY-OWNER",
+    "destructionPlan": "一時作業コピーだけを削除対象として台帳化し、正本・承認記録・教材を除外する。実際の削除は本検査では行わない。",
+    "unexpectedData": "内容を追加表示・転送せず新規作業を停止し、参照IDだけで責任者へ通知する。"
+  },
+  "stop": {
+    "stopId": "STOP-ROE09-001",
+    "triggers": [
+      "unknown-authority",
+      "out-of-scope",
+      "unexpected-data",
+      "external-communication",
+      "budget-exceeded",
+      "missing-evidence",
+      "unavailable-contact",
+      "cleanup-unconfirmed"
+    ],
+    "primaryContact": "SYNTH-TEST-LEAD",
+    "backupContact": "SYNTH-SPONSOR",
+    "acknowledgementSeconds": 60,
+    "recoveryOwner": "SYNTH-RECOVERY-OWNER",
+    "recoverySteps": [
+      "stop-new-work",
+      "preserve-reference-and-time",
+      "notify-primary-or-backup",
+      "review-affected-synthetic-copies",
+      "verify-cleanup-record"
+    ],
+    "cleanupEvidenceId": "CLEAN-ROE09-001",
+    "cleanupStatus": "not-executed",
+    "restartAuthority": "SYNTH-AUTHORITY-OWNER",
+    "automaticRestart": false
+  },
+  "approval": {
+    "sponsor": "SYNTH-SPONSOR",
+    "authorityOwner": "SYNTH-AUTHORITY-OWNER",
+    "systemOwner": "SYNTH-SYSTEM-OWNER",
+    "dataOwner": "SYNTH-DATA-OWNER",
+    "testLead": "SYNTH-TEST-LEAD",
+    "authorizationId": "AUTH-CASE-2026-001",
+    "authorityStatus": "Expired",
+    "writtenEvidenceRef": null,
+    "approvedVersion": null,
+    "validFrom": "2026-08-06T00:00:00Z",
+    "validUntil": "2026-08-19T09:00:00Z",
+    "signoffs": []
+  },
+  "evidence": {
+    "evidenceId": "EVD-ROE09-001",
+    "type": "authored-planning-record-not-observation",
+    "requiredFields": [
+      "RoE ID and version",
+      "Scope and Method IDs",
+      "synthetic object ID",
+      "time and custodian",
+      "Source and limitation",
+      "stop and disposition"
+    ],
+    "integrity": "正本JSONのbyte hashは取扱いの照合用。真正性・法的証拠能力・実行成功の証明ではない。",
+    "prohibited": "実Credential・実Token・実Cookie・個人情報は収集しない。"
+  },
+  "completion": {
+    "technicalStatus": "not-executed",
+    "decisionStatus": "not-assessed",
+    "technicalCriteria": [
+      "selected-records-accounted",
+      "budget-and-stop-record-present",
+      "cleanup-reference-present"
+    ],
+    "decisionCriteria": [
+      "required-question-answered-or-gap-recorded",
+      "alternatives-and-confidence-recorded",
+      "owner-acceptance-and-reassessment-recorded"
+    ],
+    "inconclusive": "Required evidenceが不足したらInconclusiveとしてGapと再評価条件を残す。成功や不存在と表現しない。"
+  },
+  "change": {
+    "reauthorizationId": "REA-ROE09-001",
+    "changeRequestId": "CR-ROE09-001",
+    "kind": "initial-plan",
+    "triggers": [
+      "scope",
+      "method",
+      "data",
+      "time",
+      "budget",
+      "owner",
+      "version",
+      "stop",
+      "retest"
+    ],
+    "newApprovalRequired": true,
+    "stopCleared": false,
+    "restartApprovalRef": null,
+    "retestId": "RET-ROE09-001",
+    "retestApprovalRef": null,
+    "reassessmentAt": "2026-09-14T00:00:00Z",
+    "resumeAutomatically": false
+  },
+  "handoffs": [
+    {
+      "handoffId": "HOF-ROE09-001",
+      "destination": "Chapters10-14",
+      "status": "planned-not-delivered",
+      "inputIds": [
+        "ROE-2026-009 v1",
+        "SCOPE-ROE09-001",
+        "METHOD-ROE09-001",
+        "STOP-ROE09-001"
+      ],
+      "returnContract": "HypothesisとValidationをScope・Methodへ結び、Evidence参照またはGapを返す。現記録では開始不可。"
+    },
+    {
+      "handoffId": "HOF-ROE09-002",
+      "destination": "Chapter15",
+      "status": "planned-not-delivered",
+      "inputIds": [
+        "RET-ROE09-001",
+        "REA-ROE09-001",
+        "CR-ROE09-001"
+      ],
+      "returnContract": "修正対象とRetest条件を新しい版・許可・Evidenceへ結ぶ。旧RoEの再利用ではない。"
+    },
+    {
+      "handoffId": "HOF-ROE09-003",
+      "destination": "Chapter21",
+      "status": "planned-not-delivered",
+      "inputIds": [
+        "ROE-2026-009 v1",
+        "SCOPE-ROE09-001",
+        "METHOD-ROE09-001"
+      ],
+      "returnContract": "Control Validationも独立のScope・Method・停止・許可確認を要する。Lab Safeから許可を導かない。"
+    }
+  ],
+  "boundary": {
+    "mode": "non-executing-planning-model",
+    "independentCase": "CASE-2026-011",
+    "independentRoe": "ROE-2026-011",
+    "limitation": "授業用仮定。承認署名・実測・法的判断は存在しない。親の期限・Gap・Coverageを変更しない。",
+    "expectedDisposition": "Do not proceed"
+  }
+}

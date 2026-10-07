@@ -1,0 +1,1201 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "finite-ai27-record-comparisons-not-prompt-classification",
+  "fixtures": [
+    {
+      "id": "AI27-BASE-READ",
+      "kind": "request",
+      "row": 0,
+      "changes": [],
+      "expected": "Allowed-in-model",
+      "reason": null
+    },
+    {
+      "id": "AI27-APPROVAL-MISSING",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "approvalId"
+          ],
+          "value": "absent"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-present"
+    },
+    {
+      "id": "AI27-APPROVAL-SELF",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "ownerId"
+          ],
+          "value": "AI27-USER"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-owner"
+    },
+    {
+      "id": "AI27-APPROVAL-AGENT",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "ownerId"
+          ],
+          "value": "AI27-AGENT"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-owner"
+    },
+    {
+      "id": "AI27-APPROVAL-SOURCE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "origin"
+          ],
+          "value": "retrieved-content"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-owner"
+    },
+    {
+      "id": "AI27-APPROVAL-REQUESTER",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "requesterId"
+          ],
+          "value": "AI27-OTHER-USER"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-owner"
+    },
+    {
+      "id": "AI27-APPROVAL-TARGET",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "toolId"
+          ],
+          "value": "AI27-EXPORTER"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-action-binding"
+    },
+    {
+      "id": "AI27-APPROVAL-VERSION",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "toolVersion"
+          ],
+          "value": "2.0"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-action-binding"
+    },
+    {
+      "id": "AI27-APPROVAL-CASE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "caseId"
+          ],
+          "value": "CASE-OTHER"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-action-binding"
+    },
+    {
+      "id": "AI27-APPROVAL-SINGLE-USE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "singleRequestId"
+          ],
+          "value": "AI27-REQUEST-2"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-action-binding"
+    },
+    {
+      "id": "AI27-APPROVAL-SOURCES",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "sourceIds"
+          ],
+          "value": [
+            "AI27-SOURCE-1"
+          ]
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-action-binding"
+    },
+    {
+      "id": "AI27-APPROVAL-EFFECT",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "effect"
+          ],
+          "value": "write-request-metadata-only"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-action-binding"
+    },
+    {
+      "id": "AI27-APPROVAL-EXPIRED",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "validUntil"
+          ],
+          "value": "2026-09-20T10:00:00Z"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-window"
+    },
+    {
+      "id": "AI27-APPROVAL-FUTURE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "validFrom"
+          ],
+          "value": "2026-09-20T10:00:01Z"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-window"
+    },
+    {
+      "id": "AI27-INSTRUCTION-DATA",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "instructionId"
+          ],
+          "value": "AI27-RAG-INSTRUCTION"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "instruction-origin"
+    },
+    {
+      "id": "AI27-INSTRUCTION-ORIGIN",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "instructions",
+            1,
+            "origin"
+          ],
+          "value": "AI27-SOURCE-2"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "instruction-origin"
+    },
+    {
+      "id": "AI27-INSTRUCTION-OVERRIDE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "instructions",
+            1,
+            "allowedOverride"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "instruction-origin"
+    },
+    {
+      "id": "AI27-MEMORY-CASE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "memory",
+            0,
+            "caseId"
+          ],
+          "value": "CASE-OTHER"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "memory-scope-expiry"
+    },
+    {
+      "id": "AI27-MEMORY-AUDIENCE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "memory",
+            0,
+            "audience"
+          ],
+          "value": "AI27-OTHER-USER"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "memory-scope-expiry"
+    },
+    {
+      "id": "AI27-MEMORY-VERSION",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "memory",
+            0,
+            "version"
+          ],
+          "value": "0.9"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "memory-scope-expiry"
+    },
+    {
+      "id": "AI27-MEMORY-EXPIRED",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "memory",
+            0,
+            "expiresAt"
+          ],
+          "value": "2026-09-20T10:00:00Z"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "memory-scope-expiry"
+    },
+    {
+      "id": "AI27-MEMORY-QUARANTINE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "memory",
+            0,
+            "quarantined"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "memory-scope-expiry"
+    },
+    {
+      "id": "AI27-MEMORY-SOURCE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "memory",
+            0,
+            "sourceId"
+          ],
+          "value": "absent"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "memory-scope-expiry"
+    },
+    {
+      "id": "AI27-SOURCE-CASE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "sources",
+            0,
+            "caseId"
+          ],
+          "value": "CASE-OTHER"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "source-scope"
+    },
+    {
+      "id": "AI27-SOURCE-AUDIENCE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "sources",
+            0,
+            "audience"
+          ],
+          "value": "AI27-OTHER-USER"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "source-scope"
+    },
+    {
+      "id": "AI27-SOURCE-ORIGIN",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "sources",
+            0,
+            "origin"
+          ],
+          "value": "model-output"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "source-scope"
+    },
+    {
+      "id": "AI27-SOURCE-VERSION",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "sources",
+            0,
+            "version"
+          ],
+          "value": "2.0"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "source-scope"
+    },
+    {
+      "id": "AI27-TOOL-DISABLED",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "tools",
+            0,
+            "enabled"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "tool-availability"
+    },
+    {
+      "id": "AI27-TOOL-SCOPE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "tools",
+            0,
+            "scope"
+          ],
+          "value": [
+            "CASE-OTHER"
+          ]
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "tool-scope"
+    },
+    {
+      "id": "AI27-TOOL-EFFECT",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "tools",
+            0,
+            "sideEffect"
+          ],
+          "value": "write-request-metadata-only"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "tool-effect"
+    },
+    {
+      "id": "AI27-TOOL-VERSION",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "tools",
+            0,
+            "version"
+          ],
+          "value": "2.0"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "tool-version"
+    },
+    {
+      "id": "AI27-REQUEST-EFFECT",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "requestedEffect"
+          ],
+          "value": "write-request-metadata-only"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "tool-effect"
+    },
+    {
+      "id": "AI27-REQUEST-USER",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "userId"
+          ],
+          "value": "AI27-OTHER-USER"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "request-scope"
+    },
+    {
+      "id": "AI27-REQUEST-TIME",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "asOf"
+          ],
+          "value": "2026-09-20T10:00:01Z"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "comparison-time"
+    },
+    {
+      "id": "AI27-EXECUTED-FLAG",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "executed"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "no-execution"
+    },
+    {
+      "id": "AI27-ROOT-AUTHORITY",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "executionAuthorized"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "no-execution"
+    },
+    {
+      "id": "AI27-STOP-WITH-APPROVAL",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "killSwitchActive"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "Stopped",
+      "reason": "stop-or-budget"
+    },
+    {
+      "id": "AI27-BUDGET-EXCEEDED",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "stepsUsed"
+          ],
+          "value": 4
+        }
+      ],
+      "expected": "Stopped",
+      "reason": "stop-or-budget"
+    },
+    {
+      "id": "AI27-BUDGET-COORDINATED",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "stepsUsed"
+          ],
+          "value": 4
+        },
+        {
+          "path": [
+            "requests",
+            0,
+            "stepBudget"
+          ],
+          "value": 100
+        }
+      ],
+      "expected": "Stopped",
+      "reason": "stop-or-budget"
+    },
+    {
+      "id": "AI27-BUDGET-CHANGED",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "stepBudget"
+          ],
+          "value": 100
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "fixed-budget"
+    },
+    {
+      "id": "AI27-BUDGET-EXACT",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "requests",
+            0,
+            "stepsUsed"
+          ],
+          "value": 3
+        }
+      ],
+      "expected": "Allowed-in-model",
+      "reason": null
+    },
+    {
+      "id": "AI27-APPROVAL-START-INCLUSIVE",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "validFrom"
+          ],
+          "value": "2026-09-20T10:00:00Z"
+        }
+      ],
+      "expected": "Allowed-in-model",
+      "reason": null
+    },
+    {
+      "id": "AI27-MEMORY-BEFORE-EXPIRY",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "memory",
+            0,
+            "expiresAt"
+          ],
+          "value": "2026-09-20T10:00:01Z"
+        }
+      ],
+      "expected": "Allowed-in-model",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-DISABLED",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "disabled"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "Disabled",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-RESTRICTED",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "restrictionActive"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-UNKNOWN",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "descriptorKnown"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "Unknown",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-OBSERVATION-TARGET",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "observation",
+            "target"
+          ],
+          "value": "AI27-EXPORTER"
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-OBSERVATION-VERSION",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "observation",
+            "version"
+          ],
+          "value": "2.0"
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-OBSERVATION-DIGEST",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "observation",
+            "digest"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-VALIDATION-TARGET",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "validation",
+            "target"
+          ],
+          "value": "AI27-EXPORTER"
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-VALIDATION-VERSION",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "validation",
+            "version"
+          ],
+          "value": "2.0"
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-VALIDATION-DIGEST",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "validation",
+            "digest"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-VALIDATION-OBS-ID",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "validation",
+            "observedId"
+          ],
+          "value": "AI27-OBS-2"
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-VALIDATION-FUTURE",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "validation",
+            "validatedAt"
+          ],
+          "value": "2026-09-20T10:00:01Z"
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-VALIDATION-BEFORE-OBS",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "validation",
+            "validatedAt"
+          ],
+          "value": "2026-09-20T09:54:59Z"
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-OBS-FUTURE",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "observation",
+            "observedAt"
+          ],
+          "value": "2026-09-20T10:00:01Z"
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-VALIDATION-FAILED",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "validation",
+            "passed"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-OBS-WITHOUT-VALIDATION",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "validation",
+            "present"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "Observed",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-VALIDATION-WITHOUT-OBS",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "observation",
+            "present"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "Restricted",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-DECLARED",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "observation",
+            "present"
+          ],
+          "value": false
+        },
+        {
+          "path": [
+            "components",
+            2,
+            "validation",
+            "present"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "Declared",
+      "reason": null
+    },
+    {
+      "id": "AI27-COMPONENT-DISABLED-PRECEDENCE",
+      "kind": "component",
+      "row": 2,
+      "changes": [
+        {
+          "path": [
+            "components",
+            2,
+            "disabled"
+          ],
+          "value": true
+        },
+        {
+          "path": [
+            "components",
+            2,
+            "restrictionActive"
+          ],
+          "value": true
+        },
+        {
+          "path": [
+            "components",
+            2,
+            "descriptorKnown"
+          ],
+          "value": false
+        }
+      ],
+      "expected": "Disabled",
+      "reason": null
+    },
+    {
+      "id": "AI27-RESPONSE-MISSING",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "tools",
+            0,
+            "responseId"
+          ],
+          "value": "ABSENT"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "response-present"
+    },
+    {
+      "id": "AI27-RESPONSE-VERSION",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "mockResponses",
+            0,
+            "version"
+          ],
+          "value": "2.0"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "response-version"
+    },
+    {
+      "id": "AI27-RESPONSE-INTEGRITY",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "mockResponses",
+            0,
+            "body"
+          ],
+          "value": "different fixed response"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "response-integrity"
+    },
+    {
+      "id": "AI27-APPROVAL-ORDER-EQUAL",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "validFrom"
+          ],
+          "value": "2026-09-20T11:00:00Z"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-interval"
+    },
+    {
+      "id": "AI27-APPROVAL-ORDER-REVERSED",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "validFrom"
+          ],
+          "value": "2026-09-21T09:00:00Z"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-interval"
+    },
+    {
+      "id": "AI27-APPROVAL-EXPIRED-ORDERED",
+      "kind": "request",
+      "row": 1,
+      "changes": [],
+      "expected": "Blocked",
+      "reason": "approval-window"
+    },
+    {
+      "id": "AI27-APPROVAL-ISOLATED-EXPIRY",
+      "kind": "request",
+      "row": 0,
+      "changes": [
+        {
+          "path": [
+            "approvals",
+            0,
+            "validFrom"
+          ],
+          "value": "2026-09-19T09:00:00Z"
+        },
+        {
+          "path": [
+            "approvals",
+            0,
+            "validUntil"
+          ],
+          "value": "2026-09-19T11:00:00Z"
+        }
+      ],
+      "expected": "Blocked",
+      "reason": "approval-window"
+    }
+  ]
+}

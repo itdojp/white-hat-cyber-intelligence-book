@@ -1,0 +1,1122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ART-06 finite synthetic Hunt record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "executionAuthorized",
+    "readOnly",
+    "networkRequired",
+    "record",
+    "parents",
+    "safety",
+    "plan",
+    "contrasts"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1,
+      "const": "1.0.0"
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true
+    },
+    "executionAuthorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "readOnly": {
+      "type": "boolean",
+      "const": true
+    },
+    "networkRequired": {
+      "type": "boolean",
+      "const": false
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactId",
+        "revision",
+        "subjectId",
+        "caseId",
+        "parentCaseId",
+        "relation",
+        "asOf",
+        "threatId",
+        "hypothesisId",
+        "queryId",
+        "pivotId",
+        "decision",
+        "hypothesis",
+        "baseline",
+        "timeBasis",
+        "actualCollections",
+        "actualIncidents",
+        "sourceIds",
+        "resultStates"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifactId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subjectId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "minLength": 1
+        },
+        "threatId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hypothesisId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "queryId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pivotId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hypothesis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "baseline": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeBasis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actualCollections": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
+        },
+        "actualIncidents": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "resultStates": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "parents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "telemetryMapId",
+        "telemetryRowIds",
+        "handoffId",
+        "handoffStatus",
+        "handoffReceiptId",
+        "detectionRecordId",
+        "detectionId",
+        "fixtureSetId",
+        "threatHypothesisId",
+        "telemetryIds",
+        "evidenceRole",
+        "parentStateChanged",
+        "authorityTransferred",
+        "evidenceTransferred",
+        "parentHandoffReceived",
+        "chapter17ContractSatisfied"
+      ],
+      "properties": {
+        "telemetryMapId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "telemetryRowIds": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "handoffId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handoffStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handoffReceiptId": {
+          "type": "null"
+        },
+        "detectionRecordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "detectionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fixtureSetId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "threatHypothesisId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "telemetryIds": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "evidenceRole": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentStateChanged": {
+          "type": "boolean"
+        },
+        "authorityTransferred": {
+          "type": "boolean"
+        },
+        "evidenceTransferred": {
+          "type": "boolean"
+        },
+        "parentHandoffReceived": {
+          "type": "boolean"
+        },
+        "chapter17ContractSatisfied": {
+          "type": "boolean"
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "owner",
+        "authority",
+        "stop",
+        "cleanup",
+        "classification",
+        "personalDataIncluded",
+        "productSchemaClaimed"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stop": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup": {
+          "type": "string",
+          "minLength": 1
+        },
+        "classification": {
+          "type": "string",
+          "minLength": 1
+        },
+        "personalDataIncluded": {
+          "type": "boolean"
+        },
+        "productSchemaClaimed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject",
+        "revision",
+        "population",
+        "grantStart",
+        "grantEnd",
+        "dataEnd",
+        "asOf",
+        "pivotSeconds",
+        "namespace",
+        "normalizer"
+      ],
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "population": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "grantStart": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
+        },
+        "grantEnd": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
+        },
+        "dataEnd": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
+        },
+        "asOf": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
+        },
+        "pivotSeconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
+        },
+        "namespace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "normalizer": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "contrasts": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "corpusId",
+          "input",
+          "supplyEvidence",
+          "queryResult",
+          "judgment",
+          "handoffs"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "corpusId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "input": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "queryContractId",
+              "syntheticOnly",
+              "offlineOnly",
+              "executionAuthorized",
+              "parentReceipt",
+              "plan",
+              "mode",
+              "stop",
+              "receipts",
+              "events",
+              "approvals"
+            ],
+            "properties": {
+              "queryContractId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "syntheticOnly": {
+                "type": "boolean"
+              },
+              "offlineOnly": {
+                "type": "boolean"
+              },
+              "executionAuthorized": {
+                "type": "boolean"
+              },
+              "parentReceipt": {
+                "type": "null"
+              },
+              "plan": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "subject",
+                  "revision",
+                  "population",
+                  "grantStart",
+                  "grantEnd",
+                  "dataEnd",
+                  "asOf",
+                  "pivotSeconds",
+                  "namespace",
+                  "normalizer"
+                ],
+                "properties": {
+                  "subject": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "revision": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "population": {
+                    "type": "array",
+                    "maxItems": 12,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "grantStart": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  },
+                  "grantEnd": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  },
+                  "dataEnd": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  },
+                  "asOf": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  },
+                  "pivotSeconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  },
+                  "namespace": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "normalizer": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "mode": {
+                "type": "string",
+                "minLength": 1
+              },
+              "stop": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                ]
+              },
+              "receipts": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "stream",
+                    "subject",
+                    "revision",
+                    "population",
+                    "start",
+                    "end",
+                    "producer",
+                    "collected",
+                    "retained",
+                    "queryable",
+                    "clock",
+                    "identity"
+                  ],
+                  "properties": {
+                    "stream": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "subject": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "revision": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "population": {
+                      "type": "array",
+                      "maxItems": 12,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "start": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "end": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "producer": {
+                      "type": "boolean"
+                    },
+                    "collected": {
+                      "type": "boolean"
+                    },
+                    "retained": {
+                      "type": "boolean"
+                    },
+                    "queryable": {
+                      "type": "boolean"
+                    },
+                    "clock": {
+                      "type": "boolean"
+                    },
+                    "identity": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              },
+              "events": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "kind",
+                    "subject",
+                    "revision",
+                    "workload",
+                    "namespace",
+                    "normalizer",
+                    "eventTime",
+                    "ingestTime",
+                    "uncertainty",
+                    "result",
+                    "scopes",
+                    "ticket",
+                    "iocMatch"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "kind": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "subject": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "revision": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "workload": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "namespace": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "normalizer": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "eventTime": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "ingestTime": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "uncertainty": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "result": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "scopes": {
+                      "type": "array",
+                      "maxItems": 12,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "ticket": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      ]
+                    },
+                    "iocMatch": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              },
+              "approvals": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "subject",
+                    "revision",
+                    "workload",
+                    "namespace",
+                    "normalizer",
+                    "ticket",
+                    "start",
+                    "end",
+                    "scopes"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "subject": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "revision": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "workload": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "namespace": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "normalizer": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "ticket": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "start": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "end": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "scopes": {
+                      "type": "array",
+                      "maxItems": 12,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "supplyEvidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "inputId",
+              "queryId",
+              "subject",
+              "revision",
+              "inputDigest",
+              "meaning"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "inputId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "queryId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1
+              },
+              "revision": {
+                "type": "string",
+                "minLength": 1
+              },
+              "inputDigest": {
+                "type": "string",
+                "minLength": 1
+              },
+              "meaning": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "queryResult": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "result",
+              "gaps",
+              "evidence",
+              "pairs",
+              "iocHits",
+              "limit",
+              "alternative",
+              "scope",
+              "owner",
+              "reassessment",
+              "handoffs"
+            ],
+            "properties": {
+              "result": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gaps": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "pairs": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "array",
+                  "maxItems": 12,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "iocHits": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "limit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "alternative": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scope": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "subject",
+                  "revision",
+                  "population",
+                  "grantStart",
+                  "grantEnd",
+                  "dataEnd",
+                  "asOf",
+                  "pivotSeconds",
+                  "namespace",
+                  "normalizer"
+                ],
+                "properties": {
+                  "subject": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "revision": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "population": {
+                    "type": "array",
+                    "maxItems": 12,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "grantStart": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  },
+                  "grantEnd": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  },
+                  "dataEnd": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  },
+                  "asOf": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  },
+                  "pivotSeconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  },
+                  "namespace": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "normalizer": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reassessment": {
+                "type": "string",
+                "minLength": 1
+              },
+              "handoffs": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "route",
+                    "status",
+                    "receipt",
+                    "executionAuthorized"
+                  ],
+                  "properties": {
+                    "route": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "status": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "receipt": {
+                      "type": "null"
+                    },
+                    "executionAuthorized": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "judgment": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "findingId",
+              "result",
+              "permittedConclusion",
+              "alternative",
+              "confidence",
+              "confidenceBasis",
+              "gapId",
+              "gap",
+              "nextAction",
+              "owner",
+              "dueAt",
+              "reassessmentId",
+              "reassessment",
+              "noCompromiseClaim"
+            ],
+            "properties": {
+              "findingId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "result": {
+                "type": "string",
+                "minLength": 1,
+                "enum": [
+                  "Supported",
+                  "Weakened",
+                  "Negative finding",
+                  "Inconclusive",
+                  "Stopped"
+                ]
+              },
+              "permittedConclusion": {
+                "type": "string",
+                "minLength": 1
+              },
+              "alternative": {
+                "type": "string",
+                "minLength": 1
+              },
+              "confidence": {
+                "type": "string",
+                "minLength": 1
+              },
+              "confidenceBasis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gapId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gap": {
+                "type": "string",
+                "minLength": 1
+              },
+              "nextAction": {
+                "type": "string",
+                "minLength": 1
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "dueAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reassessmentId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reassessment": {
+                "type": "string",
+                "minLength": 1
+              },
+              "noCompromiseClaim": {
+                "type": "boolean"
+              }
+            }
+          },
+          "handoffs": {
+            "type": "array",
+            "maxItems": 12,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "route",
+                "targetChapter",
+                "backlogId",
+                "sourceFindingId",
+                "sourceSupplyId",
+                "status",
+                "receiptId",
+                "executionAuthorized",
+                "owner",
+                "dueAt",
+                "acceptance",
+                "limitation"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "route": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "targetChapter": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 5000
+                },
+                "backlogId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sourceFindingId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sourceSupplyId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "status": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "receiptId": {
+                  "type": "null"
+                },
+                "executionAuthorized": {
+                  "type": "boolean"
+                },
+                "owner": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "dueAt": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "acceptance": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "limitation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "minItems": 12
+    }
+  }
+}

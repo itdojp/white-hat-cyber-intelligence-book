@@ -1,0 +1,2381 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "executionAuthorized": false,
+  "readOnly": true,
+  "networkRequired": false,
+  "record": {
+    "id": "HUNT-2026-018-001",
+    "artifactId": "ART-06",
+    "revision": "HUNT18-REV-001",
+    "subjectId": "SYNTH-HUNT18-001",
+    "caseId": "CASE-HUNT-2026-001",
+    "parentCaseId": "CASE-DET-2026-001",
+    "relation": "refines",
+    "asOf": "2026-09-22T00:00:00Z",
+    "threatId": "TH-HUNT18-001",
+    "hypothesisId": "HYP-HUNT18-001",
+    "queryId": "QRY-HUNT18-001",
+    "pivotId": "PIV-HUNT18-001",
+    "decision": "検知見直し、観測条件修正、IR評価依頼を区別する。",
+    "hypothesis": "供給承認Snapshotで説明できない成功した同意変更と、同じWorkloadの30分以内の成功した利用が組になる。",
+    "baseline": "供給承認SnapshotのTicket・対象・Window・Scope包含。正常行動分布の学習ではない。",
+    "timeBasis": "fictional-integer-seconds-not-wall-clock",
+    "actualCollections": 0,
+    "actualIncidents": 0,
+    "sourceIds": [
+      "SRC-ATTACK-001",
+      "SRC-ATTACK-DET-001",
+      "SRC-IR-001"
+    ],
+    "resultStates": [
+      "Supported",
+      "Weakened",
+      "Negative finding",
+      "Inconclusive",
+      "Stopped"
+    ]
+  },
+  "parents": {
+    "telemetryMapId": "TCM-2026-016",
+    "telemetryRowIds": [
+      "ROW-TCM16-005",
+      "ROW-TCM16-006",
+      "ROW-TCM16-007"
+    ],
+    "handoffId": "HOF-TCM16-18",
+    "handoffStatus": "planned-not-delivered",
+    "handoffReceiptId": null,
+    "detectionRecordId": "DVR-2026-017-001",
+    "detectionId": "DET-2026-017-001",
+    "fixtureSetId": "FXSET-2026-017",
+    "threatHypothesisId": "TH-DET-2026-001",
+    "telemetryIds": [
+      "TEL-DET-2026-001",
+      "TEL-DET-2026-002",
+      "TEL-DET-2026-003"
+    ],
+    "evidenceRole": "method-reference-not-evidence-for-new-subject",
+    "parentStateChanged": false,
+    "authorityTransferred": false,
+    "evidenceTransferred": false,
+    "parentHandoffReceived": false,
+    "chapter17ContractSatisfied": false
+  },
+  "safety": {
+    "scope": "offline-authored-json-reading-only",
+    "owner": "SYNTH-HUNT-OWNER",
+    "authority": "owned-reading-copy-not-parent-RoE",
+    "stop": "Unknown input, actual data, external connection or unclear scope: stop reading and record the gap.",
+    "cleanup": "整理するのは自分の読解メモだけ。供給Evidenceと正本は変更しない。",
+    "classification": "public-synthetic-only",
+    "personalDataIncluded": false,
+    "productSchemaClaimed": false
+  },
+  "plan": {
+    "subject": "SYNTH-HUNT18-001",
+    "revision": "HUNT18-REV-001",
+    "population": [
+      "syn-workload-a"
+    ],
+    "grantStart": 0,
+    "grantEnd": 1800,
+    "dataEnd": 3600,
+    "asOf": 4000,
+    "pivotSeconds": 1800,
+    "namespace": "syn-tenant-a",
+    "normalizer": "syn-normalizer-1"
+  },
+  "contrasts": [
+    {
+      "id": "HCASE18-001",
+      "title": "限定した行動の組",
+      "corpusId": "QCASE18-01",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-001",
+        "inputId": "FIX-HUNT18-001",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "b9187a9c767ba4cb59f9e5119eb653ae764d72e189fbc728373e6f595709ca79",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Supported",
+        "gaps": [],
+        "evidence": [
+          "SYN-EVT-01",
+          "SYN-EVT-02"
+        ],
+        "pairs": [
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-02"
+          ]
+        ],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "detection-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          },
+          {
+            "route": "incident-triage-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-001",
+        "result": "Supported",
+        "permittedConclusion": "供給承認で説明できない同意変更と30分以内の同じ対象の利用が、この固定入力で組になった。",
+        "alternative": "未記録の正当な変更かもしれない。",
+        "confidence": "中",
+        "confidenceBasis": "Event二件の対応は明確だが、供給Snapshot外の業務文脈はない。",
+        "gapId": "GAP-HUNT18-001",
+        "gap": "実業務文脈と原記録の真正性は未評価。",
+        "nextAction": "Detection見直し候補とIR評価依頼を別々に記録する。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-001",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-001-1",
+          "route": "detection-review",
+          "targetChapter": 17,
+          "backlogId": "BKL-HUNT18-001-1",
+          "sourceFindingId": "FND-HUNT18-001",
+          "sourceSupplyId": "SUP-HUNT18-001",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        },
+        {
+          "id": "HOF-HUNT18-001-2",
+          "route": "incident-triage-review",
+          "targetChapter": 19,
+          "backlogId": "BKL-HUNT18-001-2",
+          "sourceFindingId": "FND-HUNT18-001",
+          "sourceSupplyId": "SUP-HUNT18-001",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-002",
+      "title": "承認による弱化",
+      "corpusId": "QCASE18-02",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read"
+            ],
+            "ticket": "syn-change-01",
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": [
+          {
+            "id": "SYN-APP-01",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "ticket": "syn-change-01",
+            "start": 500,
+            "end": 800,
+            "scopes": [
+              "scope-invoice-read"
+            ]
+          }
+        ]
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-002",
+        "inputId": "FIX-HUNT18-002",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "2882993b7d498dd982a47a08db71f31b310606d5787817efdcae01a2ab0a1164",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Weakened",
+        "gaps": [],
+        "evidence": [
+          "SYN-APP-01",
+          "SYN-EVT-01"
+        ],
+        "pairs": [],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "reassessment",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-002",
+        "result": "Weakened",
+        "permittedConclusion": "すべての候補変更が供給承認の対象・Window・Scopeで説明され、当初の仮説は弱まった。",
+        "alternative": "承認Snapshot自体の誤りは本比較で排除できない。",
+        "confidence": "中",
+        "confidenceBasis": "候補一件と承認一件を照合したが、現実の承認過程は検査していない。",
+        "gapId": "GAP-HUNT18-002",
+        "gap": "供給外の承認来歴は不明。",
+        "nextAction": "入力版や承認条件が変わった時の再評価を記録する。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-002",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-002-1",
+          "route": "reassessment",
+          "targetChapter": 18,
+          "backlogId": "BKL-HUNT18-002-1",
+          "sourceFindingId": "FND-HUNT18-002",
+          "sourceSupplyId": "SUP-HUNT18-002",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-003",
+      "title": "十分な仮定下の0件",
+      "corpusId": "QCASE18-03",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [],
+        "approvals": []
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-003",
+        "inputId": "FIX-HUNT18-003",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "ae64f39636345f2e95159386acc703080b9155ee4654e4c61686d9d80a6b6e4b",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Negative finding",
+        "gaps": [],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "reassessment",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-003",
+        "result": "Negative finding",
+        "permittedConclusion": "供給された三Streamの条件を仮定した限定Windowで該当する組を観測しなかった。",
+        "alternative": "範囲外の期間や別行動は未観測のままである。",
+        "confidence": "中",
+        "confidenceBasis": "固定Queryと供給Coverageが整合する範囲に限る。",
+        "gapId": "GAP-HUNT18-003",
+        "gap": "実Coverageと対象外行動は評価していない。",
+        "nextAction": "範囲を一般化せず、ScopeやCoverage変更時に再評価する。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-003",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-003-1",
+          "route": "reassessment",
+          "targetChapter": 18,
+          "backlogId": "BKL-HUNT18-003-1",
+          "sourceFindingId": "FND-HUNT18-003",
+          "sourceSupplyId": "SUP-HUNT18-003",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-004",
+      "title": "IOC一致だけ",
+      "corpusId": "QCASE18-04",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "ioc-only",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": true
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-004",
+        "inputId": "FIX-HUNT18-004",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "d87e81200abc4abf56a540730792448bdad1e1f9ba142ed0af0df760ffa6cc1e",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Inconclusive",
+        "gaps": [
+          "behavior-not-tested"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": [
+          "SYN-EVT-01"
+        ],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "collection-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-004",
+        "result": "Inconclusive",
+        "permittedConclusion": "合成IOCラベルの一致はあるが、行動仮説を検証していないため判断できない。",
+        "alternative": "一致値が正当な利用を指しているかもしれない。",
+        "confidence": "低",
+        "confidenceBasis": "一致ラベル以外の行動比較を実施していない。",
+        "gapId": "GAP-HUNT18-004",
+        "gap": "行動仮説の比較が未実施。",
+        "nextAction": "同じ供給ScopeでBehavior比較を計画し、実Targetは追加しない。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-004",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-004-1",
+          "route": "collection-review",
+          "targetChapter": 16,
+          "backlogId": "BKL-HUNT18-004-1",
+          "sourceFindingId": "FND-HUNT18-004",
+          "sourceSupplyId": "SUP-HUNT18-004",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-005",
+      "title": "生成根拠不足の0件",
+      "corpusId": "QCASE18-06",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": false,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [],
+        "approvals": []
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-005",
+        "inputId": "FIX-HUNT18-005",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "10c2c73fbda026a933ef6615b152ad8ed06100f4bebf73aa35f00780113b040f",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Inconclusive",
+        "gaps": [
+          "consent:producer-gap"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "collection-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-005",
+        "result": "Inconclusive",
+        "permittedConclusion": "一致がなくてもconsentの生成根拠が不足し、仮説の反証にはならない。",
+        "alternative": "Eventが生成されていないだけかもしれない。",
+        "confidence": "低",
+        "confidenceBasis": "不足するProducer条件を0件では補えない。",
+        "gapId": "GAP-HUNT18-005",
+        "gap": "consent:producer-gap。",
+        "nextAction": "生成条件を説明する合成入力の再確認候補を記録する。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-005",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-005-1",
+          "route": "collection-review",
+          "targetChapter": 16,
+          "backlogId": "BKL-HUNT18-005-1",
+          "sourceFindingId": "FND-HUNT18-005",
+          "sourceSupplyId": "SUP-HUNT18-005",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-006",
+      "title": "保持根拠不足の0件",
+      "corpusId": "QCASE18-08",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": false,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [],
+        "approvals": []
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-006",
+        "inputId": "FIX-HUNT18-006",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "d4511aa0310172a684394139e2c8ceb5cd6b298c34e8f293118cd4dbc298878d",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Inconclusive",
+        "gaps": [
+          "consent:retained-gap"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "collection-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-006",
+        "result": "Inconclusive",
+        "permittedConclusion": "保持条件が不足するため、観測なしを限定的な反証としても扱わない。",
+        "alternative": "必要な記録が保持範囲から外れた可能性がある。",
+        "confidence": "低",
+        "confidenceBasis": "比較対象が残っているという仮定を満たさない。",
+        "gapId": "GAP-HUNT18-006",
+        "gap": "consent:retained-gap。",
+        "nextAction": "必要Windowと保持根拠の確認をCollection候補へ渡す。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-006",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-006-1",
+          "route": "collection-review",
+          "targetChapter": 16,
+          "backlogId": "BKL-HUNT18-006-1",
+          "sourceFindingId": "FND-HUNT18-006",
+          "sourceSupplyId": "SUP-HUNT18-006",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-007",
+      "title": "判断時点より遅い到着",
+      "corpusId": "QCASE18-15",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 4001,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-007",
+        "inputId": "FIX-HUNT18-007",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "d7ed700d6d9db6380b2a26c434816dc8b1047413d6aca534007690092efbcd35",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Inconclusive",
+        "gaps": [
+          "arrival-incomplete"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "collection-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-007",
+        "result": "Inconclusive",
+        "permittedConclusion": "判断時点までに対象Eventがそろっておらず、結論を保留する。",
+        "alternative": "単なる到着遅延による欠測かもしれない。",
+        "confidence": "低",
+        "confidenceBasis": "Event時刻は範囲内でも取り込みがasOfを超える。",
+        "gapId": "GAP-HUNT18-007",
+        "gap": "arrival-incomplete。",
+        "nextAction": "到着条件を更新した新しい入力版で再評価する。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-007",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-007-1",
+          "route": "collection-review",
+          "targetChapter": 16,
+          "backlogId": "BKL-HUNT18-007-1",
+          "sourceFindingId": "FND-HUNT18-007",
+          "sourceSupplyId": "SUP-HUNT18-007",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-008",
+      "title": "時刻の不確かさ",
+      "corpusId": "QCASE18-16",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 120,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-008",
+        "inputId": "FIX-HUNT18-008",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "823631c047a40621a158a660e8b8a4a120e69273a45431f7dae009c5242eae1c",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Inconclusive",
+        "gaps": [
+          "time-uncertainty"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "collection-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-008",
+        "result": "Inconclusive",
+        "permittedConclusion": "時刻誤差により固定Windowや順序を確定できず、組の成立を主張しない。",
+        "alternative": "見かけの順序が時計誤差で生じた可能性がある。",
+        "confidence": "低",
+        "confidenceBasis": "時刻品質が本Queryの前提を満たさない。",
+        "gapId": "GAP-HUNT18-008",
+        "gap": "time-uncertainty。",
+        "nextAction": "許容できる時刻根拠を備えた新入力で再評価する。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-008",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-008-1",
+          "route": "collection-review",
+          "targetChapter": 16,
+          "backlogId": "BKL-HUNT18-008-1",
+          "sourceFindingId": "FND-HUNT18-008",
+          "sourceSupplyId": "SUP-HUNT18-008",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-009",
+      "title": "同一性不一致",
+      "corpusId": "QCASE18-17",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-b",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-009",
+        "inputId": "FIX-HUNT18-009",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "9962b628a36e9b0651db5ce2473d88180cb96099cecab8a92847602b1bd12346",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Inconclusive",
+        "gaps": [
+          "identity-unjoinable"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "collection-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-009",
+        "result": "Inconclusive",
+        "permittedConclusion": "同じWorkload文字列でもNamespaceが異なり、同一対象の組と判断しない。",
+        "alternative": "異なる対象が同じ表示名を使っているかもしれない。",
+        "confidence": "低",
+        "confidenceBasis": "NamespaceとNormalizerの一致が必要である。",
+        "gapId": "GAP-HUNT18-009",
+        "gap": "identity-unjoinable。",
+        "nextAction": "合成Identity対応の確認をCollection候補へ残す。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-009",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-009-1",
+          "route": "collection-review",
+          "targetChapter": 16,
+          "backlogId": "BKL-HUNT18-009-1",
+          "sourceFindingId": "FND-HUNT18-009",
+          "sourceSupplyId": "SUP-HUNT18-009",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-010",
+      "title": "Scope拡大による停止",
+      "corpusId": "QCASE18-24",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": "scope-expansion",
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-010",
+        "inputId": "FIX-HUNT18-010",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "73ec0cfb970cc2cc5b1a235e28c1930126d94ff96baa4557d7624597f89b7ab9",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Stopped",
+        "gaps": [
+          "scope-expansion"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "scope-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-010",
+        "result": "Stopped",
+        "permittedConclusion": "有効なScope拡大の停止理由を優先し、行動の評価を続けない。",
+        "alternative": "停止していない場合のResultはこの記録の主張ではない。",
+        "confidence": "高",
+        "confidenceBasis": "指定された停止理由の適用だけは入力から確認できる。",
+        "gapId": "GAP-HUNT18-010",
+        "gap": "scope-expansion。",
+        "nextAction": "Scope確認へ戻し、実権限を追加せず計画を再評価する。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-010",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-010-1",
+          "route": "scope-review",
+          "targetChapter": 18,
+          "backlogId": "BKL-HUNT18-010-1",
+          "sourceFindingId": "FND-HUNT18-010",
+          "sourceSupplyId": "SUP-HUNT18-010",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-011",
+      "title": "Ticketだけでは弱化しない",
+      "corpusId": "QCASE18-27",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": "syn-change-01",
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": [
+          {
+            "id": "SYN-APP-01",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "ticket": "syn-change-01",
+            "start": 500,
+            "end": 800,
+            "scopes": [
+              "scope-invoice-read"
+            ]
+          }
+        ]
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-011",
+        "inputId": "FIX-HUNT18-011",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "571b656a4ca0a29006da10c31a7d440772492ea95f845706ff9eb39044f3fcbd",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Supported",
+        "gaps": [],
+        "evidence": [
+          "SYN-EVT-01",
+          "SYN-EVT-02"
+        ],
+        "pairs": [
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-02"
+          ]
+        ],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "detection-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          },
+          {
+            "route": "incident-triage-review",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-011",
+        "result": "Supported",
+        "permittedConclusion": "Ticketは一致してもScope包含が不足するため、説明できない変更と利用の組が残る。",
+        "alternative": "未記録の追加承認があるかもしれない。",
+        "confidence": "中",
+        "confidenceBasis": "TicketだけでなくScope集合を比較している。",
+        "gapId": "GAP-HUNT18-011",
+        "gap": "供給Snapshot以外の承認は不明。",
+        "nextAction": "不足する承認文脈を明示して検知候補と評価依頼を分ける。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-011",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-011-1",
+          "route": "detection-review",
+          "targetChapter": 17,
+          "backlogId": "BKL-HUNT18-011-1",
+          "sourceFindingId": "FND-HUNT18-011",
+          "sourceSupplyId": "SUP-HUNT18-011",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        },
+        {
+          "id": "HOF-HUNT18-011-2",
+          "route": "incident-triage-review",
+          "targetChapter": 19,
+          "backlogId": "BKL-HUNT18-011-2",
+          "sourceFindingId": "FND-HUNT18-011",
+          "sourceSupplyId": "SUP-HUNT18-011",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    },
+    {
+      "id": "HCASE18-012",
+      "title": "別対象のNear-miss",
+      "corpusId": "QCASE18-19",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-b",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "supplyEvidence": {
+        "id": "SUP-HUNT18-012",
+        "inputId": "FIX-HUNT18-012",
+        "queryId": "QRY-HUNT18-001",
+        "subject": "SYNTH-HUNT18-001",
+        "revision": "HUNT18-REV-001",
+        "inputDigest": "c1a1034855568e5202ca0c39c10db7d984a830aaa7900f808fed2a182d9d9311",
+        "meaning": "supplied-fixture-comparison-not-authenticity"
+      },
+      "queryResult": {
+        "result": "Negative finding",
+        "gaps": [],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": [],
+        "limit": "supplied-synthetic-subject-revision-population-window-query-only",
+        "alternative": "incomplete-change-record-or-unmodeled-benign-context",
+        "scope": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "owner": "SYNTH-HUNT-OWNER",
+        "reassessment": "input-revision-window-query-or-coverage-change",
+        "handoffs": [
+          {
+            "route": "reassessment",
+            "status": "planned-not-delivered",
+            "receipt": null,
+            "executionAuthorized": false
+          }
+        ]
+      },
+      "judgment": {
+        "findingId": "FND-HUNT18-012",
+        "result": "Negative finding",
+        "permittedConclusion": "成功した利用が別Workloadなので、指定Population内の該当組は観測していない。",
+        "alternative": "別Workloadの活動は本仮説の反証にも支持にも使わない。",
+        "confidence": "中",
+        "confidenceBasis": "対象固定の結合条件に限った比較である。",
+        "gapId": "GAP-HUNT18-012",
+        "gap": "範囲外の対象は未評価。",
+        "nextAction": "Populationを無断で広げず、条件変更時の再評価を残す。",
+        "owner": "SYNTH-HUNT-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-HUNT18-012",
+        "reassessment": "入力版、Query、Scope、Window、Population、Coverage、承認文脈の変更時に再評価する。",
+        "noCompromiseClaim": false
+      },
+      "handoffs": [
+        {
+          "id": "HOF-HUNT18-012-1",
+          "route": "reassessment",
+          "targetChapter": 18,
+          "backlogId": "BKL-HUNT18-012-1",
+          "sourceFindingId": "FND-HUNT18-012",
+          "sourceSupplyId": "SUP-HUNT18-012",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false,
+          "owner": "SYNTH-HUNT-OWNER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "acceptance": "受け手が対象版、問い、許容結論、代替説明、Gapを別途評価する。",
+          "limitation": "記録は実通知、受領、Incident宣言、実行権限を意味しない。"
+        }
+      ]
+    }
+  ]
+}

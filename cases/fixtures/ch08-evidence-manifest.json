@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "manifestId": "EVM-LAB08-001",
+  "artifactId": "EVD-LAB08-001",
+  "artifactPath": "cases/fixtures/ch08-control-receipts.json",
+  "sha256": "6a4b7b5b413701cec742d25fd992c88296f54043ef44cddd07d48209fa49e9a2",
+  "sourceFixtureId": "FIX-LAB08-001",
+  "runIds": [
+    "RUN-LAB08-SAFE",
+    "RUN-LAB08-UNSAFE",
+    "RUN-LAB08-INCONCLUSIVE"
+  ],
+  "producerId": "SYNTH-CH08-GENERATOR",
+  "createdAt": "2026-09-13T00:10:00Z",
+  "classification": "synthetic-only",
+  "custodian": "SYNTH-EVIDENCE-CUSTODIAN",
+  "retention": "versioned teaching artifact; no credential material",
+  "transformHistory": [
+    {
+      "operation": "synthetic-generation",
+      "inputIds": [],
+      "outputArtifactId": "EVD-LAB08-001",
+      "producerId": "SYNTH-CH08-GENERATOR",
+      "generatorVersion": "1.0.0",
+      "seed": 208,
+      "recordedAt": "2026-09-13T00:10:00Z"
+    }
+  ],
+  "limitation": "Hash agreement verifies supplied bytes, not authenticity, legal admissibility or real execution."
+}

@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "1.0.0",
+  "snapshotId": "SRC-SNAP-CH07-20260911",
+  "sourceDataKind": "public-source-extract-not-synthetic-observation",
+  "retrievedDate": "2026-09-12",
+  "selection": [
+    "CVE-2021-44228",
+    "CVE-2024-3094"
+  ],
+  "epss": {
+    "sourceId": "SRC-EPSS-001",
+    "modelVersion": "v5",
+    "modelIdentifier": "v2026.06.15",
+    "scoreDate": "2026-09-11",
+    "scoreTimestamp": "2026-09-11T12:00:21Z",
+    "csvUrl": "https://epss.empiricalsecurity.com/epss_scores-2026-09-11.csv.gz",
+    "compressedSha256": "36e793fea920d9f0af62516c9ceed759b77f2da4f43421d3a02375d3c31a8cba",
+    "csvSha256": "2c4deab153949e339e57777d7977231a0278b9eda0419add6bb3788eb385babd",
+    "apiSha256": "988138b845f29d8e79fbedefeb309a3d73000c73c8e525389044a6dd0754c85a",
+    "rows": [
+      {
+        "cveId": "CVE-2021-44228",
+        "score": 0.99999,
+        "percentile": 1.0
+      },
+      {
+        "cveId": "CVE-2024-3094",
+        "score": 0.85974,
+        "percentile": 0.99716
+      }
+    ]
+  },
+  "kev": {
+    "sourceId": "SRC-KEV-001",
+    "repository": "cisagov/kev-data",
+    "commit": "acdcfd43102c098c377568b417a42c0e00cc63a5",
+    "catalogVersion": "2026.09.11",
+    "dateReleased": "2026-09-11T19:32:16.8993Z",
+    "count": 1709,
+    "catalogSha256": "c27673ad6c346c50f573c566f14c11c373e4ae452880d2cdb8f01a364e1e630b",
+    "schemaSha256": "577f4ccc06b7b7c6a109e1a0d6457a26db7fc5219398ff2e287b9a7e14e2d9ef",
+    "readmeSha256": "7d18e1fc40185acc90128fcceb18f016e010c8d0cf4125c3311c9381cbafcfe2",
+    "transport": "official-mirror-with-synchronization-lag; canonical-webpage-403",
+    "rows": [
+      {
+        "cveId": "CVE-2021-44228",
+        "listed": true,
+        "dateAdded": "2021-12-10",
+        "catalogDueDate": "2021-12-24",
+        "requiredActionSha256": "d646c2e4d5a8cda6c87ec979b5505d96ac9b63a6c7693e149fa9d7e7dc3af716"
+      },
+      {
+        "cveId": "CVE-2024-3094",
+        "listed": false,
+        "dateAdded": null,
+        "catalogDueDate": null,
+        "requiredActionSha256": null
+      }
+    ]
+  },
+  "cvss": {
+    "sourceId": "SRC-CVSS-001",
+    "standardVersion": "4.0",
+    "specificationDocumentVersion": "1.2",
+    "userGuideDocumentVersion": "1.2",
+    "calculatorRepository": "FIRSTdotorg/cvss-v4-calculator",
+    "calculatorCommit": "c5b0d409ae9f57c44264c6ce5f27d89298e1d32a",
+    "pairs": [
+      {
+        "id": "CVSS-SYNTH-HIGH",
+        "version": "4.0",
+        "nomenclature": "CVSS-B",
+        "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+        "score": 9.3,
+        "assessmentKind": "synthetic-author-assessment-not-a-vendor-CVE-rating",
+        "calculatorCommit": "c5b0d409ae9f57c44264c6ce5f27d89298e1d32a"
+      },
+      {
+        "id": "CVSS-SYNTH-LOW",
+        "version": "4.0",
+        "nomenclature": "CVSS-B",
+        "vector": "CVSS:4.0/AV:N/AC:H/AT:P/PR:L/UI:P/VC:N/VI:L/VA:N/SC:N/SI:N/SA:N",
+        "score": 2.1,
+        "assessmentKind": "synthetic-author-assessment-not-a-vendor-CVE-rating",
+        "calculatorCommit": "c5b0d409ae9f57c44264c6ce5f27d89298e1d32a"
+      }
+    ],
+    "calculatorFiles": {
+      "metrics.js": "99ee2643587071bf744cd090c4bb2db58d523ed0276efd809871b00a12985a4c",
+      "cvss_lookup.js": "d533fe625d95e15b7b488a4bf93dab5f7df16b7e38b0c8ee01281d7b31a8165e",
+      "max_composed.js": "be707cc82c17993a04a84e47b1a8aaa1d0d212b56852254659ce77fd7d959f63",
+      "max_severity.js": "f838ecb41bfd5114456e7fa7df8a8449ca2735c176867886fa34bd011dee0b24",
+      "cvss_score.js": "453ce6767b5c3939b51d1f21315f2649e47b5abeca674be287e94b524472a1bc"
+    }
+  },
+  "cwe": {
+    "sourceId": "SRC-CWE-001",
+    "version": "4.20",
+    "date": "2026-04-30",
+    "zipSha256": "3976f599e5e5200219a3108bb896d06e2a88fbb293369e1883cb423a5e9d7d50",
+    "xmlSha256": "1f5a78bd62e00f86436b4fe32d5034a57e8f0da88e4063b2072b664ae510912e",
+    "selectedWeakness": {
+      "id": "CWE-639",
+      "name": "Authorization Bypass Through User-Controlled Key"
+    }
+  },
+  "legalBoundary": {
+    "sourceId": "SRC-CISA-VRM-001",
+    "announcementUrl": "https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a",
+    "announcementDate": "2026-06-10",
+    "announcementSha256": "dba451d567ee3761c35ee5ab0282c7719e07c7128482d1a2497596a19bbfc6e6",
+    "directiveTextVerified": false,
+    "applicability": "Unverified",
+    "numericRemediationDeadlinesAdopted": false,
+    "supersessionClaimAdopted": false
+  }
+}

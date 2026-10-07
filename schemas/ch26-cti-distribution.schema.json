@@ -1,0 +1,902 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ART-08 / ART-09 finite supplied CTI product",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "readOnly",
+    "networkRequired",
+    "executionAuthorized",
+    "record",
+    "requirement",
+    "methodReferences",
+    "evidence",
+    "judgments",
+    "recommendations",
+    "products",
+    "options",
+    "decision",
+    "feedback",
+    "reassessment",
+    "handoff",
+    "exchangeExample",
+    "alternatives"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "readOnly": {
+      "type": "boolean"
+    },
+    "networkRequired": {
+      "type": "boolean"
+    },
+    "executionAuthorized": {
+      "type": "boolean"
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "id",
+        "caseId",
+        "parentCaseId",
+        "relation",
+        "parentArtifactId",
+        "parentJudgmentId",
+        "parentDecisionId",
+        "asOf",
+        "cutoff",
+        "deadline",
+        "attributionCeiling",
+        "syntheticSetting"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentArtifactId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentJudgmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentDecisionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cutoff": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deadline": {
+          "type": "string",
+          "minLength": 1
+        },
+        "attributionCeiling": {
+          "type": "string",
+          "minLength": 1
+        },
+        "syntheticSetting": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "required": [
+        "id",
+        "decisionRequirementId",
+        "question",
+        "owner",
+        "successCondition"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionRequirementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "successCondition": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "methodReferences": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "chapter",
+          "artifactId",
+          "recordId",
+          "relation",
+          "evidenceReceived",
+          "receiptId"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "chapter": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999999999
+          },
+          "artifactId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recordId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "relation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidenceReceived": {
+            "type": "boolean"
+          },
+          "receiptId": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "sourceId",
+          "parentArtifactId",
+          "independenceGroupId",
+          "synthetic",
+          "limitation",
+          "newObservation"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parentArtifactId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "independenceGroupId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "synthetic": {
+            "type": "boolean"
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "newObservation": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "judgments": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "parentJudgmentId",
+          "statement",
+          "confidence",
+          "evidenceIds",
+          "sourceIds",
+          "gapIds",
+          "alternativeIds",
+          "invalidation",
+          "attributionLevel",
+          "successDetermined",
+          "stixConfidence",
+          "independentOrigins"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parentJudgmentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "confidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidenceIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "sourceIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "gapIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "alternativeIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "invalidation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attributionLevel": {
+            "type": "string",
+            "minLength": 1
+          },
+          "successDetermined": {
+            "type": "boolean"
+          },
+          "stixConfidence": {
+            "type": "null"
+          },
+          "independentOrigins": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999999999
+          }
+        }
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "judgmentIds",
+          "purpose",
+          "owner",
+          "statement",
+          "executionStatus",
+          "authorityGranted",
+          "parentRecommendationId"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "judgmentIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "executionStatus": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authorityGranted": {
+            "type": "boolean"
+          },
+          "parentRecommendationId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "products": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "artifactId",
+          "requirementId",
+          "audience",
+          "purpose",
+          "version",
+          "status",
+          "cutoff",
+          "preparedAt",
+          "deadline",
+          "expiresAt",
+          "judgmentIds",
+          "recommendationIds",
+          "implication",
+          "classification",
+          "sharingLabel",
+          "license",
+          "encryption",
+          "retention",
+          "actionPermission",
+          "delivered",
+          "receiptId",
+          "feedbackId",
+          "reassessmentId",
+          "supersedes",
+          "stixObjectIds"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifactId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requirementId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audience": {
+            "type": "string",
+            "minLength": 1
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999999999
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cutoff": {
+            "type": "string",
+            "minLength": 1
+          },
+          "preparedAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "deadline": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expiresAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "judgmentIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "recommendationIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "implication": {
+            "type": "string",
+            "minLength": 1
+          },
+          "classification": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sharingLabel": {
+            "type": "string",
+            "minLength": 1
+          },
+          "license": {
+            "type": "string",
+            "minLength": 1
+          },
+          "encryption": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retention": {
+            "type": "string",
+            "minLength": 1
+          },
+          "actionPermission": {
+            "type": "boolean"
+          },
+          "delivered": {
+            "type": "boolean"
+          },
+          "receiptId": {
+            "type": "null"
+          },
+          "feedbackId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessmentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "supersedes": {
+            "type": "null"
+          },
+          "stixObjectIds": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 0,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "options": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "benefit",
+          "cost",
+          "disruption",
+          "residualRisk",
+          "reversibility",
+          "parentDecisionPreserved"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "benefit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cost": {
+            "type": "string",
+            "minLength": 1
+          },
+          "disruption": {
+            "type": "string",
+            "minLength": 1
+          },
+          "residualRisk": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reversibility": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parentDecisionPreserved": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": [
+        "id",
+        "parentDecisionId",
+        "status",
+        "selectedOptionId",
+        "owner",
+        "productId",
+        "authorityGranted",
+        "executed",
+        "rationale"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentDecisionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "selectedOptionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "productId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorityGranted": {
+          "type": "boolean"
+        },
+        "executed": {
+          "type": "boolean"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "feedback": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "productId",
+          "audience",
+          "status",
+          "question",
+          "answer",
+          "receiptId"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "productId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audience": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "answer": {
+            "type": "null"
+          },
+          "receiptId": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    "reassessment": {
+      "type": "object",
+      "required": [
+        "id",
+        "parentReassessmentId",
+        "at",
+        "triggerGapIds",
+        "invalidation",
+        "onChange",
+        "supersedingProductId",
+        "stixObjectRevoked"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentReassessmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "triggerGapIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "invalidation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "onChange": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supersedingProductId": {
+          "type": "null"
+        },
+        "stixObjectRevoked": {
+          "type": "boolean"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "required": [
+        "id",
+        "chapter",
+        "audience",
+        "productIds",
+        "status",
+        "receiptId",
+        "authorityGranted"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "chapter": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999999999
+        },
+        "audience": {
+          "type": "string",
+          "minLength": 1
+        },
+        "productIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "receiptId": {
+          "type": "null"
+        },
+        "authorityGranted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "exchangeExample": {
+      "type": "object",
+      "required": [
+        "id",
+        "relation",
+        "purpose",
+        "bundleProfile",
+        "taxiiProfile",
+        "adoptedEvidenceIds",
+        "contributesToJudgment",
+        "networkExecuted"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "adoptedEvidenceIds": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 0,
+          "items": {
+            "type": "string"
+          }
+        },
+        "contributesToJudgment": {
+          "type": "boolean"
+        },
+        "networkExecuted": {
+          "type": "boolean"
+        },
+        "bundleProfile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "taxiiProfile": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "alternatives": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "focusQuestion",
+          "parentHypothesisId",
+          "statement",
+          "evidenceIds",
+          "gapIds",
+          "disposition"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "focusQuestion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parentHypothesisId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidenceIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "gapIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "disposition": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

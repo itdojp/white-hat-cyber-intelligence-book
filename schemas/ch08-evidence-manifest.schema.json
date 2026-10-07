@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ART-18 closed evidence-manifest teaching contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "manifestId",
+    "artifactId",
+    "artifactPath",
+    "sha256",
+    "sourceFixtureId",
+    "runIds",
+    "producerId",
+    "createdAt",
+    "classification",
+    "custodian",
+    "retention",
+    "transformHistory",
+    "limitation"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true
+    },
+    "manifestId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifactId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifactPath": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sourceFixtureId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "producerId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "createdAt": {
+      "type": "string",
+      "minLength": 1,
+      "format": "date-time"
+    },
+    "classification": {
+      "type": "string",
+      "minLength": 1
+    },
+    "custodian": {
+      "type": "string",
+      "minLength": 1
+    },
+    "retention": {
+      "type": "string",
+      "minLength": 1
+    },
+    "transformHistory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation",
+          "inputIds",
+          "outputArtifactId",
+          "producerId",
+          "generatorVersion",
+          "seed",
+          "recordedAt"
+        ],
+        "properties": {
+          "operation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "inputIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "outputArtifactId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "producerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "generatorVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "seed": {
+            "type": "integer",
+            "const": 208
+          },
+          "recordedAt": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date-time"
+          }
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "limitation": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

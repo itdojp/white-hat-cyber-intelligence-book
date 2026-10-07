@@ -37,12 +37,13 @@
 3. [第2章 法、倫理、許可、責任ある開示](manuscript/02-law-ethics-authorization.md)
 4. [第3章 能力を分解し、証拠で学習する](manuscript/03-capability-evidence.md)
 5. [第4章 資産、信頼境界、攻撃面、脅威モデル](manuscript/04-assets-boundaries-threat-model.md)
-6. [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
-7. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
-8. [第25章 構造化分析、不確実性、アトリビューション](manuscript/25-structured-analysis-attribution.md)
-9. [Quick Start](quickstart.md)
-10. [Concept Map](concept-map.md)
-11. [詳細目次](TOC.md)
+6. [第5章 攻撃者の行動をATT&CKで記述する](manuscript/05-attack-behavior.md)
+7. [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
+8. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
+9. [第25章 構造化分析、不確実性、アトリビューション](manuscript/25-structured-analysis-attribution.md)
+10. [Quick Start](quickstart.md)
+11. [Concept Map](concept-map.md)
+12. [詳細目次](TOC.md)
 
 ## 公開中の成果物
 
@@ -54,6 +55,8 @@
 - [第3章 合成記入例：Capability Evidence Matrix](cases/ch03-capability-evidence-example.md)
 - [Threat Modelテンプレート](templates/threat-model.md)
 - [第4章 合成記入例：資産・信頼境界・脅威モデル](cases/ch04-threat-model-example.md)
+- [ATT&CK Behavior Mapテンプレート](templates/attack-behavior-map.md)
+- [第5章 合成記入例：ATT&CK Behavior Map](cases/ch05-attack-behavior-example.md)
 - [Web/API Assessment Hypothesis Packテンプレート](templates/web-api-assessment-hypothesis-pack.md)
 - [第11章 合成記入例：マルチテナント受注Export APIとWebhook登録の評価](cases/ch11-web-api-assessment-example.md)
 - [第11章 読み取り専用の合成Request / Response Dataset](cases/fixtures/ch11-web-api-assessment-dataset.json)
@@ -83,3 +86,19 @@
 ## ライセンス
 
 本文、図表、演習課題、テンプレートは、特記がない限りCC BY-NC-SA 4.0です。商用利用には別途契約が必要です。自作コードの扱いは[LICENSE.md](LICENSE.md)を参照してください。
+
+## 第9章の成果物
+
+[第9章 Engagement DesignとRules of Engagement](manuscript/09-engagement-roe.md) / [ART-02](templates/rules-of-engagement.md) / [完全合成Case](cases/ch09-engagement-roe-example.md) / [計画JSON](cases/fixtures/ch09-engagement-roe.json)。親の許可期限を保持したDraftで、作業を始めない判断と再承認を学ぶ。
+
+## Intelligence Requirementから収集計画へ
+
+[第23章](manuscript/23-intelligence-requirements.md)、[ART-29](templates/intelligence-requirement-collection-plan.md)、[完全合成例](cases/ch23-intelligence-requirements-example.md)で、判断期限と未解決Gapを辿る。
+
+## 第24章の制作成果
+
+[OSINT、Provenance、情報源評価](manuscript/24-osint-provenance-sources.md)は、ART-30と完全合成資料で原典、版、変換、三つの評価軸とEvidence用途を学ぶ。
+
+## 第26章の制作成果
+
+[CTIを構造化し、技術・経営へ配布する](manuscript/26-cti-distribution.md)では、同じ根拠からART-08 / ART-09を作り、未配達・Gap・再評価を保持する。

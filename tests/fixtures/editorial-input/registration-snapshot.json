@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "capturedAt": "2026-09-05",
+  "capturedAt": "2026-09-08",
   "registrationIssue": 63,
   "registrationIssueSnapshotUpdatedAt": "2026-08-25T02:03:30Z",
   "packages": [
@@ -789,6 +789,18 @@
           "effectiveAt": "2026-09-05",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5550634873",
           "reason": "Issue #98契約の最初の実運用対象として明示選択した。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-06",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/113",
+          "reason": "PR #113でcurrent sourceに基づく第5章正本とIntake Recordを作成。raw Packageは不在で直接採用なし。通常mergeとmain公開は未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5577993812",
+          "reason": "PR #113通常merge: cf0cc53257393b41ebd321173440b961fe8232a3。review済みheadとmerge tree一致。exact-main Book Contract 34178009130 / Book QA 34178009152 / Deploy Pages 34178009124、deployment 6319180022がsuccess。第5章・ART-15・Case・Source Note・Datasetの公開HTTP200とmarker、JSON正本とのbyte一致を確認。raw不在・直接採用なしのIntake Recordを保持。"
         }
       ]
     },
@@ -802,6 +814,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5644514226",
+          "reason": "前提の通常merge・公開確認後にIssue #31の唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/117",
+          "reason": "専用Draft PR #117とIntake Recordを作成。raw不在で直接採用なし。通常merge・main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5645016826",
+          "reason": "PR #117通常merge: 548f102f815d617d7a4dad626e227e99206e1f34。review済みheadとmerge tree一致。exact-main Book Contract 34685474345 / Book QA 34685474321 / Deploy Pages 34685474330、deployment 6408124272がsuccess。第6章・ART-16・Case・Source Note・JSON教材を含む公開13surfaceのHTTP200とreview済み出力とのbyte一致、JSON正本との一致を確認。raw不在・直接採用なしのIntake Recordを保持。"
         }
       ]
     },
@@ -815,6 +845,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5645402838",
+          "reason": "前提main 665ca8e3c1846778f6657e38ca15facf638a028bのCI・Pages・公開確認後、branch作成前に唯一の候補を明示選択。rawは不在で直接採用なし。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/120",
+          "reason": "専用Draft PR #120とIntake Recordを作成。raw不在で直接採用なし。通常merge・main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5648933706",
+          "reason": "PR #120通常merge: 9cea38dadeb41a6ef70c080638f2ac1e33269fee。review済みheadとmerge tree一致。exact-main Book Contract 34720608514 / Book QA 34720608508 / Deploy Pages 34720608562、deployment 6414750795がsuccess。第7章・ART-17・Case・Source Note・二つのJSON教材を含む公開15surfaceのHTTP200とreview済み出力とのbyte一致、JSON正本との一致を確認。raw不在・直接採用なしのIntake Recordを保持。"
         }
       ]
     },
@@ -828,6 +876,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5649213929",
+          "reason": "第4〜7章とconsumed metadataの通常merge・公開確認後、唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/123",
+          "reason": "専用Draft PR #123とIntake Recordを作成。Runningを含む八状態を採用。raw不在で直接採用なし。通常merge・main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5650941182",
+          "reason": "PR #123通常merge: dfcdd0167ba6cca1acaaecae73b4598f1366f235。review済みheadとmerge tree一致。exact-main Book Contract 34735705159 / Book QA 34735705160 / Deploy Pages 34735705154、deployment 6417361157がsuccess。第8章・ART-18・Case・Source Note・三つのJSON教材を含む公開17surfaceのHTTP200とreview済み出力とのbyte一致、JSON正本との一致を確認。raw不在・直接採用なしのIntake Recordを保持。"
         }
       ]
     },
@@ -847,6 +913,24 @@
           "effectiveAt": "2026-08-10",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
           "reason": "Input SHAが異なる2候補を検出。比較記録なしのwinner選択を禁止した。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
+          "reason": "両候補の登録概要をcurrent Issue・親契約・一次Sourceと比較。Authority/RoE/Procedureとtechnical/decision completionの分離が現在の制約に対応するBを設計来歴として選択。raw両方不在、本文優劣・読了・hash検証・直接採用は主張しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/127",
+          "reason": "専用Draft PR #127と実URLのIntake Recordを作成。raw不在で直接採用なし。完全合成RoEはDraft/Do not proceed。通常merge/main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-14",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5659602660",
+          "reason": "PR #127通常merge: ad4957f827157e54fb53d3acc75ed08edbf59d7c。review済みheadとmerge tree一致。exact-main Book Contract 34810111029 / Book QA 34810111114 / Deploy Pages 34810110931、deployment 6431203533がsuccess。第9章・ART-02・Case・Source Note・計画JSON/Schema・代表章を含む公開20surfaceのHTTP200とreview済み出力とのbyte一致、対象五JSONと正本の一致を確認。両raw不在・直接採用なし、B選択/A DeferredのIntake Recordを保持。"
         }
       ]
     },
@@ -860,6 +944,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-14",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5660341358",
+          "reason": "Issue35/current contract/再確認した一次資料に従い登録候補を設計来歴として選択。rawは認可workspaceに不在、読了・実体hash照合・直接採用は主張しない。三Collection classes/五Verification statesへ新規構成し、同梱Chapter9の処分は伝播しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-14",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/130",
+          "reason": "専用Draft PR #130と実URLのIntake Recordを作成。raw不在で直接採用なし。完全合成ART19はrecord-only/未承認。通常merge/main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5673149529",
+          "reason": "PR #130通常merge: 202a82a37e2f0fbf66854387054411fbfb62e1d3。review済みheadとmerge tree一致。exact-main Book Contract 34914983829 / Book QA 34914983847 / Deploy Pages 34914983818、deployment 6449563073がsuccess。第10章・ART-19・Case・Source Note・二JSON/Schema・前章/代表章を含む公開27surfaceのHTTP200とreview済み出力とのbyte一致、対象八JSONと正本の一致を確認。raw不在・直接採用なし、元Intake Recordと同梱Chapter9候補のDeferredを保持。"
         }
       ]
     },
@@ -873,6 +975,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5673770683",
+          "reason": "PR132通常merge/main公開・Chapter10consumed後にIssue36の正式四Principal/六Pathstates/三Methodsへ登録候補を明示選択。raw不在のため直接採用せず現行Issue・親契約・一次Sourceから新規構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/133",
+          "reason": "第12章専用Draft PR #133に本文/ART20/完全合成JSON/Schema/Source/有限Layer AとIntake Recordを結ぶ。通常merge/main公開前のためconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5674704043",
+          "reason": "PR #133通常merge: eec3eca864786ffc8ad25cbbcc6f7a1b24995f98。最終検証headとmerge tree一致。exact-main Book Contract 34927591344 / Book QA 34927591414 / Deploy Pages 34927591325、deployment 6451659627がsuccess。第12章・ART-20・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む34公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter13のDispositionを保持。"
         }
       ]
     },
@@ -886,6 +1006,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5675937404",
+          "reason": "親Chapter4/6/9/12とChapter12consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前コメントで明示選択。raw不在のため直接採用せずcurrent Issue/契約/一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/136",
+          "reason": "第13章専用Draft PR #136に本文/ART21/完全合成JSON/閉Schema/Source/有限Layer AとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5678132066",
+          "reason": "PR #136通常merge: dcd9845be053d3c0cd21c9814dbe9e76d59ccba4。最終検証headとmerge tree一致。exact-main Book Contract 34952916465 / Book QA 34952916342 / Deploy Pages 34952916349、deployment 6456097580がsuccess。第13章・ART-21・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む40公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十二JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter12のDispositionを保持。"
         }
       ]
     },
@@ -899,6 +1037,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-16",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5686084068",
+          "reason": "親Chapter8/9/11/12/13とChapter13consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前に明示選択。raw不在のため直接採用せず正式Issue/現行契約/一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-16",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/139",
+          "reason": "第14章専用Draft PR #139に本文/ART22/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-16",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5692616067",
+          "reason": "PR #139通常merge: 99dd185db99e4bbba581b4f829cfde495eb3a50a。最終検証headとmerge tree一致。exact-main Book Contract 35059304952 / Book QA 35059304680 / Deploy Pages 35059304679、deployment 6474531706がsuccess。第14章・ART-22・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む46公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十四JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter15のDispositionを保持。"
         }
       ]
     },
@@ -912,6 +1068,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5708381252",
+          "reason": "親Chapter7〜14とChapter14consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前に明示選択。raw不在のため直接採用せず正式Issue/現行契約/一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/142",
+          "reason": "第15章専用Draft PR #142に本文/ART04/ART23/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-19",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5740271229",
+          "reason": "PR #142通常merge: 39bb672c91f60f5992df98b75fa566911c516e67。最終検証headとmerge tree一致。exact-main Book Contract 35429122730 / Book QA 35429122700 / Deploy Pages 35429122698、deployment 6538490415がsuccess。第15章・ART-04/23・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む53公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十六JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter14のDispositionを保持。"
         }
       ]
     },
@@ -925,6 +1099,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228688398",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-21",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/40#issuecomment-5758739823",
+          "reason": "PR146 actual-main公開と第II部完了後、唯一の登録候補EIC-0040-38fbe94b39aaをbranch前に設計来歴として選択。登録原料の実体は見つからず、読了/hash実照合/直接採用は主張しない。Issue40と現行契約・一次資料から新規制作し、同梱Chapter9の履歴を保持する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-21",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/147",
+          "reason": "第16章専用Draft PR #147に本文/ART24/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-22",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/40#issuecomment-5767224085",
+          "reason": "PR #147通常merge: 01874e92b51a4eb4dfc6901ee105a1bf63c56da5。最終検証headとmerge tree一致。exact-main Book Contract 35650528930 / Book QA 35650528979 / Deploy Pages 35650528928、deployment 6577693307がsuccess。第16章・ART-24・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む61公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十八JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter9のDispositionを保持。"
         }
       ]
     },
@@ -938,6 +1130,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-22",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5777112567",
+          "reason": "PR149 actual-main公開とIssue148完了後、唯一EIC-0041-5a08af6d1ae3をbranch前に登録設計来歴として選択。raw実体はworkspaceに不在で読了/hash実照合/直接採用なし。正式Issue41の五Result、現行親契約と一次資料から新規制作し、同梱Chapter19を保持する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-22",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/150",
+          "reason": "第18章専用Draft PR #150に本文/ART06/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-23",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5785664929",
+          "reason": "PR #150通常merge: d2c72ff3b14f16ff51d0c8e9409eb211be7c5e63。最終検証headとmerge tree一致。exact-main Book Contract 35793364509 / Book QA 35793364522 / Deploy Pages 35793364530、deployment 6602465904がsuccess。第18章・ART-06・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む67公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象二十JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter19のDispositionを保持。"
         }
       ]
     },
@@ -951,6 +1161,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-23",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5790260467",
+          "reason": "第19章の唯一候補をbranch作成前に選択。raw不在を隠さず、専用Draftで現行契約から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-23",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/153",
+          "reason": "第19章専用Draft PR#153に本文/ART25/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-24",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5802428231",
+          "reason": "PR #153通常merge: 52c8d11ecb9f7ae93372596b2d18f160f1cced3b。最終検証headとmerge tree一致。exact-main Book Contract 35913828428 / Book QA 35913828599 / Deploy Pages 35913828395、deployment 6623610120がsuccess。第19章・ART-25・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む73公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象二十二JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter18のDispositionを保持。"
         }
       ]
     },
@@ -964,6 +1192,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5819304826",
+          "reason": "PR155実main公開とIssue154完了後、Issue43で唯一の登録候補をbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを明示し、現契約と一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/156",
+          "reason": "第20章専用Draft PR#156に本文/ART07+26/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5823341050",
+          "reason": "PR #156通常merge: c3f8c1565324cb492f050343a54483e7d791c073。最終検証headとmerge tree一致。exact-main Book Contract 36066023441 / Book QA 36066023558 / Deploy Pages 36066023463、deployment 6649547253がsuccess。第20章・ART-07/26・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む80公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象二十四JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter21のDispositionを保持。"
         }
       ]
     },
@@ -977,6 +1223,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5824263539",
+          "reason": "PR158実main公開とIssue157完了後、Issue44で唯一の登録候補をbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを明示し、現契約と用途限定の一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/159",
+          "reason": "第21章専用Draft PR#159に本文/ART27/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5841619885",
+          "reason": "PR159は利用者が通常merge。Mermaid修正PR161・cleanup再発防止PR163もmerge後、実main d16f680e2b69fab8251ca0a98952edec0155e161 のBook Contract36196112632 / Book QA36196112566 / Pages36196112584成功、成功artifactと159公開fileのbyte一致、全13ページ18図desktop/mobile実描画、review未解決/mismatch/missing0/0/0を確認しIssue44を完了。元IntakeのPR159・作成時main82e344c・2026-09-25・raw未読等は全欄保持し、consumedとmatching checkpointだけ末尾追加する。"
         }
       ]
     },
@@ -990,6 +1254,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5841655629",
+          "reason": "親第7・15・16〜21章のmainと公開Gate完了後、Issue45で唯一候補をbranch前選択。認可workspaceでraw不在・未読・実体hash未照合・直接採用なしを記録し、現契約と用途限定の一次資料から再構成する。第21章consumed管理PR165とは変更所有を分ける。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/166",
+          "reason": "第22章専用Draft PR166に本文/ART-28/完全合成Case・JSON/閉Schema/Source/有限Layer AとIntakeを結ぶ。章全体QA・独立Review・通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5843964406",
+          "reason": "PR166は利用者が通常merge。実main 94c06a88fa4dd2f19105d30ebc38897b718f5dda のBook Contract36222833430 / Book QA36222833448 / Pages36222833390成功、成功artifactと165公開filesのbyte一致、全14ページ19図と新四面のdesktop/mobile確認、review未解決/mismatch/missing0/0/0を確認しIssue45を完了。元IntakeのPR166・作成時main d16f680・2026-09-26・42 literal・raw未読等は全欄保持し、consumedと対応するcheckpointだけ末尾追記する。"
         }
       ]
     },
@@ -1003,6 +1285,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/46#issuecomment-5850389131",
+          "reason": "前提第4/16/19章とSource更新PR172の実main f930・公開Gate完了後、Issue46で唯一候補をbranch前選択。認可workspaceでraw不在・未読・実体hash未照合・直接採用なしを記録し、Issue/current contractと用途限定の一次資料から新規制作する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/173",
+          "reason": "第23章専用Draft PR173へ本文/ART-29/全欄合成Case・JSON/閉Schema/Source/有限Layer Aと正式Intakeを結ぶ。全QA・独立review・通常merge/main公開前なのでconsumedとしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/46#issuecomment-5853206831",
+          "reason": "PR173利用者通常merge。実main 8f37aaa3c83948c105b069696531fd0e609b4cf7 のBook Contract36297624661 / Book QA36297624698 / Pages36297624671・deploy success、173公開files byte一致、全15頁20図と新四面desktop/mobile、全localQA/四seed/49review対比と21schema probes、review未解決/mismatch/missing0/0/0を確認しIssue46 completed。元Intakeの作成時main f930・PR173・日付・raw未読/実体hash未照合/直接採用なしを全欄保持し、consumed履歴/checkpointだけを末尾追記する。"
         }
       ]
     },
@@ -1016,6 +1316,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/47#issuecomment-5853214772",
+          "reason": "前提第10/23章のactual-main/Pages完了後、Issue47で唯一候補をbranch前選択。認可workspace61002directoriesでraw登録五basename hits0/errors0、未読・実体hash未照合・直接採用なしを保持し、現行Issue/契約と再確認した一次資料から新規制作する。別管理PR175のChapter23 consumedを混在させない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/176",
+          "reason": "第24章専用Draft PR176へ本文/ART-30/全欄合成Case・JSON/閉Schema/Source/有限Layer Aと正式Intakeを結ぶ。全QA/独立review/通常merge/main公開前なのでconsumedとしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-28",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/47#issuecomment-5859589801",
+          "reason": "PR176利用者通常merge。実main 9f814f7e7a134233172986f763a7e20ddc0bf592 のBook Contract36346710750 / Book QA36346710756 / Pages36346710891・deploy success、179公開files byte一致、全16頁21図と四面desktop/mobile、全localQA/四seed/36review対比+5表記、37固定IO/12空配列Schema負例、review未解決/mismatch/missing0/0/0を確認しIssue47 completed。元Intakeの作成時main8f37・PR176・日付・十評価記述（最新十一評価とは別）・raw未読/実体hash未照合/直接採用なしを全欄保持し、履歴/checkpointだけ末尾追記する。"
         }
       ]
     },
@@ -1029,6 +1347,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-28",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5859592764",
+          "reason": "前提23/24/25の実main公開と現行契約/一次資料を確認しIssue48でbranch前選択。raw登録3basename69338directories不在、未読/実体hash未照合/直接採用なし。Productは親25refines、独立STIX構造例はEvidence非採用。別管理Chapter24consumedを混在させない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-28",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/179",
+          "reason": "第26章専用Draft PR179へ本文/ART08・09/完全記入例・三JSON/閉Schema/Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開前なのでconsumedとしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-28",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5871968211",
+          "reason": "PR179利用者通常merge。実main 6a700760592e35b7de135f6d566cb11fa82fbc99 のBook Contract 36432130802 / Book QA 36432130787 / Deploy Pages 36432130683・deploy success、188公開files byte一致、全17頁22図と五面desktop/mobile、全localQA/四seed/108literal1015回帰/118IO・Schema/22review対比/15実sync負例、review未解決/mismatch/missing0/0/0を確認しIssue48 completed。元Intakeの作成時main9f814f7・PR179・日付・独立STIX13Object・raw未読/実体hash未照合/直接採用なしを全欄保持し、履歴/checkpointだけ末尾追記する。"
         }
       ]
     },
@@ -1042,6 +1378,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-29",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5878166655",
+          "reason": "唯一登録候補をIssue49でbranch前に明示選択。原Package/他Target/同梱第28章/旧履歴は保持し、実体不在を推測再構成しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-29",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/183",
+          "reason": "第27章専用Draft PR183へ本文/ART31/全欄Case/合成JSON/閉Schema/Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開前なのでconsumedとしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-30",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5901110059",
+          "reason": "PR183利用者通常merge。実main 805428e5555206acf2b8e57ead9fba95ec815f98 のBook Contract 36500761371 / Deploy Pages 36500761572 / Book QA 36500761362・deploy success、195公開files byte一致、全18頁23図と四面desktop/mobile、全localQA/四seed/3699回帰68意味対比/325IO・42review対比/22実sync負例、review未解決/mismatch/missing0/0/0を確認しIssue49 completed。元Intakeの作成時main b596730・PR183・日付・六Componentと六要求・raw未読/実体hash未照合/直接採用なしを全欄保持し、履歴/checkpointだけ末尾追記する。"
         }
       ]
     },

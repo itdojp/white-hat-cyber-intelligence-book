@@ -16,6 +16,23 @@
 | ART-12 | Analytic Judgment Record | 25, 29 | `templates/analytic-judgment-record.md` |
 | ART-13 | Authorization Checklist | 2, 9 | `templates/authorization-checklist.md` |
 | ART-14 | Capability Evidence Matrix | 3, 29 | `templates/capability-evidence-matrix.md` |
+| ART-15 | ATT&CK Behavior Map | 5 | `templates/attack-behavior-map.md` |
+| ART-16 | Signal Flow Diagram | 6 | `templates/signal-flow-diagram.md` |
+| ART-17 | Vulnerability Prioritization Record | 7 | `templates/vulnerability-prioritization-record.md` |
+| ART-18 | Lab Safety and Evidence Plan | 8 | `templates/lab-safety-evidence-plan.md` |
+| ART-19 | Attack Surface Register | 10 | `templates/attack-surface-register.md` |
+| ART-20 | Identity Attack Path Review | 12 | `templates/identity-attack-path-review.md` |
+| ART-21 | Platform and Supply Chain Assessment | 13 | `templates/platform-supply-chain-assessment.md` |
+| ART-22 | Minimal-Impact Validation Record | 14 | `templates/minimal-impact-validation-record.md` |
+| ART-23 | Retest Record | 15 | `templates/retest-record.md` |
+| ART-24 | Telemetry Coverage Map | 16 | `templates/telemetry-coverage-map.md` |
+| ART-25 | Incident Action Plan | 19 | `templates/incident-action-plan.md` |
+| ART-26 | Root Cause Analysis | 20 | `templates/root-cause-analysis.md` |
+| ART-27 | Control Validation Plan | 21 | `templates/control-validation-plan.md` |
+| ART-28 | Security Improvement Backlog | 22 | `templates/security-improvement-backlog.md` |
+| ART-29 | Intelligence Requirement and Collection Plan | 23 | `templates/intelligence-requirement-collection-plan.md` |
+| ART-30 | Evidence and Source Evaluation Table | 24 | `templates/evidence-source-evaluation-table.md` |
+| ART-31 | AI / Agent Threat Model | 27 | `templates/ai-agent-threat-model.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -36,3 +53,41 @@
 `ART-03`は、Decision RequirementからBusiness Outcome、具体的なAsset typeに記録するBusiness Asset role、Flow、Trust Boundary、Exposure、Threat Hypothesis、非OperationalなAttack Path、Control assurance、Gap、Evidence Requirement、Action、Reassessmentまでを共通IDで接続する。Network SegmentをTrust Boundaryの定義とせず、Controlの存在とValidationを分離する。第4章の合成記入例は`cases/ch04-threat-model-example.md`を参照する。
 
 成果物IDは章間・演習・評価ルーブリックで共通利用する。
+
+`ART-15`はThreat Hypothesis、ATT&CK Object / version、Mapping basis、Data、Evidence、Status、Gap、Decision contribution、Reassessmentを接続する。Mappingと観測・検証を分離し、[第5章合成Case](cases/ch05-attack-behavior-example.md)を参照する。
+
+`ART-16`は操作から認可、状態変化、生成・収集・保持・検索・検証を同一FlowのEvidenceへ結び付ける。[第6章完全合成Case](cases/ch06-signal-flow-example.md)は親CASE-2026-001をrefinesし、親の観測・Controlを更新しない。
+
+`ART-17`は公開指標、導入・影響・到達条件、統制、事業影響、Owner・期限・残余リスクを分離する。[第7章合成Case](cases/ch07-vulnerability-prioritization-example.md)では親の状態を変更せず、判断の再評価条件まで記録する。
+
+`ART-18`は許可・境界、八状態、合成receipt、EvidenceのByte/由来/保持、停止、六種Cleanup、再評価を接続する。[第8章合成Case](cases/ch08-lab-evidence-example.md)は非実行モデルであり、親の状態や実作業の許可を更新しない。
+
+`ART-02`はAuthorization evidence、Scope、Method、時間・量、Data、Stop/Recovery、Completion、Reauthorizationを接続する。[第9章完全合成Case](cases/ch09-engagement-roe-example.md)のROE-2026-009はDraft / Do not proceedであり、期限経過した親AUTH-CASE-2026-001を更新しない。
+
+`ART-19`はCollection Requirement、Source/Provenance/時点、候補Asset、所有Confidence、五Verification states、次Actionの承認不足、Evidence/Gap/Owner/再評価を接続する。[第10章Case](cases/ch10-attack-surface-example.md)はCASE-2026-001をrefinesし、親RoEのDraft/失効/Scopeを変更しない。
+
+`ART-20`はPrincipal/Class/Owner/Lifecycle、Role/Permission/Resource、必要Edge、六Path states、Evidence/Telemetry/Finding/Treatment/再評価を結びます。[第12章Case](cases/ch12-identity-path-review-example.md)は完全合成・非実行で、親RoEのDraft/失効/三Objectを変更しません。
+
+`ART-21`はSource/Lock/Builder/Artifact/Digest/Promotion/RuntimeをEvidence、五状態、Finding/Treatment/Owner/Decision/Reassessmentへ結ぶ。[第13章Case](cases/ch13-platform-supply-chain-example.md)は完全合成で、署名・Trust・Compliance・Safety・実許可を分離し、親の停止状態を変更しない。
+
+`ART-22`は問い、Authority、Validation、支持/反証/未観測、Stop、Cleanup/Residual、Finding/Decision/Reassessmentを接続する。[第14章Case](cases/ch14-minimal-impact-validation-example.md)は八つの完全合成記録で六Result・四Methodを区別し、未実施を別欄へ残す。Supportedも実影響・実許可ではなく、残存UnknownならOpenを維持する。
+
+`ART-04`の既存見出しと公開URLを保持し、Finding・対象版・Evidence・Treatment・Decision・Residual・受容権限を接続する。`ART-23`は変更参照とRetest条件・観測・限界を記録する。[第15章Case](cases/ch15-findings-retest-risk-example.md)の七つの独立した合成対比では、六Status、五Result、Retestと受容の二つのClosed経路を区別する。実改修や実行許可を与えない。
+
+`ART-24`は問い、必要Field、Consumer、七つのCoverage状態、品質、Gap、Owner、有限Validationと再評価を接続する。[第16章Case](cases/ch16-telemetry-coverage-example.md)は十の独立した合成対比であり、実収集・親Evidence・実行許可・Handoff受領を認定しない。
+
+`ART-06`は第18章で既存五見出しと公開経路を保持して拡張する。[完全合成Case](cases/ch18-hunt-plan-example.md)の十二対比で、五Result、仮説、Coverage、Query、Evidence、Gap、未配達Handoff、再評価を結ぶ。親16/17のEvidence・権限・状態は継承しない。
+
+`ART-25`は宣言、Scope、Evidence、封じ込め案、通知照会、復旧検証、残余リスク、再開を結ぶ。[第19章Case](cases/ch19-incident-action-plan-example.md)の十二の独立した合成対比で七状態を区別し、親Evidence・実権限・未配達を引き継がない。
+
+`ART-07`は第20章で既存見出し・公開URLを保持して拡張する。`ART-26`と[全欄Case](cases/ch20-dfir-timeline-causality-example.md)で原時刻、Clockの不確かさ、Cutoff、代替説明、原因未確定、限定影響と改善・再評価を結ぶ。五Receipt・二Snapshotは完全合成であり、親のEvidence・権限・未配達を継承しない。
+
+`ART-27`はControl objective、Atomic / End-to-End、五層のExpected/Actual、Failure、Gap、改善とRetestを結ぶ。[第21章Case](cases/ch21-control-validation-example.md)は十の完全合成対比であり、親Evidence・実権限・未配達・原因未確定を変更しない。
+
+`ART-28`はMetricの判断目的、母集団、品質、改善担当、Verification、Risk decisionと再評価を結ぶ。[第22章Case](cases/ch22-improvement-backlog-example.md)の十指標・八項目は供給比較だけであり、実効果、実権限、親Evidenceの受領を認定しない。
+
+## 第26章の二Product
+
+ART-08 / ART-09は[第26章の完全合成記入例](cases/ch26-cti-distribution-example.md)で同じ三KJを技術・経営の読者へ接続する。親25をrefinesし、独立STIX構造例はEvidenceへ採用しない。
+
+`ART-31 AI / Agent Threat Model`はInstruction / Data / Memory / Tool / Approval / Evidenceを結び、[空Template](templates/ai-agent-threat-model.md)と[第27章完全合成Case](cases/ch27-ai-agent-threat-model-example.md)で六状態と停止・非実行境界を記録する。

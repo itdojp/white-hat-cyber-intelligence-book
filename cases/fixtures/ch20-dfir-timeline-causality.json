@@ -1,0 +1,710 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "readOnly": true,
+  "networkRequired": false,
+  "executionAuthorized": false,
+  "record": {
+    "id": "DFIR-2026-020-001",
+    "incidentId": null,
+    "incidentReferenceStatus": "not-declared-in-this-bundle",
+    "timeStandard": "UTC; original timezone offsets retained",
+    "caseId": "CASE-DFIR-2026-001",
+    "parentCaseId": "CASE-IR-2026-001",
+    "relation": "refines",
+    "artifactIds": [
+      "ART-07",
+      "ART-26"
+    ],
+    "asOf": "2026-09-25T00:00:00Z",
+    "sourceIds": [
+      "SRC-NIST-DFIR-001",
+      "SRC-IR-001",
+      "SRC-BERKELEY-001"
+    ],
+    "actualIncidents": 0,
+    "actualCollections": 0,
+    "actualActions": 0,
+    "actualNotifications": 0
+  },
+  "parent": {
+    "recordId": "IAP-2026-019-001",
+    "contrastId": "ICASE19-004",
+    "decisionId": "DEC-IR19-004",
+    "handoffId": "HOF-IR19-004-20",
+    "questionId": "EQ-IR19-004-20",
+    "plannedTimelineId": "TL-IR19-004",
+    "status": "planned-not-delivered",
+    "receiptId": null,
+    "executionAuthorized": false,
+    "use": "method-reference-only"
+  },
+  "context": {
+    "subjectId": "SYNTH-DFIR20-001",
+    "revision": "REV-DFIR20-001",
+    "windowStart": "2026-09-01T07:50:00Z",
+    "windowEnd": "2026-09-01T08:10:00Z",
+    "assets": [
+      "SYN-DFIR-APP-A",
+      "SYN-DFIR-APP-B",
+      "SYN-DFIR-DATA-D"
+    ],
+    "actors": [
+      "SYN-DFIR-ADMIN",
+      "SYN-DFIR-WORKLOAD",
+      "SYN-DFIR-REVIEWER"
+    ],
+    "sessions": [
+      "SYN-ADMIN-SESSION",
+      "SYN-WORKLOAD-SESSION",
+      "SYN-REVIEW-SESSION"
+    ]
+  },
+  "roles": {
+    "analysisOwner": "SYN-DFIR-ANALYSIS-OWNER",
+    "evidenceLead": "SYN-DFIR-EVIDENCE-LEAD"
+  },
+  "provenance": {
+    "id": "SYN-PRESERVE20-001",
+    "origin": "synthetic-authored",
+    "custodian": "SYN-DFIR-EVIDENCE-LEAD",
+    "originalFormat": "supplied JSON payload",
+    "originalRetained": true,
+    "workingCopyOnly": true,
+    "transformations": [
+      "timezone-to-UTC",
+      "subtract-declared-offset",
+      "closed-uncertainty-interval"
+    ],
+    "hashMeaning": "Canonical JSON payloadの表現比較のみ。真正性・実収集・実権限を証明しない。",
+    "handling": "全Recordは教材内で創作した仮定であり、実Custodyや実Data保持の完了を表さない。"
+  },
+  "sources": [
+    {
+      "id": "SYN-SOURCE20-ID",
+      "purpose": "同意変更を表す供給Record",
+      "custodyRef": "SYN-PRESERVE20-001",
+      "limitation": "Actor IDは実在人物の同定でも操作許可でもない。"
+    },
+    {
+      "id": "SYN-SOURCE20-API",
+      "purpose": "Workloadの利用を表す供給Record",
+      "custodyRef": "SYN-PRESERVE20-001",
+      "limitation": "記録一件は全取得Dataや全影響の証明ではない。"
+    },
+    {
+      "id": "SYN-SOURCE20-ADMIN",
+      "purpose": "保守予定を表す供給Record",
+      "custodyRef": "SYN-PRESERVE20-001",
+      "limitation": "予定の存在は対象一致や実施確認ではない。"
+    },
+    {
+      "id": "SYN-SOURCE20-CHANGE",
+      "purpose": "特定Changeの承認範囲を表す後着Record",
+      "custodyRef": "SYN-PRESERVE20-001",
+      "limitation": "CHG20-001以外の許可の存否は分からない。"
+    }
+  ],
+  "clocks": [
+    {
+      "id": "CLK20-ID",
+      "sourceId": "SYN-SOURCE20-ID",
+      "offsetSeconds": 30,
+      "uncertaintySeconds": 30,
+      "validFrom": "2026-09-01T07:50:00Z",
+      "validUntil": "2026-09-01T08:10:00Z",
+      "availableAt": "2026-09-01T07:49:00Z",
+      "basis": "供給された時刻モデルの仮定。量子化・driftを含む総幅であり実測・校正証明ではない。"
+    },
+    {
+      "id": "CLK20-API",
+      "sourceId": "SYN-SOURCE20-API",
+      "offsetSeconds": -10,
+      "uncertaintySeconds": 30,
+      "validFrom": "2026-09-01T07:50:00Z",
+      "validUntil": "2026-09-01T08:10:00Z",
+      "availableAt": "2026-09-01T07:49:00Z",
+      "basis": "供給された時刻モデルの仮定。量子化・driftを含む総幅であり実測・校正証明ではない。"
+    },
+    {
+      "id": "CLK20-ADMIN",
+      "sourceId": "SYN-SOURCE20-ADMIN",
+      "offsetSeconds": 0,
+      "uncertaintySeconds": 1,
+      "validFrom": "2026-09-01T07:50:00Z",
+      "validUntil": "2026-09-01T08:10:00Z",
+      "availableAt": "2026-09-01T07:49:00Z",
+      "basis": "供給された時刻モデルの仮定。量子化・driftを含む総幅であり実測・校正証明ではない。"
+    },
+    {
+      "id": "CLK20-CHANGE",
+      "sourceId": "SYN-SOURCE20-CHANGE",
+      "offsetSeconds": 0,
+      "uncertaintySeconds": 1,
+      "validFrom": "2026-09-01T07:50:00Z",
+      "validUntil": "2026-09-01T08:10:00Z",
+      "availableAt": "2026-09-01T07:49:00Z",
+      "basis": "供給された時刻モデルの仮定。量子化・driftを含む総幅であり実測・校正証明ではない。"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EV20-001",
+      "sourceId": "SYN-SOURCE20-ID",
+      "eventId": "EVENT-ID-001",
+      "payload": {
+        "subjectId": "SYNTH-DFIR20-001",
+        "revision": "REV-DFIR20-001",
+        "assetId": "SYN-DFIR-APP-A",
+        "actorId": "SYN-DFIR-ADMIN",
+        "sessionId": "SYN-ADMIN-SESSION",
+        "operation": "consent-change",
+        "originalTime": "2026-09-01T17:00:40+09:00",
+        "clockId": "CLK20-ID",
+        "detail": {
+          "permission": "SYNTH-PERM-READ",
+          "observation": "同意変更Recordが供給されている。"
+        }
+      },
+      "payloadSha256": "2664e85ee2c09c56bc61c415eb897c8a012e81db9b344ab5e495aae76659ef9b",
+      "collectedAt": "2026-09-01T08:06:00Z",
+      "ingestedAt": "2026-09-01T08:06:30Z",
+      "availableAt": "2026-09-01T08:07:00Z",
+      "preservationRef": "SYN-PRESERVE20-001"
+    },
+    {
+      "id": "EV20-002",
+      "sourceId": "SYN-SOURCE20-API",
+      "eventId": "EVENT-API-001",
+      "payload": {
+        "subjectId": "SYNTH-DFIR20-001",
+        "revision": "REV-DFIR20-001",
+        "assetId": "SYN-DFIR-APP-A",
+        "actorId": "SYN-DFIR-WORKLOAD",
+        "sessionId": "SYN-WORKLOAD-SESSION",
+        "operation": "api-read",
+        "originalTime": "2026-09-01T08:00:10Z",
+        "clockId": "CLK20-API",
+        "detail": {
+          "resource": "SYNTH-RESOURCE-A",
+          "observation": "一件のAPI利用Recordが供給されている。"
+        }
+      },
+      "payloadSha256": "cd80778b1311a95f6d8d4948c2626ac86bd33c45067293deb80aa61dfbd9ceba",
+      "collectedAt": "2026-09-01T08:03:00Z",
+      "ingestedAt": "2026-09-01T08:03:30Z",
+      "availableAt": "2026-09-01T08:04:00Z",
+      "preservationRef": "SYN-PRESERVE20-001"
+    },
+    {
+      "id": "EV20-003",
+      "sourceId": "SYN-SOURCE20-ADMIN",
+      "eventId": "EVENT-ADMIN-001",
+      "payload": {
+        "subjectId": "SYNTH-DFIR20-001",
+        "revision": "REV-DFIR20-001",
+        "assetId": "SYN-DFIR-APP-A",
+        "actorId": "SYN-DFIR-ADMIN",
+        "sessionId": "SYN-ADMIN-SESSION",
+        "operation": "admin-maintenance",
+        "originalTime": "2026-09-01T07:58:00Z",
+        "clockId": "CLK20-ADMIN",
+        "detail": {
+          "changeId": "CHG20-001",
+          "observation": "保守予定が記録されている。承認範囲はこのRecordにない。"
+        }
+      },
+      "payloadSha256": "30ca714bfc79812d76c5db7e32926ff0ccb6314e3b453cdb7d0cbbd9e5a1f0c9",
+      "collectedAt": "2026-09-01T08:01:00Z",
+      "ingestedAt": "2026-09-01T08:01:30Z",
+      "availableAt": "2026-09-01T08:02:00Z",
+      "preservationRef": "SYN-PRESERVE20-001"
+    },
+    {
+      "id": "EV20-004",
+      "sourceId": "SYN-SOURCE20-API",
+      "eventId": "EVENT-API-001",
+      "payload": {
+        "subjectId": "SYNTH-DFIR20-001",
+        "revision": "REV-DFIR20-001",
+        "assetId": "SYN-DFIR-APP-A",
+        "actorId": "SYN-DFIR-WORKLOAD",
+        "sessionId": "SYN-WORKLOAD-SESSION",
+        "operation": "api-read",
+        "originalTime": "2026-09-01T08:00:10Z",
+        "clockId": "CLK20-API",
+        "detail": {
+          "resource": "SYNTH-RESOURCE-A",
+          "observation": "一件のAPI利用Recordが供給されている。"
+        }
+      },
+      "payloadSha256": "cd80778b1311a95f6d8d4948c2626ac86bd33c45067293deb80aa61dfbd9ceba",
+      "collectedAt": "2026-09-01T08:08:00Z",
+      "ingestedAt": "2026-09-01T08:08:30Z",
+      "availableAt": "2026-09-01T08:09:00Z",
+      "preservationRef": "SYN-PRESERVE20-001"
+    },
+    {
+      "id": "EV20-005",
+      "sourceId": "SYN-SOURCE20-CHANGE",
+      "eventId": "EVENT-CHANGE-001",
+      "payload": {
+        "subjectId": "SYNTH-DFIR20-001",
+        "revision": "REV-DFIR20-001",
+        "assetId": "SYN-DFIR-APP-B",
+        "actorId": "SYN-DFIR-REVIEWER",
+        "sessionId": "SYN-REVIEW-SESSION",
+        "operation": "change-scope",
+        "originalTime": "2026-09-01T07:55:00Z",
+        "clockId": "CLK20-CHANGE",
+        "detail": {
+          "changeId": "CHG20-001",
+          "approvedAssets": [
+            "SYN-DFIR-APP-B"
+          ],
+          "windowStart": "2026-09-01T07:50:00Z",
+          "windowEnd": "2026-09-01T08:10:00Z",
+          "observation": "この供給Changeの対象はApp Bだけである。"
+        }
+      },
+      "payloadSha256": "3f85f8ebf263ec0dace6b328260fa9bdb93a2d03ecdde7159ccc14ea6e4d23df",
+      "collectedAt": "2026-09-01T08:29:00Z",
+      "ingestedAt": "2026-09-01T08:29:30Z",
+      "availableAt": "2026-09-01T08:30:00Z",
+      "preservationRef": "SYN-PRESERVE20-001"
+    }
+  ],
+  "claims": [
+    {
+      "id": "CLM20-001",
+      "questionId": "EQ20-001",
+      "kind": "order",
+      "evidenceIds": [
+        "EV20-001",
+        "EV20-002"
+      ],
+      "assertedRelation": "Before",
+      "changeId": null,
+      "question": "同意変更はAPI利用より前か。"
+    },
+    {
+      "id": "CLM20-002",
+      "questionId": "EQ20-002",
+      "kind": "order",
+      "evidenceIds": [
+        "EV20-003",
+        "EV20-001"
+      ],
+      "assertedRelation": "Before",
+      "changeId": null,
+      "question": "保守予定Recordは同意変更より前か。"
+    },
+    {
+      "id": "CLM20-003",
+      "questionId": "EQ20-003",
+      "kind": "change-covers",
+      "evidenceIds": [
+        "EV20-005",
+        "EV20-002"
+      ],
+      "assertedRelation": null,
+      "changeId": "CHG20-001",
+      "question": "このAPI利用のAssetと時刻幅は、特定CHG20-001の対象資産・時間窓に含まれるか。操作の実行許可とは別である。"
+    },
+    {
+      "id": "CLM20-004",
+      "questionId": "EQ20-004",
+      "kind": "causal-link",
+      "evidenceIds": [
+        "EV20-001",
+        "EV20-002"
+      ],
+      "assertedRelation": null,
+      "changeId": null,
+      "question": "同意変更がAPI利用を可能にした原因といえるか。"
+    },
+    {
+      "id": "CLM20-005",
+      "questionId": "EQ20-005",
+      "kind": "order",
+      "evidenceIds": [
+        "EV20-002",
+        "EV20-003"
+      ],
+      "assertedRelation": "Before",
+      "changeId": null,
+      "question": "API利用は保守予定Recordより前という主張を支持できるか。"
+    },
+    {
+      "id": "CLM20-006",
+      "questionId": "EQ20-006",
+      "kind": "order",
+      "evidenceIds": [
+        "EV20-001",
+        "EV20-002"
+      ],
+      "assertedRelation": "Concurrent",
+      "changeId": null,
+      "question": "同意変更とAPI利用の同時性を確定できるか。"
+    }
+  ],
+  "snapshots": [
+    {
+      "id": "TL-DFIR20-A",
+      "cutoff": "2026-09-01T08:10:00Z",
+      "analysisAt": "2026-09-01T08:12:00Z",
+      "owner": "SYN-DFIR-ANALYSIS-OWNER",
+      "expected": {
+        "included": [
+          "EV20-001",
+          "EV20-002",
+          "EV20-003",
+          "EV20-004"
+        ],
+        "excluded": [
+          "EV20-005"
+        ],
+        "timeline": [
+          {
+            "sourceId": "SYN-SOURCE20-ADMIN",
+            "eventId": "EVENT-ADMIN-001",
+            "evidenceIds": [
+              "EV20-003"
+            ],
+            "intervalStart": "2026-09-01T07:57:59Z",
+            "intervalEnd": "2026-09-01T07:58:01Z"
+          },
+          {
+            "sourceId": "SYN-SOURCE20-API",
+            "eventId": "EVENT-API-001",
+            "evidenceIds": [
+              "EV20-002",
+              "EV20-004"
+            ],
+            "intervalStart": "2026-09-01T07:59:50Z",
+            "intervalEnd": "2026-09-01T08:00:50Z"
+          },
+          {
+            "sourceId": "SYN-SOURCE20-ID",
+            "eventId": "EVENT-ID-001",
+            "evidenceIds": [
+              "EV20-001"
+            ],
+            "intervalStart": "2026-09-01T07:59:40Z",
+            "intervalEnd": "2026-09-01T08:00:40Z"
+          }
+        ],
+        "claims": {
+          "CLM20-001": {
+            "status": "undetermined",
+            "relation": "Possibly related",
+            "gaps": [
+              "clock-order-uncertain"
+            ]
+          },
+          "CLM20-002": {
+            "status": "supported",
+            "relation": "Before",
+            "gaps": []
+          },
+          "CLM20-003": {
+            "status": "undetermined",
+            "relation": null,
+            "gaps": [
+              "not-available:EV20-005"
+            ]
+          },
+          "CLM20-004": {
+            "status": "undetermined",
+            "relation": null,
+            "gaps": [
+              "mechanism-not-supplied",
+              "alternative-not-eliminated"
+            ]
+          },
+          "CLM20-005": {
+            "status": "contradicted",
+            "relation": "After",
+            "gaps": []
+          },
+          "CLM20-006": {
+            "status": "undetermined",
+            "relation": "Possibly related",
+            "gaps": [
+              "independent-simultaneity-evidence"
+            ]
+          }
+        }
+      },
+      "rca": {
+        "id": "RCA-DFIR20-A",
+        "timelineId": "TL-DFIR20-A",
+        "problemStatement": "同意変更とAPI利用の関係、限定影響、保守による説明の可否を区別する。",
+        "triggerEvidenceId": "EV20-001",
+        "rootConditionHypothesis": "認可条件の欠落という仮説はあるが機構を示す記録がない。",
+        "rootCauseStatus": "unresolved",
+        "causalClaimId": "CLM20-004",
+        "contributingEvidenceIds": [
+          "EV20-001",
+          "EV20-002"
+        ],
+        "contributingFactor": "同意変更のreceiptはAPIより後着した。分析順序への寄与と事案の原因は別である。",
+        "impactEvidenceIds": [
+          "EV20-002"
+        ],
+        "observedScope": [
+          "SYN-DFIR-APP-A"
+        ],
+        "unknownScope": [
+          "SYN-DFIR-DATA-D"
+        ],
+        "confidence": "low",
+        "confidenceReason": "時刻幅が重なり、認可機構と他の許可・操作目的が未供給である。",
+        "alternatives": [
+          {
+            "id": "HYP20-MAINT",
+            "claimId": "CLM20-003",
+            "disposition": "not-yet-testable",
+            "remainingGap": "特定CHG20-001以外の許可や保守の存否は不明。"
+          },
+          {
+            "id": "HYP20-MISUSE",
+            "claimId": "CLM20-004",
+            "disposition": "not-established",
+            "remainingGap": "Actorの目的と利用可能化の機構は未供給。"
+          },
+          {
+            "id": "HYP20-ORDER",
+            "claimId": "CLM20-001",
+            "disposition": "order-uncertain",
+            "remainingGap": "Collector到着順とEvent順は一致するとは限らない。"
+          }
+        ],
+        "evidenceGaps": [
+          "GAP20-MECHANISM",
+          "GAP20-OTHER-AUTHORITY",
+          "GAP20-UNKNOWN-SCOPE",
+          "GAP20-CLOCK-ORDER"
+        ],
+        "controlFailureStatus": "hypothesis-only",
+        "correctiveAction": "認可判定根拠と変更対象の対応を検証する計画を作る。実変更は行わない。",
+        "controlId": "CTL-DFIR20-001",
+        "validationRequirement": "同一対象・版・Windowにおける判定根拠、変更前後と反例を別記する。",
+        "owner": "SYN-DFIR-ANALYSIS-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-DFIR20-A",
+        "invalidation": "別の許可、機構を示す記録、Clock条件または対象版が変われば旧判断を残して新しいSnapshotを作る。",
+        "recoveryStatus": "not-assessed",
+        "actualChanges": 0
+      }
+    },
+    {
+      "id": "TL-DFIR20-B",
+      "cutoff": "2026-09-01T08:35:00Z",
+      "analysisAt": "2026-09-01T08:36:00Z",
+      "owner": "SYN-DFIR-ANALYSIS-OWNER",
+      "expected": {
+        "included": [
+          "EV20-001",
+          "EV20-002",
+          "EV20-003",
+          "EV20-004",
+          "EV20-005"
+        ],
+        "excluded": [],
+        "timeline": [
+          {
+            "sourceId": "SYN-SOURCE20-ADMIN",
+            "eventId": "EVENT-ADMIN-001",
+            "evidenceIds": [
+              "EV20-003"
+            ],
+            "intervalStart": "2026-09-01T07:57:59Z",
+            "intervalEnd": "2026-09-01T07:58:01Z"
+          },
+          {
+            "sourceId": "SYN-SOURCE20-API",
+            "eventId": "EVENT-API-001",
+            "evidenceIds": [
+              "EV20-002",
+              "EV20-004"
+            ],
+            "intervalStart": "2026-09-01T07:59:50Z",
+            "intervalEnd": "2026-09-01T08:00:50Z"
+          },
+          {
+            "sourceId": "SYN-SOURCE20-CHANGE",
+            "eventId": "EVENT-CHANGE-001",
+            "evidenceIds": [
+              "EV20-005"
+            ],
+            "intervalStart": "2026-09-01T07:54:59Z",
+            "intervalEnd": "2026-09-01T07:55:01Z"
+          },
+          {
+            "sourceId": "SYN-SOURCE20-ID",
+            "eventId": "EVENT-ID-001",
+            "evidenceIds": [
+              "EV20-001"
+            ],
+            "intervalStart": "2026-09-01T07:59:40Z",
+            "intervalEnd": "2026-09-01T08:00:40Z"
+          }
+        ],
+        "claims": {
+          "CLM20-001": {
+            "status": "undetermined",
+            "relation": "Possibly related",
+            "gaps": [
+              "clock-order-uncertain"
+            ]
+          },
+          "CLM20-002": {
+            "status": "supported",
+            "relation": "Before",
+            "gaps": []
+          },
+          "CLM20-003": {
+            "status": "contradicted",
+            "relation": null,
+            "gaps": []
+          },
+          "CLM20-004": {
+            "status": "undetermined",
+            "relation": null,
+            "gaps": [
+              "mechanism-not-supplied",
+              "alternative-not-eliminated"
+            ]
+          },
+          "CLM20-005": {
+            "status": "contradicted",
+            "relation": "After",
+            "gaps": []
+          },
+          "CLM20-006": {
+            "status": "undetermined",
+            "relation": "Possibly related",
+            "gaps": [
+              "independent-simultaneity-evidence"
+            ]
+          }
+        }
+      },
+      "rca": {
+        "id": "RCA-DFIR20-B",
+        "timelineId": "TL-DFIR20-B",
+        "problemStatement": "同意変更とAPI利用の関係、限定影響、保守による説明の可否を区別する。",
+        "triggerEvidenceId": "EV20-001",
+        "rootConditionHypothesis": "認可条件の欠落という仮説はあるが機構を示す記録がない。",
+        "rootCauseStatus": "unresolved",
+        "causalClaimId": "CLM20-004",
+        "contributingEvidenceIds": [
+          "EV20-001",
+          "EV20-002"
+        ],
+        "contributingFactor": "同意変更のreceiptはAPIより後着した。分析順序への寄与と事案の原因は別である。",
+        "impactEvidenceIds": [
+          "EV20-002"
+        ],
+        "observedScope": [
+          "SYN-DFIR-APP-A"
+        ],
+        "unknownScope": [
+          "SYN-DFIR-DATA-D"
+        ],
+        "confidence": "low",
+        "confidenceReason": "時刻幅が重なり、認可機構と他の許可・操作目的が未供給である。",
+        "alternatives": [
+          {
+            "id": "HYP20-MAINT",
+            "claimId": "CLM20-003",
+            "disposition": "contradicted-for-this-change",
+            "remainingGap": "特定CHG20-001以外の許可や保守の存否は不明。"
+          },
+          {
+            "id": "HYP20-MISUSE",
+            "claimId": "CLM20-004",
+            "disposition": "not-established",
+            "remainingGap": "Actorの目的と利用可能化の機構は未供給。"
+          },
+          {
+            "id": "HYP20-ORDER",
+            "claimId": "CLM20-001",
+            "disposition": "order-uncertain",
+            "remainingGap": "Collector到着順とEvent順は一致するとは限らない。"
+          }
+        ],
+        "evidenceGaps": [
+          "GAP20-MECHANISM",
+          "GAP20-OTHER-AUTHORITY",
+          "GAP20-UNKNOWN-SCOPE",
+          "GAP20-CLOCK-ORDER"
+        ],
+        "controlFailureStatus": "hypothesis-only",
+        "correctiveAction": "認可判定根拠と変更対象の対応を検証する計画を作る。実変更は行わない。",
+        "controlId": "CTL-DFIR20-001",
+        "validationRequirement": "同一対象・版・Windowにおける判定根拠、変更前後と反例を別記する。",
+        "owner": "SYN-DFIR-ANALYSIS-OWNER",
+        "dueAt": "2026-09-30T00:00:00Z",
+        "reassessmentId": "REA-DFIR20-B",
+        "invalidation": "別の許可、機構を示す記録、Clock条件または対象版が変われば旧判断を残して新しいSnapshotを作る。",
+        "recoveryStatus": "not-assessed",
+        "actualChanges": 0
+      }
+    }
+  ],
+  "handoffs": [
+    {
+      "id": "HOF-DFIR20-21",
+      "targetChapter": 21,
+      "sourceRcaId": "RCA-DFIR20-B",
+      "sourceTimelineId": "TL-DFIR20-B",
+      "controlId": "CTL-DFIR20-001",
+      "questionId": "EQ-DFIR20-H21",
+      "question": "Control不備の仮説をどの安全な供給反例で比較するか。",
+      "scope": "SYNTH-DFIR20-001 / REV-DFIR20-001のみ。親のEvidenceを移送しない。",
+      "owner": "SYN-DFIR-ANALYSIS-OWNER",
+      "dueAt": "2026-09-30T00:00:00Z",
+      "status": "planned-not-delivered",
+      "receiptId": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-DFIR20-22",
+      "targetChapter": 22,
+      "sourceRcaId": "RCA-DFIR20-B",
+      "sourceTimelineId": "TL-DFIR20-B",
+      "controlId": "CTL-DFIR20-001",
+      "questionId": "EQ-DFIR20-H22",
+      "question": "改善案のOwner、受入基準、再評価をどう管理するか。",
+      "scope": "SYNTH-DFIR20-001 / REV-DFIR20-001のみ。親のEvidenceを移送しない。",
+      "owner": "SYN-DFIR-ANALYSIS-OWNER",
+      "dueAt": "2026-09-30T00:00:00Z",
+      "status": "planned-not-delivered",
+      "receiptId": null,
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-DFIR20-25",
+      "targetChapter": 25,
+      "sourceRcaId": "RCA-DFIR20-B",
+      "sourceTimelineId": "TL-DFIR20-B",
+      "controlId": "CTL-DFIR20-001",
+      "questionId": "EQ-DFIR20-H25",
+      "question": "残る代替説明とUnknown scopeをどの根拠で更新するか。",
+      "scope": "SYNTH-DFIR20-001 / REV-DFIR20-001のみ。親のEvidenceを移送しない。",
+      "owner": "SYN-DFIR-ANALYSIS-OWNER",
+      "dueAt": "2026-09-30T00:00:00Z",
+      "status": "planned-not-delivered",
+      "receiptId": null,
+      "executionAuthorized": false
+    }
+  ],
+  "safety": {
+    "mode": "offline-record-only",
+    "stop": "実Data、個人情報、実Credential、外部対象、許可不明の追加収集を要する場合は停止する。",
+    "cleanup": "配布資料の読解だけなので実Runtimeの停止・破棄はない。自分の解答Copyを保持条件に従い整理し、配布原本は変更しない。",
+    "limitations": "有限の教材検査であり、真正性・完全性・裁判上の適格性・原因・実在主体の同定を自動認定しない。"
+  }
+}

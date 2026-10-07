@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW_DIR = ROOT / ".github" / "workflows"
 EXPECTED_WORKFLOWS = {"contract.yml", "book-qa.yml", "pages.yml"}
-PINNED_FORMATTER = "198935ff8f60653c40e513343dc5f02573d9968e"
+PINNED_FORMATTER = "83a322da5013e74e9dbf1b0afbee85b8617ffce5"
 EDITORIAL_INPUT_BASE_EXPRESSION = "${{ github.event.pull_request.base.sha }}"
 NPM_TEST_COMMAND = "npm test --ignore-scripts"
 FORMATTER_VALIDATE_COMMAND = (
@@ -36,6 +36,7 @@ ALLOWED_WORKFLOW_RUN_COMMANDS = frozenset(
         FORMATTER_VALIDATE_COMMAND,
         NPM_TEST_COMMAND,
         "python3 scripts/check_built_site.py --source docs --site _site",
+        "npm run check:mermaid-browser",
     }
 )
 WORKFLOW_ENVIRONMENT = {

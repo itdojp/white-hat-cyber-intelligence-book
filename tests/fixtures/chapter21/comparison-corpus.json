@@ -1,0 +1,5328 @@
+{
+  "schemaVersion": "1.0.0",
+  "comparisonVersion": "1.0.0",
+  "caseCount": 63,
+  "cases": [
+    {
+      "id": "CVCHECK21-001",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authored scenario 1; independent literal result",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-001-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-002",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authored scenario 2; independent literal result",
+      "input": {
+        "id": "SCN-CV21-002",
+        "type": "Atomic",
+        "layers": [
+          "Telemetry"
+        ],
+        "traceId": "TRACE-CV21-002",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-002-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-002",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-002",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "signal-coverage": "missing-confirmed"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "produced-and-confirmed-loss"
+            },
+            "payloadSha256": "5ca808114c7d74dd24a64e67611016368666fa14b434e11f215c8a8dc4b5f714"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Telemetry",
+          "result": "Failed",
+          "failureClasses": [
+            "Telemetry"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-02-01",
+              "result": "Failed",
+              "evidenceId": "EVD-CV21-002-01",
+              "gapCode": "observed-mismatch"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-02-01",
+              "reason": "observed-mismatch"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-003",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authored scenario 3; independent literal result",
+      "input": {
+        "id": "SCN-CV21-003",
+        "type": "Atomic",
+        "layers": [
+          "Detection"
+        ],
+        "traceId": "TRACE-CV21-003",
+        "batchId": "BATCH-CV21-DETECTION",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-003-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-003",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-003",
+              "batchId": "BATCH-CV21-DETECTION",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "positive": "no-alert",
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "c2212873cf5db70e833715d9d04386e2d27cf4e1bd10c44174e8895c4eec650f"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Detection",
+          "result": "Failed",
+          "failureClasses": [
+            "Detection logic"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Failed",
+              "evidenceId": "EVD-CV21-003-01",
+              "gapCode": "observed-mismatch"
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-003-01",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-003-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-03-01",
+              "reason": "observed-mismatch"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-004",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authored scenario 4; independent literal result",
+      "input": {
+        "id": "SCN-CV21-004",
+        "type": "Atomic",
+        "layers": [
+          "Triage"
+        ],
+        "traceId": "TRACE-CV21-004",
+        "batchId": "BATCH-CV21-004",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-004-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-004",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-004",
+              "batchId": "BATCH-CV21-004",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "context": "evidence-only"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "468352cfcdf838551a443a77c874eccee375140d0ec996b20b323512e355f9aa"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Triage",
+          "result": "Partial",
+          "failureClasses": [
+            "Workflow"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-04-01",
+              "result": "Partial",
+              "evidenceId": "EVD-CV21-004-01",
+              "gapCode": "observed-partial"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-04-01",
+              "reason": "observed-partial"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-005",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authored scenario 5; independent literal result",
+      "input": {
+        "id": "SCN-CV21-005",
+        "type": "Atomic",
+        "layers": [
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-005",
+        "batchId": "BATCH-CV21-005",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": false,
+        "stopReason": "authority-gap",
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-005-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-005",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-005",
+              "batchId": "BATCH-CV21-005",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "decision": null
+              },
+              "present": {
+                "decision": false
+              },
+              "inputBasis": "authority-not-supplied",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "034808d8d4e6e9cc40563a1031cf95947dfd85b2c701b6f63196474ab341dbe7"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Response",
+          "result": "Stopped",
+          "failureClasses": [
+            "Authority"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-05-01",
+              "result": "Stopped",
+              "evidenceId": null,
+              "gapCode": "authority-gap"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-05-01",
+              "reason": "authority-gap"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-006",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authored scenario 6; independent literal result",
+      "input": {
+        "id": "SCN-CV21-006",
+        "type": "Atomic",
+        "layers": [
+          "Detection"
+        ],
+        "traceId": "TRACE-CV21-006",
+        "batchId": "BATCH-CV21-006",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-006-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-006",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-006",
+              "batchId": "BATCH-CV21-006",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "positive": null,
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": false,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "fixture-missing",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "af37a6e86660d71814dde990010d73f96975ea4a16572c951d0473bf5d7e5a7e"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Detection",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "missing-input"
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-006-01",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-006-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-03-01",
+              "reason": "missing-input"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-007",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authored scenario 7; independent literal result",
+      "input": {
+        "id": "SCN-CV21-007",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-007",
+        "batchId": "BATCH-CV21-007",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-007-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-007",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-007",
+              "batchId": "BATCH-CV21-007",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "allowed"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "0a49d668ad28f6692851f4090584f14f5daa80e086de8d8125d95cfd543dda13"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Failed",
+          "failureClasses": [
+            "Control"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Failed",
+              "evidenceId": "EVD-CV21-007-01",
+              "gapCode": "observed-mismatch"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-01-01",
+              "reason": "observed-mismatch"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-008",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authored scenario 8; independent literal result",
+      "input": {
+        "id": "SCN-CV21-008",
+        "type": "End-to-End",
+        "layers": [
+          "Prevention",
+          "Telemetry",
+          "Detection",
+          "Triage",
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-008",
+        "batchId": "BATCH-CV21-008",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-008-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "3d2a20f9483516df9827a4b6427b4a3ac98c9864713b8833e6968f8f5a50407e"
+          },
+          {
+            "id": "EVD-CV21-008-02",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 2,
+              "recordedAt": "2026-09-01T09:02:00Z",
+              "availableAt": "2026-09-01T09:02:30Z",
+              "values": {
+                "signal-coverage": "all-required"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "95fd8a87945acb9aa917d51fbf71cbbab0ca238b7ebb33a86a69e377d7e5dc26"
+          },
+          {
+            "id": "EVD-CV21-008-03",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 3,
+              "recordedAt": "2026-09-01T09:03:00Z",
+              "availableAt": "2026-09-01T09:03:30Z",
+              "values": {
+                "positive": "alert",
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "d2a46936a0749a073dd2f8111db1767ef1c69f09547d408830a51ca2b268726a"
+          },
+          {
+            "id": "EVD-CV21-008-04",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 4,
+              "recordedAt": "2026-09-01T09:04:00Z",
+              "availableAt": "2026-09-01T09:04:30Z",
+              "values": {
+                "context": "evidence-owner-reason"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "50f2c76469b54817ae3b45c4d0991a36408649f21610843cbfa519c9fb9b3eb8"
+          },
+          {
+            "id": "EVD-CV21-008-05",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 5,
+              "recordedAt": "2026-09-01T09:05:00Z",
+              "availableAt": "2026-09-01T09:05:30Z",
+              "values": {
+                "decision": "hold-with-owner"
+              },
+              "present": {
+                "decision": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "e1671a27b5248698cd54b14c82a046e5fb3a9db3f4d790a94adc5c3c1a3d146c"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Telemetry",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-02-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-02",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Detection",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Triage",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-04-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-04",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Response",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-05-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-05",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-009",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authored scenario 9; independent literal result",
+      "input": {
+        "id": "SCN-CV21-009",
+        "type": "Atomic",
+        "layers": [
+          "Telemetry"
+        ],
+        "traceId": "TRACE-CV21-009",
+        "batchId": "BATCH-CV21-009",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-009-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-009",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-009",
+              "batchId": "BATCH-CV21-009",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "signal-coverage": "primary-only"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "primary-present-secondary-missing"
+            },
+            "payloadSha256": "1e0d6834c1ba1e2da1094a7ea83b688139e3b55be61514fb6dffbdef4b6c9a0e"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Telemetry",
+          "result": "Partial",
+          "failureClasses": [
+            "Telemetry"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-02-01",
+              "result": "Partial",
+              "evidenceId": "EVD-CV21-009-01",
+              "gapCode": "observed-partial"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-02-01",
+              "reason": "observed-partial"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-010",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authored scenario 10; independent literal result",
+      "input": {
+        "id": "SCN-CV21-010",
+        "type": "Atomic",
+        "layers": [
+          "Detection"
+        ],
+        "traceId": "TRACE-CV21-010",
+        "batchId": "BATCH-CV21-DETECTION",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-010-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-010",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-010",
+              "batchId": "BATCH-CV21-DETECTION",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-002",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "positive": "alert",
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "d0aa603dc0eb47a3bbf6b2a4683a98f5ac28e38e5ab3d3c48c68f9f6590ea200"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Detection",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-010-01",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-010-01",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-010-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-011",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Cutoff equality is eligible",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:11:00Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "5745f000264d8198b7a4397549059519004db3fc3085419cdf3d795c5a2ba440"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-001-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-012",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "After cutoff remains unknown; no future repair",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:11:01Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "8fc5073cd89adec40ec8e0f80cad646c714b00f22ebaf473deb4445e2f3535a7"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "after-cutoff"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-01-01",
+              "reason": "after-cutoff"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-013",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Absent Prevention comparison is not false or partial",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": null
+              },
+              "present": {
+                "scope-outcome": false
+              },
+              "inputBasis": "fixture-missing",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "daabbf458107ac4e29bff0b311a68a6f7e6336fc5f15f13310d9873e5560d601"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "missing-input"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-01-01",
+              "reason": "missing-input"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-014",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Missing Telemetry input is not observed primary-only",
+      "input": {
+        "id": "SCN-CV21-009",
+        "type": "Atomic",
+        "layers": [
+          "Telemetry"
+        ],
+        "traceId": "TRACE-CV21-009",
+        "batchId": "BATCH-CV21-009",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-009-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-009",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-009",
+              "batchId": "BATCH-CV21-009",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "signal-coverage": null
+              },
+              "present": {
+                "signal-coverage": false
+              },
+              "inputBasis": "fixture-missing",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "6ef3a6052889370c322ba651e211b56e32d56f308368d9b788ea67eb9380e4db"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Telemetry",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-02-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "missing-input"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-02-01",
+              "reason": "missing-input"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-015",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Known positive mismatch keeps Failed; unknown normal has its own Gap",
+      "input": {
+        "id": "SCN-CV21-003",
+        "type": "Atomic",
+        "layers": [
+          "Detection"
+        ],
+        "traceId": "TRACE-CV21-003",
+        "batchId": "BATCH-CV21-DETECTION",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-003-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-003",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-003",
+              "batchId": "BATCH-CV21-DETECTION",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "positive": "no-alert",
+                "negative": null,
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": false,
+                "benign-near-miss": true
+              },
+              "inputBasis": "fixture-missing",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "4537c93beec59d9b68c06b28cd8468f8c50daaa26b691fbcf02189bf1e279d99"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Detection",
+          "result": "Failed",
+          "failureClasses": [
+            "Detection logic",
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Failed",
+              "evidenceId": "EVD-CV21-003-01",
+              "gapCode": "observed-mismatch"
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "missing-input"
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-003-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-03-01",
+              "reason": "observed-mismatch"
+            },
+            {
+              "criterionId": "CRIT-CV21-03-02",
+              "reason": "missing-input"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-016",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Retest false-positive normal counterpart is rejected as Failed",
+      "input": {
+        "id": "SCN-CV21-010",
+        "type": "Atomic",
+        "layers": [
+          "Detection"
+        ],
+        "traceId": "TRACE-CV21-010",
+        "batchId": "BATCH-CV21-DETECTION",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-010-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-010",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-010",
+              "batchId": "BATCH-CV21-DETECTION",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-002",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "positive": "alert",
+                "negative": "alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "0bdda3078142d0bcd430480daa0aa4c17aa394751b1ebf88aa646269be329565"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Detection",
+          "result": "Failed",
+          "failureClasses": [
+            "Detection logic"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-010-01",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Failed",
+              "evidenceId": "EVD-CV21-010-01",
+              "gapCode": "observed-mismatch"
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-010-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-03-02",
+              "reason": "observed-mismatch"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-017",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Benign near miss cannot disappear from evaluation",
+      "input": {
+        "id": "SCN-CV21-010",
+        "type": "Atomic",
+        "layers": [
+          "Detection"
+        ],
+        "traceId": "TRACE-CV21-010",
+        "batchId": "BATCH-CV21-DETECTION",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-002",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-010-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-010",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-010",
+              "batchId": "BATCH-CV21-DETECTION",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-002",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "positive": "alert",
+                "negative": "no-alert",
+                "benign-near-miss": "alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "06fe4d69f2b15ddd157a5df08e7b6d6c70e3878ef5f78a11767ae9916b6cbe0a"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Detection",
+          "result": "Failed",
+          "failureClasses": [
+            "Detection logic"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-010-01",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-010-01",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Failed",
+              "evidenceId": "EVD-CV21-010-01",
+              "gapCode": "observed-mismatch"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-03-03",
+              "reason": "observed-mismatch"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-018",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "No context is failure rather than partial",
+      "input": {
+        "id": "SCN-CV21-004",
+        "type": "Atomic",
+        "layers": [
+          "Triage"
+        ],
+        "traceId": "TRACE-CV21-004",
+        "batchId": "BATCH-CV21-004",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-004-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-004",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-004",
+              "batchId": "BATCH-CV21-004",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "context": "no-context"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "f50c471e8643ef0f45db2c8195eddd77cf1dca03a47c3d6ae0c1dce547e6e2a6"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Triage",
+          "result": "Failed",
+          "failureClasses": [
+            "Workflow"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-04-01",
+              "result": "Failed",
+              "evidenceId": "EVD-CV21-004-01",
+              "gapCode": "observed-mismatch"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-04-01",
+              "reason": "observed-mismatch"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-019",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Authority present but missing response decision is Workflow, not Authority",
+      "input": {
+        "id": "SCN-CV21-008",
+        "type": "Atomic",
+        "layers": [
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-008",
+        "batchId": "BATCH-CV21-008",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-008-05",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:05:00Z",
+              "availableAt": "2026-09-01T09:05:30Z",
+              "values": {
+                "decision": "no-decision"
+              },
+              "present": {
+                "decision": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "c33a386bd8947a2bbfda979b5eed05e0e6dd8d955606f0c2a5fbe8b319372e69"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Response",
+          "result": "Failed",
+          "failureClasses": [
+            "Workflow"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-05-01",
+              "result": "Failed",
+              "evidenceId": "EVD-CV21-008-05",
+              "gapCode": "observed-mismatch"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-05-01",
+              "reason": "observed-mismatch"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-020",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Unexpected supplied input stops before comparison",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": "unexpected-input",
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": null
+              },
+              "present": {
+                "scope-outcome": false
+              },
+              "inputBasis": "stopped-not-compared",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "e88e52388bc7afd02e32e6951c807e9b84f911690c3b8788a034aea5b3c62f85"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Stopped",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Stopped",
+              "evidenceId": null,
+              "gapCode": "unexpected-input"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-01-01",
+              "reason": "unexpected-input"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-021",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "End-to-End leaves Detection unknown, not a whole-plan pass",
+      "input": {
+        "id": "SCN-CV21-008",
+        "type": "End-to-End",
+        "layers": [
+          "Prevention",
+          "Telemetry",
+          "Detection",
+          "Triage",
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-008",
+        "batchId": "BATCH-CV21-008",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-008-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "3d2a20f9483516df9827a4b6427b4a3ac98c9864713b8833e6968f8f5a50407e"
+          },
+          {
+            "id": "EVD-CV21-008-02",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 2,
+              "recordedAt": "2026-09-01T09:02:00Z",
+              "availableAt": "2026-09-01T09:02:30Z",
+              "values": {
+                "signal-coverage": "all-required"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "95fd8a87945acb9aa917d51fbf71cbbab0ca238b7ebb33a86a69e377d7e5dc26"
+          },
+          {
+            "id": "EVD-CV21-008-03",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 3,
+              "recordedAt": "2026-09-01T09:03:00Z",
+              "availableAt": "2026-09-01T09:03:30Z",
+              "values": {
+                "positive": null,
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": false,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "fixture-missing",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "f09e422c0f95004926bb09a63d662453e932fc9df25beb9813d28a814f7dbd28"
+          },
+          {
+            "id": "EVD-CV21-008-04",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 4,
+              "recordedAt": "2026-09-01T09:04:00Z",
+              "availableAt": "2026-09-01T09:04:30Z",
+              "values": {
+                "context": "evidence-owner-reason"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "50f2c76469b54817ae3b45c4d0991a36408649f21610843cbfa519c9fb9b3eb8"
+          },
+          {
+            "id": "EVD-CV21-008-05",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 5,
+              "recordedAt": "2026-09-01T09:05:00Z",
+              "availableAt": "2026-09-01T09:05:30Z",
+              "values": {
+                "decision": "hold-with-owner"
+              },
+              "present": {
+                "decision": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "e1671a27b5248698cd54b14c82a046e5fb3a9db3f4d790a94adc5c3c1a3d146c"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Telemetry",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-02-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-02",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Detection",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "missing-input"
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-03-01",
+              "reason": "missing-input"
+            }
+          ]
+        },
+        {
+          "layer": "Triage",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-04-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-04",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Response",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-05-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-05",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-022",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Foreign binding subjectId",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-FOREIGN",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "c8e84be9ee0a7b73824912bd07a02785b061860ad0373557ed17241f3508f701"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "evidence binding subjectId"
+    },
+    {
+      "id": "CVCHECK21-023",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Foreign binding subjectRevision",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-FOREIGN",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "395ecd77493586263cd66f27bb98e6d546d80ffb75f9511ca8b8909ea66f0d39"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "evidence binding subjectRevision"
+    },
+    {
+      "id": "CVCHECK21-024",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Foreign binding traceId",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-FOREIGN",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "536db6966f41f5a4694e05ef10c3cb5bb9ac5d228529d0859d7cadb71e0b99d5"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "evidence binding traceId"
+    },
+    {
+      "id": "CVCHECK21-025",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Foreign binding batchId",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-FOREIGN",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "c14bbb8440a4f76ca4ba216e3ae418e9366c0c9d9849acc8fcd4610660155dc1"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "evidence binding batchId"
+    },
+    {
+      "id": "CVCHECK21-026",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Foreign binding controlRevision",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "REV-FOREIGN",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "09d38afcfc59484a5b3c70618546f9557e3669abdf087b3537b6ad9ef91c00f0"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "evidence binding controlRevision"
+    },
+    {
+      "id": "CVCHECK21-027",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed role scenarioId SCN-FOREIGN",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-FOREIGN",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "9be7daf6e1b57394ae004c8ce3482ef5f9c596a7231696f1566d6ff71d2909cb"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "scenario/layer evidence binding"
+    },
+    {
+      "id": "CVCHECK21-028",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed role layer Response",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Response",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "a067a5c568b6e7c3ddda9eeafae2b286fae2d9cf6a13b917afb81151b2cf2c21"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "scenario/layer evidence binding"
+    },
+    {
+      "id": "CVCHECK21-029",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed role controlId CTL-CV21-005",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "cfba5afdf0a5be27356481a3abc683340c087a4209f90deae74a86ea7f655ae8"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "Control/layer role"
+    },
+    {
+      "id": "CVCHECK21-030",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed role step 2",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 2,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "60f0a1774fe3e9f64cf369c54eb398773d457cba3b86cf50c6f62ba8306f48a5"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "supplied step order"
+    },
+    {
+      "id": "CVCHECK21-031",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed role step True",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": true,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "b5c5c5bd5dca1d3efae706f2c415665e7384e5a21f8e1517ebe15370c216df33"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "supplied step order"
+    },
+    {
+      "id": "CVCHECK21-032",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed role inputBasis guessed",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "guessed",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "1dedaff348f7f4065923d3409d52f799daa5d26e184af4c1a67a4aff02ca41e6"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "input basis"
+    },
+    {
+      "id": "CVCHECK21-033",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed role transportBasis guessed",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "guessed"
+            },
+            "payloadSha256": "0fb7dd2fee990f9217caf17a1d3ae4b67196057d9acf9192de7cfce0c90adaf9"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "transport basis"
+    },
+    {
+      "id": "CVCHECK21-034",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed scenario type Offline replay",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Offline replay",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "Scenario type"
+    },
+    {
+      "id": "CVCHECK21-035",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed scenario layers ['Prevention', 'Prevention']",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention",
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "layer inventory/order"
+    },
+    {
+      "id": "CVCHECK21-036",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed scenario suppliedAuthority true",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": "true",
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "supplied authority type"
+    },
+    {
+      "id": "CVCHECK21-037",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed scenario suppliedAuthority False",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": false,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "authority stop"
+    },
+    {
+      "id": "CVCHECK21-038",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed scenario stopReason ignored",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": "ignored",
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "stop reason"
+    },
+    {
+      "id": "CVCHECK21-039",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed scenario stopReason authority-gap",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": "authority-gap",
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "authority reason"
+    },
+    {
+      "id": "CVCHECK21-040",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed scenario stepsAfterStop 1",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 1,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "no continuation"
+    },
+    {
+      "id": "CVCHECK21-041",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed scenario stepsAfterStop True",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": true,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "no continuation"
+    },
+    {
+      "id": "CVCHECK21-042",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Malformed scenario mode live-execution",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "live-execution",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "non-execution mode"
+    },
+    {
+      "id": "CVCHECK21-043",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Reject unsupported timestamp 2026-09-01T09:01:00",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "9fadd0304ef0b688346e36128e84956eaf8035eec747e30905ffc3431747aefa"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": ""
+    },
+    {
+      "id": "CVCHECK21-044",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Reject unsupported timestamp 2026-09-01T09:01:00+00:00",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00+00:00",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "cc478d199ce4a9dba2a750691e3089adfe8b40cebef1ce19c7ad8e7f24dd6146"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": ""
+    },
+    {
+      "id": "CVCHECK21-045",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Reject unsupported timestamp 2026-09-01T09:01:60Z",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:60Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "979544b2d155446cc04e75a5a5532088344a7186276b0b2a3e37ebd90bafb4c0"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": ""
+    },
+    {
+      "id": "CVCHECK21-046",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Reject unsupported timestamp 2026-02-30T09:01:00Z",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-02-30T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "59803acb22de8c07198eecc505a1b3038863a8a26734f6d97e2cdd1aeed21757"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": ""
+    },
+    {
+      "id": "CVCHECK21-047",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Reject unsupported timestamp 1999-09-01T09:01:00Z",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "1999-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "b7c0102f64a93958332086fe1f4ffec33bfdccf3aca4bbedffe76016bcb7b8ee"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": ""
+    },
+    {
+      "id": "CVCHECK21-048",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Empty time window",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:00:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "window/cutoff/analysis"
+    },
+    {
+      "id": "CVCHECK21-049",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Analysis before cutoff",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:10:59Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "24798ca6201165c9deccc700c3534fd840d8f3086818c0863725ec1a7d7ce819"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "window/cutoff/analysis"
+    },
+    {
+      "id": "CVCHECK21-050",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Available before supplied recorded time",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:00:59Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "b769a7ae35056d0e9500f90a181d47c82609ea3b9693741ade2ba48c474cc737"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "supplied record chronology"
+    },
+    {
+      "id": "CVCHECK21-051",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Equal supplied chain steps are not an ordered End-to-End record",
+      "input": {
+        "id": "SCN-CV21-008",
+        "type": "End-to-End",
+        "layers": [
+          "Prevention",
+          "Telemetry",
+          "Detection",
+          "Triage",
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-008",
+        "batchId": "BATCH-CV21-008",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-008-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "3d2a20f9483516df9827a4b6427b4a3ac98c9864713b8833e6968f8f5a50407e"
+          },
+          {
+            "id": "EVD-CV21-008-02",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 2,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:02:30Z",
+              "values": {
+                "signal-coverage": "all-required"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "bd08178f2fbeb892aaf2d2e1b13478b276df56e10a35875538a366f6e866f144"
+          },
+          {
+            "id": "EVD-CV21-008-03",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 3,
+              "recordedAt": "2026-09-01T09:03:00Z",
+              "availableAt": "2026-09-01T09:03:30Z",
+              "values": {
+                "positive": "alert",
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "d2a46936a0749a073dd2f8111db1767ef1c69f09547d408830a51ca2b268726a"
+          },
+          {
+            "id": "EVD-CV21-008-04",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 4,
+              "recordedAt": "2026-09-01T09:04:00Z",
+              "availableAt": "2026-09-01T09:04:30Z",
+              "values": {
+                "context": "evidence-owner-reason"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "50f2c76469b54817ae3b45c4d0991a36408649f21610843cbfa519c9fb9b3eb8"
+          },
+          {
+            "id": "EVD-CV21-008-05",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 5,
+              "recordedAt": "2026-09-01T09:05:00Z",
+              "availableAt": "2026-09-01T09:05:30Z",
+              "values": {
+                "decision": "hold-with-owner"
+              },
+              "present": {
+                "decision": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "e1671a27b5248698cd54b14c82a046e5fb3a9db3f4d790a94adc5c3c1a3d146c"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "same-trace supplied order"
+    },
+    {
+      "id": "CVCHECK21-052",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Duplicate evidence ID",
+      "input": {
+        "id": "SCN-CV21-008",
+        "type": "End-to-End",
+        "layers": [
+          "Prevention",
+          "Telemetry",
+          "Detection",
+          "Triage",
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-008",
+        "batchId": "BATCH-CV21-008",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-008-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "3d2a20f9483516df9827a4b6427b4a3ac98c9864713b8833e6968f8f5a50407e"
+          },
+          {
+            "id": "EVD-CV21-008-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 2,
+              "recordedAt": "2026-09-01T09:02:00Z",
+              "availableAt": "2026-09-01T09:02:30Z",
+              "values": {
+                "signal-coverage": "all-required"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "95fd8a87945acb9aa917d51fbf71cbbab0ca238b7ebb33a86a69e377d7e5dc26"
+          },
+          {
+            "id": "EVD-CV21-008-03",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 3,
+              "recordedAt": "2026-09-01T09:03:00Z",
+              "availableAt": "2026-09-01T09:03:30Z",
+              "values": {
+                "positive": "alert",
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "d2a46936a0749a073dd2f8111db1767ef1c69f09547d408830a51ca2b268726a"
+          },
+          {
+            "id": "EVD-CV21-008-04",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 4,
+              "recordedAt": "2026-09-01T09:04:00Z",
+              "availableAt": "2026-09-01T09:04:30Z",
+              "values": {
+                "context": "evidence-owner-reason"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "50f2c76469b54817ae3b45c4d0991a36408649f21610843cbfa519c9fb9b3eb8"
+          },
+          {
+            "id": "EVD-CV21-008-05",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 5,
+              "recordedAt": "2026-09-01T09:05:00Z",
+              "availableAt": "2026-09-01T09:05:30Z",
+              "values": {
+                "decision": "hold-with-owner"
+              },
+              "present": {
+                "decision": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "e1671a27b5248698cd54b14c82a046e5fb3a9db3f4d790a94adc5c3c1a3d146c"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "unique evidence"
+    },
+    {
+      "id": "CVCHECK21-053",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Missing one End-to-End layer",
+      "input": {
+        "id": "SCN-CV21-008",
+        "type": "End-to-End",
+        "layers": [
+          "Prevention",
+          "Telemetry",
+          "Detection",
+          "Triage",
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-008",
+        "batchId": "BATCH-CV21-008",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-008-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "3d2a20f9483516df9827a4b6427b4a3ac98c9864713b8833e6968f8f5a50407e"
+          },
+          {
+            "id": "EVD-CV21-008-02",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 2,
+              "recordedAt": "2026-09-01T09:02:00Z",
+              "availableAt": "2026-09-01T09:02:30Z",
+              "values": {
+                "signal-coverage": "all-required"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "95fd8a87945acb9aa917d51fbf71cbbab0ca238b7ebb33a86a69e377d7e5dc26"
+          },
+          {
+            "id": "EVD-CV21-008-03",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 3,
+              "recordedAt": "2026-09-01T09:03:00Z",
+              "availableAt": "2026-09-01T09:03:30Z",
+              "values": {
+                "positive": "alert",
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "d2a46936a0749a073dd2f8111db1767ef1c69f09547d408830a51ca2b268726a"
+          },
+          {
+            "id": "EVD-CV21-008-04",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 4,
+              "recordedAt": "2026-09-01T09:04:00Z",
+              "availableAt": "2026-09-01T09:04:30Z",
+              "values": {
+                "context": "evidence-owner-reason"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "50f2c76469b54817ae3b45c4d0991a36408649f21610843cbfa519c9fb9b3eb8"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "one observation per selected layer"
+    },
+    {
+      "id": "CVCHECK21-054",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Payload representation mismatch",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "payload representation"
+    },
+    {
+      "id": "CVCHECK21-055",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Absent slot cannot claim an actual value",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": false
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "d50443b6b409e087f2ce97bd6a5c11652dd6473418cfba5f5dea9793f14d54c5"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "presence/value"
+    },
+    {
+      "id": "CVCHECK21-056",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Unknown optimistic symbol",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "probably-blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "2bd3abb152e52b45ef90342f2319b9c863f379bd31ee700182b26d2525f7e755"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "finite actual value"
+    },
+    {
+      "id": "CVCHECK21-057",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Bare missing signal without transport basis is not a proven Telemetry failure",
+      "input": {
+        "id": "SCN-CV21-002",
+        "type": "Atomic",
+        "layers": [
+          "Telemetry"
+        ],
+        "traceId": "TRACE-CV21-002",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-002-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-002",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-002",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "signal-coverage": "missing-confirmed"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "18be440edf5f8ebf579050b6634e7ca47accb89fae0a45c66279dcdba2fd7f6e"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "transport claim evidence"
+    },
+    {
+      "id": "CVCHECK21-058",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Stopped input cannot contain a claimed compared response",
+      "input": {
+        "id": "SCN-CV21-005",
+        "type": "Atomic",
+        "layers": [
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-005",
+        "batchId": "BATCH-CV21-005",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": false,
+        "stopReason": "authority-gap",
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-005-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-005",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-005",
+              "batchId": "BATCH-CV21-005",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "decision": "hold-with-owner"
+              },
+              "present": {
+                "decision": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "342700a5a5dd1c4ad6028cebba7ac5182b6638793e0f8d79030374c7fd8f3377"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "no observed execution after stop"
+    },
+    {
+      "id": "CVCHECK21-059",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Unowned criterion field",
+      "input": {
+        "id": "SCN-CV21-001",
+        "type": "Atomic",
+        "layers": [
+          "Prevention"
+        ],
+        "traceId": "TRACE-CV21-001",
+        "batchId": "BATCH-CV21-PAIR",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-001-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-001",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-001",
+              "batchId": "BATCH-CV21-PAIR",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked",
+                "extra": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "e3188ba7fd323152b4810487f9acf4b5f117a2f6ea368e48e875c1373108b70a"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "criterion field inventory"
+    },
+    {
+      "id": "CVCHECK21-060",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Same Trace: Telemetry available09:09 cannot precede Detection available09:03:30",
+      "input": {
+        "id": "SCN-CV21-008",
+        "type": "End-to-End",
+        "layers": [
+          "Prevention",
+          "Telemetry",
+          "Detection",
+          "Triage",
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-008",
+        "batchId": "BATCH-CV21-008",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-008-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "3d2a20f9483516df9827a4b6427b4a3ac98c9864713b8833e6968f8f5a50407e"
+          },
+          {
+            "id": "EVD-CV21-008-02",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 2,
+              "recordedAt": "2026-09-01T09:02:00Z",
+              "availableAt": "2026-09-01T09:09:00Z",
+              "values": {
+                "signal-coverage": "all-required"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "f88aeee8ad980f110689d5d630f2af92ca34d002754f168849bf4eab154e0d19"
+          },
+          {
+            "id": "EVD-CV21-008-03",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 3,
+              "recordedAt": "2026-09-01T09:03:00Z",
+              "availableAt": "2026-09-01T09:03:30Z",
+              "values": {
+                "positive": "alert",
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "d2a46936a0749a073dd2f8111db1767ef1c69f09547d408830a51ca2b268726a"
+          },
+          {
+            "id": "EVD-CV21-008-04",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 4,
+              "recordedAt": "2026-09-01T09:04:00Z",
+              "availableAt": "2026-09-01T09:04:30Z",
+              "values": {
+                "context": "evidence-owner-reason"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "50f2c76469b54817ae3b45c4d0991a36408649f21610843cbfa519c9fb9b3eb8"
+          },
+          {
+            "id": "EVD-CV21-008-05",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 5,
+              "recordedAt": "2026-09-01T09:05:00Z",
+              "availableAt": "2026-09-01T09:05:30Z",
+              "values": {
+                "decision": "hold-with-owner"
+              },
+              "present": {
+                "decision": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "e1671a27b5248698cd54b14c82a046e5fb3a9db3f4d790a94adc5c3c1a3d146c"
+          }
+        ]
+      },
+      "expected": null,
+      "errorContains": "same-trace supplied availability order"
+    },
+    {
+      "id": "CVCHECK21-061",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Equal batch availability is nondecreasing and valid, not a strict-time requirement",
+      "input": {
+        "id": "SCN-CV21-008",
+        "type": "End-to-End",
+        "layers": [
+          "Prevention",
+          "Telemetry",
+          "Detection",
+          "Triage",
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-008",
+        "batchId": "BATCH-CV21-008",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-008-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:09:00Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "a512ef21214b2543297b84c449446e26e46bcb28857c359f6f0466dc42269401"
+          },
+          {
+            "id": "EVD-CV21-008-02",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 2,
+              "recordedAt": "2026-09-01T09:02:00Z",
+              "availableAt": "2026-09-01T09:09:00Z",
+              "values": {
+                "signal-coverage": "all-required"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "f88aeee8ad980f110689d5d630f2af92ca34d002754f168849bf4eab154e0d19"
+          },
+          {
+            "id": "EVD-CV21-008-03",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 3,
+              "recordedAt": "2026-09-01T09:03:00Z",
+              "availableAt": "2026-09-01T09:09:00Z",
+              "values": {
+                "positive": "alert",
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "5372b44b9e46a3b0201c8868ed21a1f2b177da09055cabb600fc73f2f9df7656"
+          },
+          {
+            "id": "EVD-CV21-008-04",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 4,
+              "recordedAt": "2026-09-01T09:04:00Z",
+              "availableAt": "2026-09-01T09:09:00Z",
+              "values": {
+                "context": "evidence-owner-reason"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "95937122a397376f620f9f436549a3ee3fce7c520c2fc67ac826283f7640c363"
+          },
+          {
+            "id": "EVD-CV21-008-05",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 5,
+              "recordedAt": "2026-09-01T09:05:00Z",
+              "availableAt": "2026-09-01T09:09:00Z",
+              "values": {
+                "decision": "hold-with-owner"
+              },
+              "present": {
+                "decision": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "3fb637306d0230224d4387c9f612652c716fb86b03453696f32207be3304ffee"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Telemetry",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-02-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-02",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Detection",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Triage",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-04-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-04",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Response",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-05-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-05",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-062",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Ordered last-layer receipt after cutoff stays unknown; earlier layers retain their own results",
+      "input": {
+        "id": "SCN-CV21-008",
+        "type": "End-to-End",
+        "layers": [
+          "Prevention",
+          "Telemetry",
+          "Detection",
+          "Triage",
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-008",
+        "batchId": "BATCH-CV21-008",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-008-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:01:30Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "3d2a20f9483516df9827a4b6427b4a3ac98c9864713b8833e6968f8f5a50407e"
+          },
+          {
+            "id": "EVD-CV21-008-02",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 2,
+              "recordedAt": "2026-09-01T09:02:00Z",
+              "availableAt": "2026-09-01T09:02:30Z",
+              "values": {
+                "signal-coverage": "all-required"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "95fd8a87945acb9aa917d51fbf71cbbab0ca238b7ebb33a86a69e377d7e5dc26"
+          },
+          {
+            "id": "EVD-CV21-008-03",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 3,
+              "recordedAt": "2026-09-01T09:03:00Z",
+              "availableAt": "2026-09-01T09:03:30Z",
+              "values": {
+                "positive": "alert",
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "d2a46936a0749a073dd2f8111db1767ef1c69f09547d408830a51ca2b268726a"
+          },
+          {
+            "id": "EVD-CV21-008-04",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 4,
+              "recordedAt": "2026-09-01T09:04:00Z",
+              "availableAt": "2026-09-01T09:04:30Z",
+              "values": {
+                "context": "evidence-owner-reason"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "50f2c76469b54817ae3b45c4d0991a36408649f21610843cbfa519c9fb9b3eb8"
+          },
+          {
+            "id": "EVD-CV21-008-05",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 5,
+              "recordedAt": "2026-09-01T09:05:00Z",
+              "availableAt": "2026-09-01T09:11:01Z",
+              "values": {
+                "decision": "hold-with-owner"
+              },
+              "present": {
+                "decision": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "e2404477b7e5b14ca59e589a26499bc06168510f21bf09e2f82fbf68993cd055"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-01",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Telemetry",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-02-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-02",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Detection",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-03",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Triage",
+          "result": "Passed",
+          "failureClasses": [],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-04-01",
+              "result": "Passed",
+              "evidenceId": "EVD-CV21-008-04",
+              "gapCode": null
+            }
+          ],
+          "gaps": []
+        },
+        {
+          "layer": "Response",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-05-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "after-cutoff"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-05-01",
+              "reason": "after-cutoff"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    },
+    {
+      "id": "CVCHECK21-063",
+      "owner": "LayerA Chapter21 supplied comparison",
+      "note": "Ordered receipts all after cutoff remain unknown, never optimistic Passed",
+      "input": {
+        "id": "SCN-CV21-008",
+        "type": "End-to-End",
+        "layers": [
+          "Prevention",
+          "Telemetry",
+          "Detection",
+          "Triage",
+          "Response"
+        ],
+        "traceId": "TRACE-CV21-008",
+        "batchId": "BATCH-CV21-008",
+        "subjectId": "SYNTH-CV21-001",
+        "subjectRevision": "REV-CV21-001",
+        "controlRevision": "CTLREV-CV21-001",
+        "windowStart": "2026-09-01T09:00:00Z",
+        "windowEnd": "2026-09-01T09:10:00Z",
+        "cutoff": "2026-09-01T09:11:00Z",
+        "analysisAt": "2026-09-01T09:12:00Z",
+        "mode": "supplied-record-comparison",
+        "suppliedAuthority": true,
+        "stopReason": null,
+        "stepsAfterStop": 0,
+        "observations": [
+          {
+            "id": "EVD-CV21-008-01",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Prevention",
+              "controlId": "CTL-CV21-001",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 1,
+              "recordedAt": "2026-09-01T09:01:00Z",
+              "availableAt": "2026-09-01T09:11:01Z",
+              "values": {
+                "scope-outcome": "blocked"
+              },
+              "present": {
+                "scope-outcome": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "db366cd508649ecfabc0109f2d3a11459ae2b1a46de71bf8e398148c8e264e00"
+          },
+          {
+            "id": "EVD-CV21-008-02",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Telemetry",
+              "controlId": "CTL-CV21-002",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 2,
+              "recordedAt": "2026-09-01T09:02:00Z",
+              "availableAt": "2026-09-01T09:11:02Z",
+              "values": {
+                "signal-coverage": "all-required"
+              },
+              "present": {
+                "signal-coverage": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "67c46d811f353612713e0c959cef9796fa5377b05a033dc8490d8ed5ca9fc2d9"
+          },
+          {
+            "id": "EVD-CV21-008-03",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Detection",
+              "controlId": "CTL-CV21-003",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 3,
+              "recordedAt": "2026-09-01T09:03:00Z",
+              "availableAt": "2026-09-01T09:11:03Z",
+              "values": {
+                "positive": "alert",
+                "negative": "no-alert",
+                "benign-near-miss": "no-alert"
+              },
+              "present": {
+                "positive": true,
+                "negative": true,
+                "benign-near-miss": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "7596db152148b962df7d542adf8bca5cf8ef2d36f7fb278592b20d52637effc0"
+          },
+          {
+            "id": "EVD-CV21-008-04",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Triage",
+              "controlId": "CTL-CV21-004",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 4,
+              "recordedAt": "2026-09-01T09:04:00Z",
+              "availableAt": "2026-09-01T09:11:04Z",
+              "values": {
+                "context": "evidence-owner-reason"
+              },
+              "present": {
+                "context": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "15133b8b863b6f02391d3860ec336d40aea5b83a9f0f68ba42a7258138d637f4"
+          },
+          {
+            "id": "EVD-CV21-008-05",
+            "payload": {
+              "scenarioId": "SCN-CV21-008",
+              "subjectId": "SYNTH-CV21-001",
+              "subjectRevision": "REV-CV21-001",
+              "traceId": "TRACE-CV21-008",
+              "batchId": "BATCH-CV21-008",
+              "layer": "Response",
+              "controlId": "CTL-CV21-005",
+              "controlRevision": "CTLREV-CV21-001",
+              "step": 5,
+              "recordedAt": "2026-09-01T09:05:00Z",
+              "availableAt": "2026-09-01T09:11:05Z",
+              "values": {
+                "decision": "hold-with-owner"
+              },
+              "present": {
+                "decision": true
+              },
+              "inputBasis": "complete-supplied-input",
+              "transportBasis": "not-a-transport-claim"
+            },
+            "payloadSha256": "1c8d0f1aa3d4d97dc060d0efa7ac8e87d7576cae30d24caa4a05043c1c31793a"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "layer": "Prevention",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-01-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "after-cutoff"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-01-01",
+              "reason": "after-cutoff"
+            }
+          ]
+        },
+        {
+          "layer": "Telemetry",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-02-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "after-cutoff"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-02-01",
+              "reason": "after-cutoff"
+            }
+          ]
+        },
+        {
+          "layer": "Detection",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-03-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "after-cutoff"
+            },
+            {
+              "id": "CRIT-CV21-03-02",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "after-cutoff"
+            },
+            {
+              "id": "CRIT-CV21-03-03",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "after-cutoff"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-03-01",
+              "reason": "after-cutoff"
+            },
+            {
+              "criterionId": "CRIT-CV21-03-02",
+              "reason": "after-cutoff"
+            },
+            {
+              "criterionId": "CRIT-CV21-03-03",
+              "reason": "after-cutoff"
+            }
+          ]
+        },
+        {
+          "layer": "Triage",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-04-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "after-cutoff"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-04-01",
+              "reason": "after-cutoff"
+            }
+          ]
+        },
+        {
+          "layer": "Response",
+          "result": "Indeterminate",
+          "failureClasses": [
+            "Test design"
+          ],
+          "criteria": [
+            {
+              "id": "CRIT-CV21-05-01",
+              "result": "Indeterminate",
+              "evidenceId": null,
+              "gapCode": "after-cutoff"
+            }
+          ],
+          "gaps": [
+            {
+              "criterionId": "CRIT-CV21-05-01",
+              "reason": "after-cutoff"
+            }
+          ]
+        }
+      ],
+      "errorContains": null
+    }
+  ]
+}

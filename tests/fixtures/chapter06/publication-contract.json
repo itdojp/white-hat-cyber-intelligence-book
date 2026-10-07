@@ -1,0 +1,2574 @@
+{
+  "schemaVersion": "1.0.0",
+  "owner": "Chapter6 Layer A only",
+  "documents": {
+    "manuscript/06-observable-systems.md": {
+      "headings": [
+        [
+          1,
+          "第6章 通信・Identity・Cloudを観測可能なシステムとして読む"
+        ],
+        [
+          2,
+          "この章の位置付け"
+        ],
+        [
+          2,
+          "学習目標"
+        ],
+        [
+          2,
+          "前提知識"
+        ],
+        [
+          2,
+          "導入ケース：同意変更を見つければ十分か"
+        ],
+        [
+          2,
+          "全体像：操作と証拠は別の経路を通る"
+        ],
+        [
+          2,
+          "Identity・要求・状態変化を分離する"
+        ],
+        [
+          2,
+          "Eventの段階と観測不能点"
+        ],
+        [
+          2,
+          "安全な分析課題"
+        ],
+        [
+          2,
+          "作成する成果物"
+        ],
+        [
+          2,
+          "評価基準"
+        ],
+        [
+          2,
+          "よくある誤解"
+        ],
+        [
+          2,
+          "章のまとめ"
+        ],
+        [
+          2,
+          "次に学ぶこと"
+        ],
+        [
+          2,
+          "参考文献・Source Note ID"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む"
+          ],
+          "headings": []
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "この章の位置付け 第4章のAssetとTrust Boundary、第5章のBehavior Mapを、「どこで何を観測できるか」へ接続する。信号の流れ（Signal Flow）は製品構成図ではなく、操作、認可、状態変化、Event、収集、判断の依存関係を説明する図である。本章の成果物はART-16 Signal Flow Diagramである。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWNは操作からEvidenceまでの追跡、観測状態の分離、Gapと許容結論の記録である。BRIDGEは第4章の境界、第5章の行動、第12〜13章のIdentity・Platform、第16〜17章のTelemetry・Detection、第20章のEvidenceである。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "DELEGATEとして、Protocolの実装は実践 認証認可システム設計、基盤設定はインフラセキュリティ実装ガイドへ委譲する。委譲先では認証方式や収集設定の条件を確認し、本書へ戻ってDecision point、必須Field、GapをART-16へ記録する。委譲先を読まなくても、以下の合成記録の比較は完結する。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "この章の位置付け"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 操作とログを対応付けられる。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 観測不能点を識別できる。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "学習目標 Signal Flow Diagramを作成できる。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "「ログがある」だけでなく、どの操作、主体、対象、期間について、何の判断まで許されるかを説明できれば到達である。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "学習目標"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "前提知識 HTTP、認証・認可、Cloud、Containerの概念と、第4章のAsset / Boundary、第5章のMappingと観測の違いを前提とする。OAuth要求の組立て、Cloudアカウント、SIEM、実ログは必要ない。演習は同梱の非実行JSONを読むS1の分析課題である。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "前提知識"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "導入ケース：同意変更を見つければ十分か 合成の請求書連携について、意思決定者は「連携の権限を見直す際、どの観測不足を先に解消すべきか」と問う。管理者同意の記録は存在する一方、Workloadの現在のIdentity bindingは未確認であり、Audit exportの一部は保持期間を過ぎている。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "導入ケース：同意変更を見つければ十分か"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確認事実（教材内）は、同梱の受領記録に示されたEvent classと観測段階だけである。仮定として、管理面・顧客Data API・収集系を持つ架空の構成を置く。分析判断は「既往影響の不存在は結論できず、収集経路と期間の確認を先行する」である。代替説明は正常な変更、Export不備、保持期限切れであり、悪意を仮定しなくても欠落は説明できる。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "導入ケース：同意変更を見つければ十分か"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "確信度は中とする。有限教材内の欠落条件は明示されるが、実環境と親Caseの過去期間を示すEvidenceはない。必要な対象期間・Field・Identityの対応が確認されれば、この判断を再評価する。推奨はGapごとにOwnerと期限を付けて引き渡すことであり、実環境への追加操作ではない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "導入ケース：同意変更を見つければ十分か"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "全体像：操作と証拠は別の経路を通る"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "導入ケース：同意変更を見つければ十分か"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "F-06-01 Signal Flowと観測経路 次は本書独自の概念図である。左から操作の通過点を読み、後半で観測経路へ切り替わる。矢印は成立や成功の証明ではなく、次に確認すべき依存関係を示す。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "全体像：操作と証拠は別の経路を通る",
+            "F-06-01 Signal Flowと観測経路"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "Actor / Workload → Identity / Credential class → Protocol / Request → Gateway / Control plane / Data plane → Authorization decision → State change / Data access → Event producer → Collection path → Normalization / Retention → Query → Evidence / Detection consumer → Gap / Decision / Reassessment"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "全体像：操作と証拠は別の経路を通る",
+            "F-06-01 Signal Flowと観測経路"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "文章代替として、操作を認証主体と要求へ結び付け、認可と状態変化を分ける。そこからEvent producer、Collector、正規化、保存、検索へ追跡する。観測の根拠が切れる箇所はGapにし、最後の判断へ引き継ぐ。図の色や配置だけに意味を持たせない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "全体像：操作と証拠は別の経路を通る",
+            "F-06-01 Signal Flowと観測経路"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "NIST SP 800-207はPolicy DecisionとEnforcement、Control planeとData planeを論理的に分離する。構成要素が同一製品に実装されても、その責任とEvidenceは同じではない。本章ではこの区別だけを借り、Zero Trust適合性や製品の安全性を認定しない。SRC-NIST-ZTA-001"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "全体像：操作と証拠は別の経路を通る",
+            "F-06-01 Signal Flowと観測経路"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "Identity・要求・状態変化を分離する"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "全体像：操作と証拠は別の経路を通る",
+            "F-06-01 Signal Flowと観測経路"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-06-01 Human / Workload / Serviceの比較 主体の扱い 確認する結び付き 観測上の注意 Human 合成人物Roleと管理操作の承認 ログイン成功と変更承認を分ける"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Identity・要求・状態変化を分離する",
+            "T-06-01 Human / Workload / Serviceの比較"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-06-01 Human / Workload / Serviceの比較 主体の扱い 確認する結び付き 観測上の注意 Workload 実行単位と非人間Identityのbinding 管理者の承認をWorkload自身の実行証拠にしない"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Identity・要求・状態変化を分離する",
+            "T-06-01 Human / Workload / Serviceの比較"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-06-01 Human / Workload / Serviceの比較 主体の扱い 確認する結び付き 観測上の注意 Service 継続する機能と、その実行Identity Service名が同じでも実行Instance・権限が同じとは限らない"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Identity・要求・状態変化を分離する",
+            "T-06-01 Human / Workload / Serviceの比較"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "T-06-01 Human / Workload / Serviceの比較 主体の扱い 確認する結び付き 観測上の注意 Device 端末の状態と主体との関連 端末の正常性だけで利用者や処理を認可しない"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Identity・要求・状態変化を分離する",
+            "T-06-01 Human / Workload / Serviceの比較"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "WorkloadとServiceは排他的な普遍分類ではない。本教材では、API要求を出す実行単位をWorkload、継続的なAudit export機能をServiceと呼び分ける。Deviceは実行環境の属性として説明し、独立した実行Flowは本教材では追加しない。NIST SP 800-207Aが扱うアプリケーション・Service identityは、人のIdentityだけでアクセスを説明しないための根拠である。SRC-NIST-ZTAA-001"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Identity・要求・状態変化を分離する",
+            "T-06-01 Human / Workload / Serviceの比較"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OAuthのClient、Authorization server、Resource serverは別の役割である。Clientが自分のために行動する場合と、人の委任で行動する場合を混同しない。管理者同意の変更という製品上の操作を、OAuth仕様に共通するEvent名とみなさない。RFC 6749の役割とClient credentialsの説明だけを参照し、古いGrantの選択や実装推奨は本章では行わない。SRC-IETF-OAUTH-CORE-001"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Identity・要求・状態変化を分離する",
+            "T-06-01 Human / Workload / Serviceの比較"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "認証は「どの主体として扱うか」、認可は「その主体にこの要求を許すか」、Enforcementは「その判断を経路上で適用したか」という問いである。認可がAllowでも、処理失敗や後段拒否があれば状態は変わらない。変更成功も、監査Eventの収集成功を意味しない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Identity・要求・状態変化を分離する",
+            "T-06-01 Human / Workload / Serviceの比較"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Control / Data / Build Plane 管理者同意やDeployment設定はControl plane、顧客Data APIの利用はData planeとして読む。CI/CDは本章ではBuild planeという補助的な呼び名を使い、Source、Build identity、Artifact、Deployment承認の対応を確認する。Build成功を実行時の権限やData accessの証拠へ昇格させない。Build planeはNISTの必須分類ではなく、本書の説明上の分割である。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Identity・要求・状態変化を分離する",
+            "Control / Data / Build Plane"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Containerを再作成しても論理Serviceは残り得るため、Service名だけでは実行単位を特定できない。Cloudの管理操作とAPI内部のData操作、Gatewayの応答と後段状態も別々に記録する。製品固有のAudit schemaやPod操作は第13章と専門書へ委譲する。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Identity・要求・状態変化を分離する",
+            "Control / Data / Build Plane"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "Eventの段階と観測不能点"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Identity・要求・状態変化を分離する",
+            "Control / Data / Build Plane"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "T-06-02 Coverage statusの意味 本書のART-16で用いるStatusは次の六つだけである。これらは製品の標準用語でも、単純な成熟度の点数でもない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "T-06-02 Coverage statusの意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status この教材で必要な根拠 それだけでは言えないこと Produced 指定Producerに同一Eventの生成記録がある Collectorへの到達"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "T-06-02 Coverage statusの意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status この教材で必要な根拠 それだけでは言えないこと Collected 指定Collectorの受領記録がある 現在の保持と検索可能性"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "T-06-02 Coverage statusの意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status この教材で必要な根拠 それだけでは言えないこと Retained 指定時点が保持区間内で、保存先の記録がある 検索権限と必須Fieldの充足"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "T-06-02 Coverage statusの意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status この教材で必要な根拠 それだけでは言えないこと Queryable 期間・対象・必須Fieldを満たす検索記録がある 検知の有効性"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "T-06-02 Coverage statusの意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status この教材で必要な根拠 それだけでは言えないこと Validated 同一Flowの有限Testが期待値と一致する 実製品、親Case、過去全期間の有効性"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "T-06-02 Coverage statusの意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Status この教材で必要な根拠 それだけでは言えないこと Unknown 生成段階から根拠を確定できない Eventや侵害の不存在"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "T-06-02 Coverage statusの意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "本章ではProduced、Collected、Retained、Queryableの根拠をそれぞれ保存する。Statusはその観測時点で根拠が連続している段階を要約するが、過去の収集記録は保持期限切れでも消去しない。Collectedの記録からRetainedやQueryableを推定せず、各段階の受領記録を照合する。正規化の有無は独立Fieldであり、七番目のStatusを増やさない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "T-06-02 Coverage statusの意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "NIST SP 800-92のログ管理は、生成・転送・保存・分析を支える基盤と運用を区別し、正規化、時刻差、保持、完全性を扱う。本章の六Statusはその引用ではなく、観測不足を説明するための教材契約である。2006年版の暗号アルゴリズムや製品例を現在の推奨へ転用しない。SRC-NIST-LOG-001"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "T-06-02 Coverage statusの意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "NIST SP 800-92 Rev.1は2026-09-12確認時点でInitial Public Draftである。改訂候補として追跡するが、Final規範として使わない。SRC-NIST-LOG-DRAFT-001"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "T-06-02 Coverage statusの意味"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "時刻・相関・変換の限界 Event time、収集時刻、Query時刻を別に保存し、UTC offsetとClock uncertaintyを残す。例えば同じClockでない二つの時刻が各±2秒の誤差を持ち、表示差が1秒なら、表示順だけで前後関係を確定できない。UTCへの表記統一はClockの正確性を回復しない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "時刻・相関・変換の限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Correlation keyは合成Event ID・Tenant・Application・Request IDの組として扱う。同じApplication名だけの一致は因果関係を証明しない。Raw TokenやCookieを相関keyに使わない。正規化前後のField名と変換版、欠落したField、保持期限を記録し、変換による情報損失を明示する。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "時刻・相関・変換の限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Telemetryの分類は、第5章のATT&CK v19.2固定metadataとBehavior IDを継承する。Detection Strategyを参照できることと、必要Dataを実際に保有することは別である。新たなATT&CK対応付けや親MapのStatus更新は本章では行わない。SRC-ATTACK-001、SRC-ATTACK-DET-001"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "時刻・相関・変換の限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "安全な分析課題"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "Eventの段階と観測不能点",
+            "時刻・相関・変換の限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Purpose / Prerequisite / Authority / Scope 目的は六つの合成Flowを読み、根拠のない昇格を拒否することである。前提は本章とART-16の読了、同梱JSONを表示できる環境である。Authorityは教材の読み取りだけを許す。Scopeはread-only-synthetic-data、完全合成Caseに限定する。実Credential、Token、Cookie、実Tenant、実Logは使用しない。外部Serviceへの要求送信と認証試行は禁止する。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "Purpose / Prerequisite / Authority / Scope"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Expected evidence / Impact / Stop / Cleanup 期待Evidenceは、Flow ID、根拠のある段階、Gap、許容結論、Owner、期限を記入したART-16である。外部への影響はなく、実行する場合もRepository内JSONの読み取りだけで完結する。実データらしい内容、非合成の識別子、外部接続の必要性、意味の不一致を見つけたら停止し、教材管理者へ報告する。追加の調査操作は行わない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "Expected evidence / Impact / Stop / Cleanup"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Cleanupは、自分で作成した演習用コピーだけを整理することとする。正本とEvidence記録は変更しない。第三者Systemのログや設定を変更する課題ではない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "Expected evidence / Impact / Stop / Cleanup"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と反証 完全合成Caseと読み取り専用Datasetを開く。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "手順と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と反証 FlowのActorからConsumerまで、Node IDとEdge IDでたどる。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "手順と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と反証 各段階のEvidence IDが同じFlow・Event・対象期間を指すか確認する。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "手順と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と反証 保持期限切れと未収集を区別し、Statusと許容結論を記入する。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "手順と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と反証 WorkloadのUnknownを管理者同意の記録だけで埋められるか検討する。埋められない理由を記す。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "手順と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "手順と反証 第16章へ必要Field・期間、第17章へTestの限定、第20章へClockと変換の制約を渡す。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "手順と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "悪い例は「Collectorに届いたので過去90日の侵害はなかった」である。反証は、Collectedの受領票があっても対象期間が期限切れでQuery記録がないFlowである。良い例は「教材の受領票はあるが、指定時点の検索可能性は示せない。保持GapをOwnerへ返す」である。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "手順と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Repositoryの検査を実行できる場合は、固定依存の導入済み環境で次を使う。ネットワーク取得や実環境の観測は実行しない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "手順と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "codeblock",
+            null,
+            "python3 scripts/check_chapter06_contract.py"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "手順と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "成功は教材の有限構造・参照・表示・安全境界の整合を意味する。システムの監視性能を測った結果ではない。失敗時は正本の公開を止め、検査を回避せず、不一致を修正・レビューする。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "安全な分析課題",
+            "手順と反証"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "作成する成果物 ART-16 Templateへ、Case、親Behavior、Asset / Boundary、Actor / Identity、Protocol、認可、状態変化、Producer、Collector、正規化、保持、Query、Consumer、Gapを記入する。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "作成する成果物"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "親はCASE-2026-001、関係はrefines、子記録はSFM-2026-001である。本章の受領票は独立した完全合成の教育用補足であり、親の改修結果、Control assurance、過去の観測不足を更新しない。StatusがUnknownでも、Gap、許容結論、Owner、期限、Reassessmentが揃えば成果物として提出できる。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "作成する成果物"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "評価基準 各項目を0点（欠落）、1点（IDまたは根拠が曖昧）、2点（直接追跡できる）で評価する。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 2点の条件 操作の追跡 Actor、Identity、認可、状態変化を分ける"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 2点の条件 観測段階 同一FlowのEvidenceで各段階を裏付ける"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 2点の条件 時刻と保持 Offset、誤差、期限、Query時点を判断に使う"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 2点の条件 結論の限界 代替説明とGapを残し、不存在を断定しない"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "観点 2点の条件 Handoff Owner、期限、再評価条件と次章の入力がある"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "合計8点以上を教材上の目安とする。ただし実Data混入、許可外操作、根拠のないStatus昇格、親Caseへの無断転用が一つでもあれば点数にかかわらず差し戻す。これは職業資格や実環境能力の認定ではない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "評価基準"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 Authentication successはAuthorization successでもState change successでもない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 暗号化通信が存在しても、Data accessの内容や認可結果をGatewayだけから確定できない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 Event未検出は、指定した検索条件の結果である。生成、収集、保持、権限の欠落を調べる前に不存在へ一般化しない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 QueryableはValidatedではない。合成TestのPassも親ControlのPassではない。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "よくある誤解 正規化は証拠を増やさない。失われたFieldと変換版を残す。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "よくある誤解"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "章のまとめ Signal Flowは、操作の経路と観測の経路をIDで接続する。Identity、認可、状態変化を分け、生成・収集・保持・検索・検証を個別のEvidenceで確認する。観測不能点を隠さず、許容結論、Owner、期限、Reassessmentまで記録することが本章の完成である。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "章のまとめ"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "次に学ぶこと 第7章では、観測できる範囲と不確実性を保持したまま、脆弱性、露出、悪用可能性、事業影響を分けて優先順位を判断する。Identityの詳細は第12章、Cloud / Container / CI/CDは第13章、Telemetry要件は第16章、検知検証は第17章、証拠と時系列の再構成は第20章へ接続する。未公開章へのリンクは作らず、全体目次で位置を確認する。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "次に学ぶこと"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "参考文献・Source Note ID 本章の採用箇所、版、Draft区分、確認日、除外範囲は第6章Source Review Noteにまとめる。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-ZTA-001: NIST SP 800-207。論理的な判断・強制・Planeの分離。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-ZTAA-001: NIST SP 800-207A。Application / Service identity。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-LOG-001: NIST SP 800-92。生成・転送・保持・分析の区別。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-NIST-LOG-DRAFT-001: NIST SP 800-92 Rev.1 IPD。改訂監視だけ。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-IETF-OAUTH-CORE-001: RFC 6749。役割とClient自身のIdentityの区別だけ。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-ATTACK-001: 第5章から継承するATT&CK v19.2の版と限定。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "参考文献・Source Note ID"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "SRC-ATTACK-DET-001: StrategyとData保有・検証の分離。"
+          ],
+          "headings": [
+            "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+            "参考文献・Source Note ID"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "codeblock",
+                null,
+                "Actor / Workload → Identity / Credential class → Protocol / Request → Gateway / Control plane / Data plane → Authorization decision → State change / Data access → Event producer → Collection path → Normalization / Retention → Query → Evidence / Detection consumer → Gap / Decision / Reassessment"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "全体像：操作と証拠は別の経路を通る",
+                "F-06-01 Signal Flowと観測経路"
+              ]
+            },
+            "reason": "Reviewed descriptive role, explicit non-operative limit, or prohibition; no live operation. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "OAuthのClient、Authorization server、Resource serverは別の役割である。Clientが自分のために行動する場合と、人の委任で行動する場合を混同しない。管理者同意の変更という製品上の操作を、OAuth仕様に共通するEvent名とみなさない。RFC 6749の役割とClient credentialsの説明だけを参照し、古いGrantの選択や実装推奨は本章では行わない。SRC-IETF-OAUTH-CORE-001"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "Identity・要求・状態変化を分離する",
+                "T-06-01 Human / Workload / Serviceの比較"
+              ]
+            },
+            "reason": "Reviewed descriptive role, explicit non-operative limit, or prohibition; no live operation. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "Purpose / Prerequisite / Authority / Scope 目的は六つの合成Flowを読み、根拠のない昇格を拒否することである。前提は本章とART-16の読了、同梱JSONを表示できる環境である。Authorityは教材の読み取りだけを許す。Scopeはread-only-synthetic-data、完全合成Caseに限定する。実Credential、Token、Cookie、実Tenant、実Logは使用しない。外部Serviceへの要求送信と認証試行は禁止する。"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "安全な分析課題",
+                "Purpose / Prerequisite / Authority / Scope"
+              ]
+            },
+            "reason": "Reviewed descriptive role, explicit non-operative limit, or prohibition; no live operation. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "Cleanupは、自分で作成した演習用コピーだけを整理することとする。正本とEvidence記録は変更しない。第三者Systemのログや設定を変更する課題ではない。"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "安全な分析課題",
+                "Expected evidence / Impact / Stop / Cleanup"
+              ]
+            },
+            "reason": "Reviewed descriptive role, explicit non-operative limit, or prohibition; no live operation. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "Repositoryの検査を実行できる場合は、固定依存の導入済み環境で次を使う。ネットワーク取得や実環境の観測は実行しない。"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "安全な分析課題",
+                "手順と反証"
+              ]
+            },
+            "reason": "Reviewed descriptive role, explicit non-operative limit, or prohibition; no live operation. Exact field + heading + cardinality only."
+          }
+        ],
+        "host": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "NIST SP 800-92 Rev.1は2026-09-12確認時点でInitial Public Draftである。改訂候補として追跡するが、Final規範として使わない。SRC-NIST-LOG-DRAFT-001"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "Eventの段階と観測不能点",
+                "T-06-02 Coverage statusの意味"
+              ]
+            },
+            "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "Telemetryの分類は、第5章のATT&CK v19.2固定metadataとBehavior IDを継承する。Detection Strategyを参照できることと、必要Dataを実際に保有することは別である。新たなATT&CK対応付けや親MapのStatus更新は本章では行わない。SRC-ATTACK-001、SRC-ATTACK-DET-001"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "Eventの段階と観測不能点",
+                "時刻・相関・変換の限界"
+              ]
+            },
+            "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "codeblock",
+                null,
+                "python3 scripts/check_chapter06_contract.py"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "安全な分析課題",
+                "手順と反証"
+              ]
+            },
+            "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "SRC-ATTACK-001: 第5章から継承するATT&CK v19.2の版と限定。"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "参考文献・Source Note ID"
+              ]
+            },
+            "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          }
+        ],
+        "destination": [
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://itdojp.github.io/practical-auth-book/"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "この章の位置付け"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "p",
+                null,
+                "DELEGATEとして、Protocolの実装は実践 認証認可システム設計、基盤設定はインフラセキュリティ実装ガイドへ委譲する。委譲先では認証方式や収集設定の条件を確認し、本書へ戻ってDecision point、必須Field、GapをART-16へ記録する。委譲先を読まなくても、以下の合成記録の比較は完結する。"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://itdojp.github.io/it-infra-security-guide-book/"
+              ],
+              "headings": [
+                "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
+                "この章の位置付け"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "p",
+                null,
+                "DELEGATEとして、Protocolの実装は実践 認証認可システム設計、基盤設定はインフラセキュリティ実装ガイドへ委譲する。委譲先では認証方式や収集設定の条件を確認し、本書へ戻ってDecision point、必須Field、GapをART-16へ記録する。委譲先を読まなくても、以下の合成記録の比較は完結する。"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          }
+        ]
+      }
+    },
+    "templates/signal-flow-diagram.md": {
+      "headings": [
+        [
+          1,
+          "Signal Flow Diagram"
+        ],
+        [
+          2,
+          "Document Control"
+        ],
+        [
+          2,
+          "Flowの記入"
+        ],
+        [
+          2,
+          "Coverageと受入条件"
+        ],
+        [
+          2,
+          "Safety / Stop / Cleanup"
+        ],
+        [
+          2,
+          "HandoffとRubric"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "Signal Flow Diagram"
+          ],
+          "headings": []
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Document Control Artifact IDはART-16。本Templateは操作から観測・判断へ接続する記録であり、認可の付与、製品の監視設定、侵害判定を行うものではない。"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 Signal Flow Map ID / Case ID / Relation 子記録ID、親Case、refines等の関係"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 Decision Requirement / Parent Behavior 判断要求、第5章Behavior ID、親Statusを更新しない限定"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 Authority / Scope 教材ではread-only-synthetic-dataだけ"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 Owner / Review date 担当Role、再確認期限"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "Field 記入内容 Source / Version 用いる一次資料と教材契約の版"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Flowの記入 一つのFlowには安定したNode IDとEdge IDを付ける。分岐する場合は条件を明示し、同じEventと無関係な経路をEvidenceとして流用しない。"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Flowの記入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "記録単位 必須項目 Actor / Identity 主体ID、Human / Workload / Service、binding、Credential classだけ"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Flowの記入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "記録単位 必須項目 Request / Boundary Protocol class、目的、Asset ID、Boundary ID"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Flowの記入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "記録単位 必須項目 Decision / Effect Authentication、Authorization、Enforcement、State changeまたはData access"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Flowの記入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "記録単位 必須項目 Event / Collector Producer、Event class、必須Field、受領先、収集時刻"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Flowの記入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "記録単位 必須項目 Normalization / Retention 変換版、欠落Field、保存先、保持区間"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Flowの記入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "記録単位 必須項目 Query / Consumer 検索時点、対象期間、権限Role、Evidence / Detection consumer"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Flowの記入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "記録単位 必須項目 Time / Correlation Clock source、UTC offset、誤差秒数、Token値を含まないkey"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Flowの記入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "記録単位 必須項目 Gap / Decision 不足、許容結論、代替説明、確信度、Owner、期限、再評価条件"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Flowの記入"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Coverageと受入条件 StatusはProduced / Collected / Retained / Queryable / Validated / Unknownだけを使う。各段階のEvidence IDを独立に持ち、同じFlow、Event、時点、Fieldを参照する。以前収集していても保持期限切れなら、現在検索できるとはしない。Queryableを検証済みへ自動昇格させない。"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Coverageと受入条件"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Validatedには同一FlowのTest ID、Scope、期待値、実際値、版、結果と限界が必要である。No logをNo eventやNo compromiseへ変換しない。UnknownでもGap、Owner、期限、許容結論が揃えば提出可能である。"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Coverageと受入条件"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Safety / Stop / Cleanup 完全合成の値なしモデルだけを記入する。実Token、Cookie、Secret、実Log、個人情報は含めない。外部接続と認証試行は行わない。実Dataの疑い、許可の不明、追跡の不一致で停止する。自分の演習コピーだけを整理し、正本や親CaseのEvidenceは変更しない。"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "Safety / Stop / Cleanup"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "HandoffとRubric 第12〜13章へIdentity bindingと境界、第16章へEvent / Field / 期間、第17章へTestのScope、第20章へClock uncertaintyと変換来歴を渡す。受入側が同一FlowのEvidenceを復元できなければ差し戻す。"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "HandoffとRubric"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第6章の5観点Rubricと完全合成記入例を用いる。本書はSignal Flow判断をOWNし、Protocolと基盤実装はDELEGATE、検知・DFIRへの受渡しをBRIDGEする。"
+          ],
+          "headings": [
+            "Signal Flow Diagram",
+            "HandoffとRubric"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [],
+        "host": [],
+        "destination": []
+      }
+    },
+    "cases/ch06-signal-flow-example.md": {
+      "headings": [
+        [
+          1,
+          "第6章 完全合成記入例：Signal Flow Diagram"
+        ],
+        [
+          2,
+          "読み方と安全境界"
+        ],
+        [
+          2,
+          "Document Control"
+        ],
+        [
+          2,
+          "SF-2026-001 — Produced"
+        ],
+        [
+          2,
+          "SF-2026-002 — Collected"
+        ],
+        [
+          2,
+          "SF-2026-003 — Retained"
+        ],
+        [
+          2,
+          "SF-2026-004 — Queryable"
+        ],
+        [
+          2,
+          "SF-2026-005 — Validated"
+        ],
+        [
+          2,
+          "SF-2026-006 — Unknown"
+        ],
+        [
+          2,
+          "Decision / Reassessment / Handoff"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "読み方と安全境界 これは完全合成の非実行教材であり、製品Log schemaや実環境の観測結果ではない。SFM-2026-001はCASE-2026-001をrefinesする教育用補足である。第4章・第5章の元記録は保持し、親のControl、Gap、Decisionは変更しない。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "読み方と安全境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Purposeは同一Flowの受領記録をたどること、Prerequisiteは第6章とART-16の読了、Authority / Scopeはread-only-synthetic-dataだけである。実Credential、Token、Cookie、実Logを含めず、外部接続と認証試行は禁止する。Expected evidenceは段階とGapの記入、Impactは教材読み取りだけである。実Dataの疑いと追跡の不一致でStopし、Cleanupは自分の演習コピーの整理だけとする。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "読み方と安全境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "第6章、ART-16、正本JSONを参照する。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "読み方と安全境界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Nodeのroleは各Flowの同名Field群を意味する。actorはactorId、identityはidentityClassとcredentialClass、requestはprotocolClassとoperationPurpose、gatewayはplaneとboundaryIds、authorizationはauthenticationResultとauthorizationResult、effectはeffect、producerはproducerIdとeventClass、collectorはcollectorIdとCollected受領票、normalizerは受領票のnormalizationVersionとfieldNames、retentionは保持区間、queryはqueryEndpointとqueryStart / queryEnd、consumerはconsumerIdとdetectionIdへ結び付く。NodeとEdgeのIDを省略せず表でたどる。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "受領票のsyntheticは全てtrue。Produced / Collectedは過去の受領を表し、Retained / Queryable / ValidatedのrecordedAtはassessmentTimeと一致する。queryStartは含みqueryEndは含まない。Clock uncertaintyを含むEvent時刻が検索区間内に収まる必要がある。Query用権限Roleは各Flowのownerであり、queryEndpointは名前だけで接続しない。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "Document Control"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Test Testは未実施。別Flowや親CaseのPassを借用しない。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "SF-2026-001 — Produced",
+            "Test"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Test Testは未実施。別Flowや親CaseのPassを借用しない。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "SF-2026-002 — Collected",
+            "Test"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Test Testは未実施。別Flowや親CaseのPassを借用しない。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "SF-2026-003 — Retained",
+            "Test"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Test Testは未実施。別Flowや親CaseのPassを借用しない。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "SF-2026-004 — Queryable",
+            "Test"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Evidence receipts 受領記録なし。Unknownのまま扱う。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "SF-2026-006 — Unknown",
+            "Evidence receipts"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Test Testは未実施。別Flowや親CaseのPassを借用しない。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "SF-2026-006 — Unknown",
+            "Test"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Decision / Reassessment / Handoff SYNTH-PLATFORM-OWNERとSYNTH-SOC-REVIEWERは2026-09-20までに各GAP-SFを見直す。第12〜13章へIdentity bindingとPlane、第16章へEventとField・保持期間、第17章へ有限TestのScope、第20章へClock uncertaintyと変換来歴を渡す。受領票のない範囲を不足として明示することを受入条件とする。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "Decision / Reassessment / Handoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "OWNは観測経路と許容結論、BRIDGEは検知・DFIRへのHandoff、DELEGATEはProtocolと基盤の実装である。分析判断の確信度は中、代替説明は正常変更とCollection・保持・権限の不足である。新しい受領票、対象期間、Field、Identity binding、変換版が得られた場合に再評価する。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "Decision / Reassessment / Handoff"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "教材のValidatedは受領票の連続性を再計算した結果だけであり、親Behaviorの発生、実製品の検知率、悪意、主体帰属、侵害不存在の証明ではない。"
+          ],
+          "headings": [
+            "第6章 完全合成記入例：Signal Flow Diagram",
+            "Decision / Reassessment / Handoff"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "読み方と安全境界 これは完全合成の非実行教材であり、製品Log schemaや実環境の観測結果ではない。SFM-2026-001はCASE-2026-001をrefinesする教育用補足である。第4章・第5章の元記録は保持し、親のControl、Gap、Decisionは変更しない。"
+              ],
+              "headings": [
+                "第6章 完全合成記入例：Signal Flow Diagram",
+                "読み方と安全境界"
+              ]
+            },
+            "reason": "Reviewed descriptive role, explicit non-operative limit, or prohibition; no live operation. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "SF-2026-002 — Collected Field Value credentialClass service-authentication"
+              ],
+              "headings": [
+                "第6章 完全合成記入例：Signal Flow Diagram",
+                "SF-2026-002 — Collected"
+              ]
+            },
+            "reason": "Reviewed descriptive role, explicit non-operative limit, or prohibition; no live operation. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "SF-2026-003 — Retained Field Value credentialClass workload-authentication"
+              ],
+              "headings": [
+                "第6章 完全合成記入例：Signal Flow Diagram",
+                "SF-2026-003 — Retained"
+              ]
+            },
+            "reason": "Reviewed descriptive role, explicit non-operative limit, or prohibition; no live operation. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "SF-2026-003 — Retained Field Value operationPurpose Customer Data APIの合成利用記録"
+              ],
+              "headings": [
+                "第6章 完全合成記入例：Signal Flow Diagram",
+                "SF-2026-003 — Retained"
+              ]
+            },
+            "reason": "Reviewed descriptive role, explicit non-operative limit, or prohibition; no live operation. Exact field + heading + cardinality only."
+          }
+        ],
+        "host": [],
+        "destination": []
+      }
+    },
+    "references/ch06-source-review-2026-09-12.md": {
+      "headings": [
+        [
+          1,
+          "第6章 Source Review Note — 2026-09-12"
+        ],
+        [
+          2,
+          "対象と採否"
+        ],
+        [
+          2,
+          "一次資料と適用範囲"
+        ],
+        [
+          2,
+          "Source変更の影響と限界"
+        ],
+        [
+          2,
+          "Editorial Input Record"
+        ]
+      ],
+      "required": [
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "第6章 Source Review Note — 2026-09-12"
+          ],
+          "headings": []
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "対象と採否 Issue #31 / ART-16を対象とする。base mainはc83bf8a8cc02aa206c67ba178de665acc8bf9237、Policyは1.2.0、Publication Projectionは1.1.0である。2026-09-12に公式の出版記録、本文、MITREページを直接取得して確認した。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "対象と採否"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-NIST-ZTA-001 NIST SP 800-207、Final、2020-08-11 §3と§3.4のDecision / Enforcement、Control / Data Planeの論理分離"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-NIST-ZTAA-001 NIST SP 800-207A、Final、2023-09-13 UserだけでなくApplication / Service identityを扱う必要性"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-NIST-LOG-001 NIST SP 800-92、Final、2006-09-13 §2〜3の生成・転送・保存・分析、時刻差、正規化、保持の区別"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-NIST-LOG-DRAFT-001 NIST SP 800-92 Rev.1、Initial Public Draft、2023-10-11 改訂監視のみ。Final規範としては不採用"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-IETF-OAUTH-CORE-001 RFC 6749、2012-10、Proposed Standard §1.1と§1.3.4のRole、Client自身のための行動。操作例は不採用"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-ATTACK-001 MITRE Version History、v19.2 第5章で採用した版を継承。新たなTechnique対応は作らない"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "table_row",
+            null,
+            "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-ATTACK-DET-001 Detection Strategies、v19.2 Strategyの参照と実際のData保有・Validationの分離"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "NISTの公開日はCSRCのDocument Historyを用い、PDF表紙の月表示から日を推測しない。RFCの公表日は月までのためRegistryではpublishedAtをnullとし、notesへ2012-10と不明理由を残す。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "SP 800-92 Rev.1の出版記録とLog Management projectを照合した。意見募集が終了していてもFinalとは扱わない。SP 800-92の2006年の製品例やMD5 / SHA-1に関する記述は採用しない。SourceがFinalであることは、全記述が現在の実装推奨であることを意味しない。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "RFC 6749の更新元であるRFC 9700、BCP 240、2025-01も確認した。RFC 6749の古いGrantの選択やSecurity recommendationを本章へ転用せず、採用はRole説明に限定する。実装選択は専門書へ委譲する。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ATT&CKは公式HTTP取得とMITRE/CTIのreleaseでv19.2を確認した。検索経由のキャッシュに同版が表示されない場合があったため、キャッシュだけで現行版を決定していない。第5章の固定commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33、既存の最小metadataと原典の意味を維持する。release時刻、Version Historyページ自体の日付不明、代表章の歴史的記述を混同しない。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "一次資料と適用範囲"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Source変更の影響と限界 SP 800-207系は論理的役割だけ、SP 800-92は観測経路だけ、OAuthは主体の区別だけを本文へ採用する。六つのCoverage status、完全合成受領票、Gap、Rubric、Build planeという補助分類は本書独自であり、標準の引用や適合認証ではない。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Source変更の影響と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "ATT&CK二項目の確認日と第6章mappingを更新する。第5章・第17章・第25章の既存の限定命題は変わらず、親のObservation、Control、Gap、Decisionを昇格させない。Registry全体の一括監査日は更新しない。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Source変更の影響と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "Next reviewは2026-12-12。改訂版・Status・使用箇所の意味・ATT&CK release・委譲先routeの変更時には期限前でも確認する。出典を読んだことは、実環境のAudit schemaや監視性能を検証したことではない。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Source変更の影響と限界"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Package ID: EIP-0002"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Package SHA-256: fffbd2af8a17cbbfa60c09c37c30a682a9c528b44194e0e9f0f3588e2a6a46ca"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Target: Issue #31 / chapter-06"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Input path: chapter06-observable-systems.predraft.md"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Input SHA-256: 2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Input確認状況: not-present-in-authorized-workspace"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Adopted: raw predraftからの直接採用なし。登録metadataだけを照合。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Rewritten: Issue #31、current contract、親Case、再確認した一次資料から本文とART-16を新規作成。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Rejected: 未確認rawの読了・実体hash検証・直接採用、旧草稿の追加Status、親Caseの観測結果の無根拠な昇格。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Deferred: 実製品Log schema、Protocol操作、実環境検知、Chapter7以降。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "list_path",
+            null,
+            "Editorial Input Record Raw tracked files: 0。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "登録候補の明示選択と専用PRは機械可読Manifestで追跡する。通常merge・main/publication前にはconsumedへ進めない。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        }
+      ],
+      "exceptions": {
+        "action": [],
+        "host": [
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "対象と採否 Issue #31 / ART-16を対象とする。base mainはc83bf8a8cc02aa206c67ba178de665acc8bf9237、Policyは1.2.0、Publication Projectionは1.1.0である。2026-09-12に公式の出版記録、本文、MITREページを直接取得して確認した。"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "対象と採否"
+              ]
+            },
+            "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-NIST-ZTA-001 NIST SP 800-207、Final、2020-08-11 §3と§3.4のDecision / Enforcement、Control / Data Planeの論理分離"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ]
+            },
+            "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-IETF-OAUTH-CORE-001 RFC 6749、2012-10、Proposed Standard §1.1と§1.3.4のRole、Client自身のための行動。操作例は不採用"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ]
+            },
+            "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "SP 800-92 Rev.1の出版記録とLog Management projectを照合した。意見募集が終了していてもFinalとは扱わない。SP 800-92の2006年の製品例やMD5 / SHA-1に関する記述は採用しない。SourceがFinalであることは、全記述が現在の実装推奨であることを意味しない。"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ]
+            },
+            "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "ATT&CKは公式HTTP取得とMITRE/CTIのreleaseでv19.2を確認した。検索経由のキャッシュに同版が表示されない場合があったため、キャッシュだけで現行版を決定していない。第5章の固定commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33、既存の最小metadataと原典の意味を維持する。release時刻、Version Historyページ自体の日付不明、代表章の歴史的記述を混同しない。"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ]
+            },
+            "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "list_path",
+                null,
+                "Editorial Input Record Input path: chapter06-observable-systems.predraft.md"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "Editorial Input Record"
+              ]
+            },
+            "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          }
+        ],
+        "destination": [
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://csrc.nist.gov/pubs/sp/800/207/final"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-NIST-ZTA-001 NIST SP 800-207、Final、2020-08-11 §3と§3.4のDecision / Enforcement、Control / Data Planeの論理分離"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://csrc.nist.gov/pubs/sp/800/207/a/final"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-NIST-ZTAA-001 NIST SP 800-207A、Final、2023-09-13 UserだけでなくApplication / Service identityを扱う必要性"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://csrc.nist.gov/pubs/sp/800/92/final"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-NIST-LOG-001 NIST SP 800-92、Final、2006-09-13 §2〜3の生成・転送・保存・分析、時刻差、正規化、保持の区別"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://csrc.nist.gov/pubs/sp/800/92/r1/ipd"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-NIST-LOG-DRAFT-001 NIST SP 800-92 Rev.1、Initial Public Draft、2023-10-11 改訂監視のみ。Final規範としては不採用"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://www.rfc-editor.org/rfc/rfc6749.html"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-IETF-OAUTH-CORE-001 RFC 6749、2012-10、Proposed Standard §1.1と§1.3.4のRole、Client自身のための行動。操作例は不採用"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/resources/versions/"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-ATTACK-001 MITRE Version History、v19.2 第5章で採用した版を継承。新たなTechnique対応は作らない"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://attack.mitre.org/detectionstrategies/"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "table_row",
+                null,
+                "一次資料と適用範囲 Source ID 一次資料・版 採用範囲 SRC-ATTACK-DET-001 Detection Strategies、v19.2 Strategyの参照と実際のData保有・Validationの分離"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://csrc.nist.gov/projects/log-management"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "p",
+                null,
+                "SP 800-92 Rev.1の出版記録とLog Management projectを照合した。意見募集が終了していてもFinalとは扱わない。SP 800-92の2006年の製品例やMD5 / SHA-1に関する記述は採用しない。SourceがFinalであることは、全記述が現在の実装推奨であることを意味しない。"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "destination",
+                "link",
+                "href",
+                "https://www.rfc-editor.org/rfc/rfc9700.html"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "一次資料と適用範囲"
+              ],
+              "owner": [
+                "reader_visible_text",
+                "p",
+                null,
+                "RFC 6749の更新元であるRFC 9700、BCP 240、2025-01も確認した。RFC 6749の古いGrantの選択やSecurity recommendationを本章へ転用せず、採用はRole説明に限定する。実装選択は専門書へ委譲する。"
+              ]
+            },
+            "reason": "Verified official Source or DELEGATE publication URL, never an exercise target. Exact destination + reader-visible owner + heading + cardinality only."
+          }
+        ]
+      }
+    }
+  },
+  "parentDigests": {
+    "manuscript/04-assets-boundaries-threat-model.md": "b20d25c51f0fa27c0404a8c5d2a4753a0a5b96a7152df67be985479590940084",
+    "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
+    "cases/fixtures/ch05-attack-behavior.json": "1f51fa66fe82d72f28b73ed548bc669cf58f5ab30dd8674cad9ad0d5b315e781",
+    "manuscript/05-attack-behavior.md": "f07c93373b0931a513937ef8668d8980b90c92b542fcac257d9e63c57a84e1e2",
+    "tests/fixtures/attack/ch05-v19.2.json": "960d0b76b018bdefae3958beaaf3cc2a30d73c034467cbe0941289ded4f4d44a"
+  },
+  "sourceIdentity": {
+    "SRC-ATTACK-001": {
+      "url": "https://attack.mitre.org/resources/versions/",
+      "version": "19.2",
+      "status": "current",
+      "publishedAt": null
+    },
+    "SRC-ATTACK-DET-001": {
+      "url": "https://attack.mitre.org/detectionstrategies/",
+      "version": null,
+      "status": "current",
+      "publishedAt": null
+    },
+    "SRC-NIST-ZTA-001": {
+      "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+      "version": "SP 800-207",
+      "status": "final",
+      "publishedAt": "2020-08-11"
+    },
+    "SRC-NIST-ZTAA-001": {
+      "url": "https://csrc.nist.gov/pubs/sp/800/207/a/final",
+      "version": "SP 800-207A",
+      "status": "final",
+      "publishedAt": "2023-09-13"
+    },
+    "SRC-NIST-LOG-001": {
+      "url": "https://csrc.nist.gov/pubs/sp/800/92/final",
+      "version": "SP 800-92",
+      "status": "final",
+      "publishedAt": "2006-09-13"
+    },
+    "SRC-NIST-LOG-DRAFT-001": {
+      "url": "https://csrc.nist.gov/pubs/sp/800/92/r1/ipd",
+      "version": "SP 800-92 Rev.1 IPD",
+      "status": "initial-public-draft",
+      "publishedAt": "2023-10-11"
+    },
+    "SRC-IETF-OAUTH-CORE-001": {
+      "url": "https://www.rfc-editor.org/rfc/rfc6749.html",
+      "version": "RFC 6749",
+      "status": "proposed-standard",
+      "publishedAt": null
+    }
+  },
+  "pages": [
+    {
+      "source": "manuscript/06-observable-systems.md",
+      "destination": "chapters/chapter-06/index.md",
+      "section": "chapters",
+      "order": 49,
+      "title": "第6章 通信・Identity・Cloudを観測可能なシステムとして読む"
+    },
+    {
+      "source": "templates/signal-flow-diagram.md",
+      "destination": "templates/signal-flow-diagram/index.md",
+      "section": "additional",
+      "order": 246,
+      "title": "Signal Flow Diagram"
+    },
+    {
+      "source": "cases/ch06-signal-flow-example.md",
+      "destination": "cases/chapter-06-signal-flow/index.md",
+      "section": "additional",
+      "order": 247,
+      "title": "第6章 完全合成記入例：Signal Flow Diagram"
+    },
+    {
+      "source": "references/ch06-source-review-2026-09-12.md",
+      "destination": "references/chapter-06-source-review/index.md",
+      "section": "additional",
+      "order": 248,
+      "title": "第6章 Source Review Note：Signal Flow"
+    }
+  ],
+  "staticFiles": [
+    {
+      "source": "cases/fixtures/ch06-signal-flow.json",
+      "destination": "downloads/ch06-signal-flow.json"
+    }
+  ],
+  "indices": {
+    "artifact-index.md": [
+      "| ART-16 | Signal Flow Diagram | 6 | `templates/signal-flow-diagram.md` |"
+    ],
+    "figure-index.md": [
+      "| F-06-01 |",
+      "| T-06-01 |",
+      "| T-06-02 |"
+    ],
+    "glossary.md": [
+      "| Signal Flow |",
+      "| Clock uncertainty |"
+    ],
+    "cases/index.md": [
+      "ch06-signal-flow-example.md"
+    ],
+    "cases/fixtures/index.md": [
+      "ch06-signal-flow.json"
+    ]
+  }
+}

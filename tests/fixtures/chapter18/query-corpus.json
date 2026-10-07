@@ -1,0 +1,4845 @@
+{
+  "caseCount": 40,
+  "cases": [
+    {
+      "id": "QCASE18-01",
+      "requirement": "bounded behavioral evidence, no attribution",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Supported",
+        "gaps": [],
+        "evidence": [
+          "SYN-EVT-01",
+          "SYN-EVT-02"
+        ],
+        "pairs": [
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-02"
+          ]
+        ],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-02",
+      "requirement": "matching approval supplies an alternative explanation",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read"
+            ],
+            "ticket": "syn-change-01",
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": [
+          {
+            "id": "SYN-APP-01",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "ticket": "syn-change-01",
+            "start": 500,
+            "end": 800,
+            "scopes": [
+              "scope-invoice-read"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "result": "Weakened",
+        "gaps": [],
+        "evidence": [
+          "SYN-APP-01",
+          "SYN-EVT-01"
+        ],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-03",
+      "requirement": "zero rows only with all supplied bounded coverage assertions",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Negative finding",
+        "gaps": [],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-04",
+      "requirement": "IOC hit is not a behavioral test",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "ioc-only",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": true
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "behavior-not-tested"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": [
+          "SYN-EVT-01"
+        ]
+      }
+    },
+    {
+      "id": "QCASE18-05",
+      "requirement": "zero IOC hits also do not test behavior",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "ioc-only",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "behavior-not-tested"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-06",
+      "requirement": "zero matches cannot repair producer",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": false,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "consent:producer-gap"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-07",
+      "requirement": "zero matches cannot repair collected",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": false,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "consent:collected-gap"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-08",
+      "requirement": "zero matches cannot repair retained",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": false,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "consent:retained-gap"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-09",
+      "requirement": "zero matches cannot repair queryable",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": false,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "consent:queryable-gap"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-10",
+      "requirement": "zero matches cannot repair clock",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": false,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "consent:clock-gap"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-11",
+      "requirement": "zero matches cannot repair identity",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": false
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "consent:identity-gap"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-12",
+      "requirement": "missing approval snapshot cannot become unapproved change",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "approval:receipt-missing"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-13",
+      "requirement": "coverage cannot transfer across revisions",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-000",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "use:context-mismatch"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-14",
+      "requirement": "coverage must cover full candidate and pivot horizon",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 1200,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "use:window-gap"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-15",
+      "requirement": "not yet arrived is not nonexistent",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 4001,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "arrival-incomplete"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-16",
+      "requirement": "uncertain clock is not a proved join",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 120,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "time-uncertainty"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-17",
+      "requirement": "same raw ID is not stable identity",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-b",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "identity-unjoinable"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-18",
+      "requirement": "same raw ID is not stable identity",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-2",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "identity-unjoinable"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-19",
+      "requirement": "another known workload must not be joined or pivoted",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-b",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Negative finding",
+        "gaps": [],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-20",
+      "requirement": "exact 30 minute pivot boundary included",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 2400,
+            "ingestTime": 2401,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Supported",
+        "gaps": [],
+        "evidence": [
+          "SYN-EVT-01",
+          "SYN-EVT-02"
+        ],
+        "pairs": [
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-02"
+          ]
+        ],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-21",
+      "requirement": "30 minutes plus one second not joined",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 2401,
+            "ingestTime": 2402,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Negative finding",
+        "gaps": [],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-22",
+      "requirement": "ingestion order does not replace event order",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 599,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Negative finding",
+        "gaps": [],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-23",
+      "requirement": "failed grant is not a completed consent",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "failure",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Negative finding",
+        "gaps": [],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-24",
+      "requirement": "stop before evaluating events",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": "scope-expansion",
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Stopped",
+        "gaps": [
+          "scope-expansion"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-25",
+      "requirement": "stop before evaluating events",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": "privacy-risk",
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Stopped",
+        "gaps": [
+          "privacy-risk"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-26",
+      "requirement": "stop before evaluating events",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": "operator-stop",
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Stopped",
+        "gaps": [
+          "operator-stop"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-27",
+      "requirement": "ticket presence alone cannot authorize additional scope",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": "syn-change-01",
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": [
+          {
+            "id": "SYN-APP-01",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "ticket": "syn-change-01",
+            "start": 500,
+            "end": 800,
+            "scopes": [
+              "scope-invoice-read"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "result": "Supported",
+        "gaps": [],
+        "evidence": [
+          "SYN-EVT-01",
+          "SYN-EVT-02"
+        ],
+        "pairs": [
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-02"
+          ]
+        ],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-28",
+      "requirement": "approval interval is start-inclusive end-exclusive",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read"
+            ],
+            "ticket": "syn-change-01",
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": [
+          {
+            "id": "SYN-APP-01",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "ticket": "syn-change-01",
+            "start": 500,
+            "end": 600,
+            "scopes": [
+              "scope-invoice-read"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "result": "Supported",
+        "gaps": [],
+        "evidence": [
+          "SYN-EVT-01",
+          "SYN-EVT-02"
+        ],
+        "pairs": [
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-02"
+          ]
+        ],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-29",
+      "requirement": "grant end is excluded even inside data horizon",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 1800,
+            "ingestTime": 1801,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 1900,
+            "ingestTime": 1901,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Negative finding",
+        "gaps": [],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-30",
+      "requirement": "last included grant and last pivot sample",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 1799,
+            "ingestTime": 1800,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 3599,
+            "ingestTime": 3600,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Supported",
+        "gaps": [],
+        "evidence": [
+          "SYN-EVT-01",
+          "SYN-EVT-02"
+        ],
+        "pairs": [
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-02"
+          ]
+        ],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-31",
+      "requirement": "uncertainty crossing data boundary must not be silently discarded",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 3600,
+            "ingestTime": 3601,
+            "uncertainty": 1,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "time-uncertainty"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-32",
+      "requirement": "one approved grant does not explain every candidate; no unapproved grant-use pair",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read"
+            ],
+            "ticket": "syn-change-01",
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-03",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 1000,
+            "ingestTime": 1001,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": [
+          {
+            "id": "SYN-APP-01",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "ticket": "syn-change-01",
+            "start": 500,
+            "end": 800,
+            "scopes": [
+              "scope-invoice-read"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "result": "Negative finding",
+        "gaps": [],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-33",
+      "requirement": "another workload approval must not suppress the current chain",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read"
+            ],
+            "ticket": "syn-change-01",
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": [
+          {
+            "id": "SYN-APP-01",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-b",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "ticket": "syn-change-01",
+            "start": 500,
+            "end": 800,
+            "scopes": [
+              "scope-invoice-read"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "result": "Supported",
+        "gaps": [],
+        "evidence": [
+          "SYN-EVT-01",
+          "SYN-EVT-02"
+        ],
+        "pairs": [
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-02"
+          ]
+        ],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-34",
+      "requirement": "receipt population is bound, not a display label",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-b"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "approval:context-mismatch"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-35",
+      "requirement": "behavior independently supports despite an IOC hit",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": true
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Supported",
+        "gaps": [],
+        "evidence": [
+          "SYN-EVT-01",
+          "SYN-EVT-02"
+        ],
+        "pairs": [
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-02"
+          ]
+        ],
+        "iocHits": [
+          "SYN-EVT-01"
+        ]
+      }
+    },
+    {
+      "id": "QCASE18-36",
+      "requirement": "IOC hit cannot defeat matching alternative evidence",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read"
+            ],
+            "ticket": "syn-change-01",
+            "iocMatch": true
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": [
+          {
+            "id": "SYN-APP-01",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "ticket": "syn-change-01",
+            "start": 500,
+            "end": 800,
+            "scopes": [
+              "scope-invoice-read"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "result": "Weakened",
+        "gaps": [],
+        "evidence": [
+          "SYN-APP-01",
+          "SYN-EVT-01"
+        ],
+        "pairs": [],
+        "iocHits": [
+          "SYN-EVT-01"
+        ]
+      }
+    },
+    {
+      "id": "QCASE18-37",
+      "requirement": "positive supplied rows do not repair missing bounded query coverage",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": false,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Inconclusive",
+        "gaps": [
+          "use:queryable-gap"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-38",
+      "requirement": "stop takes precedence over an otherwise valid data gap",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": "scope-expansion",
+        "receipts": [],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Stopped",
+        "gaps": [
+          "scope-expansion"
+        ],
+        "evidence": [],
+        "pairs": [],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-39",
+      "requirement": "distinct evidence once; stable pair ordering",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read",
+              "scope-ledger-export"
+            ],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-03",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 1000,
+            "ingestTime": 1001,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": []
+      },
+      "expected": {
+        "result": "Supported",
+        "gaps": [],
+        "evidence": [
+          "SYN-EVT-01",
+          "SYN-EVT-02",
+          "SYN-EVT-03"
+        ],
+        "pairs": [
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-02"
+          ],
+          [
+            "SYN-EVT-01",
+            "SYN-EVT-03"
+          ]
+        ],
+        "iocHits": []
+      }
+    },
+    {
+      "id": "QCASE18-40",
+      "requirement": "approval row order must not change ownership",
+      "input": {
+        "queryContractId": "QUERY-HUNT18-1",
+        "syntheticOnly": true,
+        "offlineOnly": true,
+        "executionAuthorized": false,
+        "parentReceipt": null,
+        "plan": {
+          "subject": "SYNTH-HUNT18-001",
+          "revision": "HUNT18-REV-001",
+          "population": [
+            "syn-workload-a"
+          ],
+          "grantStart": 0,
+          "grantEnd": 1800,
+          "dataEnd": 3600,
+          "asOf": 4000,
+          "pivotSeconds": 1800,
+          "namespace": "syn-tenant-a",
+          "normalizer": "syn-normalizer-1"
+        },
+        "mode": "behavior",
+        "stop": null,
+        "receipts": [
+          {
+            "stream": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "approval",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          },
+          {
+            "stream": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "population": [
+              "syn-workload-a"
+            ],
+            "start": 0,
+            "end": 3600,
+            "producer": true,
+            "collected": true,
+            "retained": true,
+            "queryable": true,
+            "clock": true,
+            "identity": true
+          }
+        ],
+        "events": [
+          {
+            "id": "SYN-EVT-01",
+            "kind": "consent",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 600,
+            "ingestTime": 609,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [
+              "scope-invoice-read"
+            ],
+            "ticket": "syn-change-01",
+            "iocMatch": false
+          },
+          {
+            "id": "SYN-EVT-02",
+            "kind": "use",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "eventTime": 960,
+            "ingestTime": 969,
+            "uncertainty": 0,
+            "result": "success",
+            "scopes": [],
+            "ticket": null,
+            "iocMatch": false
+          }
+        ],
+        "approvals": [
+          {
+            "id": "SYN-APP-01",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-a",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "ticket": "syn-change-01",
+            "start": 500,
+            "end": 800,
+            "scopes": [
+              "scope-invoice-read"
+            ]
+          },
+          {
+            "id": "SYN-APP-02",
+            "subject": "SYNTH-HUNT18-001",
+            "revision": "HUNT18-REV-001",
+            "workload": "syn-workload-b",
+            "namespace": "syn-tenant-a",
+            "normalizer": "syn-normalizer-1",
+            "ticket": "syn-change-02",
+            "start": 500,
+            "end": 800,
+            "scopes": [
+              "scope-invoice-read"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "result": "Weakened",
+        "gaps": [],
+        "evidence": [
+          "SYN-APP-01",
+          "SYN-EVT-01"
+        ],
+        "pairs": [],
+        "iocHits": []
+      }
+    }
+  ],
+  "schemaVersion": "1.0.0",
+  "queryVersion": "1.0.0"
+}

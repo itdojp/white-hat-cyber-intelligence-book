@@ -10,9 +10,9 @@ REVISION_PATH = ROOT / ".book-formatter" / "revision.json"
 
 EXPECTED = {
     "repository": "itdojp/book-formatter",
-    "commit": "198935ff8f60653c40e513343dc5f02573d9968e",
-    "shared_version": "3.2.3",
-    "shared_version_blob": "091f638c357cfe9fce0db9aa0202e229c71569e5",
+    "commit": "83a322da5013e74e9dbf1b0afbee85b8617ffce5",
+    "shared_version": "3.2.4",
+    "shared_version_blob": "01f1115d292e4f5d5fa5705da267653d7456a71c",
     "schema_blob": "87dcb44b0d4b543ba43ae3a8ebc27d2f3cfda3cd",
 }
 
@@ -59,7 +59,7 @@ EXPECTED_COMPONENTS = {
     ),
     "searchJs": (
         "shared/assets/js/search.js",
-        "c5ab3e503142f47bfd491ed70f41e7a3708f5f40",
+        "4db7bcc75af8c5d4e029b717f2a967fef559d1fb",
         "assets/js/search.js",
     ),
     "themeJs": (

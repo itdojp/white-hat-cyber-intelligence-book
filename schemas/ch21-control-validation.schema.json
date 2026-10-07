@@ -1,0 +1,1745 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "readOnly",
+    "networkRequired",
+    "executionAuthorized",
+    "record",
+    "parentReferences",
+    "authorityBoundary",
+    "threat",
+    "roles",
+    "controls",
+    "scenarios",
+    "retest",
+    "handoff",
+    "safety"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true
+    },
+    "readOnly": {
+      "type": "boolean",
+      "const": true
+    },
+    "networkRequired": {
+      "type": "boolean",
+      "const": false
+    },
+    "executionAuthorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "caseId",
+        "parentCaseId",
+        "relation",
+        "artifactId",
+        "asOf",
+        "sourceIds",
+        "authoring",
+        "actualOperations",
+        "actualCollections",
+        "actualNotifications",
+        "actualDeployments",
+        "actualIncidentDeclarations"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifactId": {
+          "const": "ART-27"
+        },
+        "asOf": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceIds": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "authoring": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actualOperations": {
+          "type": "integer",
+          "const": 0
+        },
+        "actualCollections": {
+          "type": "integer",
+          "const": 0
+        },
+        "actualNotifications": {
+          "type": "integer",
+          "const": 0
+        },
+        "actualDeployments": {
+          "type": "integer",
+          "const": 0
+        },
+        "actualIncidentDeclarations": {
+          "type": "integer",
+          "const": 0
+        }
+      }
+    },
+    "parentReferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "use",
+        "decisionRequirementId",
+        "threatHypothesisId",
+        "detectionRecordId",
+        "detectionId",
+        "telemetryIds",
+        "minimalValidationId",
+        "telemetryMapId",
+        "incidentPlanId",
+        "dfirRecordId",
+        "dfirRcaId",
+        "dfirControlId",
+        "dfirControlStatus",
+        "dfirHandoffId",
+        "dfirHandoffStatus",
+        "receiptId",
+        "parentEvidenceTransferred",
+        "parentStateChanged",
+        "authorityTransferred"
+      ],
+      "properties": {
+        "use": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionRequirementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "threatHypothesisId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "detectionRecordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "detectionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "telemetryIds": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "minimalValidationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "telemetryMapId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "incidentPlanId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dfirRecordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dfirRcaId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dfirControlId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dfirControlStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dfirHandoffId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dfirHandoffStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "receiptId": {
+          "type": "null"
+        },
+        "parentEvidenceTransferred": {
+          "type": "boolean"
+        },
+        "parentStateChanged": {
+          "type": "boolean"
+        },
+        "authorityTransferred": {
+          "type": "boolean"
+        }
+      }
+    },
+    "authorityBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parentAuthorityId",
+        "parentExpiresAt",
+        "parentRoeId",
+        "parentRoeStatus",
+        "parentRoeVersion",
+        "parentLabId",
+        "parentLabRuntimeExecuted",
+        "parentExecutionAuthorized",
+        "scope"
+      ],
+      "properties": {
+        "parentAuthorityId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentExpiresAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentRoeId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentRoeStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentRoeVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "parentLabId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentLabRuntimeExecuted": {
+          "type": "boolean"
+        },
+        "parentExecutionAuthorized": {
+          "type": "boolean"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "threat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "behavior",
+        "attackTechniqueId",
+        "attackVersion",
+        "mappingBasis",
+        "coverageProof",
+        "actorAttribution"
+      ],
+      "properties": {
+        "behavior": {
+          "type": "string",
+          "minLength": 1
+        },
+        "attackTechniqueId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "attackVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mappingBasis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "coverageProof": {
+          "type": "boolean"
+        },
+        "actorAttribution": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validationOwner",
+        "evidenceReviewer",
+        "residualReviewer"
+      ],
+      "properties": {
+        "validationOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceReviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "residualReviewer": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "controls": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "objectiveId",
+              "layer",
+              "owner",
+              "objective",
+              "criteria"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "objectiveId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "layer": {
+                "const": "Prevention"
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "objective": {
+                "type": "string",
+                "minLength": 1
+              },
+              "criteria": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "field",
+                    "expected",
+                    "partialValues"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "field": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "expected": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "partialValues": {
+                      "type": "array",
+                      "maxItems": 100,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "objectiveId",
+              "layer",
+              "owner",
+              "objective",
+              "criteria"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "objectiveId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "layer": {
+                "const": "Telemetry"
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "objective": {
+                "type": "string",
+                "minLength": 1
+              },
+              "criteria": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "field",
+                    "expected",
+                    "partialValues"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "field": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "expected": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "partialValues": {
+                      "type": "array",
+                      "maxItems": 100,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "objectiveId",
+              "layer",
+              "owner",
+              "objective",
+              "criteria"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "objectiveId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "layer": {
+                "const": "Detection"
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "objective": {
+                "type": "string",
+                "minLength": 1
+              },
+              "criteria": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "field",
+                    "expected",
+                    "partialValues"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "field": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "expected": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "partialValues": {
+                      "type": "array",
+                      "maxItems": 100,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "objectiveId",
+              "layer",
+              "owner",
+              "objective",
+              "criteria"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "objectiveId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "layer": {
+                "const": "Triage"
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "objective": {
+                "type": "string",
+                "minLength": 1
+              },
+              "criteria": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "field",
+                    "expected",
+                    "partialValues"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "field": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "expected": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "partialValues": {
+                      "type": "array",
+                      "maxItems": 100,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "objectiveId",
+              "layer",
+              "owner",
+              "objective",
+              "criteria"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "objectiveId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "layer": {
+                "const": "Response"
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "objective": {
+                "type": "string",
+                "minLength": 1
+              },
+              "criteria": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "field",
+                    "expected",
+                    "partialValues"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "field": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "expected": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "partialValues": {
+                      "type": "array",
+                      "maxItems": 100,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type",
+          "layers",
+          "traceId",
+          "batchId",
+          "subjectId",
+          "subjectRevision",
+          "controlRevision",
+          "windowStart",
+          "windowEnd",
+          "cutoff",
+          "analysisAt",
+          "mode",
+          "suppliedAuthority",
+          "stopReason",
+          "stepsAfterStop",
+          "observations",
+          "expectedLayers",
+          "note",
+          "gap",
+          "improvement",
+          "permittedConclusion"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "enum": [
+              "Atomic",
+              "End-to-End"
+            ]
+          },
+          "layers": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "enum": [
+                "Prevention",
+                "Telemetry",
+                "Detection",
+                "Triage",
+                "Response"
+              ]
+            }
+          },
+          "traceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "batchId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subjectRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "controlRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "windowStart": {
+            "type": "string",
+            "minLength": 1
+          },
+          "windowEnd": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cutoff": {
+            "type": "string",
+            "minLength": 1
+          },
+          "analysisAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mode": {
+            "type": "string",
+            "minLength": 1
+          },
+          "suppliedAuthority": {
+            "type": "boolean"
+          },
+          "stopReason": {
+            "enum": [
+              null,
+              "authority-gap",
+              "unexpected-input"
+            ]
+          },
+          "stepsAfterStop": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "observations": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "payload",
+                    "payloadSha256"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "payload": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "scenarioId",
+                        "subjectId",
+                        "subjectRevision",
+                        "traceId",
+                        "batchId",
+                        "layer",
+                        "controlId",
+                        "controlRevision",
+                        "step",
+                        "recordedAt",
+                        "availableAt",
+                        "values",
+                        "present",
+                        "inputBasis",
+                        "transportBasis"
+                      ],
+                      "properties": {
+                        "scenarioId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subjectId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subjectRevision": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "traceId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "batchId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "layer": {
+                          "const": "Prevention"
+                        },
+                        "controlId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "controlRevision": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "step": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "recordedAt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "availableAt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "values": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "scope-outcome"
+                          ],
+                          "properties": {
+                            "scope-outcome": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          }
+                        },
+                        "present": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "scope-outcome"
+                          ],
+                          "properties": {
+                            "scope-outcome": {
+                              "type": "boolean"
+                            }
+                          }
+                        },
+                        "inputBasis": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "transportBasis": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "payloadSha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "payload",
+                    "payloadSha256"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "payload": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "scenarioId",
+                        "subjectId",
+                        "subjectRevision",
+                        "traceId",
+                        "batchId",
+                        "layer",
+                        "controlId",
+                        "controlRevision",
+                        "step",
+                        "recordedAt",
+                        "availableAt",
+                        "values",
+                        "present",
+                        "inputBasis",
+                        "transportBasis"
+                      ],
+                      "properties": {
+                        "scenarioId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subjectId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subjectRevision": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "traceId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "batchId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "layer": {
+                          "const": "Telemetry"
+                        },
+                        "controlId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "controlRevision": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "step": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "recordedAt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "availableAt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "values": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "signal-coverage"
+                          ],
+                          "properties": {
+                            "signal-coverage": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          }
+                        },
+                        "present": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "signal-coverage"
+                          ],
+                          "properties": {
+                            "signal-coverage": {
+                              "type": "boolean"
+                            }
+                          }
+                        },
+                        "inputBasis": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "transportBasis": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "payloadSha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "payload",
+                    "payloadSha256"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "payload": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "scenarioId",
+                        "subjectId",
+                        "subjectRevision",
+                        "traceId",
+                        "batchId",
+                        "layer",
+                        "controlId",
+                        "controlRevision",
+                        "step",
+                        "recordedAt",
+                        "availableAt",
+                        "values",
+                        "present",
+                        "inputBasis",
+                        "transportBasis"
+                      ],
+                      "properties": {
+                        "scenarioId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subjectId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subjectRevision": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "traceId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "batchId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "layer": {
+                          "const": "Detection"
+                        },
+                        "controlId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "controlRevision": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "step": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "recordedAt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "availableAt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "values": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "positive",
+                            "negative",
+                            "benign-near-miss"
+                          ],
+                          "properties": {
+                            "positive": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "negative": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "benign-near-miss": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          }
+                        },
+                        "present": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "positive",
+                            "negative",
+                            "benign-near-miss"
+                          ],
+                          "properties": {
+                            "positive": {
+                              "type": "boolean"
+                            },
+                            "negative": {
+                              "type": "boolean"
+                            },
+                            "benign-near-miss": {
+                              "type": "boolean"
+                            }
+                          }
+                        },
+                        "inputBasis": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "transportBasis": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "payloadSha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "payload",
+                    "payloadSha256"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "payload": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "scenarioId",
+                        "subjectId",
+                        "subjectRevision",
+                        "traceId",
+                        "batchId",
+                        "layer",
+                        "controlId",
+                        "controlRevision",
+                        "step",
+                        "recordedAt",
+                        "availableAt",
+                        "values",
+                        "present",
+                        "inputBasis",
+                        "transportBasis"
+                      ],
+                      "properties": {
+                        "scenarioId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subjectId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subjectRevision": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "traceId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "batchId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "layer": {
+                          "const": "Triage"
+                        },
+                        "controlId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "controlRevision": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "step": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "recordedAt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "availableAt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "values": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "context"
+                          ],
+                          "properties": {
+                            "context": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          }
+                        },
+                        "present": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "context"
+                          ],
+                          "properties": {
+                            "context": {
+                              "type": "boolean"
+                            }
+                          }
+                        },
+                        "inputBasis": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "transportBasis": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "payloadSha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "payload",
+                    "payloadSha256"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "payload": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "scenarioId",
+                        "subjectId",
+                        "subjectRevision",
+                        "traceId",
+                        "batchId",
+                        "layer",
+                        "controlId",
+                        "controlRevision",
+                        "step",
+                        "recordedAt",
+                        "availableAt",
+                        "values",
+                        "present",
+                        "inputBasis",
+                        "transportBasis"
+                      ],
+                      "properties": {
+                        "scenarioId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subjectId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "subjectRevision": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "traceId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "batchId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "layer": {
+                          "const": "Response"
+                        },
+                        "controlId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "controlRevision": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "step": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "recordedAt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "availableAt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "values": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "decision"
+                          ],
+                          "properties": {
+                            "decision": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          }
+                        },
+                        "present": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "decision"
+                          ],
+                          "properties": {
+                            "decision": {
+                              "type": "boolean"
+                            }
+                          }
+                        },
+                        "inputBasis": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "transportBasis": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "payloadSha256": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "expectedLayers": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "layer",
+                "result",
+                "failureClasses"
+              ],
+              "properties": {
+                "layer": {
+                  "enum": [
+                    "Prevention",
+                    "Telemetry",
+                    "Detection",
+                    "Triage",
+                    "Response"
+                  ]
+                },
+                "result": {
+                  "enum": [
+                    "Passed",
+                    "Failed",
+                    "Partial",
+                    "Indeterminate",
+                    "Stopped"
+                  ]
+                },
+                "failureClasses": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "enum": [
+                      "Control",
+                      "Telemetry",
+                      "Detection logic",
+                      "Workflow",
+                      "Authority",
+                      "Test design"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gap": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "affectedLayers",
+              "description",
+              "nextActionId"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "affectedLayers": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "enum": [
+                    "Prevention",
+                    "Telemetry",
+                    "Detection",
+                    "Triage",
+                    "Response"
+                  ]
+                }
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "nextActionId": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "improvement": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "status",
+              "owner",
+              "dueAt",
+              "action",
+              "retestId",
+              "acceptance",
+              "reassessmentId",
+              "trigger"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "dueAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "action": {
+                "type": "string",
+                "minLength": 1
+              },
+              "retestId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "acceptance": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reassessmentId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "trigger": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "permittedConclusion": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "retest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "beforeScenarioId",
+        "afterScenarioId",
+        "changedField",
+        "beforeRevision",
+        "afterRevision",
+        "sourceActionId",
+        "result",
+        "beforeRetained",
+        "actualChangeExecuted",
+        "limitation"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "beforeScenarioId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "afterScenarioId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "changedField": {
+          "type": "string",
+          "minLength": 1
+        },
+        "beforeRevision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "afterRevision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceActionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "string",
+          "minLength": 1
+        },
+        "beforeRetained": {
+          "type": "boolean"
+        },
+        "actualChangeExecuted": {
+          "type": "boolean"
+        },
+        "limitation": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "targetChapter",
+        "sourcePlanId",
+        "actionIds",
+        "status",
+        "receiptId",
+        "executionAuthorized",
+        "owner",
+        "dueAt",
+        "question"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "targetChapter": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "sourcePlanId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actionIds": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "receiptId": {
+          "type": "null"
+        },
+        "executionAuthorized": {
+          "type": "boolean"
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dueAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "stop",
+        "cleanup",
+        "cleanupDisposition",
+        "residualCheck",
+        "residualDisposition",
+        "limitations"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stop": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanupDisposition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "residualCheck": {
+          "type": "string",
+          "minLength": 1
+        },
+        "residualDisposition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limitations": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

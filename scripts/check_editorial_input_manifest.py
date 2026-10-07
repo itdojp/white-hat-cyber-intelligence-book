@@ -157,6 +157,7 @@ SUPPORTED_SCHEMA_KEYWORDS = {
     "properties",
     "items",
     "minItems",
+    "maxItems",
     "uniqueItems",
     "minLength",
     "pattern",
@@ -450,7 +451,7 @@ def validate_supported_schema_nodes(
         ]
         if len(encoded) != len(set(encoded)):
             fail(f"{label}.enum: duplicate values")
-    for keyword in ("minItems", "minLength"):
+    for keyword in ("minItems", "maxItems", "minLength"):
         if keyword in node and (
             not isinstance(node[keyword], int)
             or isinstance(node[keyword], bool)
@@ -607,6 +608,9 @@ def validate_schema_instance_node(
         minimum_items = node.get("minItems")
         if minimum_items is not None and len(value) < minimum_items:
             fail(f"{instance_label}: JSON Schema minItems violation")
+        maximum_items = node.get("maxItems")
+        if maximum_items is not None and len(value) > maximum_items:
+            fail(f"{instance_label}: JSON Schema maxItems violation")
         if node.get("uniqueItems") is True:
             serialized = [
                 json.dumps(
@@ -2094,6 +2098,61 @@ def verify_selected_package(
     verify_package_archive(package, package_path, target_id)
 
 
+def prepare_intake_regression(target: dict[str, Any]) -> None:
+    """Freeze only the test setup before intake, regardless of live lifecycle.
+
+    Never called by validation or mutation of the canonical manifest. A later
+    real canonical-pr-open/consumed transition must not mask the intended defect
+    with an incidental duplicate-status error in a synthetic regression.
+    """
+    for index, entry in enumerate(target["statusHistory"]):
+        if entry["status"] == "canonical-pr-open":
+            target["statusHistory"] = target["statusHistory"][:index]
+            break
+    target["canonicalPr"] = None
+    target["intakeRecord"] = None
+
+
+def prepare_checkpoint_regression(
+    manifest: dict[str, Any], snapshot: dict[str, Any]
+) -> None:
+    """Prepare matching test-only inputs before appending an unpersisted status.
+
+    Reset both copies, not only the manifest: otherwise the setup itself would
+    already fail the checkpoint comparison and mask a broken mutation.
+    """
+    target = next(item for item in manifest["targets"] if item["targetId"] == "chapter-05")
+    prepare_intake_regression(target)
+    target["status"] = target["statusHistory"][-1]["status"]
+    selected = next(
+        item for item in target["candidates"]
+        if item["candidateId"] == target["selectedCandidateId"]
+    )
+    selected["disposition"] = "selected"
+    checkpoint = next(
+        item for item in snapshot["targets"] if item["targetId"] == target["targetId"]
+    )
+    checkpoint["statusHistoryPrefix"] = copy.deepcopy(target["statusHistory"])
+
+
+def prepare_comparison_regression(manifest: dict[str, Any], snapshot: dict[str, Any]) -> None:
+    """Restore a valid test-only comparison baseline after Chapter 9 intake.
+
+    Reset both history copies; otherwise live selection/consumption can mask
+    the intended negative. No production lifecycle or checkpoint is relaxed.
+    """
+    target = next(t for t in manifest["targets"] if t["targetId"] == "chapter-09")
+    index = next(i for i, h in enumerate(target["statusHistory"])
+                 if h["status"] == "candidate-selection-required")
+    target["statusHistory"] = target["statusHistory"][:index + 1]
+    target.update(status="candidate-selection-required", selectedCandidateId=None,
+                  canonicalPr=None, intakeRecord=None)
+    for candidate in target["candidates"]:
+        candidate["disposition"] = "pending-comparison"
+    checkpoint = next(t for t in snapshot["targets"] if t["targetId"] == "chapter-09")
+    checkpoint["statusHistoryPrefix"] = copy.deepcopy(target["statusHistory"])
+
+
 def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
     packages = manifest["packages"]
     targets = {item["targetId"]: item for item in manifest["targets"]}
@@ -2164,6 +2223,7 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
             target["candidates"][0]["disposition"] = "selected"
     elif mutation == "canonical-pr-missing-intake-record":
         target = targets["chapter-05"]
+        prepare_intake_regression(target)
         target["status"] = "canonical-pr-open"
         target["canonicalPr"] = 999
         target["statusHistory"].append(
@@ -2204,6 +2264,7 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
     elif mutation == "future-target-claims-legacy-record":
         source = targets["chapter-04"]["intakeRecord"]
         target = targets["chapter-05"]
+        prepare_intake_regression(target)
         candidate = target["candidates"][0]
         package = next(
             item for item in packages if item["packageId"] == candidate["packageId"]
@@ -2239,6 +2300,8 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
         )
     elif mutation == "status-history-prefix-deleted":
         target = targets["chapter-05"]
+        target["canonicalPr"] = None
+        target["intakeRecord"] = None
         target["status"] = "deferred"
         target["selectedCandidateId"] = None
         target["candidates"][0]["disposition"] = "deferred"
@@ -2256,6 +2319,8 @@ def apply_regression_mutation(manifest: dict[str, Any], mutation: str) -> None:
         target["statusHistory"][0]["reason"] = "rewritten provenance fixture"
     elif mutation == "status-history-checkpoint-unpersisted":
         target = targets["chapter-05"]
+        target["canonicalPr"] = None
+        target["intakeRecord"] = None
         target["status"] = "deferred"
         target["selectedCandidateId"] = None
         target["candidates"][0]["disposition"] = "deferred"
@@ -2333,17 +2398,42 @@ def run_manifest_regressions(
         require_string(case["family"], f"{label}.family")
         expected = require_string(case["expectedError"], f"{label}.expectedError")
         mutated = copy.deepcopy(manifest)
-        apply_regression_mutation(
-            mutated, require_string(case["mutation"], f"{label}.mutation")
-        )
+        mutation = require_string(case["mutation"], f"{label}.mutation")
+        case_snapshot = registration_snapshot
+        if mutation in {"multi-candidate-registered", "comparison-selected-like-candidate",
+                        "filename-only-selection", "silent-latest-wins", "selected-alternative-missing"}:
+            case_snapshot = copy.deepcopy(registration_snapshot)
+            prepare_comparison_regression(mutated, case_snapshot)
+            validate_manifest(mutated, schema)
+            validate_registration_snapshot(mutated, case_snapshot)
+        if mutation == "status-history-checkpoint-unpersisted":
+            case_snapshot = copy.deepcopy(registration_snapshot)
+            prepare_checkpoint_regression(mutated, case_snapshot)
+            # Positive control: only the subsequent deferred append may cause
+            # EIM-NEG-031's existing checkpoint mismatch, not live consumption.
+            validate_manifest(mutated, schema)
+            validate_registration_snapshot(mutated, case_snapshot)
+        apply_regression_mutation(mutated, mutation)
         try:
             validate_manifest(mutated, schema)
-            validate_registration_snapshot(mutated, registration_snapshot)
+            validate_registration_snapshot(mutated, case_snapshot)
         except ManifestError as exc:
             if expected not in str(exc):
                 fail(f"regression {case_id}: expected {expected!r}, got {str(exc)!r}")
         else:
             fail(f"regression {case_id}: mutation was accepted")
+    # The synthetic mutation setup must remain usable after the first live
+    # Chapter 5 intake and later consumption. Production validation is unchanged.
+    for suffix in ([], ["canonical-pr-open"], ["canonical-pr-open", "consumed"]):
+        prefix = [{"status": "registered-pending-prerequisites"}, {"status": "selected-for-intake"}]
+        probe = {
+            "statusHistory": copy.deepcopy(prefix) + [{"status": value} for value in suffix],
+            "canonicalPr": 999,
+            "intakeRecord": {"sentinel": "test only"},
+        }
+        prepare_intake_regression(probe)
+        if probe != {"statusHistory": prefix, "canonicalPr": None, "intakeRecord": None}:
+            fail("intake mutation setup depends on current Chapter 5 lifecycle")
     # Renderer output cannot depend on JSON array order.
     reordered = copy.deepcopy(manifest)
     reordered["packages"].reverse()
@@ -2603,7 +2693,44 @@ def run_manifest_regressions(
             fail(f"exact-head environment regression returned unexpected error: {exc}")
     else:
         fail("exact-head environment regression accepted a different checkout")
-    return len(cases) + 23
+    return len(cases) + 26 + run_schema_array_regressions()
+
+
+def run_schema_array_regressions() -> int:
+    """Generic maxItems boundaries, independent of any chapter or dataset."""
+    cases = [
+        ("empty-zero", [], {"type": "array", "maxItems": 0}, True),
+        ("zero-overflow", [1], {"type": "array", "maxItems": 0}, False),
+        ("exact-one", [1], {"type": "array", "maxItems": 1}, True),
+        ("distinct-overflow", [1, 2], {"type": "array", "maxItems": 1}, False),
+        ("duplicate-overflow", [1, 1], {"type": "array", "maxItems": 1}, False),
+        ("nonarray-inapplicable", "value", {"maxItems": 0}, True),
+        ("omitted-upper-bound", [1, 2], {"type": "array", "minItems": 1}, True),
+        ("exact-lower-upper", [1, 2], {"type": "array", "minItems": 2, "maxItems": 2}, True),
+        ("nested-upper", [[1, 2]], {"type": "array", "items": {"type": "array", "maxItems": 1}}, False),
+    ]
+    for label, value, schema, expected in cases:
+        validate_supported_schema_nodes(schema, "schema", schema)
+        try:
+            validate_schema_instance(value, schema)
+            accepted = True
+        except ManifestError as exc:
+            if "maxItems violation" not in str(exc):
+                fail(f"schema-array {label}: unexpected error: {exc}")
+            accepted = False
+        if accepted != expected:
+            fail(f"schema-array {label}: expected accepted={expected}")
+    invalid_limits = [-1, True, 1.5, "1", None]
+    for value in invalid_limits:
+        schema = {"type": "array", "maxItems": value}
+        try:
+            validate_supported_schema_nodes(schema, "schema", schema)
+        except ManifestError as exc:
+            if "maxItems: expected non-negative integer" not in str(exc):
+                fail(f"schema-array malformed limit: unexpected error: {exc}")
+        else:
+            fail("schema-array accepted malformed maxItems")
+    return len(cases) + len(invalid_limits)
 
 
 def write_test_zip(

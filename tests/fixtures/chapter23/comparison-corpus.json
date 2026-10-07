@@ -1,0 +1,2865 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "finite-authored-plan-not-natural-language-truth",
+  "fixtures": [
+    {
+      "id": "IR23-BASE",
+      "changes": [],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-QUALITY-REVIEW-NOT-AUTO-ANSWER",
+      "changes": [
+        {
+          "path": [
+            "sources",
+            "2",
+            "quality"
+          ],
+          "value": "reviewed"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-OWNER-CHANGE-CONSISTENT",
+      "changes": [
+        {
+          "path": [
+            "decision",
+            "owner"
+          ],
+          "value": "ROLE-ALTERNATE"
+        },
+        {
+          "path": [
+            "pipeline",
+            "distributionAudience"
+          ],
+          "value": "ROLE-ALTERNATE"
+        },
+        {
+          "path": [
+            "feedback",
+            "owner"
+          ],
+          "value": "ROLE-ALTERNATE"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-REQUIREMENT-CANCELLED-RETAINS-GAPS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "4",
+            "status"
+          ],
+          "value": "Cancelled"
+        },
+        {
+          "path": [
+            "requirements",
+            "4",
+            "blocker"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "requirements",
+            "4",
+            "cancellationReason"
+          ],
+          "value": "期限変更のため旧要求を保留し再評価する"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-OPERATIONAL-HORIZON",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "4",
+            "timeHorizon"
+          ],
+          "value": "Operational"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-STRATEGIC-HORIZON",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "4",
+            "timeHorizon"
+          ],
+          "value": "Strategic"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-CONTRAST-001",
+      "changes": [
+        {
+          "path": [
+            "decision",
+            "owner"
+          ],
+          "value": ""
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minLength",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-002",
+      "changes": [
+        {
+          "path": [
+            "decision",
+            "deadline"
+          ],
+          "value": "2026-10-03T01:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "48h decision/cutoff",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-003",
+      "changes": [
+        {
+          "path": [
+            "decision",
+            "options"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minItems",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-004",
+      "changes": [
+        {
+          "path": [
+            "record",
+            "asOf"
+          ],
+          "value": "2026-10-03T00:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "48h decision/cutoff",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-005",
+      "changes": [
+        {
+          "path": [
+            "pipeline",
+            "analysisDeadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "pipeline deadlines",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-006",
+      "changes": [
+        {
+          "path": [
+            "pipeline",
+            "distributionAudience"
+          ],
+          "value": "WRONG"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "decision audience",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-007",
+      "changes": [
+        {
+          "path": [
+            "feedback",
+            "owner"
+          ],
+          "value": "WRONG"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "feedback owner",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-008",
+      "changes": [
+        {
+          "path": [
+            "feedback",
+            "reassessmentAt"
+          ],
+          "value": "2026-10-04T00:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "reassessment deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-009",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "criteria"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minItems",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-010",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "collectionIds"
+          ],
+          "value": [
+            "COL-IR23-001"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "reciprocal mapping",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-011",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "requirementIds"
+          ],
+          "value": [
+            "IR23-R1"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "reciprocal mapping",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-012",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T19:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "collection deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-013",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "5",
+            "status"
+          ],
+          "value": "Collecting"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "unknown boundary blocked",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-014",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "5",
+            "terms"
+          ],
+          "value": "provided-exercise-only"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-CONTRAST-015",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "5",
+            "blocker"
+          ],
+          "value": null
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "collection blocker",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-016",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "7",
+            "cancellationReason"
+          ],
+          "value": null
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "collection cancellation",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-017",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "evidenceIds"
+          ],
+          "value": [
+            "IR23-E1"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "evidence ownership",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-018",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "deliverableIds"
+          ],
+          "value": [
+            "IR23-D1-A"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "supplied deliverable scope",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-019",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "2",
+            "status"
+          ],
+          "value": "Satisfied"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "collection satisfaction",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-020",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "status"
+          ],
+          "value": "Partially satisfied"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "collection partial",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-021",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "status"
+          ],
+          "value": "Planned"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "unfulfilled collection evidence",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-022",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "collectionId"
+          ],
+          "value": "COL-IR23-002"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "evidence ownership",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-023",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "sourceId"
+          ],
+          "value": "SNOTE-IR23-2"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "source class binding",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-024",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "subjectId"
+          ],
+          "value": "OTHER"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "subject/revision",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-025",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "revision"
+          ],
+          "value": "OTHER"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "subject/revision",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-026",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "availableAt"
+          ],
+          "value": "2026-10-02T12:00:01Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "evidence window/cutoff",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-027",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "windowStart"
+          ],
+          "value": "2026-09-30T23:59:59Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "evidence window/cutoff",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-028",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T12:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "evidence window/cutoff",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-029",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "criterionIds"
+          ],
+          "value": [
+            "IR23-R5-A"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "evidence criterion scope",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-030",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "decisionId"
+          ],
+          "value": "OTHER"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement decision",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-031",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T22:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-032",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "reassessmentId"
+          ],
+          "value": "OTHER"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement reassessment",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-033",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T15:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-034",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "answerBindings",
+            "0",
+            "criterionId"
+          ],
+          "value": "IR23-R2-A"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer criterion scope",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-035",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "answerBindings",
+            "0",
+            "confidence"
+          ],
+          "value": "低"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minimum confidence",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-036",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "answerBindings",
+            "0",
+            "evidenceIds"
+          ],
+          "value": [
+            "IR23-E2"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence criterion",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-037",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "answerBindings"
+          ],
+          "value": [
+            {
+              "criterionId": "IR23-R2-A",
+              "evidenceIds": [
+                "IR23-E2"
+              ],
+              "confidence": "中"
+            },
+            {
+              "criterionId": "IR23-R2-B",
+              "evidenceIds": [
+                "IR23-E4"
+              ],
+              "confidence": "中"
+            }
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer source quality",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-038",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "gapIds"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "exact missing criteria",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-039",
+      "changes": [
+        {
+          "path": [
+            "gaps",
+            "0",
+            "requirementId"
+          ],
+          "value": "IR23-R5"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "gap ownership",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-040",
+      "changes": [
+        {
+          "path": [
+            "gaps",
+            "0",
+            "owner"
+          ],
+          "value": "OTHER"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "gap ownership",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-041",
+      "changes": [
+        {
+          "path": [
+            "gaps",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "gap deadline/reassessment",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-042",
+      "changes": [
+        {
+          "path": [
+            "gaps",
+            "0",
+            "reassessmentId"
+          ],
+          "value": "OTHER"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "gap deadline/reassessment",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-043",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "judgmentConfidence"
+          ],
+          "value": "中"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "gap confidence limit",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-044",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "4",
+            "blocker"
+          ],
+          "value": null
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement blocker",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-045",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "4",
+            "status"
+          ],
+          "value": "Cancelled"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement blocker",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-046",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "status"
+          ],
+          "value": "Satisfied"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement satisfaction",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-047",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "status"
+          ],
+          "value": "Partially satisfied"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement partial",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-048",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "status"
+          ],
+          "value": "Collecting"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "unfulfilled requirement",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-049",
+      "changes": [
+        {
+          "path": [
+            "facts",
+            "0",
+            "text"
+          ],
+          "value": "別の観測"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "fact evidence binding",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-050",
+      "changes": [
+        {
+          "path": [
+            "handoffs",
+            "0",
+            "targetChapter"
+          ],
+          "value": 25
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "handoff targets/order",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-051",
+      "changes": [
+        {
+          "path": [
+            "handoffs",
+            "1",
+            "refs"
+          ],
+          "value": [
+            "IR23-R1"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "handoff content/deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-052",
+      "changes": [
+        {
+          "path": [
+            "handoffs",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T23:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "handoff content/deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-053",
+      "changes": [
+        {
+          "path": [
+            "executionAuthorized"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "const",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-054",
+      "changes": [
+        {
+          "path": [
+            "parents",
+            "authorityTransferred"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "const",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-055",
+      "changes": [
+        {
+          "path": [
+            "record",
+            "actualCollections"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "const",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-056",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "executionAuthorized"
+          ],
+          "value": true
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "const",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-057",
+      "changes": [
+        {
+          "path": [
+            "pipeline",
+            "receiptId"
+          ],
+          "value": "RECEIVED"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "const",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-058",
+      "changes": [
+        {
+          "path": [
+            "handoffs",
+            "0",
+            "receiptId"
+          ],
+          "value": "RECEIVED"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "const",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-059",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "question"
+          ],
+          "value": "第三者の本番システムへ接続する。"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "policy",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-CONTRAST-060",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "question"
+          ],
+          "value": "https://example.com/"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "policy",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-BOUNDARY-EQUALITY",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "availableAt"
+          ],
+          "value": "2026-10-02T12:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-SELF-REVIEW-01",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "priority"
+          ],
+          "value": "P4 Not collect"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "not-collect requirement cancelled",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SELF-REVIEW-02",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "2",
+            "priority"
+          ],
+          "value": "P3 Deferred"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "deferred requirement inactive",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SELF-REVIEW-03",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "judgmentConfidence"
+          ],
+          "value": "低"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "satisfied judgment confidence",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SELF-REVIEW-04",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "classification"
+          ],
+          "value": "unknown"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "unknown boundary blocked",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-COORDINATED-BLANK-OWNER",
+      "changes": [
+        {
+          "path": [
+            "decision",
+            "owner"
+          ],
+          "value": " "
+        },
+        {
+          "path": [
+            "pipeline",
+            "distributionAudience"
+          ],
+          "value": " "
+        },
+        {
+          "path": [
+            "feedback",
+            "owner"
+          ],
+          "value": " "
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "nonblank unpadded field",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-PADDED-OWNER",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "owner"
+          ],
+          "value": " ROLE-IR23-COLLECTOR-1 "
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "nonblank unpadded field",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E1-windowStart",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E1-windowEnd",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E2-windowStart",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "1",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E2-windowEnd",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "1",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E3-windowStart",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "2",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-E3-windowEnd",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "2",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "answer evidence common window",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-ALIGNED-windowStart",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        },
+        {
+          "path": [
+            "evidence",
+            "1",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        },
+        {
+          "path": [
+            "evidence",
+            "2",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-UNBOUND-WINDOW-NOT-ANSWER-windowStart",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "3",
+            "windowStart"
+          ],
+          "value": "2026-10-01T01:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-ANSWER-WINDOW-ALIGNED-windowEnd",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        },
+        {
+          "path": [
+            "evidence",
+            "1",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        },
+        {
+          "path": [
+            "evidence",
+            "2",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-UNBOUND-WINDOW-NOT-ANSWER-windowEnd",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "3",
+            "windowEnd"
+          ],
+          "value": "2026-10-02T09:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-PLANNED",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "4",
+            "status"
+          ],
+          "value": "Collecting"
+        },
+        {
+          "path": [
+            "collections",
+            "6",
+            "status"
+          ],
+          "value": "Collecting"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-COLLECTING",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "3",
+            "status"
+          ],
+          "value": "Planned"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-SATISFIED",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "0",
+            "status"
+          ],
+          "value": "Partially satisfied"
+        },
+        {
+          "path": [
+            "collections",
+            "1",
+            "status"
+          ],
+          "value": "Partially satisfied"
+        },
+        {
+          "path": [
+            "collections",
+            "0",
+            "deliverableIds"
+          ],
+          "value": [
+            "IR23-D1-A",
+            "IR23-D1-B",
+            "IR23-D1-C"
+          ]
+        },
+        {
+          "path": [
+            "collections",
+            "1",
+            "deliverableIds"
+          ],
+          "value": [
+            "IR23-D2-A",
+            "IR23-D2-B"
+          ]
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-PARTIALLY-SATISFIED",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "2",
+            "status"
+          ],
+          "value": "Satisfied"
+        },
+        {
+          "path": [
+            "collections",
+            "2",
+            "deliverableIds"
+          ],
+          "value": [
+            "IR23-D3-A"
+          ]
+        },
+        {
+          "path": [
+            "sources",
+            "2",
+            "quality"
+          ],
+          "value": "reviewed"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-BLOCKED",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "5",
+            "status"
+          ],
+          "value": "Planned"
+        },
+        {
+          "path": [
+            "collections",
+            "5",
+            "authority"
+          ],
+          "value": "provided-synthetic-only"
+        },
+        {
+          "path": [
+            "collections",
+            "5",
+            "terms"
+          ],
+          "value": "provided-exercise-only"
+        },
+        {
+          "path": [
+            "collections",
+            "5",
+            "blocker"
+          ],
+          "value": null
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-MISSING-CANCELLED",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "7",
+            "status"
+          ],
+          "value": "Planned"
+        },
+        {
+          "path": [
+            "collections",
+            "7",
+            "cancellationReason"
+          ],
+          "value": null
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "six collection statuses",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SIX-STATUS-PRESERVED-SWAP",
+      "changes": [
+        {
+          "path": [
+            "collections",
+            "3",
+            "status"
+          ],
+          "value": "Planned"
+        },
+        {
+          "path": [
+            "collections",
+            "4",
+            "status"
+          ],
+          "value": "Collecting"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Planned",
+          "Collecting",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R1-BETWEEN-COLLECTION-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R1-BEFORE-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R1-AT-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R1-AT-ANALYSIS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R1-AFTER-ANALYSIS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R2-BETWEEN-COLLECTION-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R2-BEFORE-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R2-AT-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R2-AT-ANALYSIS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R2-AFTER-ANALYSIS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "0",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R3-BETWEEN-COLLECTION-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "2",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "1",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "2",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R3-BEFORE-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "2",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "1",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "2",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R3-AT-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "2",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "1",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "2",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R3-AT-ANALYSIS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "2",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "1",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "2",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R3-AFTER-ANALYSIS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "2",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "1",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "2",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R4-BETWEEN-COLLECTION-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "3",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "3",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "4",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R4-BEFORE-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "3",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "3",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "4",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R4-AT-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "3",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "3",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "4",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R4-AT-ANALYSIS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "3",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "3",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "4",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R4-AFTER-ANALYSIS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "3",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "3",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "4",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R5-BETWEEN-COLLECTION-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "4",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "5",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "6",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:00:00Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R5-BEFORE-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "4",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "5",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "6",
+            "deadline"
+          ],
+          "value": "2026-10-02T17:59:59Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-DEADLINE-R5-AT-PROCESSING",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "4",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "5",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "6",
+            "deadline"
+          ],
+          "value": "2026-10-02T18:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R5-AT-ANALYSIS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "4",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "5",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "6",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:00Z"
+        }
+      ],
+      "expected": "accepted",
+      "errorContains": null,
+      "expectedResult": {
+        "answers": [
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        "gaps": 7,
+        "collectionStatuses": [
+          "Satisfied",
+          "Satisfied",
+          "Partially satisfied",
+          "Collecting",
+          "Planned",
+          "Blocked",
+          "Planned",
+          "Cancelled"
+        ]
+      }
+    },
+    {
+      "id": "IR23-DEADLINE-R5-AFTER-ANALYSIS",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "4",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "5",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        },
+        {
+          "path": [
+            "gaps",
+            "6",
+            "deadline"
+          ],
+          "value": "2026-10-02T21:00:01Z"
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "requirement deadline",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SCHEMA-NONEMPTY-REF-1",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "answerBindings",
+            "0",
+            "evidenceIds"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minItems",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SCHEMA-NONEMPTY-REF-2",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "0",
+            "answerBindings",
+            "1",
+            "evidenceIds"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minItems",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SCHEMA-NONEMPTY-REF-3",
+      "changes": [
+        {
+          "path": [
+            "requirements",
+            "1",
+            "answerBindings",
+            "0",
+            "evidenceIds"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minItems",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SCHEMA-NONEMPTY-REF-4",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "0",
+            "criterionIds"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minItems",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SCHEMA-NONEMPTY-REF-5",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "1",
+            "criterionIds"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minItems",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SCHEMA-NONEMPTY-REF-6",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "2",
+            "criterionIds"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minItems",
+      "expectedResult": null
+    },
+    {
+      "id": "IR23-SCHEMA-NONEMPTY-REF-7",
+      "changes": [
+        {
+          "path": [
+            "evidence",
+            "3",
+            "criterionIds"
+          ],
+          "value": []
+        }
+      ],
+      "expected": "rejected",
+      "errorContains": "minItems",
+      "expectedResult": null
+    }
+  ]
+}

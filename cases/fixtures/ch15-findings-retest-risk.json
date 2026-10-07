@@ -1,0 +1,1538 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "executionAuthorized": false,
+  "record": {
+    "id": "FRT-2026-015",
+    "revision": "FRT15-REV-001",
+    "caseId": "CASE-2026-001",
+    "relation": "refines",
+    "artifactIds": [
+      "ART-04",
+      "ART-23"
+    ],
+    "asOf": "2026-09-16T23:00:00Z",
+    "scenarioMeaning": "seven-independent-authored-alternatives-not-a-production-timeline",
+    "actualOperations": 0
+  },
+  "parents": {
+    "caseId": "CASE-2026-001",
+    "relation": "refines",
+    "decisionRequirementId": "DR-2026-001",
+    "historicalDeadline": "2026-07-22T00:00:00Z",
+    "authorizationId": "AUTH-CASE-2026-001",
+    "authorizationExpiresAt": "2026-08-19T09:00:00Z",
+    "authorizationWindow": [
+      "2026-08-06T00:00:00Z",
+      "2026-08-06T08:00:00Z"
+    ],
+    "authorizationConditions": [
+      "COND-AUTH-2026-001 Open",
+      "COND-AUTH-2026-002 Satisfied",
+      "COND-AUTH-2026-003 Open"
+    ],
+    "roeId": "ROE-2026-009",
+    "roeVersion": 1,
+    "roeStatus": "Draft",
+    "roeObjectIds": [
+      "OBJ-ROE09-CONFIG",
+      "OBJ-ROE09-EVENT",
+      "OBJ-ROE09-POLICY"
+    ],
+    "roeExecutionAuthorized": false,
+    "threatModelId": "TM-2026-001",
+    "threatModelStatus": "Needs Evidence",
+    "parentReassessmentId": "REA-2026-001",
+    "independentCaseId": "CASE-2026-011",
+    "parentStateChanged": false
+  },
+  "context": {
+    "parentValidationRecord": "MIV-2026-014",
+    "parentHandoffId": "HOF-MIV14-15",
+    "parentHandoffStatus": "planned-not-delivered",
+    "parentStateChanged": false,
+    "parentValidationId": "VAL-MIV14-001",
+    "parentFindingId": "FND-MIV14-001",
+    "parentEvidenceRole": "method-reference-not-evidence-for-new-subject",
+    "parentCompleteMeaning": "authored-reading-record-only",
+    "parentSupportedMeaning": "supplied-two-criteria-only",
+    "parentCopyResidualMeaning": "current-authored-reading-copy-only",
+    "parentIdentityApplication": "APP-IAR12-001",
+    "newApplication": "APP-FRT15-001",
+    "applicationRelation": "authored-variant-not-parent-current-binding",
+    "parentIdentityBinding": "Unknown",
+    "parentPlatformVerifiedMeaning": "authored-summary-comparison-only",
+    "independentCaseId": "CASE-2026-011",
+    "independentEvidenceUsed": false,
+    "labStates": [
+      "Planned",
+      "Preflight passed",
+      "Ready",
+      "Running",
+      "Stopped",
+      "Destroyed",
+      "Cleanup verified",
+      "Failed closed"
+    ],
+    "labRuntimeExecuted": false,
+    "priorityReference": "VPR-ITEM-001",
+    "priorityReferenceMeaning": "contrast-only-no-CVE-rating-transferred",
+    "findingStatuses": [
+      "Open",
+      "Mitigated",
+      "Accepted",
+      "Retest required",
+      "Closed",
+      "Reopened"
+    ],
+    "retestResults": [
+      "Passed",
+      "Partial",
+      "Failed",
+      "Inconclusive",
+      "Stopped"
+    ],
+    "sourceIds": [
+      "SRC-IPA-VDP-001",
+      "SRC-WSTG-001",
+      "SRC-CVSS-001"
+    ]
+  },
+  "safety": {
+    "actualNetworkConnections": 0,
+    "actualSystemChanges": 0,
+    "actualScannerRuns": 0,
+    "actualNoticesSent": 0,
+    "actualPublicDisclosures": 0,
+    "realCredentialsPresent": false,
+    "legalPermissionGranted": false,
+    "riskAcceptanceOverridesAuthority": false,
+    "measuredBusinessImpact": false,
+    "actualCleanupPerformed": false,
+    "stop": "未知の入力・Scope不一致・追跡不能があれば読解を止め、追加操作を行わない。",
+    "cleanup": "作業メモだけを整理し、正本・親資料を保持する。実システムを変更しない。実システムを削除しない。"
+  },
+  "findings": [
+    {
+      "id": "FND-FRT15-001",
+      "scenarioId": "SCN-FRT15-001",
+      "caseId": "CASE-2026-001",
+      "assetId": "ASSET-2026-005",
+      "threatId": "TH-2026-004",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-001",
+      "status": "Open",
+      "requestedStage": "Report",
+      "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+      "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+      "rootCondition": {
+        "id": "ROOT-FRT15-001",
+        "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+        "basis": "authored-design-comparison-not-verified-implementation"
+      },
+      "validation": {
+        "id": "VAL-FRT15-001",
+        "findingId": "FND-FRT15-001",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-001",
+        "method": "Static authored comparison",
+        "requirementPermission": "read-summary",
+        "declaredPermission": "read-all-summaries",
+        "evidenceId": "EVD-FRT15-001",
+        "basis": "authored-supplied-values",
+        "actualOperation": false
+      },
+      "evidenceIds": [
+        "EVD-FRT15-001"
+      ],
+      "scope": {
+        "confirmed": "この供給版の権限宣言文字列だけ。",
+        "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+        "excluded": "親の別Object、実利用者、第三者環境。",
+        "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+      },
+      "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+      "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+      "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+      "confidence": "中",
+      "alternative": "供給設計と実装の権限制約が異なる可能性。",
+      "priority": {
+        "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+        "cvssScore": null,
+        "cvssVector": null,
+        "cvssNomenclature": null,
+        "automaticDecision": false,
+        "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+      },
+      "treatments": [
+        {
+          "id": "TMP-FRT15-001",
+          "kind": "Temporary",
+          "controlId": "CTRL-TMP-FRT15-001",
+          "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+          "benefit": "判断までの露出を限定する計画。",
+          "cost": "必要な連携を制限する可能性。",
+          "dependency": "業務Ownerによる対象範囲の確認。",
+          "owner": "SYNTH-SERVICE-OWNER",
+          "dueAt": "2026-09-25T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "PERM-FRT15-001",
+          "kind": "Permanent",
+          "controlId": "CTRL-PERM-FRT15-001",
+          "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+          "benefit": "根本条件を変更対象として明示できる。",
+          "cost": "連携先との仕様確認が必要。",
+          "dependency": "新しい変更計画と別の許可判断。",
+          "owner": "SYNTH-DESIGN-OWNER",
+          "dueAt": "2026-09-28T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "COMP-FRT15-001",
+          "kind": "Compensating",
+          "controlId": "CTRL-COMP-FRT15-001",
+          "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+          "benefit": "Gapを後続確認へ追跡できる。",
+          "cost": "権限宣言の差そのものは残る。",
+          "dependency": "必要Telemetryの提供条件。",
+          "owner": "SYNTH-DETECTION-OWNER",
+          "dueAt": "2026-09-27T00:00:00Z",
+          "implemented": false
+        }
+      ],
+      "recommendedTreatmentId": "PERM-FRT15-001",
+      "retestId": "RT-FRT15-001",
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "findingId": null,
+        "subjectId": null,
+        "scope": null,
+        "authorityReference": null,
+        "authorityHolder": null,
+        "decisionOwner": null,
+        "basis": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "residualRiskId": null,
+        "reassessmentId": null,
+        "conditions": null,
+        "overridesAssessmentAuthority": false,
+        "subjectRevision": null
+      },
+      "residualRisk": {
+        "id": "RES-FRT15-001",
+        "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+        "owner": "SYNTH-RISK-OWNER",
+        "businessRiskZero": false
+      },
+      "decision": {
+        "id": "DEC-FRT15-001",
+        "findingId": "FND-FRT15-001",
+        "action": "Remediate",
+        "basis": "open-review",
+        "owner": "SYNTH-CASE-OWNER",
+        "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+        "executionAuthorized": false
+      },
+      "reassessment": {
+        "id": "REA-FRT15-001",
+        "findingId": "FND-FRT15-001",
+        "owner": "SYNTH-CASE-OWNER",
+        "dueAt": "2026-09-20T00:00:00Z",
+        "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+        "reopenReason": null
+      },
+      "disclosure": {
+        "classification": "Synthetic teaching only",
+        "audience": "Synthetic internal roles",
+        "coordinationStatus": "Not initiated",
+        "publicReleaseAuthorized": false,
+        "actualNoticeSent": false
+      },
+      "temporaryReviewEvidenceId": null
+    },
+    {
+      "id": "FND-FRT15-002",
+      "scenarioId": "SCN-FRT15-002",
+      "caseId": "CASE-2026-001",
+      "assetId": "ASSET-2026-005",
+      "threatId": "TH-2026-004",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-002",
+      "status": "Mitigated",
+      "requestedStage": "Mitigate",
+      "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+      "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+      "rootCondition": {
+        "id": "ROOT-FRT15-002",
+        "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+        "basis": "authored-design-comparison-not-verified-implementation"
+      },
+      "validation": {
+        "id": "VAL-FRT15-002",
+        "findingId": "FND-FRT15-002",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-002",
+        "method": "Static authored comparison",
+        "requirementPermission": "read-summary",
+        "declaredPermission": "read-all-summaries",
+        "evidenceId": "EVD-FRT15-002",
+        "basis": "authored-supplied-values",
+        "actualOperation": false
+      },
+      "evidenceIds": [
+        "EVD-FRT15-002"
+      ],
+      "scope": {
+        "confirmed": "この供給版の権限宣言文字列だけ。",
+        "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+        "excluded": "親の別Object、実利用者、第三者環境。",
+        "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+      },
+      "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+      "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+      "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+      "confidence": "中",
+      "alternative": "供給設計と実装の権限制約が異なる可能性。",
+      "priority": {
+        "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+        "cvssScore": null,
+        "cvssVector": null,
+        "cvssNomenclature": null,
+        "automaticDecision": false,
+        "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+      },
+      "treatments": [
+        {
+          "id": "TMP-FRT15-002",
+          "kind": "Temporary",
+          "controlId": "CTRL-TMP-FRT15-002",
+          "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+          "benefit": "判断までの露出を限定する計画。",
+          "cost": "必要な連携を制限する可能性。",
+          "dependency": "業務Ownerによる対象範囲の確認。",
+          "owner": "SYNTH-SERVICE-OWNER",
+          "dueAt": "2026-09-25T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "PERM-FRT15-002",
+          "kind": "Permanent",
+          "controlId": "CTRL-PERM-FRT15-002",
+          "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+          "benefit": "根本条件を変更対象として明示できる。",
+          "cost": "連携先との仕様確認が必要。",
+          "dependency": "新しい変更計画と別の許可判断。",
+          "owner": "SYNTH-DESIGN-OWNER",
+          "dueAt": "2026-09-28T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "COMP-FRT15-002",
+          "kind": "Compensating",
+          "controlId": "CTRL-COMP-FRT15-002",
+          "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+          "benefit": "Gapを後続確認へ追跡できる。",
+          "cost": "権限宣言の差そのものは残る。",
+          "dependency": "必要Telemetryの提供条件。",
+          "owner": "SYNTH-DETECTION-OWNER",
+          "dueAt": "2026-09-27T00:00:00Z",
+          "implemented": false
+        }
+      ],
+      "recommendedTreatmentId": "PERM-FRT15-002",
+      "retestId": "RT-FRT15-002",
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "findingId": null,
+        "subjectId": null,
+        "scope": null,
+        "authorityReference": null,
+        "authorityHolder": null,
+        "decisionOwner": null,
+        "basis": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "residualRiskId": null,
+        "reassessmentId": null,
+        "conditions": null,
+        "overridesAssessmentAuthority": false,
+        "subjectRevision": null
+      },
+      "residualRisk": {
+        "id": "RES-FRT15-002",
+        "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+        "owner": "SYNTH-RISK-OWNER",
+        "businessRiskZero": false
+      },
+      "decision": {
+        "id": "DEC-FRT15-002",
+        "findingId": "FND-FRT15-002",
+        "action": "Remediate",
+        "basis": "open-review",
+        "owner": "SYNTH-CASE-OWNER",
+        "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+        "executionAuthorized": false
+      },
+      "reassessment": {
+        "id": "REA-FRT15-002",
+        "findingId": "FND-FRT15-002",
+        "owner": "SYNTH-CASE-OWNER",
+        "dueAt": "2026-09-20T00:00:00Z",
+        "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+        "reopenReason": null
+      },
+      "disclosure": {
+        "classification": "Synthetic teaching only",
+        "audience": "Synthetic internal roles",
+        "coordinationStatus": "Not initiated",
+        "publicReleaseAuthorized": false,
+        "actualNoticeSent": false
+      },
+      "temporaryReviewEvidenceId": "TMP-EVD-FRT15-002"
+    },
+    {
+      "id": "FND-FRT15-003",
+      "scenarioId": "SCN-FRT15-003",
+      "caseId": "CASE-2026-001",
+      "assetId": "ASSET-2026-005",
+      "threatId": "TH-2026-004",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-003",
+      "status": "Accepted",
+      "requestedStage": "Accept",
+      "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+      "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+      "rootCondition": {
+        "id": "ROOT-FRT15-003",
+        "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+        "basis": "authored-design-comparison-not-verified-implementation"
+      },
+      "validation": {
+        "id": "VAL-FRT15-003",
+        "findingId": "FND-FRT15-003",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-003",
+        "method": "Static authored comparison",
+        "requirementPermission": "read-summary",
+        "declaredPermission": "read-all-summaries",
+        "evidenceId": "EVD-FRT15-003",
+        "basis": "authored-supplied-values",
+        "actualOperation": false
+      },
+      "evidenceIds": [
+        "EVD-FRT15-003"
+      ],
+      "scope": {
+        "confirmed": "この供給版の権限宣言文字列だけ。",
+        "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+        "excluded": "親の別Object、実利用者、第三者環境。",
+        "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+      },
+      "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+      "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+      "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+      "confidence": "中",
+      "alternative": "供給設計と実装の権限制約が異なる可能性。",
+      "priority": {
+        "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+        "cvssScore": null,
+        "cvssVector": null,
+        "cvssNomenclature": null,
+        "automaticDecision": false,
+        "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+      },
+      "treatments": [
+        {
+          "id": "TMP-FRT15-003",
+          "kind": "Temporary",
+          "controlId": "CTRL-TMP-FRT15-003",
+          "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+          "benefit": "判断までの露出を限定する計画。",
+          "cost": "必要な連携を制限する可能性。",
+          "dependency": "業務Ownerによる対象範囲の確認。",
+          "owner": "SYNTH-SERVICE-OWNER",
+          "dueAt": "2026-09-25T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "PERM-FRT15-003",
+          "kind": "Permanent",
+          "controlId": "CTRL-PERM-FRT15-003",
+          "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+          "benefit": "根本条件を変更対象として明示できる。",
+          "cost": "連携先との仕様確認が必要。",
+          "dependency": "新しい変更計画と別の許可判断。",
+          "owner": "SYNTH-DESIGN-OWNER",
+          "dueAt": "2026-09-28T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "COMP-FRT15-003",
+          "kind": "Compensating",
+          "controlId": "CTRL-COMP-FRT15-003",
+          "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+          "benefit": "Gapを後続確認へ追跡できる。",
+          "cost": "権限宣言の差そのものは残る。",
+          "dependency": "必要Telemetryの提供条件。",
+          "owner": "SYNTH-DETECTION-OWNER",
+          "dueAt": "2026-09-27T00:00:00Z",
+          "implemented": false
+        }
+      ],
+      "recommendedTreatmentId": "PERM-FRT15-003",
+      "retestId": null,
+      "acceptance": {
+        "present": true,
+        "id": "ACC-FRT15-003",
+        "findingId": "FND-FRT15-003",
+        "subjectId": "APP-FRT15-001",
+        "scope": "current-supplied-scenario-only",
+        "authorityReference": "DELEGATION-FRT15-003",
+        "authorityHolder": "SYNTH-RISK-OWNER",
+        "decisionOwner": "SYNTH-RISK-OWNER",
+        "basis": "authored-delegation-not-assessment-permission",
+        "decidedAt": "2026-09-14T00:00:00Z",
+        "expiresAt": "2026-09-30T00:00:00Z",
+        "residualRiskId": "RES-FRT15-003",
+        "reassessmentId": "REA-FRT15-003",
+        "conditions": "対象版・Scope・Evidence・担当が変われば受容判断を再開する。",
+        "overridesAssessmentAuthority": false,
+        "subjectRevision": "BEFORE-FRT15-003"
+      },
+      "residualRisk": {
+        "id": "RES-FRT15-003",
+        "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+        "owner": "SYNTH-RISK-OWNER",
+        "businessRiskZero": false
+      },
+      "decision": {
+        "id": "DEC-FRT15-003",
+        "findingId": "FND-FRT15-003",
+        "action": "Accept",
+        "basis": "acceptance",
+        "owner": "SYNTH-CASE-OWNER",
+        "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+        "executionAuthorized": false
+      },
+      "reassessment": {
+        "id": "REA-FRT15-003",
+        "findingId": "FND-FRT15-003",
+        "owner": "SYNTH-CASE-OWNER",
+        "dueAt": "2026-09-20T00:00:00Z",
+        "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+        "reopenReason": null
+      },
+      "disclosure": {
+        "classification": "Synthetic teaching only",
+        "audience": "Synthetic internal roles",
+        "coordinationStatus": "Not initiated",
+        "publicReleaseAuthorized": false,
+        "actualNoticeSent": false
+      },
+      "temporaryReviewEvidenceId": null
+    },
+    {
+      "id": "FND-FRT15-004",
+      "scenarioId": "SCN-FRT15-004",
+      "caseId": "CASE-2026-001",
+      "assetId": "ASSET-2026-005",
+      "threatId": "TH-2026-004",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-004",
+      "status": "Retest required",
+      "requestedStage": "Retest",
+      "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+      "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+      "rootCondition": {
+        "id": "ROOT-FRT15-004",
+        "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+        "basis": "authored-design-comparison-not-verified-implementation"
+      },
+      "validation": {
+        "id": "VAL-FRT15-004",
+        "findingId": "FND-FRT15-004",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-004",
+        "method": "Static authored comparison",
+        "requirementPermission": "read-summary",
+        "declaredPermission": "read-all-summaries",
+        "evidenceId": "EVD-FRT15-004",
+        "basis": "authored-supplied-values",
+        "actualOperation": false
+      },
+      "evidenceIds": [
+        "EVD-FRT15-004"
+      ],
+      "scope": {
+        "confirmed": "この供給版の権限宣言文字列だけ。",
+        "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+        "excluded": "親の別Object、実利用者、第三者環境。",
+        "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+      },
+      "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+      "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+      "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+      "confidence": "中",
+      "alternative": "供給設計と実装の権限制約が異なる可能性。",
+      "priority": {
+        "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+        "cvssScore": null,
+        "cvssVector": null,
+        "cvssNomenclature": null,
+        "automaticDecision": false,
+        "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+      },
+      "treatments": [
+        {
+          "id": "TMP-FRT15-004",
+          "kind": "Temporary",
+          "controlId": "CTRL-TMP-FRT15-004",
+          "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+          "benefit": "判断までの露出を限定する計画。",
+          "cost": "必要な連携を制限する可能性。",
+          "dependency": "業務Ownerによる対象範囲の確認。",
+          "owner": "SYNTH-SERVICE-OWNER",
+          "dueAt": "2026-09-25T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "PERM-FRT15-004",
+          "kind": "Permanent",
+          "controlId": "CTRL-PERM-FRT15-004",
+          "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+          "benefit": "根本条件を変更対象として明示できる。",
+          "cost": "連携先との仕様確認が必要。",
+          "dependency": "新しい変更計画と別の許可判断。",
+          "owner": "SYNTH-DESIGN-OWNER",
+          "dueAt": "2026-09-28T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "COMP-FRT15-004",
+          "kind": "Compensating",
+          "controlId": "CTRL-COMP-FRT15-004",
+          "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+          "benefit": "Gapを後続確認へ追跡できる。",
+          "cost": "権限宣言の差そのものは残る。",
+          "dependency": "必要Telemetryの提供条件。",
+          "owner": "SYNTH-DETECTION-OWNER",
+          "dueAt": "2026-09-27T00:00:00Z",
+          "implemented": false
+        }
+      ],
+      "recommendedTreatmentId": "PERM-FRT15-004",
+      "retestId": "RT-FRT15-004",
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "findingId": null,
+        "subjectId": null,
+        "scope": null,
+        "authorityReference": null,
+        "authorityHolder": null,
+        "decisionOwner": null,
+        "basis": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "residualRiskId": null,
+        "reassessmentId": null,
+        "conditions": null,
+        "overridesAssessmentAuthority": false,
+        "subjectRevision": null
+      },
+      "residualRisk": {
+        "id": "RES-FRT15-004",
+        "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+        "owner": "SYNTH-RISK-OWNER",
+        "businessRiskZero": false
+      },
+      "decision": {
+        "id": "DEC-FRT15-004",
+        "findingId": "FND-FRT15-004",
+        "action": "Remediate",
+        "basis": "open-review",
+        "owner": "SYNTH-CASE-OWNER",
+        "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+        "executionAuthorized": false
+      },
+      "reassessment": {
+        "id": "REA-FRT15-004",
+        "findingId": "FND-FRT15-004",
+        "owner": "SYNTH-CASE-OWNER",
+        "dueAt": "2026-09-20T00:00:00Z",
+        "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+        "reopenReason": null
+      },
+      "disclosure": {
+        "classification": "Synthetic teaching only",
+        "audience": "Synthetic internal roles",
+        "coordinationStatus": "Not initiated",
+        "publicReleaseAuthorized": false,
+        "actualNoticeSent": false
+      },
+      "temporaryReviewEvidenceId": null
+    },
+    {
+      "id": "FND-FRT15-005",
+      "scenarioId": "SCN-FRT15-005",
+      "caseId": "CASE-2026-001",
+      "assetId": "ASSET-2026-005",
+      "threatId": "TH-2026-004",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-005",
+      "status": "Closed",
+      "requestedStage": "Close",
+      "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+      "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+      "rootCondition": {
+        "id": "ROOT-FRT15-005",
+        "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+        "basis": "authored-design-comparison-not-verified-implementation"
+      },
+      "validation": {
+        "id": "VAL-FRT15-005",
+        "findingId": "FND-FRT15-005",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-005",
+        "method": "Static authored comparison",
+        "requirementPermission": "read-summary",
+        "declaredPermission": "read-all-summaries",
+        "evidenceId": "EVD-FRT15-005",
+        "basis": "authored-supplied-values",
+        "actualOperation": false
+      },
+      "evidenceIds": [
+        "EVD-FRT15-005"
+      ],
+      "scope": {
+        "confirmed": "この供給版の権限宣言文字列だけ。",
+        "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+        "excluded": "親の別Object、実利用者、第三者環境。",
+        "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+      },
+      "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+      "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+      "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+      "confidence": "中",
+      "alternative": "供給設計と実装の権限制約が異なる可能性。",
+      "priority": {
+        "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+        "cvssScore": null,
+        "cvssVector": null,
+        "cvssNomenclature": null,
+        "automaticDecision": false,
+        "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+      },
+      "treatments": [
+        {
+          "id": "TMP-FRT15-005",
+          "kind": "Temporary",
+          "controlId": "CTRL-TMP-FRT15-005",
+          "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+          "benefit": "判断までの露出を限定する計画。",
+          "cost": "必要な連携を制限する可能性。",
+          "dependency": "業務Ownerによる対象範囲の確認。",
+          "owner": "SYNTH-SERVICE-OWNER",
+          "dueAt": "2026-09-25T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "PERM-FRT15-005",
+          "kind": "Permanent",
+          "controlId": "CTRL-PERM-FRT15-005",
+          "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+          "benefit": "根本条件を変更対象として明示できる。",
+          "cost": "連携先との仕様確認が必要。",
+          "dependency": "新しい変更計画と別の許可判断。",
+          "owner": "SYNTH-DESIGN-OWNER",
+          "dueAt": "2026-09-28T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "COMP-FRT15-005",
+          "kind": "Compensating",
+          "controlId": "CTRL-COMP-FRT15-005",
+          "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+          "benefit": "Gapを後続確認へ追跡できる。",
+          "cost": "権限宣言の差そのものは残る。",
+          "dependency": "必要Telemetryの提供条件。",
+          "owner": "SYNTH-DETECTION-OWNER",
+          "dueAt": "2026-09-27T00:00:00Z",
+          "implemented": false
+        }
+      ],
+      "recommendedTreatmentId": "PERM-FRT15-005",
+      "retestId": "RT-FRT15-005",
+      "acceptance": {
+        "present": false,
+        "id": null,
+        "findingId": null,
+        "subjectId": null,
+        "scope": null,
+        "authorityReference": null,
+        "authorityHolder": null,
+        "decisionOwner": null,
+        "basis": null,
+        "decidedAt": null,
+        "expiresAt": null,
+        "residualRiskId": null,
+        "reassessmentId": null,
+        "conditions": null,
+        "overridesAssessmentAuthority": false,
+        "subjectRevision": null
+      },
+      "residualRisk": {
+        "id": "RES-FRT15-005",
+        "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+        "owner": "SYNTH-RISK-OWNER",
+        "businessRiskZero": false
+      },
+      "decision": {
+        "id": "DEC-FRT15-005",
+        "findingId": "FND-FRT15-005",
+        "action": "Remediate",
+        "basis": "retest",
+        "owner": "SYNTH-CASE-OWNER",
+        "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+        "executionAuthorized": false
+      },
+      "reassessment": {
+        "id": "REA-FRT15-005",
+        "findingId": "FND-FRT15-005",
+        "owner": "SYNTH-CASE-OWNER",
+        "dueAt": "2026-09-20T00:00:00Z",
+        "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+        "reopenReason": null
+      },
+      "disclosure": {
+        "classification": "Synthetic teaching only",
+        "audience": "Synthetic internal roles",
+        "coordinationStatus": "Not initiated",
+        "publicReleaseAuthorized": false,
+        "actualNoticeSent": false
+      },
+      "temporaryReviewEvidenceId": null
+    },
+    {
+      "id": "FND-FRT15-006",
+      "scenarioId": "SCN-FRT15-006",
+      "caseId": "CASE-2026-001",
+      "assetId": "ASSET-2026-005",
+      "threatId": "TH-2026-004",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-006",
+      "status": "Reopened",
+      "requestedStage": "Reopen",
+      "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+      "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+      "rootCondition": {
+        "id": "ROOT-FRT15-006",
+        "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+        "basis": "authored-design-comparison-not-verified-implementation"
+      },
+      "validation": {
+        "id": "VAL-FRT15-006",
+        "findingId": "FND-FRT15-006",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-006",
+        "method": "Static authored comparison",
+        "requirementPermission": "read-summary",
+        "declaredPermission": "read-all-summaries",
+        "evidenceId": "EVD-FRT15-006",
+        "basis": "authored-supplied-values",
+        "actualOperation": false
+      },
+      "evidenceIds": [
+        "EVD-FRT15-006"
+      ],
+      "scope": {
+        "confirmed": "この供給版の権限宣言文字列だけ。",
+        "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+        "excluded": "親の別Object、実利用者、第三者環境。",
+        "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+      },
+      "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+      "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+      "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+      "confidence": "中",
+      "alternative": "供給設計と実装の権限制約が異なる可能性。",
+      "priority": {
+        "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+        "cvssScore": null,
+        "cvssVector": null,
+        "cvssNomenclature": null,
+        "automaticDecision": false,
+        "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+      },
+      "treatments": [
+        {
+          "id": "TMP-FRT15-006",
+          "kind": "Temporary",
+          "controlId": "CTRL-TMP-FRT15-006",
+          "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+          "benefit": "判断までの露出を限定する計画。",
+          "cost": "必要な連携を制限する可能性。",
+          "dependency": "業務Ownerによる対象範囲の確認。",
+          "owner": "SYNTH-SERVICE-OWNER",
+          "dueAt": "2026-09-25T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "PERM-FRT15-006",
+          "kind": "Permanent",
+          "controlId": "CTRL-PERM-FRT15-006",
+          "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+          "benefit": "根本条件を変更対象として明示できる。",
+          "cost": "連携先との仕様確認が必要。",
+          "dependency": "新しい変更計画と別の許可判断。",
+          "owner": "SYNTH-DESIGN-OWNER",
+          "dueAt": "2026-09-28T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "COMP-FRT15-006",
+          "kind": "Compensating",
+          "controlId": "CTRL-COMP-FRT15-006",
+          "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+          "benefit": "Gapを後続確認へ追跡できる。",
+          "cost": "権限宣言の差そのものは残る。",
+          "dependency": "必要Telemetryの提供条件。",
+          "owner": "SYNTH-DETECTION-OWNER",
+          "dueAt": "2026-09-27T00:00:00Z",
+          "implemented": false
+        }
+      ],
+      "recommendedTreatmentId": "PERM-FRT15-006",
+      "retestId": "RT-FRT15-006",
+      "acceptance": {
+        "present": true,
+        "id": "ACC-FRT15-006",
+        "findingId": "FND-FRT15-006",
+        "subjectId": "APP-FRT15-001",
+        "scope": "current-supplied-scenario-only",
+        "authorityReference": "DELEGATION-FRT15-006",
+        "authorityHolder": "SYNTH-RISK-OWNER",
+        "decisionOwner": "SYNTH-RISK-OWNER",
+        "basis": "authored-delegation-not-assessment-permission",
+        "decidedAt": "2026-09-14T00:00:00Z",
+        "expiresAt": "2026-09-15T00:00:00Z",
+        "residualRiskId": "RES-FRT15-006",
+        "reassessmentId": "REA-FRT15-006",
+        "conditions": "対象版・Scope・Evidence・担当が変われば受容判断を再開する。",
+        "overridesAssessmentAuthority": false,
+        "subjectRevision": "BEFORE-FRT15-006"
+      },
+      "residualRisk": {
+        "id": "RES-FRT15-006",
+        "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+        "owner": "SYNTH-RISK-OWNER",
+        "businessRiskZero": false
+      },
+      "decision": {
+        "id": "DEC-FRT15-006",
+        "findingId": "FND-FRT15-006",
+        "action": "Remediate",
+        "basis": "open-review",
+        "owner": "SYNTH-CASE-OWNER",
+        "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+        "executionAuthorized": false
+      },
+      "reassessment": {
+        "id": "REA-FRT15-006",
+        "findingId": "FND-FRT15-006",
+        "owner": "SYNTH-CASE-OWNER",
+        "dueAt": "2026-09-20T00:00:00Z",
+        "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+        "reopenReason": "停止と過去受容の期限切れを供給記録から確認した。"
+      },
+      "disclosure": {
+        "classification": "Synthetic teaching only",
+        "audience": "Synthetic internal roles",
+        "coordinationStatus": "Not initiated",
+        "publicReleaseAuthorized": false,
+        "actualNoticeSent": false
+      },
+      "temporaryReviewEvidenceId": null
+    },
+    {
+      "id": "FND-FRT15-007",
+      "scenarioId": "SCN-FRT15-007",
+      "caseId": "CASE-2026-001",
+      "assetId": "ASSET-2026-005",
+      "threatId": "TH-2026-004",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-007",
+      "status": "Closed",
+      "requestedStage": "Close",
+      "title": "供給OAuth App設計で必要業務より広い権限宣言があるという分析候補。",
+      "symptom": "供給設定のpermission欄と業務要件のpermission欄が異なる。",
+      "rootCondition": {
+        "id": "ROOT-FRT15-007",
+        "claim": "要件と権限宣言の対応を確認する承認条件が供給設計にない。",
+        "basis": "authored-design-comparison-not-verified-implementation"
+      },
+      "validation": {
+        "id": "VAL-FRT15-007",
+        "findingId": "FND-FRT15-007",
+        "subjectId": "APP-FRT15-001",
+        "subjectRevision": "BEFORE-FRT15-007",
+        "method": "Static authored comparison",
+        "requirementPermission": "read-summary",
+        "declaredPermission": "read-all-summaries",
+        "evidenceId": "EVD-FRT15-007",
+        "basis": "authored-supplied-values",
+        "actualOperation": false
+      },
+      "evidenceIds": [
+        "EVD-FRT15-007"
+      ],
+      "scope": {
+        "confirmed": "この供給版の権限宣言文字列だけ。",
+        "candidate": "同じ設計条件が実装にもある可能性。実装は未確認。",
+        "excluded": "親の別Object、実利用者、第三者環境。",
+        "unknown": "実到達、実装、実影響、現在のIdentity binding。"
+      },
+      "technicalImpact": "供給設計上の権限範囲に差がある。実データへの到達は未確認。",
+      "businessImpact": "請求連携の誤処理を懸念する分析仮説。実損害・金額・停止時間は未測定。",
+      "limitation": "親や他ScenarioのEvidenceをこの対象・版の実測として利用しない。",
+      "confidence": "中",
+      "alternative": "供給設計と実装の権限制約が異なる可能性。",
+      "priority": {
+        "severityReference": "第7章の比較方法のみ。新しいScoreは付けない。",
+        "cvssScore": null,
+        "cvssVector": null,
+        "cvssNomenclature": null,
+        "automaticDecision": false,
+        "reason": "業務依存・不足Evidence・変更可能時期をOwnerが別々に比較する。"
+      },
+      "treatments": [
+        {
+          "id": "TMP-FRT15-007",
+          "kind": "Temporary",
+          "controlId": "CTRL-TMP-FRT15-007",
+          "proposal": "供給計画の利用Scopeを限定する案。権限宣言自体の修正ではない。",
+          "benefit": "判断までの露出を限定する計画。",
+          "cost": "必要な連携を制限する可能性。",
+          "dependency": "業務Ownerによる対象範囲の確認。",
+          "owner": "SYNTH-SERVICE-OWNER",
+          "dueAt": "2026-09-25T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "PERM-FRT15-007",
+          "kind": "Permanent",
+          "controlId": "CTRL-PERM-FRT15-007",
+          "proposal": "供給設計の権限宣言と必要業務を対応付ける改版案。",
+          "benefit": "根本条件を変更対象として明示できる。",
+          "cost": "連携先との仕様確認が必要。",
+          "dependency": "新しい変更計画と別の許可判断。",
+          "owner": "SYNTH-DESIGN-OWNER",
+          "dueAt": "2026-09-28T00:00:00Z",
+          "implemented": false
+        },
+        {
+          "id": "COMP-FRT15-007",
+          "kind": "Compensating",
+          "controlId": "CTRL-COMP-FRT15-007",
+          "proposal": "対象・版・判断理由を監査記録へ接続する代替統制案。",
+          "benefit": "Gapを後続確認へ追跡できる。",
+          "cost": "権限宣言の差そのものは残る。",
+          "dependency": "必要Telemetryの提供条件。",
+          "owner": "SYNTH-DETECTION-OWNER",
+          "dueAt": "2026-09-27T00:00:00Z",
+          "implemented": false
+        }
+      ],
+      "recommendedTreatmentId": "PERM-FRT15-007",
+      "retestId": null,
+      "acceptance": {
+        "present": true,
+        "id": "ACC-FRT15-007",
+        "findingId": "FND-FRT15-007",
+        "subjectId": "APP-FRT15-001",
+        "scope": "current-supplied-scenario-only",
+        "authorityReference": "DELEGATION-FRT15-007",
+        "authorityHolder": "SYNTH-RISK-OWNER",
+        "decisionOwner": "SYNTH-RISK-OWNER",
+        "basis": "authored-delegation-not-assessment-permission",
+        "decidedAt": "2026-09-14T00:00:00Z",
+        "expiresAt": "2026-09-30T00:00:00Z",
+        "residualRiskId": "RES-FRT15-007",
+        "reassessmentId": "REA-FRT15-007",
+        "conditions": "対象版・Scope・Evidence・担当が変われば受容判断を再開する。",
+        "overridesAssessmentAuthority": false,
+        "subjectRevision": "BEFORE-FRT15-007"
+      },
+      "residualRisk": {
+        "id": "RES-FRT15-007",
+        "claim": "実装と業務影響は未確認であり、設計比較の結果からRiskゼロとは言えない。",
+        "owner": "SYNTH-RISK-OWNER",
+        "businessRiskZero": false
+      },
+      "decision": {
+        "id": "DEC-FRT15-007",
+        "findingId": "FND-FRT15-007",
+        "action": "Accept",
+        "basis": "acceptance",
+        "owner": "SYNTH-CASE-OWNER",
+        "reason": "供給資料の差とGapを整理し、実作業とは別に記録の次の担当を決める。",
+        "executionAuthorized": false
+      },
+      "reassessment": {
+        "id": "REA-FRT15-007",
+        "findingId": "FND-FRT15-007",
+        "owner": "SYNTH-CASE-OWNER",
+        "dueAt": "2026-09-20T00:00:00Z",
+        "trigger": "Evidence不足・対象版・Scope・受容期限・権限条件の変更。",
+        "reopenReason": null
+      },
+      "disclosure": {
+        "classification": "Synthetic teaching only",
+        "audience": "Synthetic internal roles",
+        "coordinationStatus": "Not initiated",
+        "publicReleaseAuthorized": false,
+        "actualNoticeSent": false
+      },
+      "temporaryReviewEvidenceId": null
+    }
+  ],
+  "retests": [
+    {
+      "id": "RT-FRT15-001",
+      "findingId": "FND-FRT15-001",
+      "subjectId": "APP-FRT15-001",
+      "beforeRevision": "BEFORE-FRT15-001",
+      "changeReference": "CHG-FRT15-001",
+      "changedRevision": "AFTER-FRT15-001",
+      "changeMeaning": "authored-change-summary-not-real-change",
+      "scope": "current-supplied-scenario-only",
+      "method": "Static authored comparison",
+      "requiredMethod": "Static authored comparison",
+      "criteria": [
+        {
+          "id": "CRT-FRT15-001-1",
+          "field": "permission",
+          "expected": "read-summary"
+        },
+        {
+          "id": "CRT-FRT15-001-2",
+          "field": "auditReference",
+          "expected": "AUD-FRT15-EXPECTED"
+        }
+      ],
+      "observations": [
+        {
+          "id": "RT-EVD-FRT15-001-1",
+          "criterionId": "CRT-FRT15-001-1",
+          "subjectId": "APP-FRT15-001",
+          "revision": "AFTER-FRT15-001",
+          "present": true,
+          "value": "read-all-summaries",
+          "basis": "authored-supplied-value"
+        },
+        {
+          "id": "RT-EVD-FRT15-001-2",
+          "criterionId": "CRT-FRT15-001-2",
+          "subjectId": "APP-FRT15-001",
+          "revision": "AFTER-FRT15-001",
+          "present": true,
+          "value": "AUD-FRT15-EXPECTED",
+          "basis": "authored-supplied-value"
+        }
+      ],
+      "result": "Failed",
+      "stopTrigger": "None",
+      "stepsAfterStop": 0,
+      "actualOperations": 0,
+      "owner": "SYNTH-RETEST-REVIEWER",
+      "recordedAt": "2026-09-16T22:00:00Z",
+      "limitation": "二つの供給欄だけを比較。実ScannerやBusiness Logicの動作試験は行っていない。",
+      "regressionScope": "同じ供給Scenarioの二条件だけ。全System非回帰ではない。",
+      "residualRiskId": "RES-FRT15-001",
+      "reassessmentId": "REA-FRT15-001"
+    },
+    {
+      "id": "RT-FRT15-002",
+      "findingId": "FND-FRT15-002",
+      "subjectId": "APP-FRT15-001",
+      "beforeRevision": "BEFORE-FRT15-002",
+      "changeReference": "CHG-FRT15-002",
+      "changedRevision": "AFTER-FRT15-002",
+      "changeMeaning": "authored-change-summary-not-real-change",
+      "scope": "current-supplied-scenario-only",
+      "method": "Static authored comparison",
+      "requiredMethod": "Static authored comparison",
+      "criteria": [
+        {
+          "id": "CRT-FRT15-002-1",
+          "field": "permission",
+          "expected": "read-summary"
+        },
+        {
+          "id": "CRT-FRT15-002-2",
+          "field": "auditReference",
+          "expected": "AUD-FRT15-EXPECTED"
+        }
+      ],
+      "observations": [
+        {
+          "id": "RT-EVD-FRT15-002-1",
+          "criterionId": "CRT-FRT15-002-1",
+          "subjectId": "APP-FRT15-001",
+          "revision": "AFTER-FRT15-002",
+          "present": true,
+          "value": "read-summary",
+          "basis": "authored-supplied-value"
+        },
+        {
+          "id": "RT-EVD-FRT15-002-2",
+          "criterionId": "CRT-FRT15-002-2",
+          "subjectId": "APP-FRT15-001",
+          "revision": "AFTER-FRT15-002",
+          "present": true,
+          "value": "AUD-FRT15-OTHER",
+          "basis": "authored-supplied-value"
+        }
+      ],
+      "result": "Partial",
+      "stopTrigger": "None",
+      "stepsAfterStop": 0,
+      "actualOperations": 0,
+      "owner": "SYNTH-RETEST-REVIEWER",
+      "recordedAt": "2026-09-16T22:00:00Z",
+      "limitation": "二つの供給欄だけを比較。実ScannerやBusiness Logicの動作試験は行っていない。",
+      "regressionScope": "同じ供給Scenarioの二条件だけ。全System非回帰ではない。",
+      "residualRiskId": "RES-FRT15-002",
+      "reassessmentId": "REA-FRT15-002"
+    },
+    {
+      "id": "RT-FRT15-004",
+      "findingId": "FND-FRT15-004",
+      "subjectId": "APP-FRT15-001",
+      "beforeRevision": "BEFORE-FRT15-004",
+      "changeReference": "CHG-FRT15-004",
+      "changedRevision": "AFTER-FRT15-004",
+      "changeMeaning": "authored-change-summary-not-real-change",
+      "scope": "current-supplied-scenario-only",
+      "method": "Scanner summary only",
+      "requiredMethod": "Static authored comparison",
+      "criteria": [
+        {
+          "id": "CRT-FRT15-004-1",
+          "field": "permission",
+          "expected": "read-summary"
+        },
+        {
+          "id": "CRT-FRT15-004-2",
+          "field": "auditReference",
+          "expected": "AUD-FRT15-EXPECTED"
+        }
+      ],
+      "observations": [
+        {
+          "id": "RT-EVD-FRT15-004-1",
+          "criterionId": "CRT-FRT15-004-1",
+          "subjectId": "APP-FRT15-001",
+          "revision": "AFTER-FRT15-004",
+          "present": false,
+          "value": null,
+          "basis": "missing-not-failed"
+        },
+        {
+          "id": "RT-EVD-FRT15-004-2",
+          "criterionId": "CRT-FRT15-004-2",
+          "subjectId": "APP-FRT15-001",
+          "revision": "AFTER-FRT15-004",
+          "present": false,
+          "value": null,
+          "basis": "missing-not-failed"
+        }
+      ],
+      "result": "Inconclusive",
+      "stopTrigger": "None",
+      "stepsAfterStop": 0,
+      "actualOperations": 0,
+      "owner": "SYNTH-RETEST-REVIEWER",
+      "recordedAt": "2026-09-16T22:00:00Z",
+      "limitation": "二つの供給欄だけを比較。実ScannerやBusiness Logicの動作試験は行っていない。",
+      "regressionScope": "同じ供給Scenarioの二条件だけ。全System非回帰ではない。",
+      "residualRiskId": "RES-FRT15-004",
+      "reassessmentId": "REA-FRT15-004"
+    },
+    {
+      "id": "RT-FRT15-005",
+      "findingId": "FND-FRT15-005",
+      "subjectId": "APP-FRT15-001",
+      "beforeRevision": "BEFORE-FRT15-005",
+      "changeReference": "CHG-FRT15-005",
+      "changedRevision": "AFTER-FRT15-005",
+      "changeMeaning": "authored-change-summary-not-real-change",
+      "scope": "current-supplied-scenario-only",
+      "method": "Static authored comparison",
+      "requiredMethod": "Static authored comparison",
+      "criteria": [
+        {
+          "id": "CRT-FRT15-005-1",
+          "field": "permission",
+          "expected": "read-summary"
+        },
+        {
+          "id": "CRT-FRT15-005-2",
+          "field": "auditReference",
+          "expected": "AUD-FRT15-EXPECTED"
+        }
+      ],
+      "observations": [
+        {
+          "id": "RT-EVD-FRT15-005-1",
+          "criterionId": "CRT-FRT15-005-1",
+          "subjectId": "APP-FRT15-001",
+          "revision": "AFTER-FRT15-005",
+          "present": true,
+          "value": "read-summary",
+          "basis": "authored-supplied-value"
+        },
+        {
+          "id": "RT-EVD-FRT15-005-2",
+          "criterionId": "CRT-FRT15-005-2",
+          "subjectId": "APP-FRT15-001",
+          "revision": "AFTER-FRT15-005",
+          "present": true,
+          "value": "AUD-FRT15-EXPECTED",
+          "basis": "authored-supplied-value"
+        }
+      ],
+      "result": "Passed",
+      "stopTrigger": "None",
+      "stepsAfterStop": 0,
+      "actualOperations": 0,
+      "owner": "SYNTH-RETEST-REVIEWER",
+      "recordedAt": "2026-09-16T22:00:00Z",
+      "limitation": "二つの供給欄だけを比較。実ScannerやBusiness Logicの動作試験は行っていない。",
+      "regressionScope": "同じ供給Scenarioの二条件だけ。全System非回帰ではない。",
+      "residualRiskId": "RES-FRT15-005",
+      "reassessmentId": "REA-FRT15-005"
+    },
+    {
+      "id": "RT-FRT15-006",
+      "findingId": "FND-FRT15-006",
+      "subjectId": "APP-FRT15-001",
+      "beforeRevision": "BEFORE-FRT15-006",
+      "changeReference": "CHG-FRT15-006",
+      "changedRevision": "AFTER-FRT15-006",
+      "changeMeaning": "authored-change-summary-not-real-change",
+      "scope": "current-supplied-scenario-only",
+      "method": "Static authored comparison",
+      "requiredMethod": "Static authored comparison",
+      "criteria": [
+        {
+          "id": "CRT-FRT15-006-1",
+          "field": "permission",
+          "expected": "read-summary"
+        },
+        {
+          "id": "CRT-FRT15-006-2",
+          "field": "auditReference",
+          "expected": "AUD-FRT15-EXPECTED"
+        }
+      ],
+      "observations": [
+        {
+          "id": "RT-EVD-FRT15-006-1",
+          "criterionId": "CRT-FRT15-006-1",
+          "subjectId": "APP-FRT15-001",
+          "revision": "AFTER-FRT15-006",
+          "present": true,
+          "value": "read-summary",
+          "basis": "authored-supplied-value"
+        },
+        {
+          "id": "RT-EVD-FRT15-006-2",
+          "criterionId": "CRT-FRT15-006-2",
+          "subjectId": "APP-FRT15-001",
+          "revision": "AFTER-FRT15-006",
+          "present": true,
+          "value": "AUD-FRT15-EXPECTED",
+          "basis": "authored-supplied-value"
+        }
+      ],
+      "result": "Stopped",
+      "stopTrigger": "Unexpected-input-symbol",
+      "stepsAfterStop": 0,
+      "actualOperations": 0,
+      "owner": "SYNTH-RETEST-REVIEWER",
+      "recordedAt": "2026-09-16T22:00:00Z",
+      "limitation": "二つの供給欄だけを比較。実ScannerやBusiness Logicの動作試験は行っていない。",
+      "regressionScope": "同じ供給Scenarioの二条件だけ。全System非回帰ではない。",
+      "residualRiskId": "RES-FRT15-006",
+      "reassessmentId": "REA-FRT15-006"
+    }
+  ],
+  "handoffs": [
+    {
+      "id": "HOF-FRT15-16",
+      "targetChapter": 16,
+      "findingIds": [
+        "FND-FRT15-001",
+        "FND-FRT15-002",
+        "FND-FRT15-003",
+        "FND-FRT15-004",
+        "FND-FRT15-005",
+        "FND-FRT15-006",
+        "FND-FRT15-007"
+      ],
+      "recordId": "FRT-2026-015",
+      "purpose": "対象・版・時刻・判断の必須Fieldと未観測Gap。",
+      "status": "planned-not-delivered",
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-FRT15-17",
+      "targetChapter": 17,
+      "findingIds": [
+        "FND-FRT15-001",
+        "FND-FRT15-002",
+        "FND-FRT15-003",
+        "FND-FRT15-004",
+        "FND-FRT15-005",
+        "FND-FRT15-006",
+        "FND-FRT15-007"
+      ],
+      "recordId": "FRT-2026-015",
+      "purpose": "検知の仮説と必要Evidence。検知成功の証明ではない。",
+      "status": "planned-not-delivered",
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-FRT15-21",
+      "targetChapter": 21,
+      "findingIds": [
+        "FND-FRT15-001",
+        "FND-FRT15-002",
+        "FND-FRT15-003",
+        "FND-FRT15-004",
+        "FND-FRT15-005",
+        "FND-FRT15-006",
+        "FND-FRT15-007"
+      ],
+      "recordId": "FRT-2026-015",
+      "purpose": "統制の受入条件と反証条件。",
+      "status": "planned-not-delivered",
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-FRT15-22",
+      "targetChapter": 22,
+      "findingIds": [
+        "FND-FRT15-001",
+        "FND-FRT15-002",
+        "FND-FRT15-003",
+        "FND-FRT15-004",
+        "FND-FRT15-005",
+        "FND-FRT15-006",
+        "FND-FRT15-007"
+      ],
+      "recordId": "FRT-2026-015",
+      "purpose": "改修BacklogのOwner・期限・依存。",
+      "status": "planned-not-delivered",
+      "executionAuthorized": false
+    },
+    {
+      "id": "HOF-FRT15-26",
+      "targetChapter": 26,
+      "findingIds": [
+        "FND-FRT15-001",
+        "FND-FRT15-002",
+        "FND-FRT15-003",
+        "FND-FRT15-004",
+        "FND-FRT15-005",
+        "FND-FRT15-006",
+        "FND-FRT15-007"
+      ],
+      "recordId": "FRT-2026-015",
+      "purpose": "残存Riskと判断Owner、次の再評価条件。",
+      "status": "planned-not-delivered",
+      "executionAuthorized": false
+    }
+  ],
+  "delegations": [
+    {
+      "id": "DELEGATION-FRT15-003",
+      "findingId": "FND-FRT15-003",
+      "scenarioId": "SCN-FRT15-003",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-003",
+      "scope": "current-supplied-scenario-only",
+      "holder": "SYNTH-RISK-OWNER",
+      "role": "Synthetic business risk owner",
+      "authorityKind": "Risk acceptance only",
+      "basis": "authored-business-risk-delegation",
+      "validFrom": "2026-09-13T00:00:00Z",
+      "validUntil": "2026-09-30T00:00:00Z",
+      "assessmentAuthorizationGranted": false,
+      "realDelegationIssued": false,
+      "limitation": "作成者が別欄に記述した教材上の業務受容権限。実権限の発行や実在性の証明ではない。"
+    },
+    {
+      "id": "DELEGATION-FRT15-006",
+      "findingId": "FND-FRT15-006",
+      "scenarioId": "SCN-FRT15-006",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-006",
+      "scope": "current-supplied-scenario-only",
+      "holder": "SYNTH-RISK-OWNER",
+      "role": "Synthetic business risk owner",
+      "authorityKind": "Risk acceptance only",
+      "basis": "authored-business-risk-delegation",
+      "validFrom": "2026-09-13T00:00:00Z",
+      "validUntil": "2026-09-30T00:00:00Z",
+      "assessmentAuthorizationGranted": false,
+      "realDelegationIssued": false,
+      "limitation": "作成者が別欄に記述した教材上の業務受容権限。実権限の発行や実在性の証明ではない。"
+    },
+    {
+      "id": "DELEGATION-FRT15-007",
+      "findingId": "FND-FRT15-007",
+      "scenarioId": "SCN-FRT15-007",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-007",
+      "scope": "current-supplied-scenario-only",
+      "holder": "SYNTH-RISK-OWNER",
+      "role": "Synthetic business risk owner",
+      "authorityKind": "Risk acceptance only",
+      "basis": "authored-business-risk-delegation",
+      "validFrom": "2026-09-13T00:00:00Z",
+      "validUntil": "2026-09-30T00:00:00Z",
+      "assessmentAuthorizationGranted": false,
+      "realDelegationIssued": false,
+      "limitation": "作成者が別欄に記述した教材上の業務受容権限。実権限の発行や実在性の証明ではない。"
+    }
+  ],
+  "temporaryReviews": [
+    {
+      "id": "TMP-EVD-FRT15-002",
+      "findingId": "FND-FRT15-002",
+      "scenarioId": "SCN-FRT15-002",
+      "subjectId": "APP-FRT15-001",
+      "subjectRevision": "BEFORE-FRT15-002",
+      "treatmentId": "TMP-FRT15-002",
+      "controlId": "CTRL-TMP-FRT15-002",
+      "scope": "current-supplied-scenario-only",
+      "reviewer": "SYNTH-TEMPORARY-REVIEWER",
+      "recordedAt": "2026-09-16T22:00:00Z",
+      "basis": "authored-temporary-plan-review",
+      "question": "Temporary案の利用Scopeは供給要件に対応した限定範囲として記載されているか。",
+      "requiredPlanScope": "current-authored-summary-only",
+      "reviewedPlanScope": "current-authored-summary-only",
+      "conclusion": "Limited plan scope reviewed",
+      "limitation": "Temporary案の供給記述だけを照合した。実適用・実緩和効果は未確認である。",
+      "actualOperations": 0,
+      "realMitigationEffectMeasured": false
+    }
+  ]
+}

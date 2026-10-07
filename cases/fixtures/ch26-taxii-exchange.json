@@ -1,0 +1,207 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "networkExecuted": false,
+  "caseId": "CASE-STIX26-DEMO",
+  "request": {
+    "method": "GET",
+    "url": "https://taxii.example/training/collections/82f9a9a5-9313-439f-9a20-a4291f9b19ab/objects/",
+    "accept": "application/taxii+json;version=2.1"
+  },
+  "collection": {
+    "id": "82f9a9a5-9313-439f-9a20-a4291f9b19ab",
+    "title": "SYNTH-Training Collection",
+    "description": "Offline fixture, not an available server or real permission.",
+    "can_read": true,
+    "can_write": false,
+    "media_types": [
+      "application/stix+json;version=2.1"
+    ]
+  },
+  "response": {
+    "status": 200,
+    "contentType": "application/taxii+json;version=2.1",
+    "envelope": {
+      "more": false,
+      "objects": [
+        {
+          "type": "threat-actor",
+          "spec_version": "2.1",
+          "id": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "labels": [
+            "synthetic-structure-only"
+          ],
+          "name": "SYNTH-Training Actor",
+          "description": "Independent fictional type example, not an actor attribution for CASE-2026-025.",
+          "threat_actor_types": [
+            "unknown"
+          ]
+        },
+        {
+          "type": "campaign",
+          "spec_version": "2.1",
+          "id": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "labels": [
+            "synthetic-structure-only"
+          ],
+          "name": "SYNTH-Training Campaign",
+          "description": "Independent fictional campaign, not a claim about the parent product."
+        },
+        {
+          "type": "malware",
+          "spec_version": "2.1",
+          "id": "malware--6b504777-6bcb-424b-870a-73e28d981fad",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "labels": [
+            "synthetic-structure-only"
+          ],
+          "name": "SYNTH-Training Malware Label",
+          "description": "Non-executable fictional label; no code or sample is provided.",
+          "is_family": false,
+          "malware_types": [
+            "unknown"
+          ]
+        },
+        {
+          "type": "infrastructure",
+          "spec_version": "2.1",
+          "id": "infrastructure--2d5912eb-2462-48a0-92e3-1c1f65f110fc",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "labels": [
+            "synthetic-structure-only"
+          ],
+          "name": "SYNTH-Training Infrastructure",
+          "description": "Fictional representation only; not a deployed service.",
+          "infrastructure_types": [
+            "unknown"
+          ]
+        },
+        {
+          "type": "domain-name",
+          "spec_version": "2.1",
+          "id": "domain-name--7471572f-90bd-5053-9550-edb807c1ab17",
+          "value": "relay-demo.example"
+        },
+        {
+          "type": "observed-data",
+          "spec_version": "2.1",
+          "id": "observed-data--907457b7-b097-45dc-8bf8-df7ba74f1ebc",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "labels": [
+            "synthetic-structure-only"
+          ],
+          "first_observed": "2026-10-06T00:00:00.000Z",
+          "last_observed": "2026-10-06T00:00:00.000Z",
+          "number_observed": 1,
+          "object_refs": [
+            "domain-name--7471572f-90bd-5053-9550-edb807c1ab17"
+          ]
+        },
+        {
+          "type": "indicator",
+          "spec_version": "2.1",
+          "id": "indicator--0ac09c72-7c9c-450f-a789-0389c726ba10",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "labels": [
+            "synthetic-structure-only"
+          ],
+          "name": "SYNTH-Training Pattern",
+          "description": "Fictional equality pattern; no detection effectiveness claim.",
+          "pattern": "[domain-name:value = 'relay-demo.example']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "valid_from": "2026-10-06T00:00:00.000Z",
+          "valid_until": "2026-10-07T00:00:00.000Z"
+        },
+        {
+          "type": "attack-pattern",
+          "spec_version": "2.1",
+          "id": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "labels": [
+            "synthetic-structure-only"
+          ],
+          "name": "SYNTH-Training Behavior",
+          "description": "Fictional vocabulary example, not an ATT&CK coverage claim."
+        },
+        {
+          "type": "relationship",
+          "spec_version": "2.1",
+          "id": "relationship--71fbba92-c181-45aa-9ae8-6be9310f509a",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "description": "Independent synthetic structure example only.",
+          "relationship_type": "attributed-to",
+          "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+          "target_ref": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4"
+        },
+        {
+          "type": "relationship",
+          "spec_version": "2.1",
+          "id": "relationship--fdaba7d7-b877-4d25-95af-3bcf1ce03087",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "description": "Independent synthetic structure example only.",
+          "relationship_type": "uses",
+          "source_ref": "threat-actor--f5b949d5-668a-4c36-a938-fbd5e8ba9dd4",
+          "target_ref": "malware--6b504777-6bcb-424b-870a-73e28d981fad"
+        },
+        {
+          "type": "relationship",
+          "spec_version": "2.1",
+          "id": "relationship--b4332286-4ab9-4647-91b8-596a3729d743",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "description": "Independent synthetic structure example only.",
+          "relationship_type": "uses",
+          "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+          "target_ref": "infrastructure--2d5912eb-2462-48a0-92e3-1c1f65f110fc"
+        },
+        {
+          "type": "relationship",
+          "spec_version": "2.1",
+          "id": "relationship--8637a454-e325-4b02-8916-5c277fda42d9",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "description": "Independent synthetic structure example only.",
+          "relationship_type": "uses",
+          "source_ref": "campaign--40efeb2d-c0a1-4573-a953-aaf1abeab51b",
+          "target_ref": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c"
+        },
+        {
+          "type": "relationship",
+          "spec_version": "2.1",
+          "id": "relationship--b65f4f93-74b5-470c-9510-2612246218ab",
+          "created": "2026-10-06T00:00:00.000Z",
+          "modified": "2026-10-06T00:00:00.000Z",
+          "lang": "en",
+          "description": "Independent synthetic structure example only.",
+          "relationship_type": "indicates",
+          "source_ref": "indicator--0ac09c72-7c9c-450f-a789-0389c726ba10",
+          "target_ref": "attack-pattern--79fb7e3f-8a2c-4678-9eab-e27daedcbd6c"
+        }
+      ]
+    }
+  },
+  "limitations": "A supplied response example, not an HTTP transaction, trust assertion, delivery receipt or action authorization."
+}

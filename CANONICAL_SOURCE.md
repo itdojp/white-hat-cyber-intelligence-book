@@ -26,15 +26,17 @@
 
 ```bash
 npm ci
+bundle install
 npm run check:docs-sync
 npm run sync:docs
-bundle install
 npm run build
 ```
 
 - `npm run check:docs-sync`: `scripts/sync_book_site.py`を使用して一時ディレクトリへ2回生成し、全生成ファイルのSHA-256一致と全追跡ファイルの非変更を確認する
-- `npm run sync:docs`: 許可された生成先`docs/`だけを削除し、正本と`site-pages.json`から再生成する
+- `npm run sync:docs`: 固定rendererを使用する第6章・第7章・第8章・第9章・第10章・第12章・第13章・第14章・第15章の公開前安全検査、および第II部横断対応表の検査に成功した場合だけ、許可された生成先`docs/`を削除し、正本と`site-pages.json`から再生成する
 - `npm run build`: `docs/`を生成し、Jekyllで`_site/`へbuildする
+
+`sync:docs`の公開前検査も`Gemfile.lock`のJekyll/Kramdownを使用するため、初回は`bundle install`を先に実行する。依存が未導入の場合は生成を開始せずに失敗する。`check:docs-sync`は一時生成物の決定性検査であり、公開前安全検査の代替ではない。
 
 固定済み`book-formatter` checkoutを使う場合は、`BOOK_FORMATTER_DIR`へpathを指定する。
 
@@ -76,11 +78,12 @@ RegistryのSchemaは`schemas/site-pages.schema.json`で管理する。新しい�
 
 共通layout、include、asset、schemaは、`.book-formatter/revision.json`に固定したrevisionから同期する。全対象ファイルについてGit blob SHAを検証する。
 
-共有`book.html`には、次の3つの決定的な局所変換を適用する。
+共有`book.html`には、次の4つの決定的な局所変換を適用する。
 
 1. 「GitHubで編集」リンクを生成済み`docs/`ではなく`page.source_path`の正本へ向け、`site.show_edit_link`で表示制御する。
 2. 実際には外部Fontを読み込んでいないため、不要なGoogle Fontsのpreconnect hintを除去する。
 3. Repository所有のfaviconをまだ配置していないため、404になるfaviconとapple-touch-iconのLinkを除去する。
+4. Repository所有のMermaid loaderとCSSを読み込む。固定版の描画ライブラリは図があるページだけで遅延読込みし、すべて同一サイトから配信する。
 
 `.book-formatter/revision.json`を局所変換一覧の機械可読な正本とし、変換前の上流Git blob SHA、変換名、変換後SHA-256を生成時の`_data/build-manifest.json`へ記録する。局所変換を追加・変更する場合は、本契約、revision manifest、generator、Book QA、第三者通知を同じPRで更新する。
 
@@ -92,3 +95,35 @@ RegistryのSchemaは`schemas/site-pages.schema.json`で管理する。新しい�
 - Repositoryには`docs/`や`_site/`をcommitしない
 
 Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設定の状態を確認した上で完了判定する。代表章はPhase 0完了前にDraftとして開始できるが、mergeはPhase 0のOperator Gate完了後とする。
+
+第16章の公開前安全検査も、第II部横断対応表の検査の直前、生成先削除の前に実行する。`check:chapter16`は四つの正本文書全体、合成JSONとSchema、直接親参照、Source、公開経路を有限検査する。共有Projection/Policy以外に構文解析器を持たず、未知の入力・欄・章構成変更は再レビューまでfail closedとする。
+
+第18章の公開前検査も、第II部横断対応表の検査と生成先削除の前に実行する。`check:chapter18`は本文、既存ART-06、Case、Source Noteの全体と、固定合成JSON、Schema、親参照、公開経路を扱う。有限の合成Queryは章固有の問いを比較するだけで、SIEMや任意Query言語ではない。構文と安全文法は共有Projection/Policyが所有する。
+
+第20章の`check:chapter20`も生成先削除前に実行する。五つの文書全体、ART-07/26、合成JSON/Schema、二Cutoffと六Claim、親19の非継承・未配達を検査する。構文は共有Projection、Action/Hostは共有Policyだけが所有する。検査不通過の入力を生成へ進めず、原時刻・来歴・Unknownを隠すために原本を変更しない。
+
+第21章の`check:chapter21`も生成先削除前に実行する。本文・ART-27・全欄Case・Sourceの四文書、閉Schema、十Scenarioと五層、親14/16/17/19/20の直接参照・非継承・未配達を検査する。Layer Aの有限比較であり、構文は共有Projection、Action/Hostは共有Policyだけが所有する。入力不足をPartial/Passedへ倒さず、実有効性や実権限を認定しない。
+
+## Mermaidの公開図（Issue #160）
+
+`publication/mermaid/`が共通loaderと表示CSSを所有する。`scripts/publication_assets.py`は`npm ci --ignore-scripts`で導入した`@mermaid-js/tiny@12.0.0`の配布物を版・SHA-256で検証し、生成先の`assets/`へコピーする。formatterの固定commit/上流blobは変更しない。`package-lock.json`のintegrityと生成manifestの`publicationAssets`で追跡する。依存の要件に合わせ、Node.jsは22.12以降（CIは24）とする。
+
+正本のMermaid fenceは書き換えず、Jekyll/Kramdownの`code.language-mermaid`をブラウザでSVGへ段階的に拡張する。描画後も元コードは展開可能な`details`へ保持する。JS無効時や失敗時は元コードと文章代替を残す。本文の見出し、リンク、文章代替、Policy検査surfaceは変更しない。`flowchart`/`graph`のLR/RL/TD/TB/BTを対象とし、構文解析は公式rendererだけが所有する。図内設定、callback/link、図内CSS、resource-bearing shape、`br`以外のHTML、他のdiagram typeは本契約の対象外で、公開前browser gateを失敗させる。
+
+`npm run check:mermaid`は版・integrity・資産・layout・QA接続を検査する。`npm run check:mermaid-browser`はbuild後の全公開図をChromeで描画し、desktop/mobile、複数図、方向、日本語、スクロール/全体表示、JS無効、失敗時の元コード保持を確認する。Book QAとPagesはこのgateをartifact upload前に実行する。ローカルでも既設のChrome/Chromiumが必要で、`BOOK_BROWSER_BIN`で明示できる。browser本体をnpm lifecycleやテストから取得しない。`BOOK_BROWSER_TMPDIR`はworkspace内の短いpathへ設定可能（Linuxのprofile socket長制限対策）。詳細は`publication/mermaid/README.md`を参照する。
+
+第22章の`check:chapter22`も生成先削除前に一回実行する。本文・ART-28・全欄Case・Sourceの四文書、閉Schema、十Metric・八Item・七Statusを検査し、親21の003/010の旧Failedと新Passed、未配達、期限切れの実権限を保持する。数値の計算、供給Verification、実効果の判断を分離する有限Layer Aであり、章独自のMarkdown/HTML解析は追加しない。
+
+第III部横断読解の`check:part03`は第II部横断検査の直前、生成先削除前に一回実行する。固定七教材の参照と非継承・未配達、および新頁全体の有限公開面を検査し、各章の意味判定を複製しない。構文と安全文法は共有Projection/Policyだけが所有する。
+
+## 第23章の公開前検査
+
+`python3 scripts/check_chapter23_contract.py --no-regressions`は同期前に全四文書を共有Publication Projectionへ渡し、Policy 1.2.0で検査する。有限Layer AはART-29のDecision、回答条件、Collection多対多、Source/Evidence、Gap、期限、未配達Handoffを検証する。構文・安全文法・現実の合法性の認定は所有しない。完全検査は`npm run check:chapter23`で実行する。
+
+第24章の`check:chapter24`も生成先削除前に一回実行する。本文・ART-30・全欄Case・Sourceの四文書、閉Schema、五Source・九Item・五Transform・四Claim・十一Evaluationを検査する。Hashは供給UTF-8表現、意味判定は有限Layer Aのみで、構文は共有Projection、Action/Hostは共有Policyに委譲する。実収集、自然言語の真偽、実権限、法的証拠能力を認定しない。
+
+第26章の`check:chapter26`は生成先削除前に一回実行する。本文・二Template・全欄Case・Sourceの五文書と、Product / 独立STIX / offline TAXIIの三JSON・各閉Schemaを検査する。一般STIX/Pattern/URL/rendererは実装せず、有限Layer Aと共有Projection1.1.0 / Policy1.2.0を使う。親25の判断・Decision、23/24の方法参照と未配達を保持し、独立構造例を親Evidenceへ採用しない。
+
+第IV部横断読解の`check:part04`は第III部横断検査の直前、生成先削除前に一回実行する。固定した第23〜26章と独立交換例の参照・非継承・未配達・有限境界、および新頁全体の公開fieldを検査する。各章の内部評価や一般STIX/TAXII適合性を再実装せず、構文と安全文法は共有Projection/Policyへ委譲する。
+
+第27章は`scripts/check_chapter27_contract.py`がART-31の合成記録と全公開面を共有Publication Projection / Policyへ渡す。`sync:docs`は生成先削除前に`check_chapter27_contract.py --no-regressions`を実行し、未知入力・参照/型/状態漂流を拒否する。

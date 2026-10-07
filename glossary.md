@@ -18,6 +18,8 @@
 | Decision Requirement | 誰が、何を、いつまでに、どの程度の不確実性で判断するかを定義した問い |
 | Data Asset | 目的、Owner、分類、保持、共有条件を持ち、Business Outcomeまたは判断を支えるDataの集合 |
 | Evidence | 問いとの関係、取得条件、完全性、限界を説明できる観測記録 |
+| Evidence Manifest | EvidenceのID、実ByteのHash、生成元、Time zone、変換履歴、保持、限界を記録する目録。真実性や法的証拠能力の認定ではない |
+| Lab Safety State | ART-18の八状態による合成モデルの履歴。Safe / Unsafe / Inconclusiveの判定や実行許可とは別の軸 |
 | Evidence Requirement | 判断、Threat Hypothesis、ControlまたはGapを評価するために、最小十分条件と過剰収集禁止境界を定めたEvidenceへの問い |
 | Entry Point | Exposureのうち、Request、Identity、DataまたはControl FlowがSystemへ入る具体的な接点 |
 | Exposure | Asset、FlowまたはBoundaryが一定条件で作用を受け得る状態。VulnerabilityまたはFindingの存在を自動的に意味しない |
@@ -45,3 +47,209 @@
 | Control Plane | Identity、Policy、Configuration、Deployment等を通じてSystemの振る舞いを変更できる管理面 |
 | Work Role | NICE Frameworkにおける仕事のGrouping。Job titleまたは個人を意味しない |
 | 確信度 | 分析判断を支える証拠品質、整合性、情報ギャップ、代替仮説の強さに対する評価 |
+
+## 第5章の用語
+
+| 用語 | 本書での意味 |
+|---|---|
+| ATT&CK Behavior Map | ART-15。条件付きBehavior、根拠、版、Data、Evidence、GapをDecisionへ渡す記録 |
+| Mapping basis | Hypothesized / Source-reported / Observed / Reproducedの根拠分類。自組織観測と公開報告を区別する |
+| Catalog coverage | 選定した行動候補に対する対応付けの範囲。Detection有効性ではない |
+| Observable coverage | 指定Event・Field・期間について観測できる範囲 |
+| Validated coverage | 指定した条件・版・Testで期待Evidenceを確認した範囲 |
+| Detection Strategy | 特定Techniqueに対する高位の検知方針。プラットフォーム向けAnalyticを束ねる |
+
+定義の出典、Statusの有限契約、限界は[第5章](manuscript/05-attack-behavior.md)を参照する。
+
+## 第6章の用語
+
+| 用語 | 本書での意味 |
+|---|---|
+| Signal Flow | 操作、認可、状態変化、Event、収集、Evidenceを判断へ結ぶ追跡構造 |
+| Event lifecycle | 生成、収集、保持、検索、検証を別の根拠で確認する観測経路 |
+| Clock uncertainty | 表示時刻から真の時刻がずれ得る範囲。UTC表記への統一では解消しない |
+| Queryable | 指定時点・期間・必須Fieldで検索した根拠があること。検知有効性ではない |
+
+六Statusの有限契約と限界は[第6章](manuscript/06-observable-systems.md)を参照する。
+
+## 第7章の用語
+
+| 用語 | 本書での意味 |
+|---|---|
+| Technical severity | 脆弱性の技術的な性質と重大度。事業上の修正順位とは別 |
+| Deployment / Affected | 導入有無と、版・条件が影響範囲に該当するかの別々の判断 |
+| Reachability | 指定したPath・前提条件における到達性。露出面だけでは確定しない |
+| Probability signal | 定義された対象・期間に関する推定入力。EPSSを個別組織の侵害確率に置き換えない |
+| Compensating control | リスクを抑える代替統制。存在、検証範囲、有効期限を分離する |
+| Required action applicability | 公開要請・義務が当該環境に適用されるかの確認状態。Catalog掲載とは別 |
+| Residual risk | 処置後または判断待ちに残るリスク。Ownerと再評価条件を伴う |
+
+指標の一次資料、固定Snapshot、有限教材と実務への転用限界は[第7章](manuscript/07-vulnerability-prioritization.md)を参照する。
+
+## 第9章の用語
+
+| 用語 | 本書での意味 |
+|---|---|
+| RoE | 確認済みの許可をScope・Method・Time・Data・Stop等の実施条件へ具体化する記録。権限の発生源ではない |
+| Excluded by default | 未記載の対象・作用は許可せず、追加時に再審査する原則 |
+| Technical completion | 対象件数、予算、停止、Cleanup等の作業記録がそろった状態 |
+| Decision completion | 必要EvidenceまたはGap、代替説明、責任者の受入と再評価がそろった状態 |
+| Restart authority | 停止原因の解消と残存リスクを確認し、同じ版の再開を判断する責任。Cleanupとは別 |
+
+[第9章](manuscript/09-engagement-roe.md)の有限教材は実署名・通知・隔離・法的承認を検証しない。
+
+## 第10章の用語
+
+| 用語 | 本書での意味 |
+|---|---|
+| Attack Surface Register | Sourceから候補・所有Confidence・次Actionの不足条件まで追跡する判断記録。脆弱性一覧ではない |
+| Collection class | Passive / Active / Authenticatedの三つ。Source classと実際の学習操作を別に記録 |
+| Provenance | 原典、派生、取得方法、時点、変換、Hash対象、取扱いと限界の記録 |
+| Owner confirmed | 対象IDと所有者の根拠を限定して照合した検証状態。実行許可ではない |
+| Unverified | 所有未確認を示す属性。五Verification statesとは別 |
+
+[第10章](manuscript/10-recon-osint-boundary.md)は完全合成・offlineで、Source真正性・法的承認・実稼働を保証しない。
+
+## 第12章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Principal | 権限評価の主体。本教材はHuman/Device/Service/Workloadの四分類を使う |
+| Identity Attack Path Review | 必要条件とEvidenceを持つ権限関係の判断記録。侵害手順ではない |
+| Delegation | 委任元・先・対象・Action・制限を持つ関係。任意権限の付与ではない |
+| Issuer / Audience / Relying party | 発行者、意図した受入先、実際に検証・利用する受入側を分離する欄 |
+| Dormant grant | 利用されていないという仮定と残るGrant。取消済みや悪意を意味しない |
+| Broken path | 特定Pathに必要な条件の反証。未知の別経路の不存在ではない |
+| Synthetic replay | 第12章では供給合成EventのField照合だけ。認証要求の再送はしない |
+
+[第12章](manuscript/12-enterprise-identity.md)の六状態と観測経路のCoverageを混同しない。
+
+## 第13章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Build Plane | SourceとDependencyをArtifactへ結ぶ処理と権限の境界 |
+| Provenance | Artifactの作成主体・過程・入力についての記録。存在だけでは真正性を保証しない |
+| SBOM summary | 本章ではComponentの供給要約。SPDX適合や完全性を主張しない |
+| Promotion plan | 環境間のArtifact移行計画。本CaseはPlanned-onlyで未承認 |
+| ART21 Verified | 同一Chainと版の有限summary比較の一致。実署名・実安全・実許可ではない |
+
+[第13章](manuscript/13-platform-supply-chain.md)の五状態をSLSA levelや親の観測状態へ読み替えない。
+
+## 第14章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Minimum evidence question | 対象ID・版と必要条件を限定し、十分性と不足を先に定める問い |
+| ART22 Supported | 供給資料の二条件が支持された結果。実影響・安全性・許可とは別 |
+| Not performed | 実施有無の欄。本章ではResultをInconclusiveとし、第七Resultにしない |
+| Residual check | Cleanupとは別のScope・確認者・Evidenceによる残存確認。本教材の値は実測でない |
+| ART22 Complete | 読解記録の整理と確認が揃うこと。業務上の問題の解決とは別 |
+
+[第14章](manuscript/14-minimal-impact-validation.md)ではResult、実施有無、記録完了を分ける。
+
+## 第15章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Finding | 対象・条件・根拠・判断を追跡できる報告単位 |
+| Retest | 変更後の対象版で受入条件を再確認する記録。Scannerの要約だけでは完了しない |
+| Risk acceptance | 権限・Scope・期限・条件を持つ残存リスクの受容。評価の実行許可とは別 |
+| Compensating control | 残る条件を別の手段で扱う統制。恒久改修と同一視しない |
+| ART04 Closed | 十分なRetestまたは明示的な有効な受容を根拠にした記録の終了。修正済みやリスクゼロとは別 |
+
+[第15章](manuscript/15-findings-retest-risk.md)ではStatusとResult、SeverityとPriority、受容と実施許可を分ける。
+
+## 第16章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Telemetry Coverage | 特定の対象・版・問いに必要な観測の根拠と不足 |
+| Evidence Readiness | 判断に必要なデータと取扱条件の準備。法的適格性の認定ではない |
+| Clock uncertainty | 時刻比較で考慮する不確かさ。到着順を発生順にしない |
+| ART24 Validated | 供給合成入力の限定比較の成功。実収集・検知・権限とは別 |
+| Not observed | 根拠がある限定観測Window内の未観測。侵害の不存在ではない |
+
+[第16章](manuscript/16-telemetry-evidence-readiness.md)では七状態と相関品質、親参照とEvidence受領を分ける。
+
+## 第18章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Hunt Hypothesis | 対象と観測、支持・反証条件を持つ探索の問い |
+| Negative Finding | 根拠あるCoverageと固定した対象・期間・Queryに限る未観測 |
+| Pivot | 次の問いへ進む条件付き接続。無断のScope拡大ではない |
+| ART06 Supported | 供給合成入力が限定仮説と整合する判断。侵害確定ではない |
+| ART06 Inconclusive | 観測条件や比較目的の不足による判断保留 |
+
+[第18章](manuscript/18-threat-hunting.md)で五ResultとCoverage、代替説明、再評価を接続する。
+
+## 第19章の用語
+
+| Term | 本書での意味 |
+|---|---|
+| Incident Candidate | 判断主体が宣言基準と比較すべき候補 |
+| Incident Declaration | Owner・Reason・Timestampと基準に結び付く宣言判断 |
+| Confirmed Scope | 指定対象・版・Windowの供給Evidenceで確認した範囲 |
+| Unknown Scope | 観測不足などにより結論を出せない範囲。除外ではない |
+| ART25 Closed | 限定した復旧検証と残余リスクの担当付き閉鎖。改善完了ではない |
+| Reopened | 旧閉鎖を保持し、新Evidenceに基づいて再開する判断 |
+
+[第19章](manuscript/19-incident-response.md)では分類・重大度・優先度・状態を分離する。
+
+## 第20章 DFIRの記録語彙
+
+| 用語 | 本書での意味 |
+|---|---|
+| Evidence cut-off | 判断へ使える入力の締切。原時刻だけでなく利用可能時点を扱う |
+| Clock uncertainty interval | 供給した精度・drift等の総不確かさを含む時刻幅。確信度の百分率ではない |
+| Event identity / receipt | 出来事の識別と受領記録の区別。同じEventの再送もReceiptを保持する |
+| Root condition hypothesis | 結果を可能にした根底の条件についての仮説。Triggerや相関と同義ではない |
+| Contradicted | 特定の主張が根拠と矛盾すること。別の原因の証明やEventの削除ではない |
+
+[第20章](manuscript/20-dfir-timeline-causality.md)と[ART-26](templates/root-cause-analysis.md)で使用する。
+
+## 第21章の検証語彙
+
+| 用語 | 本書での意味 |
+|---|---|
+| Control objective | 特定の対象・版・条件でControlに期待する機能 |
+| Atomic scenario | 一層の限定した問いの比較。未選択層をPassedにしない |
+| End-to-End scenario | 同一対象・版・Traceの層間接続を確認する供給比較 |
+| Observed partial | 事前定義した範囲の部分充足。nullや未観測と別 |
+| Failure class | 改善先の問いを分類する語彙。責任やRoot Causeの認定ではない |
+| Retest comparability | 旧結果を保持し、問い・対象・正常系と変更条件を明示すること |
+
+[第21章](manuscript/21-purple-team-validation.md)と[ART-27](templates/control-validation-plan.md)で使用する。
+
+## 第22章の測定・改善語彙
+
+| 用語 | 本書での意味 |
+|---|---|
+| Metric specification | 判断目的、定義、式、単位、母集団、Window、根拠と品質を一緒に記す測定条件 |
+| Goodhart risk | 指標の目標化により、本来の判断目的との関係が弱まる危険 |
+| Telemetry / Detection / Evidence debt | 観測条件、検知比較、判断根拠のそれぞれに残る不足 |
+| Verified / Accepted | 根拠に結び付いた受入条件の照合と、期限・条件付きの残存Risk判断。互いの代わりにしない |
+| Metric retirement | 判断目的を失った指標の廃止。旧値・理由・代替先を保持する |
+
+[第22章](manuscript/22-measurement-improvement.md)と[ART-28](templates/security-improvement-backlog.md)で使用する。有限供給記録の計算は、実効果や実権限の認定ではない。
+
+## Intelligence Requirement / Collection Requirement
+
+Intelligence Requirementは判断に必要な不確実性を減らす問い、Collection Requirementは不足を埋めるために必要な情報の種類と取得・利用条件を定める要求。本書では回答条件とDeliverableを区別する。[第23章](manuscript/23-intelligence-requirements.md)を参照。
+
+## 第24章の用語
+
+- **Source / Item / Claim:** 発行・観測主体、版と取得済み表現、対象と条件を伴う個別主張を分ける。
+- **Observation group:** 本教材で同じ根底の観測を束ねるID。別URLや訳文を新しい独立観測にしない。
+- **Evidence use:** Direct evidence / Context / Lead / Unverified / Excludedという本書の有限用途。法的証拠区分ではない。
+
+## 第26章の用語
+
+- **CTI Product:** 要求に対する判断と根拠、不確実性、読者、期限を結ぶ成果物。交換形式だけでは成立しない。
+- **Product expiry / Correction:** 配布対象から外す期限と、訂正理由・影響判断を伴う更新。STIX Objectの版やrevocationとは別。
+- **Sharing boundary:** 再共有の相手の範囲。分類、ライセンス、暗号化、保持、技術操作の許可とは区別する。
+
+## AI支援の境界（第27章）
+
+Instruction boundaryは指示と出自付きDataの扱いの境界、Excessive Agencyは必要以上の機能・権限・自律性に関するリスクである。ComponentのDeclared / Observed / Validated / Restricted / Disabled / Unknownは本書の六状態で、Lab八状態や外部標準の適合Levelとは別である。[第27章](manuscript/27-ai-agent-security.md)を参照。

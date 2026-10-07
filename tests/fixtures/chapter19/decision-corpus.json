@@ -1,0 +1,1048 @@
+{
+  "schemaVersion": "1.0.0",
+  "decisionVersion": "1.0.0",
+  "caseCount": 60,
+  "oracle": "Independently authored literal outcomes; canonical inputs are reusable supplied data, never sources of expected output. No runtime oracle generation.",
+  "cases": [
+    {
+      "id": "ICHECK19-001",
+      "baseCaseId": "ICASE19-001",
+      "patches": [],
+      "expected": {
+        "status": "Suspected",
+        "gaps": []
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-002",
+      "baseCaseId": "ICASE19-002",
+      "patches": [],
+      "expected": {
+        "status": "Declared",
+        "gaps": []
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-003",
+      "baseCaseId": "ICASE19-003",
+      "patches": [],
+      "expected": {
+        "status": "Contained",
+        "gaps": []
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-004",
+      "baseCaseId": "ICASE19-004",
+      "patches": [],
+      "expected": {
+        "status": "Investigating",
+        "gaps": []
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-005",
+      "baseCaseId": "ICASE19-005",
+      "patches": [],
+      "expected": {
+        "status": "Recovering",
+        "gaps": []
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-006",
+      "baseCaseId": "ICASE19-006",
+      "patches": [],
+      "expected": {
+        "status": "Closed",
+        "gaps": []
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-007",
+      "baseCaseId": "ICASE19-007",
+      "patches": [],
+      "expected": {
+        "status": "Reopened",
+        "gaps": []
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-008",
+      "baseCaseId": "ICASE19-008",
+      "patches": [],
+      "expected": {
+        "status": "Suspected",
+        "gaps": [
+          "declaration-owner-reason-time-criteria"
+        ]
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-009",
+      "baseCaseId": "ICASE19-009",
+      "patches": [],
+      "expected": {
+        "status": "Suspected",
+        "gaps": [
+          "declaration-owner-reason-time-criteria"
+        ]
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-010",
+      "baseCaseId": "ICASE19-010",
+      "patches": [],
+      "expected": {
+        "status": "Suspected",
+        "gaps": []
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-011",
+      "baseCaseId": "ICASE19-011",
+      "patches": [],
+      "expected": {
+        "status": "Declared",
+        "gaps": [
+          "containment-not-validated"
+        ]
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-012",
+      "baseCaseId": "ICASE19-012",
+      "patches": [],
+      "expected": {
+        "status": "Recovering",
+        "gaps": [
+          "recovery-not-validated"
+        ]
+      },
+      "purpose": "Independent literal status/gap expectation for educational contrast."
+    },
+    {
+      "id": "ICHECK19-013",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "severity"
+          ],
+          "value": "high"
+        },
+        {
+          "path": [
+            "priority"
+          ],
+          "value": "routine"
+        }
+      ],
+      "expected": {
+        "status": "Declared",
+        "gaps": []
+      },
+      "purpose": "Severity/priority independent of status."
+    },
+    {
+      "id": "ICHECK19-014",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "decision",
+            "requested"
+          ],
+          "value": "Investigating"
+        },
+        {
+          "path": [
+            "analysisId"
+          ],
+          "value": "EV-IR19-003-ANALYSIS"
+        },
+        {
+          "path": [
+            "containment"
+          ],
+          "value": null
+        }
+      ],
+      "expected": {
+        "status": "Investigating",
+        "gaps": []
+      },
+      "purpose": "Investigation need not wait for containment."
+    },
+    {
+      "id": "ICHECK19-015",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "containment",
+            "authority",
+            "owner"
+          ],
+          "value": ""
+        }
+      ],
+      "expected": {
+        "status": "Declared",
+        "gaps": [
+          "containment-authority"
+        ]
+      },
+      "purpose": "Authority owner required."
+    },
+    {
+      "id": "ICHECK19-016",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "preservation"
+          ],
+          "value": null
+        }
+      ],
+      "expected": {
+        "status": "Declared",
+        "gaps": [
+          "preservation-before-containment"
+        ]
+      },
+      "purpose": "Missing preservation deferred."
+    },
+    {
+      "id": "ICHECK19-017",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "containment",
+            "rollback"
+          ],
+          "value": ""
+        }
+      ],
+      "expected": {
+        "status": "Declared",
+        "gaps": [
+          "containment-impact-rollback"
+        ]
+      },
+      "purpose": "Rollback required."
+    },
+    {
+      "id": "ICHECK19-018",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "decision",
+            "owner"
+          ],
+          "value": ""
+        }
+      ],
+      "expected": {
+        "status": "Suspected",
+        "gaps": [
+          "decision-owner-or-reason"
+        ]
+      },
+      "purpose": "Decision owner required."
+    },
+    {
+      "id": "ICHECK19-019",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "decision",
+            "reason"
+          ],
+          "value": " "
+        }
+      ],
+      "expected": {
+        "status": "Suspected",
+        "gaps": [
+          "decision-owner-or-reason"
+        ]
+      },
+      "purpose": "Whitespace not a reason."
+    },
+    {
+      "id": "ICHECK19-020",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "declaration",
+            "at"
+          ],
+          "value": "2026-09-01T12:00:00Z"
+        }
+      ],
+      "expected": {
+        "status": "Suspected",
+        "gaps": [
+          "declaration-owner-reason-time-criteria"
+        ]
+      },
+      "purpose": "Future declaration cannot support present decision."
+    },
+    {
+      "id": "ICHECK19-021",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "containment",
+            "authority",
+            "expiresAt"
+          ],
+          "value": "2026-09-01T10:14:00Z"
+        }
+      ],
+      "expected": {
+        "status": "Declared",
+        "gaps": [
+          "containment-authority"
+        ]
+      },
+      "purpose": "Expired synthetic approval."
+    },
+    {
+      "id": "ICHECK19-022",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "preservation",
+            "at"
+          ],
+          "value": "2026-09-01T10:16:00Z"
+        }
+      ],
+      "expected": {
+        "status": "Declared",
+        "gaps": [
+          "preservation-before-containment"
+        ]
+      },
+      "purpose": "Preservation after action not accepted."
+    },
+    {
+      "id": "ICHECK19-023",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "containment",
+            "authority",
+            "asset"
+          ],
+          "value": "SYN-APP-B"
+        }
+      ],
+      "expected": {
+        "errorContains": "action authority scope binding"
+      },
+      "purpose": "Approval subject mismatch."
+    },
+    {
+      "id": "ICHECK19-024",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "declaration",
+            "criteriaId"
+          ],
+          "value": "EV-UNKNOWN"
+        }
+      ],
+      "expected": {
+        "errorContains": "unresolved evidence reference"
+      },
+      "purpose": "Unresolved evidence."
+    },
+    {
+      "id": "ICHECK19-025",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "declaration",
+            "criteriaId"
+          ],
+          "value": "EV-IR19-002-CONSENT"
+        }
+      ],
+      "expected": {
+        "errorContains": "evidence kind/asset binding"
+      },
+      "purpose": "Event not declaration criterion."
+    },
+    {
+      "id": "ICHECK19-026",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "evidence",
+            0,
+            "availableAt"
+          ],
+          "value": "2026-09-01T12:00:00Z"
+        }
+      ],
+      "expected": {
+        "errorContains": "evidence subject/revision/scope/window/availability"
+      },
+      "purpose": "Future evidence rejected."
+    },
+    {
+      "id": "ICHECK19-027",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "evidence",
+            0,
+            "revision"
+          ],
+          "value": "OTHER-REV"
+        }
+      ],
+      "expected": {
+        "errorContains": "evidence subject/revision/scope/window/availability"
+      },
+      "purpose": "Revision mismatch."
+    },
+    {
+      "id": "ICHECK19-028",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "evidence",
+            1,
+            "id"
+          ],
+          "value": "EV-IR19-002-CONSENT"
+        }
+      ],
+      "expected": {
+        "errorContains": "duplicate evidence ID"
+      },
+      "purpose": "Duplicate evidence."
+    },
+    {
+      "id": "ICHECK19-029",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "scope",
+            "unknown"
+          ],
+          "value": [
+            "SYN-APP-A",
+            "SYN-DATA-D"
+          ]
+        }
+      ],
+      "expected": {
+        "errorContains": "disjoint complete scope inventory"
+      },
+      "purpose": "Confirmed cannot also be unknown."
+    },
+    {
+      "id": "ICHECK19-030",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "scope",
+            "unknown"
+          ],
+          "value": []
+        }
+      ],
+      "expected": {
+        "errorContains": "disjoint complete scope inventory"
+      },
+      "purpose": "Unknown may not disappear."
+    },
+    {
+      "id": "ICHECK19-031",
+      "baseCaseId": "ICASE19-001",
+      "patches": [
+        {
+          "path": [
+            "decision",
+            "requested"
+          ],
+          "value": "Closed"
+        }
+      ],
+      "expected": {
+        "errorContains": "finite educational transition"
+      },
+      "purpose": "Candidate cannot skip to closure."
+    },
+    {
+      "id": "ICHECK19-032",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "decision",
+            "at"
+          ],
+          "value": "2026-02-30T11:00:00Z"
+        }
+      ],
+      "expected": {
+        "errorContains": "UTC timestamp"
+      },
+      "purpose": "Impossible calendar date."
+    },
+    {
+      "id": "ICHECK19-033",
+      "baseCaseId": "ICASE19-006",
+      "patches": [
+        {
+          "path": [
+            "closure",
+            "residualRisk"
+          ],
+          "value": ""
+        }
+      ],
+      "expected": {
+        "status": "Recovering",
+        "gaps": [
+          "closure-validation-residual-risk"
+        ]
+      },
+      "purpose": "Residual risk required."
+    },
+    {
+      "id": "ICHECK19-034",
+      "baseCaseId": "ICASE19-006",
+      "patches": [
+        {
+          "path": [
+            "evidence",
+            9,
+            "outcome"
+          ],
+          "value": "failed"
+        }
+      ],
+      "expected": {
+        "status": "Recovering",
+        "gaps": [
+          "recovery-not-validated"
+        ]
+      },
+      "purpose": "Failed restoration validation."
+    },
+    {
+      "id": "ICHECK19-035",
+      "baseCaseId": "ICASE19-007",
+      "patches": [
+        {
+          "path": [
+            "previous",
+            "closure"
+          ],
+          "value": null
+        }
+      ],
+      "expected": {
+        "errorContains": "prior closure validation/residual risk"
+      },
+      "purpose": "Reopen retains prior validated closure."
+    },
+    {
+      "id": "ICHECK19-036",
+      "baseCaseId": "ICASE19-007",
+      "patches": [
+        {
+          "path": [
+            "evidence",
+            10,
+            "availableAt"
+          ],
+          "value": "2026-09-01T10:10:00Z"
+        }
+      ],
+      "expected": {
+        "status": "Closed",
+        "gaps": [
+          "reopen-new-evidence-owner-time-history"
+        ]
+      },
+      "purpose": "Evidence must become available after closure."
+    },
+    {
+      "id": "ICHECK19-037",
+      "baseCaseId": "ICASE19-007",
+      "patches": [
+        {
+          "path": [
+            "reopening",
+            "newEvidenceId"
+          ],
+          "value": "EV-IR19-007-USE"
+        }
+      ],
+      "expected": {
+        "errorContains": "evidence kind/asset binding"
+      },
+      "purpose": "Wrong evidence type for reopen."
+    },
+    {
+      "id": "ICHECK19-038",
+      "baseCaseId": "ICASE19-007",
+      "patches": [
+        {
+          "path": [
+            "reopening",
+            "closedDecisionId"
+          ],
+          "value": "OTHER-CLOSED"
+        }
+      ],
+      "expected": {
+        "status": "Closed",
+        "gaps": [
+          "reopen-new-evidence-owner-time-history"
+        ]
+      },
+      "purpose": "Prior closure link exact."
+    },
+    {
+      "id": "ICHECK19-039",
+      "baseCaseId": "ICASE19-007",
+      "patches": [
+        {
+          "path": [
+            "reopening",
+            "owner"
+          ],
+          "value": ""
+        }
+      ],
+      "expected": {
+        "status": "Closed",
+        "gaps": [
+          "reopen-new-evidence-owner-time-history"
+        ]
+      },
+      "purpose": "Reopen owner required."
+    },
+    {
+      "id": "ICHECK19-040",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "unexpected"
+          ],
+          "value": true
+        }
+      ],
+      "expected": {
+        "errorContains": "additional property"
+      },
+      "purpose": "Unknown field fail closed."
+    },
+    {
+      "id": "ICHECK19-041",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "containment",
+            "actualExecuted"
+          ],
+          "value": 0
+        }
+      ],
+      "expected": {
+        "errorContains": "oneOf matched 0 branches"
+      },
+      "purpose": "Zero is not false."
+    },
+    {
+      "id": "ICHECK19-042",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "containment",
+            "destructive"
+          ],
+          "value": true
+        }
+      ],
+      "expected": {
+        "errorContains": "oneOf matched 0 branches"
+      },
+      "purpose": "Destructive action excluded."
+    },
+    {
+      "id": "ICHECK19-043",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "containment",
+            "authority",
+            "realAuthority"
+          ],
+          "value": true
+        }
+      ],
+      "expected": {
+        "errorContains": "oneOf matched 0 branches"
+      },
+      "purpose": "No real authority."
+    },
+    {
+      "id": "ICHECK19-044",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "evidence",
+            6,
+            "availableAt"
+          ],
+          "value": "2026-09-01T10:14:00Z"
+        }
+      ],
+      "expected": {
+        "status": "Declared",
+        "gaps": [
+          "containment-not-validated"
+        ]
+      },
+      "purpose": "Validation before action is not effectiveness evidence."
+    },
+    {
+      "id": "ICHECK19-045",
+      "baseCaseId": "ICASE19-006",
+      "patches": [
+        {
+          "path": [
+            "recovery",
+            "owner"
+          ],
+          "value": ""
+        }
+      ],
+      "expected": {
+        "status": "Recovering",
+        "gaps": [
+          "recovery-entry-criteria"
+        ]
+      },
+      "purpose": "Recovery owner required."
+    },
+    {
+      "id": "ICHECK19-046",
+      "baseCaseId": "ICASE19-006",
+      "patches": [
+        {
+          "path": [
+            "closure",
+            "dueAt"
+          ],
+          "value": "2026-09-01T11:00:00Z"
+        }
+      ],
+      "expected": {
+        "status": "Recovering",
+        "gaps": [
+          "closure-validation-residual-risk"
+        ]
+      },
+      "purpose": "Residual follow-up must be future."
+    },
+    {
+      "id": "ICHECK19-047",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "containment",
+            "authority",
+            "approvedAt"
+          ],
+          "value": "2026-09-01T10:16:00Z"
+        }
+      ],
+      "expected": {
+        "errorContains": "containment/approval chronology"
+      },
+      "purpose": "Approval after action rejected."
+    },
+    {
+      "id": "ICHECK19-048",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "evidence",
+            2,
+            "outcome"
+          ],
+          "value": "unknown"
+        }
+      ],
+      "expected": {
+        "errorContains": "confirmed scope requires bounded observation"
+      },
+      "purpose": "Unconfirmed asset cannot be labelled confirmed."
+    },
+    {
+      "id": "ICHECK19-049",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "evidence",
+            3,
+            "outcome"
+          ],
+          "value": "unknown"
+        }
+      ],
+      "expected": {
+        "errorContains": "excluded scope requires bounded exclusion evidence"
+      },
+      "purpose": "Missing exclusion proof does not exclude."
+    },
+    {
+      "id": "ICHECK19-050",
+      "baseCaseId": "ICASE19-007",
+      "patches": [
+        {
+          "path": [
+            "previous",
+            "closureValidationId"
+          ],
+          "value": null
+        }
+      ],
+      "expected": {
+        "errorContains": "prior closure validation/residual risk"
+      },
+      "purpose": "Prior closure evidence must remain."
+    },
+    {
+      "id": "ICHECK19-051",
+      "baseCaseId": "ICASE19-002",
+      "patches": [
+        {
+          "path": [
+            "declaration",
+            "asset"
+          ],
+          "value": "SYN-APP-B"
+        }
+      ],
+      "expected": {
+        "errorContains": "declaration confirmed scope binding"
+      },
+      "purpose": "Declaration cannot shift to hypothetical asset."
+    },
+    {
+      "id": "ICHECK19-052",
+      "baseCaseId": "ICASE19-006",
+      "patches": [
+        {
+          "path": [
+            "recovery",
+            "asset"
+          ],
+          "value": "SYN-APP-B"
+        }
+      ],
+      "expected": {
+        "errorContains": "recovery confirmed scope binding"
+      },
+      "purpose": "Recovery cannot shift scope."
+    },
+    {
+      "id": "ICHECK19-053",
+      "baseCaseId": "ICASE19-006",
+      "patches": [
+        {
+          "path": [
+            "closure",
+            "asset"
+          ],
+          "value": "SYN-APP-B"
+        }
+      ],
+      "expected": {
+        "errorContains": "closure recovery scope binding"
+      },
+      "purpose": "Closure and recovery same asset."
+    },
+    {
+      "id": "ICHECK19-054",
+      "baseCaseId": "ICASE19-006",
+      "patches": [
+        {
+          "path": [
+            "evidence",
+            9,
+            "availableAt"
+          ],
+          "value": "2026-09-01T10:10:00Z"
+        }
+      ],
+      "expected": {
+        "status": "Recovering",
+        "gaps": [
+          "recovery-not-validated"
+        ]
+      },
+      "purpose": "Recovery validation cannot predate Recovering."
+    },
+    {
+      "id": "ICHECK19-055",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "containment",
+            "authority",
+            "owner"
+          ],
+          "value": " "
+        }
+      ],
+      "expected": {
+        "status": "Declared",
+        "gaps": [
+          "containment-authority"
+        ]
+      },
+      "purpose": "Whitespace approval owner."
+    },
+    {
+      "id": "ICHECK19-056",
+      "baseCaseId": "ICASE19-003",
+      "patches": [
+        {
+          "path": [
+            "containment",
+            "expectedImpact"
+          ],
+          "value": " "
+        }
+      ],
+      "expected": {
+        "status": "Declared",
+        "gaps": [
+          "containment-impact-rollback"
+        ]
+      },
+      "purpose": "Whitespace impact."
+    },
+    {
+      "id": "ICHECK19-057",
+      "baseCaseId": "ICASE19-006",
+      "patches": [
+        {
+          "path": [
+            "closure",
+            "riskOwner"
+          ],
+          "value": " "
+        }
+      ],
+      "expected": {
+        "status": "Recovering",
+        "gaps": [
+          "closure-validation-residual-risk"
+        ]
+      },
+      "purpose": "Residual risk owner whitespace."
+    },
+    {
+      "id": "ICHECK19-058",
+      "baseCaseId": "ICASE19-007",
+      "patches": [
+        {
+          "path": [
+            "previous",
+            "closure",
+            "asset"
+          ],
+          "value": "SYN-APP-B"
+        }
+      ],
+      "expected": {
+        "errorContains": "prior closure validation/residual risk"
+      },
+      "purpose": "Prior closure scope remains bound."
+    },
+    {
+      "id": "ICHECK19-059",
+      "baseCaseId": "ICASE19-004",
+      "patches": [
+        {
+          "path": [
+            "declaration"
+          ],
+          "value": null
+        }
+      ],
+      "expected": {
+        "errorContains": "previous declared state requires valid declaration"
+      },
+      "purpose": "Prior status is not a substitute for declaration evidence."
+    },
+    {
+      "id": "ICHECK19-060",
+      "baseCaseId": "ICASE19-006",
+      "patches": [
+        {
+          "path": [
+            "evidence",
+            9,
+            "asset"
+          ],
+          "value": "SYN-ID-C"
+        }
+      ],
+      "expected": {
+        "errorContains": "evidence kind/asset binding"
+      },
+      "purpose": "Valid restoration evidence for another asset cannot close this scope."
+    }
+  ]
+}

@@ -36,6 +36,8 @@ from scripts.sync_book_site import (  # noqa: E402
     parse_registry_data,
 )
 
+from scripts.source_audit import meets_audit_baseline  # noqa: E402
+
 ERRORS: list[str] = []
 EXPECTED_CONTENT_SAFETY_POLICY_VERSION = "1.2.0"
 EXPECTED_PUBLICATION_PROJECTION_VERSION = "1.1.0"
@@ -2246,12 +2248,13 @@ def main(argv: list[str] | None = None) -> int:
         entry = source_entries.get(source_id)
         if entry is None:
             continue
-        for field in ("version", "checkedAt", "nextReviewAt"):
-            if entry.get(field) != expected[field]:
-                error(
-                    f"references/sources.json: {source_id}.{field} "
-                    f"must be {expected[field]!r}"
-                )
+        if entry.get("version") != expected["version"]:
+            error(f"references/sources.json: {source_id}.version must be {expected['version']!r}")
+        # A later scoped audit may advance dates without rewriting this
+        # chapter's retained historical note, source version or meaning.
+        for field in ("checkedAt", "nextReviewAt"):
+            if not meets_audit_baseline(entry.get(field), expected[field]):
+                error(f"references/sources.json: {source_id}.{field} must meet retained baseline {expected[field]!r}")
         notes = entry.get("notes")
         if not isinstance(notes, str):
             error(f"references/sources.json: {source_id}.notes must be a string")

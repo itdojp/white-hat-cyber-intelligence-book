@@ -1,0 +1,930 @@
+{
+  "version": "1.0.0",
+  "records": [
+    {
+      "id": "P4-NO-EXECUTION",
+      "invariant": "Planned collection grants no execution authority",
+      "mutations": [
+        {
+          "source": 23,
+          "path": [
+            "executionAuthorized"
+          ],
+          "value": true
+        }
+      ],
+      "expectedCode": "P4-23/executionAuthorized"
+    },
+    {
+      "id": "P4-NO-INHERITED-EVIDENCE",
+      "invariant": "Independent Source Evaluation Case does not inherit parent evidence",
+      "mutations": [
+        {
+          "source": 24,
+          "path": [
+            "record",
+            "parentEvidenceInherited"
+          ],
+          "value": true
+        }
+      ],
+      "expectedCode": "P4-24/record/parentEvidenceInherited"
+    },
+    {
+      "id": "P4-METHOD-NOT-RECEIVED",
+      "invariant": "Method-only link is not receipt",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "methodReferences",
+            0,
+            "receiptId"
+          ],
+          "value": "RECEIPT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-26/methodReferences/0/receiptId"
+    },
+    {
+      "id": "P4-ARTIFACT-NOT-JUDGMENT",
+      "invariant": "ART-12 method reference is not analytic judgment receipt",
+      "mutations": [
+        {
+          "source": 24,
+          "path": [
+            "methodReferences",
+            2,
+            "recordId"
+          ],
+          "value": "AJ-2026-025"
+        }
+      ],
+      "expectedCode": "P4-24/methodReferences/2/recordId"
+    },
+    {
+      "id": "P4-DISTINCT-REQUIREMENT",
+      "invariant": "Child26 uses parent25 IR, not the Chapter23 case requirement",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "requirement",
+            "id"
+          ],
+          "value": "IR23-R1"
+        }
+      ],
+      "expectedCode": "P4-link-26/requirement/id"
+    },
+    {
+      "id": "P4-COORDINATED-CASE-RENAME",
+      "invariant": "Coordinated producer and consumer changes cannot evade independent literals",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "caseId"
+          ],
+          "value": "CASE-INVENTED"
+        },
+        {
+          "source": 26,
+          "path": [
+            "record",
+            "caseId"
+          ],
+          "value": "CASE-INVENTED"
+        },
+        {
+          "source": 26,
+          "path": [
+            "record",
+            "parentCaseId"
+          ],
+          "value": "CASE-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-25/caseId"
+    },
+    {
+      "id": "P4-NO-NEW-OBSERVATION",
+      "invariant": "Child26 evidence is supplied parent evidence, not a new observation",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "evidence",
+            0,
+            "newObservation"
+          ],
+          "value": true
+        }
+      ],
+      "expectedCode": "P4-26/evidence/0/newObservation"
+    },
+    {
+      "id": "P4-SOURCE-BINDING",
+      "invariant": "Each inherited evidence binds the same parent Source Note",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "evidence",
+            0,
+            "sourceId"
+          ],
+          "value": "SN-2026-025-002"
+        }
+      ],
+      "expectedCode": "P4-link-26/evidence/0/sourceId"
+    },
+    {
+      "id": "P4-COORDINATED-ORIGIN",
+      "invariant": "Republished record cannot acquire a new origin through coordinated relabeling",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "sourceNotes",
+            4,
+            "independenceGroupId"
+          ],
+          "value": "IG-NEW"
+        },
+        {
+          "source": 26,
+          "path": [
+            "evidence",
+            4,
+            "independenceGroupId"
+          ],
+          "value": "IG-NEW"
+        }
+      ],
+      "expectedCode": "P4-25/sourceNotes/4/independenceGroupId"
+    },
+    {
+      "id": "P4-ORIGIN-COUNT",
+      "invariant": "Three same-origin Source Notes remain one origin",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            2,
+            "independentOrigins"
+          ],
+          "value": 3
+        }
+      ],
+      "expectedCode": "P4-26/judgments/2/independentOrigins"
+    },
+    {
+      "id": "P4-EXCLUDED-RECORD-RETAINED",
+      "invariant": "Excluded row travels as a record of limitation, not an adopted positive",
+      "mutations": [
+        {
+          "source": 24,
+          "path": [
+            "handoffs",
+            0,
+            "evidenceIds"
+          ],
+          "value": [
+            "EV-EV24-001",
+            "EV-EV24-002",
+            "EV-EV24-003",
+            "EV-EV24-004",
+            "EV-EV24-005",
+            "EV-EV24-006",
+            "EV-EV24-007",
+            "EV-EV24-009",
+            "EV-EV24-010",
+            "EV-EV24-011"
+          ]
+        }
+      ],
+      "expectedCode": "P4-24/handoffs/0/evidenceIds"
+    },
+    {
+      "id": "P4-LEAD-NOT-DIRECT",
+      "invariant": "Unreviewed extraction remains a lead",
+      "mutations": [
+        {
+          "source": 24,
+          "path": [
+            "evaluations",
+            10,
+            "use"
+          ],
+          "value": "Direct evidence"
+        }
+      ],
+      "expectedCode": "P4-24/evaluations/10/use"
+    },
+    {
+      "id": "P4-LEAD-CREDIBILITY",
+      "invariant": "Lead credibility remains limited",
+      "mutations": [
+        {
+          "source": 24,
+          "path": [
+            "evaluations",
+            10,
+            "credibility",
+            "value"
+          ],
+          "value": "supported"
+        }
+      ],
+      "expectedCode": "P4-24/evaluations/10/credibility/value"
+    },
+    {
+      "id": "P4-ITEM-CLAIM-PAIR",
+      "invariant": "Second evaluation of the same item is for a distinct Claim",
+      "mutations": [
+        {
+          "source": 24,
+          "path": [
+            "evaluations",
+            9,
+            "claimId"
+          ],
+          "value": "CLM-EV24-003"
+        }
+      ],
+      "expectedCode": "P4-24/evaluations/9/claimId"
+    },
+    {
+      "id": "P4-SOURCE-JUDGMENT-PARENT",
+      "invariant": "KJ003 references SEJ source evaluation, not AJ success evidence",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            2,
+            "parentJudgmentId"
+          ],
+          "value": "AJ-2026-025"
+        }
+      ],
+      "expectedCode": "P4-26/judgments/2/parentJudgmentId"
+    },
+    {
+      "id": "P4-COORDINATED-ATTRIBUTION",
+      "invariant": "Attribution cannot increase through producer and consumer relabeling",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "attributionAssessment",
+            "ladderLevel"
+          ],
+          "value": "L3"
+        },
+        {
+          "source": 26,
+          "path": [
+            "record",
+            "attributionCeiling"
+          ],
+          "value": "L3"
+        },
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "attributionLevel"
+          ],
+          "value": "L3"
+        }
+      ],
+      "expectedCode": "P4-25/attributionAssessment/ladderLevel"
+    },
+    {
+      "id": "P4-NONOBSERVATION-NOT-SUCCESS",
+      "invariant": "Limited negative finding does not settle follow-on success",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            1,
+            "successDetermined"
+          ],
+          "value": true
+        }
+      ],
+      "expectedCode": "P4-26/judgments/1/successDetermined"
+    },
+    {
+      "id": "P4-CONFIDENCE-NO-UPGRADE",
+      "invariant": "Distribution does not increase parent evidence confidence",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            1,
+            "confidence"
+          ],
+          "value": "高"
+        }
+      ],
+      "expectedCode": "P4-26/judgments/1/confidence"
+    },
+    {
+      "id": "P4-NO-CONFIDENCE-CONVERSION",
+      "invariant": "Qualitative confidence is not mechanically converted to STIX integer",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "stixConfidence"
+          ],
+          "value": 80
+        }
+      ],
+      "expectedCode": "P4-26/judgments/0/stixConfidence"
+    },
+    {
+      "id": "P4-PRODUCT-NOT-DELIVERED",
+      "invariant": "Prepared Product is not delivery",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "products",
+            0,
+            "delivered"
+          ],
+          "value": true
+        }
+      ],
+      "expectedCode": "P4-26/products/0/delivered"
+    },
+    {
+      "id": "P4-FEEDBACK-NOT-RECEIVED",
+      "invariant": "Planned feedback is not confirmed understanding",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "feedback",
+            1,
+            "answer"
+          ],
+          "value": "understood"
+        }
+      ],
+      "expectedCode": "P4-26/feedback/1/answer"
+    },
+    {
+      "id": "P4-TLP-NOT-AUTHORITY",
+      "invariant": "Sharing label does not grant action permission",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "products",
+            1,
+            "actionPermission"
+          ],
+          "value": true
+        }
+      ],
+      "expectedCode": "P4-26/products/1/actionPermission"
+    },
+    {
+      "id": "P4-DEADLINE-NOT-RENEWED",
+      "invariant": "Public review does not renew the historical synthetic Product",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "products",
+            0,
+            "expiresAt"
+          ],
+          "value": "2027-07-30T01:00:00Z"
+        }
+      ],
+      "expectedCode": "P4-26/products/0/expiresAt"
+    },
+    {
+      "id": "P4-DECISION-NOT-EXECUTED",
+      "invariant": "Representation of a decision is not execution",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "decision",
+            "executed"
+          ],
+          "value": true
+        }
+      ],
+      "expectedCode": "P4-26/decision/executed"
+    },
+    {
+      "id": "P4-DISTINCT-REASSESSMENT",
+      "invariant": "Parent and distribution-specific reassessment times remain separate",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "reassessment",
+            "reviewDate"
+          ],
+          "value": "2026-07-30T00:30:00Z"
+        }
+      ],
+      "expectedCode": "P4-25/reassessment/reviewDate"
+    },
+    {
+      "id": "P4-CAPSTONE-NOT-RECEIVED",
+      "invariant": "Planned Chapter29 handoff remains unreceived",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "handoff",
+            "receiptId"
+          ],
+          "value": "RECEIPT-29"
+        }
+      ],
+      "expectedCode": "P4-26/handoff/receiptId"
+    },
+    {
+      "id": "P4-STIX-NOT-EVIDENCE",
+      "invariant": "Independent exchange example is not analytic evidence",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "exchangeExample",
+            "adoptedEvidenceIds"
+          ],
+          "value": [
+            "EVD-2026-025-001"
+          ]
+        }
+      ],
+      "expectedCode": "P4-26/exchangeExample/adoptedEvidenceIds"
+    },
+    {
+      "id": "P4-NO-TAXII-CONNECTION",
+      "invariant": "Static response is not an actual TAXII transaction",
+      "mutations": [
+        {
+          "source": "taxii",
+          "path": [
+            "networkExecuted"
+          ],
+          "value": true
+        }
+      ],
+      "expectedCode": "P4-taxii/networkExecuted"
+    },
+    {
+      "id": "P4-BOOLEAN-NOT-ZERO",
+      "invariant": "JSON boolean false does not equal integer zero",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "executionAuthorized"
+          ],
+          "value": 0
+        }
+      ],
+      "expectedCode": "P4-26/executionAuthorized"
+    },
+    {
+      "id": "P4-EXCHANGE-OBJECT-BINDING",
+      "invariant": "Offline envelope retains the supplied independent Bundle objects",
+      "mutations": [
+        {
+          "source": "taxii",
+          "path": [
+            "response",
+            "envelope",
+            "objects"
+          ],
+          "value": []
+        }
+      ],
+      "expectedCode": "P4-exchange-object-binding"
+    },
+    {
+      "id": "P4-ALTERNATIVE-COORDINATED-1",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            0,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        },
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            0
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-25/alternativeHypotheses/0/id"
+    },
+    {
+      "id": "P4-ALTERNATIVE-PARENT-1",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            0,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/0"
+    },
+    {
+      "id": "P4-ALTERNATIVE-CONSUMER-1",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            0
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/0"
+    },
+    {
+      "id": "P4-ALTERNATIVE-EMPTY-1",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds"
+          ],
+          "value": []
+        }
+      ],
+      "expectedCode": "P4-26/judgments/0/alternativeIds"
+    },
+    {
+      "id": "P4-ALTERNATIVE-COORDINATED-2",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            1,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        },
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            1
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-25/alternativeHypotheses/1/id"
+    },
+    {
+      "id": "P4-ALTERNATIVE-PARENT-2",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            1,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/1"
+    },
+    {
+      "id": "P4-ALTERNATIVE-CONSUMER-2",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            1
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/1"
+    },
+    {
+      "id": "P4-ALTERNATIVE-EMPTY-2",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            1,
+            "alternativeIds"
+          ],
+          "value": []
+        }
+      ],
+      "expectedCode": "P4-26/judgments/1/alternativeIds"
+    },
+    {
+      "id": "P4-ALTERNATIVE-COORDINATED-3",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            2,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        },
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            2
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-25/alternativeHypotheses/2/id"
+    },
+    {
+      "id": "P4-ALTERNATIVE-PARENT-3",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 25,
+          "path": [
+            "alternativeHypotheses",
+            2,
+            "id"
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/2"
+    },
+    {
+      "id": "P4-ALTERNATIVE-CONSUMER-3",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            0,
+            "alternativeIds",
+            2
+          ],
+          "value": "ALT-INVENTED"
+        }
+      ],
+      "expectedCode": "P4-link-26/judgments/0/alternativeIds/2"
+    },
+    {
+      "id": "P4-ALTERNATIVE-EMPTY-3",
+      "invariant": "KJ001 binds frozen parent alternatives; child-local KJ002/003 alternatives remain distinct and required",
+      "originatingThread": "PRRT_kwDOTi9cus6mvC6P",
+      "mutations": [
+        {
+          "source": 26,
+          "path": [
+            "judgments",
+            2,
+            "alternativeIds"
+          ],
+          "value": []
+        }
+      ],
+      "expectedCode": "P4-26/judgments/2/alternativeIds"
+    },
+    {
+      "id": "P4-CH23-PENDING-ASOF",
+      "invariant": "The supplied asOf precedes all three deadlines; no later receipt result is observed",
+      "originatingThread": "PRRT_kwDOTi9cus6mv_I4",
+      "mutations": [
+        {
+          "source": 23,
+          "path": [
+            "record",
+            "asOf"
+          ],
+          "value": "2026-10-03T12:00:00Z"
+        }
+      ],
+      "expectedCode": "P4-23/record/asOf"
+    },
+    {
+      "id": "P4-CH23-PENDING-PROCESSING",
+      "invariant": "The supplied asOf precedes all three deadlines; no later receipt result is observed",
+      "originatingThread": "PRRT_kwDOTi9cus6mv_I4",
+      "mutations": [
+        {
+          "source": 23,
+          "path": [
+            "pipeline",
+            "processingDeadline"
+          ],
+          "value": "2026-10-02T11:00:00Z"
+        }
+      ],
+      "expectedCode": "P4-23/pipeline/processingDeadline"
+    },
+    {
+      "id": "P4-CH23-PENDING-ANALYSIS",
+      "invariant": "The supplied asOf precedes all three deadlines; no later receipt result is observed",
+      "originatingThread": "PRRT_kwDOTi9cus6mv_I4",
+      "mutations": [
+        {
+          "source": 23,
+          "path": [
+            "pipeline",
+            "analysisDeadline"
+          ],
+          "value": "2026-10-02T11:00:00Z"
+        }
+      ],
+      "expectedCode": "P4-23/pipeline/analysisDeadline"
+    },
+    {
+      "id": "P4-CH23-PENDING-DISTRIBUTION",
+      "invariant": "The supplied asOf precedes all three deadlines; no later receipt result is observed",
+      "originatingThread": "PRRT_kwDOTi9cus6mv_I4",
+      "mutations": [
+        {
+          "source": 23,
+          "path": [
+            "pipeline",
+            "distributionDeadline"
+          ],
+          "value": "2026-10-02T11:00:00Z"
+        }
+      ],
+      "expectedCode": "P4-23/pipeline/distributionDeadline"
+    }
+  ],
+  "publication": [
+    {
+      "id": "P4-PUB-BODY",
+      "source": "# 接続\n\n実サービスへ接続する。",
+      "unsafe": true,
+      "invariant": "Part IV full-document adapter: Direct action reaches shared policy",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P4-PUB-SAFE",
+      "source": "# 接続\n\n実サービスへ接続しない。",
+      "unsafe": false,
+      "invariant": "Part IV full-document adapter: Explicit prohibition",
+      "diagnosticCodes": [],
+      "findingCategory": null
+    },
+    {
+      "id": "P4-PUB-BOUNDED",
+      "source": "# 境界\n\n合成資料の比較だけを行い、実操作は行わない。",
+      "unsafe": false,
+      "invariant": "Part IV full-document adapter: Bounded read-only analysis with explicit operation prohibition; not generic risk grammar",
+      "diagnosticCodes": [],
+      "findingCategory": null
+    },
+    {
+      "id": "P4-PUB-TAIL",
+      "source": "# 接続\n\n供給記録を読む。\n\n実サービスへ接続する。",
+      "unsafe": true,
+      "invariant": "Part IV full-document adapter: Tail is included",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P4-PUB-PREAMBLE",
+      "source": "実サービスへ接続する。\n\n# 接続\n\n供給記録だけ。",
+      "unsafe": true,
+      "invariant": "Part IV full-document adapter: Preamble is included",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P4-PUB-LINK",
+      "source": "[参照](https://production.company.co.jp/path)",
+      "unsafe": true,
+      "invariant": "Part IV full-document adapter: External non-example host",
+      "diagnosticCodes": [],
+      "findingCategory": "network.host_or_address"
+    },
+    {
+      "id": "P4-PUB-SAFE-LINK",
+      "source": "[合成](https://system.example/path)",
+      "unsafe": false,
+      "invariant": "Part IV full-document adapter: Reserved example destination",
+      "diagnosticCodes": [],
+      "findingCategory": null
+    },
+    {
+      "id": "P4-PUB-TITLE",
+      "source": "[説明](#scope \"実サービスへ接続する。\")",
+      "unsafe": true,
+      "invariant": "Part IV full-document adapter: Reader title reaches policy",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P4-PUB-TABLE",
+      "source": "| 条件 | 判断 |\n|---|---|\n| 対象 | 実サービスへ接続する。 |",
+      "unsafe": true,
+      "invariant": "Part IV full-document adapter: Visible table field",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P4-PUB-CODE",
+      "source": "`実サービスへ接続する。`",
+      "unsafe": true,
+      "invariant": "Part IV full-document adapter: Visible code field",
+      "diagnosticCodes": [],
+      "findingCategory": "target.real_or_external"
+    },
+    {
+      "id": "P4-PUB-HIDDEN",
+      "source": "<!-- 実サービスへ接続する。 -->\n\n供給記録だけを読む。",
+      "unsafe": true,
+      "invariant": "Part IV full-document adapter: Frozen shared Projection rejects raw HTML comments with PP1001; no local interpretation",
+      "diagnosticCodes": [
+        "PP1001",
+        "PP1001"
+      ],
+      "findingCategory": null
+    },
+    {
+      "id": "P4-PUB-UNSUPPORTED",
+      "source": "{% include remote.md %}",
+      "unsafe": true,
+      "invariant": "Part IV full-document adapter: Interpreted unsupported syntax fails closed",
+      "diagnosticCodes": [
+        "PP1001"
+      ],
+      "findingCategory": null
+    }
+  ]
+}

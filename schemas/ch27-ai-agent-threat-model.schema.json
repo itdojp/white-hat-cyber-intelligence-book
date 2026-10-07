@@ -1,0 +1,1678 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itdojp.github.io/white-hat-cyber-intelligence-book/downloads/ch27-ai-agent-threat-model.schema.json",
+  "title": "Chapter27 finite authored AI threat-model records",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "readOnly",
+    "executionAuthorized",
+    "record",
+    "parents",
+    "safety",
+    "actors",
+    "instructions",
+    "sources",
+    "memory",
+    "modelOutput",
+    "mockResponses",
+    "components",
+    "tools",
+    "approvals",
+    "requests",
+    "audit",
+    "limitations",
+    "decision",
+    "reassessment",
+    "threats",
+    "findings",
+    "controls",
+    "evidence",
+    "stop",
+    "gaps"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1,
+      "const": "1.0.0"
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true
+    },
+    "readOnly": {
+      "type": "boolean",
+      "const": true
+    },
+    "executionAuthorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactId",
+        "caseId",
+        "parentCaseId",
+        "relation",
+        "decisionRequirementId",
+        "question",
+        "asOf",
+        "owner",
+        "decisionOwner",
+        "reviewDeadline",
+        "parentEvidenceInherited",
+        "parentAuthorityInherited",
+        "actualModelCalls",
+        "actualToolCalls",
+        "actualExternalEffects",
+        "realControlEffectivenessProven"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifactId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionRequirementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewDeadline": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentEvidenceInherited": {
+          "type": "boolean",
+          "const": false
+        },
+        "parentAuthorityInherited": {
+          "type": "boolean",
+          "const": false
+        },
+        "actualModelCalls": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "const": 0
+        },
+        "actualToolCalls": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "const": 0
+        },
+        "actualExternalEffects": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "const": 0
+        },
+        "realControlEffectivenessProven": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "parents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "threatModelId",
+        "signalFlowId",
+        "supplyChainAssessmentId",
+        "authorizationId",
+        "roeId",
+        "roeStatus",
+        "roeDecision",
+        "authorizationState",
+        "ctiRelationship",
+        "ctiProductReceived",
+        "stixAdoptedAsEvidence",
+        "historicalAiDeploymentClaimed"
+      ],
+      "properties": {
+        "threatModelId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signalFlowId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supplyChainAssessmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorizationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "roeId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "roeStatus": {
+          "type": "string",
+          "minLength": 1,
+          "const": "Draft"
+        },
+        "roeDecision": {
+          "type": "string",
+          "minLength": 1,
+          "const": "Do not proceed"
+        },
+        "authorizationState": {
+          "type": "string",
+          "minLength": 1,
+          "const": "expired-not-renewed"
+        },
+        "ctiRelationship": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ctiProductReceived": {
+          "type": "boolean",
+          "const": false
+        },
+        "stixAdoptedAsEvidence": {
+          "type": "boolean",
+          "const": false
+        },
+        "historicalAiDeploymentClaimed": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "modelApi",
+        "network",
+        "shell",
+        "fileMutation",
+        "credentialAccess",
+        "personalData",
+        "secretMaterial",
+        "stop",
+        "cleanup",
+        "runtimeKillSwitchTested",
+        "recoveryTested"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "minLength": 1,
+          "const": "offline-authored-record-comparison"
+        },
+        "modelApi": {
+          "type": "boolean",
+          "const": false
+        },
+        "network": {
+          "type": "boolean",
+          "const": false
+        },
+        "shell": {
+          "type": "boolean",
+          "const": false
+        },
+        "fileMutation": {
+          "type": "boolean",
+          "const": false
+        },
+        "credentialAccess": {
+          "type": "boolean",
+          "const": false
+        },
+        "personalData": {
+          "type": "boolean",
+          "const": false
+        },
+        "secretMaterial": {
+          "type": "boolean",
+          "const": false
+        },
+        "stop": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtimeKillSwitchTested": {
+          "type": "boolean",
+          "const": false
+        },
+        "recoveryTested": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "actors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "role",
+          "authority"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authority": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "instructions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "layer",
+          "origin",
+          "text",
+          "treatedAs",
+          "allowedOverride"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "layer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "origin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "treatedAs": {
+            "type": "string",
+            "minLength": 1
+          },
+          "allowedOverride": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "caseId",
+          "audience",
+          "version",
+          "origin",
+          "classification",
+          "text",
+          "sourceAdopted"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "caseId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audience": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "origin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "classification": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceAdopted": {
+            "type": "boolean",
+            "const": true
+          }
+        }
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "memory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "caseId",
+          "audience",
+          "version",
+          "sourceId",
+          "expiresAt",
+          "quarantined",
+          "origin",
+          "automaticWrite"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "caseId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audience": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expiresAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quarantined": {
+            "type": "boolean"
+          },
+          "origin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "automaticWrite": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "modelOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "modelId",
+        "classification",
+        "text",
+        "sourceIds",
+        "adoptedAsFact",
+        "adoptedAsSource",
+        "adoptedAsCommand",
+        "writtenToTrustedMemory"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "modelId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "classification": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "adoptedAsFact": {
+          "type": "boolean",
+          "const": false
+        },
+        "adoptedAsSource": {
+          "type": "boolean",
+          "const": false
+        },
+        "adoptedAsCommand": {
+          "type": "boolean",
+          "const": false
+        },
+        "writtenToTrustedMemory": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "mockResponses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "version",
+          "body",
+          "sha256"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "body": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 1
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "version",
+          "digest",
+          "provenance",
+          "descriptorKnown",
+          "restrictionActive",
+          "disabled",
+          "observation",
+          "validation",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "digest": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provenance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "origin",
+              "label",
+              "signatureStatus"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "origin": {
+                "type": "string",
+                "minLength": 1
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "signatureStatus": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "descriptorKnown": {
+            "type": "boolean"
+          },
+          "restrictionActive": {
+            "type": "boolean"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "observation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "present",
+              "id",
+              "target",
+              "version",
+              "digest",
+              "observedAt",
+              "origin"
+            ],
+            "properties": {
+              "present": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "target": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "digest": {
+                "type": "string",
+                "minLength": 1
+              },
+              "observedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "origin": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "validation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "present",
+              "id",
+              "target",
+              "version",
+              "digest",
+              "observedId",
+              "passed",
+              "validatedAt",
+              "method"
+            ],
+            "properties": {
+              "present": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "target": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "digest": {
+                "type": "string",
+                "minLength": 1
+              },
+              "observedId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "passed": {
+                "type": "boolean"
+              },
+              "validatedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Declared",
+              "Observed",
+              "Validated",
+              "Restricted",
+              "Disabled",
+              "Unknown"
+            ]
+          }
+        }
+      },
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "version",
+          "capability",
+          "scope",
+          "credentialClass",
+          "sideEffect",
+          "approvalRequired",
+          "approvalOwnerId",
+          "timeoutSeconds",
+          "enabled",
+          "responseId",
+          "stopId",
+          "actualImplementation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "capability": {
+            "type": "string",
+            "minLength": 1,
+            "const": "read-fixed-response"
+          },
+          "scope": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "uniqueItems": true
+          },
+          "credentialClass": {
+            "type": "string",
+            "minLength": 1,
+            "const": "none"
+          },
+          "sideEffect": {
+            "type": "string",
+            "minLength": 1,
+            "const": "none"
+          },
+          "approvalRequired": {
+            "type": "boolean",
+            "const": true
+          },
+          "approvalOwnerId": {
+            "type": "string",
+            "minLength": 1,
+            "const": "AI27-OWNER"
+          },
+          "timeoutSeconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000,
+            "const": 30
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "responseId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "stopId": {
+            "type": "string",
+            "minLength": 1,
+            "const": "AI27-STOP"
+          },
+          "actualImplementation": {
+            "type": "string",
+            "minLength": 1,
+            "const": "none-record-only"
+          }
+        }
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "ownerId",
+          "requesterId",
+          "toolId",
+          "toolVersion",
+          "caseId",
+          "sourceIds",
+          "effect",
+          "validFrom",
+          "validUntil",
+          "origin",
+          "decision",
+          "singleRequestId",
+          "cryptographicProof"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ownerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requesterId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "toolId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "toolVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "caseId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "uniqueItems": true
+          },
+          "effect": {
+            "type": "string",
+            "minLength": 1
+          },
+          "validFrom": {
+            "type": "string",
+            "minLength": 1
+          },
+          "validUntil": {
+            "type": "string",
+            "minLength": 1
+          },
+          "origin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "decision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "singleRequestId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cryptographicProof": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "requests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "userId",
+          "modelId",
+          "toolId",
+          "toolVersion",
+          "caseId",
+          "sourceIds",
+          "instructionId",
+          "memoryId",
+          "approvalId",
+          "requestedEffect",
+          "stepsUsed",
+          "stepBudget",
+          "killSwitchActive",
+          "asOf",
+          "expectedDisposition",
+          "evidenceId",
+          "findingId",
+          "auditId",
+          "executed"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "modelId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "toolId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "toolVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "caseId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "uniqueItems": true
+          },
+          "instructionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "memoryId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approvalId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requestedEffect": {
+            "type": "string",
+            "minLength": 1
+          },
+          "stepsUsed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "stepBudget": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000,
+            "const": 3
+          },
+          "killSwitchActive": {
+            "type": "boolean"
+          },
+          "asOf": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expectedDisposition": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "Allowed-in-model",
+              "Blocked",
+              "Stopped"
+            ]
+          },
+          "evidenceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "findingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "auditId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "executed": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "audit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "requestId",
+          "evidenceId",
+          "findingId",
+          "targetId",
+          "targetVersion",
+          "at",
+          "disposition",
+          "origin",
+          "ownerId",
+          "retentionUntil",
+          "immutableStorageVerified",
+          "controlEvidence",
+          "actualEffect"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requestId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidenceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "findingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "disposition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "origin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ownerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retentionUntil": {
+            "type": "string",
+            "minLength": 1
+          },
+          "immutableStorageVerified": {
+            "type": "boolean",
+            "const": false
+          },
+          "controlEvidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "actualEffect": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "limitations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "modelEvaluated",
+        "promptClassifierImplemented",
+        "aisvsConformanceClaimed",
+        "signatureVerified",
+        "digestMeaning",
+        "independentEvidenceSources",
+        "coverage"
+      ],
+      "properties": {
+        "modelEvaluated": {
+          "type": "boolean",
+          "const": false
+        },
+        "promptClassifierImplemented": {
+          "type": "boolean",
+          "const": false
+        },
+        "aisvsConformanceClaimed": {
+          "type": "boolean",
+          "const": false
+        },
+        "signatureVerified": {
+          "type": "boolean",
+          "const": false
+        },
+        "digestMeaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independentEvidenceSources": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "const": 1
+        },
+        "coverage": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "owner",
+        "value",
+        "confidence",
+        "fact",
+        "judgment",
+        "assumption",
+        "alternative",
+        "prediction",
+        "recommendation",
+        "realExecutionAuthorized",
+        "handoff"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fact": {
+          "type": "string",
+          "minLength": 1
+        },
+        "judgment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assumption": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alternative": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prediction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recommendation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "realExecutionAuthorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "handoff": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "reassessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "owner",
+        "dueAt",
+        "triggers",
+        "closure"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dueAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 7,
+          "maxItems": 7,
+          "uniqueItems": true
+        },
+        "closure": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "threats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "family",
+          "precondition",
+          "impact",
+          "control",
+          "telemetryRequired",
+          "limit",
+          "owner",
+          "status",
+          "reassessmentId",
+          "controlId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "family": {
+            "type": "string",
+            "minLength": 1
+          },
+          "precondition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "impact": {
+            "type": "string",
+            "minLength": 1
+          },
+          "control": {
+            "type": "string",
+            "minLength": 1
+          },
+          "telemetryRequired": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessmentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "controlId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 8,
+      "maxItems": 8
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "requestId",
+          "evidenceId",
+          "disposition",
+          "reasons",
+          "threatIds",
+          "owner",
+          "dueAt",
+          "reassessmentId",
+          "permittedConclusion",
+          "controlIds",
+          "validationIds"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requestId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidenceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "disposition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0,
+            "maxItems": 2,
+            "uniqueItems": true
+          },
+          "threatIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 2,
+            "maxItems": 3,
+            "uniqueItems": true
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dueAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessmentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "permittedConclusion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "controlIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 2,
+            "maxItems": 3,
+            "uniqueItems": true
+          },
+          "validationIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0,
+            "maxItems": 1,
+            "uniqueItems": true
+          }
+        }
+      },
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "controls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "threatId",
+          "description",
+          "owner",
+          "status",
+          "runtimeValidated",
+          "telemetryRequired",
+          "gapId",
+          "reassessmentId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "threatId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "const": "Documented-only"
+          },
+          "runtimeValidated": {
+            "type": "boolean",
+            "const": false
+          },
+          "telemetryRequired": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gapId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessmentId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 8,
+      "maxItems": 8
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "requestId",
+          "auditId",
+          "targetId",
+          "targetVersion",
+          "at",
+          "origin",
+          "classification",
+          "modelOutputAdopted"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requestId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "auditId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "origin": {
+            "type": "string",
+            "minLength": 1,
+            "const": "author-synthetic"
+          },
+          "classification": {
+            "type": "string",
+            "minLength": 1,
+            "const": "authored-comparison-not-runtime-observation"
+          },
+          "modelOutputAdopted": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "stop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ownerId",
+        "stepBudget",
+        "timeoutSeconds",
+        "precedence",
+        "controlChannel",
+        "runtimeTested",
+        "auditRequired"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "const": "AI27-STOP"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "const": "AI27-OWNER"
+        },
+        "stepBudget": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "const": 3
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "const": 30
+        },
+        "precedence": {
+          "type": "string",
+          "minLength": 1,
+          "const": "stop-before-approval"
+        },
+        "controlChannel": {
+          "type": "string",
+          "minLength": 1,
+          "const": "not-implemented-record-only"
+        },
+        "runtimeTested": {
+          "type": "boolean",
+          "const": false
+        },
+        "auditRequired": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "controlId",
+          "reason",
+          "owner",
+          "dueAt",
+          "status",
+          "reassessmentId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "controlId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dueAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessmentId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 8,
+      "maxItems": 8
+    }
+  }
+}

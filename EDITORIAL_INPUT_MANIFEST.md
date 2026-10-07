@@ -3,7 +3,7 @@
 このファイルは`editorial-input-manifest.json`から決定的に生成します。機械可読Manifestを更新し、`npm run render:editorial-inputs`を実行してください。このファイルを手編集しないでください。
 
 - Manifest version: `1.0.0`
-- Audit date: `2026-09-05`
+- Audit date: `2026-09-30`
 - Packages / targets / candidates: `14 / 29 / 30`
 - Provenance: [Issue #63](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63) / [Issue #98](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98)
 - External audit artifact: `not-present-in-authorized-workspace`。内容やhash一致を推測しません。
@@ -15,11 +15,9 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
-| `candidate-selection-required` | 1 |
-| `consumed` | 1 |
+| `consumed` | 21 |
 | `generator-blueprint-only` | 2 |
-| `registered-pending-prerequisites` | 23 |
-| `selected-for-intake` | 1 |
+| `registered-pending-prerequisites` | 5 |
 
 ## Acknowledged collisions
 
@@ -52,26 +50,26 @@
 | Target | Issue | Status | Selected candidate | Canonical PR | Evidence |
 |---|---:|---|---|---:|---|
 | `chapter-04` | #29 | `consumed` | `EIC-0029-c49f0a11ef9e` | #64 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5245374024) |
-| `chapter-05` | #30 | `selected-for-intake` | `EIC-0030-11e256480c15` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5550634873) |
-| `chapter-06` | #31 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155) |
-| `chapter-07` | #32 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644) |
-| `chapter-08` | #33 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529) |
-| `chapter-09` | #34 | `candidate-selection-required` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98) |
-| `chapter-10` | #35 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652) |
-| `chapter-12` | #36 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
-| `chapter-13` | #37 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716) |
-| `chapter-14` | #38 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
-| `chapter-15` | #39 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435) |
-| `chapter-16` | #40 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228688398) |
-| `chapter-18` | #41 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526) |
-| `chapter-19` | #42 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526) |
-| `chapter-20` | #43 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622) |
-| `chapter-21` | #44 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622) |
-| `chapter-22` | #45 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
-| `chapter-23` | #46 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155) |
-| `chapter-24` | #47 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644) |
-| `chapter-26` | #48 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529) |
-| `chapter-27` | #49 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541) |
+| `chapter-05` | #30 | `consumed` | `EIC-0030-11e256480c15` | #113 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5577993812) |
+| `chapter-06` | #31 | `consumed` | `EIC-0031-2c4e8b2b8508` | #117 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5645016826) |
+| `chapter-07` | #32 | `consumed` | `EIC-0032-6caf4e3d9174` | #120 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5648933706) |
+| `chapter-08` | #33 | `consumed` | `EIC-0033-eee4bacd1c7b` | #123 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5650941182) |
+| `chapter-09` | #34 | `consumed` | `EIC-0034-dd0c5e0b83f3` | #127 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5659602660) |
+| `chapter-10` | #35 | `consumed` | `EIC-0035-23f9af567b80` | #130 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5673149529) |
+| `chapter-12` | #36 | `consumed` | `EIC-0036-bf2b7e4fe16e` | #133 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5674704043) |
+| `chapter-13` | #37 | `consumed` | `EIC-0037-16d33d9ab258` | #136 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5678132066) |
+| `chapter-14` | #38 | `consumed` | `EIC-0038-3e687b3de61f` | #139 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5692616067) |
+| `chapter-15` | #39 | `consumed` | `EIC-0039-c168fc29af42` | #142 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5740271229) |
+| `chapter-16` | #40 | `consumed` | `EIC-0040-38fbe94b39aa` | #147 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/40#issuecomment-5767224085) |
+| `chapter-18` | #41 | `consumed` | `EIC-0041-5a08af6d1ae3` | #150 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5785664929) |
+| `chapter-19` | #42 | `consumed` | `EIC-0042-3630c01fb55d` | #153 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5802428231) |
+| `chapter-20` | #43 | `consumed` | `EIC-0043-58dc95fff364` | #156 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5823341050) |
+| `chapter-21` | #44 | `consumed` | `EIC-0044-a729d22fb189` | #159 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5841619885) |
+| `chapter-22` | #45 | `consumed` | `EIC-0045-78813e20d84e` | #166 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5843964406) |
+| `chapter-23` | #46 | `consumed` | `EIC-0046-29d20db7f44a` | #173 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/46#issuecomment-5853206831) |
+| `chapter-24` | #47 | `consumed` | `EIC-0047-b1b83a6735ac` | #176 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/47#issuecomment-5859589801) |
+| `chapter-26` | #48 | `consumed` | `EIC-0048-38a432a5daf5` | #179 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5871968211) |
+| `chapter-27` | #49 | `consumed` | `EIC-0049-32e8846cf56d` | #183 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5901110059) |
 | `chapter-28` | #50 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541) |
 | `chapter-29` | #51 | `blueprint-only` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
 | `appendix-a` | #52 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215) |
@@ -93,122 +91,122 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0030-11e256480c15` | `EIP-0001` | `chapter05-attack-behavior.predraft.md` | `11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12` | `selected` | 登録候補は1件。Packageが利用可能ならhash検証し、利用不能なら直接採用を主張せずIssue #30と現行一次資料から再構成する。 |
+| `EIC-0030-11e256480c15` | `EIP-0001` | `chapter05-attack-behavior.predraft.md` | `11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12` | `rewritten` | PR #113でIssue #30とcurrent contract・再検証済みMITRE一次資料から正本を新規作成し、通常mergeとexact-main CI・Pages・公開markerを確認した。登録metadataとの照合であり、EIP-0001/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。 |
 
 ### `chapter-06` / Issue #31
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0031-2c4e8b2b8508` | `EIP-0002` | `chapter06-observable-systems.predraft.md` | `2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0031-2c4e8b2b8508` | `EIP-0002` | `chapter06-observable-systems.predraft.md` | `2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d` | `rewritten` | PR #117でIssue #31とcurrent contract・再検証済み一次資料から第6章正本を新規作成し、通常mergeとexact-main CI・Pages・公開markerを確認した。登録metadataとの照合であり、EIP-0002/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。 |
 
 ### `chapter-07` / Issue #32
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0032-6caf4e3d9174` | `EIP-0003` | `chapter07-vulnerability-prioritization.predraft.md` | `6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0032-6caf4e3d9174` | `EIP-0003` | `chapter07-vulnerability-prioritization.predraft.md` | `6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb` | `rewritten` | PR #120でIssue #32とcurrent contract・再検証済み一次資料から第7章正本を新規作成し、通常mergeとexact-main CI・Pages・公開markerを確認した。登録metadataとの照合であり、EIP-0003/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。 |
 
 ### `chapter-08` / Issue #33
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0033-eee4bacd1c7b` | `EIP-0004` | `chapter08-safe-lab-evidence.predraft.md` | `eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0033-eee4bacd1c7b` | `EIP-0004` | `chapter08-safe-lab-evidence.predraft.md` | `eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b` | `rewritten` | PR #123でIssue #33とcurrent contract・再検証済み一次資料から第8章正本を新規作成し、通常mergeとexact-main CI・Pages・公開markerを確認した。登録metadataとの照合であり、EIP-0004/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。 |
 
 ### `chapter-09` / Issue #34
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0034-00de5e803e04` | `EIP-0005` | `chapter09-engagement-roe.predraft.md` | `00de5e803e04d13ae80b9960489a2d7d90d6564c88324d7f32aed8c28c96ea91` | `pending-comparison` | Issue #34、Chapter 2/4/8契約、current Policyと一次資料に対する比較が未実施。 |
-| `EIC-0034-dd0c5e0b83f3` | `EIP-0006` | `chapter09-engagement-roe.predraft.md` | `dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579` | `pending-comparison` | Issue #34、Chapter 2/4/8契約、current Policyと一次資料に対する比較が未実施。 |
+| `EIC-0034-00de5e803e04` | `EIP-0005` | `chapter09-engagement-roe.predraft.md` | `00de5e803e04d13ae80b9960489a2d7d90d6564c88324d7f32aed8c28c96ea91` | `deferred` | 未選択代替として原文比較を将来Intakeへ保留。品質不良とは判定していない。同梱第10章の状態は不変。raw不在、直接採用なし。 |
+| `EIC-0034-dd0c5e0b83f3` | `EIP-0006` | `chapter09-engagement-roe.predraft.md` | `dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579` | `rewritten` | PR #127でIssue #34とcurrent contract・再検証済み一次資料から第9章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補Bを登録設計の来歴として選択した記録を保持し、EIP-0006/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。候補AのDeferredは不変。 |
 
 ### `chapter-10` / Issue #35
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0035-23f9af567b80` | `EIP-0005` | `chapter10-recon-osint-boundary.predraft.md` | `23f9af567b80d64c0d191b0f7905ddd8350ce81606d24c72626949fa30739002` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0035-23f9af567b80` | `EIP-0005` | `chapter10-recon-osint-boundary.predraft.md` | `23f9af567b80d64c0d191b0f7905ddd8350ce81606d24c72626949fa30739002` | `rewritten` | PR #130でIssue #35とcurrent contract・再検証済み一次資料から第10章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0005/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter9候補のDeferredは不変。 |
 
 ### `chapter-12` / Issue #36
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0036-bf2b7e4fe16e` | `EIP-0008` | `chapter12-enterprise-identity.predraft.md` | `bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0036-bf2b7e4fe16e` | `EIP-0008` | `chapter12-enterprise-identity.predraft.md` | `bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd` | `rewritten` | PR #133でIssue #36とcurrent contract・再検証済み一次資料から第12章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0008/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter13のDispositionは不変。 |
 
 ### `chapter-13` / Issue #37
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0037-16d33d9ab258` | `EIP-0008` | `chapter13-platform-supply-chain.predraft.md` | `16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0037-16d33d9ab258` | `EIP-0008` | `chapter13-platform-supply-chain.predraft.md` | `16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec` | `rewritten` | PR #136でIssue #37とcurrent contract・再検証済み一次資料から第13章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0008/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter12のDispositionは不変。 |
 
 ### `chapter-14` / Issue #38
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0038-3e687b3de61f` | `EIP-0009` | `chapter14-minimal-impact-validation.predraft.md` | `3e687b3de61f4c6a0b20365b04f483064edf5ac07c2ff4cc6ffbe0cbd89bf58f` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0038-3e687b3de61f` | `EIP-0009` | `chapter14-minimal-impact-validation.predraft.md` | `3e687b3de61f4c6a0b20365b04f483064edf5ac07c2ff4cc6ffbe0cbd89bf58f` | `rewritten` | PR #139でIssue #38とcurrent contract・再検証済み一次資料から第14章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0009/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter15のDispositionは不変。 |
 
 ### `chapter-15` / Issue #39
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0039-c168fc29af42` | `EIP-0009` | `chapter15-findings-retest-risk.predraft.md` | `c168fc29af42cc50a38d23c581172bc4953125775f71867d60c36d5a726b7b3c` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0039-c168fc29af42` | `EIP-0009` | `chapter15-findings-retest-risk.predraft.md` | `c168fc29af42cc50a38d23c581172bc4953125775f71867d60c36d5a726b7b3c` | `rewritten` | PR #142でIssue #39とcurrent contract・再検証済み一次資料から第15章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0009/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter14のDispositionは不変。 |
 
 ### `chapter-16` / Issue #40
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0040-38fbe94b39aa` | `EIP-0006` | `chapter16-telemetry-evidence-readiness.predraft.md` | `38fbe94b39aac0ad6e59fcaa0c2cd9bfffc23b4eb01ca4dbbfd1cfb470a00c32` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0040-38fbe94b39aa` | `EIP-0006` | `chapter16-telemetry-evidence-readiness.predraft.md` | `38fbe94b39aac0ad6e59fcaa0c2cd9bfffc23b4eb01ca4dbbfd1cfb470a00c32` | `rewritten` | PR #147でIssue #40とcurrent contract・再検証済み一次資料から第16章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0006/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter9のDispositionは不変。 |
 
 ### `chapter-18` / Issue #41
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0041-5a08af6d1ae3` | `EIP-0010` | `chapter18-threat-hunting.predraft.md` | `5a08af6d1ae3f94b622ddec1f36f133b763d5b6eaac03f1ef08b415d0b540bbd` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0041-5a08af6d1ae3` | `EIP-0010` | `chapter18-threat-hunting.predraft.md` | `5a08af6d1ae3f94b622ddec1f36f133b763d5b6eaac03f1ef08b415d0b540bbd` | `rewritten` | PR #150でIssue #41とcurrent contract・再検証済み一次資料から第18章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0010/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter19のDispositionは不変。 |
 
 ### `chapter-19` / Issue #42
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0042-3630c01fb55d` | `EIP-0010` | `chapter19-incident-response.predraft.md` | `3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0042-3630c01fb55d` | `EIP-0010` | `chapter19-incident-response.predraft.md` | `3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68` | `rewritten` | PR #153でIssue #42とcurrent contract・再検証済み一次資料から第19章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0010/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter18のDispositionは不変。 |
 
 ### `chapter-20` / Issue #43
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0043-58dc95fff364` | `EIP-0011` | `chapter20-dfir-timeline-causality.predraft.md` | `58dc95fff36417b259bab6c965d2bfe2289b3d59fa5d4e4f57a2b49806c81078` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0043-58dc95fff364` | `EIP-0011` | `chapter20-dfir-timeline-causality.predraft.md` | `58dc95fff36417b259bab6c965d2bfe2289b3d59fa5d4e4f57a2b49806c81078` | `rewritten` | PR #156でIssue #43とcurrent contract・再検証済み一次資料から第20章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0011/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter21のDispositionは不変。 |
 
 ### `chapter-21` / Issue #44
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0044-a729d22fb189` | `EIP-0011` | `chapter21-purple-team-control-validation.predraft.md` | `a729d22fb1898e62d5ddf0d7bc2ebd1e4794ed82a49d77ff65ddaaf1aff0dbff` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0044-a729d22fb189` | `EIP-0011` | `chapter21-purple-team-control-validation.predraft.md` | `a729d22fb1898e62d5ddf0d7bc2ebd1e4794ed82a49d77ff65ddaaf1aff0dbff` | `rewritten` | PR159の利用者による通常mergeとmain公開を確認。共通Mermaid修正PR161・cleanup再発防止PR163のmerge後、全公開面と図の描画を再検証しIssue44を完了。登録rawは不在・未読・実体hash未照合・直接採用なしのまま、current契約と一次資料から再構成した正本の完了だけを記録する。 |
 
 ### `chapter-22` / Issue #45
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0045-78813e20d84e` | `EIP-0012` | `chapter22-measurement-improvement.predraft.md` | `78813e20d84e495b2aada2173b50b80a3efe947d9689dd90718e2a617a3bf15c` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0045-78813e20d84e` | `EIP-0012` | `chapter22-measurement-improvement.predraft.md` | `78813e20d84e495b2aada2173b50b80a3efe947d9689dd90718e2a617a3bf15c` | `rewritten` | PR166の利用者による通常merge、実mainのCI/Pagesと全公開面・図の検証を確認しIssue45を完了。登録rawは不在・未読・実体hash未照合・直接採用なしのまま、現行契約と一次資料から再構成した正本の公開完了だけを記録する。 |
 
 ### `chapter-23` / Issue #46
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0046-29d20db7f44a` | `EIP-0002` | `chapter23-intelligence-requirements.predraft.md` | `29d20db7f44a073d8aa3b8d1c18db109f479297da79cec787edc5e8b4e5b9493` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0046-29d20db7f44a` | `EIP-0002` | `chapter23-intelligence-requirements.predraft.md` | `29d20db7f44a073d8aa3b8d1c18db109f479297da79cec787edc5e8b4e5b9493` | `rewritten` | PR173利用者通常mergeと実main CI/Pages・全公開面/図/レビュー根拠を確認しIssue46を完了。登録raw不在・未読・実体hash未照合・直接採用なしは保持し、現行契約と一次資料から新規制作した正本の公開完了だけを記録する。 |
 
 ### `chapter-24` / Issue #47
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0047-b1b83a6735ac` | `EIP-0003` | `chapter24-osint-provenance-sources.predraft.md` | `b1b83a6735ac33f66afa27d1ac2ce1f260d70fc904eca9b6b5c2fefb36ed59bd` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0047-b1b83a6735ac` | `EIP-0003` | `chapter24-osint-provenance-sources.predraft.md` | `b1b83a6735ac33f66afa27d1ac2ce1f260d70fc904eca9b6b5c2fefb36ed59bd` | `rewritten` | PR176の利用者通常mergeと実main CI/Pages・全公開面/図/レビュー根拠を確認しIssue47を完了。raw未読・実体hash未照合・直接採用なしを保持し、現行契約と一次資料から新規制作した正本の公開完了だけを記録する。 |
 
 ### `chapter-26` / Issue #48
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0048-38a432a5daf5` | `EIP-0004` | `chapter26-cti-distribution.predraft.md` | `38a432a5daf5477a3b986f8c19307d89a9565edf2f0d3a25ea9815126bb5bf32` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0048-38a432a5daf5` | `EIP-0004` | `chapter26-cti-distribution.predraft.md` | `38a432a5daf5477a3b986f8c19307d89a9565edf2f0d3a25ea9815126bb5bf32` | `rewritten` | PR179の利用者通常mergeと実main CI/Pages・全公開面/図/レビュー根拠を確認しIssue48を完了。raw未読・実体hash未照合・直接採用なしを保持し、現行契約と一次資料から新規制作した正本の公開完了だけを記録する。 |
 
 ### `chapter-27` / Issue #49
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0049-32e8846cf56d` | `EIP-0007` | `chapter27-ai-agent-security.predraft.md` | `32e8846cf56d741ba7fc28ca36df288132192e48d8f142dc8c32d433da375fed` | `registered` | 前提完了後にcurrent contractと一次資料へ再構成する登録候補。 |
+| `EIC-0049-32e8846cf56d` | `EIP-0007` | `chapter27-ai-agent-security.predraft.md` | `32e8846cf56d741ba7fc28ca36df288132192e48d8f142dc8c32d433da375fed` | `rewritten` | PR183の利用者通常mergeと実main CI/Pages・全公開面/図/レビュー根拠を確認しIssue49を完了。raw未読・実体hash未照合・直接採用なしを保持し、現行契約と一次資料から新規制作した正本の公開完了だけを記録する。 |
 
 ### `chapter-28` / Issue #50
 

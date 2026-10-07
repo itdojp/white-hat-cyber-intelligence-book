@@ -1,0 +1,281 @@
+{
+  "version": "1.0.0",
+  "records": [
+    {
+      "id": "P2-NEG-DRAFT",
+      "chapter": 9,
+      "path": [
+        "record",
+        "status"
+      ],
+      "value": "Approved",
+      "error": "P2-roe-draft",
+      "invariant": "Unapproved parent remains Draft"
+    },
+    {
+      "id": "P2-NEG-EXPIRED",
+      "chapter": 9,
+      "path": [
+        "parents",
+        "authorizationExpiresAt"
+      ],
+      "value": "2027-08-19T09:00:00Z",
+      "error": "P2-expiry",
+      "invariant": "Do not renew a historical approval"
+    },
+    {
+      "id": "P2-NEG-WINDOW",
+      "chapter": 15,
+      "path": [
+        "parents",
+        "authorizationWindow"
+      ],
+      "value": [
+        "2026-09-19T00:00:00Z",
+        "2026-09-19T08:00:00Z"
+      ],
+      "error": "P2-parent-15-window",
+      "invariant": "Do not move the parent window to a new lesson"
+    },
+    {
+      "id": "P2-NEG-SCOPE",
+      "chapter": 12,
+      "path": [
+        "parents",
+        "roeObjectIds"
+      ],
+      "value": [
+        "APP-IAR12-001"
+      ],
+      "error": "P2-parent-12-roeObjectIds",
+      "invariant": "No automatic scope expansion"
+    },
+    {
+      "id": "P2-NEG-CASE",
+      "chapter": 15,
+      "path": [
+        "parents",
+        "independentCaseId"
+      ],
+      "value": "CASE-2026-001",
+      "error": "P2-parent-15-independentCaseId",
+      "invariant": "CASE11 remains independent"
+    },
+    {
+      "id": "P2-NEG-BORROW-ROE",
+      "chapter": 11,
+      "path": [
+        "authority",
+        "id"
+      ],
+      "value": "ROE-2026-009",
+      "error": "P2-independent-roe",
+      "invariant": "Independent Case cannot borrow parent RoE"
+    },
+    {
+      "id": "P2-NEG-BORROW-EVIDENCE",
+      "chapter": 15,
+      "path": [
+        "context",
+        "parentEvidenceRole"
+      ],
+      "value": "evidence-for-new-subject",
+      "error": "P2-new-subject-parentEvidenceRole",
+      "invariant": "Method reference is not subject evidence"
+    },
+    {
+      "id": "P2-NEG-INDEPENDENT-EVIDENCE",
+      "chapter": 15,
+      "path": [
+        "context",
+        "independentEvidenceUsed"
+      ],
+      "value": true,
+      "error": "P2-new-subject-independentEvidenceUsed",
+      "invariant": "No evidence import from independent Case"
+    },
+    {
+      "id": "P2-NEG-DELIVERED",
+      "chapter": 14,
+      "path": [
+        "handoffs",
+        0,
+        "status"
+      ],
+      "value": "delivered",
+      "error": "P2-undelivered-14-0",
+      "invariant": "A reference is not a delivery receipt"
+    },
+    {
+      "id": "P2-NEG-BINDING",
+      "chapter": 13,
+      "path": [
+        "parentIdentity",
+        "currentBinding"
+      ],
+      "value": "Confirmed",
+      "error": "P2-binding",
+      "invariant": "Validated path does not prove current binding"
+    },
+    {
+      "id": "P2-NEG-BUILD",
+      "chapter": 13,
+      "path": [
+        "safety",
+        "actualBuilds"
+      ],
+      "value": 1,
+      "error": "P2-platform-actualBuilds",
+      "invariant": "Supplied summary comparison is not a real build"
+    },
+    {
+      "id": "P2-NEG-TIMELINE",
+      "chapter": 15,
+      "path": [
+        "record",
+        "scenarioMeaning"
+      ],
+      "value": "one-production-timeline",
+      "error": "P2-alternatives",
+      "invariant": "Seven authored alternatives are independent"
+    },
+    {
+      "id": "P2-NEG-RETEST-FINDING",
+      "chapter": 15,
+      "path": [
+        "retests",
+        0,
+        "findingId"
+      ],
+      "value": "FND-FRT15-002",
+      "error": "P2-0-retest-findingId",
+      "invariant": "Retest must bind to its own Finding"
+    },
+    {
+      "id": "P2-NEG-RETEST-SUBJECT",
+      "chapter": 15,
+      "path": [
+        "retests",
+        0,
+        "subjectId"
+      ],
+      "value": "APP-IAR12-001",
+      "error": "P2-0-retest-subjectId",
+      "invariant": "Retest must not substitute the parent subject"
+    },
+    {
+      "id": "P2-NEG-RETEST-REVISION",
+      "chapter": 15,
+      "path": [
+        "retests",
+        0,
+        "beforeRevision"
+      ],
+      "value": "BEFORE-FRT15-002",
+      "error": "P2-0-retest-beforeRevision",
+      "invariant": "Before revision belongs to this Finding"
+    },
+    {
+      "id": "P2-NEG-EXPECTED",
+      "chapter": 15,
+      "path": [
+        "retests",
+        0,
+        "criteria",
+        0,
+        "expected"
+      ],
+      "value": "read-all-summaries",
+      "error": "P2-0-original-requirement",
+      "invariant": "Do not move the expectation to the observed value"
+    },
+    {
+      "id": "P2-NEG-DECISION",
+      "chapter": 15,
+      "path": [
+        "findings",
+        0,
+        "decision",
+        "findingId"
+      ],
+      "value": "FND-FRT15-002",
+      "error": "P2-0-decision-finding",
+      "invariant": "Decision must bind to its own Finding"
+    },
+    {
+      "id": "P2-NEG-BOOL",
+      "chapter": 15,
+      "path": [
+        "findings",
+        0,
+        "decision",
+        "executionAuthorized"
+      ],
+      "value": 0,
+      "error": "P2-0-decision-not-permission",
+      "invariant": "False cannot be substituted by numeric zero"
+    }
+  ],
+  "publication": [
+    {
+      "id": "P2-SAFE-PROHIBITION",
+      "source": "第三者サイトへのスキャンは行わない。",
+      "unsafe": false,
+      "invariant": "Explicit prohibition remains safe"
+    },
+    {
+      "id": "P2-SAFE-BOUNDED",
+      "source": "合成資料の比較だけを行い、実操作は行わない。",
+      "unsafe": false,
+      "invariant": "Bounded read-only analysis"
+    },
+    {
+      "id": "P2-UNSAFE-DIRECT",
+      "source": "第三者サイトをスキャンする。",
+      "unsafe": true,
+      "invariant": "Direct unsafe instruction reaches shared Policy"
+    },
+    {
+      "id": "P2-UNSAFE-TAIL",
+      "source": "# 読解\n\n合成資料だけを読む。\n\n第三者サイトをスキャンする。",
+      "unsafe": true,
+      "invariant": "Document tail is scanned"
+    },
+    {
+      "id": "P2-UNSAFE-PREAMBLE",
+      "source": "第三者サイトをスキャンする。\n\n# 読解",
+      "unsafe": true,
+      "invariant": "Preamble is scanned"
+    },
+    {
+      "id": "P2-UNSAFE-TITLE",
+      "source": "[資料](https://fixture.example/ \"第三者サイトをスキャンする。\")",
+      "unsafe": true,
+      "invariant": "Reader-visible title reaches shared Policy"
+    },
+    {
+      "id": "P2-UNSAFE-HOST",
+      "source": "[資料](https://real-target.com/)",
+      "unsafe": true,
+      "invariant": "Absolute destination reaches shared host policy"
+    },
+    {
+      "id": "P2-UNSUPPORTED",
+      "source": "{% include unsafe.html %}",
+      "unsafe": true,
+      "invariant": "Shared unsupported syntax fails closed"
+    },
+    {
+      "id": "P2-SAFE-LOCAL-LINK",
+      "source": "[記入例](ch15-findings-retest-risk-example.md)",
+      "unsafe": false,
+      "invariant": "Relative canonical link is not a host"
+    },
+    {
+      "id": "P2-SAFE-NEARMISS",
+      "source": "同じCase IDでも、対象と版は別に照合する。",
+      "unsafe": false,
+      "invariant": "ID comparison alone is safe"
+    }
+  ]
+}

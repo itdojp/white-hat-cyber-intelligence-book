@@ -5,28 +5,31 @@
     {
       "id": "SRC-ATTACK-001",
       "publisher": "MITRE",
-      "title": "MITRE ATT&CK Version History and April 2026 Updates",
+      "title": "MITRE ATT&CK Version History and August 2026 Updates",
       "kind": "framework",
       "status": "current",
-      "version": "19.1",
+      "version": "19.2",
       "url": "https://attack.mitre.org/resources/versions/",
-      "publishedAt": "2026-04-28",
-      "checkedAt": "2026-08-03",
-      "nextReviewAt": "2026-11-03",
+      "publishedAt": null,
+      "checkedAt": "2026-09-28",
+      "nextReviewAt": "2026-12-21",
       "reviewTriggers": [
-        "ATT&CK major or minor release"
+        "ATT&CK major or minor release",
+        "Used Object version, modified, revoked/deprecated or relationship change"
       ],
       "chapters": [
         0,
         1,
         5,
+        6,
         16,
         17,
+        18,
         21,
         25,
         26
       ],
-      "notes": "Current version page identifies ATT&CK v19.1 as current from 2026-04-28. Chapter 17 relies on ATT&CK framing that detection mapping is not coverage proof; Chapter 25 uses it only as behavior-mapping vocabulary and not as attribution proof."
+      "notes": "Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration. publishedAt is null because the live Version History page does not establish its own publication timestamp. The related release UTC timestamp and Updates effective/start date above are separate context, not the publication date of this live page. Publication date of the live page is unknown; monitor Version History and Updates on the recorded review triggers rather than guessing a date. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Version History19.2; inherited Chapter5 snapshot retained; behavior mapping is not telemetry coverage. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: 公式Version History current19.2とUpdatesを確認。版付き仮説語彙に限定し、全CTI object監査・Coverage認定・帰属推定ではない。詳細はch18-source-review-2026-09-22.md。 第21章（2026-09-25）では公式Versions/Updatesの現在版19.2と更新日の文脈を確認。既存CTI pin/Hashとhistorical版を保持し、親17のT1098を方法参照とする。全Object監査・Control有効性・Coverageの証明には使わない。 Chapter26 scoped review 2026-09-28 JST: official Versions/Updates still identify 19.2. Existing snapshot commit/hash, publication-date precision and historical Chapter25 v19.1 wording remain unchanged. Use is behavior vocabulary only, not object-wide audit, coverage/effectiveness or attribution proof. The independent STIX teaching example does not copy current ATT&CK objects. See references/ch26-source-review-2026-09-28.md."
     },
     {
       "id": "SRC-ATTACK-DS-001",
@@ -37,15 +40,17 @@
       "version": "Deprecated in ATT&CK v18",
       "url": "https://attack.mitre.org/datasources/",
       "publishedAt": null,
-      "checkedAt": "2026-08-03",
-      "nextReviewAt": "2026-11-03",
+      "checkedAt": "2026-09-06",
+      "nextReviewAt": "2026-12-06",
       "reviewTriggers": [
-        "ATT&CK data source taxonomy change or deprecation status change"
+        "ATT&CK data source taxonomy change or deprecation status change",
+        "Used Object version, modified, revoked/deprecated or relationship change"
       ],
       "chapters": [
+        5,
         17
       ],
-      "notes": "Official page states data sources were deprecated in the ATT&CK v18 release in October 2025 and no new data sources will be added. The exact publication day is not recorded on the page, so publishedAt remains null."
+      "notes": "Official page states data sources were deprecated in the ATT&CK v18 release in October 2025 and no new data sources will be added. The exact publication day is not recorded on the page, so publishedAt remains null. Rechecked for Chapter 5 on 2026-09-06; used only for historical migration explanation. Current Data Component objects are evaluated separately."
     },
     {
       "id": "SRC-ATTACK-DET-001",
@@ -56,15 +61,21 @@
       "version": null,
       "url": "https://attack.mitre.org/detectionstrategies/",
       "publishedAt": null,
-      "checkedAt": "2026-08-03",
-      "nextReviewAt": "2026-11-03",
+      "checkedAt": "2026-09-25",
+      "nextReviewAt": "2026-12-21",
       "reviewTriggers": [
-        "ATT&CK detection strategy additions or model changes"
+        "ATT&CK detection strategy additions or model changes",
+        "Used Object version, modified, revoked/deprecated or relationship change"
       ],
       "chapters": [
-        17
+        5,
+        6,
+        16,
+        17,
+        18,
+        21
       ],
-      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt."
+      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt. Rechecked for Chapter 5 on 2026-09-06; DET0539 and analytic/data-component references are pinned separately in SRC-ATTACK-T1671-001. No product detection validation is implied. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Introductory definition of strategies grouping platform analytics only; no new object mapping or catalogue count. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: Strategyが複数Analyticsをまとめる導入説明を確認。五Resultと有限Hunt算法は本書独自で、製品Query・取得済みCoverageの証明ではない。詳細はch18-source-review-2026-09-22.md。 第21章（2026-09-25）では公式Page導入の上位方針とPlatform別Analyticsの区別に限定して確認。全Strategy/Analyticsや件数を固定せず、独立Page版・日付不明のnullを保持。掲載やmappingを実検知成功にしない。"
     },
     {
       "id": "SRC-SIGMA-001",
@@ -135,7 +146,7 @@
       "version": "2.0",
       "url": "https://www.nist.gov/cyberframework",
       "publishedAt": "2024-02-26",
-      "checkedAt": "2026-08-08",
+      "checkedAt": "2026-09-26",
       "nextReviewAt": "2026-11-08",
       "reviewTriggers": [
         "NIST CSF revision or errata",
@@ -147,7 +158,7 @@
         19,
         22
       ],
-      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。"
+      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。 2026-09-23用途限定確認: 第19章ではFinal CSWP 29（2024-02-26）印刷p.5の六Functionを上位Outcomeとして参照し、固定直列IR手順・本書七状態の規範算法・適合認定とはしない。 第22章用途限定確認（2026-09-26）: CSWP29 Final2024-02-26の公式landing/PDF、§3.1印刷pp.6〜7のCurrent/Target Profile、Gap、優先行動計画を確認。Metric/七状態の規範算法やmappingからの効果証明ではない。既存章notesと次回確認日を保持。"
     },
     {
       "id": "SRC-NIST-RISK-001",
@@ -200,19 +211,22 @@
       "version": "SP 800-61 Rev.3",
       "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
       "publishedAt": "2025-04-03",
-      "checkedAt": "2026-08-03",
+      "checkedAt": "2026-09-26",
       "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
         "NIST revision or supplemental guidance change"
       ],
       "chapters": [
         1,
+        16,
         17,
+        18,
         19,
         20,
+        21,
         22
       ],
-      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03."
+      "notes": "Supersedes SP 800-61 Rev.2. Verified final publication date on 2026-08-03. Chapter16 scoped review (2026-09-21): PR.PS-04 and RS.AN-06/07 only: log readiness, records integrity/provenance, authorized access and retention. Not a telemetry schema or legal certification. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: FinalのDE.AE-08/p26、RS.MA-02/p27、RS.AN-06/07/p29をIncident基準・Triage・記録の来歴に限定参照。本書の五Resultや算法の規範・法的認定ではない。詳細はch18-source-review-2026-09-22.md。 2026-09-23用途限定確認: 第19章はSP800-61r3 Final（2025-04-03）pp.1–2、DE.AE-08 p.26、RS.MA-02〜05 pp.27–28、RS.AN-06/07 p.29、RS.CO-02/03 pp.30–31、RS.MI-01/02 pp.32–33、RC.RP-01〜06 p.34を宣言・分類・記録・通知照会・復旧検証に参照。七状態と有限判断は本書独自で、実権限・真正性・個別法的通知判断は認定しない。 2026-09-25: Chapter20用途としてRev3 Final2025-04-03の公式landing/PDFを再確認。印刷pp.28–29のRS.AN-03/06/07を順序・関連資産・根底の原因を問うこと、調査記録、来歴・保持に限定採用。二Eventの相関を原因とせず、有限教材の算法や普遍的保持・法的適格性の根拠にはしない。 第21章（2026-09-25）では公式Final/PDFの印刷p.13 GV.RR-02、pp.19〜20 ID.IM-01/02/03に限定し、役割・権限と評価/演習/運用からの改善を確認。供給仮定を実権限や実Incident由来の教訓にせず、実対応手順・個別法的判断は対象外。 第22章用途限定確認（2026-09-26）: Rev3 Final2025-04-03の公式landing/PDF、ID.IM-01〜03印刷pp.19〜20の評価・演習・運用からの改善を参照。供給比較を実Incident教訓や実Risk reductionとしない。既存章notesと次回確認日を保持。"
     },
     {
       "id": "SRC-BERKELEY-001",
@@ -223,17 +237,20 @@
       "version": "2022 edition",
       "url": "https://www.ohchr.org/en/publications/policy-and-methodological-publications/berkeley-protocol-digital-open-source",
       "publishedAt": null,
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2027-07-25",
+      "checkedAt": "2026-09-27",
+      "nextReviewAt": "2027-09-14",
       "reviewTriggers": [
-        "new edition"
+        "new edition",
+        "Official URL relocation or adopted evidence-handling scope change"
       ],
       "chapters": [
         8,
+        10,
+        20,
         24,
         25
       ],
-      "notes": "Official publication identifies the 2022 edition; an exact publication day is not recorded here."
+      "notes": "Official publication identifies the 2022 edition; an exact publication day is not recorded here. Chapter 8 scoped recheck on 2026-09-13 uses the official co-publisher 2022 PDF, VI.C 155(g/h) and VI.D 167–169, for time/hash/context, handling history and original/working-copy distinction only. OHCHR landing direct retrieval returned HTTP 403. Exact edition publication day remains unknown; neither the separate 2020 announcement nor the PDF path is substituted. Chapter 25 edition and source-evaluation meaning remain unchanged. No legal admissibility, complete chain-of-custody certification, copied tables, or full cross-chapter audit is claimed. 2026-09-25: Chapter20用途の限定確認。OHCHR landingは403で再読不能、共同発行者UC Berkeley公式projectとlinked PDFは200。表題・版権頁で2022 edition、VI.C154/155(g,h)印刷p.59とVI.D167〜169 p.61の原形式・変換記録・取得文脈・来歴・作業Copyを確認。正確な刊行日不明のpublishedAt nullを保持。Digital Open Source調査の原則を参考にするだけで、一般DFIRの法的適格性・実調査許可・全節監査を認定しない。 Chapter24 scoped review 2026-09-27: official co-publisher project/publication links to the 102-page 2022 PDF, directly retrieved with byte evidence. VI.B147–152/C154–155/D167–169/E176–178,187,192–194/F196–197 supports bounded provenance, working-copy processing, context and verification only. OHCHR landing returned HTTP 403. Keep exact edition publication day unknown; 2020 landing date is not the 2022 publication day. No civilian collection authority, legal admissibility, copied tables, real-person investigation or whole-registry audit is claimed. See references/ch24-source-review-2026-09-27.md."
     },
     {
       "id": "SRC-OWASP-TOP10-001",
@@ -244,8 +261,8 @@
       "version": "2025",
       "url": "https://owasp.org/Top10/",
       "publishedAt": null,
-      "checkedAt": "2026-08-03",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
       "reviewTriggers": [
         "new OWASP Top 10 release or correction"
       ],
@@ -253,7 +270,7 @@
         7,
         11
       ],
-      "notes": "Official project page identifies this as the 2025 release; an exact release day is not recorded here."
+      "notes": "Official project page identifies this as the 2025 release; an exact release day is not recorded here. Chapter 7 scoped recheck of the 2025 official edition on 2026-09-12 preserves Chapter 11 awareness-only use; not a complete assessment or a per-environment priority score."
     },
     {
       "id": "SRC-WSTG-001",
@@ -264,18 +281,19 @@
       "version": "4.2; 5.0 under development",
       "url": "https://owasp.org/www-project-web-security-testing-guide/",
       "publishedAt": "2020-12-03",
-      "checkedAt": "2026-08-03",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-09-17",
+      "nextReviewAt": "2026-12-17",
       "reviewTriggers": [
         "WSTG stable or 5.0 release"
       ],
       "chapters": [
         9,
+        10,
         11,
         14,
         15
       ],
-      "notes": "Versioned links should be used in published chapters."
+      "notes": "Versioned links should be used in published chapters. Chapter 9 scoped re-audit 2026-09-13: official project and versioned v42 Introduction retain stable 4.2 and 5.0 development. Requirements/evidence/reporting vocabulary bridges to independent Chapter 11; no legal authority or full technique adoption. Chapter 14 scoped primary-text review (2026-09-16): versioned 4.2 Introduction only, What is Testing, How To Reference WSTG Scenarios/Linking, and The Need for a Balanced Approach. No individual technique or complete scenario corpus adopted; 5.0 development and 4.3 Unreleased are not the adopted version. Six Results/four Methods are book-owned; supplied response comparison is not real HTTP testing. Scope: references/ch14-source-review-2026-09-16.md. Existing chapter 15 mapping is retained, not freshly audited here. Chapter 15 scoped primary-text review (2026-09-17): v4.2 Reporting at fixed commit dd33419e10edb22b78d89325a6c2aad9f184e3a2, About this Section, 1.4 Scope, 1.5 Limitations, 2 Executive Summary and 3 Findings including prior-report/retest references and 3.2 fields. A proposed reporting format, not a mandatory standard. No individual exploitation steps, real sensitive-data acquisition, disclaimer reproduction or external bibliography adopted. Six Finding Statuses/five Retest Results are book-owned. Fixed blob and SHA256: references/ch15-source-review-2026-09-17.md."
     },
     {
       "id": "SRC-API-001",
@@ -302,18 +320,18 @@
       "title": "Exploit Prediction Scoring System",
       "kind": "continuous-data",
       "status": "current",
-      "version": "v4 model line",
+      "version": "v5 (model identifier v2026.06.15)",
       "url": "https://www.first.org/epss/",
-      "publishedAt": "2025-03-17",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "publishedAt": null,
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
       "reviewTriggers": [
         "EPSS model version change"
       ],
       "chapters": [
         7
       ],
-      "notes": "Scores are daily and must not be copied into stable prose. FIRST documents EPSS v4 as starting 2025-03-17."
+      "notes": "Daily continuous data, not organization compromise probability. FIRST Data confirms v5 operational from 2026-06-15, distinct from the related July 15 release announcement publication. The live project page publication date is unknown, so publishedAt is null; the old v4 model start was not this page publication date. Chapter 7 uses a frozen 2026-09-11 CSV/API subset, not current values in stable explanatory prose. API v1 is not the model version. Reassess at model boundaries and each operational use."
     },
     {
       "id": "SRC-KEV-001",
@@ -324,8 +342,8 @@
       "version": null,
       "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
       "publishedAt": null,
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-09-26",
+      "nextReviewAt": "2026-12-12",
       "reviewTriggers": [
         "schema change or use in a specific assessment"
       ],
@@ -333,7 +351,7 @@
         7,
         22
       ],
-      "notes": "Use as an input to prioritization; individual entries require use-time checking."
+      "notes": "Individual entries require use-time checking; unlisted is not unexploited. Chapter 7 pinned official cisagov/kev-data commit acdcfd43102c098c377568b417a42c0e00cc63a5, Catalog 2026.09.11, 1709 entries. Canonical web page returned 403; official mirror README documents synchronization lag. Live catalog publication date and fixed version are not established, so publishedAt/version remain null; dated snapshot is separate. No inference of organization deadlines or legal exemption. Original BOD 26-04 text was inaccessible; the separate SRC-CISA-VRM-001 announcement supports issuance/purpose only. 第22章用途限定確認（2026-09-26）: canonical CatalogはHTTP403。公式cisagov/kev-data READMEのUpdate schedule/Usage/Licenseだけを確認し、継続更新Dataの例と取得時点・適用母集団固定の説明に限定。最新Catalog値・個別CVE・期限・BOD26-04本文・新Snapshotは未確認/不採用。第7章の過去Snapshot、version/publishedAt null、次回確認日を保持し、全件の再監査とはしない。"
     },
     {
       "id": "SRC-STIX-001",
@@ -344,15 +362,17 @@
       "version": "2.1",
       "url": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
       "publishedAt": "2021-06-10",
-      "checkedAt": "2026-07-25",
+      "checkedAt": "2026-09-28",
       "nextReviewAt": "2028-07-25",
       "reviewTriggers": [
-        "new OASIS Standard"
+        "new OASIS Standard",
+        "STIX Errata draft, Committee Specification, or Approved Errata stage change",
+        "correction to ID, common/version, object, relationship, domain-name or Bundle properties used by the Chapter26 finite profile"
       ],
       "chapters": [
         26
       ],
-      "notes": ""
+      "notes": "Chapter26 scoped review 2026-09-28 JST: fixed OS title/citation remains STIX 2.1 OASIS Standard, 10 June 2021. Live latest is 02 April 2025 Draft 01 of Errata 01 with Committee Specification Draft 01 citation, not treated here as Approved Errata. Checked selected ID/common/version, eight object types, Relationship, Domain Name and Bundle properties for the independent 13-object teaching profile only. No universal conformance, arbitrary pattern parser, analytic truth or authority claim. See references/ch26-source-review-2026-09-28.md."
     },
     {
       "id": "SRC-TAXII-001",
@@ -363,15 +383,17 @@
       "version": "2.1",
       "url": "https://docs.oasis-open.org/cti/taxii/v2.1/os/taxii-v2.1-os.html",
       "publishedAt": "2021-06-10",
-      "checkedAt": "2026-07-25",
+      "checkedAt": "2026-09-28",
       "nextReviewAt": "2028-07-25",
       "reviewTriggers": [
-        "new OASIS Standard"
+        "new OASIS Standard",
+        "TAXII Errata draft, Committee Specification, or Approved Errata stage change",
+        "correction to Discovery, API Root, Collection, Manifest, Objects envelope, Status or media-type properties used by Chapter26"
       ],
       "chapters": [
         26
       ],
-      "notes": ""
+      "notes": "Chapter26 scoped review 2026-09-28 JST: fixed OS title/citation is TAXII 2.1 OASIS Standard, 10 June 2021; latest HTML was byte-identical at retrieval. Checked Discovery/API Root/Collection, Manifest/Objects/Status and media version negotiation. Channel keywords reserved but services not defined in 2.1. Supplied Collection/GET envelope is offline, not a server response, delivery or permission proof. See references/ch26-source-review-2026-09-28.md."
     },
     {
       "id": "SRC-ICD203-001",
@@ -379,13 +401,14 @@
       "title": "ICD 203 Analytic Standards / Objectivity",
       "kind": "analytic-standard",
       "status": "official",
-      "version": "signed 2015-01-02; technical amendment effective 2022-01-21",
+      "version": "signed 2015-01-02; technical amendment effective 2022-01-21; official summary revision 2023-06 (signature day unverified)",
       "url": "https://www.dni.gov/files/documents/ICD/ICD-203.pdf",
       "publishedAt": "2015-01-02",
-      "checkedAt": "2026-08-03",
+      "checkedAt": "2026-09-28",
       "nextReviewAt": "2027-08-03",
       "reviewTriggers": [
-        "ODNI directive amendment or replacement"
+        "ODNI directive amendment or replacement",
+        "verify exact signature date of the officially summarized June 2023 revision when primary evidence becomes available"
       ],
       "chapters": [
         1,
@@ -394,7 +417,7 @@
         25,
         26
       ],
-      "notes": "Official PDF shows ICD 203 signed on 2015-01-02 and a technical amendment effective on 2022-01-21. Used for source quality, uncertainty/confidence, assumptions, alternatives, and logical argumentation."
+      "notes": "Official PDF shows ICD 203 signed on 2015-01-02 and a technical amendment effective on 2022-01-21. Used for source quality, uncertainty/confidence, assumptions, alternatives, and logical argumentation. Scoped review 2026-09-26: the official Objectivity page (https://www.intelligence.gov/mission/our-values/objectivity) identifies revision/revalidation/approval in June 2023. The current eight-page official PDF also has a leading annual-training amendment. The exact 2023 signature day remains unverified (null), not inferred from search indexing; publishedAt retains the original 2015 directive date. Web-reader text and the official summary were inspected, not PDF signature images or downloaded-byte hashes. Existing Chapter 1/25 uses of D.6 remain unchanged; no civilian collection authority or analytic correctness is conferred. The historical Chapter 25 audit baseline 2026-08-03 and nextReviewAt 2027-08-03 are retained. Future mapped chapters are not certified by this scoped review; see references/icd203-source-review-2026-09-26.md. Chapter23 scoped review 2026-09-27: D.6.c/d/e supports timely customer requirements, critical gaps, source quality, uncertainty, assumptions and alternatives only. Rechecked official extracted PDF text and Objectivity; prior version precision and unverified signature day/images/byte hashes remain unchanged. ART-29 statuses, priorities and supplied evidence are author-designed, not ICD requirements or civilian collection authority. See references/ch23-source-review-2026-09-27.md; other future mapped chapters remain unreviewed here. Chapter24 scoped review 2026-09-27: official web-reader D6.e(1)–(3) and Objectivity rechecked for source quality, uncertainty and information/assumption/judgment separation only. Direct PDF download returned HTTP 403; signature day/images/downloaded-PDF byte hash remain unverified. Existing edition history and other chapter uses are retained. ART-30 finite categories and supplied relations are author-designed, not IC rules or civilian authority. See references/ch24-source-review-2026-09-27.md. Chapter26 scoped review 2026-09-28 JST: official web-reader D6.c/d/e and Objectivity rechecked for timeliness, source quality, uncertainty, assumptions/judgments and alternatives. Direct PDF and summary HTTP requests returned 403; exact signature day/images/downloaded-PDF byte hash remain unverified. Existing edition history, original publication date and other chapter meanings retained. No civilian collection authority or universal legal duty is inferred. ART08/09 lifecycle and supplied decisions are author-designed. See references/ch26-source-review-2026-09-28.md."
     },
     {
       "id": "SRC-CIA-SAT-001",
@@ -424,16 +447,16 @@
       "version": "NIST AI 600-1",
       "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
       "publishedAt": "2024-07-26",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2027-04-08",
+      "checkedAt": "2026-09-29",
+      "nextReviewAt": "2026-12-29",
       "reviewTriggers": [
-        "NIST update or successor profile"
+        "NIST update or successor profile",
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
       ],
       "chapters": [
-        27,
-        28
+        27
       ],
-      "notes": "Official page was updated 2026-04-08."
+      "notes": "Official page was updated 2026-04-08. Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. "
     },
     {
       "id": "SRC-AML-001",
@@ -444,16 +467,16 @@
       "version": "NIST AI 100-2e2025",
       "url": "https://www.nist.gov/publications/adversarial-machine-learning-taxonomy-and-terminology-attacks-and-mitigations-0",
       "publishedAt": "2025-03-24",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-09-29",
+      "nextReviewAt": "2026-12-29",
       "reviewTriggers": [
-        "annual NIST AML update"
+        "annual NIST AML update",
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
       ],
       "chapters": [
-        27,
-        28
+        27
       ],
-      "notes": "NIST states an intent to update the report annually."
+      "notes": "NIST states an intent to update the report annually. Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. CSRC final 2025-03-24; corrected PDF announced 2025-04-01. Potential updates dated 2025-06-03 concern page x taxonomy index and are proposed, not official document changes. Sections 3.3/3.4 used for taxonomy only."
     },
     {
       "id": "SRC-OWASP-LLM-001",
@@ -461,19 +484,19 @@
       "title": "Top 10 for LLM and GenAI Applications",
       "kind": "awareness",
       "status": "released",
-      "version": "2025",
-      "url": "https://genai.owasp.org/llm-top-10/",
-      "publishedAt": "2024-11-17",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "version": "2026",
+      "url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-29",
+      "nextReviewAt": "2026-12-29",
       "reviewTriggers": [
-        "new Top 10 release or correction"
+        "new Top 10 release or correction",
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
       ],
       "chapters": [
-        27,
-        28
+        27
       ],
-      "notes": ""
+      "notes": " Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. Previous registered edition 2025 / publishedAt 2024-11-17. 2026 PDF publication date remains a placeholder: resource date 2026-08-03, announcement page 2026-09-01 and press-body 2026-09-02 are distinct, not a verified PDF release day. Risk IDs changed; all Chapter27 surfaces use versioned 2026 IDs."
     },
     {
       "id": "SRC-OWASP-AGENT-001",
@@ -484,35 +507,36 @@
       "version": "2026 guidance",
       "url": "https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/",
       "publishedAt": "2025-12-10",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "checkedAt": "2026-09-29",
+      "nextReviewAt": "2026-12-29",
       "reviewTriggers": [
-        "Agentic Top 10 update"
+        "Agentic Top 10 update",
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
       ],
       "chapters": [
-        27,
-        28
+        27
       ],
-      "notes": ""
+      "notes": " Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. Version 2026 PDF states December 2025; publishedAt retains press-body 2025-12-10, not PDF day. Blog/resource date 2025-12-09 is distinct. Risk vocabulary, not runtime effectiveness proof."
     },
     {
       "id": "SRC-AISVS-001",
       "publisher": "OWASP",
       "title": "Artificial Intelligence Security Verification Standard",
       "kind": "verification-standard",
-      "status": "live",
+      "status": "released",
       "version": "1.0",
-      "url": "https://owasp.org/www-project-artificial-intelligence-security-verification-standard-aisvs-docs/",
-      "publishedAt": "2026-06-24",
-      "checkedAt": "2026-07-25",
-      "nextReviewAt": "2026-10-25",
+      "url": "https://owasp.org/projects/artificial-intelligence-security-verification-standard-aisvs-docs",
+      "publishedAt": null,
+      "checkedAt": "2026-09-29",
+      "nextReviewAt": "2026-12-29",
       "reviewTriggers": [
-        "AISVS release or errata"
+        "AISVS release or errata",
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
       ],
       "chapters": [
         27
       ],
-      "notes": "Official page states AISVS 1.0 was released 2026-06-24."
+      "notes": "Official page states AISVS 1.0 was released 2026-06-24. Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. The earlier June 24 day statement above is historical and was not reconfirmed. Current official stable 1.0 locked source/PDF/header verify June 2026 only, so publishedAt is null. Pin aedffade1817238a493ff4d63c28d0d3855c98db / 1.0. Never use 1.01-dev or AI-generated research as 1.0 requirement text."
     },
     {
       "id": "SRC-JP-LAW-001",
@@ -523,8 +547,8 @@
       "version": "current display effective 2025-06-01",
       "url": "https://laws.e-gov.go.jp/law/411AC0000000128",
       "publishedAt": null,
-      "checkedAt": "2026-08-05",
-      "nextReviewAt": "2026-11-05",
+      "checkedAt": "2026-09-13",
+      "nextReviewAt": "2026-12-13",
       "reviewTriggers": [
         "law amendment or legal chapter release"
       ],
@@ -532,7 +556,7 @@
         2,
         9
       ],
-      "notes": "The e-Gov current display was rechecked on 2026-08-05 and showed the law effective from 2025-06-01. Always confirm current text before publication; this book is not legal advice."
+      "notes": "The e-Gov current display was rechecked on 2026-08-05 and showed the law effective from 2025-06-01. Always confirm current text before publication; this book is not legal advice. Chapter 9 scoped re-audit 2026-09-13: official law-data v2 and revision display confirm CurrentEnforced revision 411AC0000000128_20250601_504AC0000000068, effective 2025-06-01; Articles 2 and 3 read. The HTML shell alone is not text evidence. No individual legal applicability or renewed Authorization is asserted."
     },
     {
       "id": "SRC-IPA-VDP-001",
@@ -543,16 +567,17 @@
       "version": "2024 edition",
       "url": "https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html",
       "publishedAt": null,
-      "checkedAt": "2026-08-05",
-      "nextReviewAt": "2026-11-05",
+      "checkedAt": "2026-09-17",
+      "nextReviewAt": "2026-12-17",
       "reviewTriggers": [
         "guideline revision or disclosure chapter release"
       ],
       "chapters": [
         2,
+        9,
         15
       ],
-      "notes": "The official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05, and the official page showed last update 2026-04-06. The current page and linked guideline must be rechecked at publication time."
+      "notes": "The official IPA page and linked 2024 edition guideline were rechecked on 2026-08-05, and the official page showed last update 2026-04-06. The current page and linked guideline must be rechecked at publication time. Chapter 9 scoped re-audit 2026-09-13: official page and 61-page PDF retain 2024 edition, page last update 2026-04-06; role, handling and coordination sections reviewed. PDF SHA256 98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458. Reporting/coordination guidance is not assessment or publication permission. Chapter 15 scoped primary-text review (2026-09-17): 2024 guideline sections I roles/framework and II definitions of information, countermeasures and response status only. Audience and coordination remain separate from Finding status. No actual notification, publication-date decision, legal finding or full appendix audit. Existing publishedAt=null and prior chapter notes retained; scope and retrieved PDF hash: references/ch15-source-review-2026-09-17.md."
     },
     {
       "id": "SRC-IANA-TLD-001",
@@ -572,6 +597,623 @@
         25
       ],
       "notes": "Pinned operational snapshot used only by the Chapter 25 synthetic-publication safety gate; sha256:1a5b42ef79e837556bce63981f79591808237cb42f9fafb1c110783ddf0fcb95."
+    },
+    {
+      "id": "SRC-ATTACK-FAQ-001",
+      "publisher": "MITRE",
+      "title": "MITRE ATT&CK Frequently Asked Questions",
+      "kind": "framework-reference",
+      "status": "current",
+      "version": null,
+      "url": "https://attack.mitre.org/resources/faq/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-06",
+      "nextReviewAt": "2026-12-06",
+      "reviewTriggers": [
+        "Object semantics or FAQ change"
+      ],
+      "chapters": [
+        5
+      ],
+      "notes": "Used for Tactic, Technique, Sub-technique and Procedure distinctions and unordered tactics. No independent version or publication date; both remain null. Update cadence is taken from current Updates, not the older biannual FAQ description."
+    },
+    {
+      "id": "SRC-ATTACK-T1671-001",
+      "publisher": "MITRE",
+      "title": "ATT&CK v19.2 Enterprise STIX: T1671 and detection metadata subset",
+      "kind": "framework-reference",
+      "status": "snapshot",
+      "version": "19.2",
+      "url": "https://github.com/mitre/cti/blob/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json",
+      "publishedAt": "2026-08-05",
+      "checkedAt": "2026-09-06",
+      "nextReviewAt": "2026-12-06",
+      "reviewTriggers": [
+        "T1671, TA0003, DET0539, AN1487, AN1488, DC0066, DC0069 or DC0038 metadata/relationship change",
+        "ATT&CK release or data-model change"
+      ],
+      "chapters": [
+        5
+      ],
+      "notes": "Enterprise bundle SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Published date is the UTC calendar date of GitHub release timestamp 2026-08-05T22:57:35Z. The Updates start date is separately 2026-08-06; it is not the STIX release publication date. Finite metadata extraction includes active flags, original STIX IDs, object hashes and relationship provenance; excludes procedure descriptions. Website version URLs use v19, while exact commit fixes minor release. MITRE license notice is in THIRD_PARTY_NOTICES.md. These source relations do not demonstrate observed compromise or detection effectiveness."
+    },
+    {
+      "id": "SRC-NIST-ZTA-001",
+      "publisher": "NIST",
+      "title": "Zero Trust Architecture",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-207",
+      "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+      "publishedAt": "2020-08-11",
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
+      "reviewTriggers": [
+        "Revision, publication status, errata or adopted meaning changes"
+      ],
+      "chapters": [
+        6
+      ],
+      "notes": "Sections 3 and 3.4 only: logical decision/enforcement and control/data plane separation; not a compliance or product endorsement."
+    },
+    {
+      "id": "SRC-NIST-ZTAA-001",
+      "publisher": "NIST",
+      "title": "A Zero Trust Architecture Model for Access Control in Cloud-Native Applications in Multi-Cloud Environments",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-207A",
+      "url": "https://csrc.nist.gov/pubs/sp/800/207/a/final",
+      "publishedAt": "2023-09-13",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Revision, publication status, errata or adopted meaning changes"
+      ],
+      "chapters": [
+        6,
+        12
+      ],
+      "notes": "Application/service identity distinction only; no provider or deployment recipes."
+    },
+    {
+      "id": "SRC-NIST-LOG-001",
+      "publisher": "NIST",
+      "title": "Guide to Computer Security Log Management",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-92",
+      "url": "https://csrc.nist.gov/pubs/sp/800/92/final",
+      "publishedAt": "2006-09-13",
+      "checkedAt": "2026-09-21",
+      "nextReviewAt": "2026-12-21",
+      "reviewTriggers": [
+        "Revision, publication status, errata or adopted meaning changes"
+      ],
+      "chapters": [
+        6,
+        16
+      ],
+      "notes": "Sections 2-3 lifecycle, normalization, time and retention only. Old product examples and MD5/SHA-1 recommendations are not adopted. Chapter16 scoped review (2026-09-21): Sections3.2 functions/normalization/time,4.2 purpose/retention/access/sensitive information,5.6 bounded testing/reassessment only. Old products, legal examples, MD5/SHA1 advice and digest-as-signature wording are not adopted. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned."
+    },
+    {
+      "id": "SRC-NIST-LOG-DRAFT-001",
+      "publisher": "NIST",
+      "title": "Cybersecurity Log Management Planning Guide",
+      "kind": "guidance",
+      "status": "initial-public-draft",
+      "version": "SP 800-92 Rev.1 IPD",
+      "url": "https://csrc.nist.gov/pubs/sp/800/92/r1/ipd",
+      "publishedAt": "2023-10-11",
+      "checkedAt": "2026-09-21",
+      "nextReviewAt": "2026-12-21",
+      "reviewTriggers": [
+        "Revision, publication status, errata or adopted meaning changes"
+      ],
+      "chapters": [
+        6,
+        16
+      ],
+      "notes": "Monitoring only, not a final normative source. Publication history and NIST log-management project checked; closed comments do not mean Final. Chapter16 scoped review (2026-09-21): IPD2023-10-11 metadata/status only; closed comment period is not Final. Draft body not adopted. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned."
+    },
+    {
+      "id": "SRC-IETF-OAUTH-CORE-001",
+      "publisher": "IETF / RFC Editor",
+      "title": "The OAuth 2.0 Authorization Framework",
+      "kind": "standard",
+      "status": "proposed-standard",
+      "version": "RFC 6749",
+      "url": "https://www.rfc-editor.org/rfc/rfc6749.html",
+      "publishedAt": null,
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
+      "reviewTriggers": [
+        "Revision, publication status, errata or adopted meaning changes"
+      ],
+      "chapters": [
+        6
+      ],
+      "notes": "Published October 2012; exact publication day is unknown (null), because RFC metadata specifies the month only. Monitor RFC Editor metadata and errata, do not infer a day. Roles in 1.1 and client acting on its own behalf in 1.3.4 only. Updated by RFC 9700 (BCP 240, January 2025), checked separately; old grants/security recommendations and request examples are not adopted."
+    },
+    {
+      "id": "SRC-CVE-001",
+      "publisher": "NIST",
+      "title": "Common Vulnerabilities and Exposures glossary",
+      "kind": "glossary",
+      "status": "live-reference",
+      "version": null,
+      "url": "https://csrc.nist.gov/glossary/term/common_vulnerabilities_and_exposures",
+      "publishedAt": null,
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
+      "reviewTriggers": [
+        "Source version/status or adopted meaning changes",
+        "Before operational use or legal interpretation"
+      ],
+      "chapters": [
+        7
+      ],
+      "notes": "Definition read through primary-source browser retrieval; direct HTTP returned 403. CVE.org returned only a SPA shell, not evidence of reading its content. Version and publication date of this live glossary are unknown; both remain null. Identifier role only, not a severity or priority model."
+    },
+    {
+      "id": "SRC-CWE-001",
+      "publisher": "MITRE",
+      "title": "Common Weakness Enumeration Archive",
+      "kind": "taxonomy",
+      "status": "released",
+      "version": "4.20",
+      "url": "https://cwe.mitre.org/data/archive.html",
+      "publishedAt": "2026-04-30",
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
+      "reviewTriggers": [
+        "Source version/status or adopted meaning changes",
+        "Before operational use or legal interpretation"
+      ],
+      "chapters": [
+        7
+      ],
+      "notes": "Official cwec_v4.20.xml.zip root Version=4.20 and Date=2026-04-30 verified. Date comes from the XML release, not a footer/cache string. Chapter 7 selects CWE-639 Authorization Bypass Through User-Controlled Key; taxonomy is not a list of CVEs or a prioritization rule."
+    },
+    {
+      "id": "SRC-CVSS-001",
+      "publisher": "FIRST",
+      "title": "CVSS v4.0 Specification and User Guide",
+      "kind": "specification",
+      "status": "released",
+      "version": "4.0 / Specification 1.2 / User Guide 1.2",
+      "url": "https://www.first.org/cvss/v4.0/specification-document",
+      "publishedAt": null,
+      "checkedAt": "2026-09-17",
+      "nextReviewAt": "2026-12-17",
+      "reviewTriggers": [
+        "Source version/status or adopted meaning changes",
+        "Before operational use or legal interpretation"
+      ],
+      "chapters": [
+        7,
+        15
+      ],
+      "notes": "Standard 4.0 and document versions 1.2 directly verified. Exact publication day for the current document revision is unknown and is not inferred from the standard launch date. Base/Threat/Environmental/Supplemental and nomenclature only. Finite author-synthetic vectors checked with FIRSTdotorg/cvss-v4-calculator commit c5b0d409ae9f57c44264c6ce5f27d89298e1d32a; not vendor/CVE scores or a runtime calculator. Chapter 15 scoped primary-text review (2026-09-17): CVSS standard 4.0, Specification and User Guide document revision 1.2 verified. Specification introduction only for four metric groups, score/vector and additional organizational risk factors. User Guide revision verified, not a fresh complete scoring-rubric audit. Existing chapter 7 inputs preserved; no new OAuth score/vector or CVE rating transfer, no CWE adoption or calculator update. Scope: references/ch15-source-review-2026-09-17.md."
+    },
+    {
+      "id": "SRC-CISA-VRM-001",
+      "publisher": "CISA",
+      "title": "CISA Announces BOD 26-04: official issuance bulletin",
+      "kind": "official-announcement",
+      "status": "published",
+      "version": "BOD 26-04 issuance announcement only",
+      "url": "https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a",
+      "publishedAt": "2026-06-10",
+      "checkedAt": "2026-09-12",
+      "nextReviewAt": "2026-12-12",
+      "reviewTriggers": [
+        "Source version/status or adopted meaning changes",
+        "Before operational use or legal interpretation"
+      ],
+      "chapters": [
+        7
+      ],
+      "notes": "CISA-issued GovDelivery bulletin confirms issuance, federal-agency focus and risk-based prioritization purpose. Original directive text returned 403. Detailed applicability, exemptions, supersession and numeric deadlines are NOT adopted or verified by this announcement. Chapter 7 marks required-action applicability Unverified and requires separate authority/governance review before any operational action; no legal waiver."
+    },
+    {
+      "id": "SRC-NIST-DFIR-001",
+      "publisher": "NIST",
+      "title": "Guide to Integrating Forensic Techniques into Incident Response",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-86, Final, August 2006",
+      "url": "https://csrc.nist.gov/pubs/sp/800/86/final",
+      "publishedAt": null,
+      "checkedAt": "2026-09-25",
+      "nextReviewAt": "2027-09-13",
+      "reviewTriggers": [
+        "Revision, withdrawal, official URL relocation or adopted scope change"
+      ],
+      "chapters": [
+        8,
+        20
+      ],
+      "notes": "CSRC Date Published is August 2006; its distinct History date is 09/01/06. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3 and 3.1.2: collection/examination/analysis/reporting, acquisition planning, integrity and handling records. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed. 2026-09-25: Chapter20用途として公式Final landing/PDFを再確認。公表はAugust2006、正確な日付は未確定のためpublishedAt nullを保持。印刷pp.3-1/3-4/3-6〜3-8の収集・検査・分析・報告、完全性と作業Copy、複数Source・結論不能・代替説明の原則だけを採用。旧製品・取得手順・個別法的適格性・全節監査の根拠ではない。有限時刻幅/Cutoff/重複/Claimモデルは本書独自。"
+    },
+    {
+      "id": "SRC-NIST-CONTAINER-001",
+      "publisher": "NIST",
+      "title": "Application Container Security Guide",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-190, Final, September 2017",
+      "url": "https://csrc.nist.gov/pubs/sp/800/190/final",
+      "publishedAt": null,
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2027-09-15",
+      "reviewTriggers": [
+        "Revision, withdrawal, official URL relocation or adopted scope change"
+      ],
+      "chapters": [
+        8,
+        13
+      ],
+      "notes": "CSRC Date Published is September 2017; its distinct History date is 09/25/17. Exact publication day is unknown, so publishedAt is null rather than inferring a day from history. Chapter 8 scoped primary-text review: sections 3.5.2, 4.4.2, 4.4.3 and 4.5.5: shared-kernel residual risk, network/runtime/host boundaries. Historical principles only, not current product commands, legal advice or production assurance. SHA-256 and the finite eight-state synthetic receipt model are this book's educational contract, not a standard-mandated certification. No full-document local PDF hash audit is claimed. Chapter 13 scoped primary-text review on 2026-09-15: sections 3.5.2 and 4.1.4, shared-kernel residual risk and secret-handling boundaries, as recorded in references/ch13-source-review-2026-09-15.md. Historical principles only; no current product configuration, isolation assurance, full-document audit or local PDF hash audit is claimed. Chapter 13 uses a separate five-state authored-summary comparison, not Chapter 8's eight-state receipt lifecycle or a standard-mandated certification."
+    },
+    {
+      "id": "SRC-NIST-TEST-001",
+      "publisher": "NIST",
+      "title": "Technical Guide to Information Security Testing and Assessment",
+      "kind": "technical-guide",
+      "status": "final",
+      "version": "SP 800-115, September 2008",
+      "url": "https://csrc.nist.gov/pubs/sp/800/115/final",
+      "publishedAt": null,
+      "checkedAt": "2026-09-16",
+      "nextReviewAt": "2027-09-16",
+      "reviewTriggers": [
+        "NIST revision, withdrawal or supersession",
+        "Adopted planning scope or legal/authority boundary changes"
+      ],
+      "chapters": [
+        9,
+        14
+      ],
+      "notes": "Chapter 9 checked official landing and 80-page PDF on 2026-09-13. Adopted sections 6.5-6.6 and Appendix B: planning, scope, constraints, contacts, data, stop/restart, reporting and approval. Not a modern product procedure, blanket authorization or adoption of old offensive/covert examples. Date Published is September 2008; Document History 09/30/08 is a separate attribute. Exact publication day is unknown, so publishedAt is null; do not infer it from history. PDF SHA256 58e5ed41e5c8ca34ce14fd80b70f118f2c6d613d1647bc307edca30bcc45f063. The finite eight states and numeric limits are book-authored teaching assumptions, not NIST requirements. Chapter 14 scoped primary-text review (2026-09-16): sections 6.5, 7.2, 7.3, 7.4 introduction only, and 8.1-8.2 for planning, coordination/stop, analysis, data-handling scope and reporting. No historical covert/attack/product examples or section 7.4.4 media-sanitization classification adopted as current operations. Six Results, four Methods, two scalar criteria, eight authored records and separate Not performed/cleanup/residual rules are book-owned, not NIST requirements. Scope and PDF retrieval hash: references/ch14-source-review-2026-09-16.md."
+    },
+    {
+      "id": "SRC-CT-001",
+      "publisher": "RFC Editor / IETF",
+      "title": "Certificate Transparency Version 2.0",
+      "kind": "specification",
+      "status": "experimental",
+      "version": "RFC 9162",
+      "url": "https://www.rfc-editor.org/info/rfc9162/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-14",
+      "nextReviewAt": "2027-09-14",
+      "reviewTriggers": [
+        "RFC status, update, replacement or errata change",
+        "Adopted claim or Chapter10 scope changes"
+      ],
+      "chapters": [
+        10
+      ],
+      "notes": "Official RFC gives December 2021; publication day is unknown, so publishedAt remains null. Section 3.2.1 certificate/precertificate and issuance intent only; not deployed browser/CT implementation, current asset ownership or authorization. Erratum8670 Held for Document Update is outside adopted scope. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md."
+    },
+    {
+      "id": "SRC-SECURITYTXT-001",
+      "publisher": "RFC Editor / IETF",
+      "title": "A File Format to Aid in Security Vulnerability Disclosure",
+      "kind": "specification",
+      "status": "informational",
+      "version": "RFC 9116",
+      "url": "https://www.rfc-editor.org/info/rfc9116/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-14",
+      "nextReviewAt": "2027-09-14",
+      "reviewTriggers": [
+        "RFC status, update, replacement or errata change",
+        "Adopted claim or Chapter10 scope changes"
+      ],
+      "chapters": [
+        10
+      ],
+      "notes": "Official RFC gives April 2022; publication day is unknown, so publishedAt remains null. Section 5.5 only: file presence/absence is not testing permission. Errata6946 Verified and7264/7743 Reported are separate from that claim; no parser or signature implementation. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md."
+    },
+    {
+      "id": "SRC-DNS-TERM-001",
+      "publisher": "RFC Editor / IETF",
+      "title": "DNS Terminology",
+      "kind": "specification",
+      "status": "best-current-practice",
+      "version": "RFC 9499 / BCP 219",
+      "url": "https://www.rfc-editor.org/info/rfc9499/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-14",
+      "nextReviewAt": "2027-09-14",
+      "reviewTriggers": [
+        "RFC status, update, replacement or errata change",
+        "Adopted claim or Chapter10 scope changes"
+      ],
+      "chapters": [
+        10
+      ],
+      "notes": "Official RFC gives March 2024; publication day is unknown, so publishedAt remains null. Section 5 RR Owner term only, not corporate ownership. Obsoletes8499, updates2308. Erratum8189 Rejected. No numerical TTL implementation claims adopted. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md."
+    },
+    {
+      "id": "SRC-DNS-STALE-001",
+      "publisher": "RFC Editor / IETF",
+      "title": "Serving Stale Data to Improve DNS Resiliency",
+      "kind": "specification",
+      "status": "standards-track",
+      "version": "RFC 8767",
+      "url": "https://www.rfc-editor.org/info/rfc8767/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-14",
+      "nextReviewAt": "2027-09-14",
+      "reviewTriggers": [
+        "RFC status, update, replacement or errata change",
+        "Adopted claim or Chapter10 scope changes"
+      ],
+      "chapters": [
+        10
+      ],
+      "notes": "Official RFC gives March 2020; publication day is unknown, so publishedAt remains null. Section 4 serve-stale and TTL context only; no resolver implementation/tuning. Updates1034/1035/2181. Errata search returned no matching records at checkedAt. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md."
+    },
+    {
+      "id": "SRC-NIST-DIGITAL-001",
+      "publisher": "NIST",
+      "title": "Digital Identity Guidelines",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-63-4",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/4/final",
+      "publishedAt": "2025-07-31",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Revision/status/errata change",
+        "Adopted Chapter12 claim or scope changes"
+      ],
+      "chapters": [
+        12
+      ],
+      "notes": "Scope and Applicability / Assurance Levels only; natural-person scope, no machine-to-machine conformance claim. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-NIST-PROOFING-001",
+      "publisher": "NIST",
+      "title": "Digital Identity Guidelines: Identity Proofing and Enrollment",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-63A-4",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/a/4/final",
+      "publishedAt": "2025-07-31",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Revision/status/errata change",
+        "Adopted Chapter12 claim or scope changes"
+      ],
+      "chapters": [
+        12
+      ],
+      "notes": "Introduction only: identity proofing and natural-person scope; no real identity verification. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-NIST-AUTHN-001",
+      "publisher": "NIST",
+      "title": "Digital Identity Guidelines: Authentication and Authenticator Management",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-63B-4",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/b/4/final",
+      "publishedAt": "2025-07-31",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Revision/status/errata change",
+        "Adopted Chapter12 claim or scope changes"
+      ],
+      "chapters": [
+        12
+      ],
+      "notes": "Sections2 and3.2.5 only: authentication strength, MFA and phishing resistance; not authorization correctness. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-NIST-FEDERATION-001",
+      "publisher": "NIST",
+      "title": "Digital Identity Guidelines: Federation and Assertions",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-63C-4",
+      "url": "https://csrc.nist.gov/pubs/sp/800/63/c/4/final",
+      "publishedAt": "2025-07-31",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Revision/status/errata change",
+        "Adopted Chapter12 claim or scope changes"
+      ],
+      "chapters": [
+        12
+      ],
+      "notes": "IdP-issued Assertion Contents (#assertions) and Audience Restriction only; not wallet #assertion-contents or a token validator. Single-audience required FAL2+, not all FAL1. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-IETF-OAUTH-BCP-001",
+      "publisher": "RFC Editor / IETF",
+      "title": "Best Current Practice for OAuth 2.0 Security",
+      "kind": "specification",
+      "status": "best-current-practice",
+      "version": "RFC 9700 / BCP 240",
+      "url": "https://www.rfc-editor.org/info/rfc9700/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2027-09-15",
+      "reviewTriggers": [
+        "RFC status/update/replacement/errata change",
+        "Adopted Chapter12 claim changes"
+      ],
+      "chapters": [
+        12
+      ],
+      "notes": "Official publication gives January2025; exact day is unknown, so publishedAt is null. Updates6749/6750/6819. Section2.3 privilege/resource/action/audience restriction only; no token handling or protocol implementation. Official errata search: no matching records at checkedAt. Scoped review: references/ch12-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-NIST-SSDF-001",
+      "publisher": "NIST",
+      "title": "Secure Software Development Framework",
+      "kind": "guidance",
+      "status": "final",
+      "version": "SP 800-218 / SSDF 1.1",
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "publishedAt": null,
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Version/status/replacement/errata or adopted scope change"
+      ],
+      "chapters": [
+        13
+      ],
+      "notes": "Date Published February2022; History02/03/22 is distinct, so exact publication day unknown and publishedAt null. Chapter13 adopts only PS1.1/PS2.1/PS3.1/PS3.2/PW4.4. Rev1/SSDF1.2 remains Initial Public Draft (2025-12-17); not adopted as Final. No full-document local PDF/hash audit or standard conformance claim. Scoped review: references/ch13-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-SLSA-001",
+      "publisher": "SLSA / OpenSSF",
+      "title": "SLSA Specification",
+      "kind": "specification",
+      "status": "approved",
+      "version": "1.2",
+      "url": "https://slsa.dev/spec/v1.2/",
+      "publishedAt": "2025-11-24",
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Version/status/replacement/errata or adopted scope change"
+      ],
+      "chapters": [
+        13
+      ],
+      "notes": "Official release announcement date, not independently verified approval-decision date. Version1.1 Retired. Scoped Tracks/Build Track Basics/Verifying artifacts Steps1/2 review: identity/digest/expectations and platform-trust limitations. ART21 is a separate finite authored-summary comparison, no SLSA level or crypto verification. Scoped review: references/ch13-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-SPDX-001",
+      "publisher": "SPDX / Linux Foundation",
+      "title": "SPDX Specifications",
+      "kind": "specification",
+      "status": "published",
+      "version": "Current list 3.0 / versioned HTML 3.0.1",
+      "url": "https://spdx.dev/use/specifications/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-15",
+      "nextReviewAt": "2026-12-15",
+      "reviewTriggers": [
+        "Version/status/replacement/errata or adopted scope change"
+      ],
+      "chapters": [
+        13
+      ],
+      "notes": "Exact publication date unknown; official version list and linked3.0.1 HTML identify distinct minor/patch labels. Chapter13 uses version/location only; no full model/schema/JSON-LD review or conformance claim. Teaching SBOM summary is not SPDX. Scoped review: references/ch13-source-review-2026-09-15.md."
+    },
+    {
+      "id": "SRC-NIST-ASSESS-001",
+      "publisher": "NIST",
+      "title": "Assessing Security and Privacy Controls in Information Systems and Organizations",
+      "kind": "standard",
+      "status": "final",
+      "version": "SP 800-53A Rev.5 (January 2022)",
+      "url": "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final",
+      "publishedAt": "2022-01-25",
+      "checkedAt": "2026-09-25",
+      "nextReviewAt": "2027-09-25",
+      "reviewTriggers": [
+        "NIST revision or planning-note release change",
+        "Chapter21 adopted assessment-object/method/result or retest scope change"
+      ],
+      "chapters": [
+        21
+      ],
+      "notes": "第21章の用途限定確認。January2022 FinalとDocument History2022-01-25を確認。公式PDF印刷pp.11〜12 §2.4、p.25 §3.2.3.1、pp.31〜33 §3.3〜3.4の対象/方法/目的、期待と実際、情報不足、再評価と組織のリスク判断の分離に限定。Planning Note/公式告知のRelease5.2.0（2025-08-27）を旧PDFの刊行日や全文改訂日に置き換えず、追加個別procedure/全catalogueは未採用。原典のsatisfied/other than satisfiedと本書の五Result/六Failureを区別し、有限比較をNIST適合認定にしない。取得PDF SHA-256 75665570048b969ad465a4f4f1db425ce505c374951c2c64e462949c6b21be47。取得Byte識別であり全733頁監査や署名検証ではない。"
+    },
+    {
+      "id": "SRC-NIST-MEASURE-001",
+      "publisher": "NIST",
+      "title": "Measurement Guide for Information Security: Volume 1 — Identifying and Selecting Measures",
+      "kind": "standard",
+      "status": "final",
+      "version": "SP 800-55v1",
+      "url": "https://csrc.nist.gov/pubs/sp/800/55/v1/final",
+      "publishedAt": "2024-12-04",
+      "checkedAt": "2026-09-26",
+      "nextReviewAt": "2027-09-26",
+      "reviewTriggers": [
+        "NIST revision, errata, successor or withdrawal notice",
+        "Chapter22 adopted measurement definition, data-quality assumption or improvement workflow change"
+      ],
+      "chapters": [
+        22
+      ],
+      "notes": "Chapter22 scoped review: official Final landing and PDF, §1.4 p.2, §3 pp.12–18 and §4 pp.19–23: definitions, goals/scope/formula/time/source/roles, data quality/uncertainty, measure selection and review. Final date from Document History; supersedes SP800-55 Rev.1. Book metric roles/statuses/algorithms and supplied numbers are not NIST normative categories or real effectiveness proof. No FPR denominator change or financial model adopted. Scope and PDF identifier: references/ch22-source-review-2026-09-26.md."
+    },
+    {
+      "id": "SRC-NIST-MEASURE-002",
+      "publisher": "NIST",
+      "title": "Measurement Guide for Information Security: Volume 2 — Developing an Information Security Measurement Program",
+      "kind": "standard",
+      "status": "final",
+      "version": "SP 800-55v2",
+      "url": "https://csrc.nist.gov/pubs/sp/800/55/v2/final",
+      "publishedAt": "2024-12-04",
+      "checkedAt": "2026-09-26",
+      "nextReviewAt": "2027-09-26",
+      "reviewTriggers": [
+        "NIST revision, errata, successor or withdrawal notice",
+        "Chapter22 adopted measurement definition, data-quality assumption or improvement workflow change"
+      ],
+      "chapters": [
+        22
+      ],
+      "notes": "Chapter22 scoped review: official Final landing and PDF, §3 pp.12–22, especially §3.1.4 p.15: goals/current program, measure selection, analysis, corrective action, iterative review and retirement. Final date from Document History; supersedes SP800-55 Rev.1. Not a compulsory maturity ladder, HR ranking, universal threshold or certification of actual implementation/effectiveness. Scope and PDF identifier: references/ch22-source-review-2026-09-26.md."
+    },
+    {
+      "id": "SRC-ODNI-OSINT-001",
+      "publisher": "ODNI / CIA",
+      "title": "The IC OSINT Strategy 2024–2026",
+      "kind": "strategy",
+      "status": "official",
+      "version": "2024–2026 published edition",
+      "url": "https://www.odni.gov/files/ODNI/documents/IC_OSINT_Strategy.pdf",
+      "publishedAt": "2024-03-08",
+      "checkedAt": "2026-09-27",
+      "nextReviewAt": "2026-12-31",
+      "reviewTriggers": [
+        "official correction, replacement or withdrawal",
+        "successor strategy or period-end status confirmed",
+        "Chapter23 adopted requirement/gap claim changes"
+      ],
+      "chapters": [
+        23
+      ],
+      "notes": "Scoped historical-edition use: printed pp.1 and 3–4 connect priorities, requirements, gaps and collection management. Official CIA rollout and ODNI archived release identify 2024-03-08. Successor/current status was not established; no claim of absence, latest guidance, civilian legal applicability or collection authority. Official web-reader extracted text inspected; PDF-byte hash and signature images not verified. See references/ch23-source-review-2026-09-27.md."
+    },
+    {
+      "id": "SRC-TLP-001",
+      "publisher": "FIRST",
+      "title": "Traffic Light Protocol (TLP) — Version 2.0",
+      "kind": "standard",
+      "status": "current",
+      "version": "2.0",
+      "url": "https://www.first.org/tlp/",
+      "publishedAt": null,
+      "checkedAt": "2026-09-28",
+      "nextReviewAt": "2027-09-28",
+      "reviewTriggers": [
+        "FIRST TLP version or sharing-label definitions change",
+        "Change to the scoped Chapter26 sharing or exchange profile"
+      ],
+      "chapters": [
+        26
+      ],
+      "notes": "Official page identifies 2.0 as current and authoritative from August 2022. publishedAt is null because the live page publication day is unknown; the effective month is not substituted for it. Scoped Chapter26 review: sharing boundaries, AMBER+STRICT, wider-sharing permission and separation from classification/licensing/encryption only. No table reproduction, retention/action authorization inference or automatic STIX TLP mapping. See references/ch26-source-review-2026-09-28.md."
     }
   ]
 }

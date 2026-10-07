@@ -1,0 +1,1356 @@
+{
+  "schemaVersion": "1.0.0",
+  "timelineVersion": "1.0.0",
+  "caseCount": 77,
+  "oracle": "Independently authored literal values/errors; not evaluator output; finite teaching cases only.",
+  "cases": [
+    {
+      "id": "DCHECK20-001",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T08:00:00Z",
+      "expected": {
+        "value": "2026-09-01T08:00:00Z"
+      },
+      "note": "Explicit offset, date rollover or leap-year positive"
+    },
+    {
+      "id": "DCHECK20-002",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T17:00:00+09:00",
+      "expected": {
+        "value": "2026-09-01T08:00:00Z"
+      },
+      "note": "Explicit offset, date rollover or leap-year positive"
+    },
+    {
+      "id": "DCHECK20-003",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T03:00:00-05:00",
+      "expected": {
+        "value": "2026-09-01T08:00:00Z"
+      },
+      "note": "Explicit offset, date rollover or leap-year positive"
+    },
+    {
+      "id": "DCHECK20-004",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T00:30:00+09:00",
+      "expected": {
+        "value": "2026-08-31T15:30:00Z"
+      },
+      "note": "Explicit offset, date rollover or leap-year positive"
+    },
+    {
+      "id": "DCHECK20-005",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T00:00:00+14:00",
+      "expected": {
+        "value": "2026-08-31T10:00:00Z"
+      },
+      "note": "Explicit offset, date rollover or leap-year positive"
+    },
+    {
+      "id": "DCHECK20-006",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2024-02-29T00:00:00Z",
+      "expected": {
+        "value": "2024-02-29T00:00:00Z"
+      },
+      "note": "Explicit offset, date rollover or leap-year positive"
+    },
+    {
+      "id": "DCHECK20-007",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T08:00:00",
+      "expected": {
+        "errorContains": "timezone/precision"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-008",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T08:00:00-00:00",
+      "expected": {
+        "errorContains": "unknown offset"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-009",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T08:00:00+14:01",
+      "expected": {
+        "errorContains": "offset range"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-010",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-02-29T08:00:00Z",
+      "expected": {
+        "errorContains": "calendar"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-011",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T24:00:00Z",
+      "expected": {
+        "errorContains": "calendar"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-012",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T08:00:60Z",
+      "expected": {
+        "errorContains": "calendar"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-013",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T08:00:00.1Z",
+      "expected": {
+        "errorContains": "timezone/precision"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-014",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01 08:00:00Z",
+      "expected": {
+        "errorContains": "canonical representation"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-015",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T08:00:00JST",
+      "expected": {
+        "errorContains": "timezone/precision"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-016",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": true,
+      "expected": {
+        "errorContains": "type"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-017",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "",
+      "expected": {
+        "errorContains": "timezone/precision"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-018",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "2026-09-01T08:00:00z",
+      "expected": {
+        "errorContains": "timezone/precision"
+      },
+      "note": "Reject, do not silently guess or coerce"
+    },
+    {
+      "id": "DCHECK20-019",
+      "owner": "LayerA Chapter20 relation",
+      "kind": "relation",
+      "input": [
+        [
+          "2026-09-01T08:00:00Z",
+          "2026-09-01T08:00:01Z"
+        ],
+        [
+          "2026-09-01T08:00:02Z",
+          "2026-09-01T08:00:03Z"
+        ]
+      ],
+      "expected": {
+        "value": "Before"
+      },
+      "note": "Closed interval boundary; overlap is not simultaneity"
+    },
+    {
+      "id": "DCHECK20-020",
+      "owner": "LayerA Chapter20 relation",
+      "kind": "relation",
+      "input": [
+        [
+          "2026-09-01T08:00:02Z",
+          "2026-09-01T08:00:03Z"
+        ],
+        [
+          "2026-09-01T08:00:00Z",
+          "2026-09-01T08:00:01Z"
+        ]
+      ],
+      "expected": {
+        "value": "After"
+      },
+      "note": "Closed interval boundary; overlap is not simultaneity"
+    },
+    {
+      "id": "DCHECK20-021",
+      "owner": "LayerA Chapter20 relation",
+      "kind": "relation",
+      "input": [
+        [
+          "2026-09-01T08:00:00Z",
+          "2026-09-01T08:00:02Z"
+        ],
+        [
+          "2026-09-01T08:00:02Z",
+          "2026-09-01T08:00:03Z"
+        ]
+      ],
+      "expected": {
+        "value": "Possibly related"
+      },
+      "note": "Closed interval boundary; overlap is not simultaneity"
+    },
+    {
+      "id": "DCHECK20-022",
+      "owner": "LayerA Chapter20 relation",
+      "kind": "relation",
+      "input": [
+        [
+          "2026-09-01T08:00:00Z",
+          "2026-09-01T08:00:03Z"
+        ],
+        [
+          "2026-09-01T08:00:01Z",
+          "2026-09-01T08:00:02Z"
+        ]
+      ],
+      "expected": {
+        "value": "Possibly related"
+      },
+      "note": "Closed interval boundary; overlap is not simultaneity"
+    },
+    {
+      "id": "DCHECK20-023",
+      "owner": "LayerA Chapter20 relation",
+      "kind": "relation",
+      "input": [
+        [
+          "2026-09-01T08:00:00Z",
+          "2026-09-01T08:00:03Z"
+        ],
+        [
+          "2026-09-01T08:00:00Z",
+          "2026-09-01T08:00:03Z"
+        ]
+      ],
+      "expected": {
+        "value": "Possibly related"
+      },
+      "note": "Closed interval boundary; overlap is not simultaneity"
+    },
+    {
+      "id": "DCHECK20-024",
+      "owner": "LayerA Chapter20 relation",
+      "kind": "relation",
+      "input": [
+        [
+          "2026-09-01T08:00:02Z",
+          "2026-09-01T08:00:04Z"
+        ],
+        [
+          "2026-09-01T08:00:01Z",
+          "2026-09-01T08:00:03Z"
+        ]
+      ],
+      "expected": {
+        "value": "Possibly related"
+      },
+      "note": "Closed interval boundary; overlap is not simultaneity"
+    },
+    {
+      "id": "DCHECK20-025",
+      "owner": "LayerA Chapter20 interval",
+      "kind": "interval",
+      "input": {
+        "clock": {
+          "offsetSeconds": 30,
+          "uncertaintySeconds": 30
+        },
+        "originalTime": "2026-09-01T17:00:40+09:00"
+      },
+      "expected": {
+        "value": [
+          "2026-09-01T07:59:40Z",
+          "2026-09-01T08:00:40Z"
+        ]
+      },
+      "note": "Positive=fast; subtract before expanding uncertainty"
+    },
+    {
+      "id": "DCHECK20-026",
+      "owner": "LayerA Chapter20 interval",
+      "kind": "interval",
+      "input": {
+        "clock": {
+          "offsetSeconds": -10,
+          "uncertaintySeconds": 30
+        },
+        "originalTime": "2026-09-01T08:00:10Z"
+      },
+      "expected": {
+        "value": [
+          "2026-09-01T07:59:50Z",
+          "2026-09-01T08:00:50Z"
+        ]
+      },
+      "note": "Positive=fast; subtract before expanding uncertainty"
+    },
+    {
+      "id": "DCHECK20-027",
+      "owner": "LayerA Chapter20 interval",
+      "kind": "interval",
+      "input": {
+        "clock": {
+          "offsetSeconds": 0,
+          "uncertaintySeconds": 1
+        },
+        "originalTime": "2026-09-01T07:58:00Z"
+      },
+      "expected": {
+        "value": [
+          "2026-09-01T07:57:59Z",
+          "2026-09-01T07:58:01Z"
+        ]
+      },
+      "note": "Positive=fast; subtract before expanding uncertainty"
+    },
+    {
+      "id": "DCHECK20-028",
+      "owner": "LayerA Chapter20 interval",
+      "kind": "interval",
+      "input": {
+        "clock": {
+          "offsetSeconds": true
+        },
+        "originalTime": "2026-09-01T17:00:40+09:00"
+      },
+      "expected": {
+        "errorContains": "integer offsetSeconds"
+      },
+      "note": "Unsupported/missing premise must reject"
+    },
+    {
+      "id": "DCHECK20-029",
+      "owner": "LayerA Chapter20 interval",
+      "kind": "interval",
+      "input": {
+        "clock": {
+          "uncertaintySeconds": true
+        },
+        "originalTime": "2026-09-01T17:00:40+09:00"
+      },
+      "expected": {
+        "errorContains": "integer uncertaintySeconds"
+      },
+      "note": "Unsupported/missing premise must reject"
+    },
+    {
+      "id": "DCHECK20-030",
+      "owner": "LayerA Chapter20 interval",
+      "kind": "interval",
+      "input": {
+        "clock": {
+          "uncertaintySeconds": 0
+        },
+        "originalTime": "2026-09-01T17:00:40+09:00"
+      },
+      "expected": {
+        "errorContains": "uncertainty includes precision"
+      },
+      "note": "Unsupported/missing premise must reject"
+    },
+    {
+      "id": "DCHECK20-031",
+      "owner": "LayerA Chapter20 interval",
+      "kind": "interval",
+      "input": {
+        "clock": {
+          "offsetSeconds": 3601
+        },
+        "originalTime": "2026-09-01T17:00:40+09:00"
+      },
+      "expected": {
+        "errorContains": "offset bounds"
+      },
+      "note": "Unsupported/missing premise must reject"
+    },
+    {
+      "id": "DCHECK20-032",
+      "owner": "LayerA Chapter20 interval",
+      "kind": "interval",
+      "input": {
+        "clock": {
+          "uncertaintySeconds": 3601
+        },
+        "originalTime": "2026-09-01T17:00:40+09:00"
+      },
+      "expected": {
+        "errorContains": "uncertainty includes precision"
+      },
+      "note": "Unsupported/missing premise must reject"
+    },
+    {
+      "id": "DCHECK20-033",
+      "owner": "LayerA Chapter20 interval",
+      "kind": "interval",
+      "input": {
+        "clock": {
+          "sourceId": "SYN-OTHER"
+        },
+        "originalTime": "2026-09-01T17:00:40+09:00"
+      },
+      "expected": {
+        "errorContains": "clock/source binding"
+      },
+      "note": "Unsupported/missing premise must reject"
+    },
+    {
+      "id": "DCHECK20-034",
+      "owner": "LayerA Chapter20 interval",
+      "kind": "interval",
+      "input": {
+        "clock": {
+          "validUntil": "2026-09-01T07:59:00Z"
+        },
+        "originalTime": "2026-09-01T17:00:40+09:00"
+      },
+      "expected": {
+        "errorContains": "clock validity window"
+      },
+      "note": "Unsupported/missing premise must reject"
+    },
+    {
+      "id": "DCHECK20-035",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 0,
+        "snapshot": 0,
+        "patches": []
+      },
+      "expected": {
+        "value": {
+          "status": "undetermined",
+          "relation": "Possibly related",
+          "gaps": [
+            "clock-order-uncertain"
+          ]
+        }
+      },
+      "note": "Finite main example, scoped conclusion only"
+    },
+    {
+      "id": "DCHECK20-036",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 1,
+        "snapshot": 0,
+        "patches": []
+      },
+      "expected": {
+        "value": {
+          "status": "supported",
+          "relation": "Before",
+          "gaps": []
+        }
+      },
+      "note": "Finite main example, scoped conclusion only"
+    },
+    {
+      "id": "DCHECK20-037",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 0,
+        "patches": []
+      },
+      "expected": {
+        "value": {
+          "status": "undetermined",
+          "relation": null,
+          "gaps": [
+            "not-available:EV20-005"
+          ]
+        }
+      },
+      "note": "Finite main example, scoped conclusion only"
+    },
+    {
+      "id": "DCHECK20-038",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 1,
+        "patches": []
+      },
+      "expected": {
+        "value": {
+          "status": "contradicted",
+          "relation": null,
+          "gaps": []
+        }
+      },
+      "note": "Finite main example, scoped conclusion only"
+    },
+    {
+      "id": "DCHECK20-039",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 3,
+        "snapshot": 1,
+        "patches": []
+      },
+      "expected": {
+        "value": {
+          "status": "undetermined",
+          "relation": null,
+          "gaps": [
+            "mechanism-not-supplied",
+            "alternative-not-eliminated"
+          ]
+        }
+      },
+      "note": "Finite main example, scoped conclusion only"
+    },
+    {
+      "id": "DCHECK20-040",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 4,
+        "snapshot": 0,
+        "patches": []
+      },
+      "expected": {
+        "value": {
+          "status": "contradicted",
+          "relation": "After",
+          "gaps": []
+        }
+      },
+      "note": "Finite main example, scoped conclusion only"
+    },
+    {
+      "id": "DCHECK20-041",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 5,
+        "snapshot": 0,
+        "patches": []
+      },
+      "expected": {
+        "value": {
+          "status": "undetermined",
+          "relation": "Possibly related",
+          "gaps": [
+            "independent-simultaneity-evidence"
+          ]
+        }
+      },
+      "note": "Finite main example, scoped conclusion only"
+    },
+    {
+      "id": "DCHECK20-042",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 1,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              4,
+              "payload",
+              "detail",
+              "approvedAssets"
+            ],
+            "value": [
+              "SYN-DFIR-APP-A"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "value": {
+          "status": "supported",
+          "relation": null,
+          "gaps": []
+        }
+      },
+      "note": "Counterfactual scope/window control; not a new published conclusion"
+    },
+    {
+      "id": "DCHECK20-043",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 1,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              4,
+              "payload",
+              "detail",
+              "approvedAssets"
+            ],
+            "value": [
+              "SYN-DFIR-APP-A"
+            ]
+          },
+          {
+            "path": [
+              "evidence",
+              4,
+              "payload",
+              "detail",
+              "windowStart"
+            ],
+            "value": "2026-09-01T08:00:00Z"
+          }
+        ]
+      },
+      "expected": {
+        "value": {
+          "status": "undetermined",
+          "relation": null,
+          "gaps": [
+            "change-window-uncertain"
+          ]
+        }
+      },
+      "note": "Counterfactual scope/window control; not a new published conclusion"
+    },
+    {
+      "id": "DCHECK20-044",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 1,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              4,
+              "payload",
+              "detail",
+              "approvedAssets"
+            ],
+            "value": [
+              "SYN-DFIR-APP-A"
+            ]
+          },
+          {
+            "path": [
+              "evidence",
+              4,
+              "payload",
+              "detail",
+              "windowStart"
+            ],
+            "value": "2026-09-01T08:01:00Z"
+          }
+        ]
+      },
+      "expected": {
+        "value": {
+          "status": "contradicted",
+          "relation": null,
+          "gaps": []
+        }
+      },
+      "note": "Counterfactual scope/window control; not a new published conclusion"
+    },
+    {
+      "id": "DCHECK20-045",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 1,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              4,
+              "payload",
+              "detail",
+              "changeId"
+            ],
+            "value": "CHG20-OTHER"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "change identity"
+      },
+      "note": "Counterfactual scope/window control; not a new published conclusion"
+    },
+    {
+      "id": "DCHECK20-046",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 1,
+        "patches": [
+          {
+            "path": [
+              "claims",
+              2,
+              "evidenceIds"
+            ],
+            "value": [
+              "EV20-003",
+              "EV20-002"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "change claim roles"
+      },
+      "note": "Counterfactual scope/window control; not a new published conclusion"
+    },
+    {
+      "id": "DCHECK20-047",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 1,
+        "patches": [
+          {
+            "path": [
+              "claims",
+              2,
+              "evidenceIds"
+            ],
+            "value": [
+              "EV20-005",
+              "EV20-UNKNOWN"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "claim reference"
+      },
+      "note": "Counterfactual scope/window control; not a new published conclusion"
+    },
+    {
+      "id": "DCHECK20-048",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              3,
+              "payload",
+              "detail",
+              "resource"
+            ],
+            "value": "SYNTH-OTHER"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "conflicting source/event identity"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-049",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              3,
+              "id"
+            ],
+            "value": "EV20-002"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "duplicate id"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-050",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              0,
+              "payload",
+              "subjectId"
+            ],
+            "value": "SYNTH-OTHER"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "evidence subject/revision"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-051",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              0,
+              "payload",
+              "revision"
+            ],
+            "value": "REV-OTHER"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "evidence subject/revision"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-052",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              0,
+              "payload",
+              "assetId"
+            ],
+            "value": "SYN-UNOWNED"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "evidence asset scope"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-053",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              0,
+              "payload",
+              "actorId"
+            ],
+            "value": "SYN-UNOWNED"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "actor/session registry"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-054",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              0,
+              "payload",
+              "clockId"
+            ],
+            "value": "CLK-UNKNOWN"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "unknown clock"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-055",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              0,
+              "ingestedAt"
+            ],
+            "value": "2026-09-01T08:05:00Z"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "receipt chronology/asOf"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-056",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              4,
+              "availableAt"
+            ],
+            "value": "2026-09-26T00:00:00Z"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "receipt chronology/asOf"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-057",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "clocks",
+              0,
+              "availableAt"
+            ],
+            "value": "2026-09-01T08:08:00Z"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "clock not available with receipt"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-058",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "snapshots",
+              0,
+              "analysisAt"
+            ],
+            "value": "2026-09-01T08:09:00Z"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "snapshot chronology"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-059",
+      "owner": "LayerA Chapter20 snapshot-error",
+      "kind": "snapshot-error",
+      "input": {
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "context",
+              "windowStart"
+            ],
+            "value": "2026-09-01T08:00:00Z"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "event window"
+      },
+      "note": "Recompute representation hashes; still reject semantic defect, including late evidence"
+    },
+    {
+      "id": "DCHECK20-060",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "0001-01-01T00:00:00+14:00",
+      "expected": {
+        "errorContains": "supported years"
+      },
+      "note": "Bounded years reject before UTC overflow"
+    },
+    {
+      "id": "DCHECK20-061",
+      "owner": "LayerA Chapter20 instant",
+      "kind": "instant",
+      "input": "9999-12-31T23:59:59-14:00",
+      "expected": {
+        "errorContains": "supported years"
+      },
+      "note": "Bounded years reject before UTC overflow"
+    },
+    {
+      "id": "DCHECK20-062",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 1,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              4,
+              "payload",
+              "detail",
+              "approvedAssets"
+            ],
+            "value": []
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "change scope nonempty/unique"
+      },
+      "note": "Malformed change asset scope is not silently coerced"
+    },
+    {
+      "id": "DCHECK20-063",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 1,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              4,
+              "payload",
+              "detail",
+              "approvedAssets"
+            ],
+            "value": [
+              "SYN-DFIR-APP-A",
+              "SYN-DFIR-APP-A"
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "change scope nonempty/unique"
+      },
+      "note": "Malformed change asset scope is not silently coerced"
+    },
+    {
+      "id": "DCHECK20-064",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 0,
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "claims",
+              0,
+              "changeId"
+            ],
+            "value": "CHG20-001"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "non-change identity"
+      },
+      "note": "Unused change identity on an order claim is rejected"
+    },
+    {
+      "id": "DCHECK20-065",
+      "owner": "LayerA Chapter20 claim",
+      "kind": "claim",
+      "input": {
+        "claim": 2,
+        "snapshot": 0,
+        "patches": [
+          {
+            "path": [
+              "evidence",
+              4,
+              "payload",
+              "detail",
+              "changeId"
+            ],
+            "value": "CHG20-OTHER"
+          }
+        ]
+      },
+      "expected": {
+        "errorContains": "change identity"
+      },
+      "note": "Reference role is validated even before this evidence becomes eligible"
+    },
+    {
+      "id": "DCHECK20-066",
+      "kind": "instant",
+      "input": "2000-01-01T00:00:00+14:00",
+      "expected": {
+        "errorContains": "timestamp UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-067",
+      "kind": "instant",
+      "input": "2099-12-31T23:59:59-14:00",
+      "expected": {
+        "errorContains": "timestamp UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-068",
+      "kind": "instant",
+      "input": "2000-01-01T14:00:00+14:00",
+      "expected": {
+        "value": "2000-01-01T00:00:00Z"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-069",
+      "kind": "instant",
+      "input": "2099-12-31T09:59:59-14:00",
+      "expected": {
+        "value": "2099-12-31T23:59:59Z"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-070",
+      "kind": "instant",
+      "input": "2000-01-01T00:00:00Z",
+      "expected": {
+        "value": "2000-01-01T00:00:00Z"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-071",
+      "kind": "instant",
+      "input": "2099-12-31T23:59:59Z",
+      "expected": {
+        "value": "2099-12-31T23:59:59Z"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-072",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2000-01-01T00:00:00Z",
+        "clock": {
+          "offsetSeconds": 0,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "errorContains": "interval UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-073",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2099-12-31T23:59:59Z",
+        "clock": {
+          "offsetSeconds": 0,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "errorContains": "interval UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-074",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2000-01-01T00:00:01Z",
+        "clock": {
+          "offsetSeconds": 0,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "value": [
+          "2000-01-01T00:00:00Z",
+          "2000-01-01T00:00:02Z"
+        ]
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-075",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2099-12-31T23:59:58Z",
+        "clock": {
+          "offsetSeconds": 0,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "value": [
+          "2099-12-31T23:59:57Z",
+          "2099-12-31T23:59:59Z"
+        ]
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-076",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2000-01-01T00:30:00Z",
+        "clock": {
+          "offsetSeconds": 3600,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "errorContains": "interval UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    },
+    {
+      "id": "DCHECK20-077",
+      "kind": "interval",
+      "input": {
+        "originalTime": "2099-12-31T23:30:00Z",
+        "clock": {
+          "offsetSeconds": -3600,
+          "uncertaintySeconds": 1,
+          "validFrom": "2000-01-01T00:00:00Z",
+          "validUntil": "2099-12-31T23:59:59Z"
+        }
+      },
+      "expected": {
+        "errorContains": "interval UTC supported years"
+      },
+      "owner": "LayerA Chapter20 UTC supported-year boundary",
+      "note": "PR156 review5309026785 / threadPRRT_kwDOTi9cus6luwgx / comment4097487771; local year, converted UTC and offset/uncertainty endpoints must all stay within2000–2099. Literal expectation, not evaluator generated."
+    }
+  ]
+}

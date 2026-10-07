@@ -1,0 +1,1584 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "readOnly",
+    "networkRequired",
+    "executionAuthorized",
+    "record",
+    "parent",
+    "context",
+    "roles",
+    "provenance",
+    "sources",
+    "clocks",
+    "evidence",
+    "claims",
+    "snapshots",
+    "handoffs",
+    "safety"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true
+    },
+    "readOnly": {
+      "type": "boolean",
+      "const": true
+    },
+    "networkRequired": {
+      "type": "boolean",
+      "const": false
+    },
+    "executionAuthorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "incidentId",
+        "incidentReferenceStatus",
+        "timeStandard",
+        "caseId",
+        "parentCaseId",
+        "relation",
+        "artifactIds",
+        "asOf",
+        "sourceIds",
+        "actualIncidents",
+        "actualCollections",
+        "actualActions",
+        "actualNotifications"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "incidentId": {
+          "type": "null"
+        },
+        "incidentReferenceStatus": {
+          "const": "not-declared-in-this-bundle"
+        },
+        "timeStandard": {
+          "const": "UTC; original timezone offsets retained"
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifactIds": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "asOf": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceIds": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "actualIncidents": {
+          "type": "integer",
+          "const": 0
+        },
+        "actualCollections": {
+          "type": "integer",
+          "const": 0
+        },
+        "actualActions": {
+          "type": "integer",
+          "const": 0
+        },
+        "actualNotifications": {
+          "type": "integer",
+          "const": 0
+        }
+      }
+    },
+    "parent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recordId",
+        "contrastId",
+        "decisionId",
+        "handoffId",
+        "questionId",
+        "plannedTimelineId",
+        "status",
+        "receiptId",
+        "executionAuthorized",
+        "use"
+      ],
+      "properties": {
+        "recordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contrastId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handoffId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "questionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "plannedTimelineId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "const": "planned-not-delivered"
+        },
+        "receiptId": {
+          "type": "null"
+        },
+        "executionAuthorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "use": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subjectId",
+        "revision",
+        "windowStart",
+        "windowEnd",
+        "assets",
+        "actors",
+        "sessions"
+      ],
+      "properties": {
+        "subjectId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "windowStart": {
+          "type": "string",
+          "minLength": 1
+        },
+        "windowEnd": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assets": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "actors": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "sessions": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "analysisOwner",
+        "evidenceLead"
+      ],
+      "properties": {
+        "analysisOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceLead": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "origin",
+        "custodian",
+        "originalFormat",
+        "originalRetained",
+        "workingCopyOnly",
+        "transformations",
+        "hashMeaning",
+        "handling"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "type": "string",
+          "minLength": 1
+        },
+        "custodian": {
+          "type": "string",
+          "minLength": 1
+        },
+        "originalFormat": {
+          "type": "string",
+          "minLength": 1
+        },
+        "originalRetained": {
+          "type": "boolean",
+          "const": true
+        },
+        "workingCopyOnly": {
+          "type": "boolean",
+          "const": true
+        },
+        "transformations": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "hashMeaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handling": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "purpose",
+          "custodyRef",
+          "limitation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "custodyRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "clocks": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceId",
+          "offsetSeconds",
+          "uncertaintySeconds",
+          "validFrom",
+          "validUntil",
+          "availableAt",
+          "basis"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "offsetSeconds": {
+            "type": "integer",
+            "minimum": -3600,
+            "maximum": 3600
+          },
+          "uncertaintySeconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3600
+          },
+          "validFrom": {
+            "type": "string",
+            "minLength": 1
+          },
+          "validUntil": {
+            "type": "string",
+            "minLength": 1
+          },
+          "availableAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "basis": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "sourceId",
+              "eventId",
+              "payload",
+              "payloadSha256",
+              "collectedAt",
+              "ingestedAt",
+              "availableAt",
+              "preservationRef"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sourceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "eventId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "subjectId",
+                  "revision",
+                  "assetId",
+                  "actorId",
+                  "sessionId",
+                  "operation",
+                  "originalTime",
+                  "clockId",
+                  "detail"
+                ],
+                "properties": {
+                  "subjectId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "revision": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "assetId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "actorId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sessionId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "operation": {
+                    "const": "consent-change"
+                  },
+                  "originalTime": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "clockId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "detail": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "permission",
+                      "observation"
+                    ],
+                    "properties": {
+                      "permission": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "observation": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "payloadSha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "collectedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ingestedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "availableAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "preservationRef": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "sourceId",
+              "eventId",
+              "payload",
+              "payloadSha256",
+              "collectedAt",
+              "ingestedAt",
+              "availableAt",
+              "preservationRef"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sourceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "eventId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "subjectId",
+                  "revision",
+                  "assetId",
+                  "actorId",
+                  "sessionId",
+                  "operation",
+                  "originalTime",
+                  "clockId",
+                  "detail"
+                ],
+                "properties": {
+                  "subjectId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "revision": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "assetId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "actorId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sessionId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "operation": {
+                    "const": "api-read"
+                  },
+                  "originalTime": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "clockId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "detail": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "resource",
+                      "observation"
+                    ],
+                    "properties": {
+                      "resource": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "observation": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "payloadSha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "collectedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ingestedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "availableAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "preservationRef": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "sourceId",
+              "eventId",
+              "payload",
+              "payloadSha256",
+              "collectedAt",
+              "ingestedAt",
+              "availableAt",
+              "preservationRef"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sourceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "eventId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "subjectId",
+                  "revision",
+                  "assetId",
+                  "actorId",
+                  "sessionId",
+                  "operation",
+                  "originalTime",
+                  "clockId",
+                  "detail"
+                ],
+                "properties": {
+                  "subjectId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "revision": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "assetId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "actorId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sessionId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "operation": {
+                    "const": "admin-maintenance"
+                  },
+                  "originalTime": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "clockId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "detail": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "changeId",
+                      "observation"
+                    ],
+                    "properties": {
+                      "changeId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "observation": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "payloadSha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "collectedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ingestedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "availableAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "preservationRef": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "sourceId",
+              "eventId",
+              "payload",
+              "payloadSha256",
+              "collectedAt",
+              "ingestedAt",
+              "availableAt",
+              "preservationRef"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sourceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "eventId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "subjectId",
+                  "revision",
+                  "assetId",
+                  "actorId",
+                  "sessionId",
+                  "operation",
+                  "originalTime",
+                  "clockId",
+                  "detail"
+                ],
+                "properties": {
+                  "subjectId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "revision": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "assetId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "actorId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sessionId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "operation": {
+                    "const": "change-scope"
+                  },
+                  "originalTime": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "clockId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "detail": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "changeId",
+                      "approvedAssets",
+                      "windowStart",
+                      "windowEnd",
+                      "observation"
+                    ],
+                    "properties": {
+                      "changeId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "approvedAssets": {
+                        "type": "array",
+                        "minItems": 0,
+                        "maxItems": 100,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "windowStart": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "windowEnd": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "observation": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "payloadSha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "collectedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ingestedAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "availableAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "preservationRef": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        ]
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "questionId",
+          "kind",
+          "evidenceIds",
+          "assertedRelation",
+          "changeId",
+          "question"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "questionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "order",
+              "change-covers",
+              "causal-link"
+            ]
+          },
+          "evidenceIds": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 100,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "assertedRelation": {
+            "enum": [
+              "Before",
+              "After",
+              "Concurrent",
+              null
+            ]
+          },
+          "changeId": {
+            "enum": [
+              "CHG20-001",
+              null
+            ]
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "cutoff",
+          "analysisAt",
+          "owner",
+          "expected",
+          "rca"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cutoff": {
+            "type": "string",
+            "minLength": 1
+          },
+          "analysisAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "included",
+              "excluded",
+              "timeline",
+              "claims"
+            ],
+            "properties": {
+              "included": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "excluded": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "timeline": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 100,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "sourceId",
+                    "eventId",
+                    "evidenceIds",
+                    "intervalStart",
+                    "intervalEnd"
+                  ],
+                  "properties": {
+                    "sourceId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "eventId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "evidenceIds": {
+                      "type": "array",
+                      "minItems": 0,
+                      "maxItems": 100,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "intervalStart": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "intervalEnd": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              },
+              "claims": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "CLM20-001",
+                  "CLM20-002",
+                  "CLM20-003",
+                  "CLM20-004",
+                  "CLM20-005",
+                  "CLM20-006"
+                ],
+                "properties": {
+                  "CLM20-001": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "relation",
+                      "gaps"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "supported",
+                          "contradicted",
+                          "undetermined"
+                        ]
+                      },
+                      "relation": {
+                        "enum": [
+                          "Before",
+                          "After",
+                          "Possibly related",
+                          null
+                        ]
+                      },
+                      "gaps": {
+                        "type": "array",
+                        "minItems": 0,
+                        "maxItems": 100,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  },
+                  "CLM20-002": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "relation",
+                      "gaps"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "supported",
+                          "contradicted",
+                          "undetermined"
+                        ]
+                      },
+                      "relation": {
+                        "enum": [
+                          "Before",
+                          "After",
+                          "Possibly related",
+                          null
+                        ]
+                      },
+                      "gaps": {
+                        "type": "array",
+                        "minItems": 0,
+                        "maxItems": 100,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  },
+                  "CLM20-003": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "relation",
+                      "gaps"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "supported",
+                          "contradicted",
+                          "undetermined"
+                        ]
+                      },
+                      "relation": {
+                        "enum": [
+                          "Before",
+                          "After",
+                          "Possibly related",
+                          null
+                        ]
+                      },
+                      "gaps": {
+                        "type": "array",
+                        "minItems": 0,
+                        "maxItems": 100,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  },
+                  "CLM20-004": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "relation",
+                      "gaps"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "supported",
+                          "contradicted",
+                          "undetermined"
+                        ]
+                      },
+                      "relation": {
+                        "enum": [
+                          "Before",
+                          "After",
+                          "Possibly related",
+                          null
+                        ]
+                      },
+                      "gaps": {
+                        "type": "array",
+                        "minItems": 0,
+                        "maxItems": 100,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  },
+                  "CLM20-005": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "relation",
+                      "gaps"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "supported",
+                          "contradicted",
+                          "undetermined"
+                        ]
+                      },
+                      "relation": {
+                        "enum": [
+                          "Before",
+                          "After",
+                          "Possibly related",
+                          null
+                        ]
+                      },
+                      "gaps": {
+                        "type": "array",
+                        "minItems": 0,
+                        "maxItems": 100,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  },
+                  "CLM20-006": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "relation",
+                      "gaps"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "supported",
+                          "contradicted",
+                          "undetermined"
+                        ]
+                      },
+                      "relation": {
+                        "enum": [
+                          "Before",
+                          "After",
+                          "Possibly related",
+                          null
+                        ]
+                      },
+                      "gaps": {
+                        "type": "array",
+                        "minItems": 0,
+                        "maxItems": 100,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "rca": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "timelineId",
+              "problemStatement",
+              "triggerEvidenceId",
+              "rootConditionHypothesis",
+              "rootCauseStatus",
+              "causalClaimId",
+              "contributingEvidenceIds",
+              "contributingFactor",
+              "impactEvidenceIds",
+              "observedScope",
+              "unknownScope",
+              "confidence",
+              "confidenceReason",
+              "alternatives",
+              "evidenceGaps",
+              "controlFailureStatus",
+              "correctiveAction",
+              "controlId",
+              "validationRequirement",
+              "owner",
+              "dueAt",
+              "reassessmentId",
+              "invalidation",
+              "recoveryStatus",
+              "actualChanges"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "timelineId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "problemStatement": {
+                "type": "string",
+                "minLength": 1
+              },
+              "triggerEvidenceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "rootConditionHypothesis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "rootCauseStatus": {
+                "const": "unresolved"
+              },
+              "causalClaimId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "contributingEvidenceIds": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "contributingFactor": {
+                "type": "string",
+                "minLength": 1
+              },
+              "impactEvidenceIds": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "observedScope": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "unknownScope": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "confidence": {
+                "const": "low"
+              },
+              "confidenceReason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "alternatives": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 100,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "claimId",
+                    "disposition",
+                    "remainingGap"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "claimId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "disposition": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "remainingGap": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              },
+              "evidenceGaps": {
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "controlFailureStatus": {
+                "const": "hypothesis-only"
+              },
+              "correctiveAction": {
+                "type": "string",
+                "minLength": 1
+              },
+              "controlId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "validationRequirement": {
+                "type": "string",
+                "minLength": 1
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "dueAt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reassessmentId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "invalidation": {
+                "type": "string",
+                "minLength": 1
+              },
+              "recoveryStatus": {
+                "const": "not-assessed"
+              },
+              "actualChanges": {
+                "type": "integer",
+                "const": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "handoffs": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "targetChapter",
+          "sourceRcaId",
+          "sourceTimelineId",
+          "controlId",
+          "questionId",
+          "question",
+          "scope",
+          "owner",
+          "dueAt",
+          "status",
+          "receiptId",
+          "executionAuthorized"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetChapter": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "sourceRcaId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceTimelineId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "controlId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "questionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dueAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "const": "planned-not-delivered"
+          },
+          "receiptId": {
+            "type": "null"
+          },
+          "executionAuthorized": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "stop",
+        "cleanup",
+        "limitations"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stop": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limitations": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

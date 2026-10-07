@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "manifestVersion": "1.0.0",
-  "auditedAt": "2026-09-05",
+  "auditedAt": "2026-09-30",
   "source": {
     "repository": "https://github.com/itdojp/white-hat-cyber-intelligence-book",
     "registrationIssue": 63,
@@ -951,19 +951,62 @@
       "targetId": "chapter-05",
       "issue": 30,
       "targetKind": "chapter",
-      "status": "selected-for-intake",
+      "status": "consumed",
       "selectedCandidateId": "EIC-0030-11e256480c15",
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "canonicalPr": 113,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/113",
+        "packageId": "EIP-0001",
+        "packageSha256": "caf8c73aa4e84c99f4062ac7cf85ac56794ad2cbb5d8ec5d9403138753eb6388",
+        "inputPath": "chapter05-attack-behavior.predraft.md",
+        "inputSha256": "11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12",
+        "targetIssue": 30,
+        "canonicalPr": 113,
+        "currentMainSha": "518ea8579439a2c29cfc0e4fbea4086995ada1c0",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-06",
+        "adoptedSections": [
+          "Raw predraftからの直接採用なし。登録metadataだけを照合した。"
+        ],
+        "rewrittenSections": [
+          "Issue #30の構成・学習目標を、current contractとMITRE一次資料から新規作成。",
+          "ART-15、7行の完全合成Case、同一行Evidence/Test閾値、Source note、共有ProjectionのLayer A consumer。"
+        ],
+        "rejectedOrDeferredSections": [
+          "未確認raw predraftを読了・hash検証・採用したという主張は拒否。",
+          "実製品Rule、T1671実施、親Control検証、Chapter 6以降は対象外。"
+        ],
+        "sourceRevalidation": [
+          "2026-09-06確認: ATT&CK v19.2 / Updates開始日2026-08-06 / release公開時刻2026-08-05T22:57:35Z。Version HistoryのApril 28表示との差を保持。",
+          "MITRE/CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; Enterprise bundle SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259。",
+          "T1671 / TA0003 / DET0539 / AN1487 / AN1488 / DC0066 / DC0069 / DC0038とactive flags・関係を有限fixtureへ抽出。",
+          "最小fixture SHA-256 960d0b76b018bdefae3958beaaf3cc2a30d73c034467cbe0941289ded4f4d44a。MITRE attribution/licenseを保存。"
+        ],
+        "canonicalFiles": [
+          "manuscript/05-attack-behavior.md",
+          "templates/attack-behavior-map.md",
+          "cases/ch05-attack-behavior-example.md",
+          "cases/fixtures/ch05-attack-behavior.json",
+          "references/ch05-source-review-2026-09-06.md"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日であり、Package本文を読んだ日ではない。",
+          "3件のsynthetic-field-classificationは実製品のDetection effectiveness、T1671再現、親Control検証、侵害有無や主体帰属の証明ではない。",
+          "PR #113作成時（2026-09-06）の制約: Draft PRの作成はmerge・main CI・Pages公開の完了を意味しない。consumedはそれらの確認後に別更新する。 現在は2026-09-08の公開確認済みであり、その別更新を本metadata変更で記録した。現時点の状態・証跡はtarget.statusとstatusHistoryの最新entryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0030-11e256480c15",
           "packageId": "EIP-0001",
           "inputPath": "chapter05-attack-behavior.predraft.md",
           "inputSha256": "11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12",
-          "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5550634873",
-          "dispositionReason": "登録候補は1件。Packageが利用可能ならhash検証し、利用不能なら直接採用を主張せずIssue #30と現行一次資料から再構成する。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5577993812",
+          "dispositionReason": "PR #113でIssue #30とcurrent contract・再検証済みMITRE一次資料から正本を新規作成し、通常mergeとexact-main CI・Pages・公開markerを確認した。登録metadataとの照合であり、EIP-0001/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。"
         }
       ],
       "statusHistory": [
@@ -978,6 +1021,18 @@
           "effectiveAt": "2026-09-05",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5550634873",
           "reason": "Issue #98契約の最初の実運用対象として明示選択した。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-06",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/113",
+          "reason": "PR #113でcurrent sourceに基づく第5章正本とIntake Recordを作成。raw Packageは不在で直接採用なし。通常mergeとmain公開は未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-08",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98#issuecomment-5577993812",
+          "reason": "PR #113通常merge: cf0cc53257393b41ebd321173440b961fe8232a3。review済みheadとmerge tree一致。exact-main Book Contract 34178009130 / Book QA 34178009152 / Deploy Pages 34178009124、deployment 6319180022がsuccess。第5章・ART-15・Case・Source Note・Datasetの公開HTTP200とmarker、JSON正本とのbyte一致を確認。raw不在・直接採用なしのIntake Recordを保持。"
         }
       ]
     },
@@ -985,19 +1040,60 @@
       "targetId": "chapter-06",
       "issue": 31,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0031-2c4e8b2b8508",
+      "canonicalPr": 117,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/117",
+        "packageId": "EIP-0002",
+        "packageSha256": "fffbd2af8a17cbbfa60c09c37c30a682a9c528b44194e0e9f0f3588e2a6a46ca",
+        "inputPath": "chapter06-observable-systems.predraft.md",
+        "inputSha256": "2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d",
+        "targetIssue": 31,
+        "canonicalPr": 117,
+        "currentMainSha": "c83bf8a8cc02aa206c67ba178de665acc8bf9237",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-12",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。登録metadataだけを照合した。"
+        ],
+        "rewrittenSections": [
+          "Issue #31とcurrent contract・再確認済み一次資料から第6章、ART16、完全合成Signal Flow、有限Layer A checkerを新規作成した。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw不在のため本文読了・実体hash検証・直接採用は主張しない。",
+          "旧草稿の追加Status、親Caseの観測結果の昇格、実製品操作、Chapter7以降は対象外。"
+        ],
+        "sourceRevalidation": [
+          "2026-09-12 NIST SP800-207/207A/92 Final、92r1 Initial Public Draftを公式出版記録・本文・Log Management projectで確認。古い暗号と製品推奨は不採用。",
+          "RFC6749のRole/Client説明だけを採用。更新元RFC9700を確認し、古いGrant/Security recommendationは転用しない。",
+          "MITRE公式direct HTTPとreleaseでv19.2を確認。第5章の固定metadataと親Asset/Boundary/Behaviorの意味を保持する。"
+        ],
+        "canonicalFiles": [
+          "manuscript/06-observable-systems.md",
+          "templates/signal-flow-diagram.md",
+          "cases/ch06-signal-flow-example.md",
+          "cases/fixtures/ch06-signal-flow.json",
+          "references/ch06-source-review-2026-09-12.md"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日であり、rawを読んだ日ではない。",
+          "受領票とTestは独立した完全合成の教育用記録であり、実製品や親Caseの観測・Control有効性ではない。",
+          "PR #117作成時（2026-09-12）は通常merge・main/publication未完了。consumedはそれらの確認後に別metadata更新する。 現在は2026-09-12の公開確認済みであり、その別更新を本metadata変更で記録した。現時点の状態・証跡はtarget.statusとstatusHistoryの最新entryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0031-2c4e8b2b8508",
           "packageId": "EIP-0002",
           "inputPath": "chapter06-observable-systems.predraft.md",
           "inputSha256": "2c4e8b2b85086bde3d0f83bb4e2ed61cf0d7512252e27fbc805a272249e8973d",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5645016826",
+          "dispositionReason": "PR #117でIssue #31とcurrent contract・再検証済み一次資料から第6章正本を新規作成し、通常mergeとexact-main CI・Pages・公開markerを確認した。登録metadataとの照合であり、EIP-0002/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。"
         }
       ],
       "statusHistory": [
@@ -1006,6 +1102,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5644514226",
+          "reason": "前提の通常merge・公開確認後にIssue #31の唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/117",
+          "reason": "専用Draft PR #117とIntake Recordを作成。raw不在で直接採用なし。通常merge・main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/31#issuecomment-5645016826",
+          "reason": "PR #117通常merge: 548f102f815d617d7a4dad626e227e99206e1f34。review済みheadとmerge tree一致。exact-main Book Contract 34685474345 / Book QA 34685474321 / Deploy Pages 34685474330、deployment 6408124272がsuccess。第6章・ART-16・Case・Source Note・JSON教材を含む公開13surfaceのHTTP200とreview済み出力とのbyte一致、JSON正本との一致を確認。raw不在・直接採用なしのIntake Recordを保持。"
         }
       ]
     },
@@ -1013,19 +1127,62 @@
       "targetId": "chapter-07",
       "issue": 32,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0032-6caf4e3d9174",
+      "canonicalPr": 120,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/120",
+        "packageId": "EIP-0003",
+        "packageSha256": "d986ee9a9c71cf210420bb921f078a395133e2e5e0b9050960ad63554c22582a",
+        "inputPath": "chapter07-vulnerability-prioritization.predraft.md",
+        "inputSha256": "6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb",
+        "targetIssue": 32,
+        "canonicalPr": 120,
+        "currentMainSha": "665ca8e3c1846778f6657e38ca15facf638a028b",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-12",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。登録metadataだけを照合した。"
+        ],
+        "rewrittenSections": [
+          "Issue #32とcurrent contract・親Case・再確認した一次資料から第7章、ART17、六件の合成優先順位判断、有限Layer A契約を新規作成した。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw不在のため本文読了・実体hash検証・直接採用は主張しない。",
+          "実対象への操作、公開Signalの組織侵害確率への置換、未検証の義務適用除外、任意CVSS計算器、Chapter8以降は対象外。"
+        ],
+        "sourceRevalidation": [
+          "2026-09-12 FIRST CVSS4.0 / Specification・User Guide1.2、固定公式calculatorで著者合成Vector二組を確認。実CVEの公表評価ではない。",
+          "FIRST EPSS v5/model v2026.06.15の2026-09-11 CSV/API値、CISA公式Mirrorの固定全件Catalog2026.09.11、MITRE CWE4.20 XML Version/Date/CWE639を照合。",
+          "OWASP2025のAwareness限定とNIST CVE定義を確認。CISA発行告知は発行と目的だけを採用し、取得不能のDirective原文の詳細適用・例外・置換・数値期限を推測しない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/07-vulnerability-prioritization.md",
+          "templates/vulnerability-prioritization-record.md",
+          "cases/ch07-vulnerability-prioritization-example.md",
+          "cases/fixtures/ch07-vulnerability-prioritization.json",
+          "cases/fixtures/ch07-source-snapshot.json",
+          "references/ch07-source-review-2026-09-12.md"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日であり、rawを読んだ日ではない。",
+          "導入・到達性・統制・判断・Evidenceは完全合成、EPSS/KEVは固定公開Source入力。親の状態を昇格させず、実環境評価や適合証明をしない。",
+          "BOD26-04原文は403で未検証。告知から詳細な法的適用を導かずUnverifiedを保持する。実務への転用には原文とAuthorityの確認が必要。",
+          "PR #120作成時（2026-09-12）は通常merge・main/publication未完了。consumedはそれらの確認後に別metadata更新する。 現在は2026-09-13の公開確認済みであり、その別更新を本metadata変更で記録した。現時点の状態・証跡はtarget.statusとstatusHistoryの最新entryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0032-6caf4e3d9174",
           "packageId": "EIP-0003",
           "inputPath": "chapter07-vulnerability-prioritization.predraft.md",
           "inputSha256": "6caf4e3d9174ae8b527df5b14301cd456550b1eca1ea7e88cf7c19e5031338cb",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5648933706",
+          "dispositionReason": "PR #120でIssue #32とcurrent contract・再検証済み一次資料から第7章正本を新規作成し、通常mergeとexact-main CI・Pages・公開markerを確認した。登録metadataとの照合であり、EIP-0003/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。"
         }
       ],
       "statusHistory": [
@@ -1034,6 +1191,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5645402838",
+          "reason": "前提main 665ca8e3c1846778f6657e38ca15facf638a028bのCI・Pages・公開確認後、branch作成前に唯一の候補を明示選択。rawは不在で直接採用なし。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-12",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/120",
+          "reason": "専用Draft PR #120とIntake Recordを作成。raw不在で直接採用なし。通常merge・main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/32#issuecomment-5648933706",
+          "reason": "PR #120通常merge: 9cea38dadeb41a6ef70c080638f2ac1e33269fee。review済みheadとmerge tree一致。exact-main Book Contract 34720608514 / Book QA 34720608508 / Deploy Pages 34720608562、deployment 6414750795がsuccess。第7章・ART-17・Case・Source Note・二つのJSON教材を含む公開15surfaceのHTTP200とreview済み出力とのbyte一致、JSON正本との一致を確認。raw不在・直接採用なしのIntake Recordを保持。"
         }
       ]
     },
@@ -1041,19 +1216,66 @@
       "targetId": "chapter-08",
       "issue": 33,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0033-eee4bacd1c7b",
+      "canonicalPr": 123,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/123",
+        "packageId": "EIP-0004",
+        "packageSha256": "956a321088abed3058e59c58ceeda3d5fd57a9d12a6715240185d0d7c445d86f",
+        "inputPath": "chapter08-safe-lab-evidence.predraft.md",
+        "inputSha256": "eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b",
+        "targetIssue": 33,
+        "canonicalPr": 123,
+        "currentMainSha": "d6b4dce5ed7bc697034dda36a139562e1802aac3",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-13",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。登録metadataとOperatorの八状態決定を照合した。"
+        ],
+        "rewrittenSections": [
+          "Issue #33、current contract・親Case・再確認した一次資料から第8章、ART-18、三Runの合成Plan・Evidence manifest・72 control checks・9 events・有限Layer A契約を新規作成した。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw不在のため本文読了・実体hash検証・直接採用は主張しない。",
+          "実Runtimeの構築・外部操作・実Credential・実測成功の断定は非目標。製品固有Assurance、専門DFIR取得手順、法的手続、第9章以降は委譲または後続Issue。"
+        ],
+        "sourceRevalidation": [
+          "2026-09-13 NIST SP800-86 Final/August2006 §§3/3.1.2を限定参照。取得計画・完全性・取扱いを採用し、旧Hashや製品操作を現在の推奨としない。",
+          "NIST SP800-190 Final/September2017 §§3.5.2/4.4.2/4.4.3/4.5.5の境界原則を限定採用。現行WSL2・Podman挙動や実測隔離は保証しない。",
+          "Berkeley Protocol公式共同発行者PDFの2022版・VI.C155(g/h)・VI.D167–169を確認。日不明publishedAt=nullと第25章の意味を維持し、原本・作業コピー・取扱いの記録へ限定。"
+        ],
+        "canonicalFiles": [
+          "manuscript/08-safe-lab-evidence.md",
+          "templates/lab-safety-evidence-plan.md",
+          "cases/ch08-lab-evidence-example.md",
+          "references/ch08-source-review-2026-09-13.md",
+          "cases/fixtures/ch08-lab-plan.json",
+          "cases/fixtures/ch08-control-receipts.json",
+          "cases/fixtures/ch08-evidence-manifest.json",
+          "schemas/ch08-lab-plan.schema.json",
+          "schemas/ch08-control-receipts.schema.json",
+          "schemas/ch08-evidence-manifest.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日であり、raw読了日ではない。",
+          "実Runtimeは実行しない。すべてのreceipt/Eventは固定レシピの合成仮定で、実Hostの隔離・停止・削除・残存は未測定。親のCoverage・Gap・Authorityは更新しない。",
+          "直接NIST PDF/OHCHR landing取得に403があり、一次PDFのブラウザ取得テキストで該当箇所を確認。全文のローカル取得やPDF Hash監査、法的証拠能力を主張しない。",
+          "PR #123作成時（2026-09-13）は通常merge・main/publication未完了。consumedはそれらの確認後に別metadata更新する。 現在は2026-09-13の公開確認済みであり、その別更新を本metadata変更で記録した。現時点の状態・証跡はtarget.statusとstatusHistoryの最新entryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0033-eee4bacd1c7b",
           "packageId": "EIP-0004",
           "inputPath": "chapter08-safe-lab-evidence.predraft.md",
           "inputSha256": "eee4bacd1c7be3366e6343a10f5f69a184dffe8a16c662fcabe90f24f543373b",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5650941182",
+          "dispositionReason": "PR #123でIssue #33とcurrent contract・再検証済み一次資料から第8章正本を新規作成し、通常mergeとexact-main CI・Pages・公開markerを確認した。登録metadataとの照合であり、EIP-0004/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。"
         }
       ],
       "statusHistory": [
@@ -1062,6 +1284,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5649213929",
+          "reason": "第4〜7章とconsumed metadataの通常merge・公開確認後、唯一の登録候補を明示選択。raw不在のため直接採用せず、Issue/current contract/一次資料から作成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/123",
+          "reason": "専用Draft PR #123とIntake Recordを作成。Runningを含む八状態を採用。raw不在で直接採用なし。通常merge・main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/33#issuecomment-5650941182",
+          "reason": "PR #123通常merge: dfcdd0167ba6cca1acaaecae73b4598f1366f235。review済みheadとmerge tree一致。exact-main Book Contract 34735705159 / Book QA 34735705160 / Deploy Pages 34735705154、deployment 6417361157がsuccess。第8章・ART-18・Case・Source Note・三つのJSON教材を含む公開17surfaceのHTTP200とreview済み出力とのbyte一致、JSON正本との一致を確認。raw不在・直接採用なしのIntake Recordを保持。"
         }
       ]
     },
@@ -1069,28 +1309,73 @@
       "targetId": "chapter-09",
       "issue": 34,
       "targetKind": "chapter",
-      "status": "candidate-selection-required",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0034-dd0c5e0b83f3",
+      "canonicalPr": 127,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/127",
+        "packageId": "EIP-0006",
+        "packageSha256": "1a2ccaa3dc3453dfc91c28a482bb8e319b5a2db6023d2d64f8cce2133619efb3",
+        "inputPath": "chapter09-engagement-roe.predraft.md",
+        "inputSha256": "dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579",
+        "targetIssue": 34,
+        "canonicalPr": 127,
+        "currentMainSha": "adf88935891b99ce781bbaaeba4b51e48fb1fc7d",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-13",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。両候補の登録概要を比較し、Bを設計来歴として選択した。"
+        ],
+        "rewrittenSections": [
+          "current Issue34、Chapter2/4/8親契約、再確認した一次Sourceから第9章・ART02・完全合成Case・JSON/Schema・有限Layer A contractを新規構成。Authorization evidence/RoE/ProcedureとTechnical/Decision completionを分離した。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw読了・実体hash照合・直接adoptionは不採用。A原文の比較は将来IntakeへDeferredで、品質不良とは判定しない。",
+          "実Target/実Credential/外部通信/Runtime/実署名検証/削除は非目標。個別法的助言・契約全文・製品/攻撃手順は委譲。第10章以降はHandoff定義だけ、本文は各Issue。"
+        ],
+        "sourceRevalidation": [
+          "NIST SP800-115 Final/September2008の公式ページ/PDFを取得し、§6.5–6.6/Appendix Bの計画・制約・Data・連絡・停止/再開・報告へ限定。新規SRC-NIST-TEST-001。",
+          "WSTG stable4.2/5.0developmentを公式project/versionedIntroductionで再確認。Chapter11の語彙へのBridgeに限定。",
+          "e-Gov公式law-data v2と現行表示APIで2025-06-01施行/CurrentEnforcedを確認。版維持、個別法的適用は不明のまま。",
+          "IPA公式2024版61頁PDFとページ更新2026-04-06を再確認。役割/情報取扱い/調整に限定し、許可や免責の代替にしない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/09-engagement-roe.md",
+          "templates/rules-of-engagement.md",
+          "cases/ch09-engagement-roe-example.md",
+          "references/ch09-source-review-2026-09-13.md",
+          "cases/fixtures/ch09-engagement-roe.json",
+          "schemas/ch09-engagement-roe.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報と採否の監査日であり、raw読了日ではない。",
+          "AUTH-CASE-2026-001の8月19日期限と元の8月6日Test windowを保持。正本はDraft/Do not proceedで、CIから実施許可を発行しない。親の状態やChapter11独立Caseは変更しない。",
+          "完全合成の仮定モデルで、実署名・権限・法的判断・通知・隔離・削除・PII完全検出を保証しない。",
+          "CROSS_BOOK_MAPの広いRoEテーマはBRIDGE。本章OWNは本書固有の成果物/判断/Handoffに限定し、粒度整理は既存Issue55。",
+          "PR #127作成時は通常mergeとmain/publication未完了。consumedはその確認後の別metadata更新でのみ記録する。 現在は2026-09-14の通常merge・main/publication確認済みであり、その別更新を本metadata変更で記録した。現時点の状態・証跡はtarget.statusとstatusHistoryの最新entryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0034-00de5e803e04",
           "packageId": "EIP-0005",
           "inputPath": "chapter09-engagement-roe.predraft.md",
           "inputSha256": "00de5e803e04d13ae80b9960489a2d7d90d6564c88324d7f32aed8c28c96ea91",
-          "disposition": "pending-comparison",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
-          "dispositionReason": "Issue #34、Chapter 2/4/8契約、current Policyと一次資料に対する比較が未実施。"
+          "disposition": "deferred",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
+          "dispositionReason": "未選択代替として原文比較を将来Intakeへ保留。品質不良とは判定していない。同梱第10章の状態は不変。raw不在、直接採用なし。"
         },
         {
           "candidateId": "EIC-0034-dd0c5e0b83f3",
           "packageId": "EIP-0006",
           "inputPath": "chapter09-engagement-roe.predraft.md",
           "inputSha256": "dd0c5e0b83f3cb75e099e7ca5bee572a6b51c1745bc985fc91f6b370b90f8579",
-          "disposition": "pending-comparison",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
-          "dispositionReason": "Issue #34、Chapter 2/4/8契約、current Policyと一次資料に対する比較が未実施。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5659602660",
+          "dispositionReason": "PR #127でIssue #34とcurrent contract・再検証済み一次資料から第9章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補Bを登録設計の来歴として選択した記録を保持し、EIP-0006/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。候補AのDeferredは不変。"
         }
       ],
       "statusHistory": [
@@ -1105,6 +1390,24 @@
           "effectiveAt": "2026-08-10",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/98",
           "reason": "Input SHAが異なる2候補を検出。比較記録なしのwinner選択を禁止した。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5652298262",
+          "reason": "両候補の登録概要をcurrent Issue・親契約・一次Sourceと比較。Authority/RoE/Procedureとtechnical/decision completionの分離が現在の制約に対応するBを設計来歴として選択。raw両方不在、本文優劣・読了・hash検証・直接採用は主張しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-13",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/127",
+          "reason": "専用Draft PR #127と実URLのIntake Recordを作成。raw不在で直接採用なし。完全合成RoEはDraft/Do not proceed。通常merge/main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-14",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/34#issuecomment-5659602660",
+          "reason": "PR #127通常merge: ad4957f827157e54fb53d3acc75ed08edbf59d7c。review済みheadとmerge tree一致。exact-main Book Contract 34810111029 / Book QA 34810111114 / Deploy Pages 34810110931、deployment 6431203533がsuccess。第9章・ART-02・Case・Source Note・計画JSON/Schema・代表章を含む公開20surfaceのHTTP200とreview済み出力とのbyte一致、対象五JSONと正本の一致を確認。両raw不在・直接採用なし、B選択/A DeferredのIntake Recordを保持。"
         }
       ]
     },
@@ -1112,19 +1415,63 @@
       "targetId": "chapter-10",
       "issue": 35,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0035-23f9af567b80",
+      "canonicalPr": 130,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/130",
+        "packageId": "EIP-0005",
+        "packageSha256": "c4fd20d4c44d769c22bbab886535ca3105b3a3a5ed7bdb6cea71619e6b7279a0",
+        "inputPath": "chapter10-recon-osint-boundary.predraft.md",
+        "inputSha256": "23f9af567b80d64c0d191b0f7905ddd8350ce81606d24c72626949fa30739002",
+        "targetIssue": 35,
+        "canonicalPr": 130,
+        "currentMainSha": "41caee3830222c0dc95a550abc399a0427969cd6",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-14",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0035-23f9af567b80を登録設計の来歴として選択した。"
+        ],
+        "rewrittenSections": [
+          "current Issue35、親Chapter2/4/9契約、再確認した一次Sourceから第10章・ART19・完全合成Case/二JSON/Schema・有限Layer A contractを新規構成。三Collection classes/五Verification statesと所有Unverified、取得Interactionと読解、所有と許可を分離。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw読了・実体hash照合・直接adoptionは主張しない。登録概要の第四class/別Stateを自動採用しない。同梱Chapter9のDispositionは伝播しない。",
+          "実Target/実Credential/実在人物/外部通信/Scanner操作は非目標。第24章詳細分析は委譲、第12章以降の正本は含めない。ODNIは後継不明の任意SourceとしてDeferred。"
+        ],
+        "sourceRevalidation": [
+          "Berkeley公式共同発行者2022版PDF102頁を取得しIII39–41/VI.C155(g,h)/VI.D167–169/VI.E176へ限定。2020発表日を2022版公開日に代用しない。",
+          "WSTG stable4.2/5.0developmentを公式projectとVersioned Information Gatheringで再確認。分類の補助だけ。",
+          "RFC9162 ExperimentalのPrecertificate発行意図、RFC9116 InformationalのTesting permission分離、RFC9499 BCP219のRR Owner語彙、RFC8767 StandardsTrackのserve-staleを限定採用。各info/更新関係/Errataを実取得し、Held/Verified/Reported/Rejected/該当0を区別。月のみの発行日はnull。"
+        ],
+        "canonicalFiles": [
+          "manuscript/10-recon-osint-boundary.md",
+          "templates/attack-surface-register.md",
+          "cases/ch10-attack-surface-example.md",
+          "references/ch10-source-review-2026-09-14.md",
+          "cases/fixtures/ch10-attack-surface.json",
+          "cases/fixtures/ch10-source-bundle.json",
+          "schemas/ch10-attack-surface.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。inputReviewedAtは登録情報・採否の監査日で、raw読了日ではない。",
+          "親ROE-2026-009 v1/Draft/失効/元window/三Objectを保持。所有確認・出版・Hash一致はScope追加や実行承認にならない。全候補record-only / executionAuthorized=false、CASE-2026-011は独立。",
+          "有限の作成者による合成資料モデルで、実収集・観測・Source真正性・実署名・法的判断・一般PII認識・実隔離/削除を保証しない。",
+          "PR #130作成時の制約として「PR #130は通常merge/main/publication未完了。consumedはその確認後の別metadata更新でのみ記録する。」と記録した。現在は2026-09-15の通常merge・main/publication確認済みであり、その別更新を本metadata変更で記録した。現時点の状態・証跡はtarget.statusとstatusHistoryの最新entryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0035-23f9af567b80",
           "packageId": "EIP-0005",
           "inputPath": "chapter10-recon-osint-boundary.predraft.md",
           "inputSha256": "23f9af567b80d64c0d191b0f7905ddd8350ce81606d24c72626949fa30739002",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5673149529",
+          "dispositionReason": "PR #130でIssue #35とcurrent contract・再検証済み一次資料から第10章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0005/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter9候補のDeferredは不変。"
         }
       ],
       "statusHistory": [
@@ -1133,6 +1480,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228684652",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-14",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5660341358",
+          "reason": "Issue35/current contract/再確認した一次資料に従い登録候補を設計来歴として選択。rawは認可workspaceに不在、読了・実体hash照合・直接採用は主張しない。三Collection classes/五Verification statesへ新規構成し、同梱Chapter9の処分は伝播しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-14",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/130",
+          "reason": "専用Draft PR #130と実URLのIntake Recordを作成。raw不在で直接採用なし。完全合成ART19はrecord-only/未承認。通常merge/main/publicationは未完了。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/35#issuecomment-5673149529",
+          "reason": "PR #130通常merge: 202a82a37e2f0fbf66854387054411fbfb62e1d3。review済みheadとmerge tree一致。exact-main Book Contract 34914983829 / Book QA 34914983847 / Deploy Pages 34914983818、deployment 6449563073がsuccess。第10章・ART-19・Case・Source Note・二JSON/Schema・前章/代表章を含む公開27surfaceのHTTP200とreview済み出力とのbyte一致、対象八JSONと正本の一致を確認。raw不在・直接採用なし、元Intake Recordと同梱Chapter9候補のDeferredを保持。"
         }
       ]
     },
@@ -1140,19 +1505,62 @@
       "targetId": "chapter-12",
       "issue": 36,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0036-bf2b7e4fe16e",
+      "canonicalPr": 133,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/133",
+        "packageId": "EIP-0008",
+        "packageSha256": "386e7148f504c9fa58a0b095bffcc6aeeaaf2be901e0d3b917e5e8db6c604b2c",
+        "inputPath": "chapter12-enterprise-identity.predraft.md",
+        "inputSha256": "bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd",
+        "targetIssue": 36,
+        "canonicalPr": 133,
+        "currentMainSha": "f49455264dd6968fd3fd795ed645211d79950bc7",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-15",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。登録候補EIC-0036-bf2b7e4fe16eを設計来歴として明示選択。"
+        ],
+        "rewrittenSections": [
+          "current Issue36、凍結契約、親Chapter4/6/9/10/独立Chapter11、限定一次Sourceから第12章・ART20・完全合成Graph/一JSON/閉じたSchema・有限Layer Aを新規構成。四Principal/十四Edge/六Pathstates/三Methods、Issuer/Audience/RP、必要条件とEvidence、MFAと認可を分離。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw読了・実体Hash照合・直接adoptionは主張しない。非正本紹介の追加分類/別Stateへ置換しない。同梱Chapter13のDisposition不変。",
+          "実Credential/Token/Cookie/実Tenant/Directory/Account/実認証・通信、IAM/Assertion parser、無限Graph探索、後続章正本は不採用またはDeferred。Protocol/製品実装は専門書へ委譲。"
+        ],
+        "sourceRevalidation": [
+          "公式63-4/A/B/C各CSRC Document HistoryのFinal2025-07-31と限定本文を再取得。Scope/自然人/IAL-AAL-FAL、B§2/§3.2.5、CのIdP発行AssertionとAudienceを確認し、機械間認証への適合保証はしない。",
+          "RFC9700BCP240/January2025§2.3、update6749/6750/6819、公式Errata該当0を確認。日不明のpublishedAtはnull。全OAuth更新史/実装監査ではない。",
+          "既存SP800-207A公式Final2023-09-13/AbstractのApplication/Service identityだけを再確認。第6章notesを保持。PDF全本文を再監査したとは主張しない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/12-enterprise-identity.md",
+          "templates/identity-attack-path-review.md",
+          "cases/ch12-identity-path-review-example.md",
+          "references/ch12-source-review-2026-09-15.md",
+          "cases/fixtures/ch12-identity-paths.json",
+          "schemas/ch12-identity-paths.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録名による全域調査hit0/error0で、任意rename検知はしない。inputReviewedAtは登録・採否確認日でraw読了日ではない。",
+          "親AUTH失効/元window/RoEv1 Draft/三Object/false、TM Needs Evidence、Signal Flow Gap、Chapter10record-only、独立CASE2026-011を保持。子の有限Passは親bindingや実行許可を更新しない。",
+          "有限の供給レコード・必要条件の比較。実測、実認証、製品適合、一般Secret認識、法的許可、実隔離/削除、Detection検証を保証しない。",
+          "本Intake記録作成時はPR #133 Draftで通常merge/main/publication未完了。consumedはその公開確認後の別metadata PRで記録する。現時点の進行状態はtarget.statusと最新statusHistoryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0036-bf2b7e4fe16e",
           "packageId": "EIP-0008",
           "inputPath": "chapter12-enterprise-identity.predraft.md",
           "inputSha256": "bf2b7e4fe16e083924af23ecee183f3536e97b588770d56efd80e6b5e17b85cd",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5674704043",
+          "dispositionReason": "PR #133でIssue #36とcurrent contract・再検証済み一次資料から第12章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0008/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter13のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -1161,6 +1569,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5673770683",
+          "reason": "PR132通常merge/main公開・Chapter10consumed後にIssue36の正式四Principal/六Pathstates/三Methodsへ登録候補を明示選択。raw不在のため直接採用せず現行Issue・親契約・一次Sourceから新規構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/133",
+          "reason": "第12章専用Draft PR #133に本文/ART20/完全合成JSON/Schema/Source/有限Layer AとIntake Recordを結ぶ。通常merge/main公開前のためconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/36#issuecomment-5674704043",
+          "reason": "PR #133通常merge: eec3eca864786ffc8ad25cbbcc6f7a1b24995f98。最終検証headとmerge tree一致。exact-main Book Contract 34927591344 / Book QA 34927591414 / Deploy Pages 34927591325、deployment 6451659627がsuccess。第12章・ART-20・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む34公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter13のDispositionを保持。"
         }
       ]
     },
@@ -1168,19 +1594,62 @@
       "targetId": "chapter-13",
       "issue": 37,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0037-16d33d9ab258",
+      "canonicalPr": 136,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/136",
+        "packageId": "EIP-0008",
+        "packageSha256": "386e7148f504c9fa58a0b095bffcc6aeeaaf2be901e0d3b917e5e8db6c604b2c",
+        "inputPath": "chapter13-platform-supply-chain.predraft.md",
+        "inputSha256": "16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec",
+        "targetIssue": 37,
+        "canonicalPr": 136,
+        "currentMainSha": "c6131bfeb9d479eef93138b99c0565af33ef532e",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-15",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0037-16d33d9ab258を設計来歴としてbranch前に明示選択。"
+        ],
+        "rewrittenSections": [
+          "current Issue37/凍結契約/親Chapter4/6/9/12と再確認した一次資料から、本文/ART21/完全合成Case/JSON/閉Schema/有限LayerAを新規構成。三Plane、Human/WorkloadとSecret class ID、八Chain、五StateとSourceからRuntimeまでの直接ID/版/Evidence/期待値を判断へ接続。"
+        ],
+        "rejectedOrDeferredSections": [
+          "raw読了・実体hash照合・直接adoptionは主張しない。同梱Chapter12のconsumed/元Intake/登録Packageを変更しない。",
+          "実Cloud/CI/Registry/Token/Package install/Build/Deploy/暗号署名検証、SLSA/SPDX全標準parser、一般Secret認識、第14章以降正本は不採用またはDeferred。"
+        ],
+        "sourceRevalidation": [
+          "SSDF1.1 FinalのPS1.1/PS2.1/PS3.1/PS3.2/PW4.4を公式web readerで限定確認。Date Published February2022とHistory02/03/22を区別しpublishedAt null。SSDF1.2は2025-12-17 IPD、potential updatesはp.iii謝辞typo一件で技術改訂ではない。",
+          "SLSA1.2 Approved/1.1 Retired、公式release2025-11-24と承認決議日を区別。Tracks/Build Track Basics/Verifying artifactsの対象Digest/信頼するBuilder/期待値/保証限界を採用。教材の有限Verifiedは標準適合でも実暗号検証でもない。",
+          "SPDX公式list3.0と版別HTML3.0.1は所在/版だけ確認。SP800-190 Final2017-09の§3.5.2/4.1.4を限定確認、既存Source identity/notesは保持。公式PDFのlocal取得403により全PDF/localhash監査は主張しない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/13-platform-supply-chain.md",
+          "templates/platform-supply-chain-assessment.md",
+          "cases/ch13-platform-supply-chain-example.md",
+          "references/ch13-source-review-2026-09-15.md",
+          "cases/fixtures/ch13-supply-chain.json",
+          "schemas/ch13-supply-chain.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録4名workspace調査8457directories hit0/errors0、symlinkdirs未走査/任意rename内容検出ではない。inputReviewedAtは登録採否確認日でraw読了日ではない。",
+          "親RoE Draft/失効/元window/三Object/false、親第12章Unknown/非Federation三nullとcustomer-summary限定、独立CASE11を保持。新Human/Workload IDは仮定で実許可ではない。",
+          "供給summaryの有限比較であり、実測、Build、Deploy、署名、標準適合、安全性、法的許可、実隔離/削除、Detection成功を保証しない。Digestは合成ラベル由来。",
+          "本Intake記録作成時はPR #136 Draftで通常merge/main公開未完了。consumedはその確認後の別metadata PRで記録する。現在の進行状態はtarget.statusと最新statusHistoryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0037-16d33d9ab258",
           "packageId": "EIP-0008",
           "inputPath": "chapter13-platform-supply-chain.predraft.md",
           "inputSha256": "16d33d9ab2589c661fd88739ec20f8d6b74221b60eece7efa0ca0293dc1be0ec",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5678132066",
+          "dispositionReason": "PR #136でIssue #37とcurrent contract・再検証済み一次資料から第13章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0008/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter12のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -1189,6 +1658,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229170716",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5675937404",
+          "reason": "親Chapter4/6/9/12とChapter12consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前コメントで明示選択。raw不在のため直接採用せずcurrent Issue/契約/一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/136",
+          "reason": "第13章専用Draft PR #136に本文/ART21/完全合成JSON/閉Schema/Source/有限Layer AとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-15",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/37#issuecomment-5678132066",
+          "reason": "PR #136通常merge: dcd9845be053d3c0cd21c9814dbe9e76d59ccba4。最終検証headとmerge tree一致。exact-main Book Contract 34952916465 / Book QA 34952916342 / Deploy Pages 34952916349、deployment 6456097580がsuccess。第13章・ART-21・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む40公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十二JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter12のDispositionを保持。"
         }
       ]
     },
@@ -1196,19 +1683,63 @@
       "targetId": "chapter-14",
       "issue": 38,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0038-3e687b3de61f",
+      "canonicalPr": 139,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/139",
+        "packageId": "EIP-0009",
+        "packageSha256": "bef9879d4b230f63d5f1f8d037611bbab097328defc054cb2b801fbf8deeb1ad",
+        "inputPath": "chapter14-minimal-impact-validation.predraft.md",
+        "inputSha256": "3e687b3de61f4c6a0b20365b04f483064edf5ac07c2ff4cc6ffbe0cbd89bf58f",
+        "targetIssue": 38,
+        "canonicalPr": 139,
+        "currentMainSha": "5ab793c72bcde3fe7f57db6001a1db320f7e7981",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-16",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0038-3e687b3de61fを設計来歴としてbranch前に明示選択。"
+        ],
+        "rewrittenSections": [
+          "正式Issue38/現行契約/親Chapter8/9/11/12/13と再確認した一次資料から、本文/ART22/完全合成Case/JSON/閉Schema/有限LayerAを新規構成。八記録、四Method、六Result、二条件の期待値と合成観測を比較し、未実施/停止/整理/残存確認/判断を直接IDで接続する。"
+        ],
+        "rejectedOrDeferredSections": [
+          "非正本のNot performedを第七Resultとする一覧とM0〜M7の階層は、正式六Result/四Methodを上書きするものとして採用しない。Not performedは実施有無の欄に分離する。",
+          "実Target/実Data/実Credential/実通信/実Account/実操作/実Replay/実Cleanup測定、NIST80053Aの未確認採用、標準適合parser、第15章以降正本は不採用またはDeferred。",
+          "raw読了・実体hash照合・直接adoptionを主張しない。元登録2026-08-09/Issue63comment5229191435、同梱第15章や他Target/Packageを変更しない。"
+        ],
+        "sourceRevalidation": [
+          "NIST SP800-115 Final/September2008。Date PublishedとDocument History09/30/08を区別しpublishedAt null保持。§6.5/7.2/7.3/7.4導入/8.1-8.2の限定範囲を公式PDF web readerで確認。取得PDF HTTP200/hash58e5ed41e5c8ca34ce14fd80b70f118f2c6d613d1647bc307edca30bcc45f063は既存記録と一致。ローカル変換ツール未導入、全規範再監査/現在の媒体消去手順採用ではない。",
+          "WSTG公式Projectとversioned4.2 IntroductionのWhat is Testing/版別参照/Balanced Approachを限定確認。4.2公開2020-12-03、5.0 development/4.3 Unreleasedを区別。個別Technique/全Scenarioは採用しない。",
+          "既存SRC-NIST-TEST-001/SRC-WSTG-001の過去notesを全保持し、章14採用scope/Source Noteを追記。既存9/10consumer exactnotesを機械更新、rootbaseline2026-07-25を保持。六Result/四Methodは標準規定ではなく本書独自設計。"
+        ],
+        "canonicalFiles": [
+          "manuscript/14-minimal-impact-validation.md",
+          "templates/minimal-impact-validation-record.md",
+          "cases/ch14-minimal-impact-validation-example.md",
+          "references/ch14-source-review-2026-09-16.md",
+          "cases/fixtures/ch14-minimal-impact-validation.json",
+          "schemas/ch14-minimal-impact-validation.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録4名workspace調査11082directories hit0/errors0、symlinkdirs未走査/任意改名内容検出ではない。inputReviewedAtは登録採否確認日でraw読了日ではない。",
+          "親RoE Draft/失効/元Window/三Object/false、親第8章Runningを含む八状態と実行有無、12のUnknown/非Federation三null、13のVerified=供給summary比較/実BuildDeploy署名検証0、独立CASE11を保持。",
+          "供給文字列の二条件比較と作成者の記録であり、実製品の制御、脆弱性成立、実影響、安全性、法的許可、実削除や残存影響の測定を保証しない。Completeは読解記録の完了であり業務課題の解決ではない。",
+          "本Intake記録作成時はPR #139 Draftで通常merge/main公開未完了。consumedはその確認後の別metadata PRで記録する。現在の進行状態はtarget.statusと最新statusHistoryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0038-3e687b3de61f",
           "packageId": "EIP-0009",
           "inputPath": "chapter14-minimal-impact-validation.predraft.md",
           "inputSha256": "3e687b3de61f4c6a0b20365b04f483064edf5ac07c2ff4cc6ffbe0cbd89bf58f",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5692616067",
+          "dispositionReason": "PR #139でIssue #38とcurrent contract・再検証済み一次資料から第14章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0009/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter15のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -1217,6 +1748,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-16",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5686084068",
+          "reason": "親Chapter8/9/11/12/13とChapter13consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前に明示選択。raw不在のため直接採用せず正式Issue/現行契約/一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-16",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/139",
+          "reason": "第14章専用Draft PR #139に本文/ART22/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-16",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/38#issuecomment-5692616067",
+          "reason": "PR #139通常merge: 99dd185db99e4bbba581b4f829cfde495eb3a50a。最終検証headとmerge tree一致。exact-main Book Contract 35059304952 / Book QA 35059304680 / Deploy Pages 35059304679、deployment 6474531706がsuccess。第14章・ART-22・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む46公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十四JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter15のDispositionを保持。"
         }
       ]
     },
@@ -1224,19 +1773,65 @@
       "targetId": "chapter-15",
       "issue": 39,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0039-c168fc29af42",
+      "canonicalPr": 142,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/142",
+        "packageId": "EIP-0009",
+        "packageSha256": "bef9879d4b230f63d5f1f8d037611bbab097328defc054cb2b801fbf8deeb1ad",
+        "inputPath": "chapter15-findings-retest-risk.predraft.md",
+        "inputSha256": "c168fc29af42cc50a38d23c581172bc4953125775f71867d60c36d5a726b7b3c",
+        "targetIssue": 39,
+        "canonicalPr": 142,
+        "currentMainSha": "f56c531ea3027e27869fb4a347df48a1352bc33f",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-17",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0039-c168fc29af42を設計来歴としてbranch前に明示選択。"
+        ],
+        "rewrittenSections": [
+          "正式Issue39/現行契約/親Chapter7〜14と再確認した一次資料から、本文/ART04互換拡張/ART23/完全合成Case/JSON/閉Schema/有限LayerAを新規構成。七つの独立したFindingと五Retestで六Status/五Resultを比較し、Treatment/変更参照/Residual/Acceptance権限期限/Decision/Reassessmentを直接IDで接続する。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Target/実Data/実Credential/実通信/実Scanner/実変更/実Retest/実届出/実公表、Risk acceptanceによる実行許可上書き、実CVE評価の新OAuth教材への転用は不採用。",
+          "NIST SP800-53A/800-39/CSF/CWEの未確認採用、汎用Workflow engine、第16章以降正本は不採用またはDeferred。",
+          "raw読了・実体hash照合・直接adoptionを主張しない。元登録2026-08-09/Issue63comment5229191435、同梱第14章/元Intakeや他Target/Packageを変更しない。"
+        ],
+        "sourceRevalidation": [
+          "IPA2024届出ガイドラインのⅠ枠組み/役割とⅡ情報・対策・対応状況の定義を限定確認。公式ページ更新2026-04-06、全61ページPDF取得hash98ec2ed52e14a2065c4a4befd154be2627d47fb08d4ed290b93d20438183e458は前回と一致。全付録/実届出/公表時期/法的責任判断ではなくpublishedAt null保持。",
+          "WSTG公式Projectの4.2/5.0developmentを区別。公式tag v4.2→dd33419e10edb22b78d89325a6c2aad9f184e3a2、Reporting Git blob9e2131fb657f555acc48f55785da2b50a4a4feda/SHA256ac4c37f76f1d4ef1aab5d67636cef856a8cfecb0c482cbb73238ef0269fdba12。About/1.4/1.5/2/3の再テスト参照と3.2限定、全技法や外部参考群は不採用。unsignedtagを署名検証済みと扱わない。",
+          "CVSS4.0 / Specification1.2 / User Guide1.2を公式FIRSTで確認。Specification冒頭の四Metric groups/ScoreとVector/範囲外の組織Risk要因だけ採用。User Guide全rubric再監査や新Score/CWE採用なし。",
+          "三Sourceの過去notes全保持、Chapter15採用scope/Source Note追記。既存7/9/10/14consumer exactnotesを機械更新、rootbaseline2026-07-25保持。六Status/五Result/二条件優先順は本書独自設計。"
+        ],
+        "canonicalFiles": [
+          "manuscript/15-findings-retest-risk.md",
+          "templates/finding-report.md",
+          "templates/retest-record.md",
+          "cases/ch15-findings-retest-risk-example.md",
+          "references/ch15-source-review-2026-09-17.md",
+          "cases/fixtures/ch15-findings-retest-risk.json",
+          "schemas/ch15-findings-retest-risk.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録4名workspace13642directories hit0/errors0、symlinkdirs/任意改名内容未調査。inputReviewedAtは登録採否確認日でraw読了日ではない。",
+          "親RoE Draft/失効/元Window/三Object/false、親8八状態Running、12Unknown、13供給summaryVerified、独立CASE11を保持。親14VAL/FNDは方法参照だけで、新subjectのEvidenceや配達済みへ付替えない。",
+          "供給文字列と作成者の判断であり、実製品の制御、改修効果、業務影響、安全性、法的許可を保証しない。Closed/AcceptedでもResidualは残り、実行許可を付与しない。既存ART04十H2/routeを保持。",
+          "本Intake記録作成時はPR #142 Draftで通常merge/main公開未完了。consumedはその確認後の別metadata PRで記録する。現在の進行状態はtarget.statusと最新statusHistoryを参照する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0039-c168fc29af42",
           "packageId": "EIP-0009",
           "inputPath": "chapter15-findings-retest-risk.predraft.md",
           "inputSha256": "c168fc29af42cc50a38d23c581172bc4953125775f71867d60c36d5a726b7b3c",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5740271229",
+          "dispositionReason": "PR #142でIssue #39とcurrent contract・再検証済み一次資料から第15章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0009/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter14のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -1245,6 +1840,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229191435",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5708381252",
+          "reason": "親Chapter7〜14とChapter14consumedの通常merge/actual-main公開Gate完了。唯一の候補をbranch前に明示選択。raw不在のため直接採用せず正式Issue/現行契約/一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/142",
+          "reason": "第15章専用Draft PR #142に本文/ART04/ART23/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-19",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/39#issuecomment-5740271229",
+          "reason": "PR #142通常merge: 39bb672c91f60f5992df98b75fa566911c516e67。最終検証headとmerge tree一致。exact-main Book Contract 35429122730 / Book QA 35429122700 / Deploy Pages 35429122698、deployment 6538490415がsuccess。第15章・ART-04/23・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む53公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十六JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter14のDispositionを保持。"
         }
       ]
     },
@@ -1252,19 +1865,64 @@
       "targetId": "chapter-16",
       "issue": 40,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0040-38fbe94b39aa",
+      "canonicalPr": 147,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/147",
+        "packageId": "EIP-0006",
+        "packageSha256": "1a2ccaa3dc3453dfc91c28a482bb8e319b5a2db6023d2d64f8cce2133619efb3",
+        "inputPath": "chapter16-telemetry-evidence-readiness.predraft.md",
+        "inputSha256": "38fbe94b39aac0ad6e59fcaa0c2cd9bfffc23b4eb01ca4dbbfd1cfb470a00c32",
+        "targetIssue": 40,
+        "canonicalPr": 147,
+        "currentMainSha": "923a6684ed2510e4e539033e5fe440054d2fd1d0",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-21",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0040-38fbe94b39aaを登録設計来歴としてbranch前のIssue40comment5758739823で選択。"
+        ],
+        "rewrittenSections": [
+          "正式Issue40/現行契約/親Chapter5・6・15・17/再確認した一次資料から、本文/ART24/全欄Case/完全合成JSON/閉Schema/有限LayerAを新規制作。七状態/十の独立対比/二十四receipt、Consumer別必要Field/時刻/Identity/保持/Privacy/Gap/Owner/期限/再評価を接続。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実収集/実Log/実PII/実Credential/実通信/実製品設定/実Handoff配達/実許可発行は不採用。親のEvidence/権限/未配達を変更しない。",
+          "Correlatableを第八状態へ追加する旧案、OpenTelemetry採用、製品別Schema、汎用収集engine、第18章以降正本は不採用またはDeferred。",
+          "raw読了・実体hash照合・直接adoptionを主張しない。同梱Chapter9/元Intake、他Target/Packageと全過去履歴を保持。"
+        ],
+        "sourceRevalidation": [
+          "ATT&CK公式Version History current19.2とStrategy導入説明だけ確認。第5章固定snapshotを保持、新Technique/Strategy割当なし、April28をminor公開日時と推定しない。",
+          "NIST SP800-92 Final2006-09-13、§3.2/4.2/5.6限定。72ページPDF SHA256466c3ab1580bc3b2e25d11bbd4b2ac92fd1762b3c5b10596924981bc1b9e61e1。旧製品/法令/MD5-SHA1推奨/digestを署名と呼ぶ表現は採用しない。Rev1 IPD2023-10-11はmetadata状態だけ確認、Draft本文不採用。",
+          "NIST SP800-61r3 Final2025-04-03のPR.PS04/RS.AN06/07限定。48ページPDF SHA256e5593d6bb85daecec7e8d9549400c7b3473bcc3f06e469c82218073afa7fba2d。ログ準備/記録完全性/来歴/権限別アクセス/保持だけ採用、Schemaや法的認定ではない。",
+          "7公式endpoint取得、5Sourceの旧notesを保持して限定用途だけ追記。rootbaseline2026-07-25保持。七状態とreceiptと数値は本書独自設計。全規範/全Object/全章の再監査ではない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/16-telemetry-evidence-readiness.md",
+          "templates/telemetry-coverage-map.md",
+          "cases/ch16-telemetry-coverage-example.md",
+          "references/ch16-source-review-2026-09-21.md",
+          "cases/fixtures/ch16-telemetry-coverage.json",
+          "schemas/ch16-telemetry-coverage.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録4名workspace16709dirs hit0/errors0、symlinkdirs/任意改名内容未調査。inputReviewedAtは登録採否確認日でraw読了日ではない。",
+          "TCM新対象APP-TCM16-001/TCM16-REV-001は親5/6/15/17の現在実装・証拠・権限ではない。HOF-FRT15-16 planned-not-deliveredと既存DVR/DET/TEL/fixtureは保持。",
+          "Validatedは供給入力の限定比較。実収集/Detection全体/親17保持180-365-90日/実行許可/法的適格性の成功ではない。Byte比較は固定JSON表現であり真正性やファイル空白の一致ではない。",
+          "本Intake作成時はPR #147 Draftで通常merge/main公開未完。consumedはその確認後の別metadata PRで記録する。現在状態はtarget.statusと最新statusHistoryを参照。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0040-38fbe94b39aa",
           "packageId": "EIP-0006",
           "inputPath": "chapter16-telemetry-evidence-readiness.predraft.md",
           "inputSha256": "38fbe94b39aac0ad6e59fcaa0c2cd9bfffc23b4eb01ca4dbbfd1cfb470a00c32",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228688398",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/40#issuecomment-5767224085",
+          "dispositionReason": "PR #147でIssue #40とcurrent contract・再検証済み一次資料から第16章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0006/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter9のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -1273,6 +1931,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228688398",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-21",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/40#issuecomment-5758739823",
+          "reason": "PR146 actual-main公開と第II部完了後、唯一の登録候補EIC-0040-38fbe94b39aaをbranch前に設計来歴として選択。登録原料の実体は見つからず、読了/hash実照合/直接採用は主張しない。Issue40と現行契約・一次資料から新規制作し、同梱Chapter9の履歴を保持する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-21",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/147",
+          "reason": "第16章専用Draft PR #147に本文/ART24/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-22",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/40#issuecomment-5767224085",
+          "reason": "PR #147通常merge: 01874e92b51a4eb4dfc6901ee105a1bf63c56da5。最終検証headとmerge tree一致。exact-main Book Contract 35650528930 / Book QA 35650528979 / Deploy Pages 35650528928、deployment 6577693307がsuccess。第16章・ART-24・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む61公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象十八JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter9のDispositionを保持。"
         }
       ]
     },
@@ -1280,19 +1956,64 @@
       "targetId": "chapter-18",
       "issue": 41,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0041-5a08af6d1ae3",
+      "canonicalPr": 150,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/150",
+        "packageId": "EIP-0010",
+        "packageSha256": "34a748e0d3373ad842aa512f6510c2ac17242d42588b82e19f377678d255c381",
+        "inputPath": "chapter18-threat-hunting.predraft.md",
+        "inputSha256": "5a08af6d1ae3f94b622ddec1f36f133b763d5b6eaac03f1ef08b415d0b540bbd",
+        "targetIssue": 41,
+        "canonicalPr": 150,
+        "currentMainSha": "94f246e18d327616f9f82e77017ae88f3f4a1dd8",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-22",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0041-5a08af6d1ae3を登録設計来歴としてbranch前のIssue41comment5777112567で選択。"
+        ],
+        "rewrittenSections": [
+          "正式Issue41/現行契約/親Chapter16・17/用途限定一次資料から本文/既存ART06拡張/Artifact全欄Case/完全合成JSON/閉Schema/有限LayerAを新規制作。五Result/十二独立対比、Hypothesis/Scope/Coverage/Query/Pivot/Evidence/Alternative/Gap/Backlog/Owner/期限/再評価を接続。",
+          "非正本準備で新規作成した40手書き期待値を、SYNTH-HUNT18-001/HUNT18-REV-001/製品非依存Scope語へ再構成し独立期待値を保持して再検査。元登録rawの読了・復元を意味しない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Log/実PII/実Credential/実SIEM接続/実Target探索/実Handoff/実許可発行は不採用。親16/17のEvidence・状態・実権限・未配達、原DVR/DET/TEL/fixtureを変更しない。",
+          "六語の旧登録案は正式Issue/設計の五Resultへ整理。汎用Query言語、全製品ログParser、実Collector検証、帰属/侵害/Incidentの自動確定、第19章以降の正本は不採用またはDeferred。",
+          "同梱Chapter19、全他Target/Packageと全過去履歴を保持。raw未読/hash未照合/直接採用なし。"
+        ],
+        "sourceRevalidation": [
+          "公式ATT&CK Version History current19.2/UpdatesとDetection Strategies導入説明を限定確認。April28の系列開始表示を19.2のminor公開日と混同せず、全Technique/CTI object監査やCoverage認定は行わない。",
+          "NIST SP800-61r3 Final2025-04-03のDE.AE-08/p26、RS.MA-02/p27、RS.AN-06/07/p29を限定確認。PDF SHA256e5593d6bb85daecec7e8d9549400c7b3473bcc3f06e469c82218073afa7fba2d。Incident基準/Triage/記録の来歴に限定し、教材算法/五Result/法的適格性の規範としない。",
+          "公式HTML四応答/PDFを取得。初回一部403は監査User-Agent明示の通常HTTPSで再取得し最終全200、TLS検証無効化なし。三Sourceの旧notes/rootbaseline2026-07-25を保持し、用途限定notes/09-22確認日/chapter18 mappingだけを更新。"
+        ],
+        "canonicalFiles": [
+          "manuscript/18-threat-hunting.md",
+          "templates/hunt-report.md",
+          "cases/ch18-hunt-plan-example.md",
+          "references/ch18-source-review-2026-09-22.md",
+          "cases/fixtures/ch18-threat-hunting.json",
+          "schemas/ch18-threat-hunting.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録4名workspace18283dirs hit0/errors0、symlinkdirs/任意改名内容/Workspace外は未調査。inputReviewedAtは登録採否確認日でraw読了日ではない。",
+          "供給receiptは教育用仮定で実Collectorの証拠ではない。SUP binding/digestは固定JSON表現の比較に限定し、原記録の真正性、取得前完全性、権限、実Coverageを証明しない。",
+          "Supportedは限定行動と整合するだけで悪意/帰属/侵害/Incidentを確定しない。Negative findingは固定対象版/Population/Window/Query/Coverageだけ。Gap/停止を隠さない。全Handoffはplanned-not-delivered/receipt null/executionAuthorized false。",
+          "本Intake作成時はPR #150 Draftで通常merge/main公開未完。consumedは確認後の別metadata PRで記録する。現在状態はtarget.statusと最新statusHistoryを参照。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0041-5a08af6d1ae3",
           "packageId": "EIP-0010",
           "inputPath": "chapter18-threat-hunting.predraft.md",
           "inputSha256": "5a08af6d1ae3f94b622ddec1f36f133b763d5b6eaac03f1ef08b415d0b540bbd",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5785664929",
+          "dispositionReason": "PR #150でIssue #41とcurrent contract・再検証済み一次資料から第18章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0010/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter19のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -1301,6 +2022,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-22",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5777112567",
+          "reason": "PR149 actual-main公開とIssue148完了後、唯一EIC-0041-5a08af6d1ae3をbranch前に登録設計来歴として選択。raw実体はworkspaceに不在で読了/hash実照合/直接採用なし。正式Issue41の五Result、現行親契約と一次資料から新規制作し、同梱Chapter19を保持する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-22",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/150",
+          "reason": "第18章専用Draft PR #150に本文/ART06/完全合成JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedへ進めない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-23",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/41#issuecomment-5785664929",
+          "reason": "PR #150通常merge: d2c72ff3b14f16ff51d0c8e9409eb211be7c5e63。最終検証headとmerge tree一致。exact-main Book Contract 35793364509 / Book QA 35793364522 / Deploy Pages 35793364530、deployment 6602465904がsuccess。第18章・ART-06・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む67公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象二十JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter19のDispositionを保持。"
         }
       ]
     },
@@ -1308,19 +2047,64 @@
       "targetId": "chapter-19",
       "issue": 42,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0042-3630c01fb55d",
+      "canonicalPr": 153,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/153",
+        "packageId": "EIP-0010",
+        "packageSha256": "34a748e0d3373ad842aa512f6510c2ac17242d42588b82e19f377678d255c381",
+        "inputPath": "chapter19-incident-response.predraft.md",
+        "inputSha256": "3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68",
+        "targetIssue": 42,
+        "canonicalPr": 153,
+        "currentMainSha": "3eb82b3905ac7199a3d44ba68f4573e8ee9da6ed",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-23",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0042-3630c01fb55dをimmutable登録来歴としてIssue42comment5790260467でbranch前に選択。"
+        ],
+        "rewrittenSections": [
+          "正式Issue42/凍結契約/現main親15〜18/用途限定NIST一次資料から本文・ART25・全欄Case・完全合成JSON・閉Schema・有限LayerAを新規制作。七状態、十二独立した対象版、宣言/Scope/Evidence/選択肢/復旧検証/残余リスク/再開/未配達Handoffを結ぶ。",
+          "60の独立に記述した有限status/gap/error期待値を使用。日本語判断profileは十二対比とともに新規作成し、独立oracleとは主張しない。元rawを読了・復元した記録ではない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Incident/実組織/実User/実PII/実Credential/外部接続/実収集/実操作/実通知/法的通知の自動決定は不採用。親のEvidence/権限/未配達を変更しない。",
+          "NISTの万能状態機械、全製品IR自動化、任意NLPや章固有rendererの実装、第20章以降の正本先行統合は対象外。",
+          "同梱Chapter18のconsumedと元Intake、全他Target/Package、過去履歴を保持。raw未読/hash実体未照合/直接採用なし。"
+        ],
+        "sourceRevalidation": [
+          "NIST CSF2.0 Final2024-02-26の印刷p.5を六Functionの上位Outcomeと並行性に限定参照。七状態と有限判断契約は本書独自で、規範算法や適合認定とはしない。",
+          "SP800-61r3 Final2025-04-03のpp.1–2/26–34にある宣言基準、triage/分類/優先付け、記録と来歴、通知・共有、封じ込め/根絶、復旧検証を用途限定確認。個別法域・通知要否/期限は判断しない。",
+          "公式HTML二応答/PDF二応答の最終HTTP200とbyteHashを保存。ローカルpdftotext未導入の抽出失敗を記録し、一次PDFのWeb表示で該当箇所を読解。TLS検証無効化なし。二Sourceの09-23確認日/notes追記だけでrootbaseline2026-07-25/旧notes/既存chapter mappingを保持。"
+        ],
+        "canonicalFiles": [
+          "manuscript/19-incident-response.md",
+          "templates/incident-action-plan.md",
+          "cases/ch19-incident-action-plan-example.md",
+          "references/ch19-source-review-2026-09-23.md",
+          "cases/fixtures/ch19-incident-response.json",
+          "schemas/ch19-incident-response.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録4basenameをworkspace19761directoriesで検索しhit0/errors0。symlink先、改名file、archive内部、workspace外は未調査。inputReviewedAtは登録採否確認日でraw読了日ではない。",
+          "供給前状態/基準/承認/保持/Validationは教育上の仮定。固定JSON表現のHashは真正性、実権限、原記録の完全性、実Incidentや受領を証明しない。有限guardは公開前の読解契約で実運用IRツールではない。",
+          "実Incident/操作/収集/通知0。法的通知要否/期限は未決定。全36Handoffはplanned-not-delivered/receipt null/executionAuthorized false。Closedも全改善完了や組織全体の安全を意味しない。",
+          "Intake作成時はPR#153 Draft、通常merge/main公開未完。consumedは公開確認後の別metadata PRで記録する。現在状態はtarget.statusと最新statusHistoryを参照。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0042-3630c01fb55d",
           "packageId": "EIP-0010",
           "inputPath": "chapter19-incident-response.predraft.md",
           "inputSha256": "3630c01fb55dab74344e89467e0a72881f8134995f84e0eb250a9c9648446f68",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5802428231",
+          "dispositionReason": "PR #153でIssue #42とcurrent contract・再検証済み一次資料から第19章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0010/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter18のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -1329,6 +2113,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229205526",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-23",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5790260467",
+          "reason": "第19章の唯一候補をbranch作成前に選択。raw不在を隠さず、専用Draftで現行契約から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-23",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/153",
+          "reason": "第19章専用Draft PR#153に本文/ART25/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-24",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/42#issuecomment-5802428231",
+          "reason": "PR #153通常merge: 52c8d11ecb9f7ae93372596b2d18f160f1cced3b。最終検証headとmerge tree一致。exact-main Book Contract 35913828428 / Book QA 35913828599 / Deploy Pages 35913828395、deployment 6623610120がsuccess。第19章・ART-25・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む73公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象二十二JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter18のDispositionを保持。"
         }
       ]
     },
@@ -1336,19 +2138,67 @@
       "targetId": "chapter-20",
       "issue": 43,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0043-58dc95fff364",
+      "canonicalPr": 156,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/156",
+        "packageId": "EIP-0011",
+        "packageSha256": "cb9fee8ca0a1ff1b8e2ce6d45f5d0d1cc102303eacaddfec394deca098e83461",
+        "inputPath": "chapter20-dfir-timeline-causality.predraft.md",
+        "inputSha256": "58dc95fff36417b259bab6c965d2bfe2289b3d59fa5d4e4f57a2b49806c81078",
+        "targetIssue": 43,
+        "canonicalPr": 156,
+        "currentMainSha": "6ac13b55017d304d54a52f27dde5ee248821896c",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-25",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0043-58dc95fff364 / EIP-0011をimmutable登録来歴としてIssue43comment5819304826でbranch前に選択。"
+        ],
+        "rewrittenSections": [
+          "正式Issue43/設計コメント/現main親16・19/用途限定NIST・Berkeley一次資料から本文、既存ART07拡張、ART26、全欄Case、完全合成JSON/閉Schema、有限LayerAを新規制作。",
+          "五Receipt・四Source/Clock・二Cutoff・六Claim、原時刻/総不確かさ、再送と内容衝突、後着Evidence、代替説明・原因未確定・限定影響・Control/再評価・未配達を結ぶ。65の独立literal期待値は実装出力から生成していない。読解結果の有限表は本書の著者所有であり、実事案の独立検証や汎用原因推論ではない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Incident/実イメージ/実メモリ/実PII/実Credential/外部対象/実収集/実操作/実通知は採用しない。親19のEvidence・実権限・未配達を継承しない。",
+          "実収集の真正性や法的適格性、全形式の時刻正規化、万能因果算法、任意NLP、章別renderer、第21章の正本先行統合は対象外。",
+          "同梱Chapter21の登録状態、Chapter19のconsumed/元Intake、全他Target/Package/過去履歴を保持。rawの推測復元は行わない。"
+        ],
+        "sourceRevalidation": [
+          "NIST SP800-86 Final August2006の公式landing/PDFを確認。印刷pp.3-1/3-4/3-6〜3-8の完全性/作業Copy/複数Source/結論不能/代替説明/報告に限定。正確な公開日は未確定のpublishedAt nullを保持し、旧OS/製品/取得コマンドを現在の手順にしない。",
+          "NIST SP800-61r3 Final2025-04-03の公式landing/PDF、印刷pp.28–29のRS.AN-03/06/07を順序・関連資産・根底の原因の問い、調査記録、来歴・保持に限定。教材算法や一律の法的適格性の根拠ではない。",
+          "Berkeley Protocol2022 editionはOHCHR landing403を記録し、共同発行者UC Berkeley公式project/PDF200で版・VI.C154/155(g,h)印刷p.59、VI.D167〜169 p.61を確認。原形式/変換/来歴/作業Copyに限定し一般DFIR法や実在人物調査許可にはしない。",
+          "TLS検証有効の六HTTP200応答とOHCHR403、三PDFのHash/採用節を保存。一次PDF表示と既設ローカルPDF抽出で読解。三SourceのみcheckedAt09-25/notes追記・20mapping、rootbaseline07-25/旧notes/他mapping保持。"
+        ],
+        "canonicalFiles": [
+          "manuscript/20-dfir-timeline-causality.md",
+          "templates/incident-timeline.md",
+          "templates/root-cause-analysis.md",
+          "cases/ch20-dfir-timeline-causality-example.md",
+          "references/ch20-source-review-2026-09-25.md",
+          "cases/fixtures/ch20-dfir-timeline-causality.json",
+          "schemas/ch20-dfir-timeline-causality.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録四basenameを認可workspace24298directoriesで検索しhit0/errors0、symlink追跡なし。改名file、archive内部、workspace外、symlink先は未調査。inputReviewedAtは登録採否確認日でraw読了日ではない。raw実体hash未照合・未読・直接採用なし。",
+          "供給Clock offset/総不確かさ/Source/Receipt/Change scopeは教育上の仮定。JSON payloadの表現Hashは原Byteの真正性、実収集、実Custody、実権限を証明しない。固定Artifact検査と本文の意味レビューを区別する。",
+          "2000〜2099年・秒単位・明示Timezoneの有限モデル。区間重なりからConcurrentを支持する経路や、二Eventから原因をsupportedへ昇格する経路は持たない。特定Changeの対象資産/時間窓比較が通っても操作の実行許可は認定しない。",
+          "実Incident/収集/操作/通知0、三Handoff21/22/25は未配達/null/実権限false。原親19の予定TL-IR19-004・未配達・状態は不変。旧Clock/判断を無言で修復しない。",
+          "Intake作成時はPR#156 Draft、通常merge/main公開未完。consumedは公開確認後の別metadata PRで記録する。現在状態はtarget.statusと最新statusHistoryを参照。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0043-58dc95fff364",
           "packageId": "EIP-0011",
           "inputPath": "chapter20-dfir-timeline-causality.predraft.md",
           "inputSha256": "58dc95fff36417b259bab6c965d2bfe2289b3d59fa5d4e4f57a2b49806c81078",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5823341050",
+          "dispositionReason": "PR #156でIssue #43とcurrent contract・再検証済み一次資料から第20章正本を新規構成し、通常mergeとexact-main CI・Pages・公開markerを確認した。候補を登録設計の来歴として選択した記録を保持し、EIP-0011/raw predraftはnot-present-in-authorized-workspace。raw内容の読了・実体hash検証・直接採用は主張しない。同梱Chapter21のDispositionは不変。"
         }
       ],
       "statusHistory": [
@@ -1357,6 +2207,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5819304826",
+          "reason": "PR155実main公開とIssue154完了後、Issue43で唯一の登録候補をbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを明示し、現契約と一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/156",
+          "reason": "第20章専用Draft PR#156に本文/ART07+26/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/43#issuecomment-5823341050",
+          "reason": "PR #156通常merge: c3f8c1565324cb492f050343a54483e7d791c073。最終検証headとmerge tree一致。exact-main Book Contract 36066023441 / Book QA 36066023558 / Deploy Pages 36066023463、deployment 6649547253がsuccess。第20章・ART-07/26・Case・Source Note・JSON/Schema・前章/代表章・CHANGELOGを含む80公開surfaceのHTTP200と最終検証済み出力とのbyte一致、対象二十四JSONと正本の一致を確認。raw登録名不在・直接採用なし、元Intake Recordと同梱Chapter21のDispositionを保持。"
         }
       ]
     },
@@ -1364,19 +2232,67 @@
       "targetId": "chapter-21",
       "issue": 44,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0044-a729d22fb189",
+      "canonicalPr": 159,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/159",
+        "packageId": "EIP-0011",
+        "packageSha256": "cb9fee8ca0a1ff1b8e2ce6d45f5d0d1cc102303eacaddfec394deca098e83461",
+        "inputPath": "chapter21-purple-team-control-validation.predraft.md",
+        "inputSha256": "a729d22fb1898e62d5ddf0d7bc2ebd1e4794ed82a49d77ff65ddaaf1aff0dbff",
+        "targetIssue": 44,
+        "canonicalPr": 159,
+        "currentMainSha": "82e344c01150b29a41929aacca762ff52286cc88",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-25",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0044-a729d22fb189 / EIP-0011をimmutable登録来歴としてIssue44comment5824263539でbranch前に選択。"
+        ],
+        "rewrittenSections": [
+          "正式Issue44本文と8月8日設計、現main親14/16/17/19/20、用途限定の公式一次資料から本文、ART27、全欄Case、完全合成JSON/閉Schema、有限LayerAを新規制作。",
+          "正式5Result/6Failure/AtomicとEnd-to-Endの2type。十ScenarioでPrevention/Telemetry/Detection/Triage/ResponseのExpected/Actual、対象版/Trace/Cutoff、観測されたPartialとUnknown、停止、Gap/Owner/改善/Retestを分離。59の独立literal期待値は実装出力から生成していない。有限な著者所有の教材であり実Controlの独立検証ではない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "非正本候補のNot testedや追加Failure/typeを正式集合へ加えない。旧計画19.1ではなく現mainで既承認移行済みのATT&CK19.2を参照し、CTI pinとhistorical記録は保持。D3FENDは今回未採用。",
+          "実攻撃/実Credential/実Data/実環境/外部Network/実操作/実収集/実通知/Deploy/Incident宣言を採用しない。親Evidence・実権限・状態・未配達を継承しない。",
+          "一般的Emulation engine、実Rule修正、製品操作、NIST適合認定、全Control catalogue、実証拠認証、章別renderer、第22章正本先行統合は対象外。",
+          "同梱Chapter20のconsumed/rewrittenと元Intake全欄、全他Target/Package/過去履歴を保持。rawの推測復元は行わない。"
+        ],
+        "sourceRevalidation": [
+          "MITRE公式Versions/Updatesのcurrent19.2と日付の文脈、Detection Strategies導入の上位方針/Platform別Analyticsを確認。全Object/Strategy/Analyticsを監査せずmappingを有効性にしない。既存CTI pin/Hashと独立Page版/日付不明のnullを保持。",
+          "NIST SP800-53A Rev5 January2022 FinalとDocument History2022-01-25、公式PDF印刷pp.11〜12 §2.4、p.25 §3.2.3.1、pp.31〜33 §3.3〜3.4を用途限定確認。Planning Note/公式告知Release5.2.0（2025-08-27）を旧PDF刊行日/全文改訂日に置換せず、個別追加procedure/全catalogueは未採用。本書五ResultとNIST S/Oを区別する。",
+          "NIST SP800-61r3 Final2025-04-03の公式landing/PDF、印刷p.13 GV.RR-02、pp.19〜20 ID.IM-01/02/03を役割・権限・評価/演習/運用からの改善に限定確認。実権限や実Incident由来の教訓、個別法的判断を認定しない。",
+          "TLS検証有効の六HTML/二PDFは全HTTP200、取得ByteHashと採用節を保存。公表Pageと一次PDF該当節を既設ローカル抽出も併用して読解。四Sourceの第21章用途のみcheckedAt09-25/notes・mapping、新Source1件。rootbaseline07-25/旧notes/既存pinを保持し全Registry再監査とはしない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/21-purple-team-validation.md",
+          "templates/control-validation-plan.md",
+          "cases/ch21-control-validation-example.md",
+          "references/ch21-source-review-2026-09-25.md",
+          "cases/fixtures/ch21-control-validation.json",
+          "schemas/ch21-control-validation.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録四basenameを認可workspace29170directoriesで検索しhit0/errors0、symlink追跡なし。改名file、archive内部、workspace外、symlink先は未調査。inputReviewedAtは登録採否確認日でraw読了日ではない。raw実体hash未照合・未読・直接採用なし。",
+          "Actual値、対象/版、Trace、時刻、suppliedAuthorityは教育用供給条件であり実測ではない。HashはJSON表現比較だけで真正性・実権限を認定しない。source節は限定読解で全733頁監査ではない。",
+          "Atomicは未選択層を評価せず、End-to-Endは同一Traceの供給比較だけ。Partialは二つの事前定義した観測部分であり、Unknown/nullではない。層内Failedでも残るUnknownのGapを消さず、全層を総合Passedへ潰さない。",
+          "Retestは同一条件の供給版名と出力記録の比較で、実Rule変更/Deploy/測定の証明ではない。実活動0、親14失効Authority/Draft RoE、親16/17/19/20のEvidence/状態/Handoff未配達、親20原因未確定を保持。Handoff22は予定/null/実権限false。",
+          "Intake作成時はPR#159 Draft、通常merge/main公開未完。consumedは公開確認後の別metadata PRで記録する。現在状態はtarget.statusと最新statusHistoryを参照。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0044-a729d22fb189",
           "packageId": "EIP-0011",
           "inputPath": "chapter21-purple-team-control-validation.predraft.md",
           "inputSha256": "a729d22fb1898e62d5ddf0d7bc2ebd1e4794ed82a49d77ff65ddaaf1aff0dbff",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5841619885",
+          "dispositionReason": "PR159の利用者による通常mergeとmain公開を確認。共通Mermaid修正PR161・cleanup再発防止PR163のmerge後、全公開面と図の描画を再検証しIssue44を完了。登録rawは不在・未読・実体hash未照合・直接採用なしのまま、current契約と一次資料から再構成した正本の完了だけを記録する。"
         }
       ],
       "statusHistory": [
@@ -1385,6 +2301,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229566622",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5824263539",
+          "reason": "PR158実main公開とIssue157完了後、Issue44で唯一の登録候補をbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを明示し、現契約と用途限定の一次資料から再構成する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/159",
+          "reason": "第21章専用Draft PR#159に本文/ART27/完全合成Case・JSON/閉Schema/Source/有限LayerAとIntakeを結ぶ。通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/44#issuecomment-5841619885",
+          "reason": "PR159は利用者が通常merge。Mermaid修正PR161・cleanup再発防止PR163もmerge後、実main d16f680e2b69fab8251ca0a98952edec0155e161 のBook Contract36196112632 / Book QA36196112566 / Pages36196112584成功、成功artifactと159公開fileのbyte一致、全13ページ18図desktop/mobile実描画、review未解決/mismatch/missing0/0/0を確認しIssue44を完了。元IntakeのPR159・作成時main82e344c・2026-09-25・raw未読等は全欄保持し、consumedとmatching checkpointだけ末尾追加する。"
         }
       ]
     },
@@ -1392,19 +2326,67 @@
       "targetId": "chapter-22",
       "issue": 45,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0045-78813e20d84e",
+      "canonicalPr": 166,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/166",
+        "packageId": "EIP-0012",
+        "packageSha256": "6f5da12b33216dbc50473e9fd9d403213807d7f0219c50a71e5292386e82ea7b",
+        "inputPath": "chapter22-measurement-improvement.predraft.md",
+        "inputSha256": "78813e20d84e495b2aada2173b50b80a3efe947d9689dd90718e2a617a3bf15c",
+        "targetIssue": 45,
+        "canonicalPr": 166,
+        "currentMainSha": "d16f680e2b69fab8251ca0a98952edec0155e161",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-26",
+        "adoptedSections": [
+          "raw predraftからの直接採用なし。EIC-0045-78813e20d84e / EIP-0012を登録来歴としてIssue45comment5841655629でbranch前に選択。"
+        ],
+        "rewrittenSections": [
+          "正式Issue45本文・設計コメント、親第7・15・16〜21章の現mainと公開Gate、用途限定の公式一次資料から本文、ART-28、全欄Case、完全合成JSON/閉Schema、有限Layer Aを新規制作。",
+          "十Metricの二つの供給版、八Backlog項目、正式七Statusで五対比を説明する。42の独立literal算術期待値はevaluator出力から生成していない。母集団、欠測、平均/中央値/nearest-rank p90、Quality、Validation/Evidence binding、受容期限、指標廃止を区別する。実KPI engineや実効果の測定ではない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "非正本候補のImplemented / Verification pendingは正式Statusへ追加せず、Action/Verification/作業記録の説明へ分ける。",
+          "実Data/実Log/実Credential/個人情報、実収集・実操作・実通知・実Deploy・実Incident宣言、実Risk reductionの認定を採用しない。個人監視・公開Ranking・懲罰KPIへ転用しない。",
+          "BI製品実装、財務Riskモデル、人事評価設計、一般統計解析、章別renderer、親Handoffの受領扱いを対象外とする。第23章以降・PartIII横断Reviewは混在させない。",
+          "同梱chapter29 blueprintと他全Target/Package・元Intake・過去履歴を保持。第21章consumed管理は独立PR165の所有とし、本PRへコピーしない。rawの推測復元は行わない。"
+        ],
+        "sourceRevalidation": [
+          "NIST SP800-55v1/v2 Final2024-12-04の公式landing/PDFを確認。v1 §1.4・§3・§4の定義、条件、品質、選択、v2 §3と§3.1.4の改善反復/指標見直しに限定する。本書の四役割・七Status・有限算法をNISTの規定としない。",
+          "CSF2.0/CSWP29 Final2024-02-26の§3.1 Current/Target ProfileとGap/行動計画、SP800-61r3 Final2025-04-03のID.IM01〜03に限定して公式landing/PDF本文を確認。実有効性や実Incident教訓へ昇格させない。",
+          "CISA KEV canonicalURLは今回HTTP403。公式cisagov/kev-data READMEのUpdate schedule/Usage/Licenseだけを確認。最新Catalog値、個別CVE/期限、BOD26-04本文、新しい固定Snapshotは未採用。第7章の過去Snapshotを保持。",
+          "取得時刻・HTTP結果・ByteHashと採用節を保存。確認日はJST2026-09-26、取得UTC22:28〜22:30。既存Source3件の用途notes/個別checkedAtと新規NIST55Source2件だけを更新し、Registry直下07-25/旧notes/既存次回期限を保持。全Registry再監査ではない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/22-measurement-improvement.md",
+          "templates/security-improvement-backlog.md",
+          "cases/ch22-improvement-backlog-example.md",
+          "references/ch22-source-review-2026-09-26.md",
+          "cases/fixtures/ch22-measurement-improvement.json",
+          "schemas/ch22-measurement-improvement.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。branch前に登録五basenameを認可workspace35108directoriesで検索しhit0/errors0、symlink追跡なし。改名file、archive内部、workspace外、symlink先は未調査。inputReviewedAtは登録採否確認日でraw読了日ではない。raw実体hash未照合・未読・直接採用なし。",
+          "値、Member、Owner、Status、時刻、受容とVerificationは著者の教育用供給条件であり実測ではない。二つの入力版・八項目は一つの実案件の時系列ではない。Hashは表現比較だけで真正性や実許可を認定しない。",
+          "率は有限Member集合、分布は最大100件・整数分単位に限定。欠測/0分母はunknown、小標本のp90で実分布を推定しない。Mappingと検証、既知の根拠不充足と入力欠測、Accepted/Retiredと検証成功を分離する。",
+          "親21の003旧Failedと010新Passed、未配達HOF-CV21-22/Receipt null、期限切れAUTH/Draft RoE/実権限falseを保持。比較はmethod-reference-onlyで親Evidence/状態を継承しない。HOF-IMP22-26は予定/Receipt nullであり実受領ではない。",
+          "Intake作成時はPR166 Draft、章全体QA・独立Review・通常merge/main公開は未完。consumedは公開確認後の別管理PRで記録する。現在状態はtarget.statusと最新statusHistoryを参照。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0045-78813e20d84e",
           "packageId": "EIP-0012",
           "inputPath": "chapter22-measurement-improvement.predraft.md",
           "inputSha256": "78813e20d84e495b2aada2173b50b80a3efe947d9689dd90718e2a617a3bf15c",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5843964406",
+          "dispositionReason": "PR166の利用者による通常merge、実mainのCI/Pagesと全公開面・図の検証を確認しIssue45を完了。登録rawは不在・未読・実体hash未照合・直接採用なしのまま、現行契約と一次資料から再構成した正本の公開完了だけを記録する。"
         }
       ],
       "statusHistory": [
@@ -1413,6 +2395,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5841655629",
+          "reason": "親第7・15・16〜21章のmainと公開Gate完了後、Issue45で唯一候補をbranch前選択。認可workspaceでraw不在・未読・実体hash未照合・直接採用なしを記録し、現契約と用途限定の一次資料から再構成する。第21章consumed管理PR165とは変更所有を分ける。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/166",
+          "reason": "第22章専用Draft PR166に本文/ART-28/完全合成Case・JSON/閉Schema/Source/有限Layer AとIntakeを結ぶ。章全体QA・独立Review・通常merge/main公開前なのでconsumedにしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-26",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/45#issuecomment-5843964406",
+          "reason": "PR166は利用者が通常merge。実main 94c06a88fa4dd2f19105d30ebc38897b718f5dda のBook Contract36222833430 / Book QA36222833448 / Pages36222833390成功、成功artifactと165公開filesのbyte一致、全14ページ19図と新四面のdesktop/mobile確認、review未解決/mismatch/missing0/0/0を確認しIssue45を完了。元IntakeのPR166・作成時main d16f680・2026-09-26・42 literal・raw未読等は全欄保持し、consumedと対応するcheckpointだけ末尾追記する。"
         }
       ]
     },
@@ -1420,19 +2420,62 @@
       "targetId": "chapter-23",
       "issue": 46,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0046-29d20db7f44a",
+      "canonicalPr": 173,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/173",
+        "packageId": "EIP-0002",
+        "packageSha256": "fffbd2af8a17cbbfa60c09c37c30a682a9c528b44194e0e9f0f3588e2a6a46ca",
+        "inputPath": "chapter23-intelligence-requirements.predraft.md",
+        "inputSha256": "29d20db7f44a073d8aa3b8d1c18db109f479297da79cec787edc5e8b4e5b9493",
+        "targetIssue": 46,
+        "canonicalPr": 173,
+        "currentMainSha": "f930ad00e2f69d3b64f7dfd14f3bc579c65e68f9",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-27",
+        "adoptedSections": [
+          "rawから直接採用なし。唯一登録候補をIssue46comment5850389131でbranch前選択。"
+        ],
+        "rewrittenSections": [
+          "Issue46/current contractと再確認した一次資料から本文、ART-29、全欄Case、完全合成JSON/閉Schema、有限Layer Aを新規制作する。",
+          "五Requirement・八Collection・正式六Status・七Gap、多対多、Source品質と回答条件、期限、未配達Handoffを区別する。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Data/実収集/実操作/実通知、親Evidence/許可/Incident宣言の継承、機密収集、現行CAI政策、ICD206詳細を採用しない。",
+          "CIA SATは既存第25章へのBRIDGEだけ。第24/26章本文、共有構文/Policy/formatter変更、別Target/同梱第6章の変更を混在させない。"
+        ],
+        "sourceRevalidation": [
+          "ICD203公式PDF抽出本文D6.c/d/eとObjectivityを章用途に再確認。旧2015/2022/2023-06の版精度を保持し、署名day/画像/取得PDF byte hash未確認を補わない。",
+          "OSINT Strategy2024–2026公式PDFと2024-03-08公式発表を確認。要求/優先順位/Gap起点という当該公表版だけを採用し、後継の不存在・現行民間規範・法的権限へ拡張しない。",
+          "確認JST2026-09-27、取得UTC09-26 21:50〜21:54。第23章用途notes/個別確認日と新Sourceだけ。Registry全体と他章の再監査ではない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/23-intelligence-requirements.md",
+          "templates/intelligence-requirement-collection-plan.md",
+          "cases/ch23-intelligence-requirements-example.md",
+          "references/ch23-source-review-2026-09-27.md",
+          "cases/fixtures/ch23-intelligence-requirements.json",
+          "schemas/ch23-intelligence-requirements.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録五basenameを56929directoriesで検索しhits0/errors0、symlink非追跡。改名・archive内部・workspace外は未調査。raw未読・実体hash未照合・直接採用なし。inputReviewedAtは登録採否確認日でraw読了日ではない。",
+          "供給値/日付/状態は著者設計、実測ではない。有限検査は自然言語の真偽や現実の合法性を認定しない。親対象/Evidence/許可は継承しない。",
+          "Intake作成時はPR173 Draft、全QA・独立review・通常merge/main公開は未完。consumedは公開確認後の別metadata管理で記録する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0046-29d20db7f44a",
           "packageId": "EIP-0002",
           "inputPath": "chapter23-intelligence-requirements.predraft.md",
           "inputSha256": "29d20db7f44a073d8aa3b8d1c18db109f479297da79cec787edc5e8b4e5b9493",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/46#issuecomment-5853206831",
+          "dispositionReason": "PR173利用者通常mergeと実main CI/Pages・全公開面/図/レビュー根拠を確認しIssue46を完了。登録raw不在・未読・実体hash未照合・直接採用なしは保持し、現行契約と一次資料から新規制作した正本の公開完了だけを記録する。"
         }
       ],
       "statusHistory": [
@@ -1441,6 +2484,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5223904155",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/46#issuecomment-5850389131",
+          "reason": "前提第4/16/19章とSource更新PR172の実main f930・公開Gate完了後、Issue46で唯一候補をbranch前選択。認可workspaceでraw不在・未読・実体hash未照合・直接採用なしを記録し、Issue/current contractと用途限定の一次資料から新規制作する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/173",
+          "reason": "第23章専用Draft PR173へ本文/ART-29/全欄合成Case・JSON/閉Schema/Source/有限Layer Aと正式Intakeを結ぶ。全QA・独立review・通常merge/main公開前なのでconsumedとしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/46#issuecomment-5853206831",
+          "reason": "PR173利用者通常merge。実main 8f37aaa3c83948c105b069696531fd0e609b4cf7 のBook Contract36297624661 / Book QA36297624698 / Pages36297624671・deploy success、173公開files byte一致、全15頁20図と新四面desktop/mobile、全localQA/四seed/49review対比と21schema probes、review未解決/mismatch/missing0/0/0を確認しIssue46 completed。元Intakeの作成時main f930・PR173・日付・raw未読/実体hash未照合/直接採用なしを全欄保持し、consumed履歴/checkpointだけを末尾追記する。"
         }
       ]
     },
@@ -1448,19 +2509,63 @@
       "targetId": "chapter-24",
       "issue": 47,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0047-b1b83a6735ac",
+      "canonicalPr": 176,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/176",
+        "packageId": "EIP-0003",
+        "packageSha256": "d986ee9a9c71cf210420bb921f078a395133e2e5e0b9050960ad63554c22582a",
+        "inputPath": "chapter24-osint-provenance-sources.predraft.md",
+        "inputSha256": "b1b83a6735ac33f66afa27d1ac2ce1f260d70fc904eca9b6b5c2fefb36ed59bd",
+        "targetIssue": 47,
+        "canonicalPr": 176,
+        "currentMainSha": "8f37aaa3c83948c105b069696531fd0e609b4cf7",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-27",
+        "adoptedSections": [
+          "rawから直接採用なし。唯一候補EIC-0047-b1b83a6735acをIssue47comment5853214772でbranch前選択。"
+        ],
+        "rewrittenSections": [
+          "現行Issue47/契約と用途限定の一次資料から本文、ART-30、全欄合成Case、供給JSON/閉Schema、有限Layer Aを新規制作する。",
+          "五Source・九Item・五Transform・四Claim・十Evaluationを、原典、版、modality、独立観測、五用途、Gap、未配達へ結ぶ。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Data/実収集/実通信/実操作/実通知、親10/23/25のEvidence・対象・許可・Receiptの継承、任意自然言語の真偽認定を採用しない。",
+          "CIA SAT詳細は第25章、OSINT/CAI/ICD206/Archive製品仕様・第26章正文・章別renderer・共有Policy/pin変更は不採用。",
+          "同梱第7章、他Target/Package・過去履歴、別管理PR175のChapter23 consumedを混在させない。"
+        ],
+        "sourceRevalidation": [
+          "Berkeley共同発行者project/publication→公式102頁2022 PDFをHTTP200で確認。VI.B147–152/C154–155/D167–169/E176–178,187,192–194/F196–197へ限定。OHCHR landing403。2020 landing日付を版の刊行日へ転用せずpublishedAt nullを保持。",
+          "ICD203公式web readerのD6e(1)–(3)とObjectivityを再確認。直接PDF403、署名day/画像/取得PDFbytehash未確認を保持。2015/2022/2023-06版精度不変。",
+          "確認JST2026-09-27、取得UTC同日。民間の普遍的義務・許可・法的証拠能力へ転用せず、二Sourceの用途notesと必要個別確認日だけ。全Registryや他章の再監査ではない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/24-osint-provenance-sources.md",
+          "templates/evidence-source-evaluation-table.md",
+          "cases/ch24-source-evaluation-example.md",
+          "references/ch24-source-review-2026-09-27.md",
+          "cases/fixtures/ch24-source-evaluation.json",
+          "schemas/ch24-source-evaluation.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録五basenameを61002directoriesで検索hits0/errors0、symlink非追跡。改名/Archive内部/workspace外未探索。raw未読・実体hash未照合・直接採用なし。inputReviewedAtは採否記録日でraw読了日ではない。",
+          "供給内容/原典関係/日時/評価は著者設計で実測ではない。Hashは表現比較だけ。有限検査は任意文章の真偽や実権限を認定しない。",
+          "Intake作成時はPR176 Draft、全QA/独立review/通常merge/main公開未完。現在状態はtarget.statusと末尾statusHistoryを参照。consumedは実公開後の別管理PRで記録する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0047-b1b83a6735ac",
           "packageId": "EIP-0003",
           "inputPath": "chapter24-osint-provenance-sources.predraft.md",
           "inputSha256": "b1b83a6735ac33f66afa27d1ac2ce1f260d70fc904eca9b6b5c2fefb36ed59bd",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/47#issuecomment-5859589801",
+          "dispositionReason": "PR176の利用者通常mergeと実main CI/Pages・全公開面/図/レビュー根拠を確認しIssue47を完了。raw未読・実体hash未照合・直接採用なしを保持し、現行契約と一次資料から新規制作した正本の公開完了だけを記録する。"
         }
       ],
       "statusHistory": [
@@ -1469,6 +2574,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224086644",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/47#issuecomment-5853214772",
+          "reason": "前提第10/23章のactual-main/Pages完了後、Issue47で唯一候補をbranch前選択。認可workspace61002directoriesでraw登録五basename hits0/errors0、未読・実体hash未照合・直接採用なしを保持し、現行Issue/契約と再確認した一次資料から新規制作する。別管理PR175のChapter23 consumedを混在させない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-27",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/176",
+          "reason": "第24章専用Draft PR176へ本文/ART-30/全欄合成Case・JSON/閉Schema/Source/有限Layer Aと正式Intakeを結ぶ。全QA/独立review/通常merge/main公開前なのでconsumedとしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-28",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/47#issuecomment-5859589801",
+          "reason": "PR176利用者通常merge。実main 9f814f7e7a134233172986f763a7e20ddc0bf592 のBook Contract36346710750 / Book QA36346710756 / Pages36346710891・deploy success、179公開files byte一致、全16頁21図と四面desktop/mobile、全localQA/四seed/36review対比+5表記、37固定IO/12空配列Schema負例、review未解決/mismatch/missing0/0/0を確認しIssue47 completed。元Intakeの作成時main8f37・PR176・日付・十評価記述（最新十一評価とは別）・raw未読/実体hash未照合/直接採用なしを全欄保持し、履歴/checkpointだけ末尾追記する。"
         }
       ]
     },
@@ -1476,19 +2599,69 @@
       "targetId": "chapter-26",
       "issue": 48,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0048-38a432a5daf5",
+      "canonicalPr": 179,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/179",
+        "packageId": "EIP-0004",
+        "packageSha256": "956a321088abed3058e59c58ceeda3d5fd57a9d12a6715240185d0d7c445d86f",
+        "inputPath": "chapter26-cti-distribution.predraft.md",
+        "inputSha256": "38a432a5daf5477a3b986f8c19307d89a9565edf2f0d3a25ea9815126bb5bf32",
+        "targetIssue": 48,
+        "canonicalPr": 179,
+        "currentMainSha": "9f814f7e7a134233172986f763a7e20ddc0bf592",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-28",
+        "adoptedSections": [
+          "rawから直接採用なし。唯一候補EIC-0048-38a432a5daf5をbranch前に選択: https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5859592764"
+        ],
+        "rewrittenSections": [
+          "現行Issue48/契約と用途限定の一次資料から本文、ART08/09、完全記入例、三JSON/閉Schemaと有限Layer Aを新規制作する。",
+          "親25の同じCaseをrefinesする三KJ/二Product/三Option、焦点質問を分けた代替説明、未配達/未受領/非実行を保持する。独立STIX構造例13Objectは親Evidenceへ採用しない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Feed/TAXII/AI API接続、実在Actor・国家帰属、実操作・配達、独立STIX例を親Evidenceへ昇格することを採用しない。",
+          "一般STIX/Pattern/URL/Markdown/HTML parser、全仕様validator、共有Policy/Projection/formatter pin・依存の変更、第IV部横断review/第27章は対象外。",
+          "同梱第8章・他Target/Package/旧履歴は保持。Chapter24consumedは別管理PR178で、こちらへ複製しない。"
+        ],
+        "sourceRevalidation": [
+          "STIX2.1固定OS/2021-06-10を保持。latest2025-04-02はDraft01 of Errata01/CSD01でApproved Errataとして扱わない。ID/型/関係/時刻の有限profileだけを確認。",
+          "TAXII2.1固定OS/latestはbyte同一、Channelsサービス未仕様を確認。FIRST公式TLP2.0 currentを共有境界へ限定。",
+          "ATT&CK19.2の公式Versions/Updatesを再確認し既存pin/hash/日付精度と親25の歴史19.1を保持。ICD公式web-reader/Objectivity限定確認、直接HTTP403/署名day/画像/PDFdownloadhash未確認を保持。",
+          "確認JST2026-09-28、取得UTC09-27。全Source/全Object監査ではない。NISTsharing候補はlanding探索のみで未読本文を採用しない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/26-cti-distribution.md",
+          "templates/cti-report.md",
+          "templates/executive-brief.md",
+          "cases/ch26-cti-distribution-example.md",
+          "references/ch26-source-review-2026-09-28.md",
+          "cases/fixtures/ch26-cti-distribution.json",
+          "schemas/ch26-cti-distribution.schema.json",
+          "cases/fixtures/ch26-stix-bundle.json",
+          "schemas/ch26-stix-bundle.schema.json",
+          "cases/fixtures/ch26-taxii-exchange.json",
+          "schemas/ch26-taxii-exchange.schema.json"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録3basename69338directoriesでhits0/errors0、symlink非追跡。改名/Archive内部/workspace外未探索。raw未読・実体hash未照合・直接採用なし。inputReviewedAtは採否記録日で原文読了日ではない。",
+          "供給値・日時・判断・独立13Object関係は教材設計で実測ではない。有限profileは一般準拠・真偽・権限・合法性を認定しない。",
+          "Intake作成時はPR179 Draft、全QA/独立review/通常merge/main公開未完。現在状態はtarget.statusと末尾statusHistoryを参照。consumedは実公開後の別管理PRで記録する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0048-38a432a5daf5",
           "packageId": "EIP-0004",
           "inputPath": "chapter26-cti-distribution.predraft.md",
           "inputSha256": "38a432a5daf5477a3b986f8c19307d89a9565edf2f0d3a25ea9815126bb5bf32",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5871968211",
+          "dispositionReason": "PR179の利用者通常mergeと実main CI/Pages・全公開面/図/レビュー根拠を確認しIssue48を完了。raw未読・実体hash未照合・直接採用なしを保持し、現行契約と一次資料から新規制作した正本の公開完了だけを記録する。"
         }
       ],
       "statusHistory": [
@@ -1497,6 +2670,24 @@
           "effectiveAt": "2026-08-08",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5224564529",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-28",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5859592764",
+          "reason": "前提23/24/25の実main公開と現行契約/一次資料を確認しIssue48でbranch前選択。raw登録3basename69338directories不在、未読/実体hash未照合/直接採用なし。Productは親25refines、独立STIX構造例はEvidence非採用。別管理Chapter24consumedを混在させない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-28",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/179",
+          "reason": "第26章専用Draft PR179へ本文/ART08・09/完全記入例・三JSON/閉Schema/Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開前なのでconsumedとしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-28",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5871968211",
+          "reason": "PR179利用者通常merge。実main 6a700760592e35b7de135f6d566cb11fa82fbc99 のBook Contract 36432130802 / Book QA 36432130787 / Deploy Pages 36432130683・deploy success、188公開files byte一致、全17頁22図と五面desktop/mobile、全localQA/四seed/108literal1015回帰/118IO・Schema/22review対比/15実sync負例、review未解決/mismatch/missing0/0/0を確認しIssue48 completed。元Intakeの作成時main9f814f7・PR179・日付・独立STIX13Object・raw未読/実体hash未照合/直接採用なしを全欄保持し、履歴/checkpointだけ末尾追記する。"
         }
       ]
     },
@@ -1504,19 +2695,64 @@
       "targetId": "chapter-27",
       "issue": 49,
       "targetKind": "chapter",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "consumed",
+      "selectedCandidateId": "EIC-0049-32e8846cf56d",
+      "canonicalPr": 183,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/183",
+        "packageId": "EIP-0007",
+        "packageSha256": "2ac28571912725ed838d4895779e3921b8138b52a66f2d5938c5776e46f3ff69",
+        "inputPath": "chapter27-ai-agent-security.predraft.md",
+        "inputSha256": "32e8846cf56d741ba7fc28ca36df288132192e48d8f142dc8c32d433da375fed",
+        "targetIssue": 49,
+        "canonicalPr": 183,
+        "currentMainSha": "b5967301cffbcfb5818733e3d730eb970797c423",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-09-29",
+        "adoptedSections": [
+          "rawから直接採用なし。branch前選択: https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5878166655"
+        ],
+        "rewrittenSections": [
+          "現行Issue49/契約と用途限定の一次資料から本文、ART31、全欄Case、958leaf完全合成JSON/閉Schema、Source、有限Layer Aを新規制作。",
+          "六Component状態と六要求、承認/停止/監査/証拠/Control/再評価を結合。CASE2026001の教育上refinesで親のAI稼働観測・権限・Evidenceを発明しない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実Model/API/key/Tenant/実Data、外部Network/Shell/File mutation/Credential accessは使わない。親RoE/失効を更新せず、全要求executed=false。",
+          "一般Prompt分類器・Markdown/HTML/URL parser・AISVS準拠認証・Issue67・formatter pin/依存変更・第28章以降は対象外。",
+          "同梱第28章、他Target/Package/旧履歴を保持。第26章consumedはmerge済みPR181のまま変更しない。"
+        ],
+        "sourceRevalidation": [
+          "NIST AI600-1 final/2024-07-26とAI100-2e2025 final/2025-03-24の公式PDF/採用節を限定確認。2025-04-01訂正告知、06-03 potential updatesは正式本文更新と区別。",
+          "OWASP LLM Top10 2026の公式実体/番号変更を確認。resource08-03、blog09-01、press本文09-02を区別しPDFday placeholderを補完しない。Agentic2026はDecember2025版・resource/blog12-09とpress本文12-10を区別。",
+          "AISVS locked1.0 commit aedffade1817238a493ff4d63c28d0d3855c98db のC6/8/9/12採用要件とPDFを確認。1.01-dev/researchは根拠外。June2026まで確認し旧06-24 dayは再確認できないためpublishedAt null・旧notes保持。",
+          "各実体SHAと用途/限界をSource reviewへ記録。確認日2026-09-29 JST。PDF表紙画像を直接目視した監査や全仕様/全研究調査は未実施。"
+        ],
+        "canonicalFiles": [
+          "manuscript/27-ai-agent-security.md",
+          "templates/ai-agent-threat-model.md",
+          "cases/ch27-ai-agent-threat-model-example.md",
+          "cases/fixtures/ch27-ai-agent-threat-model.json",
+          "schemas/ch27-ai-agent-threat-model.schema.json",
+          "references/ch27-source-review-2026-09-29.md"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録5basename87822directories不在、symlink非追跡。改名/Archive内部/workspace外未探索。raw未読・実体hash未照合・直接採用なし。inputReviewedAtは採否記録日で原文読了日ではない。",
+          "合成descriptor Digestはラベルhashで実Artifact測定ではない。Allowed-in-modelは固定記録の条件一致だけでModel/Toolを実行しない。Component六状態とLab八状態は別。実停止・復旧・署名・安全性能・規範準拠を認定しない。",
+          "Intake作成時はPR183 Draft、全QA/独立review/通常merge/main公開未完。現在状態はtarget.statusと末尾statusHistoryを参照。consumedは実公開後の別管理PRで記録する。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0049-32e8846cf56d",
           "packageId": "EIP-0007",
           "inputPath": "chapter27-ai-agent-security.predraft.md",
           "inputSha256": "32e8846cf56d741ba7fc28ca36df288132192e48d8f142dc8c32d433da375fed",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5901110059",
+          "dispositionReason": "PR183の利用者通常mergeと実main CI/Pages・全公開面/図/レビュー根拠を確認しIssue49を完了。raw未読・実体hash未照合・直接採用なしを保持し、現行契約と一次資料から新規制作した正本の公開完了だけを記録する。"
         }
       ],
       "statusHistory": [
@@ -1525,6 +2761,24 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5228712541",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-09-29",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5878166655",
+          "reason": "唯一登録候補をIssue49でbranch前に明示選択。原Package/他Target/同梱第28章/旧履歴は保持し、実体不在を推測再構成しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-09-29",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/183",
+          "reason": "第27章専用Draft PR183へ本文/ART31/全欄Case/合成JSON/閉Schema/Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開前なのでconsumedとしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-09-30",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5901110059",
+          "reason": "PR183利用者通常merge。実main 805428e5555206acf2b8e57ead9fba95ec815f98 のBook Contract 36500761371 / Deploy Pages 36500761572 / Book QA 36500761362・deploy success、195公開files byte一致、全18頁23図と四面desktop/mobile、全localQA/四seed/3699回帰68意味対比/325IO・42review対比/22実sync負例、review未解決/mismatch/missing0/0/0を確認しIssue49 completed。元Intakeの作成時main b596730・PR183・日付・六Componentと六要求・raw未読/実体hash未照合/直接採用なしを全欄保持し、履歴/checkpointだけ末尾追記する。"
         }
       ]
     },

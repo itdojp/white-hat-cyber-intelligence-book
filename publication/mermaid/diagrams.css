@@ -1,0 +1,12 @@
+.mermaid-figure { margin: 1.5rem 0; min-width: 0; max-width: 100%; }
+.mermaid-figure figcaption { margin-bottom: .5rem; font-size: .9rem; }
+.mermaid-figure button { margin-bottom: .5rem; padding: .4rem .8rem; cursor: pointer; }
+.mermaid-view { overflow-x: auto; max-width: 100%; background: #fff; color: #111; }
+.mermaid-view:focus-visible { outline: 2px solid #2764a5; outline-offset: 2px; }
+.mermaid-view svg { display: block; max-width: none !important; height: auto; }
+.mermaid-view.mermaid-fit svg { max-width: 100% !important; }
+.mermaid-figure details { margin-top: .5rem; }
+.mermaid-figure summary { cursor: pointer; }
+.mermaid-error { border-left: .25rem solid #986800; padding-left: .75rem; }
+.mermaid-render-host { position: absolute; left: -100000px; top: 0; }
+@media print { .mermaid-view svg { max-width: 100% !important; } }

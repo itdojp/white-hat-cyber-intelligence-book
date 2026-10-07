@@ -1,0 +1,3393 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "readOnly": true,
+  "networkRequired": false,
+  "executionAuthorized": false,
+  "record": {
+    "id": "IAP-2026-019-001",
+    "artifactId": "ART-25",
+    "caseId": "CASE-IR-2026-001",
+    "parentCaseId": "CASE-DET-2026-001",
+    "relation": "refines",
+    "asOf": "2026-09-23T00:00:00Z",
+    "timeZone": "UTC",
+    "sourceIds": [
+      "SRC-CSF-001",
+      "SRC-IR-001"
+    ],
+    "states": [
+      "Suspected",
+      "Declared",
+      "Contained",
+      "Investigating",
+      "Recovering",
+      "Closed",
+      "Reopened"
+    ],
+    "decisionRequirement": "架空OAuth Appの同意変更とWorkload利用を受け、宣言、限定Scope、選択肢、復旧と再評価をどの根拠で記録できるか。",
+    "actualIncidents": 0,
+    "actualActions": 0,
+    "actualNotifications": 0,
+    "actualCollections": 0
+  },
+  "parents": {
+    "telemetryMapId": "TCM-2026-016",
+    "telemetryRowIds": [
+      "ROW-TCM16-003",
+      "ROW-TCM16-008"
+    ],
+    "telemetryHandoffId": "HOF-TCM16-19",
+    "detectionRecordId": "DVR-2026-017-001",
+    "detectionId": "DET-2026-017-001",
+    "huntRecordId": "HUNT-2026-018-001",
+    "huntCaseId": "CASE-HUNT-2026-001",
+    "huntFindingId": "FND-HUNT18-001",
+    "huntHandoffId": "HOF-HUNT18-001-2",
+    "parentHandoffStatus": "planned-not-delivered",
+    "parentReceiptId": null,
+    "evidenceRole": "method-reference-not-evidence-for-new-subject",
+    "authorityTransferred": false,
+    "evidenceTransferred": false,
+    "parentHandoffReceived": false,
+    "parentStateChanged": false
+  },
+  "roles": {
+    "decisionOwner": "SYNTH-IR-DECIDER",
+    "incidentCommander": "SYNTH-IR-COMMANDER",
+    "evidenceLead": "SYNTH-IR-EVIDENCE",
+    "communicationOwner": "SYNTH-IR-COMMS",
+    "recoveryOwner": "SYNTH-IR-RECOVERY",
+    "legalPrivacyReviewer": "SYNTH-IR-LEGAL"
+  },
+  "safety": {
+    "scope": "offline-authored-json-reading-only",
+    "authority": "自分の教材コピーを読む権限だけ。親RoEや実対応の許可ではない。",
+    "stop": "実Data、外部接続、未知のScope、権限不明が出たら読解を停止しGapを記録する。",
+    "cleanup": "自分の読解メモを整理するだけ。供給Evidenceと正本は書き換えない。",
+    "dataClassification": "public-synthetic-only",
+    "personalDataIncluded": false,
+    "notificationAutomaticallyDetermined": false,
+    "receiptAuthenticityClaimed": false
+  },
+  "notification": {
+    "questionId": "NQ-IR19-001",
+    "question": "対象Dataと影響、法域、契約、組織手順を誰が確認し、通知先と期限を判断するか。教材だけで要否や期限は決めない。",
+    "audiences": [
+      "内部Incident担当",
+      "法務・Privacy担当",
+      "顧客担当",
+      "Vendor窓口"
+    ],
+    "escalationOwner": "SYNTH-IR-LEGAL",
+    "dueAt": "2026-09-30T00:00:00Z",
+    "status": "question-only-not-legal-determination",
+    "actualSent": false
+  },
+  "options": [
+    {
+      "id": "OPT-IR19-DISABLE",
+      "name": "App停止案",
+      "security": "当該Appの利用を抑える案。別経路の停止までは主張しない。",
+      "business": "合成請求処理が停止する想定。",
+      "evidence": "状態変化前の記録を保持する必要がある。",
+      "rollback": "所有者の再判断と供給復旧条件の照合を要する案。実操作なし。"
+    },
+    {
+      "id": "OPT-IR19-RESTRICT",
+      "name": "Permission制限案",
+      "security": "問題となる権限の範囲を限定する案。侵害の終結ではない。",
+      "business": "合成Export機能が一時利用不能となる想定。",
+      "evidence": "変更前後の権限Snapshotを別々に保持する。",
+      "rollback": "再拡大は別承認と検証の対象。実操作なし。"
+    },
+    {
+      "id": "OPT-IR19-MONITOR",
+      "name": "Monitoring強化案",
+      "security": "観測を増やす案であり、それだけでは封じ込めにならない。",
+      "business": "保管量と分析負荷が増える想定。",
+      "evidence": "新規観測と既存記録を区別する。取得済みとはしない。",
+      "rollback": "追加観測の終了条件を別記する案。実操作なし。"
+    }
+  ],
+  "contrasts": [
+    {
+      "id": "ICASE19-001",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-001",
+          "revision": "REV-IR19-001",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-001-PREV",
+          "status": "Suspected",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-001",
+          "requested": "Suspected",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "候補の確認を続ける。Huntの支持だけでIncidentを宣言しない。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-001-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-001-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-001-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-001-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-001-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-001-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-001-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-001-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-001-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-001-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-001-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-001",
+            "revision": "REV-IR19-001",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": null,
+        "preservation": {
+          "id": "PRV-IR19-001",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-001-SAVE"
+        },
+        "containment": null,
+        "analysisId": null,
+        "recovery": null,
+        "closure": null,
+        "reopening": null,
+        "incidentId": "INC-IR19-001",
+        "threatQuestionId": "THQ-IR19-001",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Suspected",
+        "decision": "accepted",
+        "gaps": [],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "候補の確認を続ける。Huntの支持だけでIncidentを宣言しない。",
+        "alternative": "未記録の正当な管理変更かもしれない。",
+        "confidence": "低",
+        "confidenceBasis": "供給Signalだけで追加の宣言判断はない。",
+        "gap": "業務承認文脈が不足している。",
+        "nextAction": "宣言基準に必要な確認事項を記録する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-001",
+      "findingId": "FND-IR19-001",
+      "controlId": "CTL-IR19-001",
+      "reassessmentId": "REA-IR19-001",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-001-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-001",
+          "questionId": "EQ-IR19-001-20",
+          "plannedRecordId": "TL-IR19-001",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-001-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-001",
+          "questionId": "EQ-IR19-001-22",
+          "plannedRecordId": "BKL-IR19-001",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-001-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-001",
+          "questionId": "EQ-IR19-001-26",
+          "plannedRecordId": "CTI-IR19-001",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-002",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-002",
+          "revision": "REV-IR19-002",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-002-PREV",
+          "status": "Suspected",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-002",
+          "requested": "Declared",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された基準判定と所有者の記録に限ってDeclaredとする。実Incidentの宣言ではない。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-002-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-002-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-002-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-002-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-002-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-002-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-002-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-002-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-002-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-002-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-002-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-002",
+            "revision": "REV-IR19-002",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": {
+          "id": "DCL-IR19-002",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給した教育用基準では、承認未確認の権限変化と利用の組が個別確認対象となる。",
+          "at": "2026-09-01T09:15:00Z",
+          "criteriaId": "EV-IR19-002-CRITERIA",
+          "asset": "SYN-APP-A"
+        },
+        "preservation": {
+          "id": "PRV-IR19-002",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-002-SAVE"
+        },
+        "containment": null,
+        "analysisId": null,
+        "recovery": null,
+        "closure": null,
+        "reopening": null,
+        "incidentId": "INC-IR19-002",
+        "threatQuestionId": "THQ-IR19-002",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Declared",
+        "decision": "accepted",
+        "gaps": [],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "供給された基準判定と所有者の記録に限ってDeclaredとする。実Incidentの宣言ではない。",
+        "alternative": "誤設定や承認記録不足という説明を残す。",
+        "confidence": "中",
+        "confidenceBasis": "宣言記録はあるが、組織全体の影響は分からない。",
+        "gap": "未観測Dataの影響はUnknownのままである。",
+        "nextAction": "Evidence Questionと合成選択肢の比較へ進む。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-002",
+      "findingId": "FND-IR19-002",
+      "controlId": "CTL-IR19-002",
+      "reassessmentId": "REA-IR19-002",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-002-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-002",
+          "questionId": "EQ-IR19-002-20",
+          "plannedRecordId": "TL-IR19-002",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-002-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-002",
+          "questionId": "EQ-IR19-002-22",
+          "plannedRecordId": "BKL-IR19-002",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-002-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-002",
+          "questionId": "EQ-IR19-002-26",
+          "plannedRecordId": "CTI-IR19-002",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-003",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-003",
+          "revision": "REV-IR19-003",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-003-PREV",
+          "status": "Declared",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-003",
+          "requested": "Contained",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された対象と時点に限ってContainedとする。侵害の終結ではない。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-003-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-003-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-003-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-003-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-003-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-003-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-003-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-003-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-003-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-003-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-003-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": {
+          "id": "DCL-IR19-003",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給した教育用基準では、承認未確認の権限変化と利用の組が個別確認対象となる。",
+          "at": "2026-09-01T09:15:00Z",
+          "criteriaId": "EV-IR19-003-CRITERIA",
+          "asset": "SYN-APP-A"
+        },
+        "preservation": {
+          "id": "PRV-IR19-003",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-003-SAVE"
+        },
+        "containment": {
+          "id": "ACT-IR19-003",
+          "optionId": "OPT-IR19-RESTRICT",
+          "asset": "SYN-APP-A",
+          "at": "2026-09-01T10:15:00Z",
+          "expectedImpact": "合成Export機能が一時利用不能となる想定。",
+          "rollback": "再拡大は別承認と検証の対象。実操作なし。",
+          "destructive": false,
+          "actualExecuted": false,
+          "validationId": "EV-IR19-003-CONTAIN",
+          "authority": {
+            "id": "AUTH-IR19-003",
+            "approved": true,
+            "owner": "SYNTH-IR-COMMANDER",
+            "approvedAt": "2026-09-01T10:12:00Z",
+            "expiresAt": "2026-09-01T10:45:00Z",
+            "subject": "SYNTH-IR19-003",
+            "revision": "REV-IR19-003",
+            "asset": "SYN-APP-A",
+            "realAuthority": false
+          }
+        },
+        "analysisId": null,
+        "recovery": null,
+        "closure": null,
+        "reopening": null,
+        "incidentId": "INC-IR19-003",
+        "threatQuestionId": "THQ-IR19-003",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Contained",
+        "decision": "accepted",
+        "gaps": [],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "供給された対象と時点に限ってContainedとする。侵害の終結ではない。",
+        "alternative": "別経路の影響が残る可能性がある。",
+        "confidence": "中",
+        "confidenceBasis": "事前保持と合成承認、限定した検証記録が揃う。",
+        "gap": "未知の対象には封じ込め効果を拡張できない。",
+        "nextAction": "調査継続と切戻し条件を別々に記録する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-003",
+      "findingId": "FND-IR19-003",
+      "controlId": "CTL-IR19-003",
+      "reassessmentId": "REA-IR19-003",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-003-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-003",
+          "questionId": "EQ-IR19-003-20",
+          "plannedRecordId": "TL-IR19-003",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-003-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-003",
+          "questionId": "EQ-IR19-003-22",
+          "plannedRecordId": "BKL-IR19-003",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-003-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-003",
+          "questionId": "EQ-IR19-003-26",
+          "plannedRecordId": "CTI-IR19-003",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-004",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-004",
+          "revision": "REV-IR19-004",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-004-PREV",
+          "status": "Contained",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-004",
+          "requested": "Investigating",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "Investigatingとして因果と影響を問う。攻撃者を確定しない。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-004-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-004-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-004-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-004-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-004-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-004-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-004-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-004-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-004-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-004-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-004-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-004",
+            "revision": "REV-IR19-004",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": {
+          "id": "DCL-IR19-004",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給した教育用基準では、承認未確認の権限変化と利用の組が個別確認対象となる。",
+          "at": "2026-09-01T09:15:00Z",
+          "criteriaId": "EV-IR19-004-CRITERIA",
+          "asset": "SYN-APP-A"
+        },
+        "preservation": {
+          "id": "PRV-IR19-004",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-004-SAVE"
+        },
+        "containment": null,
+        "analysisId": "EV-IR19-004-ANALYSIS",
+        "recovery": null,
+        "closure": null,
+        "reopening": null,
+        "incidentId": "INC-IR19-004",
+        "threatQuestionId": "THQ-IR19-004",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Investigating",
+        "decision": "accepted",
+        "gaps": [],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "Investigatingとして因果と影響を問う。攻撃者を確定しない。",
+        "alternative": "正当な変更と誤設定も比較対象に残す。",
+        "confidence": "低",
+        "confidenceBasis": "分析対象は供給記録に限定される。",
+        "gap": "Root causeと全影響はまだ確定していない。",
+        "nextAction": "第20章向けEvidence Questionを未配達で記録する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-004",
+      "findingId": "FND-IR19-004",
+      "controlId": "CTL-IR19-004",
+      "reassessmentId": "REA-IR19-004",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-004-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-004",
+          "questionId": "EQ-IR19-004-20",
+          "plannedRecordId": "TL-IR19-004",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-004-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-004",
+          "questionId": "EQ-IR19-004-22",
+          "plannedRecordId": "BKL-IR19-004",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-004-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-004",
+          "questionId": "EQ-IR19-004-26",
+          "plannedRecordId": "CTI-IR19-004",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-005",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-005",
+          "revision": "REV-IR19-005",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-005-PREV",
+          "status": "Investigating",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-005",
+          "requested": "Recovering",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "Recoveringへの条件は揃うが、復旧完了とはしない。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-005-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-005-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-005-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-005-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-005-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-005-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-005-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-005-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-005-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-005-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-005-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-005",
+            "revision": "REV-IR19-005",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": {
+          "id": "DCL-IR19-005",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給した教育用基準では、承認未確認の権限変化と利用の組が個別確認対象となる。",
+          "at": "2026-09-01T09:15:00Z",
+          "criteriaId": "EV-IR19-005-CRITERIA",
+          "asset": "SYN-APP-A"
+        },
+        "preservation": {
+          "id": "PRV-IR19-005",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-005-SAVE"
+        },
+        "containment": null,
+        "analysisId": null,
+        "recovery": {
+          "id": "REC-IR19-005",
+          "owner": "SYNTH-IR-RECOVERY",
+          "criteriaId": "EV-IR19-005-RECENTRY",
+          "validationId": "EV-IR19-005-RECVALID",
+          "asset": "SYN-APP-A"
+        },
+        "closure": null,
+        "reopening": null,
+        "incidentId": "INC-IR19-005",
+        "threatQuestionId": "THQ-IR19-005",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Recovering",
+        "decision": "accepted",
+        "gaps": [],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "Recoveringへの条件は揃うが、復旧完了とはしない。",
+        "alternative": "復旧条件の見落としが残る可能性がある。",
+        "confidence": "中",
+        "confidenceBasis": "入口の基準判定と担当者だけを供給した。",
+        "gap": "サービス正常性の別検証が必要である。",
+        "nextAction": "Validationと残余リスクの判定を計画する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-005",
+      "findingId": "FND-IR19-005",
+      "controlId": "CTL-IR19-005",
+      "reassessmentId": "REA-IR19-005",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-005-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-005",
+          "questionId": "EQ-IR19-005-20",
+          "plannedRecordId": "TL-IR19-005",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-005-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-005",
+          "questionId": "EQ-IR19-005-22",
+          "plannedRecordId": "BKL-IR19-005",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-005-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-005",
+          "questionId": "EQ-IR19-005-26",
+          "plannedRecordId": "CTI-IR19-005",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-006",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-006",
+          "revision": "REV-IR19-006",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-006-PREV",
+          "status": "Recovering",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-006",
+          "requested": "Closed",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給Scopeの復旧検証と残余リスクの担当を条件にClosedとする。改善完了ではない。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-006-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-006-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-006-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-006-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-006-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-006-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-006-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-006-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-006-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-006-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-006-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-006",
+            "revision": "REV-IR19-006",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": {
+          "id": "DCL-IR19-006",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給した教育用基準では、承認未確認の権限変化と利用の組が個別確認対象となる。",
+          "at": "2026-09-01T09:15:00Z",
+          "criteriaId": "EV-IR19-006-CRITERIA",
+          "asset": "SYN-APP-A"
+        },
+        "preservation": {
+          "id": "PRV-IR19-006",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-006-SAVE"
+        },
+        "containment": null,
+        "analysisId": null,
+        "recovery": {
+          "id": "REC-IR19-006",
+          "owner": "SYNTH-IR-RECOVERY",
+          "criteriaId": "EV-IR19-006-RECENTRY",
+          "validationId": "EV-IR19-006-RECVALID",
+          "asset": "SYN-APP-A"
+        },
+        "closure": {
+          "owner": "SYNTH-IR-DECIDER",
+          "at": "2026-09-01T11:00:00Z",
+          "residualRisk": "未観測Dataの影響と再発要因は別担当が追跡する。",
+          "riskOwner": "SYNTH-IR-RISK",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "asset": "SYN-APP-A"
+        },
+        "reopening": null,
+        "incidentId": "INC-IR19-006",
+        "threatQuestionId": "THQ-IR19-006",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Closed",
+        "decision": "accepted",
+        "gaps": [],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "供給Scopeの復旧検証と残余リスクの担当を条件にClosedとする。改善完了ではない。",
+        "alternative": "未観測範囲や再発要因が残る可能性がある。",
+        "confidence": "中",
+        "confidenceBasis": "限定した復旧結果と閉鎖判断を供給した。",
+        "gap": "組織全体の安全と再発防止完了は未評価である。",
+        "nextAction": "残余リスクと改善Backlogを別期限で追跡する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-006",
+      "findingId": "FND-IR19-006",
+      "controlId": "CTL-IR19-006",
+      "reassessmentId": "REA-IR19-006",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-006-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-006",
+          "questionId": "EQ-IR19-006-20",
+          "plannedRecordId": "TL-IR19-006",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-006-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-006",
+          "questionId": "EQ-IR19-006-22",
+          "plannedRecordId": "BKL-IR19-006",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-006-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-006",
+          "questionId": "EQ-IR19-006-26",
+          "plannedRecordId": "CTI-IR19-006",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-007",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-007",
+          "revision": "REV-IR19-007",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-007-PREV",
+          "status": "Closed",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": "EV-IR19-007-RECVALID",
+          "closure": {
+            "owner": "SYNTH-IR-DECIDER",
+            "at": "2026-09-01T10:10:00Z",
+            "residualRisk": "未観測Dataは未解決。",
+            "riskOwner": "SYNTH-IR-RISK",
+            "dueAt": "2026-09-30T00:00:00Z",
+            "asset": "SYN-APP-A"
+          }
+        },
+        "decision": {
+          "id": "DEC-IR19-007",
+          "requested": "Reopened",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "閉鎖後に利用可能となった新しい供給EvidenceでReopenedとする。旧閉鎖記録を消さない。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-007-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-007-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-007-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-007-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-007-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-007-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-007-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-007-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-007-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-007-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-007-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-007",
+            "revision": "REV-IR19-007",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": {
+          "id": "DCL-IR19-007",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給した教育用基準では、承認未確認の権限変化と利用の組が個別確認対象となる。",
+          "at": "2026-09-01T09:15:00Z",
+          "criteriaId": "EV-IR19-007-CRITERIA",
+          "asset": "SYN-APP-A"
+        },
+        "preservation": {
+          "id": "PRV-IR19-007",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-007-SAVE"
+        },
+        "containment": null,
+        "analysisId": null,
+        "recovery": null,
+        "closure": null,
+        "reopening": {
+          "id": "REOPEN-IR19-007",
+          "closedDecisionId": "DEC-IR19-007-PREV",
+          "newEvidenceId": "EV-IR19-007-NEW",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "閉鎖後に利用可能となった供給記録の影響を再評価する。",
+          "at": "2026-09-01T11:00:00Z"
+        },
+        "incidentId": "INC-IR19-007",
+        "threatQuestionId": "THQ-IR19-007",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Reopened",
+        "decision": "accepted",
+        "gaps": [],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "閉鎖後に利用可能となった新しい供給EvidenceでReopenedとする。旧閉鎖記録を消さない。",
+        "alternative": "新しい記録が既知事象の遅延情報かもしれない。",
+        "confidence": "低",
+        "confidenceBasis": "再開理由はあるが新情報の全影響は未分析である。",
+        "gap": "新しいEvidenceの解釈を再検討する必要がある。",
+        "nextAction": "旧Decision IDを参照した新判断を追記する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-007",
+      "findingId": "FND-IR19-007",
+      "controlId": "CTL-IR19-007",
+      "reassessmentId": "REA-IR19-007",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-007-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-007",
+          "questionId": "EQ-IR19-007-20",
+          "plannedRecordId": "TL-IR19-007",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-007-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-007",
+          "questionId": "EQ-IR19-007-22",
+          "plannedRecordId": "BKL-IR19-007",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-007-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-007",
+          "questionId": "EQ-IR19-007-26",
+          "plannedRecordId": "CTI-IR19-007",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-008",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-008",
+          "revision": "REV-IR19-008",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-008-PREV",
+          "status": "Suspected",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-008",
+          "requested": "Declared",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "宣言根拠が不足するためSuspectedを維持する。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-008-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-008-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-008-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-008-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-008-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-008-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-008-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-008-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-008-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-008-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-008-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-008",
+            "revision": "REV-IR19-008",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": null,
+        "preservation": {
+          "id": "PRV-IR19-008",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-008-SAVE"
+        },
+        "containment": null,
+        "analysisId": null,
+        "recovery": null,
+        "closure": null,
+        "reopening": null,
+        "incidentId": "INC-IR19-008",
+        "threatQuestionId": "THQ-IR19-008",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Suspected",
+        "decision": "deferred",
+        "gaps": [
+          "declaration-owner-reason-time-criteria"
+        ],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "宣言根拠が不足するためSuspectedを維持する。",
+        "alternative": "Event不足で判断材料が揃っていない。",
+        "confidence": "低",
+        "confidenceBasis": "Huntの支持を追加の宣言基準に代用できない。",
+        "gap": "判断主体と供給基準の確認が必要である。",
+        "nextAction": "不足根拠のOwnerと次回確認を記録する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-008",
+      "findingId": "FND-IR19-008",
+      "controlId": "CTL-IR19-008",
+      "reassessmentId": "REA-IR19-008",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-008-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-008",
+          "questionId": "EQ-IR19-008-20",
+          "plannedRecordId": "TL-IR19-008",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-008-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-008",
+          "questionId": "EQ-IR19-008-22",
+          "plannedRecordId": "BKL-IR19-008",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-008-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-008",
+          "questionId": "EQ-IR19-008-26",
+          "plannedRecordId": "CTI-IR19-008",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-009",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-009",
+          "revision": "REV-IR19-009",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-009-PREV",
+          "status": "Suspected",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-009",
+          "requested": "Declared",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "正当変更という代替が残り、基準は未確定のためSuspectedを維持する。"
+        },
+        "classification": "legitimate-change-possible",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-009-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-009-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-009-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-009-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-009-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "unknown"
+          },
+          {
+            "id": "EV-IR19-009-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-009-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-009-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-009-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-009-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-009-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-009",
+            "revision": "REV-IR19-009",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": {
+          "id": "DCL-IR19-009",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給した教育用基準では、承認未確認の権限変化と利用の組が個別確認対象となる。",
+          "at": "2026-09-01T09:15:00Z",
+          "criteriaId": "EV-IR19-009-CRITERIA",
+          "asset": "SYN-APP-A"
+        },
+        "preservation": {
+          "id": "PRV-IR19-009",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-009-SAVE"
+        },
+        "containment": null,
+        "analysisId": null,
+        "recovery": null,
+        "closure": null,
+        "reopening": null,
+        "incidentId": "INC-IR19-009",
+        "threatQuestionId": "THQ-IR19-009",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Suspected",
+        "decision": "deferred",
+        "gaps": [
+          "declaration-owner-reason-time-criteria"
+        ],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "正当変更という代替が残り、基準は未確定のためSuspectedを維持する。",
+        "alternative": "誤設定の可能性も残す。",
+        "confidence": "低",
+        "confidenceBasis": "部分的な承認文脈だけでは宣言基準を満たさない。",
+        "gap": "正当変更の対象と時点の追加確認が必要である。",
+        "nextAction": "承認の不足を照会する計画だけを記録する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-009",
+      "findingId": "FND-IR19-009",
+      "controlId": "CTL-IR19-009",
+      "reassessmentId": "REA-IR19-009",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-009-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-009",
+          "questionId": "EQ-IR19-009-20",
+          "plannedRecordId": "TL-IR19-009",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-009-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-009",
+          "questionId": "EQ-IR19-009-22",
+          "plannedRecordId": "BKL-IR19-009",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-009-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-009",
+          "questionId": "EQ-IR19-009-26",
+          "plannedRecordId": "CTI-IR19-009",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-010",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-010",
+          "revision": "REV-IR19-010",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-010-PREV",
+          "status": "Suspected",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-010",
+          "requested": "Suspected",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "Log不足をUnknownとして残し、Suspectedを維持する。侵害なしとはしない。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-APP-B",
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-010-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-010-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-010-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-010-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-010-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-010-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-010-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-010-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-010-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-010-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-010-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-010",
+            "revision": "REV-IR19-010",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": null,
+        "preservation": {
+          "id": "PRV-IR19-010",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-010-SAVE"
+        },
+        "containment": null,
+        "analysisId": null,
+        "recovery": null,
+        "closure": null,
+        "reopening": null,
+        "incidentId": "INC-IR19-010",
+        "threatQuestionId": "THQ-IR19-010",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Suspected",
+        "decision": "accepted",
+        "gaps": [],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "Log不足をUnknownとして残し、Suspectedを維持する。侵害なしとはしない。",
+        "alternative": "未観測の影響も無害な変更もあり得る。",
+        "confidence": "低",
+        "confidenceBasis": "供給Scopeの一部が未観測である。",
+        "gap": "未知の範囲を除外範囲に置換できない。",
+        "nextAction": "Collection gapとEvidence Questionを渡す計画を記録する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-010",
+      "findingId": "FND-IR19-010",
+      "controlId": "CTL-IR19-010",
+      "reassessmentId": "REA-IR19-010",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-010-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-010",
+          "questionId": "EQ-IR19-010-20",
+          "plannedRecordId": "TL-IR19-010",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-010-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-010",
+          "questionId": "EQ-IR19-010-22",
+          "plannedRecordId": "BKL-IR19-010",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-010-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-010",
+          "questionId": "EQ-IR19-010-26",
+          "plannedRecordId": "CTI-IR19-010",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-011",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-011",
+          "revision": "REV-IR19-011",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-011-PREV",
+          "status": "Declared",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-011",
+          "requested": "Contained",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "選択肢の記録だけではContainedに進めず、Declaredを維持する。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-011-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-011-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-011-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-011-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-011-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-011-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-011-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-011-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-011-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-011-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-011-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": {
+          "id": "DCL-IR19-011",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給した教育用基準では、承認未確認の権限変化と利用の組が個別確認対象となる。",
+          "at": "2026-09-01T09:15:00Z",
+          "criteriaId": "EV-IR19-011-CRITERIA",
+          "asset": "SYN-APP-A"
+        },
+        "preservation": {
+          "id": "PRV-IR19-011",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-011-SAVE"
+        },
+        "containment": {
+          "id": "ACT-IR19-011",
+          "optionId": "OPT-IR19-MONITOR",
+          "asset": "SYN-APP-A",
+          "at": "2026-09-01T10:15:00Z",
+          "expectedImpact": "保管量と分析負荷が増える想定。",
+          "rollback": "追加観測の終了条件を別記する案。実操作なし。",
+          "destructive": false,
+          "actualExecuted": false,
+          "validationId": null,
+          "authority": {
+            "id": "AUTH-IR19-011",
+            "approved": true,
+            "owner": "SYNTH-IR-COMMANDER",
+            "approvedAt": "2026-09-01T10:12:00Z",
+            "expiresAt": "2026-09-01T10:45:00Z",
+            "subject": "SYNTH-IR19-011",
+            "revision": "REV-IR19-011",
+            "asset": "SYN-APP-A",
+            "realAuthority": false
+          }
+        },
+        "analysisId": null,
+        "recovery": null,
+        "closure": null,
+        "reopening": null,
+        "incidentId": "INC-IR19-011",
+        "threatQuestionId": "THQ-IR19-011",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Declared",
+        "decision": "deferred",
+        "gaps": [
+          "containment-not-validated"
+        ],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "選択肢の記録だけではContainedに進めず、Declaredを維持する。",
+        "alternative": "Monitoringだけでは拡大が続く可能性がある。",
+        "confidence": "低",
+        "confidenceBasis": "封じ込め効果を示す供給検証がない。",
+        "gap": "実行済みとも効果確認済みともいえない。",
+        "nextAction": "効果の検証条件を再設計する計画を記録する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-011",
+      "findingId": "FND-IR19-011",
+      "controlId": "CTL-IR19-011",
+      "reassessmentId": "REA-IR19-011",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-011-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-011",
+          "questionId": "EQ-IR19-011-20",
+          "plannedRecordId": "TL-IR19-011",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-011-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-011",
+          "questionId": "EQ-IR19-011-22",
+          "plannedRecordId": "BKL-IR19-011",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-011-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-011",
+          "questionId": "EQ-IR19-011-26",
+          "plannedRecordId": "CTI-IR19-011",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    },
+    {
+      "id": "ICASE19-012",
+      "input": {
+        "context": {
+          "subject": "SYNTH-IR19-012",
+          "revision": "REV-IR19-012",
+          "assets": [
+            "SYN-APP-A",
+            "SYN-APP-B",
+            "SYN-ID-C",
+            "SYN-DATA-D"
+          ],
+          "start": "2026-09-01T08:00:00Z",
+          "end": "2026-09-01T09:00:00Z"
+        },
+        "previous": {
+          "id": "DEC-IR19-012-PREV",
+          "status": "Recovering",
+          "at": "2026-09-01T10:10:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給された前提判断。真正性を示す受領記録ではない。",
+          "closureValidationId": null,
+          "closure": null
+        },
+        "decision": {
+          "id": "DEC-IR19-012",
+          "requested": "Closed",
+          "at": "2026-09-01T11:00:00Z",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "復旧検証が未確定のためRecoveringを維持する。Closedとしない。"
+        },
+        "classification": "suspected-policy-violation",
+        "severity": "medium",
+        "priority": "urgent",
+        "scope": {
+          "hypothesized": [
+            "SYN-APP-B"
+          ],
+          "confirmed": [
+            "SYN-APP-A"
+          ],
+          "excluded": [
+            "SYN-ID-C"
+          ],
+          "unknown": [
+            "SYN-DATA-D"
+          ]
+        },
+        "evidence": [
+          {
+            "id": "EV-IR19-012-CONSENT",
+            "kind": "consent-change",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-012-USE",
+            "kind": "workload-access",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-012-SCOPE",
+            "kind": "scope-confirmation",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-012-EXCLUDED",
+            "kind": "scope-exclusion",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-ID-C",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-012-CRITERIA",
+            "kind": "declaration-criteria",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:10:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-012-SAVE",
+            "kind": "preservation",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T09:20:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-012-CONTAIN",
+            "kind": "containment-validation",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-012-ANALYSIS",
+            "kind": "analysis",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-012-RECENTRY",
+            "kind": "recovery-criteria",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:05:00Z",
+            "outcome": "supported"
+          },
+          {
+            "id": "EV-IR19-012-RECVALID",
+            "kind": "recovery-validation",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "unknown"
+          },
+          {
+            "id": "EV-IR19-012-NEW",
+            "kind": "new-evidence",
+            "subject": "SYNTH-IR19-012",
+            "revision": "REV-IR19-012",
+            "asset": "SYN-APP-A",
+            "windowStart": "2026-09-01T08:00:00Z",
+            "windowEnd": "2026-09-01T09:00:00Z",
+            "availableAt": "2026-09-01T10:30:00Z",
+            "outcome": "supported"
+          }
+        ],
+        "declaration": {
+          "id": "DCL-IR19-012",
+          "owner": "SYNTH-IR-DECIDER",
+          "reason": "供給した教育用基準では、承認未確認の権限変化と利用の組が個別確認対象となる。",
+          "at": "2026-09-01T09:15:00Z",
+          "criteriaId": "EV-IR19-012-CRITERIA",
+          "asset": "SYN-APP-A"
+        },
+        "preservation": {
+          "id": "PRV-IR19-012",
+          "owner": "SYNTH-IR-EVIDENCE",
+          "at": "2026-09-01T09:25:00Z",
+          "evidenceId": "EV-IR19-012-SAVE"
+        },
+        "containment": null,
+        "analysisId": null,
+        "recovery": {
+          "id": "REC-IR19-012",
+          "owner": "SYNTH-IR-RECOVERY",
+          "criteriaId": "EV-IR19-012-RECENTRY",
+          "validationId": "EV-IR19-012-RECVALID",
+          "asset": "SYN-APP-A"
+        },
+        "closure": {
+          "owner": "SYNTH-IR-DECIDER",
+          "at": "2026-09-01T11:00:00Z",
+          "residualRisk": "未観測Dataの影響と再発要因は別担当が追跡する。",
+          "riskOwner": "SYNTH-IR-RISK",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "asset": "SYN-APP-A"
+        },
+        "reopening": null,
+        "incidentId": "INC-IR19-012",
+        "threatQuestionId": "THQ-IR19-012",
+        "evidenceQuestion": "同意変更とWorkload利用の対応を、正当変更・誤設定・侵害仮説からどう区別するか。",
+        "collectionGap": "Data Dの影響は未観測。実収集、原記録の真正性、全組織の範囲は未評価。",
+        "classificationBasis": "供給候補の種類であり、悪意や原因の確定ではない。",
+        "severityBasis": "合成Export機能への限定影響を想定する。Severityは確信度ではない。",
+        "priorityBasis": "次の判断に必要な情報を先に確認する教育上の優先度。実対応の指示ではない。",
+        "eradicationQuestion": "残る権限と再発条件をどのScopeで確認するか。根絶完了は未認定。実操作なし。"
+      },
+      "expected": {
+        "status": "Recovering",
+        "decision": "deferred",
+        "gaps": [
+          "recovery-not-validated"
+        ],
+        "limit": "supplied-synthetic-record-only-not-authority-or-authenticity",
+        "executionAuthorized": false,
+        "notificationDecided": false,
+        "noIncidentClaim": false,
+        "improvementComplete": false
+      },
+      "judgment": {
+        "conclusion": "復旧検証が未確定のためRecoveringを維持する。Closedとしない。",
+        "alternative": "限定した正常性確認が不足している。",
+        "confidence": "低",
+        "confidenceBasis": "入口基準だけでは復旧完了を示せない。",
+        "gap": "復旧後の完全性と正常性の確認が必要である。",
+        "nextAction": "復旧検証と残余リスクの見直しを記録する。",
+        "reassessment": "対象、版、Scope、供給Evidence、承認、正常性、残余リスクが変わったら別Decisionで再評価する。"
+      },
+      "timelineId": "TL-IR19-012",
+      "findingId": "FND-IR19-012",
+      "controlId": "CTL-IR19-012",
+      "reassessmentId": "REA-IR19-012",
+      "handoffs": [
+        {
+          "id": "HOF-IR19-012-20",
+          "targetChapter": 20,
+          "sourceDecisionId": "DEC-IR19-012",
+          "questionId": "EQ-IR19-012-20",
+          "plannedRecordId": "TL-IR19-012",
+          "question": "同意変更と利用の時系列、代替説明、Unknown scopeをどの追加記録で区別できるか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-012-22",
+          "targetChapter": 22,
+          "sourceDecisionId": "DEC-IR19-012",
+          "questionId": "EQ-IR19-012-22",
+          "plannedRecordId": "BKL-IR19-012",
+          "question": "残余リスクと観測GapをどのOwner、期限、検証条件で改善候補にするか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        },
+        {
+          "id": "HOF-IR19-012-26",
+          "targetChapter": 26,
+          "sourceDecisionId": "DEC-IR19-012",
+          "questionId": "EQ-IR19-012-26",
+          "plannedRecordId": "CTI-IR19-012",
+          "question": "限定した観測と代替説明をどの判断要求向けに再評価するか。",
+          "scope": "供給subject/revisionの四対象と08:00–09:00 UTCだけ。親Evidenceの移送ではない。",
+          "owner": "SYNTH-IR-COMMANDER",
+          "dueAt": "2026-09-30T00:00:00Z",
+          "status": "planned-not-delivered",
+          "receiptId": null,
+          "executionAuthorized": false
+        }
+      ]
+    }
+  ]
+}

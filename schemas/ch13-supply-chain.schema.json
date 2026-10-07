@@ -1,0 +1,2289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ART-21 finite supplied teaching summary; not SPDX or SLSA schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "record",
+    "parents",
+    "parentIdentity",
+    "safety",
+    "platform",
+    "principals",
+    "secretClasses",
+    "expectations",
+    "chains",
+    "handoffs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": [
+        "1.0.0"
+      ]
+    },
+    "synthetic": {
+      "type": "boolean",
+      "enum": [
+        true
+      ]
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactId",
+        "caseId",
+        "relation",
+        "serviceId",
+        "asOf",
+        "revision",
+        "purpose",
+        "authoredNotMeasured"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "enum": [
+            "PSA-2026-013"
+          ]
+        },
+        "artifactId": {
+          "type": "string",
+          "enum": [
+            "ART-21"
+          ]
+        },
+        "caseId": {
+          "type": "string",
+          "enum": [
+            "CASE-2026-001"
+          ]
+        },
+        "relation": {
+          "type": "string",
+          "enum": [
+            "refines"
+          ]
+        },
+        "serviceId": {
+          "type": "string",
+          "enum": [
+            "SVC-PSA13-001"
+          ]
+        },
+        "asOf": {
+          "type": "string",
+          "enum": [
+            "2026-09-15T09:00:00Z"
+          ]
+        },
+        "revision": {
+          "type": "string",
+          "enum": [
+            "PSA13-REV-001"
+          ]
+        },
+        "purpose": {
+          "type": "string",
+          "enum": [
+            "供給されたSourceからRuntimeまでの記録の対応と、未確認の条件を区別する。"
+          ]
+        },
+        "authoredNotMeasured": {
+          "type": "boolean",
+          "enum": [
+            true
+          ]
+        }
+      }
+    },
+    "parents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "caseId",
+        "relation",
+        "decisionRequirementId",
+        "historicalDeadline",
+        "authorizationId",
+        "authorizationExpiresAt",
+        "authorizationWindow",
+        "authorizationConditions",
+        "roeId",
+        "roeVersion",
+        "roeStatus",
+        "roeObjectIds",
+        "roeExecutionAuthorized",
+        "threatModelId",
+        "threatModelStatus",
+        "parentReassessmentId",
+        "independentCaseId",
+        "parentStateChanged"
+      ],
+      "properties": {
+        "caseId": {
+          "type": "string",
+          "enum": [
+            "CASE-2026-001"
+          ]
+        },
+        "relation": {
+          "type": "string",
+          "enum": [
+            "refines"
+          ]
+        },
+        "decisionRequirementId": {
+          "type": "string",
+          "enum": [
+            "DR-2026-001"
+          ]
+        },
+        "historicalDeadline": {
+          "type": "string",
+          "enum": [
+            "2026-07-22T00:00:00Z"
+          ]
+        },
+        "authorizationId": {
+          "type": "string",
+          "enum": [
+            "AUTH-CASE-2026-001"
+          ]
+        },
+        "authorizationExpiresAt": {
+          "type": "string",
+          "enum": [
+            "2026-08-19T09:00:00Z"
+          ]
+        },
+        "authorizationWindow": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "2026-08-06T00:00:00Z",
+              "2026-08-06T08:00:00Z"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 2
+        },
+        "authorizationConditions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "COND-AUTH-2026-001 Open",
+              "COND-AUTH-2026-002 Satisfied",
+              "COND-AUTH-2026-003 Open"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 3
+        },
+        "roeId": {
+          "type": "string",
+          "enum": [
+            "ROE-2026-009"
+          ]
+        },
+        "roeVersion": {
+          "type": "integer",
+          "enum": [
+            1
+          ]
+        },
+        "roeStatus": {
+          "type": "string",
+          "enum": [
+            "Draft"
+          ]
+        },
+        "roeObjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "OBJ-ROE09-CONFIG",
+              "OBJ-ROE09-EVENT",
+              "OBJ-ROE09-POLICY"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 3
+        },
+        "roeExecutionAuthorized": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "threatModelId": {
+          "type": "string",
+          "enum": [
+            "TM-2026-001"
+          ]
+        },
+        "threatModelStatus": {
+          "type": "string",
+          "enum": [
+            "Needs Evidence"
+          ]
+        },
+        "parentReassessmentId": {
+          "type": "string",
+          "enum": [
+            "REA-2026-001"
+          ]
+        },
+        "independentCaseId": {
+          "type": "string",
+          "enum": [
+            "CASE-2026-011"
+          ]
+        },
+        "parentStateChanged": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        }
+      }
+    },
+    "parentIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewId",
+        "pathId",
+        "pathState",
+        "principalId",
+        "permission",
+        "signalFlowId",
+        "threatId",
+        "boundaryId",
+        "currentBinding",
+        "coverage",
+        "nonFederationEvaluationId",
+        "nonFederationAssertion",
+        "use"
+      ],
+      "properties": {
+        "reviewId": {
+          "type": "string",
+          "enum": [
+            "IAR-2026-012"
+          ]
+        },
+        "pathId": {
+          "type": "string",
+          "enum": [
+            "PTH-IAR12-004"
+          ]
+        },
+        "pathState": {
+          "type": "string",
+          "enum": [
+            "Validated"
+          ]
+        },
+        "principalId": {
+          "type": "string",
+          "enum": [
+            "PRN-IAR12-004"
+          ]
+        },
+        "permission": {
+          "type": "string",
+          "enum": [
+            "read-customer-summary"
+          ]
+        },
+        "signalFlowId": {
+          "type": "string",
+          "enum": [
+            "SF-2026-006"
+          ]
+        },
+        "threatId": {
+          "type": "string",
+          "enum": [
+            "TH-2026-004"
+          ]
+        },
+        "boundaryId": {
+          "type": "string",
+          "enum": [
+            "TB-2026-004"
+          ]
+        },
+        "currentBinding": {
+          "type": "string",
+          "enum": [
+            "Unknown"
+          ]
+        },
+        "coverage": {
+          "type": "string",
+          "enum": [
+            "Unknown"
+          ]
+        },
+        "nonFederationEvaluationId": {
+          "type": "string",
+          "enum": [
+            "EVAL-IAR12-005"
+          ]
+        },
+        "nonFederationAssertion": {
+          "type": "array",
+          "items": {
+            "type": "null",
+            "enum": [
+              null
+            ]
+          },
+          "uniqueItems": false,
+          "minItems": 3
+        },
+        "use": {
+          "type": "string",
+          "enum": [
+            "background-gap-only-no-build-or-deploy-permission"
+          ]
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "executionAuthorized",
+        "externalConnections",
+        "actualBuilds",
+        "actualDeployments",
+        "actualSignatureVerifications",
+        "actualTrust",
+        "standardCompliance",
+        "safeClaim",
+        "secretValuesPresent",
+        "inputKind",
+        "digestMeaning",
+        "nextAction",
+        "stop",
+        "cleanup",
+        "durationMinutes",
+        "retentionHours"
+      ],
+      "properties": {
+        "executionAuthorized": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "externalConnections": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "actualBuilds": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "actualDeployments": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "actualSignatureVerifications": {
+          "type": "integer",
+          "enum": [
+            0
+          ]
+        },
+        "actualTrust": {
+          "type": "string",
+          "enum": [
+            "Not assessed"
+          ]
+        },
+        "standardCompliance": {
+          "type": "string",
+          "enum": [
+            "Not assessed"
+          ]
+        },
+        "safeClaim": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "secretValuesPresent": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "inputKind": {
+          "type": "string",
+          "enum": [
+            "authored-summary-only-not-standard-document"
+          ]
+        },
+        "digestMeaning": {
+          "type": "string",
+          "enum": [
+            "sha256-of-authored-label-not-real-artifact"
+          ]
+        },
+        "nextAction": {
+          "type": "string",
+          "enum": [
+            "record-only"
+          ]
+        },
+        "stop": {
+          "type": "string",
+          "enum": [
+            "実Dataらしい内容、未知の入力、外部接続、許可不明なら停止する。"
+          ]
+        },
+        "cleanup": {
+          "type": "string",
+          "enum": [
+            "自分の作業コピーだけを整理し、正本と親Evidenceを保持する。"
+          ]
+        },
+        "durationMinutes": {
+          "type": "integer",
+          "enum": [
+            30
+          ]
+        },
+        "retentionHours": {
+          "type": "integer",
+          "enum": [
+            24
+          ]
+        }
+      }
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "serviceId",
+        "businessPurpose",
+        "controlPlaneId",
+        "dataPlaneId",
+        "buildPlaneId",
+        "runtimeBoundaryId",
+        "saasIntegrationId",
+        "saasScope",
+        "owner"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "enum": [
+            "PLT-PSA13-001"
+          ]
+        },
+        "serviceId": {
+          "type": "string",
+          "enum": [
+            "SVC-PSA13-001"
+          ]
+        },
+        "businessPurpose": {
+          "type": "string",
+          "enum": [
+            "架空の請求書連携の変更根拠を記録する。"
+          ]
+        },
+        "controlPlaneId": {
+          "type": "string",
+          "enum": [
+            "CP-PSA13-001"
+          ]
+        },
+        "dataPlaneId": {
+          "type": "string",
+          "enum": [
+            "DP-PSA13-001"
+          ]
+        },
+        "buildPlaneId": {
+          "type": "string",
+          "enum": [
+            "BP-PSA13-001"
+          ]
+        },
+        "runtimeBoundaryId": {
+          "type": "string",
+          "enum": [
+            "RB-PSA13-001"
+          ]
+        },
+        "saasIntegrationId": {
+          "type": "string",
+          "enum": [
+            "SAAS-PSA13-001"
+          ]
+        },
+        "saasScope": {
+          "type": "string",
+          "enum": [
+            "metadata-only-no-provider-access"
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "enum": [
+            "SYNTH-PLATFORM-OWNER"
+          ]
+        }
+      }
+    },
+    "principals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "class",
+          "permission",
+          "secretClass",
+          "owner",
+          "secretClassId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "HUM-PSA13-001",
+              "WRK-PSA13-001"
+            ]
+          },
+          "class": {
+            "type": "string",
+            "enum": [
+              "Human",
+              "Workload"
+            ]
+          },
+          "permission": {
+            "type": "string",
+            "enum": [
+              "review-promotion-plan",
+              "build-summary-only"
+            ]
+          },
+          "secretClass": {
+            "type": "string",
+            "enum": [
+              "interactive-authenticator-class",
+              "workload-authentication-class"
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "enum": [
+              "SYNTH-REVIEW-OWNER",
+              "SYNTH-BUILD-OWNER"
+            ]
+          },
+          "secretClassId": {
+            "type": "string",
+            "enum": [
+              "SEC-PSA13-001",
+              "SEC-PSA13-002"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true,
+      "minItems": 2
+    },
+    "secretClasses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "principalId",
+          "secretClass",
+          "valueIncluded",
+          "owner"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "SEC-PSA13-001",
+              "SEC-PSA13-002"
+            ]
+          },
+          "principalId": {
+            "type": "string",
+            "enum": [
+              "HUM-PSA13-001",
+              "WRK-PSA13-001"
+            ]
+          },
+          "secretClass": {
+            "type": "string",
+            "enum": [
+              "interactive-authenticator-class",
+              "workload-authentication-class"
+            ]
+          },
+          "valueIncluded": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "enum": [
+              "SYNTH-REVIEW-OWNER",
+              "SYNTH-BUILD-OWNER"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true,
+      "minItems": 2
+    },
+    "expectations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "chainId",
+          "recordRevision",
+          "sourceRevision",
+          "lockDigest",
+          "artifactDigest",
+          "builderId",
+          "buildType",
+          "parameters",
+          "actionRevision",
+          "workloadPrincipalId",
+          "permission",
+          "runnerClass",
+          "isolation",
+          "network",
+          "cache",
+          "expectedRuntimeBoundary",
+          "trustBasis",
+          "secretClassId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "EXP-PSA13-001",
+              "EXP-PSA13-002",
+              "EXP-PSA13-003",
+              "EXP-PSA13-004",
+              "EXP-PSA13-005",
+              "EXP-PSA13-006",
+              "EXP-PSA13-007",
+              "EXP-PSA13-008"
+            ]
+          },
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "CHN-PSA13-001",
+              "CHN-PSA13-002",
+              "CHN-PSA13-003",
+              "CHN-PSA13-004",
+              "CHN-PSA13-005",
+              "CHN-PSA13-006",
+              "CHN-PSA13-007",
+              "CHN-PSA13-008"
+            ]
+          },
+          "recordRevision": {
+            "type": "string",
+            "enum": [
+              "PSA13-REV-001"
+            ]
+          },
+          "sourceRevision": {
+            "type": "string",
+            "enum": [
+              "cad8efa6b5af487f26222c95a5f908b5daa8b7b4",
+              "70b7f0245f128a1368c1758be35300512e5172f1",
+              "fbc0223202a7f096804b1b551b63977abc10d34d",
+              "f0eb21aecc5bf32ef0d9bdf3c354d64497cf9309",
+              "a561b92f0034a2fecc2077af920a1ea3b3919146",
+              "00b4953c634e5d2eaf5e3e7a26ff8308e917c4fb",
+              "26addbb641d46ab9166d2f04008ad49bb5e6fd63",
+              "b5e904c240aad31128eef64b478a295fc317d179"
+            ]
+          },
+          "lockDigest": {
+            "type": "string",
+            "enum": [
+              "1a85c55f15c449b3294f5e930d53c6dd316d4c80d3a395b84680848443fc7998",
+              "8fd6ad965fe15db3b80dcb63edbd05941faa48adab0f8594d73d3da3ef0c8b0f",
+              "5125dc39778971489248810b241596ad6cc13b9325d4e81aca905b3c5c48f417",
+              "c81c83d998538f2eb1ca390155c1b02d4a4cbbb7998c705a784280d52b9a237e",
+              "e96862b409d4bf25394ce710f8e398b2c11806c327fcc219a1fdb1be1c240b7f",
+              "1193af504a42d1b29c60986036ce6d3b87f9d9afe2b1eda60a6e6f86b64f08de",
+              "c05aee88d88b4b8622008d17e8f2d55f10f9181d107a724e926f2286e2afd25b",
+              "969a8dd26cda281da27b9cb086c7d7edfba9dcd8f866888a42bedca1889ddd02"
+            ]
+          },
+          "artifactDigest": {
+            "type": "string",
+            "enum": [
+              "9efdb1d2979cdb7429c6b0204e7351ac835a19498b7dac316f03503e6e687c87",
+              "28ef2aa48879e820e3f8cb272dbde6ef7421941e91b8cacc3ae9de98869ec543",
+              "0ba0c99132d6e945af38d032bd5dd175368bbbe90a5e486dc81833cf48c0ac2b",
+              "9228102d16300a4ec3b9ce86327ed14b05b9ad287a94314a7ecdaac253f0a40b",
+              "2212905502d5c258c6894da127b8daab0d9a33e41201d4d13faed328ef75ef60",
+              "098ce0d27fb46e5c96aed75b185169c094eabe243383e5a9b71bc7c7867f8bf4",
+              "f5950ccec365ac9bbf6bf1ea01894cf925732667df4bce3372de095f1f81f028",
+              "1ca98a80850d87fb76d5f3d751bb343cbe72bd930cbf8147c9d4d1bb8e045ac5"
+            ]
+          },
+          "builderId": {
+            "type": "string",
+            "enum": [
+              "BLD-PSA13-001"
+            ]
+          },
+          "buildType": {
+            "type": "string",
+            "enum": [
+              "finite-summary-v1"
+            ]
+          },
+          "parameters": {
+            "type": "string",
+            "enum": [
+              "target=synthetic-summary"
+            ]
+          },
+          "actionRevision": {
+            "type": "string",
+            "enum": [
+              "91296223262f7a7f6d82352e0947f4786b203f6e"
+            ]
+          },
+          "workloadPrincipalId": {
+            "type": "string",
+            "enum": [
+              "WRK-PSA13-001"
+            ]
+          },
+          "permission": {
+            "type": "string",
+            "enum": [
+              "build-summary-only"
+            ]
+          },
+          "runnerClass": {
+            "type": "string",
+            "enum": [
+              "ephemeral-unprivileged"
+            ]
+          },
+          "isolation": {
+            "type": "string",
+            "enum": [
+              "separate-build-runtime"
+            ]
+          },
+          "network": {
+            "type": "string",
+            "enum": [
+              "deny-external"
+            ]
+          },
+          "cache": {
+            "type": "string",
+            "enum": [
+              "reviewed-no-cross-run-state"
+            ]
+          },
+          "expectedRuntimeBoundary": {
+            "type": "string",
+            "enum": [
+              "RB-PSA13-001"
+            ]
+          },
+          "trustBasis": {
+            "type": "string",
+            "enum": [
+              "author-supplied-expectation-not-real-root-of-trust"
+            ]
+          },
+          "secretClassId": {
+            "type": "string",
+            "enum": [
+              "SEC-PSA13-002"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true,
+      "minItems": 8
+    },
+    "chains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "recordRevision",
+          "platformId",
+          "source",
+          "dependency",
+          "action",
+          "build",
+          "artifact",
+          "provenance",
+          "registry",
+          "promotion",
+          "deployment",
+          "runtime",
+          "evidence",
+          "finding",
+          "decision"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "CHN-PSA13-001",
+              "CHN-PSA13-002",
+              "CHN-PSA13-003",
+              "CHN-PSA13-004",
+              "CHN-PSA13-005",
+              "CHN-PSA13-006",
+              "CHN-PSA13-007",
+              "CHN-PSA13-008"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "Pinned supplied comparison",
+              "Mutable source only",
+              "Unversioned external action",
+              "Excess runner privilege",
+              "Unknown artifact origin",
+              "Declaration only",
+              "Observation without comparison",
+              "Runtime digest drift"
+            ]
+          },
+          "recordRevision": {
+            "type": "string",
+            "enum": [
+              "PSA13-REV-001"
+            ]
+          },
+          "platformId": {
+            "type": "string",
+            "enum": [
+              "PLT-PSA13-001"
+            ]
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "repository",
+              "refLabel",
+              "revision",
+              "lockId",
+              "lockDigest"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "SRC-PSA13-001",
+                  "SRC-PSA13-002",
+                  "SRC-PSA13-003",
+                  "SRC-PSA13-004",
+                  "SRC-PSA13-005",
+                  "SRC-PSA13-006",
+                  "SRC-PSA13-007",
+                  "SRC-PSA13-008"
+                ]
+              },
+              "repository": {
+                "type": "string",
+                "enum": [
+                  "https://source.psa13.example/synthetic"
+                ]
+              },
+              "refLabel": {
+                "type": "string",
+                "enum": [
+                  "recorded-release",
+                  "mutable-branch-only"
+                ]
+              },
+              "revision": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "cad8efa6b5af487f26222c95a5f908b5daa8b7b4",
+                  null,
+                  "fbc0223202a7f096804b1b551b63977abc10d34d",
+                  "f0eb21aecc5bf32ef0d9bdf3c354d64497cf9309",
+                  "a561b92f0034a2fecc2077af920a1ea3b3919146",
+                  "00b4953c634e5d2eaf5e3e7a26ff8308e917c4fb",
+                  "26addbb641d46ab9166d2f04008ad49bb5e6fd63",
+                  "b5e904c240aad31128eef64b478a295fc317d179"
+                ]
+              },
+              "lockId": {
+                "type": "string",
+                "enum": [
+                  "LCK-PSA13-001",
+                  "LCK-PSA13-002",
+                  "LCK-PSA13-003",
+                  "LCK-PSA13-004",
+                  "LCK-PSA13-005",
+                  "LCK-PSA13-006",
+                  "LCK-PSA13-007",
+                  "LCK-PSA13-008"
+                ]
+              },
+              "lockDigest": {
+                "type": "string",
+                "enum": [
+                  "1a85c55f15c449b3294f5e930d53c6dd316d4c80d3a395b84680848443fc7998",
+                  "8fd6ad965fe15db3b80dcb63edbd05941faa48adab0f8594d73d3da3ef0c8b0f",
+                  "5125dc39778971489248810b241596ad6cc13b9325d4e81aca905b3c5c48f417",
+                  "c81c83d998538f2eb1ca390155c1b02d4a4cbbb7998c705a784280d52b9a237e",
+                  "e96862b409d4bf25394ce710f8e398b2c11806c327fcc219a1fdb1be1c240b7f",
+                  "1193af504a42d1b29c60986036ce6d3b87f9d9afe2b1eda60a6e6f86b64f08de",
+                  "c05aee88d88b4b8622008d17e8f2d55f10f9181d107a724e926f2286e2afd25b",
+                  "969a8dd26cda281da27b9cb086c7d7edfba9dcd8f866888a42bedca1889ddd02"
+                ]
+              }
+            }
+          },
+          "dependency": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "name",
+              "version",
+              "source",
+              "review",
+              "lockId"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "DEP-PSA13-001",
+                  "DEP-PSA13-002",
+                  "DEP-PSA13-003",
+                  "DEP-PSA13-004",
+                  "DEP-PSA13-005",
+                  "DEP-PSA13-006",
+                  "DEP-PSA13-007",
+                  "DEP-PSA13-008"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "enum": [
+                  "SYNTH-LIBRARY-NOT-PUBLISHED"
+                ]
+              },
+              "version": {
+                "type": "string",
+                "enum": [
+                  "1.0.0-synthetic"
+                ]
+              },
+              "source": {
+                "type": "string",
+                "enum": [
+                  "https://dependency.psa13.example/synthetic"
+                ]
+              },
+              "review": {
+                "type": "string",
+                "enum": [
+                  "Reviewed summary"
+                ]
+              },
+              "lockId": {
+                "type": "string",
+                "enum": [
+                  "LCK-PSA13-001",
+                  "LCK-PSA13-002",
+                  "LCK-PSA13-003",
+                  "LCK-PSA13-004",
+                  "LCK-PSA13-005",
+                  "LCK-PSA13-006",
+                  "LCK-PSA13-007",
+                  "LCK-PSA13-008"
+                ]
+              }
+            }
+          },
+          "action": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "source",
+              "version",
+              "revision",
+              "review"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "ACT-PSA13-001",
+                  "ACT-PSA13-002",
+                  "ACT-PSA13-003",
+                  "ACT-PSA13-004",
+                  "ACT-PSA13-005",
+                  "ACT-PSA13-006",
+                  "ACT-PSA13-007",
+                  "ACT-PSA13-008"
+                ]
+              },
+              "source": {
+                "type": "string",
+                "enum": [
+                  "https://action.psa13.example/synthetic"
+                ]
+              },
+              "version": {
+                "type": "string",
+                "enum": [
+                  "1.0.0-synthetic",
+                  "unversioned"
+                ]
+              },
+              "revision": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "91296223262f7a7f6d82352e0947f4786b203f6e",
+                  null
+                ]
+              },
+              "review": {
+                "type": "string",
+                "enum": [
+                  "Reviewed summary",
+                  "Not reviewed"
+                ]
+              }
+            }
+          },
+          "build": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "sourceId",
+              "sourceRevision",
+              "lockId",
+              "lockDigest",
+              "builderId",
+              "workloadPrincipalId",
+              "permission",
+              "runnerClass",
+              "isolation",
+              "network",
+              "cache",
+              "logId",
+              "secretClassId"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "BLR-PSA13-001",
+                  "BLR-PSA13-002",
+                  "BLR-PSA13-003",
+                  "BLR-PSA13-004",
+                  "BLR-PSA13-005",
+                  "BLR-PSA13-006",
+                  "BLR-PSA13-007",
+                  "BLR-PSA13-008"
+                ]
+              },
+              "sourceId": {
+                "type": "string",
+                "enum": [
+                  "SRC-PSA13-001",
+                  "SRC-PSA13-002",
+                  "SRC-PSA13-003",
+                  "SRC-PSA13-004",
+                  "SRC-PSA13-005",
+                  "SRC-PSA13-006",
+                  "SRC-PSA13-007",
+                  "SRC-PSA13-008"
+                ]
+              },
+              "sourceRevision": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "cad8efa6b5af487f26222c95a5f908b5daa8b7b4",
+                  null,
+                  "fbc0223202a7f096804b1b551b63977abc10d34d",
+                  "f0eb21aecc5bf32ef0d9bdf3c354d64497cf9309",
+                  "a561b92f0034a2fecc2077af920a1ea3b3919146",
+                  "00b4953c634e5d2eaf5e3e7a26ff8308e917c4fb",
+                  "26addbb641d46ab9166d2f04008ad49bb5e6fd63",
+                  "b5e904c240aad31128eef64b478a295fc317d179"
+                ]
+              },
+              "lockId": {
+                "type": "string",
+                "enum": [
+                  "LCK-PSA13-001",
+                  "LCK-PSA13-002",
+                  "LCK-PSA13-003",
+                  "LCK-PSA13-004",
+                  "LCK-PSA13-005",
+                  "LCK-PSA13-006",
+                  "LCK-PSA13-007",
+                  "LCK-PSA13-008"
+                ]
+              },
+              "lockDigest": {
+                "type": "string",
+                "enum": [
+                  "1a85c55f15c449b3294f5e930d53c6dd316d4c80d3a395b84680848443fc7998",
+                  "8fd6ad965fe15db3b80dcb63edbd05941faa48adab0f8594d73d3da3ef0c8b0f",
+                  "5125dc39778971489248810b241596ad6cc13b9325d4e81aca905b3c5c48f417",
+                  "c81c83d998538f2eb1ca390155c1b02d4a4cbbb7998c705a784280d52b9a237e",
+                  "e96862b409d4bf25394ce710f8e398b2c11806c327fcc219a1fdb1be1c240b7f",
+                  "1193af504a42d1b29c60986036ce6d3b87f9d9afe2b1eda60a6e6f86b64f08de",
+                  "c05aee88d88b4b8622008d17e8f2d55f10f9181d107a724e926f2286e2afd25b",
+                  "969a8dd26cda281da27b9cb086c7d7edfba9dcd8f866888a42bedca1889ddd02"
+                ]
+              },
+              "builderId": {
+                "type": "string",
+                "enum": [
+                  "BLD-PSA13-001"
+                ]
+              },
+              "workloadPrincipalId": {
+                "type": "string",
+                "enum": [
+                  "WRK-PSA13-001"
+                ]
+              },
+              "permission": {
+                "type": "string",
+                "enum": [
+                  "build-summary-only",
+                  "runtime-write-excess"
+                ]
+              },
+              "runnerClass": {
+                "type": "string",
+                "enum": [
+                  "ephemeral-unprivileged"
+                ]
+              },
+              "isolation": {
+                "type": "string",
+                "enum": [
+                  "separate-build-runtime"
+                ]
+              },
+              "network": {
+                "type": "string",
+                "enum": [
+                  "deny-external"
+                ]
+              },
+              "cache": {
+                "type": "string",
+                "enum": [
+                  "reviewed-no-cross-run-state"
+                ]
+              },
+              "logId": {
+                "type": "string",
+                "enum": [
+                  "LOG-PSA13-001",
+                  "LOG-PSA13-002",
+                  "LOG-PSA13-003",
+                  "LOG-PSA13-004",
+                  "LOG-PSA13-005",
+                  "LOG-PSA13-006",
+                  "LOG-PSA13-007",
+                  "LOG-PSA13-008"
+                ]
+              },
+              "secretClassId": {
+                "type": "string",
+                "enum": [
+                  "SEC-PSA13-002"
+                ]
+              }
+            }
+          },
+          "artifact": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "buildId",
+              "digest",
+              "signatureStatus",
+              "sbomId",
+              "sbomFormat",
+              "sbomDependencyId",
+              "sbomCompleteness"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "OBJ-PSA13-001",
+                  "OBJ-PSA13-002",
+                  "OBJ-PSA13-003",
+                  "OBJ-PSA13-004",
+                  "OBJ-PSA13-005",
+                  "OBJ-PSA13-006",
+                  "OBJ-PSA13-007",
+                  "OBJ-PSA13-008"
+                ]
+              },
+              "buildId": {
+                "type": "string",
+                "enum": [
+                  "BLR-PSA13-001",
+                  "BLR-PSA13-002",
+                  "BLR-PSA13-003",
+                  "BLR-PSA13-004",
+                  "BLR-PSA13-005",
+                  "BLR-PSA13-006",
+                  "BLR-PSA13-007",
+                  "BLR-PSA13-008"
+                ]
+              },
+              "digest": {
+                "type": "string",
+                "enum": [
+                  "9efdb1d2979cdb7429c6b0204e7351ac835a19498b7dac316f03503e6e687c87",
+                  "28ef2aa48879e820e3f8cb272dbde6ef7421941e91b8cacc3ae9de98869ec543",
+                  "0ba0c99132d6e945af38d032bd5dd175368bbbe90a5e486dc81833cf48c0ac2b",
+                  "9228102d16300a4ec3b9ce86327ed14b05b9ad287a94314a7ecdaac253f0a40b",
+                  "2212905502d5c258c6894da127b8daab0d9a33e41201d4d13faed328ef75ef60",
+                  "098ce0d27fb46e5c96aed75b185169c094eabe243383e5a9b71bc7c7867f8bf4",
+                  "f5950ccec365ac9bbf6bf1ea01894cf925732667df4bce3372de095f1f81f028",
+                  "1ca98a80850d87fb76d5f3d751bb343cbe72bd930cbf8147c9d4d1bb8e045ac5"
+                ]
+              },
+              "signatureStatus": {
+                "type": "string",
+                "enum": [
+                  "Recorded-unverified"
+                ]
+              },
+              "sbomId": {
+                "type": "string",
+                "enum": [
+                  "SBM-PSA13-001",
+                  "SBM-PSA13-002",
+                  "SBM-PSA13-003",
+                  "SBM-PSA13-004",
+                  "SBM-PSA13-005",
+                  "SBM-PSA13-006",
+                  "SBM-PSA13-007",
+                  "SBM-PSA13-008"
+                ]
+              },
+              "sbomFormat": {
+                "type": "string",
+                "enum": [
+                  "book-summary-not-SPDX"
+                ]
+              },
+              "sbomDependencyId": {
+                "type": "string",
+                "enum": [
+                  "DEP-PSA13-001",
+                  "DEP-PSA13-002",
+                  "DEP-PSA13-003",
+                  "DEP-PSA13-004",
+                  "DEP-PSA13-005",
+                  "DEP-PSA13-006",
+                  "DEP-PSA13-007",
+                  "DEP-PSA13-008"
+                ]
+              },
+              "sbomCompleteness": {
+                "type": "string",
+                "enum": [
+                  "Not assessed"
+                ]
+              }
+            }
+          },
+          "provenance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "artifactId",
+              "subjectDigest",
+              "sourceRevision",
+              "lockDigest",
+              "builderId",
+              "buildType",
+              "parameters",
+              "format"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "PROV-PSA13-001",
+                  "PROV-PSA13-002",
+                  "PROV-PSA13-003",
+                  "PROV-PSA13-004",
+                  "PROV-PSA13-005",
+                  "PROV-PSA13-006",
+                  "PROV-PSA13-007",
+                  "PROV-PSA13-008"
+                ]
+              },
+              "artifactId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "OBJ-PSA13-001",
+                  "OBJ-PSA13-002",
+                  "OBJ-PSA13-003",
+                  "OBJ-PSA13-004",
+                  null,
+                  "OBJ-PSA13-006",
+                  "OBJ-PSA13-007",
+                  "OBJ-PSA13-008"
+                ]
+              },
+              "subjectDigest": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "9efdb1d2979cdb7429c6b0204e7351ac835a19498b7dac316f03503e6e687c87",
+                  "28ef2aa48879e820e3f8cb272dbde6ef7421941e91b8cacc3ae9de98869ec543",
+                  "0ba0c99132d6e945af38d032bd5dd175368bbbe90a5e486dc81833cf48c0ac2b",
+                  "9228102d16300a4ec3b9ce86327ed14b05b9ad287a94314a7ecdaac253f0a40b",
+                  null,
+                  "098ce0d27fb46e5c96aed75b185169c094eabe243383e5a9b71bc7c7867f8bf4",
+                  "f5950ccec365ac9bbf6bf1ea01894cf925732667df4bce3372de095f1f81f028",
+                  "1ca98a80850d87fb76d5f3d751bb343cbe72bd930cbf8147c9d4d1bb8e045ac5"
+                ]
+              },
+              "sourceRevision": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "cad8efa6b5af487f26222c95a5f908b5daa8b7b4",
+                  null,
+                  "fbc0223202a7f096804b1b551b63977abc10d34d",
+                  "f0eb21aecc5bf32ef0d9bdf3c354d64497cf9309",
+                  "00b4953c634e5d2eaf5e3e7a26ff8308e917c4fb",
+                  "26addbb641d46ab9166d2f04008ad49bb5e6fd63",
+                  "b5e904c240aad31128eef64b478a295fc317d179"
+                ]
+              },
+              "lockDigest": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "1a85c55f15c449b3294f5e930d53c6dd316d4c80d3a395b84680848443fc7998",
+                  "8fd6ad965fe15db3b80dcb63edbd05941faa48adab0f8594d73d3da3ef0c8b0f",
+                  "5125dc39778971489248810b241596ad6cc13b9325d4e81aca905b3c5c48f417",
+                  "c81c83d998538f2eb1ca390155c1b02d4a4cbbb7998c705a784280d52b9a237e",
+                  null,
+                  "1193af504a42d1b29c60986036ce6d3b87f9d9afe2b1eda60a6e6f86b64f08de",
+                  "c05aee88d88b4b8622008d17e8f2d55f10f9181d107a724e926f2286e2afd25b",
+                  "969a8dd26cda281da27b9cb086c7d7edfba9dcd8f866888a42bedca1889ddd02"
+                ]
+              },
+              "builderId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "BLD-PSA13-001",
+                  null
+                ]
+              },
+              "buildType": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "finite-summary-v1",
+                  null
+                ]
+              },
+              "parameters": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "target=synthetic-summary",
+                  null
+                ]
+              },
+              "format": {
+                "type": "string",
+                "enum": [
+                  "book-summary-not-SLSA"
+                ]
+              }
+            }
+          },
+          "registry": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "location",
+              "artifactId",
+              "digest",
+              "tag",
+              "trust"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "REG-PSA13-001",
+                  "REG-PSA13-002",
+                  "REG-PSA13-003",
+                  "REG-PSA13-004",
+                  "REG-PSA13-005",
+                  "REG-PSA13-006",
+                  "REG-PSA13-007",
+                  "REG-PSA13-008"
+                ]
+              },
+              "location": {
+                "type": "string",
+                "enum": [
+                  "https://registry.psa13.example/synthetic"
+                ]
+              },
+              "artifactId": {
+                "type": "string",
+                "enum": [
+                  "OBJ-PSA13-001",
+                  "OBJ-PSA13-002",
+                  "OBJ-PSA13-003",
+                  "OBJ-PSA13-004",
+                  "OBJ-PSA13-005",
+                  "OBJ-PSA13-006",
+                  "OBJ-PSA13-007",
+                  "OBJ-PSA13-008"
+                ]
+              },
+              "digest": {
+                "type": "string",
+                "enum": [
+                  "9efdb1d2979cdb7429c6b0204e7351ac835a19498b7dac316f03503e6e687c87",
+                  "28ef2aa48879e820e3f8cb272dbde6ef7421941e91b8cacc3ae9de98869ec543",
+                  "0ba0c99132d6e945af38d032bd5dd175368bbbe90a5e486dc81833cf48c0ac2b",
+                  "9228102d16300a4ec3b9ce86327ed14b05b9ad287a94314a7ecdaac253f0a40b",
+                  "2212905502d5c258c6894da127b8daab0d9a33e41201d4d13faed328ef75ef60",
+                  "098ce0d27fb46e5c96aed75b185169c094eabe243383e5a9b71bc7c7867f8bf4",
+                  "f5950ccec365ac9bbf6bf1ea01894cf925732667df4bce3372de095f1f81f028",
+                  "1ca98a80850d87fb76d5f3d751bb343cbe72bd930cbf8147c9d4d1bb8e045ac5"
+                ]
+              },
+              "tag": {
+                "type": "string",
+                "enum": [
+                  "release-synthetic"
+                ]
+              },
+              "trust": {
+                "type": "string",
+                "enum": [
+                  "Not assessed"
+                ]
+              }
+            }
+          },
+          "promotion": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "registryId",
+              "artifactId",
+              "digest",
+              "fromEnvironment",
+              "toEnvironment",
+              "status",
+              "reviewerPrincipalId",
+              "approved"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "PROM-PSA13-001",
+                  "PROM-PSA13-002",
+                  "PROM-PSA13-003",
+                  "PROM-PSA13-004",
+                  "PROM-PSA13-005",
+                  "PROM-PSA13-006",
+                  "PROM-PSA13-007",
+                  "PROM-PSA13-008"
+                ]
+              },
+              "registryId": {
+                "type": "string",
+                "enum": [
+                  "REG-PSA13-001",
+                  "REG-PSA13-002",
+                  "REG-PSA13-003",
+                  "REG-PSA13-004",
+                  "REG-PSA13-005",
+                  "REG-PSA13-006",
+                  "REG-PSA13-007",
+                  "REG-PSA13-008"
+                ]
+              },
+              "artifactId": {
+                "type": "string",
+                "enum": [
+                  "OBJ-PSA13-001",
+                  "OBJ-PSA13-002",
+                  "OBJ-PSA13-003",
+                  "OBJ-PSA13-004",
+                  "OBJ-PSA13-005",
+                  "OBJ-PSA13-006",
+                  "OBJ-PSA13-007",
+                  "OBJ-PSA13-008"
+                ]
+              },
+              "digest": {
+                "type": "string",
+                "enum": [
+                  "9efdb1d2979cdb7429c6b0204e7351ac835a19498b7dac316f03503e6e687c87",
+                  "28ef2aa48879e820e3f8cb272dbde6ef7421941e91b8cacc3ae9de98869ec543",
+                  "0ba0c99132d6e945af38d032bd5dd175368bbbe90a5e486dc81833cf48c0ac2b",
+                  "9228102d16300a4ec3b9ce86327ed14b05b9ad287a94314a7ecdaac253f0a40b",
+                  "2212905502d5c258c6894da127b8daab0d9a33e41201d4d13faed328ef75ef60",
+                  "098ce0d27fb46e5c96aed75b185169c094eabe243383e5a9b71bc7c7867f8bf4",
+                  "f5950ccec365ac9bbf6bf1ea01894cf925732667df4bce3372de095f1f81f028",
+                  "1ca98a80850d87fb76d5f3d751bb343cbe72bd930cbf8147c9d4d1bb8e045ac5"
+                ]
+              },
+              "fromEnvironment": {
+                "type": "string",
+                "enum": [
+                  "Staging"
+                ]
+              },
+              "toEnvironment": {
+                "type": "string",
+                "enum": [
+                  "Production"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Planned-only"
+                ]
+              },
+              "reviewerPrincipalId": {
+                "type": "string",
+                "enum": [
+                  "HUM-PSA13-001"
+                ]
+              },
+              "approved": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
+            }
+          },
+          "deployment": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "promotionId",
+              "digest",
+              "status",
+              "runtimeBoundaryId"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "DPL-PSA13-001",
+                  "DPL-PSA13-002",
+                  "DPL-PSA13-003",
+                  "DPL-PSA13-004",
+                  "DPL-PSA13-005",
+                  "DPL-PSA13-006",
+                  "DPL-PSA13-007",
+                  "DPL-PSA13-008"
+                ]
+              },
+              "promotionId": {
+                "type": "string",
+                "enum": [
+                  "PROM-PSA13-001",
+                  "PROM-PSA13-002",
+                  "PROM-PSA13-003",
+                  "PROM-PSA13-004",
+                  "PROM-PSA13-005",
+                  "PROM-PSA13-006",
+                  "PROM-PSA13-007",
+                  "PROM-PSA13-008"
+                ]
+              },
+              "digest": {
+                "type": "string",
+                "enum": [
+                  "9efdb1d2979cdb7429c6b0204e7351ac835a19498b7dac316f03503e6e687c87",
+                  "28ef2aa48879e820e3f8cb272dbde6ef7421941e91b8cacc3ae9de98869ec543",
+                  "0ba0c99132d6e945af38d032bd5dd175368bbbe90a5e486dc81833cf48c0ac2b",
+                  "9228102d16300a4ec3b9ce86327ed14b05b9ad287a94314a7ecdaac253f0a40b",
+                  "2212905502d5c258c6894da127b8daab0d9a33e41201d4d13faed328ef75ef60",
+                  "098ce0d27fb46e5c96aed75b185169c094eabe243383e5a9b71bc7c7867f8bf4",
+                  "f5950ccec365ac9bbf6bf1ea01894cf925732667df4bce3372de095f1f81f028",
+                  "1ca98a80850d87fb76d5f3d751bb343cbe72bd930cbf8147c9d4d1bb8e045ac5"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Planned-only"
+                ]
+              },
+              "runtimeBoundaryId": {
+                "type": "string",
+                "enum": [
+                  "RB-PSA13-001"
+                ]
+              }
+            }
+          },
+          "runtime": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "deploymentId",
+              "digest",
+              "controlPlaneId",
+              "dataPlaneId",
+              "boundaryId",
+              "status"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "RUN-PSA13-001",
+                  "RUN-PSA13-002",
+                  "RUN-PSA13-003",
+                  "RUN-PSA13-004",
+                  "RUN-PSA13-005",
+                  "RUN-PSA13-006",
+                  "RUN-PSA13-007",
+                  "RUN-PSA13-008"
+                ]
+              },
+              "deploymentId": {
+                "type": "string",
+                "enum": [
+                  "DPL-PSA13-001",
+                  "DPL-PSA13-002",
+                  "DPL-PSA13-003",
+                  "DPL-PSA13-004",
+                  "DPL-PSA13-005",
+                  "DPL-PSA13-006",
+                  "DPL-PSA13-007",
+                  "DPL-PSA13-008"
+                ]
+              },
+              "digest": {
+                "type": "string",
+                "enum": [
+                  "9efdb1d2979cdb7429c6b0204e7351ac835a19498b7dac316f03503e6e687c87",
+                  "28ef2aa48879e820e3f8cb272dbde6ef7421941e91b8cacc3ae9de98869ec543",
+                  "0ba0c99132d6e945af38d032bd5dd175368bbbe90a5e486dc81833cf48c0ac2b",
+                  "9228102d16300a4ec3b9ce86327ed14b05b9ad287a94314a7ecdaac253f0a40b",
+                  "2212905502d5c258c6894da127b8daab0d9a33e41201d4d13faed328ef75ef60",
+                  "098ce0d27fb46e5c96aed75b185169c094eabe243383e5a9b71bc7c7867f8bf4",
+                  "f5950ccec365ac9bbf6bf1ea01894cf925732667df4bce3372de095f1f81f028",
+                  "f2b79473fd5ea4a0f7b538e68b1210041c72feb664ae01fcfef0efc1619da902"
+                ]
+              },
+              "controlPlaneId": {
+                "type": "string",
+                "enum": [
+                  "CP-PSA13-001"
+                ]
+              },
+              "dataPlaneId": {
+                "type": "string",
+                "enum": [
+                  "DP-PSA13-001"
+                ]
+              },
+              "boundaryId": {
+                "type": "string",
+                "enum": [
+                  "RB-PSA13-001"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Authored-snapshot-not-deployed"
+                ]
+              }
+            }
+          },
+          "evidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "chainId",
+              "recordRevision",
+              "expectationId",
+              "sourceId",
+              "buildLogId",
+              "artifactId",
+              "runtimeId",
+              "recordedAt",
+              "basis",
+              "synthetic",
+              "expectedState",
+              "reason"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "EVD-PSA13-001",
+                  "EVD-PSA13-002",
+                  "EVD-PSA13-003",
+                  "EVD-PSA13-004",
+                  "EVD-PSA13-005",
+                  "EVD-PSA13-006",
+                  "EVD-PSA13-007",
+                  "EVD-PSA13-008"
+                ]
+              },
+              "chainId": {
+                "type": "string",
+                "enum": [
+                  "CHN-PSA13-001",
+                  "CHN-PSA13-002",
+                  "CHN-PSA13-003",
+                  "CHN-PSA13-004",
+                  "CHN-PSA13-005",
+                  "CHN-PSA13-006",
+                  "CHN-PSA13-007",
+                  "CHN-PSA13-008"
+                ]
+              },
+              "recordRevision": {
+                "type": "string",
+                "enum": [
+                  "PSA13-REV-001"
+                ]
+              },
+              "expectationId": {
+                "type": "string",
+                "enum": [
+                  "EXP-PSA13-001",
+                  "EXP-PSA13-002",
+                  "EXP-PSA13-003",
+                  "EXP-PSA13-004",
+                  "EXP-PSA13-005",
+                  "EXP-PSA13-006",
+                  "EXP-PSA13-007",
+                  "EXP-PSA13-008"
+                ]
+              },
+              "sourceId": {
+                "type": "string",
+                "enum": [
+                  "SRC-PSA13-001",
+                  "SRC-PSA13-002",
+                  "SRC-PSA13-003",
+                  "SRC-PSA13-004",
+                  "SRC-PSA13-005",
+                  "SRC-PSA13-006",
+                  "SRC-PSA13-007",
+                  "SRC-PSA13-008"
+                ]
+              },
+              "buildLogId": {
+                "type": "string",
+                "enum": [
+                  "LOG-PSA13-001",
+                  "LOG-PSA13-002",
+                  "LOG-PSA13-003",
+                  "LOG-PSA13-004",
+                  "LOG-PSA13-005",
+                  "LOG-PSA13-006",
+                  "LOG-PSA13-007",
+                  "LOG-PSA13-008"
+                ]
+              },
+              "artifactId": {
+                "type": "string",
+                "enum": [
+                  "OBJ-PSA13-001",
+                  "OBJ-PSA13-002",
+                  "OBJ-PSA13-003",
+                  "OBJ-PSA13-004",
+                  "OBJ-PSA13-005",
+                  "OBJ-PSA13-006",
+                  "OBJ-PSA13-007",
+                  "OBJ-PSA13-008"
+                ]
+              },
+              "runtimeId": {
+                "type": "string",
+                "enum": [
+                  "RUN-PSA13-001",
+                  "RUN-PSA13-002",
+                  "RUN-PSA13-003",
+                  "RUN-PSA13-004",
+                  "RUN-PSA13-005",
+                  "RUN-PSA13-006",
+                  "RUN-PSA13-007",
+                  "RUN-PSA13-008"
+                ]
+              },
+              "recordedAt": {
+                "type": "string",
+                "enum": [
+                  "2026-09-15T08:00:00Z"
+                ]
+              },
+              "basis": {
+                "type": "string",
+                "enum": [
+                  "Declared summary",
+                  "Observed summary",
+                  "Compared summary"
+                ]
+              },
+              "synthetic": {
+                "type": "boolean",
+                "enum": [
+                  true
+                ]
+              },
+              "expectedState": {
+                "type": "string",
+                "enum": [
+                  "Declared",
+                  "Observed",
+                  "Verified",
+                  "Rejected",
+                  "Unknown"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "enum": [
+                  "all-supplied-bindings-match",
+                  "mutable-source-only",
+                  "unversioned-action",
+                  "runner-permission-mismatch",
+                  "provenance-missing",
+                  "declaration-only",
+                  "observation-only",
+                  "runtime-digest-mismatch"
+                ]
+              }
+            }
+          },
+          "finding": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "chainId",
+              "evidenceId",
+              "threatId",
+              "signalFlowId",
+              "status",
+              "gap",
+              "alternative",
+              "confidence",
+              "treatment",
+              "owner",
+              "dueAt",
+              "treatmentId",
+              "validationQuestion",
+              "telemetryPlanId",
+              "telemetryStatus"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "FND-PSA13-001",
+                  "FND-PSA13-002",
+                  "FND-PSA13-003",
+                  "FND-PSA13-004",
+                  "FND-PSA13-005",
+                  "FND-PSA13-006",
+                  "FND-PSA13-007",
+                  "FND-PSA13-008"
+                ]
+              },
+              "chainId": {
+                "type": "string",
+                "enum": [
+                  "CHN-PSA13-001",
+                  "CHN-PSA13-002",
+                  "CHN-PSA13-003",
+                  "CHN-PSA13-004",
+                  "CHN-PSA13-005",
+                  "CHN-PSA13-006",
+                  "CHN-PSA13-007",
+                  "CHN-PSA13-008"
+                ]
+              },
+              "evidenceId": {
+                "type": "string",
+                "enum": [
+                  "EVD-PSA13-001",
+                  "EVD-PSA13-002",
+                  "EVD-PSA13-003",
+                  "EVD-PSA13-004",
+                  "EVD-PSA13-005",
+                  "EVD-PSA13-006",
+                  "EVD-PSA13-007",
+                  "EVD-PSA13-008"
+                ]
+              },
+              "threatId": {
+                "type": "string",
+                "enum": [
+                  "TH-2026-004"
+                ]
+              },
+              "signalFlowId": {
+                "type": "string",
+                "enum": [
+                  "SF-2026-006"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Verified",
+                  "Rejected",
+                  "Unknown",
+                  "Declared",
+                  "Observed"
+                ]
+              },
+              "gap": {
+                "type": "string",
+                "enum": [
+                  "実Build、署名、Runtimeの観測と新たな実施許可はない。"
+                ]
+              },
+              "alternative": {
+                "type": "string",
+                "enum": [
+                  "正常な変更、記録遅延、資料不足を比較する。"
+                ]
+              },
+              "confidence": {
+                "type": "string",
+                "enum": [
+                  "Medium",
+                  "Low"
+                ]
+              },
+              "treatment": {
+                "type": "string",
+                "enum": [
+                  "record-review-question"
+                ]
+              },
+              "owner": {
+                "type": "string",
+                "enum": [
+                  "SYNTH-PLATFORM-OWNER"
+                ]
+              },
+              "dueAt": {
+                "type": "string",
+                "enum": [
+                  "2026-09-22T00:00:00Z"
+                ]
+              },
+              "treatmentId": {
+                "type": "string",
+                "enum": [
+                  "TRT-PSA13-001",
+                  "TRT-PSA13-002",
+                  "TRT-PSA13-003",
+                  "TRT-PSA13-004",
+                  "TRT-PSA13-005",
+                  "TRT-PSA13-006",
+                  "TRT-PSA13-007",
+                  "TRT-PSA13-008"
+                ]
+              },
+              "validationQuestion": {
+                "type": "string",
+                "enum": [
+                  "このChainの必要条件のどれを、同じ版と対象の資料で確認または反証できるか。"
+                ]
+              },
+              "telemetryPlanId": {
+                "type": "string",
+                "enum": [
+                  "TEL-PSA13-001",
+                  "TEL-PSA13-002",
+                  "TEL-PSA13-003",
+                  "TEL-PSA13-004",
+                  "TEL-PSA13-005",
+                  "TEL-PSA13-006",
+                  "TEL-PSA13-007",
+                  "TEL-PSA13-008"
+                ]
+              },
+              "telemetryStatus": {
+                "type": "string",
+                "enum": [
+                  "planned-not-tested"
+                ]
+              }
+            }
+          },
+          "decision": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "findingId",
+              "reassessmentId",
+              "disposition",
+              "executionAuthorized",
+              "trigger",
+              "treatmentId"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "DEC-PSA13-001",
+                  "DEC-PSA13-002",
+                  "DEC-PSA13-003",
+                  "DEC-PSA13-004",
+                  "DEC-PSA13-005",
+                  "DEC-PSA13-006",
+                  "DEC-PSA13-007",
+                  "DEC-PSA13-008"
+                ]
+              },
+              "findingId": {
+                "type": "string",
+                "enum": [
+                  "FND-PSA13-001",
+                  "FND-PSA13-002",
+                  "FND-PSA13-003",
+                  "FND-PSA13-004",
+                  "FND-PSA13-005",
+                  "FND-PSA13-006",
+                  "FND-PSA13-007",
+                  "FND-PSA13-008"
+                ]
+              },
+              "reassessmentId": {
+                "type": "string",
+                "enum": [
+                  "REA-PSA13-001",
+                  "REA-PSA13-002",
+                  "REA-PSA13-003",
+                  "REA-PSA13-004",
+                  "REA-PSA13-005",
+                  "REA-PSA13-006",
+                  "REA-PSA13-007",
+                  "REA-PSA13-008"
+                ]
+              },
+              "disposition": {
+                "type": "string",
+                "enum": [
+                  "Record-only"
+                ]
+              },
+              "executionAuthorized": {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              },
+              "trigger": {
+                "type": "string",
+                "enum": [
+                  "Source、Builder、Digest、権限、観測資料の変更時に再評価する。"
+                ]
+              },
+              "treatmentId": {
+                "type": "string",
+                "enum": [
+                  "TRT-PSA13-001",
+                  "TRT-PSA13-002",
+                  "TRT-PSA13-003",
+                  "TRT-PSA13-004",
+                  "TRT-PSA13-005",
+                  "TRT-PSA13-006",
+                  "TRT-PSA13-007",
+                  "TRT-PSA13-008"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "uniqueItems": true,
+      "minItems": 8
+    },
+    "handoffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "chapter",
+          "assessmentId",
+          "input",
+          "state",
+          "owner",
+          "parentStateChanged"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "HOF-PSA13-014",
+              "HOF-PSA13-016",
+              "HOF-PSA13-027"
+            ]
+          },
+          "chapter": {
+            "type": "integer",
+            "enum": [
+              14,
+              16,
+              27
+            ]
+          },
+          "assessmentId": {
+            "type": "string",
+            "enum": [
+              "PSA-2026-013"
+            ]
+          },
+          "input": {
+            "type": "string",
+            "enum": [
+              "Validation question / Build-Deploy correlation / supply-chain boundary"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "planned-not-delivered"
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "enum": [
+              "SYNTH-PLATFORM-OWNER"
+            ]
+          },
+          "parentStateChanged": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          }
+        }
+      },
+      "uniqueItems": true,
+      "minItems": 3
+    }
+  }
+}
