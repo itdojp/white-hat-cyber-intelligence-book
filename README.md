@@ -63,7 +63,7 @@
 
 ```bash
 git clone https://github.com/itdojp/book-formatter.git ../book-formatter
-git -C ../book-formatter checkout cf3f75ee9b1e200e4b6cece23501cb9c83170ec7
+git -C ../book-formatter checkout 83a322da5013e74e9dbf1b0afbee85b8617ffce5
 npm ci --prefix ../book-formatter --ignore-scripts
 
 npm ci

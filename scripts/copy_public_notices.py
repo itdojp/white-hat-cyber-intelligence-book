@@ -16,7 +16,7 @@ REQUIRED_MARKERS = (
     "Copyright (c) ITDO Inc.",
     "Permission is hereby granted, free of charge",
     "THE SOFTWARE IS PROVIDED \"AS IS\"",
-    "cf3f75ee9b1e200e4b6cece23501cb9c83170ec7",
+    "83a322da5013e74e9dbf1b0afbee85b8617ffce5",
 )
 
 

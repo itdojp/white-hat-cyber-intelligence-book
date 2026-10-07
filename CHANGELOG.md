@@ -64,6 +64,8 @@
 
 ### Changed
 
+- formatterを通常マージ済み `83a322da5013e74e9dbf1b0afbee85b8617ffce5` へ固定し、依存修復と共有検索JSのDOM-text修正（shared 3.2.4）を取り込む。公開部品のblob・workflow・第三者通知・章fixtureのpin checksumを同期し、本文・合成教材・Source・Policy/Projectionの意味は変更しない（Issue #188 / #184）。
+
 - `SRC-ICD203-001`へ公式説明が示す2023年6月の改訂情報を補完。未確認の署名日を推測せず、第1・25章の引用用途と旧監査基準を保持する。[限定Source Review](references/icd203-source-review-2026-09-26.md)に確認方法・精度・読者影響を記録した（Issue #171）。
 
 - 第12章のSource baselineにNIST SP 800-63-4 / 63A-4 / 63B-4 / 63C-4（2025-07-31 Final）とRFC9700 / BCP240を追加し、既存SP800-207Aの章対応を拡張。読者は自然人のAssuranceをWorkload適合へ一般化せず、MFAと認可、IssuerとAudienceを別に判断する。採用節と限界は[第12章Source Review Note](references/ch12-source-review-2026-09-15.md)で確認できる。既存Sourceの版・親章の意味とRegistry一括監査日は保持する。
