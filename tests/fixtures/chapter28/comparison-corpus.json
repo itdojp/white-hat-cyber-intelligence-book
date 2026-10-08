@@ -1,0 +1,1300 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "finite-ai28-source-claim-human-comparisons-not-model-evaluation",
+  "families": [
+    "complete-grounding",
+    "missing-source",
+    "citation-content-versus-existence",
+    "invented-citation",
+    "composite-source-mixing",
+    "source-preservation",
+    "cutoff-expiry-ordering",
+    "common-origin-reports",
+    "contamination-authority",
+    "confidence-attribution-alternatives",
+    "partial-only-rewrite",
+    "five-status-distinction",
+    "version-hash-reproduction",
+    "method-only-unreceived-independence",
+    "audit-reassessment",
+    "capability-secret-PII-shared-policy"
+  ],
+  "fixtures": [
+    {
+      "family": "complete-grounding",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-01-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "complete-grounding",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-01-REJECT",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            0,
+            "status"
+          ],
+          "value": "Unverified"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "Claim status/reason"
+    },
+    {
+      "family": "complete-grounding",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-01-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            0,
+            "parts",
+            0,
+            "sourceText"
+          ],
+          "value": "a different statement"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "passage existence/content/support"
+    },
+    {
+      "family": "missing-source",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-02-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "missing-source",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-02-REJECT",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            0,
+            "citations"
+          ],
+          "value": []
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "independent origins not report count"
+    },
+    {
+      "family": "missing-source",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-02-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            0,
+            "citations"
+          ],
+          "value": [
+            "SN-ABSENT"
+          ]
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "independent origins not report count"
+    },
+    {
+      "family": "citation-content-versus-existence",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-03-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "citation-content-versus-existence",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-03-REJECT",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            0,
+            "parts",
+            0,
+            "outcome"
+          ],
+          "value": "unknown"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "passage existence/content/support"
+    },
+    {
+      "family": "invented-citation",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-04-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "invented-citation",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-04-REJECT",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            3,
+            "status"
+          ],
+          "value": "Supported"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "Claim status/reason"
+    },
+    {
+      "family": "invented-citation",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-04-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "approvedSources",
+            0,
+            "reference"
+          ],
+          "value": "https://github.com/"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "network.host_or_address"
+    },
+    {
+      "family": "composite-source-mixing",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-05-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "composite-source-mixing",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-05-REJECT",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            1,
+            "parts",
+            1,
+            "sourceIds"
+          ],
+          "value": [
+            "SN-2026-025-001"
+          ]
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "passage existence/content/support"
+    },
+    {
+      "family": "composite-source-mixing",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-05-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            1,
+            "grounding"
+          ],
+          "value": "Direct"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "composite part coverage"
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-06-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-06-REJECT",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            5,
+            "status"
+          ],
+          "value": "Supported"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "Claim status/reason"
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-06-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "input",
+            "sourceIds",
+            0
+          ],
+          "value": "AI28-OUTPUT"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "input approved Source binding"
+    },
+    {
+      "family": "cutoff-expiry-ordering",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-07-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "cutoff-expiry-ordering",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-07-REJECT",
+      "changes": [
+        {
+          "path": [
+            "approvedSources",
+            0,
+            "validUntil"
+          ],
+          "value": "2026-07-29T10:00:00Z"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "approved Source cutoff/validity"
+    },
+    {
+      "family": "cutoff-expiry-ordering",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-07-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "approvedSources",
+            0,
+            "collectedAt"
+          ],
+          "value": "2026-07-29T09:00:01Z"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "parent Source identity"
+    },
+    {
+      "family": "cutoff-expiry-ordering",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-07-NEARMISS-2",
+      "changes": [
+        {
+          "path": [
+            "humanDecisions",
+            0,
+            "validUntil"
+          ],
+          "value": "2026-07-29T10:00:00Z"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "verification/human review timeline"
+    },
+    {
+      "family": "cutoff-expiry-ordering",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-07-NEARMISS-3",
+      "changes": [
+        {
+          "path": [
+            "humanDecisions",
+            0,
+            "reviewedAt"
+          ],
+          "value": "2026-07-29T09:59:59Z"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "verification/human review timeline"
+    },
+    {
+      "family": "common-origin-reports",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-08-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "common-origin-reports",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-08-REJECT",
+      "changes": [
+        {
+          "path": [
+            "verifications",
+            2,
+            "independentOriginCount"
+          ],
+          "value": 3
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "independent origins not report count"
+    },
+    {
+      "family": "common-origin-reports",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-08-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "approvedSources",
+            4,
+            "independenceGroupId"
+          ],
+          "value": "IG-INVENTED"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "parent Source identity"
+    },
+    {
+      "family": "contamination-authority",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-09-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "contamination-authority",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-09-REJECT",
+      "changes": [
+        {
+          "path": [
+            "contaminationSamples",
+            0,
+            "authorityGranted"
+          ],
+          "value": true
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "contamination-authority",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-09-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "contaminationSamples",
+            1,
+            "adopted"
+          ],
+          "value": true
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "contamination-authority",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-09-NEARMISS-2",
+      "changes": [
+        {
+          "path": [
+            "contaminationSamples",
+            2,
+            "executed"
+          ],
+          "value": true
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "contamination-authority",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-09-NEARMISS-3",
+      "changes": [
+        {
+          "path": [
+            "contaminationSamples",
+            0,
+            "conclusion"
+          ],
+          "value": "all-inputs-safe"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "contamination-authority",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-09-NEARMISS-4",
+      "changes": [
+        {
+          "path": [
+            "input",
+            "contaminationSampleIds",
+            0
+          ],
+          "value": "ABSENT"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "input contamination inventory"
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-10-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-10-REJECT",
+      "changes": [
+        {
+          "path": [
+            "humanDecisions",
+            0,
+            "analyticConfidence"
+          ],
+          "value": "高"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "human confidence/attribution boundary"
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-10-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "humanDecisions",
+            0,
+            "modelConfidenceCopied"
+          ],
+          "value": true
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-10-NEARMISS-2",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            6,
+            "status"
+          ],
+          "value": "Supported"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "Claim status/reason"
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-10-NEARMISS-3",
+      "changes": [
+        {
+          "path": [
+            "humanDecisions",
+            0,
+            "alternativeIds",
+            0
+          ],
+          "value": "ABSENT"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "alternatives/gaps preserved"
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-10-NEARMISS-4",
+      "changes": [
+        {
+          "path": [
+            "humanDecisions",
+            0,
+            "gapIds",
+            0
+          ],
+          "value": "ABSENT"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "alternatives/gaps preserved"
+    },
+    {
+      "family": "partial-only-rewrite",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-11-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "partial-only-rewrite",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-11-REJECT",
+      "changes": [
+        {
+          "path": [
+            "humanDecisions",
+            1,
+            "acceptedWording"
+          ],
+          "value": "quarantine mail was present; successful follow-on access is established"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "partial-only limited adoption"
+    },
+    {
+      "family": "partial-only-rewrite",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-11-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "humanDecisions",
+            1,
+            "disposition"
+          ],
+          "value": "Accept"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "partial-only limited adoption"
+    },
+    {
+      "family": "five-status-distinction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-12-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "five-status-distinction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-12-REJECT",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            2,
+            "status"
+          ],
+          "value": "Rejected"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "Claim status/reason"
+    },
+    {
+      "family": "five-status-distinction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-12-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            3,
+            "status"
+          ],
+          "value": "Contradicted"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "Claim status/reason"
+    },
+    {
+      "family": "five-status-distinction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-12-NEARMISS-2",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            4,
+            "status"
+          ],
+          "value": "Supported"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "Claim status/reason"
+    },
+    {
+      "family": "version-hash-reproduction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-13-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "version-hash-reproduction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-13-REJECT",
+      "changes": [
+        {
+          "path": [
+            "model",
+            "version"
+          ],
+          "value": "author-descriptor-2"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "verification target/version/hash"
+    },
+    {
+      "family": "version-hash-reproduction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-13-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "instruction",
+            "sha256"
+          ],
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "Instruction/Input hash"
+    },
+    {
+      "family": "version-hash-reproduction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-13-NEARMISS-2",
+      "changes": [
+        {
+          "path": [
+            "output",
+            "version"
+          ],
+          "value": "2.0.0"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "verification target/version/hash"
+    },
+    {
+      "family": "version-hash-reproduction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-13-NEARMISS-3",
+      "changes": [
+        {
+          "path": [
+            "verifications",
+            0,
+            "target",
+            "claimId"
+          ],
+          "value": "AI28-CLAIM-2"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "verification target/version/hash"
+    },
+    {
+      "family": "version-hash-reproduction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-13-NEARMISS-4",
+      "changes": [
+        {
+          "path": [
+            "humanDecisions",
+            0,
+            "target",
+            "claimId"
+          ],
+          "value": "AI28-CLAIM-2"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "human Claim/Verification binding"
+    },
+    {
+      "family": "version-hash-reproduction",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-13-NEARMISS-5",
+      "changes": [
+        {
+          "path": [
+            "reproduction",
+            "targets",
+            0,
+            "outputVersion"
+          ],
+          "value": "2.0.0"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "reproduction target/limits"
+    },
+    {
+      "family": "method-only-unreceived-independence",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-14-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "method-only-unreceived-independence",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-14-REJECT",
+      "changes": [
+        {
+          "path": [
+            "methodReferences",
+            0,
+            "caseId"
+          ],
+          "value": "CASE-2026-025"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "method-only/non-inheritance"
+    },
+    {
+      "family": "method-only-unreceived-independence",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-14-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "methodReferences",
+            1,
+            "evidenceInherited"
+          ],
+          "value": true
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "method-only-unreceived-independence",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-14-NEARMISS-2",
+      "changes": [
+        {
+          "path": [
+            "handoff",
+            "unreceivedCTIProductAdopted"
+          ],
+          "value": true
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "method-only-unreceived-independence",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-14-NEARMISS-3",
+      "changes": [
+        {
+          "path": [
+            "handoff",
+            "receipt"
+          ],
+          "value": "received"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "audit-reassessment",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-15-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "audit-reassessment",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-15-REJECT",
+      "changes": [
+        {
+          "path": [
+            "audit",
+            0,
+            "target",
+            "claimId"
+          ],
+          "value": "AI28-CLAIM-2"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "audit binding/retention"
+    },
+    {
+      "family": "audit-reassessment",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-15-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "humanDecisions",
+            0,
+            "reassessmentId"
+          ],
+          "value": "ABSENT"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "human reassessment binding"
+    },
+    {
+      "family": "audit-reassessment",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-15-NEARMISS-2",
+      "changes": [
+        {
+          "path": [
+            "reassessment",
+            "ownerId"
+          ],
+          "value": "ABSENT"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "reassessment reachability/owner/triggers"
+    },
+    {
+      "family": "audit-reassessment",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-15-NEARMISS-3",
+      "changes": [
+        {
+          "path": [
+            "reassessment",
+            "triggers",
+            0
+          ],
+          "value": "never-recheck"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "reassessment reachability/owner/triggers"
+    },
+    {
+      "family": "audit-reassessment",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-15-NEARMISS-4",
+      "changes": [
+        {
+          "path": [
+            "reassessment",
+            "claimIds",
+            0
+          ],
+          "value": "ABSENT"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "reassessment reachability/owner/triggers"
+    },
+    {
+      "family": "audit-reassessment",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-15-NEARMISS-5",
+      "changes": [
+        {
+          "path": [
+            "reassessment",
+            "dueAt"
+          ],
+          "value": "2026-07-29T10:00:00Z"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "reassessment reachability/owner/triggers"
+    },
+    {
+      "family": "capability-secret-PII-shared-policy",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-16-SAFE",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "capability-secret-PII-shared-policy",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-16-REJECT",
+      "changes": [
+        {
+          "path": [
+            "executionAuthorized"
+          ],
+          "value": true
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "capability-secret-PII-shared-policy",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-16-NEARMISS-1",
+      "changes": [
+        {
+          "path": [
+            "realSecretUsed"
+          ],
+          "value": true
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "capability-secret-PII-shared-policy",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-16-NEARMISS-2",
+      "changes": [
+        {
+          "path": [
+            "realPIIUsed"
+          ],
+          "value": true
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "capability-secret-PII-shared-policy",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-16-NEARMISS-3",
+      "changes": [
+        {
+          "path": [
+            "model",
+            "networkEnabled"
+          ],
+          "value": true
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "const"
+    },
+    {
+      "family": "capability-secret-PII-shared-policy",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-16-NEARMISS-4",
+      "changes": [
+        {
+          "path": [
+            "task",
+            "purpose"
+          ],
+          "value": "第三者の本番システムへ接続する。"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "target.real_or_external"
+    },
+    {
+      "family": "capability-secret-PII-shared-policy",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-16-NEARMISS-5",
+      "changes": [
+        {
+          "path": [
+            "task",
+            "purpose"
+          ],
+          "value": "https://github.com/"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "network.host_or_address"
+    },
+    {
+      "family": "capability-secret-PII-shared-policy",
+      "owner": "Chapter28 Layer A",
+      "source": "Issue50/ART32 finite authored records",
+      "snapshotRefreshed": true,
+      "notes": "Not a general model, prompt, injection or natural-language classifier",
+      "id": "CH28-CMP-16-NEARMISS-6",
+      "changes": [
+        {
+          "path": [
+            "passages",
+            0,
+            "parentDocument"
+          ],
+          "value": "https://github.com/"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "network.host_or_address"
+    }
+  ]
+}

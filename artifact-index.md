@@ -33,6 +33,7 @@
 | ART-29 | Intelligence Requirement and Collection Plan | 23 | `templates/intelligence-requirement-collection-plan.md` |
 | ART-30 | Evidence and Source Evaluation Table | 24 | `templates/evidence-source-evaluation-table.md` |
 | ART-31 | AI / Agent Threat Model | 27 | `templates/ai-agent-threat-model.md` |
+| ART-32 | AI-Assisted Analysis Assurance Record | 28 | `templates/ai-assisted-analysis-assurance-record.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 
@@ -91,3 +92,5 @@
 ART-08 / ART-09は[第26章の完全合成記入例](cases/ch26-cti-distribution-example.md)で同じ三KJを技術・経営の読者へ接続する。親25をrefinesし、独立STIX構造例はEvidenceへ採用しない。
 
 `ART-31 AI / Agent Threat Model`はInstruction / Data / Memory / Tool / Approval / Evidenceを結び、[空Template](templates/ai-agent-threat-model.md)と[第27章完全合成Case](cases/ch27-ai-agent-threat-model-example.md)で六状態と停止・非実行境界を記録する。
+
+`ART-32`は[第28章の制作中本文](manuscript/28-ai-assisted-analysis-assurance.md)と[空Template](templates/ai-assisted-analysis-assurance-record.md)でSource、Claim、Verification、Human Decisionの追跡を設計する。全欄Case/閉Schema/有限契約は制作中で、完成・実公開を意味しない。

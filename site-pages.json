@@ -741,6 +741,34 @@
       "title": "第27章 Source Review — 2026-09-29"
     },
     {
+      "source": "manuscript/28-ai-assisted-analysis-assurance.md",
+      "destination": "chapters/chapter-28/index.md",
+      "section": "chapters",
+      "order": 213,
+      "title": "第28章 AIを使って分析するときの検証と汚染対策"
+    },
+    {
+      "source": "templates/ai-assisted-analysis-assurance-record.md",
+      "destination": "templates/ai-assisted-analysis-assurance-record/index.md",
+      "section": "additional",
+      "order": 334,
+      "title": "ART-32 AI-Assisted Analysis Assurance Record"
+    },
+    {
+      "source": "references/ch28-source-review-2026-09-30.md",
+      "destination": "references/chapter-28-source-review/index.md",
+      "section": "additional",
+      "order": 336,
+      "title": "第28章 Source Review — 2026-09-30"
+    },
+    {
+      "source": "cases/ch28-ai-assisted-analysis-assurance-example.md",
+      "destination": "cases/chapter-28-ai-assisted-analysis-assurance/index.md",
+      "section": "additional",
+      "order": 335,
+      "title": "第28章 合成AI支援分析の保証記録"
+    },
+    {
       "source": "cases/first-artifact-walkthrough.md",
       "destination": "cases/first-artifact-walkthrough/index.md",
       "section": "additional",
@@ -939,6 +967,14 @@
     {
       "source": "schemas/ch27-ai-agent-threat-model.schema.json",
       "destination": "downloads/ch27-ai-agent-threat-model.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch28-ai-assisted-analysis-assurance.json",
+      "destination": "downloads/ch28-ai-assisted-analysis-assurance.json"
+    },
+    {
+      "source": "schemas/ch28-ai-assisted-analysis-assurance.schema.json",
+      "destination": "downloads/ch28-ai-assisted-analysis-assurance.schema.json"
     }
   ]
 }
