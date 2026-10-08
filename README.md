@@ -9,7 +9,9 @@
 - Phase 0 Runbook: <https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/1>
 - Bootstrap PR: <https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/2>
 - Parent proposal: <https://github.com/itdojp/it-engineer-knowledge-architecture/issues/280>
-- Status: `0.1.0` editorial and publication foundation / Phase 0 in progress
+- Status: `0.1.0` 初版執筆中。出版基盤と代表章の初期Gateは完了していますが、全30章・付録の完成版ではありません。
+- Completion Roadmap: <https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/17>
+- Whole-book review: [2026-09-06の全体レビューと改善計画](reviews/2026-09-06-whole-book-review.md)
 
 ## 中心となるループ
 
