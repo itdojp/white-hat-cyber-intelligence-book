@@ -2,11 +2,13 @@
 import copy
 import json
 from pathlib import Path
+import subprocess
 import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-# Match the CLI entrypoint: the shared site module imports its sibling assets.
+# Resolve the package for direct execution, and the CLI's sibling imports.
+sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 from scripts.check_chapter02_contract import chapter02_source_metadata_errors  # noqa: E402
 
@@ -14,6 +16,15 @@ SOURCE_ID = "SRC-IPA-VDP-001"
 
 
 class SourceEditionTests(unittest.TestCase):
+    def test_direct_entrypoint_without_cwd_or_environment_import_paths(self):
+        result = subprocess.run(
+            [sys.executable, "-I", "-B", str(Path(__file__).resolve()),
+             "SourceEditionTests.test_audited_current_edition_and_retained_law_pass"],
+            cwd=ROOT / "tests", capture_output=True, text=True, timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("Ran 1 test", result.stderr)
+
     def setUp(self):
         sources = json.loads((ROOT / "references/sources.json").read_text(encoding="utf-8"))
         self.entries = {s["id"]: s for s in sources["sources"]}
