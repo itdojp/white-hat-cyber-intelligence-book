@@ -56,7 +56,7 @@
 
 前提:
 
-- Node.js 24
+- Node.js 24 / npm 8.3.0以上
 - Python 3.11以上
 - Ruby 3.3 / Bundler
 - Git
@@ -65,7 +65,7 @@
 
 ```bash
 git clone https://github.com/itdojp/book-formatter.git ../book-formatter
-git -C ../book-formatter checkout 83a322da5013e74e9dbf1b0afbee85b8617ffce5
+git -C ../book-formatter checkout c4dcd01e8450112f95002a454657d409cb3fa2f1
 npm ci --prefix ../book-formatter --ignore-scripts
 
 npm ci
@@ -73,6 +73,8 @@ bundle install
 BOOK_FORMATTER_DIR=../book-formatter npm test
 BOOK_FORMATTER_DIR=../book-formatter npm run check:book-qa
 ```
+
+本書のQAはPRH/textlintのAPIを使用します。依存内部の`js-yaml` CLIは固定formatterの[支援範囲](https://github.com/itdojp/book-formatter/blob/c4dcd01e8450112f95002a454657d409cb3fa2f1/docs/dependency-audit-20261008.md)に含まれません。
 
 `BOOK_FORMATTER_DIR`を省略した場合、生成スクリプトは固定commitの共通部品を取得し、Git blob SHAを検証します。
 

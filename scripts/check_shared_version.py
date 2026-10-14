@@ -10,16 +10,16 @@ REVISION_PATH = ROOT / ".book-formatter" / "revision.json"
 
 EXPECTED = {
     "repository": "itdojp/book-formatter",
-    "commit": "83a322da5013e74e9dbf1b0afbee85b8617ffce5",
-    "shared_version": "3.2.4",
-    "shared_version_blob": "01f1115d292e4f5d5fa5705da267653d7456a71c",
+    "commit": "c4dcd01e8450112f95002a454657d409cb3fa2f1",
+    "shared_version": "3.3.0",
+    "shared_version_blob": "6e74ea23d3d7e2c146791dac7bfb4c25a7b00ef7",
     "schema_blob": "87dcb44b0d4b543ba43ae3a8ebc27d2f3cfda3cd",
 }
 
 EXPECTED_COMPONENTS = {
     "bookLayout": (
         "shared/layouts/book.html",
-        "c9e31a0e6bfb594310da04f74ea96f57b32e3121",
+        "d25459b4785c404405dcde8c0e414404a3a2f17a",
         "_layouts/book.html",
     ),
     "defaultLayout": (
@@ -39,7 +39,7 @@ EXPECTED_COMPONENTS = {
     ),
     "mainCss": (
         "shared/assets/css/main.css",
-        "130ff02259a726d4f3f35e943188a894288e7ea6",
+        "f1ce8f5ea649ad7e358465bd1408df76daace8ae",
         "assets/css/main.css",
     ),
     "mobileResponsiveCss": (
@@ -59,7 +59,7 @@ EXPECTED_COMPONENTS = {
     ),
     "searchJs": (
         "shared/assets/js/search.js",
-        "4db7bcc75af8c5d4e029b717f2a967fef559d1fb",
+        "30dafcf5966cd71318981fec057c1fbf7ea1113c",
         "assets/js/search.js",
     ),
     "themeJs": (
