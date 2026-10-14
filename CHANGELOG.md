@@ -64,6 +64,8 @@
 
 ### Changed
 
+- formatterを通常マージ済み `c4dcd01e8450112f95002a454657d409cb3fa2f1` へ固定し、source-map-js・sprintf-js・Handlebarsの依存修復と共有ヘッダー・検索の更新（shared 3.3.0）を採用する。狭幅でのヘッダー折返し・本文位置、短い検索語と再フォーカス時の結果表示を同期する。書籍QA用途の支援範囲を維持し、公開部品blob・workflow・第三者通知・章fixtureのpin checksumを更新する（Issue #193）。
+
 - formatterを通常マージ済み `83a322da5013e74e9dbf1b0afbee85b8617ffce5` へ固定し、依存修復と共有検索JSのDOM-text修正（shared 3.2.4）を取り込む。公開部品のblob・workflow・第三者通知・章fixtureのpin checksumを同期し、本文・合成教材・Source・Policy/Projectionの意味は変更しない（Issue #188 / #184）。
 
 - `SRC-ICD203-001`へ公式説明が示す2023年6月の改訂情報を補完。未確認の署名日を推測せず、第1・25章の引用用途と旧監査基準を保持する。[限定Source Review](references/icd203-source-review-2026-09-26.md)に確認方法・精度・読者影響を記録した（Issue #171）。

@@ -9,7 +9,9 @@
 - Phase 0 Runbook: <https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/1>
 - Bootstrap PR: <https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/2>
 - Parent proposal: <https://github.com/itdojp/it-engineer-knowledge-architecture/issues/280>
-- Status: `0.1.0` editorial and publication foundation / Phase 0 in progress
+- Status: `0.1.0` 初版執筆中。出版基盤と代表章の初期Gateは完了していますが、全30章・付録の完成版ではありません。
+- Completion Roadmap: <https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/17>
+- Whole-book review: [2026-09-06の全体レビューと改善計画](reviews/2026-09-06-whole-book-review.md)
 
 ## 中心となるループ
 
@@ -54,7 +56,7 @@
 
 前提:
 
-- Node.js 24
+- Node.js 24 / npm 8.3.0以上
 - Python 3.11以上
 - Ruby 3.3 / Bundler
 - Git
@@ -63,7 +65,7 @@
 
 ```bash
 git clone https://github.com/itdojp/book-formatter.git ../book-formatter
-git -C ../book-formatter checkout 83a322da5013e74e9dbf1b0afbee85b8617ffce5
+git -C ../book-formatter checkout c4dcd01e8450112f95002a454657d409cb3fa2f1
 npm ci --prefix ../book-formatter --ignore-scripts
 
 npm ci
@@ -71,6 +73,8 @@ bundle install
 BOOK_FORMATTER_DIR=../book-formatter npm test
 BOOK_FORMATTER_DIR=../book-formatter npm run check:book-qa
 ```
+
+本書のQAはPRH/textlintのAPIを使用します。依存内部の`js-yaml` CLIは固定formatterの[支援範囲](https://github.com/itdojp/book-formatter/blob/c4dcd01e8450112f95002a454657d409cb3fa2f1/docs/dependency-audit-20261008.md)に含まれません。
 
 `BOOK_FORMATTER_DIR`を省略した場合、生成スクリプトは固定commitの共通部品を取得し、Git blob SHAを検証します。
 

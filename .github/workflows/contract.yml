@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: itdojp/book-formatter
-          ref: 83a322da5013e74e9dbf1b0afbee85b8617ffce5
+          ref: c4dcd01e8450112f95002a454657d409cb3fa2f1
           path: .work/book-formatter
           persist-credentials: false
 
