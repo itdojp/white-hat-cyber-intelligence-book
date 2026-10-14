@@ -32,6 +32,20 @@ class SourceEditionTests(unittest.TestCase):
     def test_audited_current_edition_and_retained_law_pass(self):
         self.assertEqual(chapter02_source_metadata_errors(self.entries), [])
 
+    def test_registry_retains_declared_review_triggers(self):
+        # Source Review 2026-10-03: next review / stop conditions, plus the
+        # existing disclosure chapter release trigger. No prose parsing.
+        triggers = self.entries[SOURCE_ID]["reviewTriggers"]
+        self.assertIsInstance(triggers, list)
+        for trigger in (
+            "guideline revision or disclosure chapter release",
+            "reception guidance change",
+            "adopted scope change",
+            "related law change",
+        ):
+            with self.subTest(trigger=trigger):
+                self.assertIn(trigger, triggers)
+
     def test_old_edition_or_date_only_update_is_not_accepted(self):
         for checked in ("2026-09-17", "2026-10-03"):
             with self.subTest(checked=checked):

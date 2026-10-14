@@ -570,7 +570,10 @@
       "checkedAt": "2026-10-03",
       "nextReviewAt": "2027-01-03",
       "reviewTriggers": [
-        "guideline revision or disclosure chapter release"
+        "guideline revision or disclosure chapter release",
+        "reception guidance change",
+        "adopted scope change",
+        "related law change"
       ],
       "chapters": [
         2,
