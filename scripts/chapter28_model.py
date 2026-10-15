@@ -222,10 +222,9 @@ def claim_status(data, claim):
     require(
         len(claim["citations"]) == len(set(claim["citations"])), "duplicate citation"
     )
+    known_citations = [s for s in claim["citations"] if s in source]
     groups = list(
-        dict.fromkeys(
-            source[s]["independenceGroupId"] for s in claim["citations"] if s in source
-        )
+        dict.fromkeys(source[s]["independenceGroupId"] for s in known_citations)
     )
     require(
         v["originGroups"] == groups and v["independentOriginCount"] == len(groups),
@@ -236,17 +235,10 @@ def claim_status(data, claim):
         and v["independentObservationAdded"] is False,
         "cross-check scope",
     )
-    if (
-        not claim["citations"]
-        or any(s not in source for s in claim["citations"])
-        or claim["contaminated"]
-        or claim["proposedAttribution"] not in ("L0", "L1", "L2")
-    ):
-        return "Rejected", ["ineligible-provenance-or-boundary"]
     require(
         all(
             instant(source[s]["collectedAt"]) <= instant(data["record"]["cutoff"])
-            for s in claim["citations"]
+            for s in known_citations
         ),
         "source cutoff",
     )
@@ -281,9 +273,16 @@ def claim_status(data, claim):
             )
             covered.extend(p["sourceIds"])
         outcomes.append(part["outcome"])
-    require(
-        list(dict.fromkeys(covered)) == claim["citations"], "claim Source preservation"
-    )
+    # Unresolved citations can describe a rejected record, never passage support.
+    # Even rejected records must validate every part and preserve known Sources.
+    require(list(dict.fromkeys(covered)) == known_citations, "claim Source preservation")
+    if (
+        not claim["citations"]
+        or len(known_citations) != len(claim["citations"])
+        or claim["contaminated"]
+        or claim["proposedAttribution"] not in ("L0", "L1", "L2")
+    ):
+        return "Rejected", ["ineligible-provenance-or-boundary"]
     if not v["complete"]:
         return "Unverified", ["verification-incomplete"]
     if "contradicted" in outcomes:

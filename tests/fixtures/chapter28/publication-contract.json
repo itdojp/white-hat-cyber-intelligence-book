@@ -9766,7 +9766,7 @@
   "schemaVersion": "1.0.0",
   "comparisonVersion": "1.0.0",
   "schemaSha256": "fe54788534137237863928fd6e3d38ed4bea535cc3c60cd3f07ca965b730870a",
-  "corpusSha256": "bda0fe11b7f763a74bdf5161b8ba5151ecbae3b6ae8be7cc8b1ef5d47240ff2d",
+  "corpusSha256": "f8e0d28c7daa859e38bf6cad24bd99408757beaab3fcc6a44bf3f796f859e2f0",
   "documents": {
     "manuscript/28-ai-assisted-analysis-assurance.md": {
       "projectionSha256": "e36d945433ec9a22f1c8aadf29e0f11ea699a002c8f9711d2b93bb55631972fb",

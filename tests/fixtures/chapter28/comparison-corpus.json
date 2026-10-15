@@ -1295,6 +1295,531 @@
       ],
       "expectedAccepted": false,
       "diagnostic": "network.host_or_address"
+    },
+    {
+      "family": "invented-citation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Exact review counterexample; invented citation must not bypass passage validation.",
+      "id": "CH28-REVIEW-REJECTED-001",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            3,
+            "parts",
+            0,
+            "passageId"
+          ],
+          "value": "ABSENT"
+        },
+        {
+          "path": [
+            "claims",
+            3,
+            "parts",
+            0,
+            "sourceText"
+          ],
+          "value": "fabricated source text"
+        },
+        {
+          "path": [
+            "claims",
+            3,
+            "parts",
+            0,
+            "outcome"
+          ],
+          "value": "supported"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "passage existence/content/support"
+    },
+    {
+      "family": "invented-citation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Rejected still requires the declared part structure.",
+      "id": "CH28-REVIEW-REJECTED-002",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            3,
+            "grounding"
+          ],
+          "value": "Composite"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "composite part coverage"
+    },
+    {
+      "family": "invented-citation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "A null passage remains unknown/not-found with no Source IDs, even when rejected.",
+      "id": "CH28-REVIEW-REJECTED-003",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            3,
+            "parts",
+            0,
+            "outcome"
+          ],
+          "value": "supported"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "ungrounded part"
+    },
+    {
+      "family": "invented-citation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "A null passage remains unknown/not-found with no Source IDs, even when rejected.",
+      "id": "CH28-REVIEW-REJECTED-004",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            3,
+            "parts",
+            0,
+            "sourceText"
+          ],
+          "value": "fabricated source text"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "ungrounded part"
+    },
+    {
+      "family": "invented-citation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "A null passage remains unknown/not-found with no Source IDs, even when rejected.",
+      "id": "CH28-REVIEW-REJECTED-005",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            3,
+            "parts",
+            0,
+            "sourceIds"
+          ],
+          "value": [
+            "SN-2026-025-001"
+          ]
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "ungrounded part"
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "An absent citation does not waive structural checks of rejected records.",
+      "id": "CH28-REVIEW-REJECTED-006",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            5,
+            "parts",
+            0,
+            "passageId"
+          ],
+          "value": "ABSENT"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "passage existence/content/support"
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "An absent citation does not waive structural checks of rejected records.",
+      "id": "CH28-REVIEW-REJECTED-007",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            5,
+            "parts",
+            0,
+            "sourceText"
+          ],
+          "value": "fabricated source text"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "ungrounded part"
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "An absent citation does not waive structural checks of rejected records.",
+      "id": "CH28-REVIEW-REJECTED-008",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            5,
+            "parts",
+            0,
+            "outcome"
+          ],
+          "value": "supported"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "ungrounded part"
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Missing-source rejection still validates grounding shape.",
+      "id": "CH28-REVIEW-REJECTED-009",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            5,
+            "grounding"
+          ],
+          "value": "Composite"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "composite part coverage"
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Attribution-boundary rejection still validates every referenced passage.",
+      "id": "CH28-REVIEW-REJECTED-010",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            6,
+            "parts",
+            0,
+            "passageId"
+          ],
+          "value": "ABSENT"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "passage existence/content/support"
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Attribution-boundary rejection still validates every referenced passage.",
+      "id": "CH28-REVIEW-REJECTED-011",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            6,
+            "parts",
+            0,
+            "sourceText"
+          ],
+          "value": "fabricated source text"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "passage existence/content/support"
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Attribution-boundary rejection still validates every referenced passage.",
+      "id": "CH28-REVIEW-REJECTED-012",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            6,
+            "parts",
+            0,
+            "outcome"
+          ],
+          "value": "supported"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "passage existence/content/support"
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Attribution-boundary rejection still validates every referenced passage.",
+      "id": "CH28-REVIEW-REJECTED-013",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            6,
+            "parts",
+            0,
+            "sourceIds"
+          ],
+          "value": [
+            "SN-2026-025-001"
+          ]
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "passage existence/content/support"
+    },
+    {
+      "family": "confidence-attribution-alternatives",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Attribution-boundary rejection still validates grounding shape.",
+      "id": "CH28-REVIEW-REJECTED-014",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            6,
+            "grounding"
+          ],
+          "value": "Composite"
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "composite part coverage"
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Known citations cannot be left uncovered beside an invented citation; origin metadata is refreshed.",
+      "id": "CH28-REVIEW-REJECTED-015",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            3,
+            "citations"
+          ],
+          "value": [
+            "SN-FAKE-028",
+            "SN-2026-025-001"
+          ]
+        },
+        {
+          "path": [
+            "verifications",
+            3,
+            "originGroups"
+          ],
+          "value": [
+            "IG-INT-001"
+          ]
+        },
+        {
+          "path": [
+            "verifications",
+            3,
+            "independentOriginCount"
+          ],
+          "value": 1
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "claim Source preservation"
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "A grounded passage cannot silently contribute an uncited Source; origin metadata is refreshed.",
+      "id": "CH28-REVIEW-REJECTED-016",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            6,
+            "citations"
+          ],
+          "value": [
+            "SN-2026-025-002",
+            "SN-2026-025-003",
+            "SN-2026-025-004"
+          ]
+        },
+        {
+          "path": [
+            "verifications",
+            6,
+            "originGroups"
+          ],
+          "value": [
+            "IG-INT-002",
+            "IG-EXT-001",
+            "IG-EXT-002"
+          ]
+        },
+        {
+          "path": [
+            "verifications",
+            6,
+            "independentOriginCount"
+          ],
+          "value": 3
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "claim Source preservation"
+    },
+    {
+      "family": "five-status-distinction",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Canonical positive control: all five statuses, including invented/missing/attribution Rejected records, remain valid.",
+      "id": "CH28-REVIEW-REJECTED-017",
+      "changes": [],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "An otherwise well-formed ungrounded part cannot silently lose known Source coverage on a rejected record.",
+      "id": "CH28-REVIEW-REJECTED-018",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            6,
+            "parts",
+            0,
+            "passageId"
+          ],
+          "value": null
+        },
+        {
+          "path": [
+            "claims",
+            6,
+            "parts",
+            0,
+            "sourceText"
+          ],
+          "value": "not-found"
+        },
+        {
+          "path": [
+            "claims",
+            6,
+            "parts",
+            0,
+            "sourceIds"
+          ],
+          "value": []
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "claim Source preservation"
+    },
+    {
+      "family": "invented-citation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Multiple unresolved citations remain an explicitly rejected record with no invented passage support; stay within the frozen array bound.",
+      "id": "CH28-REVIEW-REJECTED-019",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            3,
+            "citations"
+          ],
+          "value": [
+            "SN-FAKE-028",
+            "SN-FAKE-029"
+          ]
+        }
+      ],
+      "expectedAccepted": true,
+      "diagnostic": null
+    },
+    {
+      "family": "source-preservation",
+      "owner": "Chapter28 Layer A",
+      "source": "PR187 review5529419595 / discussion_r4280086172",
+      "snapshotRefreshed": true,
+      "notes": "Rejected records retain deterministic first-use source order; matching sets alone are insufficient.",
+      "id": "CH28-REVIEW-REJECTED-020",
+      "changes": [
+        {
+          "path": [
+            "claims",
+            6,
+            "citations"
+          ],
+          "value": [
+            "SN-2026-025-002",
+            "SN-2026-025-001",
+            "SN-2026-025-003",
+            "SN-2026-025-004"
+          ]
+        },
+        {
+          "path": [
+            "verifications",
+            6,
+            "originGroups"
+          ],
+          "value": [
+            "IG-INT-002",
+            "IG-INT-001",
+            "IG-EXT-001",
+            "IG-EXT-002"
+          ]
+        }
+      ],
+      "expectedAccepted": false,
+      "diagnostic": "claim Source preservation"
     }
   ]
 }
