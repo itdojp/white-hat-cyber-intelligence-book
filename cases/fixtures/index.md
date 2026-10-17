@@ -114,3 +114,7 @@
 [Product record](ch26-cti-distribution.json)、[独立STIX Bundle](ch26-stix-bundle.json)、[offline TAXII例](ch26-taxii-exchange.json)と各閉Schemaを[完全記入例](../ch26-cti-distribution-example.md)から辿る。供給13Objectの有限profileで、一般STIX検証・外部接続・実配達ではない。
 
 - [第27章供給記録](ch27-ai-agent-threat-model.json) / [閉Schema](../../schemas/ch27-ai-agent-threat-model.schema.json): 固定Responseと合成記録の比較だけ。実Model/API/外部Toolを実行しない。
+
+## 第28章の固定AI支援分析記録（Draft / 未merge）
+
+`ch28-ai-assisted-analysis-assurance.json` / `ch28-ai-assisted-analysis-assurance.schema.json`は完全合成の記録照合用。実Model/API/Toolを実行しない。

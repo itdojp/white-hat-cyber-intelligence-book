@@ -8547,9 +8547,10 @@
       "publishedAt": "2024-07-26",
       "reviewTriggers": [
         "NIST update or successor profile",
-        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change",
+        "Chapter28 adopted claim/source/citation/grounding/independence or human-review boundary changes"
       ],
-      "notes": "Official page was updated 2026-04-08. Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. "
+      "notes": "Official page was updated 2026-04-08. Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit.  Chapter28 scoped audit 2026-09-30; see references/ch28-source-review-2026-09-30.md. The previous No Chapter28 audit statement describes the Chapter27-only historical audit. Only adopted sections are checked; no full-framework or runtime/model assurance claim."
     },
     "SRC-AML-001": {
       "id": "SRC-AML-001",
@@ -8562,9 +8563,10 @@
       "publishedAt": "2025-03-24",
       "reviewTriggers": [
         "annual NIST AML update",
-        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change",
+        "Chapter28 adopted claim/source/citation/grounding/independence or human-review boundary changes"
       ],
-      "notes": "NIST states an intent to update the report annually. Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. CSRC final 2025-03-24; corrected PDF announced 2025-04-01. Potential updates dated 2025-06-03 concern page x taxonomy index and are proposed, not official document changes. Sections 3.3/3.4 used for taxonomy only."
+      "notes": "NIST states an intent to update the report annually. Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. CSRC final 2025-03-24; corrected PDF announced 2025-04-01. Potential updates dated 2025-06-03 concern page x taxonomy index and are proposed, not official document changes. Sections 3.3/3.4 used for taxonomy only. Chapter28 scoped audit 2026-09-30; see references/ch28-source-review-2026-09-30.md. The previous No Chapter28 audit statement describes the Chapter27-only historical audit. Only adopted sections are checked; no full-framework or runtime/model assurance claim."
     },
     "SRC-OWASP-LLM-001": {
       "id": "SRC-OWASP-LLM-001",
@@ -8577,9 +8579,10 @@
       "publishedAt": null,
       "reviewTriggers": [
         "new Top 10 release or correction",
-        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change",
+        "Chapter28 adopted claim/source/citation/grounding/independence or human-review boundary changes"
       ],
-      "notes": " Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. Previous registered edition 2025 / publishedAt 2024-11-17. 2026 PDF publication date remains a placeholder: resource date 2026-08-03, announcement page 2026-09-01 and press-body 2026-09-02 are distinct, not a verified PDF release day. Risk IDs changed; all Chapter27 surfaces use versioned 2026 IDs."
+      "notes": " Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. Previous registered edition 2025 / publishedAt 2024-11-17. 2026 PDF publication date remains a placeholder: resource date 2026-08-03, announcement page 2026-09-01 and press-body 2026-09-02 are distinct, not a verified PDF release day. Risk IDs changed; all Chapter27 surfaces use versioned 2026 IDs. Chapter28 scoped audit 2026-09-30; see references/ch28-source-review-2026-09-30.md. The previous No Chapter28 audit statement describes the Chapter27-only historical audit. Only adopted sections are checked; no full-framework or runtime/model assurance claim."
     },
     "SRC-OWASP-AGENT-001": {
       "id": "SRC-OWASP-AGENT-001",
@@ -8592,9 +8595,10 @@
       "publishedAt": "2025-12-10",
       "reviewTriggers": [
         "Agentic Top 10 update",
-        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change"
+        "Chapter27 adopted boundary/approval/stop/provenance or versioned risk/requirement IDs change",
+        "Chapter28 adopted claim/source/citation/grounding/independence or human-review boundary changes"
       ],
-      "notes": " Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. Version 2026 PDF states December 2025; publishedAt retains press-body 2025-12-10, not PDF day. Blog/resource date 2025-12-09 is distinct. Risk vocabulary, not runtime effectiveness proof."
+      "notes": " Chapter27 scoped audit 2026-09-29; see references/ch27-source-review-2026-09-29.md for exact adopted sections and PDF hashes. No full-registry or Chapter28 audit. Version 2026 PDF states December 2025; publishedAt retains press-body 2025-12-10, not PDF day. Blog/resource date 2025-12-09 is distinct. Risk vocabulary, not runtime effectiveness proof. Chapter28 scoped audit 2026-09-30; see references/ch28-source-review-2026-09-30.md. The previous No Chapter28 audit statement describes the Chapter27-only historical audit. Only adopted sections are checked; no full-framework or runtime/model assurance claim."
     },
     "SRC-AISVS-001": {
       "id": "SRC-AISVS-001",

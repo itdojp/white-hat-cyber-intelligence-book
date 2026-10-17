@@ -63,6 +63,7 @@ PREFLIGHT = tuple(
     "python3 scripts/check_chapter24_contract.py --no-regressions",
     "python3 scripts/check_chapter26_contract.py --no-regressions",
     "python3 scripts/check_chapter27_contract.py --no-regressions",
+    "python3 scripts/check_chapter28_contract.py --no-regressions",
     "python3 scripts/check_part04_contract.py --no-regressions",
     "python3 scripts/check_part03_contract.py --no-regressions",
     "python3 scripts/check_part02_contract.py --no-regressions",
