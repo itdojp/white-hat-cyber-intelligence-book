@@ -1421,6 +1421,12 @@
           "effectiveAt": "2026-09-30",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/187",
           "reason": "専用Draft PR187へ初期本文/空ART32/四Source用途限定確認とformalIntakeを結合。全欄Case/Schema/有限Layer A/全Gate未完、consumed/完成/実公開ではない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-10-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/50#issuecomment-6228570538",
+          "reason": "PR187利用者通常merge。実main ec42b80c78676f9cb32ae2b4adcfceb3485d1570 は最終reviewed7f47968と全tree/421inputs一致。Book Contract38993526476 / Book QA38993526509 / Deploy Pages38993526673 success、203実公開filesが成功Pages artifactと全byte一致、四面desktop/mobile・1137leaf DOM・2downloadsを再確認。全review8/inline8/thread4resolved、未解決/不整合/欠落0/0/0でIssue50 completed。同一入力の旧localQAだけ限定再利用し、main CI/publication/browser/auditは新規実測。原Intakeの作成時main/日付/初期Draft制約/全欄と同梱27・全Package・旧履歴を保持し、raw未読/実体hash未照合/直接採用なしを変更しない。"
         }
       ]
     },
