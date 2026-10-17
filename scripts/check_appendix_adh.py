@@ -7,6 +7,7 @@ requires review and an explicit fixture update, not a new exception or parser.
 """
 from __future__ import annotations
 
+from datetime import date
 import hashlib
 import json
 import os
@@ -124,6 +125,24 @@ def repository_errors(inputs, contract):
         expected = contract["sourceIdentity"][identifier]
         if len(matches) != 1 or any(matches[0].get(k) != v for k, v in expected.items()):
             errors.append("ADH-source-identity: " + identifier)
+    if set(contract["sourceReviews"]) != set(SOURCE_IDS):
+        errors.append("ADH-source-review-inventory")
+    for identifier in SOURCE_IDS:
+        matches = [s for s in sources if s["id"] == identifier]
+        expected = contract["sourceReviews"][identifier]
+        source = matches[0] if len(matches) == 1 else {}
+        try:
+            current = date.fromisoformat(source.get("checkedAt", ""))
+            reviewed = date.fromisoformat(expected["appendixReview"]["checkedAt"])
+            valid = current >= reviewed
+        except (ValueError, TypeError):
+            valid = False
+        if (not valid or source.get("appendixReview") != expected["appendixReview"]
+                or not isinstance(source.get("notes"), str)
+                or expected["notes"] not in source["notes"]
+                or not isinstance(source.get("reviewTriggers"), list)
+                or expected["trigger"] not in source["reviewTriggers"]):
+            errors.append("ADH-source-review: " + identifier)
     registry, package = (strict(inputs[p]) for p in ("site-pages.json", "package.json"))
     pages = registry["pages"]
     if [p["source"] for p in contract["routes"]] != list(DOCUMENTS):

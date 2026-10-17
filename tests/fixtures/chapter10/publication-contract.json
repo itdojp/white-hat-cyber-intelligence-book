@@ -279,7 +279,7 @@
       "status": "informational",
       "publishedAt": null,
       "url": "https://www.rfc-editor.org/info/rfc9116/",
-      "notes": "Official RFC gives April 2022; publication day is unknown, so publishedAt remains null. Section 5.5 only: file presence/absence is not testing permission. Errata6946 Verified and7264/7743 Reported are separate from that claim; no parser or signature implementation. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md."
+      "notes": "Official RFC gives April 2022; publication day is unknown, so publishedAt remains null. Section 5.5 only: file presence/absence is not testing permission. Errata6946 Verified and7264/7743 Reported are separate from that claim; no parser or signature implementation. Scoped Chapter10 review: references/ch10-source-review-2026-09-14.md. 2026-10-17 appendix-scoped review: RFC 9116 section 5.5 only: presence or absence does not imply permission or denial of testing. Targets: appendix-a. Scope and exclusions: references/appendix-adh-source-review-2026-10-17.md. Prior chapter audits and historical Case authority/cutoff remain unchanged; this is not a full-source or all-chapter re-audit. Existing nextReviewAt remains conservative."
     },
     "SRC-DNS-TERM-001": {
       "version": "RFC 9499 / BCP 219",

@@ -92,6 +92,44 @@
           },
           "notes": {
             "type": "string"
+          },
+          "appendixReview": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "checkedAt",
+              "targets",
+              "note"
+            ],
+            "properties": {
+              "checkedAt": {
+                "type": "string",
+                "format": "date"
+              },
+              "targets": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "appendix-a",
+                    "appendix-b",
+                    "appendix-c",
+                    "appendix-d",
+                    "appendix-e",
+                    "appendix-f",
+                    "appendix-g",
+                    "appendix-h",
+                    "appendix-i",
+                    "appendix-j"
+                  ]
+                }
+              },
+              "note": {
+                "type": "string",
+                "pattern": "^references/[a-z0-9][a-z0-9-]*\\.md$"
+              }
+            }
           }
         },
         "additionalProperties": false

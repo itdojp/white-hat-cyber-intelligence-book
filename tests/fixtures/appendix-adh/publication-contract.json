@@ -1233,7 +1233,7 @@
         "p",
         null,
         null,
-        "公式の参照先と既存Source IDはSource Baselineにある。同じ資料を別IDで再登録しない。今回の用途限定確認日はこのNoteに記録し、他章への全影響を再監査していないRegistryの確認日・次回確認日・章mappingを一括更新しない。付録の対応は下表を正とし、章番号欄へ付録を架空の章として追加しない。"
+        "公式の参照先と既存Source IDはSource Baselineにある。同じ資料を別IDで再登録しない。用途限定確認を対象5 SourceのRegistryへ登録し、個別確認日、過去の記録を残したnotes、再確認trigger、appendixReviewの対象付録・確認日・本Noteへの参照をBaselineへ接続する。Registry全体の一括監査日、他Sourceの確認日、既存の次回確認日と章mappingは変更しない。個別確認日を他章の全影響まで再監査した日付と解釈せず、章番号欄へ付録を架空の章として追加しない。"
       ],
       [
         "destination",
@@ -1517,6 +1517,64 @@
       "version": "SP 800-86, Final, August 2006",
       "url": "https://csrc.nist.gov/pubs/sp/800/86/final",
       "publishedAt": null
+    }
+  },
+  "sourceReviews": {
+    "SRC-JP-LAW-001": {
+      "appendixReview": {
+        "checkedAt": "2026-10-17",
+        "targets": [
+          "appendix-a"
+        ],
+        "note": "references/appendix-adh-source-review-2026-10-17.md"
+      },
+      "notes": "2026-10-17 appendix-scoped review: Articles 1-3: purpose, definitions and prohibitions only; no individual legal applicability or renewed authority. Targets: appendix-a. Scope and exclusions: references/appendix-adh-source-review-2026-10-17.md. Prior chapter audits and historical Case authority/cutoff remain unchanged; this is not a full-source or all-chapter re-audit. Existing nextReviewAt remains conservative.",
+      "trigger": "Appendix A/D/H release, cited source revision or adopted scope change"
+    },
+    "SRC-IPA-VDP-001": {
+      "appendixReview": {
+        "checkedAt": "2026-10-17",
+        "targets": [
+          "appendix-a"
+        ],
+        "note": "references/appendix-adh-source-review-2026-10-17.md"
+      },
+      "notes": "2026-10-17 appendix-scoped review: 2026 edition IV-V: roles, reporting, acceptance, coordination and publication are distinct; no testing or disclosure permission. Targets: appendix-a. Scope and exclusions: references/appendix-adh-source-review-2026-10-17.md. Prior chapter audits and historical Case authority/cutoff remain unchanged; this is not a full-source or all-chapter re-audit. Existing nextReviewAt remains conservative.",
+      "trigger": "Appendix A/D/H release, cited source revision or adopted scope change"
+    },
+    "SRC-SECURITYTXT-001": {
+      "appendixReview": {
+        "checkedAt": "2026-10-17",
+        "targets": [
+          "appendix-a"
+        ],
+        "note": "references/appendix-adh-source-review-2026-10-17.md"
+      },
+      "notes": "2026-10-17 appendix-scoped review: RFC 9116 section 5.5 only: presence or absence does not imply permission or denial of testing. Targets: appendix-a. Scope and exclusions: references/appendix-adh-source-review-2026-10-17.md. Prior chapter audits and historical Case authority/cutoff remain unchanged; this is not a full-source or all-chapter re-audit. Existing nextReviewAt remains conservative.",
+      "trigger": "Appendix A/D/H release, cited source revision or adopted scope change"
+    },
+    "SRC-NIST-TEST-001": {
+      "appendixReview": {
+        "checkedAt": "2026-10-17",
+        "targets": [
+          "appendix-a",
+          "appendix-d"
+        ],
+        "note": "references/appendix-adh-source-review-2026-10-17.md"
+      },
+      "notes": "2026-10-17 appendix-scoped review: Sections 6.5-6.6, 7.2-7.3 and Appendix B 3.2: planning, legal consultation and stop/restart coordination; no old operational examples. Targets: appendix-a, appendix-d. Scope and exclusions: references/appendix-adh-source-review-2026-10-17.md. Prior chapter audits and historical Case authority/cutoff remain unchanged; this is not a full-source or all-chapter re-audit. Existing nextReviewAt remains conservative.",
+      "trigger": "Appendix A/D/H release, cited source revision or adopted scope change"
+    },
+    "SRC-NIST-DFIR-001": {
+      "appendixReview": {
+        "checkedAt": "2026-10-17",
+        "targets": [
+          "appendix-h"
+        ],
+        "note": "references/appendix-adh-source-review-2026-10-17.md"
+      },
+      "notes": "2026-10-17 appendix-scoped review: Executive Summary and section 3.1.2: planning, integrity, retention and handling limits; no legal admissibility or current acquisition commands. Targets: appendix-h. Scope and exclusions: references/appendix-adh-source-review-2026-10-17.md. Prior chapter audits and historical Case authority/cutoff remain unchanged; this is not a full-source or all-chapter re-audit. Existing nextReviewAt remains conservative.",
+      "trigger": "Appendix A/D/H release, cited source revision or adopted scope change"
     }
   }
 }
