@@ -1,0 +1,1522 @@
+{
+  "version": "1.0.0",
+  "policy": "1.2.0",
+  "projection": "1.1.0",
+  "documents": {
+    "appendices/appendix-a-legal-safety.md": [
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        1,
+        "付録A 法・倫理・安全上の注意"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "付録a-法倫理安全上の注意"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "最初に何を判断するか"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "最初に何を判断するか"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "最初に何を判断するか この付録で判断するのは「技術的にできるか」ではなく、「誰がどの対象・操作・Data・期間を承認でき、不明ならどこへ戻すか」である。教育目的、ツールの成功、レポートの完成を、実作業の許可へ読み替えない。個別の適法性や法的義務は本書で判定しない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "最初にART-13 Authorization Checklistの判断要求、承認者、対象と対象外、期間を確認する。自分の読解用コピーへ、根拠の参照ID、確認時点、未確認事項、確認する役割を記入する。教材の原本と親Caseは変更しない。書面による許可確認は本書の安全方針であり、すべての法令が同一の書式を一律に要求するという説明ではない。［SRC-JP-LAW-001］"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../templates/authorization-checklist/"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "OWNは四Gateを横断して必要な記録へ戻す導線、BRIDGEは第2・9・15・19章、DELEGATEは個別法的助言と契約・法令の適用判断である。リンク先を未読でも、権限が不明なら新規操作を始めないという停止点は変わらない。"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "四つのGateを一つにまとめない"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "四つのgateを一つにまとめない"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "四つのGateを一つにまとめない Gate 本文で確認する問い 不足時に残すもの Authority 承認する役割はその操作とDataを承認できるか 根拠ID、確認するOwner、不明点"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "四つのGateを一つにまとめない Gate 本文で確認する問い 不足時に残すもの Scope 対象・対象外、手法、環境、時間は一致するか 不一致の対象と版、変更確認の担当"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "四つのGateを一つにまとめない Gate 本文で確認する問い 不足時に残すもの Safety 影響、停止、証拠保持、復旧、残存確認を説明できるか 未確認Evidenceと停止理由"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "四つのGateを一つにまとめない Gate 本文で確認する問い 不足時に残すもの Disclosure 誰に何を共有し、誰が公開を判断するか 宛先候補、情報分類、承認待ちの範囲"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "一つのPassで他を補完しない。管理権限を持つこと、予算を持つこと、Dataの取扱いを認められることも別である。具体的な有限Decisionと条件付き判断は第2章の契約に従い、この付録で新しい状態を追加しない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../chapters/chapter-02/"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "法令・契約・組織の確認を分ける"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "法令契約組織の確認を分ける"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "法令・契約・組織の確認を分ける 不正アクセス禁止法の現行表示では、定義と禁止が別の条項に置かれている。一般的な条文の説明を、今回の対象・操作についての適法性保証にしない。承認者の権限、第三者サービスとの契約、Dataの目的外利用、共有・保存条件が不明なら、作業を始めず適切な法務・契約・Privacy担当へ戻す。［SRC-JP-LAW-001］"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "法令の公布日、施行日、確認日を分ける。確認した現行版だけを根拠に、関連法令の将来改正がないとは主張しない。施行前の改正や案件固有の義務が関係する可能性は、専門家へ照会する項目として残す。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "RoEは確認済み権限より狭い実施条件であり、権限の発生源ではない。計画・Scope・Data取扱い・連絡の検討にはNIST SP 800-115を限定参照できるが、掲載手法が今回許可されるという意味ではない。［SRC-NIST-TEST-001］"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "届出、受理、調整、公開を分ける"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "届出受理調整公開を分ける"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "届出、受理、調整、公開を分ける 想定外の脆弱性らしい情報に接した場合、強い報告にするための追加操作を続けない。停止理由と参照IDを残し、情報の扱いと連絡先を確認する。実Credential、個人情報、未調整の詳細を公開Issueや解答へ貼り付けない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "IPAの早期警戒パートナーシップでは、製品とWebサイトで役割や取扱いが異なる。届出の送信、受理、調整、公表を同じ出来事として記録しない。受付・調整の枠組みは、個別対象の試験や公開を許可する文書ではない。実際の届出が必要な案件では現行公式案内を確認し、本付録の読解課題では送信しない。［SRC-IPA-VDP-001］"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "RFC 9116に規定された脆弱性連絡先ファイルは、窓口等の確認に使う情報であり、存在または不在だけから試験許可・拒否を推定しない。連絡先を見つけたことと、今回の範囲を承認されたことを分ける。［SRC-SECURITYTXT-001］"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "過去Caseを現在の承認へ更新しない"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "過去caseを現在の承認へ更新しない"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "過去Caseを現在の承認へ更新しない 第9章のROE-2026-009はDraft / Do not proceedである。親AUTH-CASE-2026-001の有効期限2026-08-19T18:00:00+09:00を、今回の読書日へ延長しない。2026年版のGuidanceを読んだことも、過去Caseで新しい承認や受理があった証拠にはならない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "第9章の合成記入例を読み、権限の期限と提案Window、三Object、未充足Gapを対応付ける。自分のメモの期待出力は「開始しない理由、確認する役割、必要な新しい根拠」であり、Approvedに変更したTemplateではない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../cases/chapter-09-engagement-roe/"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "自己点検と戻り先"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "自己点検と戻り先"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "自己点検と戻り先 判断要求、対象・版、確認時点を記入したか。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "自己点検と戻り先 技術的可能性、組織承認、法令・契約、Data権利を分けたか。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "自己点検と戻り先 届出先の存在と試験許可、受理と公開判断を混同していないか。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "自己点検と戻り先 不足を隠さず、Ownerと次に確認する資料を記入したか。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "自己点検と戻り先 実Data、許可不明、対象拡張が出たら停止したか。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "許可根拠は第2章、実施条件はART-02 RoE、停止と相談は停止フロー、教材の共通境界は安全・公開範囲へ戻る。メモが完成しても実Controlの検証や法的承認は完了しない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../chapters/chapter-02/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../templates/rules-of-engagement/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../troubleshooting/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../safety-scope/"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "参考文献・Source Note ID"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "参考文献source-note-id"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "参考文献・Source Note ID SRC-JP-LAW-001"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "参考文献・Source Note ID SRC-NIST-TEST-001"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "参考文献・Source Note ID SRC-IPA-VDP-001"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "参考文献・Source Note ID SRC-SECURITYTXT-001"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "版・確認日・採用する節と採用しない内容は付録A/D/Hの限定Source Reviewを参照する。親Caseの時点とAuthorityは変更しない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../reference/appendix-adh-source-review/"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "共通の注意へ戻る: Legal and Safety Notice。停止の切り分けは付録D、合成ラボ記録は付録Hを参照する。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../legal-notice/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../troubleshooting-stop-flow/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../lab-operations/"
+      ]
+    ],
+    "appendices/appendix-d-troubleshooting.md": [
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        1,
+        "付録D 停止・切り分けフロー"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "付録d-停止切り分けフロー"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "最初に残す記録"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "最初に残す記録"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "最初に残す記録 この付録は「失敗をどう回避するか」より先に、「何を止め、何を保持し、誰のどの判断を待つか」を整理する。実環境の復旧コマンドを示すRunbookではない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "ART-02のStop / RecoveryとART-18のStop / Cleanup / Reassessmentを開く。自分の読解メモに対象ID・版・Run、停止理由、確認時刻、確認済みEvidence、未確認事項、連絡する役割を書き分ける。教材の原本や親記録を編集して成功へ揃えない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../templates/rules-of-engagement/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../templates/lab-safety-evidence-plan/"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "OWNは停止と次の確認先の接続、BRIDGEは第2・8・9・14・19・20章である。製品操作、実Incident対応、法的判断は各担当へDELEGATEする。"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "新規操作を止める条件"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "新規操作を止める条件"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "新規操作を止める条件 Authority、Scope、Data所有、予測できる影響、証拠保持、復旧可能性が不明なら、新規操作を始めない。実Dataらしい入力や予期しない外部通信があれば、追加表示・転送・取得を止める。「あと一件」で不足を埋めようとしない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "必要なEvidenceが揃った場合も、追加侵害の確認へ進まず読解を閉じる。不足している場合は不足を残す。第14章の最小十分性は、成功するまで操作を増やす原則ではない。"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "判断順と停止したまま残す場合"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "判断順と停止したまま残す場合"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "判断順と停止したまま残す場合 新規作業の停止: Trigger、対象、時刻を記録する。実停止を確認していないなら確認済みにしない。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "判断順と停止したまま残す場合 保全と連絡: 既定の取扱い内で、参照IDと必要最小限の記録を保持する。実Secretの値や不要なDataは複製しない。Primaryが不明ならBackupと判断責任者へ戻る。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "判断順と停止したまま残す場合 停止確認: 確認Evidenceがなければ停止未確認と残す。停止できたという仮定で破棄へ進めない。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "判断順と停止したまま残す場合 Evidence exportの確認: 保持対象と破棄対象を分ける。必要な保持を確認できなければ、Evidenceを失う破棄へ進めない。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "判断順と停止したまま残す場合 事前計画内のDestroyと残存確認: 所有する一時資源だけを対象にする。DestroyedとCleanup verifiedは別である。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "判断順と停止したまま残す場合 再評価: 原因、残るGap、再開条件、担当、必要な新しい承認を記録する。Cleanupだけで再開しない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "これは第8章の合成Runに対する読解の順であり、実Incidentで証拠保持より機械的に停止・破棄を優先する指示ではない。現実の封じ込めや復旧の判断は、個別の権限と計画へ戻す。NIST SP 800-115の連絡・停止・再開条件を補助にするが、具体的な実操作の許可は付与しない。［SRC-NIST-TEST-001］"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "「ない」の意味を分ける"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "ないの意味を分ける"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "「ない」の意味を分ける 記録 読み方 誤った読み替え Not collected 必要な観測を収集していないという取得状況 事象が存在しない"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "「ない」の意味を分ける 記録 読み方 誤った読み替え Inconclusive 今ある根拠では問いへ結論できない 安全、無害、失敗の確定"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "「ない」の意味を分ける 記録 読み方 誤った読み替え Unknown そのFieldやチェックの条件が不明 Passやfalseへの補完"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "「ない」の意味を分ける 記録 読み方 誤った読み替え 記入完了 不足、担当、次の判断まで記録した Control有効性を検証した"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "各語の所属Fieldと有限語彙は元のArtifactに従う。横断表の語を新しい共通Statusとして各JSONへ追加しない。"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "三つの読み取り専用対比"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "三つの読み取り専用対比"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "三つの読み取り専用対比 第8章Case: UnsafeのRunがCleanup verifiedへ達しても、Unsafeと正常完了falseを残す。後片付けの成功は異常を取り消さない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../cases/chapter-08-lab-evidence/"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "三つの読み取り専用対比 第14章Case: SupportedでもResidual checkがUnknownなら記録はOpen。Inconclusiveでも不足・制限・担当・期限を記載して記録完了にできる場合とは別である。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../cases/chapter-14-minimal-impact-validation/"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "三つの読み取り専用対比 第19章Case: 復旧Actionと復旧検証を分ける。未確認ならClosedへ進めない。通知未送信は、通知不要という法的判断ではない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../cases/chapter-19-incident-action-plan/"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "期待出力は「支持できる結論、できない結論、不足Evidence、Owner、再評価条件」の五点を含むメモである。新たな収集、通知、実対象への操作は行わない。"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "自己点検と戻り先"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "自己点検と戻り先"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "自己点検と戻り先 親Caseの時点・RoE・未配達Handoffを変えていないか。停止が未確認なのに破棄済みとしていないか。保持原本と自分の一時コピーを区別したか。Hash一致を真実や法的証拠能力と呼んでいないか。再開に必要な根拠と担当を具体化したか。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "不明なら既存の停止フローと第9章へ戻る。Evidenceの原時刻・来歴・分析時点が不一致なら第20章へ戻り、後着Dataで過去の判断を無言で修復しない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../troubleshooting/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../chapters/chapter-09/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../chapters/chapter-20/"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "参考文献・Source Note ID"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "参考文献source-note-id"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "参考文献・Source Note ID SRC-NIST-TEST-001"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "版・確認日・採用する節と採用しない内容は付録A/D/Hの限定Source Reviewを参照する。親Caseの時点とAuthorityは変更しない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../reference/appendix-adh-source-review/"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "権限の確認は付録A、六種残存確認は付録Hへ戻る。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../legal-safety/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../lab-operations/"
+      ]
+    ],
+    "appendices/appendix-h-lab-operations.md": [
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        1,
+        "付録H ラボ運用ガイド"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "付録h-ラボ運用ガイド"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "このガイドで行うこと"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "このガイドで行うこと"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "このガイドで行うこと ラボが起動したこと、分析が終わったこと、残存物を確認したことは別である。本付録では第8章の供給された合成記録を読み、開始できない条件と終了を主張できない条件を説明する。実コンテナを起動しない。NetworkやPortを開かない。実Credentialを作成しない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../chapters/chapter-08/"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "OWNはART-18の記入と確認先への導線、BRIDGEは第2・8・9・20章、DELEGATEは製品固有の構築方法である。本付録は供給教材の読解だけに限定する。実Dataを取得しない。演習環境アーキテクチャと安全・公開範囲は設計の正本のまま保持し、運用メモで上書きしない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../lab-guide/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../safety-scope/"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "最初にどこへ記入するか"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "最初にどこへ記入するか"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "最初にどこへ記入するか ART-18 Lab Safety and Evidence PlanのDocument Controlから始める。自分の読解メモへPlan / Case / Relation、Decision / Authority / Scope、Owner / Reviewer、Purpose / Assumptionsを記入する。実装していない版・Image digestは、教材で定義されたnot-executedとnullの理由を保持する。数値やreceiptを創作して空欄を埋めない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../templates/lab-safety-evidence-plan/"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "次に完全合成記入例を読み、同じRunの開始条件、停止記録、Evidence、Cleanup、Gapを対応付ける。他RunのPassを借りて完了にしない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../cases/chapter-08-lab-evidence/"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "八状態、三判定、実行許可は別の軸"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "八状態三判定実行許可は別の軸"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "八状態、三判定、実行許可は別の軸 状態は次の八つに固定されている。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "Planned / Preflight passed / Ready / Running / Stopped / Destroyed / Cleanup verified / Failed closed"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "Run判定はSafe / Unsafe / Inconclusive、各receiptはPass / Fail / Unknownである。実行許可は全RunでexecutionAuthorized=false。Ready、Running、Safeのいずれも実作業の承認ではない。安全Tier、作業段階、Run状態を一つの一覧へ統合しない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "PreflightのFailまたはUnknownではRunningに入らない。実行中の異常では新規シナリオ操作を止め、定義済みの停止、Evidence保持、破棄、残存確認だけを扱う。Failed closedから同じRunを再開せず、再審査と新Run IDを必要とする。"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "開始前に確認する根拠"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "開始前に確認する根拠"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "開始前に確認する根拠 観点 ART-18で照合するもの 不明時の扱い 権限と対象 Authority、Scope、Case、Run 開始しない"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "開始前に確認する根拠 観点 ART-18で照合するもの 不明時の扱い Hostと権限 rootless、非特権、Mount、Capabilities 設定名だけでPassにしない"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "開始前に確認する根拠 観点 ART-18で照合するもの 不明時の扱い Network 境界、外向き既定拒否、Exposure 実通信で勝手に補完しない"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "開始前に確認する根拠 観点 ART-18で照合するもの 不明時の扱い Data 合成入力、読取り専用、実Secret不在の前提 実Dataを混ぜない"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "開始前に確認する根拠 観点 ART-18で照合するもの 不明時の扱い 観測 必要な収集、時計、期待Evidence 欠けた観測を「異常なし」にしない"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "開始前に確認する根拠 観点 ART-18で照合するもの 不明時の扱い 資源 CPU・Memory・Disk・時間の計画 実測していなければ未測定と残す"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "この表は第8章の読み方であり、任意の環境に安全を認定する検査ではない。実Runtimeの設定・到達性・残存を本付録で測定したとは記録しない。"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "保持するものと破棄するもの"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "保持するものと破棄するもの"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "保持するものと破棄するもの Evidence manifestのID、相対Path、SHA-256、Producer、時刻、Run、由来、変換履歴、Custodian、Retentionを照合する。収集、検査、分析、報告を分けるNIST SP 800-86の考え方を限定参照し、古い製品操作やHash方式の推奨を引き継がない。［SRC-NIST-DFIR-001］"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "Hash一致は指定Byteの同一性であり、内容の真実、許可、取得前の完全性、法的証拠能力を単独では証明しない。親Case、供給JSON、保持原本はCleanup対象の一時資源と区別する。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "第8章では、停止確認、Evidence export、Destroy、Cleanupの順を守る。保持が確認できなければ、Evidenceを失う破棄へ進めない。Container・Network・Volume・File・Credential・Portの六種を別々に照合し、CredentialがUnknownなら残り五種がPassでもCleanup verifiedにしない。"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "三Runの期待出力を読む"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "三runの期待出力を読む"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "三Runの期待出力を読む Run 判定 最終状態 正常完了 RUN-LAB08-SAFE Safe Cleanup verified true"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "三Runの期待出力を読む Run 判定 最終状態 正常完了 RUN-LAB08-UNSAFE Unsafe Cleanup verified false"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "三Runの期待出力を読む Run 判定 最終状態 正常完了 RUN-LAB08-INCONCLUSIVE Inconclusive Failed closed false"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "Unsafeの後でCleanupが完了しても、そのFailを消さない。FailがあればUnknownより優先し、未訪問の段階はPassへ補完しない。構造欠損や未知の状態を検証エラーで拒否したことと、RunをInconclusiveと判定したことも別である。"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "自己点検と次の確認"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "自己点検と次の確認"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "自己点検と次の確認 次の五点を自分のメモだけから説明できれば、読解の提出物になる。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "対象Runと判断する問い。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "開始条件を支えるreceiptと不足しているもの。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "新規操作を止める条件と停止確認の有無。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "保持対象、破棄対象、六種Cleanupの各結果。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "残るGap、Owner、新Runに向けた再審査条件。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "記入が完成しても実Controlが検証されたことにはならない。許可は第2章、RoEの期限と再開条件は第9章、時点と証拠の意味は第20章へ戻る。実Dataや権限不明を見つけたら停止し、読解課題を実操作へ拡張しない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../chapters/chapter-02/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../chapters/chapter-09/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../chapters/chapter-20/"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "参考文献・Source Note ID"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "参考文献source-note-id"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "参考文献・Source Note ID SRC-NIST-DFIR-001"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "版・確認日・採用する節と採用しない内容は付録A/D/Hの限定Source Reviewを参照する。親Caseの時点とAuthorityは変更しない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../reference/appendix-adh-source-review/"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "停止したまま保留する場合は付録D、許可の根拠は付録Aへ戻る。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../troubleshooting-stop-flow/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../legal-safety/"
+      ]
+    ],
+    "references/appendix-adh-source-review-2026-10-17.md": [
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        1,
+        "付録A/D/H Source Review（限定採用）"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "付録adh-source-review限定採用"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "確認範囲と時点"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "確認範囲と時点"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "確認範囲と時点 確認日: 2026-10-17。付録A・D・Hの権限、連絡、停止、証拠保持に使用する節だけを確認した。全法令、全Source、個別案件の適法性を監査した記録ではない。法律相談を提供せず、現実の届出義務や期限も本付録では決定しない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "公式の参照先と既存Source IDはSource Baselineにある。同じ資料を別IDで再登録しない。今回の用途限定確認日はこのNoteに記録し、他章への全影響を再監査していないRegistryの確認日・次回確認日・章mappingを一括更新しない。付録の対応は下表を正とし、章番号欄へ付録を架空の章として追加しない。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../source-notes/"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "資料と限定採用"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "資料と限定採用"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "資料と限定採用 Source Note ID 版・公開時点 使用箇所と限定採用 SRC-JP-LAW-001 e-Gov現行施行版。原法公布1999-08-13、確認版の施行2025-06-01 A。第1〜3条の目的・定義・禁止を区別し、組織承認を個別適法性保証へ転換しない"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "資料と限定採用 Source Note ID 版・公開時点 使用箇所と限定採用 SRC-IPA-VDP-001 2026年版。公式掲載2026-10-01、PDF表紙は2026年10月 A。IV・Vの製品／Webサイトの連絡・受理・調整・公表の役割を区別する"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "資料と限定採用 Source Note ID 版・公開時点 使用箇所と限定採用 SRC-SECURITYTXT-001 RFC 9116、April 2022、Informational A。第5章第5節の連絡先情報と試験許可の区別"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "資料と限定採用 Source Note ID 版・公開時点 使用箇所と限定採用 SRC-NIST-TEST-001 SP 800-115、Final、September 2008 A・D。第6章第5・6節、第7章第2・3節、Appendix Bの第3節第2項から、計画・法務相談・逸脱時の停止・再開判断を限定参照"
+      ],
+      [
+        "reader_visible_text",
+        "table_row",
+        null,
+        null,
+        "資料と限定採用 Source Note ID 版・公開時点 使用箇所と限定採用 SRC-NIST-DFIR-001 SP 800-86、Final、August 2006 H。Executive Summaryと第3章第1節第2項の計画・完全性・保持・取扱いの限界を限定参照"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "e-Govの確認版識別子は 411AC0000000128_20250601_504AC0000000068、改正法の公布は2022-06-17である。公布日、施行日、今回の確認日を同じ日付として扱わない。関連法令の未施行改正が一切ないという意味でもない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "NISTのCSRC履歴日（SP 800-115は2008-09-30、SP 800-86は2006-09-01）と文書表紙の月を区別する。月しか示されない刊行日の日部分を推測しない。IPAについては2026年版への限定移行Noteと同じ採用範囲を維持する。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../references/ipa-vdp-2026/"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "採用しない内容"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "採用しない内容"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "採用しない内容 旧資料の製品操作、侵入手順、収集コマンド、古いHash方式の推奨は転載しない。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "採用しない内容 条文、Guidance、連絡先ファイルの存在を、対象への試験・収集・公開の許可へ転換しない。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "採用しない内容 届出、受理、調整、公開判断、実通知を混同しない。本書の読解課題から送信しない。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "採用しない内容 Hash一致だけで真実性、取得前の完全性、法的証拠能力を認定しない。"
+      ],
+      [
+        "reader_visible_text",
+        "list_path",
+        null,
+        null,
+        "採用しない内容 既存の人間による限定Source確認を、付録全体の法務承認や実作業の承認へ拡張しない。"
+      ],
+      [
+        "reader_visible_text",
+        "heading",
+        null,
+        2,
+        "親Caseと再確認"
+      ],
+      [
+        "hidden_metadata",
+        "heading",
+        "id",
+        null,
+        "親caseと再確認"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "親Caseと再確認 過去Caseの分析時点、Source cutoff、RoEのDraft、権限の有効期限、未配達Handoffを保持する。第9章の過去版引用を今回の版へ無言で差し替えず、2026年版の読解によって新しい承認や受理を追加しない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "法令の施行・改正、IPAの版や受付案内、RFCの訂正、NISTの改訂・撤回、採用範囲の変更があれば、このNoteと付録の該当主張を再確認する。実案件への適用を検討するときは、その時点の公式資料と適切な担当者へ戻り、本書の確認日を現在の保証にしない。"
+      ],
+      [
+        "reader_visible_text",
+        "p",
+        null,
+        null,
+        "戻り先: 付録A、付録D、付録H。"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../appendices/legal-safety/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../appendices/troubleshooting-stop-flow/"
+      ],
+      [
+        "destination",
+        "link",
+        "href",
+        null,
+        "../../appendices/lab-operations/"
+      ]
+    ]
+  },
+  "parentDigests": {
+    "templates/authorization-checklist.md": "02a785e2cf59fa2ae8f53beaf9ad5745d5fa03bc5580964e20a6875bc74883ab",
+    "templates/rules-of-engagement.md": "abf36127616fb838f8b599f60bbb1459e9b709381e990db4c9d855bcb81b9ef9",
+    "templates/lab-safety-evidence-plan.md": "8d2c2a36600fc4861968c19647144c004409a3ccefe4f03274ae5b61f4b74ff8",
+    "cases/fixtures/ch08-lab-plan.json": "f4ea0e4544e65fbb3447b173b0d9ab510e3aa8dea82209187727842b5f64ca8f",
+    "cases/fixtures/ch08-control-receipts.json": "6a4b7b5b413701cec742d25fd992c88296f54043ef44cddd07d48209fa49e9a2",
+    "cases/fixtures/ch08-evidence-manifest.json": "837ff7520fc5d9f310af15487267298ada2f5703e87481404acff78ea0e2e514",
+    "cases/fixtures/ch09-engagement-roe.json": "cf3b2af1dc846981e9a9411641bc21663e7b0a0b1e90d66fd2750cdbd904f936",
+    "cases/fixtures/ch14-minimal-impact-validation.json": "0ef78c7e51a200de200c9293fe047dab95408c2353128bc75c6388448600e7bc",
+    "cases/fixtures/ch19-incident-response.json": "5f400fb8fc9948146eb57d1b2098bd2185bd20f46c3d8bb9fe91a617630760e7",
+    "cases/fixtures/ch20-dfir-timeline-causality.json": "56aac7eb5eab7d080454e983a136489c486244b4ede4ab6be03210b24b439b33",
+    "LAB_ARCHITECTURE.md": "b77374961863cb63b052d1a0647e3f68c6bc11ffd101ee469d104076a027f88a",
+    "SAFETY_SCOPE.md": "e8ab5d61712004d16ef96f455d8224162f63296a056663d37cc5403639a184ff"
+  },
+  "routes": [
+    {
+      "source": "appendices/appendix-a-legal-safety.md",
+      "destination": "appendices/legal-safety/index.md",
+      "section": "appendices",
+      "order": 430,
+      "title": "付録A 法・倫理・安全上の注意"
+    },
+    {
+      "source": "appendices/appendix-d-troubleshooting.md",
+      "destination": "appendices/troubleshooting-stop-flow/index.md",
+      "section": "appendices",
+      "order": 440,
+      "title": "付録D 停止・切り分けフロー"
+    },
+    {
+      "source": "appendices/appendix-h-lab-operations.md",
+      "destination": "appendices/lab-operations/index.md",
+      "section": "appendices",
+      "order": 450,
+      "title": "付録H ラボ運用ガイド"
+    },
+    {
+      "source": "references/appendix-adh-source-review-2026-10-17.md",
+      "destination": "reference/appendix-adh-source-review/index.md",
+      "section": "resources",
+      "order": 395,
+      "title": "付録A/D/H Source Review（限定採用）"
+    }
+  ],
+  "entryLinks": {
+    "legal-notice.md": [
+      "../appendices/legal-safety/"
+    ],
+    "troubleshooting.md": [
+      "../appendices/troubleshooting-stop-flow/",
+      "../appendices/lab-operations/"
+    ]
+  },
+  "sourceIdentity": {
+    "SRC-JP-LAW-001": {
+      "id": "SRC-JP-LAW-001",
+      "publisher": "e-Gov",
+      "title": "不正アクセス行為の禁止等に関する法律",
+      "status": "current-law",
+      "version": "current display effective 2025-06-01",
+      "url": "https://laws.e-gov.go.jp/law/411AC0000000128",
+      "publishedAt": null
+    },
+    "SRC-IPA-VDP-001": {
+      "id": "SRC-IPA-VDP-001",
+      "publisher": "IPA / JPCERT/CC",
+      "title": "情報セキュリティ早期警戒パートナーシップガイドライン",
+      "status": "current-guidance",
+      "version": "2026 edition",
+      "url": "https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html",
+      "publishedAt": "2026-10-01"
+    },
+    "SRC-SECURITYTXT-001": {
+      "id": "SRC-SECURITYTXT-001",
+      "publisher": "RFC Editor / IETF",
+      "title": "A File Format to Aid in Security Vulnerability Disclosure",
+      "status": "informational",
+      "version": "RFC 9116",
+      "url": "https://www.rfc-editor.org/info/rfc9116/",
+      "publishedAt": null
+    },
+    "SRC-NIST-TEST-001": {
+      "id": "SRC-NIST-TEST-001",
+      "publisher": "NIST",
+      "title": "Technical Guide to Information Security Testing and Assessment",
+      "status": "final",
+      "version": "SP 800-115, September 2008",
+      "url": "https://csrc.nist.gov/pubs/sp/800/115/final",
+      "publishedAt": null
+    },
+    "SRC-NIST-DFIR-001": {
+      "id": "SRC-NIST-DFIR-001",
+      "publisher": "NIST",
+      "title": "Guide to Integrating Forensic Techniques into Incident Response",
+      "status": "final",
+      "version": "SP 800-86, Final, August 2006",
+      "url": "https://csrc.nist.gov/pubs/sp/800/86/final",
+      "publishedAt": null
+    }
+  }
+}

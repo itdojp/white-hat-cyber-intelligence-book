@@ -706,6 +706,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-10-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857",
+          "reason": "利用者が事前レビュー→第29章→付録最終確定の順を選択。親章がmainに存在し唯一候補を選択。raw不在・直接採用なし。"
         }
       ]
     },
@@ -719,6 +725,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-10-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857",
+          "reason": "利用者が事前レビュー→第29章→付録最終確定の順を選択。親章がmainに存在し唯一候補を選択。raw不在・直接採用なし。"
         }
       ]
     },
@@ -732,6 +744,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-10-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857",
+          "reason": "利用者が事前レビュー→第29章→付録最終確定の順を選択。親章がmainに存在し唯一候補を選択。raw不在・直接採用なし。"
         }
       ]
     },

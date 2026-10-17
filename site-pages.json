@@ -781,6 +781,34 @@
       "section": "additional",
       "order": 340,
       "title": "最初の成果物：判断と証拠不足の読解"
+    },
+    {
+      "source": "appendices/appendix-a-legal-safety.md",
+      "destination": "appendices/legal-safety/index.md",
+      "section": "appendices",
+      "order": 430,
+      "title": "付録A 法・倫理・安全上の注意"
+    },
+    {
+      "source": "appendices/appendix-d-troubleshooting.md",
+      "destination": "appendices/troubleshooting-stop-flow/index.md",
+      "section": "appendices",
+      "order": 440,
+      "title": "付録D 停止・切り分けフロー"
+    },
+    {
+      "source": "appendices/appendix-h-lab-operations.md",
+      "destination": "appendices/lab-operations/index.md",
+      "section": "appendices",
+      "order": 450,
+      "title": "付録H ラボ運用ガイド"
+    },
+    {
+      "source": "references/appendix-adh-source-review-2026-10-17.md",
+      "destination": "reference/appendix-adh-source-review/index.md",
+      "section": "resources",
+      "order": 395,
+      "title": "付録A/D/H Source Review（限定採用）"
     }
   ],
   "directoryRoutes": {

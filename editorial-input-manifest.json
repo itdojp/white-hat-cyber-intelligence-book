@@ -760,8 +760,8 @@
       "targetId": "appendix-a",
       "issue": 52,
       "targetKind": "appendix",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
+      "status": "selected-for-intake",
+      "selectedCandidateId": "EIC-0052-d6932c1a4774",
       "canonicalPr": null,
       "intakeRecord": null,
       "candidates": [
@@ -770,9 +770,9 @@
           "packageId": "EIP-0013",
           "inputPath": "appendix-a-safety-legal-disclosure.predraft.md",
           "inputSha256": "d6932c1a47741992071cd05d866afd26980ec64e6e35c3ebda09d53c2eede854",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857",
+          "dispositionReason": "唯一候補をbranch前に選択。raw不在を明示し、現行契約と限定一次資料から再構成する。"
         }
       ],
       "statusHistory": [
@@ -781,6 +781,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-10-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857",
+          "reason": "利用者が事前レビュー→第29章→付録最終確定の順を選択。親章がmainに存在し唯一候補を選択。raw不在・直接採用なし。"
         }
       ]
     },
@@ -788,8 +794,8 @@
       "targetId": "appendix-d",
       "issue": 52,
       "targetKind": "appendix",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
+      "status": "selected-for-intake",
+      "selectedCandidateId": "EIC-0052-a1d1ce13dd48",
       "canonicalPr": null,
       "intakeRecord": null,
       "candidates": [
@@ -798,9 +804,9 @@
           "packageId": "EIP-0013",
           "inputPath": "appendix-d-troubleshooting-stop-flow.predraft.md",
           "inputSha256": "a1d1ce13dd4827d438182ed1ad94b20f01c25c4d243b42e847d1ed9e2a2147da",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857",
+          "dispositionReason": "唯一候補をbranch前に選択。raw不在を明示し、現行契約と限定一次資料から再構成する。"
         }
       ],
       "statusHistory": [
@@ -809,6 +815,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-10-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857",
+          "reason": "利用者が事前レビュー→第29章→付録最終確定の順を選択。親章がmainに存在し唯一候補を選択。raw不在・直接採用なし。"
         }
       ]
     },
@@ -816,8 +828,8 @@
       "targetId": "appendix-h",
       "issue": 52,
       "targetKind": "appendix",
-      "status": "registered-pending-prerequisites",
-      "selectedCandidateId": null,
+      "status": "selected-for-intake",
+      "selectedCandidateId": "EIC-0052-390579c705e1",
       "canonicalPr": null,
       "intakeRecord": null,
       "candidates": [
@@ -826,9 +838,9 @@
           "packageId": "EIP-0013",
           "inputPath": "appendix-h-lab-operations.predraft.md",
           "inputSha256": "390579c705e1187c9765b6544f9628a7bd4b0542b7cc3da70ff5dc3172b8ecca",
-          "disposition": "registered",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
-          "dispositionReason": "前提完了後にcurrent contractと一次資料へ再構成する登録候補。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857",
+          "dispositionReason": "唯一候補をbranch前に選択。raw不在を明示し、現行契約と限定一次資料から再構成する。"
         }
       ],
       "statusHistory": [
@@ -837,6 +849,12 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215",
           "reason": "Package登録済み。前提完了までbranchを作成しない。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-10-17",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857",
+          "reason": "利用者が事前レビュー→第29章→付録最終確定の順を選択。親章がmainに存在し唯一候補を選択。raw不在・直接採用なし。"
         }
       ]
     },
