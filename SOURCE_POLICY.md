@@ -30,6 +30,8 @@
 
 Registry直下の`checkedAt`は、全Source Noteを一括監査した最終基準日である。個別Source Noteを章Issueで再確認した場合は、その項目の`checkedAt`だけを更新し、未再確認の項目まで一括監査済みと見なして直下の日付を進めない。読者向けBaselineでは、直下の日付をRegistry-wide baseline、各行の日付を個別Source Noteの確認日として表示する。
 
+付録の用途限定確認は、対象Sourceの`checkedAt`と履歴を保持する`notes`に記録し、任意の`appendixReview`（確認日、付録Target ID、採用範囲Noteの正本path）から追跡する。`chapters`へ架空の章番号を加えない。生成Baselineにも対象とNoteを表示し、Source変更時は章mappingと付録依存の両方を再確認する。限定確認だけでRegistry全体日付や他Sourceを更新せず、過去章の確認範囲は履歴とNoteで区別する。
+
 ## 3. 鮮度分類
 
 | class | 対象 | 通常確認間隔 |

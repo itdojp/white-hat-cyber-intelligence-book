@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-17 — 付録Sourceの追跡修正（Issue #198）
+
+- 付録A/D/Hの限定確認を対象5 Sourceの正本Registryへ登録し、生成Baselineから確認日・付録依存・採用範囲Noteを追跡可能にする。既存の章監査履歴、次回確認日、他SourceとRegistry全体の一括監査日を保持する。
+- 出典の版や採用する技術内容、過去Caseの時点・Authority・Status、共有Projection/Policy、formatter pinは変更しない。全章・全法令の再監査を主張しない。
+
 ## 2026-10-03 — IPAガイドライン2026版の限定Source移行（Issue #189）
 
 - `SRC-IPA-VDP-001`を公式の2026-10-01公開版へ同期し、第2・9・15章の出典IdentityとSource Baselineを更新する。用途限定の監査記録を追加し、2024版の過去の監査と現行版を区別する。

@@ -4,7 +4,7 @@
 
 確認日: 2026-10-17。付録A・D・Hの権限、連絡、停止、証拠保持に使用する節だけを確認した。全法令、全Source、個別案件の適法性を監査した記録ではない。法律相談を提供せず、現実の届出義務や期限も本付録では決定しない。
 
-公式の参照先と既存Source IDは[Source Baseline](reference-baseline.md)にある。同じ資料を別IDで再登録しない。今回の用途限定確認日はこのNoteに記録し、他章への全影響を再監査していないRegistryの確認日・次回確認日・章mappingを一括更新しない。付録の対応は下表を正とし、章番号欄へ付録を架空の章として追加しない。
+公式の参照先と既存Source IDは[Source Baseline](reference-baseline.md)にある。同じ資料を別IDで再登録しない。用途限定確認を対象5 SourceのRegistryへ登録し、個別確認日、過去の記録を残したnotes、再確認trigger、appendixReviewの対象付録・確認日・本Noteへの参照をBaselineへ接続する。Registry全体の一括監査日、他Sourceの確認日、既存の次回確認日と章mappingは変更しない。個別確認日を他章の全影響まで再監査した日付と解釈せず、章番号欄へ付録を架空の章として追加しない。
 
 ## 資料と限定採用
 
