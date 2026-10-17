@@ -15,10 +15,10 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
+| `canonical-pr-open` | 3 |
 | `consumed` | 22 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 1 |
-| `selected-for-intake` | 3 |
 
 ## Acknowledged collisions
 
@@ -73,9 +73,9 @@
 | `chapter-27` | #49 | `consumed` | `EIC-0049-32e8846cf56d` | #183 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5901110059) |
 | `chapter-28` | #50 | `consumed` | `EIC-0050-313c092a3659` | #187 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/50#issuecomment-6228570538) |
 | `chapter-29` | #51 | `blueprint-only` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
-| `appendix-a` | #52 | `selected-for-intake` | `EIC-0052-d6932c1a4774` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857) |
-| `appendix-d` | #52 | `selected-for-intake` | `EIC-0052-a1d1ce13dd48` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857) |
-| `appendix-h` | #52 | `selected-for-intake` | `EIC-0052-390579c705e1` | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6231343857) |
+| `appendix-a` | #52 | `canonical-pr-open` | `EIC-0052-d6932c1a4774` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197) |
+| `appendix-d` | #52 | `canonical-pr-open` | `EIC-0052-a1d1ce13dd48` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197) |
+| `appendix-h` | #52 | `canonical-pr-open` | `EIC-0052-390579c705e1` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197) |
 | `appendices-b-c-i` | #53 | `generator-blueprint-only` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231033156) |
 | `appendices-e-f-g` | #54 | `generator-blueprint-only` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231033156) |
 | `appendix-j` | #55 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215) |
@@ -225,19 +225,19 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0052-d6932c1a4774` | `EIP-0013` | `appendix-a-safety-legal-disclosure.predraft.md` | `d6932c1a47741992071cd05d866afd26980ec64e6e35c3ebda09d53c2eede854` | `selected` | 唯一候補をbranch前に選択。raw不在を明示し、現行契約と限定一次資料から再構成する。 |
+| `EIC-0052-d6932c1a4774` | `EIP-0013` | `appendix-a-safety-legal-disclosure.predraft.md` | `d6932c1a47741992071cd05d866afd26980ec64e6e35c3ebda09d53c2eede854` | `selected` | raw不在をIntakeに明示しcurrent契約と限定一次資料から再構成。Draftの検証・独立レビューは継続中。 |
 
 ### `appendix-d` / Issue #52
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0052-a1d1ce13dd48` | `EIP-0013` | `appendix-d-troubleshooting-stop-flow.predraft.md` | `a1d1ce13dd4827d438182ed1ad94b20f01c25c4d243b42e847d1ed9e2a2147da` | `selected` | 唯一候補をbranch前に選択。raw不在を明示し、現行契約と限定一次資料から再構成する。 |
+| `EIC-0052-a1d1ce13dd48` | `EIP-0013` | `appendix-d-troubleshooting-stop-flow.predraft.md` | `a1d1ce13dd4827d438182ed1ad94b20f01c25c4d243b42e847d1ed9e2a2147da` | `selected` | raw不在をIntakeに明示しcurrent契約と限定一次資料から再構成。Draftの検証・独立レビューは継続中。 |
 
 ### `appendix-h` / Issue #52
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0052-390579c705e1` | `EIP-0013` | `appendix-h-lab-operations.predraft.md` | `390579c705e1187c9765b6544f9628a7bd4b0542b7cc3da70ff5dc3172b8ecca` | `selected` | 唯一候補をbranch前に選択。raw不在を明示し、現行契約と限定一次資料から再構成する。 |
+| `EIC-0052-390579c705e1` | `EIP-0013` | `appendix-h-lab-operations.predraft.md` | `390579c705e1187c9765b6544f9628a7bd4b0542b7cc3da70ff5dc3172b8ecca` | `selected` | raw不在をIntakeに明示しcurrent契約と限定一次資料から再構成。Draftの検証・独立レビューは継続中。 |
 
 ### `appendices-b-c-i` / Issue #53
 
