@@ -15,8 +15,7 @@
 | Status | Count |
 |---|---:|
 | `blueprint-only` | 1 |
-| `canonical-pr-open` | 1 |
-| `consumed` | 21 |
+| `consumed` | 22 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 4 |
 
@@ -71,7 +70,7 @@
 | `chapter-24` | #47 | `consumed` | `EIC-0047-b1b83a6735ac` | #176 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/47#issuecomment-5859589801) |
 | `chapter-26` | #48 | `consumed` | `EIC-0048-38a432a5daf5` | #179 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5871968211) |
 | `chapter-27` | #49 | `consumed` | `EIC-0049-32e8846cf56d` | #183 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5901110059) |
-| `chapter-28` | #50 | `canonical-pr-open` | `EIC-0050-313c092a3659` | #187 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/187) |
+| `chapter-28` | #50 | `consumed` | `EIC-0050-313c092a3659` | #187 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/50#issuecomment-6228570538) |
 | `chapter-29` | #51 | `blueprint-only` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
 | `appendix-a` | #52 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215) |
 | `appendix-d` | #52 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215) |
@@ -213,7 +212,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0050-313c092a3659` | `EIP-0007` | `chapter28-ai-assisted-analysis-assurance.predraft.md` | `313c092a3659c566f85061efeb23a103fa2a7d3fd68845b76de72a7e6f29016a` | `selected` | 正式前提47/48/49actualmain/Pages達成後にIssue50でbranch前選択。登録6basename95407dirs不在、raw未読・実体hash未照合・直接採用なし。現行契約と一次資料から新規制作する。 |
+| `EIC-0050-313c092a3659` | `EIP-0007` | `chapter28-ai-assisted-analysis-assurance.predraft.md` | `313c092a3659c566f85061efeb23a103fa2a7d3fd68845b76de72a7e6f29016a` | `rewritten` | PR187の利用者通常mergeと実main CI/Pages・203公開filesのbyte一致・第28章公開四面・レビュー全件照合を確認しIssue50を完了。raw未読・実体hash未照合・直接採用なしを保持し、現行契約と一次資料から新規制作した正本の公開完了だけを記録する。 |
 
 ### `chapter-29` / Issue #51
 
