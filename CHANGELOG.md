@@ -3,6 +3,7 @@
 ## 2026-10-17 — 付録Sourceの追跡修正（Issue #198）
 
 - 付録A/D/Hの限定確認を対象5 Sourceの正本Registryへ登録し、生成Baselineから確認日・付録依存・採用範囲Noteを追跡可能にする。既存の章監査履歴、次回確認日、他SourceとRegistry全体の一括監査日を保持する。
+- 既存6章のSource identity fixtureにある8件のnotes期待値だけを追記後のRegistryへ同期し、早期の整合検査を追加する。章本文・Case・既存判定の基準や過去の確認範囲は変えない。
 - 出典の版や採用する技術内容、過去Caseの時点・Authority・Status、共有Projection/Policy、formatter pinは変更しない。全章・全法令の再監査を主張しない。
 
 ## 2026-10-03 — IPAガイドライン2026版の限定Source移行（Issue #189）

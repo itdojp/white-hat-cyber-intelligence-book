@@ -125,6 +125,16 @@ class AppendixTests(unittest.TestCase):
         self.assertEqual(rendered.count("[限定確認](appendix-adh-source-review-2026-10-17.md)"), 5)
         self.assertEqual(c.repository_errors(self.inputs, self.contract), [])
 
+    def test_parent_source_identity_bindings_remain_consistent(self):
+        sources = {s["id"]: s for s in c.strict(self.inputs["references/sources.json"])["sources"]}
+        for chapter in (8, 9, 10, 14, 15, 20):
+            path = f"tests/fixtures/chapter{chapter:02}/publication-contract.json"
+            parent = c.strict((ROOT / path).read_text(encoding="utf-8"))
+            for sid, expected in parent["sourceIdentity"].items():
+                for key, value in expected.items():
+                    with self.subTest(chapter=chapter, source=sid, field=key):
+                        self.assertEqual(sources[sid][key], value)
+
     def test_appendix_review_drift_fails_closed(self):
         for sid in c.SOURCE_IDS:
             for kind in ("missing", "date", "source-date", "target", "note", "notes", "trigger"):
