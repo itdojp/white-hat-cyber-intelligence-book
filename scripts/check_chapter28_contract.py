@@ -70,6 +70,7 @@ PREFLIGHT = tuple(
         28,
     )
 ) + (
+    "python3 scripts/check_appendix_adh.py",
     "python3 scripts/check_part04_contract.py --no-regressions",
     "python3 scripts/check_part03_contract.py --no-regressions",
     "python3 scripts/check_part02_contract.py --no-regressions",

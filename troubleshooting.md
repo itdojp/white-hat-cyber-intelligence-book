@@ -30,3 +30,5 @@
 - 実行者、監視者、緊急連絡先が合意している
 
 停止を失敗扱いにしない。安全停止の記録は、技術的成功と同等に重要な成果物である。
+
+停止確認、Evidence保持、破棄、残存確認の読み分けは[付録D 停止・切り分けフロー](appendices/appendix-d-troubleshooting.md)を参照する。ラボの合成記録は[付録H](appendices/appendix-h-lab-operations.md)へ進む。

@@ -131,3 +131,7 @@ Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設�
 第28章の初期Draftで本文/空Template/Source確認とIntakeを記録した。現在のDraftには全欄Case/完全合成JSON/閉Schema/有限Layer A/比較Corpus/有限公開前検査を追加済みである。実装の存在だけで独立レビュー・章DoD・実main/Pages公開の完了を意味しない。共有Projection/Policy/formatter pinは変更しない。
 
 第28章の供給教材は`cases/ch28-ai-assisted-analysis-assurance-example.md`、`cases/fixtures/ch28-ai-assisted-analysis-assurance.json`、`schemas/ch28-ai-assisted-analysis-assurance.schema.json`。`scripts/check_chapter28_contract.py`は有限Layer Aを所有し、共有Projection/Policyを消費する。
+
+## 付録A/D/Hの公開前検査
+
+`check:appendix-adh`は4文書の全公開fieldを共有Projection / Policyへ渡し、有限版の読者面、12親入力、往復導線、旧ラボ設計routeの非移管を確認する。`sync:docs`は生成先削除前に同じ検査を一回実行する。親章の意味評価を再実装せず、参照している親版の変更は再レビューを要求する。付録に新しいparser・安全例外・実操作許可を追加しない。
