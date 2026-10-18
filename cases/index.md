@@ -112,6 +112,6 @@
 
 - [第27章 AI / Agent Threat Model完全合成例](ch27-ai-agent-threat-model-example.md): 六Component・六要求、承認・停止・証跡を読む非実行教材。
 
-## 第28章 AI支援分析の保証記録（Draft / 未merge）
+## 第28章 AI支援分析の保証記録
 
 [全欄Case](ch28-ai-assisted-analysis-assurance-example.md)は七Claim・五Statusと人間の採否を分離する。別CaseのEvidence、未受領Product、実AI実行を継承しない。

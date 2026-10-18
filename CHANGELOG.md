@@ -2,8 +2,8 @@
 
 ## 2026-10-19 — 第28章の公開索引の整合（Issue #200 / PR #201）
 
-- 用語集・図表一覧・READMEに残る第28章の制作中/Draft表記と公開前追跡の説明を整理した。図表のImplementedは教材内の実装状態であり、Claim Statusや実AIの性能・法的承認を意味しない。
-- 見出し、二つの図表行、READMEの説明を有限公開契約と個別の旧表記への置換テストに含めた。初期Source確認・Intakeの履歴、合成Caseの状態・許可・未配達、共有Projection/Policy、formatter pinは保持する。
+- 用語集・図表一覧・README・Case索引・供給Data索引に残る第28章の制作中/Draft表記と公開前追跡の説明を整理した。図表のImplementedは教材内の実装状態であり、Claim Statusや実AIの性能・法的承認を意味しない。
+- 五つの索引・入口の見出し、二つの図表行、READMEの説明を有限公開契約と個別の旧表記への置換テストに含めた。初期Source確認・Intakeの履歴、合成Caseの状態・許可・未配達、共有Projection/Policy、formatter pinは保持する。
 
 ## 2026-10-18 — 第28章の公開後注記（Issue #200）
 

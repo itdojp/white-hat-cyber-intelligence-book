@@ -283,6 +283,16 @@ def run_regressions(data, schema, contract, source, projection, parent25, parent
             "教材の更新も独立レビュー・通常merge・実main/Pagesの確認を経ます。",
             "独立レビュー・通常merge・実main/Pagesの達成はIssue #50 / PR #187で追跡します。",
         ),
+        (
+            "cases/index.md",
+            "## 第28章 AI支援分析の保証記録\n",
+            "## 第28章 AI支援分析の保証記録（Draft / 未merge）\n",
+        ),
+        (
+            "cases/fixtures/index.md",
+            "## 第28章の固定AI支援分析記録\n",
+            "## 第28章の固定AI支援分析記録（Draft / 未merge）\n",
+        ),
     )
     check(
         "publication-not-stale:" + DOCUMENTS[0],

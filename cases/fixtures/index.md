@@ -115,6 +115,6 @@
 
 - [第27章供給記録](ch27-ai-agent-threat-model.json) / [閉Schema](../../schemas/ch27-ai-agent-threat-model.schema.json): 固定Responseと合成記録の比較だけ。実Model/API/外部Toolを実行しない。
 
-## 第28章の固定AI支援分析記録（Draft / 未merge）
+## 第28章の固定AI支援分析記録
 
 `ch28-ai-assisted-analysis-assurance.json` / `ch28-ai-assisted-analysis-assurance.schema.json`は完全合成の記録照合用。実Model/API/Toolを実行しない。
