@@ -760,7 +760,7 @@
       "targetId": "appendix-a",
       "issue": 52,
       "targetKind": "appendix",
-      "status": "canonical-pr-open",
+      "status": "consumed",
       "selectedCandidateId": "EIC-0052-d6932c1a4774",
       "canonicalPr": 197,
       "intakeRecord": {
@@ -813,9 +813,9 @@
           "packageId": "EIP-0013",
           "inputPath": "appendix-a-safety-legal-disclosure.predraft.md",
           "inputSha256": "d6932c1a47741992071cd05d866afd26980ec64e6e35c3ebda09d53c2eede854",
-          "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197",
-          "dispositionReason": "raw不在をIntakeに明示しcurrent契約と限定一次資料から再構成。Draftの検証・独立レビューは継続中。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212",
+          "dispositionReason": "PR197およびSource追跡修正PR199の利用者通常merge、実main CI/Pages、207公開byte一致、元P1解決を確認。raw不在・未読・実体hash未照合・直接採用なしを保持し、現行契約と限定一次資料から再構成した付録の公開完了を記録する。"
         }
       ],
       "statusHistory": [
@@ -836,6 +836,12 @@
           "effectiveAt": "2026-10-17",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197",
           "reason": "専用Draft PR197と正式Intake。既存親契約を保持したA/D/H参照本文、限定Source、有限公開面検査。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-10-18",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212",
+          "reason": "PR197/199の通常merge後main fe3bed926526ba80d78e764e9f0dc393fc1bc5e6でBook Contract39099984766/Book QA39099984786/Deploy Pages39099984852 success。207公開filesがPages artifactと全byte一致、公開byteの42表示/Source往復2条件/親nav18linksを確認。PR199指摘0、元197 P1はcurrentmainの15unit/追跡検査で証明し解決。原Intake/Package/同梱J/他Target/旧履歴、raw未読・実体hash未照合・直接採用なしを保持。人間読者試行/実機/nativezoom/法務承認や全付録最終確定とはしない。"
         }
       ]
     },
@@ -843,7 +849,7 @@
       "targetId": "appendix-d",
       "issue": 52,
       "targetKind": "appendix",
-      "status": "canonical-pr-open",
+      "status": "consumed",
       "selectedCandidateId": "EIC-0052-a1d1ce13dd48",
       "canonicalPr": 197,
       "intakeRecord": {
@@ -896,9 +902,9 @@
           "packageId": "EIP-0013",
           "inputPath": "appendix-d-troubleshooting-stop-flow.predraft.md",
           "inputSha256": "a1d1ce13dd4827d438182ed1ad94b20f01c25c4d243b42e847d1ed9e2a2147da",
-          "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197",
-          "dispositionReason": "raw不在をIntakeに明示しcurrent契約と限定一次資料から再構成。Draftの検証・独立レビューは継続中。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212",
+          "dispositionReason": "PR197およびSource追跡修正PR199の利用者通常merge、実main CI/Pages、207公開byte一致、元P1解決を確認。raw不在・未読・実体hash未照合・直接採用なしを保持し、現行契約と限定一次資料から再構成した付録の公開完了を記録する。"
         }
       ],
       "statusHistory": [
@@ -919,6 +925,12 @@
           "effectiveAt": "2026-10-17",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197",
           "reason": "専用Draft PR197と正式Intake。既存親契約を保持したA/D/H参照本文、限定Source、有限公開面検査。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-10-18",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212",
+          "reason": "PR197/199の通常merge後main fe3bed926526ba80d78e764e9f0dc393fc1bc5e6でBook Contract39099984766/Book QA39099984786/Deploy Pages39099984852 success。207公開filesがPages artifactと全byte一致、公開byteの42表示/Source往復2条件/親nav18linksを確認。PR199指摘0、元197 P1はcurrentmainの15unit/追跡検査で証明し解決。原Intake/Package/同梱J/他Target/旧履歴、raw未読・実体hash未照合・直接採用なしを保持。人間読者試行/実機/nativezoom/法務承認や全付録最終確定とはしない。"
         }
       ]
     },
@@ -926,7 +938,7 @@
       "targetId": "appendix-h",
       "issue": 52,
       "targetKind": "appendix",
-      "status": "canonical-pr-open",
+      "status": "consumed",
       "selectedCandidateId": "EIC-0052-390579c705e1",
       "canonicalPr": 197,
       "intakeRecord": {
@@ -979,9 +991,9 @@
           "packageId": "EIP-0013",
           "inputPath": "appendix-h-lab-operations.predraft.md",
           "inputSha256": "390579c705e1187c9765b6544f9628a7bd4b0542b7cc3da70ff5dc3172b8ecca",
-          "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197",
-          "dispositionReason": "raw不在をIntakeに明示しcurrent契約と限定一次資料から再構成。Draftの検証・独立レビューは継続中。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212",
+          "dispositionReason": "PR197およびSource追跡修正PR199の利用者通常merge、実main CI/Pages、207公開byte一致、元P1解決を確認。raw不在・未読・実体hash未照合・直接採用なしを保持し、現行契約と限定一次資料から再構成した付録の公開完了を記録する。"
         }
       ],
       "statusHistory": [
@@ -1002,6 +1014,12 @@
           "effectiveAt": "2026-10-17",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197",
           "reason": "専用Draft PR197と正式Intake。既存親契約を保持したA/D/H参照本文、限定Source、有限公開面検査。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-10-18",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212",
+          "reason": "PR197/199の通常merge後main fe3bed926526ba80d78e764e9f0dc393fc1bc5e6でBook Contract39099984766/Book QA39099984786/Deploy Pages39099984852 success。207公開filesがPages artifactと全byte一致、公開byteの42表示/Source往復2条件/親nav18linksを確認。PR199指摘0、元197 P1はcurrentmainの15unit/追跡検査で証明し解決。原Intake/Package/同梱J/他Target/旧履歴、raw未読・実体hash未照合・直接採用なしを保持。人間読者試行/実機/nativezoom/法務承認や全付録最終確定とはしない。"
         }
       ]
     },
