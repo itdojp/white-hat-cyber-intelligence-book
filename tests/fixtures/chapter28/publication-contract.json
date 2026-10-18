@@ -9769,7 +9769,7 @@
   "corpusSha256": "f8e0d28c7daa859e38bf6cad24bd99408757beaab3fcc6a44bf3f796f859e2f0",
   "documents": {
     "manuscript/28-ai-assisted-analysis-assurance.md": {
-      "projectionSha256": "e36d945433ec9a22f1c8aadf29e0f11ea699a002c8f9711d2b93bb55631972fb",
+      "projectionSha256": "fcdb43db644d0bf55e39a541f1d6d6fdd15c03130148da40733f9d46cf7b364c",
       "fieldCount": 107,
       "headings": [
         [
@@ -9778,7 +9778,7 @@
         ],
         [
           2,
-          "公開前Draftの扱い"
+          "教材の範囲と検証の限界"
         ],
         [
           2,
@@ -10521,7 +10521,9 @@
   "indices": {
     "artifact-index.md": [
       "ART-32",
-      "templates/ai-assisted-analysis-assurance-record.md"
+      "templates/ai-assisted-analysis-assurance-record.md",
+      "全欄Case、閉Schema、有限Layer Aの契約検査",
+      "cases/ch28-ai-assisted-analysis-assurance-example.md"
     ],
     "figure-index.md": [
       "F-28-01",
@@ -10545,7 +10547,8 @@
       "七Claim/五Status"
     ],
     "CANONICAL_SOURCE.md": [
-      "scripts/check_chapter28_contract.py"
+      "scripts/check_chapter28_contract.py",
+      "第28章の公開教材"
     ]
   }
 }

@@ -253,4 +253,32 @@ def run_regressions(data, schema, contract, source, projection, parent25, parent
         "Case-complete",
         not reading_table_errors(projection.document(DOCUMENTS[2]), data),
     )
+    # Issue #200: publication state is not the synthetic record's authorization.
+    from unittest.mock import patch
+    from scripts.check_chapter28_contract import repository_errors
+
+    current_markers = {
+        "artifact-index.md": "全欄Case、閉Schema、有限Layer Aの契約検査",
+        "CANONICAL_SOURCE.md": "第28章の公開教材",
+    }
+    stale_markers = {
+        DOCUMENTS[0]: "公開前Draftの扱い",
+        "artifact-index.md": "全欄Case/閉Schema/有限契約は制作中",
+        "CANONICAL_SOURCE.md": "現在のDraftには全欄Case",
+    }
+    for path, stale in stale_markers.items():
+        check("publication-not-stale:" + path, stale not in read_regular(ROOT, path).decode())
+    check(
+        "publication-offline-boundary",
+        "教材の範囲と検証の限界" in source[DOCUMENTS[0]]
+        and "オフラインの記録照合に限定する" in source[DOCUMENTS[0]]
+        and "実Model/APIの実行や実操作の許可を意味しない" in source[DOCUMENTS[0]],
+    )
+    for path, marker in current_markers.items():
+        check("publication-current:" + path, marker in read_regular(ROOT, path).decode())
+        changed = read_regular(ROOT, path).decode().replace(marker, stale_markers[path])
+        def changed_read(root, name, changed_path=path, text=changed):
+            return text.encode() if name == changed_path else read_regular(root, name)
+        with patch("scripts.check_chapter28_contract.read_regular", side_effect=changed_read):
+            check("publication-stale-rejected:" + path, "AI28 index: " + path in repository_errors(contract))
     return len(checked), errors

@@ -5,9 +5,9 @@ description: Source、入力、出力Claim、検証、人間の採否を分け�
 
 # 第28章　AIを使って分析するときの検証と汚染対策
 
-## 公開前Draftの扱い
+## 教材の範囲と検証の限界
 
-本文・ART-32 Template・全欄Case・完全合成JSON・閉Schema・有限Layer Aを同じDraftで制作する。教材はオフラインの記録照合に限定する。独立レビューと通常merge、実main/Pages gateを経るまで章DoD/verified Ready/実公開を主張しない。
+本文・ART-32 Template・全欄Case・完全合成JSON・閉Schema・有限Layer Aを併せて読む。教材はオフラインの記録照合に限定する。記入完了や契約検査の成功は、実Model/APIの実行や実操作の許可を意味しない。教材の更新も独立レビュー、通常merge、実main/Pagesの公開確認を経る。
 
 ## この章の位置付け
 
