@@ -718,6 +718,12 @@
           "effectiveAt": "2026-10-17",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197",
           "reason": "専用Draft PR197と正式Intake。既存親契約を保持したA/D/H参照本文、限定Source、有限公開面検査。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-10-18",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212",
+          "reason": "PR197/199の通常merge後main fe3bed926526ba80d78e764e9f0dc393fc1bc5e6でBook Contract39099984766/Book QA39099984786/Deploy Pages39099984852 success。207公開filesがPages artifactと全byte一致、公開byteの42表示/Source往復2条件/親nav18linksを確認。PR199指摘0、元197 P1はcurrentmainの15unit/追跡検査で証明し解決。原Intake/Package/同梱J/他Target/旧履歴、raw未読・実体hash未照合・直接採用なしを保持。人間読者試行/実機/nativezoom/法務承認や全付録最終確定とはしない。"
         }
       ]
     },
@@ -743,6 +749,12 @@
           "effectiveAt": "2026-10-17",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197",
           "reason": "専用Draft PR197と正式Intake。既存親契約を保持したA/D/H参照本文、限定Source、有限公開面検査。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-10-18",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212",
+          "reason": "PR197/199の通常merge後main fe3bed926526ba80d78e764e9f0dc393fc1bc5e6でBook Contract39099984766/Book QA39099984786/Deploy Pages39099984852 success。207公開filesがPages artifactと全byte一致、公開byteの42表示/Source往復2条件/親nav18linksを確認。PR199指摘0、元197 P1はcurrentmainの15unit/追跡検査で証明し解決。原Intake/Package/同梱J/他Target/旧履歴、raw未読・実体hash未照合・直接採用なしを保持。人間読者試行/実機/nativezoom/法務承認や全付録最終確定とはしない。"
         }
       ]
     },
@@ -768,6 +780,12 @@
           "effectiveAt": "2026-10-17",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/197",
           "reason": "専用Draft PR197と正式Intake。既存親契約を保持したA/D/H参照本文、限定Source、有限公開面検査。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-10-18",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212",
+          "reason": "PR197/199の通常merge後main fe3bed926526ba80d78e764e9f0dc393fc1bc5e6でBook Contract39099984766/Book QA39099984786/Deploy Pages39099984852 success。207公開filesがPages artifactと全byte一致、公開byteの42表示/Source往復2条件/親nav18linksを確認。PR199指摘0、元197 P1はcurrentmainの15unit/追跡検査で証明し解決。原Intake/Package/同梱J/他Target/旧履歴、raw未読・実体hash未照合・直接採用なしを保持。人間読者試行/実機/nativezoom/法務承認や全付録最終確定とはしない。"
         }
       ]
     },
