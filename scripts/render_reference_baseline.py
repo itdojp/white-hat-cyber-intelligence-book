@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import argparse
+from datetime import date
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,8 +20,36 @@ def display_version(source: dict) -> str:
     return str(status)
 
 
-def render() -> str:
-    data = json.loads(REGISTRY.read_text(encoding='utf-8'))
+def appendix_review_rows(data: dict) -> list[str]:
+    """Render declared dependencies, not inferred chapter numbers or legal approval."""
+    rows = []
+    for source in data['sources']:
+        if 'appendixReview' not in source:
+            continue
+        review = source['appendixReview']
+        if not isinstance(review, dict) or set(review) != {'checkedAt', 'targets', 'note'}:
+            raise ValueError('invalid appendixReview fields')
+        checked, targets, note = review['checkedAt'], review['targets'], review['note']
+        if not isinstance(checked, str):
+            raise ValueError('invalid appendix review date')
+        if date.fromisoformat(checked).isoformat() != checked:
+            raise ValueError('non-canonical appendix review date')
+        allowed = {'appendix-' + letter for letter in 'abcdefghij'}
+        if (not isinstance(targets, list) or not targets
+                or any(not isinstance(t, str) or t not in allowed for t in targets)
+                or len(set(targets)) != len(targets)):
+            raise ValueError('invalid appendix review targets')
+        if not isinstance(note, str) or not re.fullmatch(r'references/[a-z0-9][a-z0-9-]*\.md', note):
+            raise ValueError('invalid appendix review note path')
+        labels = '・'.join(t[-1].upper() for t in targets)
+        rows.append(f'| {source["id"]} | {checked} | {labels} | '
+                    f'[限定確認]({Path(note).name}) |')
+    return rows
+
+
+def render(data: dict | None = None) -> str:
+    if data is None:
+        data = json.loads(REGISTRY.read_text(encoding='utf-8'))
     lines = [
         '# Reference Baseline',
         '',
@@ -39,6 +69,14 @@ def render() -> str:
             f'| {source["id"]} | {publisher} | [{title}]({source["url"]}) | '
             f'{version} | {source["checkedAt"]} | {source["nextReviewAt"]} | {chapters} |'
         )
+    appendix_rows = appendix_review_rows(data)
+    if appendix_rows:
+        lines.extend([
+            '', '## 付録の用途限定確認', '',
+            '対象は記載の付録・節だけです。全Source・全章・個別事案の適法性を再監査した日付ではありません。過去の章監査とCaseの時点・権限を更新せず、変更時は既存の章mappingと下表の付録を確認します。',
+            '', '| ID | 用途限定確認日 | 対象付録 | 採用範囲・非採用・履歴 |',
+            '|---|---|---|---|', *appendix_rows,
+        ])
     lines.extend([
         '',
         '## 運用',

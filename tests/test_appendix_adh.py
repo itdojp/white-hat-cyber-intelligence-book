@@ -110,6 +110,74 @@ class AppendixTests(unittest.TestCase):
                 self.assertIn("ADH-source-identity: " + identifier,
                               c.repository_errors(inputs, self.contract))
 
+    def test_appendix_review_is_discoverable_in_registry_and_baseline(self):
+        from scripts.render_reference_baseline import render
+        registry = c.strict(self.inputs["references/sources.json"])
+        entries = {s["id"]: s for s in registry["sources"]}
+        for sid in c.SOURCE_IDS:
+            review = entries[sid].get("appendixReview")
+            self.assertIsInstance(review, dict, sid)
+            self.assertEqual(review["checkedAt"], "2026-10-17")
+            self.assertGreaterEqual(entries[sid]["checkedAt"], review["checkedAt"])
+            self.assertEqual(review["note"], c.DOCUMENTS[3])
+        rendered = render(registry)
+        self.assertIn("## 付録の用途限定確認", rendered)
+        self.assertEqual(rendered.count("[限定確認](appendix-adh-source-review-2026-10-17.md)"), 5)
+        self.assertEqual(c.repository_errors(self.inputs, self.contract), [])
+
+    def test_parent_source_identity_bindings_remain_consistent(self):
+        sources = {s["id"]: s for s in c.strict(self.inputs["references/sources.json"])["sources"]}
+        for chapter in (8, 9, 10, 14, 15, 20):
+            path = f"tests/fixtures/chapter{chapter:02}/publication-contract.json"
+            parent = c.strict((ROOT / path).read_text(encoding="utf-8"))
+            for sid, expected in parent["sourceIdentity"].items():
+                for key, value in expected.items():
+                    with self.subTest(chapter=chapter, source=sid, field=key):
+                        self.assertEqual(sources[sid][key], value)
+
+    def test_appendix_review_drift_fails_closed(self):
+        for sid in c.SOURCE_IDS:
+            for kind in ("missing", "date", "source-date", "target", "note", "notes", "trigger"):
+                inputs = dict(self.inputs)
+                registry = c.strict(inputs["references/sources.json"])
+                source = next(s for s in registry["sources"] if s["id"] == sid)
+                if kind == "missing":
+                    source.pop("appendixReview")
+                elif kind == "date":
+                    source["appendixReview"]["checkedAt"] = "2026-10-18"
+                elif kind == "source-date":
+                    source["checkedAt"] = "2026-10-16"
+                elif kind == "target":
+                    source["appendixReview"]["targets"] = ["appendix-j"]
+                elif kind == "note":
+                    source["appendixReview"]["note"] = "references/other.md"
+                elif kind == "notes":
+                    source["notes"] = "review omitted"
+                else:
+                    source["reviewTriggers"] = []
+                inputs["references/sources.json"] = json.dumps(registry)
+                with self.subTest(sid=sid, kind=kind):
+                    self.assertIn("ADH-source-review: " + sid,
+                                  c.repository_errors(inputs, self.contract))
+
+    def test_baseline_optional_review_metadata_is_bounded(self):
+        from scripts.render_reference_baseline import render
+        registry = c.strict(self.inputs["references/sources.json"])
+        for source in registry["sources"]:
+            source.pop("appendixReview", None)
+        self.assertNotIn("## 付録の用途限定確認", render(registry))
+        source = registry["sources"][0]
+        good = {"checkedAt": "2026-10-17", "targets": ["appendix-a"],
+                "note": c.DOCUMENTS[3]}
+        for field, value in (("checkedAt", "not-a-date"), ("checkedAt", "2026-02-30"),
+                             ("targets", []), ("targets", ["appendix-a", "appendix-a"]),
+                             ("targets", [29]), ("note", "references/../private.md"),
+                             ("note", "https://example.invalid/note.md"),
+                             ("note", "references/a](bad).md")):
+            source["appendixReview"] = dict(good, **{field: value})
+            with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                render(registry)
+
     def test_route_missing_duplicate_collision_and_legacy_owner(self):
         for kind in ("missing", "duplicate", "destination", "order", "legacy"):
             inputs = dict(self.inputs)

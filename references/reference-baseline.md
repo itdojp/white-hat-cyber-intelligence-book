@@ -31,8 +31,8 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-OWASP-LLM-001 | OWASP GenAI Security Project | [Top 10 for LLM and GenAI Applications](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/) | 2026 / released | 2026-09-30 | 2026-12-30 | 27, 28 |
 | SRC-OWASP-AGENT-001 | OWASP GenAI Security Project | [Top 10 Risks and Mitigations for Agentic AI Security](https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/) | 2026 guidance / released | 2026-09-30 | 2026-12-30 | 27, 28 |
 | SRC-AISVS-001 | OWASP | [Artificial Intelligence Security Verification Standard](https://owasp.org/projects/artificial-intelligence-security-verification-standard-aisvs-docs) | 1.0 / released | 2026-09-29 | 2026-12-29 | 27 |
-| SRC-JP-LAW-001 | e-Gov | [不正アクセス行為の禁止等に関する法律](https://laws.e-gov.go.jp/law/411AC0000000128) | current display effective 2025-06-01 / current-law | 2026-09-13 | 2026-12-13 | 2, 9 |
-| SRC-IPA-VDP-001 | IPA / JPCERT/CC | [情報セキュリティ早期警戒パートナーシップガイドライン](https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html) | 2026 edition / current-guidance | 2026-10-03 | 2027-01-03 | 2, 9, 15 |
+| SRC-JP-LAW-001 | e-Gov | [不正アクセス行為の禁止等に関する法律](https://laws.e-gov.go.jp/law/411AC0000000128) | current display effective 2025-06-01 / current-law | 2026-10-17 | 2026-12-13 | 2, 9 |
+| SRC-IPA-VDP-001 | IPA / JPCERT/CC | [情報セキュリティ早期警戒パートナーシップガイドライン](https://www.ipa.go.jp/security/guide/vuln/partnership_guide.html) | 2026 edition / current-guidance | 2026-10-17 | 2027-01-03 | 2, 9, 15 |
 | SRC-IANA-TLD-001 | Internet Assigned Numbers Authority (IANA) | [Root Zone Database — TLDs alpha by domain](https://data.iana.org/TLD/tlds-alpha-by-domain.txt) | 2026080300 / current-snapshot | 2026-08-03 | 2026-11-03 | 25 |
 | SRC-ATTACK-FAQ-001 | MITRE | [MITRE ATT&CK Frequently Asked Questions](https://attack.mitre.org/resources/faq/) | current | 2026-09-06 | 2026-12-06 | 5 |
 | SRC-ATTACK-T1671-001 | MITRE | [ATT&CK v19.2 Enterprise STIX: T1671 and detection metadata subset](https://github.com/mitre/cti/blob/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json) | 19.2 / snapshot | 2026-09-06 | 2026-12-06 | 5 |
@@ -45,11 +45,11 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-CWE-001 | MITRE | [Common Weakness Enumeration Archive](https://cwe.mitre.org/data/archive.html) | 4.20 / released | 2026-09-12 | 2026-12-12 | 7 |
 | SRC-CVSS-001 | FIRST | [CVSS v4.0 Specification and User Guide](https://www.first.org/cvss/v4.0/specification-document) | 4.0 / Specification 1.2 / User Guide 1.2 / released | 2026-09-17 | 2026-12-17 | 7, 15 |
 | SRC-CISA-VRM-001 | CISA | [CISA Announces BOD 26-04: official issuance bulletin](https://content.govdelivery.com/accounts/USDHSCISA/bulletins/41b445a) | BOD 26-04 issuance announcement only / published | 2026-09-12 | 2026-12-12 | 7 |
-| SRC-NIST-DFIR-001 | NIST | [Guide to Integrating Forensic Techniques into Incident Response](https://csrc.nist.gov/pubs/sp/800/86/final) | SP 800-86, Final, August 2006 / final | 2026-09-25 | 2027-09-13 | 8, 20 |
+| SRC-NIST-DFIR-001 | NIST | [Guide to Integrating Forensic Techniques into Incident Response](https://csrc.nist.gov/pubs/sp/800/86/final) | SP 800-86, Final, August 2006 / final | 2026-10-17 | 2027-09-13 | 8, 20 |
 | SRC-NIST-CONTAINER-001 | NIST | [Application Container Security Guide](https://csrc.nist.gov/pubs/sp/800/190/final) | SP 800-190, Final, September 2017 / final | 2026-09-15 | 2027-09-15 | 8, 13 |
-| SRC-NIST-TEST-001 | NIST | [Technical Guide to Information Security Testing and Assessment](https://csrc.nist.gov/pubs/sp/800/115/final) | SP 800-115, September 2008 / final | 2026-09-16 | 2027-09-16 | 9, 14 |
+| SRC-NIST-TEST-001 | NIST | [Technical Guide to Information Security Testing and Assessment](https://csrc.nist.gov/pubs/sp/800/115/final) | SP 800-115, September 2008 / final | 2026-10-17 | 2027-09-16 | 9, 14 |
 | SRC-CT-001 | RFC Editor / IETF | [Certificate Transparency Version 2.0](https://www.rfc-editor.org/info/rfc9162/) | RFC 9162 / experimental | 2026-09-14 | 2027-09-14 | 10 |
-| SRC-SECURITYTXT-001 | RFC Editor / IETF | [A File Format to Aid in Security Vulnerability Disclosure](https://www.rfc-editor.org/info/rfc9116/) | RFC 9116 / informational | 2026-09-14 | 2027-09-14 | 10 |
+| SRC-SECURITYTXT-001 | RFC Editor / IETF | [A File Format to Aid in Security Vulnerability Disclosure](https://www.rfc-editor.org/info/rfc9116/) | RFC 9116 / informational | 2026-10-17 | 2027-09-14 | 10 |
 | SRC-DNS-TERM-001 | RFC Editor / IETF | [DNS Terminology](https://www.rfc-editor.org/info/rfc9499/) | RFC 9499 / BCP 219 / best-current-practice | 2026-09-14 | 2027-09-14 | 10 |
 | SRC-DNS-STALE-001 | RFC Editor / IETF | [Serving Stale Data to Improve DNS Resiliency](https://www.rfc-editor.org/info/rfc8767/) | RFC 8767 / standards-track | 2026-09-14 | 2027-09-14 | 10 |
 | SRC-NIST-DIGITAL-001 | NIST | [Digital Identity Guidelines](https://csrc.nist.gov/pubs/sp/800/63/4/final) | SP 800-63-4 / final | 2026-09-15 | 2026-12-15 | 12 |
@@ -65,6 +65,18 @@ Registry全体の最終一括監査日: **2026-07-25**
 | SRC-NIST-MEASURE-002 | NIST | [Measurement Guide for Information Security: Volume 2 — Developing an Information Security Measurement Program](https://csrc.nist.gov/pubs/sp/800/55/v2/final) | SP 800-55v2 / final | 2026-09-26 | 2027-09-26 | 22 |
 | SRC-ODNI-OSINT-001 | ODNI / CIA | [The IC OSINT Strategy 2024–2026](https://www.odni.gov/files/ODNI/documents/IC_OSINT_Strategy.pdf) | 2024–2026 published edition / official | 2026-09-27 | 2026-12-31 | 23 |
 | SRC-TLP-001 | FIRST | [Traffic Light Protocol (TLP) — Version 2.0](https://www.first.org/tlp/) | 2.0 / current | 2026-09-28 | 2027-09-28 | 26 |
+
+## 付録の用途限定確認
+
+対象は記載の付録・節だけです。全Source・全章・個別事案の適法性を再監査した日付ではありません。過去の章監査とCaseの時点・権限を更新せず、変更時は既存の章mappingと下表の付録を確認します。
+
+| ID | 用途限定確認日 | 対象付録 | 採用範囲・非採用・履歴 |
+|---|---|---|---|
+| SRC-JP-LAW-001 | 2026-10-17 | A | [限定確認](appendix-adh-source-review-2026-10-17.md) |
+| SRC-IPA-VDP-001 | 2026-10-17 | A | [限定確認](appendix-adh-source-review-2026-10-17.md) |
+| SRC-NIST-DFIR-001 | 2026-10-17 | H | [限定確認](appendix-adh-source-review-2026-10-17.md) |
+| SRC-NIST-TEST-001 | 2026-10-17 | A・D | [限定確認](appendix-adh-source-review-2026-10-17.md) |
+| SRC-SECURITYTXT-001 | 2026-10-17 | A | [限定確認](appendix-adh-source-review-2026-10-17.md) |
 
 ## 運用
 
