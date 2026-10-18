@@ -254,7 +254,7 @@ Intelligence Requirementは判断に必要な不確実性を減らす問い、Co
 
 Instruction boundaryは指示と出自付きDataの扱いの境界、Excessive Agencyは必要以上の機能・権限・自律性に関するリスクである。ComponentのDeclared / Observed / Validated / Restricted / Disabled / Unknownは本書の六状態で、Lab八状態や外部標準の適合Levelとは別である。[第27章](manuscript/27-ai-agent-security.md)を参照。
 
-## 第28章の用語（制作中）
+## 第28章の用語
 
 - **Claim Status**: 本書独自のUnverified / Supported / Partially supported / Contradicted / Rejected。Human Decisionや実操作許可と異なる。
 - **Grounding mode**: Direct / Composite / Inferenceで原句・各構成箇所・推論の限界を分ける記録。

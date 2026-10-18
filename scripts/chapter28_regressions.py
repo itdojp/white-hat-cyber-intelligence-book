@@ -257,28 +257,58 @@ def run_regressions(data, schema, contract, source, projection, parent25, parent
     from unittest.mock import patch
     from scripts.check_chapter28_contract import repository_errors
 
-    current_markers = {
-        "artifact-index.md": "全欄Case、閉Schema、有限Layer Aの契約検査",
-        "CANONICAL_SOURCE.md": "第28章の公開教材",
-    }
-    stale_markers = {
-        DOCUMENTS[0]: "公開前Draftの扱い",
-        "artifact-index.md": "全欄Case/閉Schema/有限契約は制作中",
-        "CANONICAL_SOURCE.md": "現在のDraftには全欄Case",
-    }
-    for path, stale in stale_markers.items():
-        check("publication-not-stale:" + path, stale not in read_regular(ROOT, path).decode())
+    publication_markers = (
+        (
+            "artifact-index.md",
+            "全欄Case、閉Schema、有限Layer Aの契約検査",
+            "全欄Case/閉Schema/有限契約は制作中",
+        ),
+        ("CANONICAL_SOURCE.md", "第28章の公開教材", "現在のDraftには全欄Case"),
+        ("glossary.md", "## 第28章の用語\n", "## 第28章の用語（制作中）\n"),
+        ("figure-index.md", "## 第28章\n", "## 第28章（制作中）\n"),
+        (
+            "figure-index.md",
+            "| F-28-01 | Claimから人間の判断への記録順 | `manuscript/28-ai-assisted-analysis-assurance.md` | Implemented |",
+            "| F-28-01 | Claimから人間の判断への記録順 | `manuscript/28-ai-assisted-analysis-assurance.md` | Draft |",
+        ),
+        (
+            "figure-index.md",
+            "| T-28-01 | 五つのClaim Status | `manuscript/28-ai-assisted-analysis-assurance.md` | Implemented |",
+            "| T-28-01 | 五つのClaim Status | `manuscript/28-ai-assisted-analysis-assurance.md` | Draft |",
+        ),
+        ("README.md", "## 第28章の公開教材\n", "## 第28章（Draft / Issue #50）\n"),
+        ("README.md", "第28章の教材は七Claim", "第28章Draftは七Claim"),
+        (
+            "README.md",
+            "教材の更新も独立レビュー・通常merge・実main/Pagesの確認を経ます。",
+            "独立レビュー・通常merge・実main/Pagesの達成はIssue #50 / PR #187で追跡します。",
+        ),
+    )
+    check(
+        "publication-not-stale:" + DOCUMENTS[0],
+        "公開前Draftの扱い" not in source[DOCUMENTS[0]],
+    )
     check(
         "publication-offline-boundary",
         "教材の範囲と検証の限界" in source[DOCUMENTS[0]]
         and "オフラインの記録照合に限定する" in source[DOCUMENTS[0]]
         and "実Model/APIの実行や実操作の許可を意味しない" in source[DOCUMENTS[0]],
     )
-    for path, marker in current_markers.items():
-        check("publication-current:" + path, marker in read_regular(ROOT, path).decode())
-        changed = read_regular(ROOT, path).decode().replace(marker, stale_markers[path])
+    for i, (path, marker, stale) in enumerate(publication_markers):
+        label = path + ":" + str(i)
+        text = read_regular(ROOT, path).decode()
+        check("publication-not-stale:" + label, stale not in text)
+        check("publication-current:" + label, text.count(marker) == 1)
+        changed = text.replace(marker, stale)
+
         def changed_read(root, name, changed_path=path, text=changed):
             return text.encode() if name == changed_path else read_regular(root, name)
-        with patch("scripts.check_chapter28_contract.read_regular", side_effect=changed_read):
-            check("publication-stale-rejected:" + path, "AI28 index: " + path in repository_errors(contract))
+
+        with patch(
+            "scripts.check_chapter28_contract.read_regular", side_effect=changed_read
+        ):
+            check(
+                "publication-stale-rejected:" + label,
+                "AI28 index: " + path in repository_errors(contract),
+            )
     return len(checked), errors

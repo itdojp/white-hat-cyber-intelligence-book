@@ -10527,11 +10527,15 @@
     ],
     "figure-index.md": [
       "F-28-01",
-      "T-28-01"
+      "T-28-01",
+      "## 第28章\n",
+      "| F-28-01 | Claimから人間の判断への記録順 | `manuscript/28-ai-assisted-analysis-assurance.md` | Implemented |",
+      "| T-28-01 | 五つのClaim Status | `manuscript/28-ai-assisted-analysis-assurance.md` | Implemented |"
     ],
     "glossary.md": [
       "Approved Source Set",
-      "Claim Status"
+      "Claim Status",
+      "## 第28章の用語\n"
     ],
     "cases/index.md": [
       "ch28-ai-assisted-analysis-assurance-example.md"
@@ -10541,7 +10545,10 @@
       "ch28-ai-assisted-analysis-assurance.schema.json"
     ],
     "README.md": [
-      "npm run check:chapter28"
+      "npm run check:chapter28",
+      "## 第28章の公開教材\n",
+      "第28章の教材は七Claim",
+      "教材の更新も独立レビュー・通常merge・実main/Pagesの確認を経ます。"
     ],
     "CHANGELOG.md": [
       "七Claim/五Status"
