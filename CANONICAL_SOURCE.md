@@ -128,7 +128,7 @@ Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設�
 
 第27章は`scripts/check_chapter27_contract.py`がART-31の合成記録と全公開面を共有Publication Projection / Policyへ渡す。`sync:docs`は生成先削除前に`check_chapter27_contract.py --no-regressions`を実行し、未知入力・参照/型/状態漂流を拒否する。
 
-第28章の初期Draftで本文/空Template/Source確認とIntakeを記録した。現在のDraftには全欄Case/完全合成JSON/閉Schema/有限Layer A/比較Corpus/有限公開前検査を追加済みである。実装の存在だけで独立レビュー・章DoD・実main/Pages公開の完了を意味しない。共有Projection/Policy/formatter pinは変更しない。
+第28章の公開教材は本文/空Template/Source確認、全欄Case/完全合成JSON/閉Schema/有限Layer A/比較Corpus/有限公開前検査を含む。初期DraftのIntakeは作成時点の履歴として保持する。更新時も実装の存在だけで独立レビュー・章DoD・実main/Pages公開の完了とせず、各gateを確認する。共有Projection/Policy/formatter pinは変更しない。
 
 第28章の供給教材は`cases/ch28-ai-assisted-analysis-assurance-example.md`、`cases/fixtures/ch28-ai-assisted-analysis-assurance.json`、`schemas/ch28-ai-assisted-analysis-assurance.schema.json`。`scripts/check_chapter28_contract.py`は有限Layer Aを所有し、共有Projection/Policyを消費する。
 

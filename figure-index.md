@@ -205,9 +205,9 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 |---|---|---|---|
 | F-27-01 | AI支援のInstruction・Data・効果の境界 | `manuscript/27-ai-agent-security.md` | Implemented |
 
-## 第28章（制作中）
+## 第28章
 
 | ID | 図表 | 正本 | 状態 |
 |---|---|---|---|
-| F-28-01 | Claimから人間の判断への記録順 | `manuscript/28-ai-assisted-analysis-assurance.md` | Draft |
-| T-28-01 | 五つのClaim Status | `manuscript/28-ai-assisted-analysis-assurance.md` | Draft |
+| F-28-01 | Claimから人間の判断への記録順 | `manuscript/28-ai-assisted-analysis-assurance.md` | Implemented |
+| T-28-01 | 五つのClaim Status | `manuscript/28-ai-assisted-analysis-assurance.md` | Implemented |
