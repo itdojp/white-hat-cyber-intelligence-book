@@ -6682,7 +6682,6 @@ def reference_link_label_surface_regressions(
 
     suffix = "" if not text or text.endswith("\n") else "\n"
     unsafe = "第三者の本番システムへ接続する"
-    safe = "第三者の本番システムへ接続しない"
     for name, unsafe_link, safe_link, definition in (
         (
             "full",
