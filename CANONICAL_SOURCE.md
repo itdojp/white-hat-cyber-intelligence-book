@@ -135,3 +135,7 @@ Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設�
 ## 付録A/D/Hの公開前検査
 
 `check:appendix-adh`は4文書の全公開fieldを共有Projection / Policyへ渡し、有限版の読者面、12親入力、往復導線、旧ラボ設計routeの非移管を確認する。`sync:docs`は生成先削除前に同じ検査を一回実行する。親章の意味評価を再実装せず、参照している親版の変更は再レビューを要求する。付録に新しいparser・安全例外・実操作許可を追加しない。
+
+## 第29章の公開前検査
+
+`scripts/check_chapter29_contract.py`はART-33の固定合成版、32成果物・親版・非継承、文書根拠、Gap、二Brief、Decision/Action/Reassessmentを有限検査する。`sync:docs`では生成先削除前に`--no-regressions`で実行する。構文と安全文法は共有Projection1.1.0 / Policy1.2.0が所有する。六状態比較は任意Workflowの承認器ではなく、実操作や人間承認を認定しない。

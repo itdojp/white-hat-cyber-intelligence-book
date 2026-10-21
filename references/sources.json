@@ -146,19 +146,21 @@
       "version": "2.0",
       "url": "https://www.nist.gov/cyberframework",
       "publishedAt": "2024-02-26",
-      "checkedAt": "2026-09-26",
+      "checkedAt": "2026-10-21",
       "nextReviewAt": "2026-11-08",
       "reviewTriggers": [
         "NIST CSF revision or errata",
-        "NIST CSF 2.0 resource-center or outcome-taxonomy change used by Chapter 4"
+        "NIST CSF 2.0 resource-center or outcome-taxonomy change used by Chapter 4",
+        "Change to Chapter 29 risk communication, evidence sharing, or reassessment concepts"
       ],
       "chapters": [
         1,
         4,
         19,
-        22
+        22,
+        29
       ],
-      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。 2026-09-23用途限定確認: 第19章ではFinal CSWP 29（2024-02-26）印刷p.5の六Functionを上位Outcomeとして参照し、固定直列IR手順・本書七状態の規範算法・適合認定とはしない。 第22章用途限定確認（2026-09-26）: CSWP29 Final2024-02-26の公式landing/PDF、§3.1印刷pp.6〜7のCurrent/Target Profile、Gap、優先行動計画を確認。Metric/七状態の規範算法やmappingからの効果証明ではない。既存章notesと次回確認日を保持。"
+      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。 2026-09-23用途限定確認: 第19章ではFinal CSWP 29（2024-02-26）印刷p.5の六Functionを上位Outcomeとして参照し、固定直列IR手順・本書七状態の規範算法・適合認定とはしない。 第22章用途限定確認（2026-09-26）: CSWP29 Final2024-02-26の公式landing/PDF、§3.1印刷pp.6〜7のCurrent/Target Profile、Gap、優先行動計画を確認。Metric/七状態の規範算法やmappingからの効果証明ではない。既存章notesと次回確認日を保持。 第29章用途限定確認（2026-10-21）: CSWP29 Final2024-02-26の公式landing/PDF、Abstract/§1/§5.1を再取得して高位Outcomeと情報の往復を確認。本書六状態、実許可、Control有効性、過去Caseの再承認の根拠ではない。既存採用節と次回日付を保持。"
     },
     {
       "id": "SRC-NIST-RISK-001",
@@ -169,17 +171,19 @@
       "version": "SP 800-30 Rev.1",
       "url": "https://csrc.nist.gov/pubs/sp/800/30/r1/final",
       "publishedAt": "2012-09-17",
-      "checkedAt": "2026-08-08",
+      "checkedAt": "2026-10-21",
       "nextReviewAt": "2026-11-08",
       "reviewTriggers": [
         "NIST SP 800-30 revision, withdrawal, successor, or errata",
         "NIST Risk Management publications index status change",
-        "Change to a threat source, threat event, vulnerability, predisposing condition, likelihood, impact, or uncertainty concept used by Chapter 4"
+        "Change to a threat source, threat event, vulnerability, predisposing condition, likelihood, impact, or uncertainty concept used by Chapter 4",
+        "Change to Chapter 29 risk communication, evidence sharing, or reassessment concepts"
       ],
       "chapters": [
-        4
+        4,
+        29
       ],
-      "notes": "2026-08-08に公式final publication pageとNIST Risk Management publications indexを意味確認した。確認した公式範囲ではRev.1はFinalとして掲載され、後継版または専用errataは確認できなかった。第4章ではRisk assessmentの準備・維持、Threat source/event、Vulnerability/Predisposing condition、Likelihood、Impact、Uncertainty、Decision handoffの限定概念だけに用いる。Federal向けProcessを普遍的必須手順とせず、数値Risk scoreをThreat Modelの完了条件にしない。"
+      "notes": "2026-08-08に公式final publication pageとNIST Risk Management publications indexを意味確認した。確認した公式範囲ではRev.1はFinalとして掲載され、後継版または専用errataは確認できなかった。第4章ではRisk assessmentの準備・維持、Threat source/event、Vulnerability/Predisposing condition、Likelihood、Impact、Uncertainty、Decision handoffの限定概念だけに用いる。Federal向けProcessを普遍的必須手順とせず、数値Risk scoreをThreat Modelの完了条件にしない。 第29章用途限定確認（2026-10-21）: SP800-30 Rev.1 Final2012-09-17の公式landing/PDF、§3.3/§3.4を再取得し共有と評価維持を確認。本書六状態、実許可、Control有効性、過去Caseの再承認の根拠ではない。既存採用節と次回日付を保持。"
     },
     {
       "id": "SRC-OWASP-TM-001",

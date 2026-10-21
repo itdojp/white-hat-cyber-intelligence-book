@@ -1,0 +1,74 @@
+[
+  {
+    "id": "CAP29-STATE-1",
+    "input": {
+      "assembled": false,
+      "reviewed": false,
+      "sufficient": false,
+      "approved": false,
+      "superseded": false
+    },
+    "expected": "Assembling",
+    "scope": "authored finite boolean contrast; not real approval or arbitrary-record support"
+  },
+  {
+    "id": "CAP29-STATE-2",
+    "input": {
+      "assembled": true,
+      "reviewed": false,
+      "sufficient": false,
+      "approved": false,
+      "superseded": false
+    },
+    "expected": "Reviewable",
+    "scope": "authored finite boolean contrast; not real approval or arbitrary-record support"
+  },
+  {
+    "id": "CAP29-STATE-3",
+    "input": {
+      "assembled": true,
+      "reviewed": true,
+      "sufficient": false,
+      "approved": false,
+      "superseded": false
+    },
+    "expected": "Needs evidence",
+    "scope": "authored finite boolean contrast; not real approval or arbitrary-record support"
+  },
+  {
+    "id": "CAP29-STATE-4",
+    "input": {
+      "assembled": true,
+      "reviewed": true,
+      "sufficient": true,
+      "approved": false,
+      "superseded": false
+    },
+    "expected": "Decision ready",
+    "scope": "authored finite boolean contrast; not real approval or arbitrary-record support"
+  },
+  {
+    "id": "CAP29-STATE-5",
+    "input": {
+      "assembled": true,
+      "reviewed": true,
+      "sufficient": true,
+      "approved": true,
+      "superseded": false
+    },
+    "expected": "Approved",
+    "scope": "authored finite boolean contrast; not real approval or arbitrary-record support"
+  },
+  {
+    "id": "CAP29-STATE-6",
+    "input": {
+      "assembled": true,
+      "reviewed": true,
+      "sufficient": true,
+      "approved": true,
+      "superseded": true
+    },
+    "expected": "Superseded",
+    "scope": "authored finite boolean contrast; not real approval or arbitrary-record support"
+  }
+]

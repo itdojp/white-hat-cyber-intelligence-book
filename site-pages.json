@@ -809,6 +809,34 @@
       "section": "resources",
       "order": 395,
       "title": "付録A/D/H Source Review（限定採用）"
+    },
+    {
+      "source": "manuscript/29-capstone-case-study.md",
+      "destination": "chapters/chapter-29/index.md",
+      "section": "chapters",
+      "order": 72,
+      "title": "第29章 統合ケーススタディ"
+    },
+    {
+      "source": "templates/final-security-decision-portfolio-index.md",
+      "destination": "templates/final-security-decision-portfolio-index/index.md",
+      "section": "additional",
+      "order": 341,
+      "title": "Final Security Decision Portfolio Index"
+    },
+    {
+      "source": "cases/ch29-capstone-portfolio-example.md",
+      "destination": "cases/chapter-29-capstone-portfolio/index.md",
+      "section": "additional",
+      "order": 342,
+      "title": "第29章 完全合成Portfolio"
+    },
+    {
+      "source": "references/ch29-source-review-2026-10-21.md",
+      "destination": "references/chapter-29-source-review/index.md",
+      "section": "additional",
+      "order": 343,
+      "title": "第29章 Source Review — 2026-10-21"
     }
   ],
   "directoryRoutes": {
@@ -1010,6 +1038,14 @@
     {
       "source": "schemas/ch28-ai-assisted-analysis-assurance.schema.json",
       "destination": "downloads/ch28-ai-assisted-analysis-assurance.schema.json"
+    },
+    {
+      "source": "cases/fixtures/ch29-capstone-portfolio.json",
+      "destination": "downloads/ch29-capstone-portfolio.json"
+    },
+    {
+      "source": "schemas/ch29-capstone-portfolio.schema.json",
+      "destination": "downloads/ch29-capstone-portfolio.schema.json"
     }
   ]
 }

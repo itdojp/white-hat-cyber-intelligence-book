@@ -118,3 +118,7 @@
 ## 第28章の固定AI支援分析記録
 
 `ch28-ai-assisted-analysis-assurance.json` / `ch28-ai-assisted-analysis-assurance.schema.json`は完全合成の記録照合用。実Model/API/Toolを実行しない。
+
+## 第29章の非実行Portfolio Data
+
+[固定JSON](ch29-capstone-portfolio.json) / [閉Schema](../../schemas/ch29-capstone-portfolio.schema.json)。32参照・12接続点・四Gapを持ち、実操作・実配送は0。

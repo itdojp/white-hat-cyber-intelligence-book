@@ -115,3 +115,7 @@
 ## 第28章 AI支援分析の保証記録
 
 [全欄Case](ch28-ai-assisted-analysis-assurance-example.md)は七Claim・五Statusと人間の採否を分離する。別CaseのEvidence、未受領Product、実AI実行を継承しない。
+
+## 第29章の最終Portfolio
+
+[完全合成Case](ch29-capstone-portfolio-example.md)はCASE-2026-001の後日の読解記録。親の状態・期限・未配達は変更しない。

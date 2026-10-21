@@ -261,3 +261,9 @@ Instruction boundaryは指示と出自付きDataの扱いの境界、Excessive A
 - **AI-Assisted Analysis Assurance Record**: ART-32。SourceからClaim、Verification、Human Decisionと再評価を辿る成果物。
 
 - **Approved Source Set**: 指定cutoff・版・原典・Evidence ID・限界を持つ承認済み合成Source在庫。Model出力や未受領Productを自動追加しない。
+
+## 第29章の用語
+
+- **Portfolio（ポートフォリオ）**: 成果物と参照・限界・判断の束。全Control合格とは別。[第29章](manuscript/29-capstone-case-study.md)。
+- **Decision ready**: 限定Optionを判断者へ提示できる状態。Approved、実操作許可と区別する。
+- **Documentary evidence（文書読解の根拠）**: 固定された記録の記載を示す根拠。新しいシステム観測ではない。
