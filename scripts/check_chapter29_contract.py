@@ -69,6 +69,17 @@ def document_errors(document, spec, data):
     return errors
 
 
+def chapter_navigation_errors(site):
+    """The final chapter follows Chapter 28, not a contiguous-order guess."""
+    chapters = sorted((r for r in site["pages"] if r["section"] == "chapters"),
+                      key=lambda r: r["order"])
+    expected = ["manuscript/28-ai-assisted-analysis-assurance.md", DOCUMENTS[0]]
+    if ([r["source"] for r in chapters[-2:]] != expected
+            or chapters[-2]["order"] >= chapters[-1]["order"]):
+        return ["CAP29-chapter-navigation: Chapter 29 must follow Chapter 28"]
+    return []
+
+
 def repository_errors(root, data, bindings, pub):
     allowed = set(bindings["parents"]) | set(pub["inputDigests"]) | {
         "site-pages.json", "package.json", "references/sources.json", "book-config.json",
@@ -95,6 +106,7 @@ def repository_errors(root, data, bindings, pub):
             and preflight.index(command + " --no-regressions")
             < preflight.index("python3 scripts/sync_book_site.py --output docs"), "entrypoints")
     site = strict(inputs["site-pages.json"])
+    require(not chapter_navigation_errors(site), "chapter-navigation")
     for key, routes in pub["routes"].items():
         for row in routes:
             require(site[key].count(row) == 1 and sum(

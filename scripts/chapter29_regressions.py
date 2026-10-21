@@ -12,10 +12,21 @@ from scripts.check_editorial_input_manifest import ManifestError
 
 
 def run_regressions(data, schema, bindings, pub, projection, root):
-    from scripts.check_chapter29_contract import document_errors, repository_errors
+    from scripts.check_chapter29_contract import (
+        chapter_navigation_errors, document_errors, repository_errors,
+    )
     from scripts.publication_projection import project_documents, is_policy_scan_field
 
     count = 0
+    site = strict((root / "site-pages.json").read_bytes())
+    require(not chapter_navigation_errors(site), "canonical-chapter-navigation")
+    for chapter, order in [(29, 72), (29, 213), (28, 215)]:
+        changed = deepcopy(site)
+        source = (DOCUMENTS[0] if chapter == 29
+                  else "manuscript/28-ai-assisted-analysis-assurance.md")
+        next(r for r in changed["pages"] if r["source"] == source)["order"] = order
+        require(bool(chapter_navigation_errors(changed)), f"chapter-order-regression-{chapter}-{order}")
+        count += 1
     cases = strict((root / "tests/fixtures/chapter29/state-corpus.json").read_bytes())
     require([c["expected"] for c in cases] == list(STATUSES), "six-state-corpus")
     for c in cases:
