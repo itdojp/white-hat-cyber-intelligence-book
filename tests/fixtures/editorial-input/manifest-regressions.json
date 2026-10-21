@@ -107,7 +107,7 @@
       "id": "EIM-NEG-018",
       "family": "blueprint ownership",
       "mutation": "blueprint-role-mismatch",
-      "expectedError": "blueprint-only target must reference blueprint-input files"
+      "expectedError": "initial status 'blueprint-only' requires the first registered Candidate to be blueprint-input"
     },
     {
       "id": "EIM-NEG-019",

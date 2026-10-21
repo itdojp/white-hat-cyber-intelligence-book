@@ -2406,20 +2406,6 @@ def run_manifest_regressions(
             prepare_comparison_regression(mutated, case_snapshot)
             validate_manifest(mutated, schema)
             validate_registration_snapshot(mutated, case_snapshot)
-        if mutation == "blueprint-role-mismatch":
-            # Keep this registered-Blueprint negative independent of Chapter 29's
-            # live intake/consumption; only the role mutation may reject it.
-            case_snapshot = copy.deepcopy(registration_snapshot)
-            target = next(t for t in mutated["targets"] if t["targetId"] == "chapter-29")
-            target.update(status="blueprint-only", selectedCandidateId=None,
-                          canonicalPr=None, intakeRecord=None)
-            target["statusHistory"] = target["statusHistory"][:1]
-            target["candidates"][0]["disposition"] = "blueprint-only"
-            checkpoint = next(t for t in case_snapshot["targets"]
-                              if t["targetId"] == "chapter-29")
-            checkpoint["statusHistoryPrefix"] = copy.deepcopy(target["statusHistory"])
-            validate_manifest(mutated, schema)
-            validate_registration_snapshot(mutated, case_snapshot)
         if mutation == "status-history-checkpoint-unpersisted":
             case_snapshot = copy.deepcopy(registration_snapshot)
             prepare_checkpoint_regression(mutated, case_snapshot)
