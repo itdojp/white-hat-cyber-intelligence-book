@@ -1494,6 +1494,18 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913",
           "reason": "第2〜28章と付録の安定後に使用するBlueprintとして登録した。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-10-21",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/51#issuecomment-6306141945",
+          "reason": "唯一登録Blueprint候補をIssue51でbranch前に選択。原Package/同梱第22章/他Target/元履歴を保持し、実体不在を推測再構成しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-10-21",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/206",
+          "reason": "専用Draft PR206へ本文/ART33/全欄Case/合成JSON/閉Schema/二Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開は未完、formatter HighはIssue205で留保しconsumedを先取りしない。"
         }
       ]
     }

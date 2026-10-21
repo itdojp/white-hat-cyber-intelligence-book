@@ -130,9 +130,12 @@ class LearningRouteTests(unittest.TestCase):
 
     def test_route_order_has_one_constant_owner(self):
         # Simulate a reviewed contract update, not a runtime registry exemption.
-        with patch.dict(ROUTE, {"order": 341}):
+        # Pick an unused order so adding an unrelated page cannot invalidate
+        # this positive fixture; the duplicate below must still be rejected.
+        alternate_order = 1 + max(p["order"] for p in self.registry["pages"])
+        with patch.dict(ROUTE, {"order": alternate_order}):
             registry = deepcopy(self.registry)
-            next(p for p in registry["pages"] if p["source"] == GUIDE)["order"] = 341
+            next(p for p in registry["pages"] if p["source"] == GUIDE)["order"] = alternate_order
             self.assertEqual(check_route(registry, self.package), [])
             registry["pages"].append({
                 **ROUTE, "source": "cases/other.md", "destination": "cases/other/index.md",
