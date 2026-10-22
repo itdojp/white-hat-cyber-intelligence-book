@@ -1,7 +1,7 @@
 {
   "repository": "itdojp/book-formatter",
-  "commit": "c4dcd01e8450112f95002a454657d409cb3fa2f1",
-  "checkedAt": "2026-10-12",
+  "commit": "fba61076a7d8171e8344c5d60119f737447214d1",
+  "checkedAt": "2026-10-22",
   "schema": {
     "path": "shared/schemas/book-config.schema.json",
     "blobSha": "87dcb44b0d4b543ba43ae3a8ebc27d2f3cfda3cd"
@@ -9,7 +9,7 @@
   "components": {
     "bookLayout": {
       "path": "shared/layouts/book.html",
-      "blobSha": "d25459b4785c404405dcde8c0e414404a3a2f17a",
+      "blobSha": "8c862d57ddd5cee0b0ba3cd4a9e2cc86884b29d9",
       "target": "_layouts/book.html"
     },
     "defaultLayout": {
@@ -34,7 +34,7 @@
     },
     "mobileResponsiveCss": {
       "path": "shared/assets/css/mobile-responsive.css",
-      "blobSha": "15f64c136d976935a0d8b9439b67df3fb365fb80",
+      "blobSha": "cd8b92d1624d6f69286b73e8efe19839514d6475",
       "target": "assets/css/mobile-responsive.css"
     },
     "syntaxHighlightingCss": {
@@ -60,12 +60,12 @@
   },
   "shared": {
     "path": "shared/version.json",
-    "blobSha": "6e74ea23d3d7e2c146791dac7bfb4c25a7b00ef7",
-    "version": "3.3.0",
+    "blobSha": "66d7d7b8cc6c11ab817603f5892d7cbe7b9726b6",
+    "version": "3.3.3",
     "componentVersions": {
-      "layouts": "3.3.0",
+      "layouts": "3.3.2",
       "includes": "3.2.0",
-      "assets": "3.3.0",
+      "assets": "3.3.3",
       "templates": "1.0.0",
       "schemas": "1.0.0"
     }

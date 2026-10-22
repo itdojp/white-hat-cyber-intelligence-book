@@ -8491,7 +8491,7 @@
     "scripts/sync_book_site.py": "9cfeb3465557fd63c9e24031ef4ca2354edd4d5d9e617f540698e679867d7ef0",
     "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
     "package-lock.json": "22b3f2274d543974445811b1f4317aba4779d10728638a51ffce105d7abb8d01",
-    ".book-formatter/revision.json": "b5ddae68651efe50dfd3e880f69b5393083c2ce2e041c5e7fca2fade8161a1a2"
+    ".book-formatter/revision.json": "e32362b186de32386e547ba8e8543200d02206fa48e0e3dfbd3cdd144cac7bea"
   },
   "routes": {
     "pages": [

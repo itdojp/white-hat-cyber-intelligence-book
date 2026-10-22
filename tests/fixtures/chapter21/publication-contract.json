@@ -42,7 +42,7 @@
     "scripts/publication_text.py": "07a27c1d135b9071783b98eddf3d94c20b0ad6fe853dd4b084be5aa757792917",
     "Gemfile.lock": "3feeb09e01a8214f60439b531f7b3942990b9583a86e055a4a5b30fa2ebbb424",
     "package-lock.json": "22b3f2274d543974445811b1f4317aba4779d10728638a51ffce105d7abb8d01",
-    ".book-formatter/revision.json": "b5ddae68651efe50dfd3e880f69b5393083c2ce2e041c5e7fca2fade8161a1a2"
+    ".book-formatter/revision.json": "e32362b186de32386e547ba8e8543200d02206fa48e0e3dfbd3cdd144cac7bea"
   },
   "documents": {
     "manuscript/21-purple-team-validation.md": {
