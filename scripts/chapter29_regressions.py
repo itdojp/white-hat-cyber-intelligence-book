@@ -13,11 +13,31 @@ from scripts.check_editorial_input_manifest import ManifestError
 
 def run_regressions(data, schema, bindings, pub, projection, root):
     from scripts.check_chapter29_contract import (
+        ARTIFACT_INDEX, artifact_index_errors,
         chapter_navigation_errors, document_errors, repository_errors,
     )
     from scripts.publication_projection import project_documents, is_policy_scan_field
 
     count = 0
+    index_text = (root / ARTIFACT_INDEX).read_text(encoding="utf-8")
+    index_row = (
+        "| ART-33 | Final Security Decision Portfolio Index | 29 | "
+        "`templates/final-security-decision-portfolio-index.md` |"
+    )
+    require(index_text.count(index_row) == 1, "canonical-artifact-index-source")
+    for label, replacement in [
+        ("missing", ""),
+        ("prose-only", "ART-33 Final Security Decision Portfolio Index"),
+        ("name", index_row.replace("Final Security", "Other Security")),
+        ("chapter", index_row.replace("| 29 |", "| 28 |")),
+        ("template", index_row.replace("final-security-decision-portfolio-index.md",
+                                       "integrated-security-case-map.md")),
+    ]:
+        document = project_documents({
+            ARTIFACT_INDEX: index_text.replace(index_row, replacement)
+        }).documents[0]
+        require(bool(artifact_index_errors(document)), "artifact-index-" + label)
+        count += 1
     site = strict((root / "site-pages.json").read_bytes())
     require(not chapter_navigation_errors(site), "canonical-chapter-navigation")
     for chapter, order in [(29, 72), (29, 213), (28, 215)]:
@@ -136,6 +156,24 @@ def run_regressions(data, schema, bindings, pub, projection, root):
     tmp.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="chapter29-", dir=tmp) as directory:
         folder = Path(directory)
+        # Projection deliberately deduplicates identical policy fields. Preserve
+        # that shared contract: an exact duplicate is rejected by the reviewed
+        # index byte binding, not a chapter-specific table parser.
+        replica = folder / "repository"
+        for name, raw in repository_errors(root, data, bindings, pub).items():
+            target = replica / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+        (replica / ARTIFACT_INDEX).write_text(
+            index_text.replace(index_row, index_row + "\n" + index_row), encoding="utf-8")
+        try:
+            repository_errors(replica, data, bindings, pub)
+        except ValueError as exc:
+            require("reviewed-input-drift: " + ARTIFACT_INDEX in str(exc),
+                    "duplicate-index-must-fail-at-byte-binding")
+            count += 1
+        else:
+            raise ValueError("CAP29 duplicate index row accepted")
         (folder / "known").write_text("known")
         require(read_regular(folder, "known", {"known"}) == b"known", "reader-positive")
         (folder / "alias").symlink_to("known")

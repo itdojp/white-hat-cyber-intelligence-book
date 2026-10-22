@@ -687,7 +687,8 @@
     "cases/fixtures/ch29-capstone-portfolio.json": "c82d364653c19b2d325833aefa65042a613e7df526b399c1e2d94dae54a99b65",
     "schemas/ch29-capstone-portfolio.schema.json": "97fcb6215fa22a1071e18ea4a7d9b7271637dc8e393b05bc1e30987335fcecd9",
     "tests/fixtures/chapter29/parent-contract.json": "4d97edc96997ff4b6f3a2acdce4dccb6cff1cbde7bdc556161b1144a670fbcbe",
-    "tests/fixtures/chapter29/state-corpus.json": "3cf55263db3852057290a3c1135e947805fc45015dfa4fa3778e1960fcac6298"
+    "tests/fixtures/chapter29/state-corpus.json": "3cf55263db3852057290a3c1135e947805fc45015dfa4fa3778e1960fcac6298",
+    "artifact-index.md": "f28678e07e3d6408e1889c8bd0edc17ad799c9de664485ebf2050f20bb1bb50c"
   },
   "routes": {
     "pages": [
