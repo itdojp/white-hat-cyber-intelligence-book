@@ -211,3 +211,8 @@ Mermaid図は、図だけを見なくても意味を理解できる文章代替�
 |---|---|---|---|
 | F-28-01 | Claimから人間の判断への記録順 | `manuscript/28-ai-assisted-analysis-assurance.md` | Implemented |
 | T-28-01 | 五つのClaim Status | `manuscript/28-ai-assisted-analysis-assurance.md` | Implemented |
+
+## 第29章の図表
+
+- [F-29-01 参照から判断まで](manuscript/29-capstone-case-study.md): 記録の追跡方向であり実行順ではない。
+- T-29-01 最初の三つの記入、T-29-02 全成果物の読解経路、T-29-03 Portfolio Statusは同章に収録。

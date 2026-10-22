@@ -3056,19 +3056,63 @@
       "targetId": "chapter-29",
       "issue": 51,
       "targetKind": "chapter",
-      "status": "blueprint-only",
-      "selectedCandidateId": null,
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "status": "canonical-pr-open",
+      "selectedCandidateId": "EIC-0051-a90f9092493f",
+      "canonicalPr": 206,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/206",
+        "packageId": "EIP-0012",
+        "packageSha256": "6f5da12b33216dbc50473e9fd9d403213807d7f0219c50a71e5292386e82ea7b",
+        "inputPath": "chapter29-final-portfolio-blueprint.md",
+        "inputSha256": "a90f9092493f64bcfbb3a36f269e83e686177203f276234b29cfd365e4444e04",
+        "targetIssue": 51,
+        "canonicalPr": 206,
+        "currentMainSha": "9552159a3d801839c1a32eb32b7ccb4dfa2847e1",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-10-21",
+        "adoptedSections": [
+          "rawから直接採用なし。branch前選択: https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/51#issuecomment-6306141945"
+        ],
+        "rewrittenSections": [
+          "現行Issue51・PR204事前レビュー・32成果物の正本・限定二NIST原典から第29章本文/ART33空Template/完全合成Portfolio JSON/全欄Case/閉Schema/Source Note/有限Layer Aを新規制作。",
+          "12接続点、四つの記録上の証拠と四つの不足、二つのBrief、Option比較、Owner/期限/再評価を対応付ける。六状態は有限教材の比較で、親状態/Authority/未配達を継承・変更しない。"
+        ],
+        "rejectedOrDeferredSections": [
+          "実対象への操作/実データ収集/AI Model呼出し/実配送/実承認・全Control完了を作らない。決定保留を提案できる状態と実作業再開許可を分離する。",
+          "新構文parser・共有Policy変更・Issue67実装・formatter pin/依存更新を含めない。付録最終確定と全書Releaseは第29章後の別工程。",
+          "原Package/同梱第22章/他Target/元履歴は保持する。管理PRのmergeを第29章着手の新前提にしない。"
+        ],
+        "sourceRevalidation": [
+          "NIST CSWP29/CSF2.0 Final2024-02-26の公式landing/PDFを取得。Abstract/1節/5.1節のOutcomeと双方向情報共有を限定採用し、本書固有12接続点・六状態・Control有効性の規範としない。",
+          "NIST SP800-30 Rev1 Final2012-09-17の公式landing/PDFを取得。3.3節の共有と3.4節の維持を限定採用。本文September2012と公式history dayを区別し、法的義務や実許可に変換しない。",
+          "二Source個別checkedAtだけ10-21、限定notes/triggersと第29章mappingを追記。Registry-wide baseline/他Source/旧Case時点/次回期限は保持。全PDF・全59Source・法務/License監査を完了とはしない。"
+        ],
+        "canonicalFiles": [
+          "manuscript/29-capstone-case-study.md",
+          "templates/final-security-decision-portfolio-index.md",
+          "cases/ch29-capstone-portfolio-example.md",
+          "cases/fixtures/ch29-capstone-portfolio.json",
+          "schemas/ch29-capstone-portfolio.schema.json",
+          "references/ch29-source-review-2026-10-21.md"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録4basename/164920directoriesをsymlink非追跡で検索し不在。raw未読・実体hash未照合・直接採用なし。改名/Archive内/workspace外探索なし。inputReviewedAtは採否記録日で原文読了日ではない。",
+          "Intake作成時PR206初期Draft。初期2047回帰等のみ成功、最終4seed/全文QA/build/表示/CI/独立reviewは未完。formatter HighはIssue205、Ready/章DoD/公開完了を主張しない。",
+          "Portfolio内の架空review8観点/Decision readyは教材上の値であり、本PRの独立review・人間の読者試行・法務承認ではない。任意入力の安全性や業務Workflowを認定しない。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0051-a90f9092493f",
           "packageId": "EIP-0012",
           "inputPath": "chapter29-final-portfolio-blueprint.md",
           "inputSha256": "a90f9092493f64bcfbb3a36f269e83e686177203f276234b29cfd365e4444e04",
-          "disposition": "blueprint-only",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913",
-          "dispositionReason": "完成本文ではなく、live manifest/reportを基に統合するBlueprint。"
+          "disposition": "selected",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/51#issuecomment-6306141945",
+          "dispositionReason": "登録された唯一のBlueprintを採否記録の対象として選択。raw実体未確認のため直接採用せず、現行Issueと正本・限定原典から新規制作。"
         }
       ],
       "statusHistory": [
@@ -3077,6 +3121,18 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913",
           "reason": "第2〜28章と付録の安定後に使用するBlueprintとして登録した。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-10-21",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/51#issuecomment-6306141945",
+          "reason": "唯一登録Blueprint候補をIssue51でbranch前に選択。原Package/同梱第22章/他Target/元履歴を保持し、実体不在を推測再構成しない。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-10-21",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/206",
+          "reason": "専用Draft PR206へ本文/ART33/全欄Case/合成JSON/閉Schema/二Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開は未完、formatter HighはIssue205で留保しconsumedを先取りしない。"
         }
       ]
     }

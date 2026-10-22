@@ -1,0 +1,915 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://itdojp.github.io/white-hat-cyber-intelligence-book/schemas/ch29-capstone-portfolio.schema.json",
+  "title": "One authored offline capstone Portfolio; not an operational workflow engine",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "readOnly",
+    "networkRequired",
+    "executionAuthorized",
+    "actualCollections",
+    "actualActions",
+    "actualModelCalls",
+    "actualDeliveries",
+    "record",
+    "requirement",
+    "artifacts",
+    "stages",
+    "documentaryEvidence",
+    "gaps",
+    "judgment",
+    "options",
+    "reviews",
+    "decision",
+    "briefs",
+    "actions",
+    "reassessment",
+    "sourceIds"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "readOnly": {
+      "type": "boolean"
+    },
+    "networkRequired": {
+      "type": "boolean"
+    },
+    "executionAuthorized": {
+      "type": "boolean"
+    },
+    "actualCollections": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "actualActions": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "actualModelCalls": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "actualDeliveries": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifactId",
+        "finalCaseId",
+        "version",
+        "asOf",
+        "sourceCutoff",
+        "classification",
+        "status",
+        "owner",
+        "deadline",
+        "expiry",
+        "meaning"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifactId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "finalCaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceCutoff": {
+          "type": "string",
+          "minLength": 1
+        },
+        "classification": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "enum": [
+            "Assembling",
+            "Reviewable",
+            "Needs evidence",
+            "Decision ready",
+            "Approved",
+            "Superseded"
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deadline": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expiry": {
+          "type": "string",
+          "minLength": 1
+        },
+        "meaning": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "parentId",
+        "question",
+        "decisionOwner",
+        "deadline",
+        "criteria",
+        "maximumUncertainty"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deadline": {
+          "type": "string",
+          "minLength": 1
+        },
+        "criteria": {
+          "type": "string",
+          "minLength": 1
+        },
+        "maximumUncertainty": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 32,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifactId",
+          "recordId",
+          "sourceCaseId",
+          "relationToFinal",
+          "use",
+          "canonicalPath",
+          "versionSha256",
+          "templatePath",
+          "ownerChapter",
+          "nativeState",
+          "integrationOwner",
+          "stageId",
+          "evidenceTransfer",
+          "authorityTransfer",
+          "parentChanged",
+          "receiptCreated",
+          "readingBoundary",
+          "reassessment"
+        ],
+        "properties": {
+          "artifactId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "recordId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceCaseId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "relationToFinal": {
+            "type": "string",
+            "minLength": 1
+          },
+          "use": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonicalPath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "versionSha256": {
+            "type": "string",
+            "minLength": 1
+          },
+          "templatePath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ownerChapter": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "nativeState": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "scope",
+              "line",
+              "verbatim"
+            ],
+            "properties": {
+              "scope": {
+                "type": "string",
+                "minLength": 1
+              },
+              "line": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "verbatim": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "integrationOwner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "stageId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidenceTransfer": {
+            "type": "boolean"
+          },
+          "authorityTransfer": {
+            "type": "boolean"
+          },
+          "parentChanged": {
+            "type": "boolean"
+          },
+          "receiptCreated": {
+            "type": "boolean"
+          },
+          "readingBoundary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reassessment": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "inputIds",
+          "artifactIds",
+          "owner",
+          "result",
+          "gapId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "inputIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "artifactIds": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gapId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "documentaryEvidence": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "artifactId",
+          "path",
+          "line",
+          "verbatim",
+          "sourceSha256",
+          "kind",
+          "claim",
+          "systemObservation",
+          "availableAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifactId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "verbatim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceSha256": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "systemObservation": {
+            "type": "boolean"
+          },
+          "availableAt": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "question",
+          "artifactIds",
+          "answer",
+          "owner",
+          "dueAt",
+          "nextCheck"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifactIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "answer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dueAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "nextCheck": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "judgment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "inputStepId",
+        "evidenceIds",
+        "gapIds",
+        "confirmedFacts",
+        "assessment",
+        "confidence",
+        "confidenceScope",
+        "assumption",
+        "alternative",
+        "prediction",
+        "recommendation"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputStepId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "gapIds": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "confirmedFacts": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "assessment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidenceScope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assumption": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alternative": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prediction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recommendation": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "options": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "requiredClosedGaps",
+          "benefit",
+          "cost",
+          "reversible"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requiredClosedGaps": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 32,
+            "items": {
+              "type": "string"
+            }
+          },
+          "benefit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cost": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reversible": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "area",
+          "reviewerRole",
+          "result",
+          "date",
+          "evidenceIds",
+          "limitation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "area": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewerRole": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "type": "string",
+            "minLength": 1
+          },
+          "date": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidenceIds": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "requirementId",
+        "judgmentId",
+        "owner",
+        "recommendedOption",
+        "approval",
+        "supersededBy",
+        "gapIds",
+        "statusMeaning",
+        "residualRisk",
+        "deliveryStatus",
+        "receiptId",
+        "realAuthorization"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requirementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "judgmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recommendedOption": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approval": {
+          "type": "null"
+        },
+        "supersededBy": {
+          "type": "null"
+        },
+        "gapIds": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "statusMeaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "residualRisk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deliveryStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "receiptId": {
+          "type": "null"
+        },
+        "realAuthorization": {
+          "type": "boolean"
+        }
+      }
+    },
+    "briefs": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "audience",
+          "judgmentId",
+          "evidenceIds",
+          "gapIds",
+          "text",
+          "deliveryStatus"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audience": {
+            "type": "string",
+            "minLength": 1
+          },
+          "judgmentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidenceIds": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "gapIds": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "deliveryStatus": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "decisionId",
+          "gapId",
+          "owner",
+          "dueAt",
+          "instruction",
+          "verification",
+          "result",
+          "executed"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "decisionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gapId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dueAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "instruction": {
+            "type": "string",
+            "minLength": 1
+          },
+          "verification": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "type": "string",
+            "minLength": 1
+          },
+          "executed": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "reassessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "decisionId",
+        "actionIds",
+        "scheduledAt",
+        "expiry",
+        "triggers",
+        "closure"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decisionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actionIds": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "scheduledAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expiry": {
+          "type": "string",
+          "minLength": 1
+        },
+        "triggers": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "closure": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "sourceIds": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

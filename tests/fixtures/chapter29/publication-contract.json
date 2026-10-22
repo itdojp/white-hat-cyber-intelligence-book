@@ -1,0 +1,777 @@
+{
+  "version": "1.0.0",
+  "policy": "1.2.0",
+  "projection": "1.1.0",
+  "documents": {
+    "manuscript/29-capstone-case-study.md": {
+      "fieldCount": 160,
+      "sha256": "a6d3faf1e82fc436a457866f1949c9274386d9e3a6ea07b63c27a19cdf4089e2",
+      "hostProvenance": [
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://itdojp.github.io/pentest-learning-book/",
+          "manuscript/29-capstone-case-study.md:L32:F27"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "導入ケースまたは判断要求 架空の請求書連携Service billing-bridge.exampleを扱うCASE-2026-001には、過去の判断DEC-2026-001と再評価REA-2026-001がある。第1章のDocumentはReassessment Due、過去侵害の仮説TH-2026-003はInconclusiveである。この履歴を書き換えて現在の安全確認にしない。",
+          "manuscript/29-capstone-case-study.md:L36:F30"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "NIST CSF 2.0は高位のOutcomeを共有する枠組みであり、実装方法や実施順を指定するものではない。本章では技術担当と判断担当の情報の往復という限定観点を使う。以下の十二段階やPortfolioの六状態は本書の教材契約である。SRC-CSF-001",
+          "manuscript/29-capstone-case-study.md:L54:F42"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "NIST SP 800-30 Rev.1の§3.3は評価結果と根拠の共有、§3.4は変化を踏まえた維持を扱う。本章では読者別説明と再評価の参考に限定する。連邦向け過程を普遍的な法的義務、本書六状態の規範算法、実許可の認定にしない。SRC-NIST-RISK-001",
+          "manuscript/29-capstone-case-study.md:L121:F83"
+        ],
+        [
+          "reader_visible_text",
+          "codeblock",
+          null,
+          null,
+          "python3 scripts/check_chapter29_contract.py",
+          "manuscript/29-capstone-case-study.md:L158:F110"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "期待値はChapter29 contract passed、32参照・12段階・4DOC・4Gap・8レビュー観点、共有Policy 1.2.0 / Projection 1.1.0である。未知欄、親版漂流、別Case Evidence転送、未配達の受領化、一般的な危険記述は失敗する。自分の記入がすべての実務条件を満たすことを判定するコマンドではない。",
+          "manuscript/29-capstone-case-study.md:L162:F111"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "参考文献・Source Note ID SRC-CSF-001 — NIST CSWP 29 / CSF 2.0、2024-02-26。高位Outcomeと§5.1の情報の往復に限定。",
+          "manuscript/29-capstone-case-study.md:L206:F156"
+        ],
+        [
+          "reader_visible_text",
+          "list_path",
+          null,
+          null,
+          "参考文献・Source Note ID SRC-NIST-RISK-001 — NIST SP 800-30 Rev.1、2012-09-17。§3.3の共有と§3.4の維持に限定。",
+          "manuscript/29-capstone-case-study.md:L207:F157"
+        ]
+      ]
+    },
+    "templates/final-security-decision-portfolio-index.md": {
+      "fieldCount": 85,
+      "sha256": "18b2899f322eadb68091bff7903094eda8c146481d65bb0c878cbad0a2811a48",
+      "hostProvenance": []
+    },
+    "cases/ch29-capstone-portfolio-example.md": {
+      "fieldCount": 1363,
+      "sha256": "551f7fea68b9c3f57a55ed4fbb7773a074aae8a36dd5c710402eab0bb498d98c",
+      "hostProvenance": [
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-1 Field Value canonicalPath cases/ch03-capability-evidence-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L141:F169"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-1 Field Value templatePath templates/learning-route-plan.md",
+          "cases/ch29-capstone-portfolio-example.md:L141:F171"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-2 Field Value canonicalPath cases/ch09-engagement-roe-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L166:F191"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-2 Field Value templatePath templates/rules-of-engagement.md",
+          "cases/ch29-capstone-portfolio-example.md:L166:F193"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-3 Field Value canonicalPath cases/ch04-threat-model-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L191:F213"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-3 Field Value templatePath templates/threat-model.md",
+          "cases/ch29-capstone-portfolio-example.md:L191:F215"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-4 Field Value canonicalPath cases/ch15-findings-retest-risk-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L216:F235"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-4 Field Value templatePath templates/finding-report.md",
+          "cases/ch29-capstone-portfolio-example.md:L216:F237"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-5 Field Value canonicalPath cases/ch17-detection-validation-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L241:F257"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-5 Field Value templatePath templates/detection-validation.md",
+          "cases/ch29-capstone-portfolio-example.md:L241:F259"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-6 Field Value canonicalPath cases/ch18-hunt-plan-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L266:F279"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-6 Field Value templatePath templates/hunt-report.md",
+          "cases/ch29-capstone-portfolio-example.md:L266:F281"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-7 Field Value canonicalPath cases/ch20-dfir-timeline-causality-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L291:F301"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-7 Field Value templatePath templates/incident-timeline.md",
+          "cases/ch29-capstone-portfolio-example.md:L291:F303"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-8 Field Value canonicalPath cases/ch26-cti-distribution-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L316:F323"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-8 Field Value templatePath templates/cti-report.md",
+          "cases/ch29-capstone-portfolio-example.md:L316:F325"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-9 Field Value canonicalPath cases/ch26-cti-distribution-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L341:F345"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-9 Field Value templatePath templates/executive-brief.md",
+          "cases/ch29-capstone-portfolio-example.md:L341:F347"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-10 Field Value canonicalPath cases/ch01-integrated-security-case-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L366:F367"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-10 Field Value templatePath templates/integrated-security-case-map.md",
+          "cases/ch29-capstone-portfolio-example.md:L366:F369"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-11 Field Value canonicalPath cases/ch11-web-api-assessment-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L391:F389"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-11 Field Value templatePath templates/web-api-assessment-hypothesis-pack.md",
+          "cases/ch29-capstone-portfolio-example.md:L391:F391"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-12 Field Value canonicalPath cases/ch25-structured-analysis-attribution-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L416:F411"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-12 Field Value templatePath templates/analytic-judgment-record.md",
+          "cases/ch29-capstone-portfolio-example.md:L416:F413"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-13 Field Value canonicalPath cases/ch02-authorization-decision-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L441:F433"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-13 Field Value templatePath templates/authorization-checklist.md",
+          "cases/ch29-capstone-portfolio-example.md:L441:F435"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-14 Field Value canonicalPath cases/ch03-capability-evidence-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L466:F455"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-14 Field Value templatePath templates/capability-evidence-matrix.md",
+          "cases/ch29-capstone-portfolio-example.md:L466:F457"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-15 Field Value canonicalPath cases/ch05-attack-behavior-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L491:F477"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-15 Field Value templatePath templates/attack-behavior-map.md",
+          "cases/ch29-capstone-portfolio-example.md:L491:F479"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-16 Field Value canonicalPath cases/ch06-signal-flow-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L516:F499"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-16 Field Value templatePath templates/signal-flow-diagram.md",
+          "cases/ch29-capstone-portfolio-example.md:L516:F501"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-17 Field Value canonicalPath cases/ch07-vulnerability-prioritization-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L541:F521"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-17 Field Value templatePath templates/vulnerability-prioritization-record.md",
+          "cases/ch29-capstone-portfolio-example.md:L541:F523"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-18 Field Value canonicalPath cases/ch08-lab-evidence-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L566:F543"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-18 Field Value templatePath templates/lab-safety-evidence-plan.md",
+          "cases/ch29-capstone-portfolio-example.md:L566:F545"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-19 Field Value canonicalPath cases/ch10-attack-surface-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L591:F565"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-19 Field Value templatePath templates/attack-surface-register.md",
+          "cases/ch29-capstone-portfolio-example.md:L591:F567"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-20 Field Value canonicalPath cases/ch12-identity-path-review-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L616:F587"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-20 Field Value templatePath templates/identity-attack-path-review.md",
+          "cases/ch29-capstone-portfolio-example.md:L616:F589"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-21 Field Value canonicalPath cases/ch13-platform-supply-chain-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L641:F609"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-21 Field Value templatePath templates/platform-supply-chain-assessment.md",
+          "cases/ch29-capstone-portfolio-example.md:L641:F611"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-22 Field Value canonicalPath cases/ch14-minimal-impact-validation-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L666:F631"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-22 Field Value templatePath templates/minimal-impact-validation-record.md",
+          "cases/ch29-capstone-portfolio-example.md:L666:F633"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-23 Field Value canonicalPath cases/ch15-findings-retest-risk-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L691:F653"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-23 Field Value templatePath templates/retest-record.md",
+          "cases/ch29-capstone-portfolio-example.md:L691:F655"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-24 Field Value canonicalPath cases/ch16-telemetry-coverage-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L716:F675"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-24 Field Value templatePath templates/telemetry-coverage-map.md",
+          "cases/ch29-capstone-portfolio-example.md:L716:F677"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-25 Field Value canonicalPath cases/ch19-incident-action-plan-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L741:F697"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-25 Field Value templatePath templates/incident-action-plan.md",
+          "cases/ch29-capstone-portfolio-example.md:L741:F699"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-26 Field Value canonicalPath cases/ch20-dfir-timeline-causality-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L766:F719"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-26 Field Value templatePath templates/root-cause-analysis.md",
+          "cases/ch29-capstone-portfolio-example.md:L766:F721"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-27 Field Value canonicalPath cases/ch21-control-validation-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L791:F741"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-27 Field Value templatePath templates/control-validation-plan.md",
+          "cases/ch29-capstone-portfolio-example.md:L791:F743"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-28 Field Value canonicalPath cases/ch22-improvement-backlog-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L816:F763"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-28 Field Value templatePath templates/security-improvement-backlog.md",
+          "cases/ch29-capstone-portfolio-example.md:L816:F765"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-29 Field Value canonicalPath cases/ch23-intelligence-requirements-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L841:F785"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-29 Field Value templatePath templates/intelligence-requirement-collection-plan.md",
+          "cases/ch29-capstone-portfolio-example.md:L841:F787"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-30 Field Value canonicalPath cases/ch24-source-evaluation-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L866:F807"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-30 Field Value templatePath templates/evidence-source-evaluation-table.md",
+          "cases/ch29-capstone-portfolio-example.md:L866:F809"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-31 Field Value canonicalPath cases/ch27-ai-agent-threat-model-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L891:F829"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-31 Field Value templatePath templates/ai-agent-threat-model.md",
+          "cases/ch29-capstone-portfolio-example.md:L891:F831"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-32 Field Value canonicalPath cases/ch28-ai-assisted-analysis-assurance-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L916:F851"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "artifacts-32 Field Value templatePath templates/ai-assisted-analysis-assurance-record.md",
+          "cases/ch29-capstone-portfolio-example.md:L916:F853"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "documentaryEvidence-1 Field Value path cases/ch01-integrated-security-case-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L1105:F998"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "documentaryEvidence-2 Field Value path cases/ch09-engagement-roe-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L1120:F1010"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "documentaryEvidence-3 Field Value path cases/ch01-integrated-security-case-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L1135:F1022"
+        ],
+        [
+          "reader_visible_text",
+          "table_row",
+          null,
+          null,
+          "documentaryEvidence-4 Field Value path cases/ch26-cti-distribution-example.md",
+          "cases/ch29-capstone-portfolio-example.md:L1150:F1034"
+        ]
+      ]
+    },
+    "references/ch29-source-review-2026-10-21.md": {
+      "fieldCount": 21,
+      "sha256": "4496d162c94a48754d279683af907eb8949098c91f3d6134578f29517c5da0b1",
+      "hostProvenance": [
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20",
+          "references/ch29-source-review-2026-10-21.md:L7:F6"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+          "references/ch29-source-review-2026-10-21.md:L7:F7"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "Abstract、§1（印刷pp.1〜2）、§5.1（印刷pp.10〜11）の高位Outcome、技術担当・管理者・判断担当の情報の往復に限定採用する。実装手順、固定直列の十二段階、Control有効性や完全性の証明へは使わない。",
+          "references/ch29-source-review-2026-10-21.md:L9:F8"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://csrc.nist.gov/pubs/sp/800/30/r1/final",
+          "references/ch29-source-review-2026-10-21.md:L13:F12"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-30r1.pdf",
+          "references/ch29-source-review-2026-10-21.md:L13:F13"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "§3.3（印刷p.37）の結果と根拠の共有、§3.4（印刷pp.38〜39）の変化を踏まえた評価維持に限定採用する。連邦向けProcessを普遍的な法的義務、本書の状態算法、実操作許可へ変換しない。",
+          "references/ch29-source-review-2026-10-21.md:L15:F14"
+        ]
+      ]
+    }
+  },
+  "inputDigests": {
+    "cases/fixtures/ch29-capstone-portfolio.json": "c82d364653c19b2d325833aefa65042a613e7df526b399c1e2d94dae54a99b65",
+    "schemas/ch29-capstone-portfolio.schema.json": "97fcb6215fa22a1071e18ea4a7d9b7271637dc8e393b05bc1e30987335fcecd9",
+    "tests/fixtures/chapter29/parent-contract.json": "4d97edc96997ff4b6f3a2acdce4dccb6cff1cbde7bdc556161b1144a670fbcbe",
+    "tests/fixtures/chapter29/state-corpus.json": "3cf55263db3852057290a3c1135e947805fc45015dfa4fa3778e1960fcac6298"
+  },
+  "routes": {
+    "pages": [
+      {
+        "source": "manuscript/29-capstone-case-study.md",
+        "destination": "chapters/chapter-29/index.md",
+        "section": "chapters",
+        "order": 214,
+        "title": "第29章 統合ケーススタディ"
+      },
+      {
+        "source": "templates/final-security-decision-portfolio-index.md",
+        "destination": "templates/final-security-decision-portfolio-index/index.md",
+        "section": "additional",
+        "order": 341,
+        "title": "Final Security Decision Portfolio Index"
+      },
+      {
+        "source": "cases/ch29-capstone-portfolio-example.md",
+        "destination": "cases/chapter-29-capstone-portfolio/index.md",
+        "section": "additional",
+        "order": 342,
+        "title": "第29章 完全合成Portfolio"
+      },
+      {
+        "source": "references/ch29-source-review-2026-10-21.md",
+        "destination": "references/chapter-29-source-review/index.md",
+        "section": "additional",
+        "order": 343,
+        "title": "第29章 Source Review — 2026-10-21"
+      }
+    ],
+    "staticFiles": [
+      {
+        "source": "cases/fixtures/ch29-capstone-portfolio.json",
+        "destination": "downloads/ch29-capstone-portfolio.json"
+      },
+      {
+        "source": "schemas/ch29-capstone-portfolio.schema.json",
+        "destination": "downloads/ch29-capstone-portfolio.schema.json"
+      }
+    ]
+  },
+  "sourceIdentity": {
+    "SRC-CSF-001": {
+      "id": "SRC-CSF-001",
+      "version": "2.0",
+      "status": "final",
+      "publishedAt": "2024-02-26",
+      "checkedAt": "2026-10-21",
+      "nextReviewAt": "2026-11-08",
+      "url": "https://www.nist.gov/cyberframework",
+      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。 2026-09-23用途限定確認: 第19章ではFinal CSWP 29（2024-02-26）印刷p.5の六Functionを上位Outcomeとして参照し、固定直列IR手順・本書七状態の規範算法・適合認定とはしない。 第22章用途限定確認（2026-09-26）: CSWP29 Final2024-02-26の公式landing/PDF、§3.1印刷pp.6〜7のCurrent/Target Profile、Gap、優先行動計画を確認。Metric/七状態の規範算法やmappingからの効果証明ではない。既存章notesと次回確認日を保持。 第29章用途限定確認（2026-10-21）: CSWP29 Final2024-02-26の公式landing/PDF、Abstract/§1/§5.1を再取得して高位Outcomeと情報の往復を確認。本書六状態、実許可、Control有効性、過去Caseの再承認の根拠ではない。既存採用節と次回日付を保持。",
+      "reviewTriggers": [
+        "NIST CSF revision or errata",
+        "NIST CSF 2.0 resource-center or outcome-taxonomy change used by Chapter 4",
+        "Change to Chapter 29 risk communication, evidence sharing, or reassessment concepts"
+      ]
+    },
+    "SRC-NIST-RISK-001": {
+      "id": "SRC-NIST-RISK-001",
+      "version": "SP 800-30 Rev.1",
+      "status": "final",
+      "publishedAt": "2012-09-17",
+      "checkedAt": "2026-10-21",
+      "nextReviewAt": "2026-11-08",
+      "url": "https://csrc.nist.gov/pubs/sp/800/30/r1/final",
+      "notes": "2026-08-08に公式final publication pageとNIST Risk Management publications indexを意味確認した。確認した公式範囲ではRev.1はFinalとして掲載され、後継版または専用errataは確認できなかった。第4章ではRisk assessmentの準備・維持、Threat source/event、Vulnerability/Predisposing condition、Likelihood、Impact、Uncertainty、Decision handoffの限定概念だけに用いる。Federal向けProcessを普遍的必須手順とせず、数値Risk scoreをThreat Modelの完了条件にしない。 第29章用途限定確認（2026-10-21）: SP800-30 Rev.1 Final2012-09-17の公式landing/PDF、§3.3/§3.4を再取得し共有と評価維持を確認。本書六状態、実許可、Control有効性、過去Caseの再承認の根拠ではない。既存採用節と次回日付を保持。",
+      "reviewTriggers": [
+        "NIST SP 800-30 revision, withdrawal, successor, or errata",
+        "NIST Risk Management publications index status change",
+        "Change to a threat source, threat event, vulnerability, predisposing condition, likelihood, impact, or uncertainty concept used by Chapter 4",
+        "Change to Chapter 29 risk communication, evidence sharing, or reassessment concepts"
+      ]
+    }
+  },
+  "chapter": {
+    "id": "ch29-capstone",
+    "title": "第29章 統合ケーススタディ",
+    "description": "評価、検知、対応、CTI、経営判断を一つの事案で接続する",
+    "objectives": [
+      "統合ワークフローを実行できる",
+      "成果物間の追跡性を示せる",
+      "最終ポートフォリオを完成できる"
+    ]
+  }
+}

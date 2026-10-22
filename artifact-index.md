@@ -94,3 +94,7 @@ ART-08 / ART-09は[第26章の完全合成記入例](cases/ch26-cti-distribution
 `ART-31 AI / Agent Threat Model`はInstruction / Data / Memory / Tool / Approval / Evidenceを結び、[空Template](templates/ai-agent-threat-model.md)と[第27章完全合成Case](cases/ch27-ai-agent-threat-model-example.md)で六状態と停止・非実行境界を記録する。
 
 `ART-32`は[第28章](manuscript/28-ai-assisted-analysis-assurance.md)、[空Template](templates/ai-assisted-analysis-assurance-record.md)、[完全合成の全欄Case](cases/ch28-ai-assisted-analysis-assurance-example.md)でSource、Claim、Verification、Human Decisionを追跡する。全欄Case、閉Schema、有限Layer Aの契約検査はオフライン教材の整合を確認するもので、実Modelの性能保証や実操作の許可ではない。
+
+## ART-33 — Final Security Decision Portfolio Index
+
+[第29章](manuscript/29-capstone-case-study.md) / [空Template](templates/final-security-decision-portfolio-index.md) / [全欄Case](cases/ch29-capstone-portfolio-example.md)。ART-01〜32の参照と不足を保持して判断へ渡す索引。Decision readyは承認・実操作許可・全Control合格ではない。

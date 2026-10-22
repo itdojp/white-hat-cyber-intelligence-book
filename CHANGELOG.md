@@ -174,3 +174,7 @@ ART-31、六Component・六要求の固定合成Case、閉Schema、有限Layer A
 - 正式五Claim Status、25/26 Case refinement、24/27方法参照と非継承を明示。その後、全欄Case/完全合成JSON/閉Schema/有限Layer A/比較Corpusを追加済み。実装の存在は独立レビュー・章DoD・実公開の完了を意味しない。
 
 第28章Draftへ全欄Case・完全合成JSON/閉Schema・七Claim/五Status・有限Layer Aと16意味族の対比を追加。共有Policy/Projection/formatter pinと親正文は不変。独立レビュー・通常merge・実main/Pagesの達成はIssue #50 / PR #187で追跡する。
+
+## 2026-10-21 — 第29章 / ART-33
+
+32成果物の参照と非継承、判断要求・二Brief・不足・再評価を辿る完全合成Portfolioを追加。親CaseのStatus/Authority/時点を変更せず、共有Projection/Policyとformatter pinを維持する。二NIST Sourceを用途限定で再確認し、29の実使用mappingだけを追加。

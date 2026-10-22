@@ -68,6 +68,7 @@ PREFLIGHT = tuple(
         26,
         27,
         28,
+        29,
     )
 ) + (
     "python3 scripts/check_appendix_adh.py",

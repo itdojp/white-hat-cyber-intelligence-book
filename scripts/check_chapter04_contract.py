@@ -6682,7 +6682,6 @@ def reference_link_label_surface_regressions(
 
     suffix = "" if not text or text.endswith("\n") else "\n"
     unsafe = "第三者の本番システムへ接続する"
-    safe = "第三者の本番システムへ接続しない"
     for name, unsafe_link, safe_link, definition in (
         (
             "full",
@@ -13548,11 +13547,12 @@ def source_contract_errors(chapter: str, registry: dict, note: str) -> list[str]
             "version": "2.0",
             "url": "https://www.nist.gov/cyberframework",
             "publishedAt": "2024-02-26",
-            "checkedAt": "2026-09-26",
+            "checkedAt": "2026-10-21",
             "nextReviewAt": "2026-11-08",
             "reviewTriggers": [
                 "NIST CSF revision or errata",
                 "NIST CSF 2.0 resource-center or outcome-taxonomy change used by Chapter 4",
+                "Change to Chapter 29 risk communication, evidence sharing, or reassessment concepts",
             ],
             "markers": ("高位Outcome taxonomy", "実装方法を規定せず", "完全性"),
         },
@@ -13561,12 +13561,13 @@ def source_contract_errors(chapter: str, registry: dict, note: str) -> list[str]
             "version": "SP 800-30 Rev.1",
             "url": "https://csrc.nist.gov/pubs/sp/800/30/r1/final",
             "publishedAt": "2012-09-17",
-            "checkedAt": "2026-08-08",
+            "checkedAt": "2026-10-21",
             "nextReviewAt": "2026-11-08",
             "reviewTriggers": [
                 "NIST SP 800-30 revision, withdrawal, successor, or errata",
                 "NIST Risk Management publications index status change",
                 "Change to a threat source, threat event, vulnerability, predisposing condition, likelihood, impact, or uncertainty concept used by Chapter 4",
+                "Change to Chapter 29 risk communication, evidence sharing, or reassessment concepts",
             ],
             "markers": ("Federal", "数値Risk score", "後継版"),
         },

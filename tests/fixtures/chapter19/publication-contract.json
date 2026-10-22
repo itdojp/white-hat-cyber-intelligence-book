@@ -13774,7 +13774,7 @@
       "version": "2.0",
       "url": "https://www.nist.gov/cyberframework",
       "publishedAt": "2024-02-26",
-      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。 2026-09-23用途限定確認: 第19章ではFinal CSWP 29（2024-02-26）印刷p.5の六Functionを上位Outcomeとして参照し、固定直列IR手順・本書七状態の規範算法・適合認定とはしない。 第22章用途限定確認（2026-09-26）: CSWP29 Final2024-02-26の公式landing/PDF、§3.1印刷pp.6〜7のCurrent/Target Profile、Gap、優先行動計画を確認。Metric/七状態の規範算法やmappingからの効果証明ではない。既存章notesと次回確認日を保持。"
+      "notes": "2026-08-08にNIST CSWP 29 final publication pageと現行Resource Centerを意味確認した。第4章ではBusiness Outcome、Governance、Risk communicationへのHandoffを支える高位Outcome taxonomyとして用いる。CSFは実装方法を規定せず、mappingはThreat Model、Control実装、観測、有効性または完全性の証明ではない。 2026-09-23用途限定確認: 第19章ではFinal CSWP 29（2024-02-26）印刷p.5の六Functionを上位Outcomeとして参照し、固定直列IR手順・本書七状態の規範算法・適合認定とはしない。 第22章用途限定確認（2026-09-26）: CSWP29 Final2024-02-26の公式landing/PDF、§3.1印刷pp.6〜7のCurrent/Target Profile、Gap、優先行動計画を確認。Metric/七状態の規範算法やmappingからの効果証明ではない。既存章notesと次回確認日を保持。 第29章用途限定確認（2026-10-21）: CSWP29 Final2024-02-26の公式landing/PDF、Abstract/§1/§5.1を再取得して高位Outcomeと情報の往復を確認。本書六状態、実許可、Control有効性、過去Caseの再承認の根拠ではない。既存採用節と次回日付を保持。"
     },
     "SRC-IR-001": {
       "publisher": "NIST",

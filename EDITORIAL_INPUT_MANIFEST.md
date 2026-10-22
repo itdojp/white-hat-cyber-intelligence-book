@@ -14,7 +14,7 @@
 
 | Status | Count |
 |---|---:|
-| `blueprint-only` | 1 |
+| `canonical-pr-open` | 1 |
 | `consumed` | 25 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 1 |
@@ -71,7 +71,7 @@
 | `chapter-26` | #48 | `consumed` | `EIC-0048-38a432a5daf5` | #179 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5871968211) |
 | `chapter-27` | #49 | `consumed` | `EIC-0049-32e8846cf56d` | #183 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5901110059) |
 | `chapter-28` | #50 | `consumed` | `EIC-0050-313c092a3659` | #187 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/50#issuecomment-6228570538) |
-| `chapter-29` | #51 | `blueprint-only` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5229589913) |
+| `chapter-29` | #51 | `canonical-pr-open` | `EIC-0051-a90f9092493f` | #206 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/206) |
 | `appendix-a` | #52 | `consumed` | `EIC-0052-d6932c1a4774` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212) |
 | `appendix-d` | #52 | `consumed` | `EIC-0052-a1d1ce13dd48` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212) |
 | `appendix-h` | #52 | `consumed` | `EIC-0052-390579c705e1` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212) |
@@ -218,7 +218,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0051-a90f9092493f` | `EIP-0012` | `chapter29-final-portfolio-blueprint.md` | `a90f9092493f64bcfbb3a36f269e83e686177203f276234b29cfd365e4444e04` | `blueprint-only` | 完成本文ではなく、live manifest/reportを基に統合するBlueprint。 |
+| `EIC-0051-a90f9092493f` | `EIP-0012` | `chapter29-final-portfolio-blueprint.md` | `a90f9092493f64bcfbb3a36f269e83e686177203f276234b29cfd365e4444e04` | `selected` | 登録された唯一のBlueprintを採否記録の対象として選択。raw実体未確認のため直接採用せず、現行Issueと正本・限定原典から新規制作。 |
 
 ### `appendix-a` / Issue #52
 

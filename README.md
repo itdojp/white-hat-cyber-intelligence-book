@@ -186,3 +186,7 @@ npm run check:part02
 [本文](manuscript/28-ai-assisted-analysis-assurance.md)、[ART-32 Template](templates/ai-assisted-analysis-assurance-record.md)、[用途限定Source確認](references/ch28-source-review-2026-09-30.md)を同梱しています。全欄Case/完全合成JSON/閉Schema/有限Layer A/比較Corpusも含みます。
 
 第28章の教材は七Claimの全欄Case・JSON/閉Schema・有限比較を同梱する。`npm run check:chapter28`は記録照合であり、実AI性能/検出耐性/法的承認の検証ではない。教材の更新も独立レビュー・通常merge・実main/Pagesの確認を経ます。
+
+## 第29章の統合教材
+
+[第29章](manuscript/29-capstone-case-study.md) / [ART-33](templates/final-security-decision-portfolio-index.md) / [完全合成Case](cases/ch29-capstone-portfolio-example.md)。記録の完成とControl検証・実許可を区別する。付録の最終整合と全書Releaseは別工程で確認する。
