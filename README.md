@@ -65,7 +65,7 @@
 
 ```bash
 git clone https://github.com/itdojp/book-formatter.git ../book-formatter
-git -C ../book-formatter checkout c4dcd01e8450112f95002a454657d409cb3fa2f1
+git -C ../book-formatter checkout fba61076a7d8171e8344c5d60119f737447214d1
 npm ci --prefix ../book-formatter --ignore-scripts
 
 npm ci
@@ -74,7 +74,7 @@ BOOK_FORMATTER_DIR=../book-formatter npm test
 BOOK_FORMATTER_DIR=../book-formatter npm run check:book-qa
 ```
 
-本書のQAはPRH/textlintのAPIを使用します。依存内部の`js-yaml` CLIは固定formatterの[支援範囲](https://github.com/itdojp/book-formatter/blob/c4dcd01e8450112f95002a454657d409cb3fa2f1/docs/dependency-audit-20261008.md)に含まれません。
+本書のQAはPRH/textlintのAPIを使用します。依存内部の`js-yaml` CLIは固定formatterの[支援範囲](https://github.com/itdojp/book-formatter/blob/fba61076a7d8171e8344c5d60119f737447214d1/docs/dependency-audit-20261008.md)に含まれません。
 
 `BOOK_FORMATTER_DIR`を省略した場合、生成スクリプトは固定commitの共通部品を取得し、Git blob SHAを検証します。
 

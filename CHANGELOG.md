@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-22 — formatter依存修復と共有navigationの採用（Issue #205）
+
+- 通常マージ済みformatter `fba61076a7d8171e8344c5d60119f737447214d1` / shared3.3.3へ固定し、Markdown・textlint内部依存と隔離出版toolchainの脆弱性修復を採用する。依存監査の結果は実行時点の証拠とし、過去のaudit成功を現在値へ流用しない。
+- 同範囲の共有layoutによる単一のページ末尾navigation、サイドバーのkeyboard/focus状態、狭幅での折返しを採用する。本文・Case・Source時点・共有Projection/Policyは変更しない。
+- workflow・公開部品blob・第三者通知・既存18章fixtureのpin checksumを同期する。本書root依存やrenderer lock、検査閾値は変更しない。
+
 ## 2026-10-19 — 第28章の公開索引の整合（Issue #200 / PR #201）
 
 - 用語集・図表一覧・README・Case索引・供給Data索引に残る第28章の制作中/Draft表記と公開前追跡の説明を整理した。図表のImplementedは教材内の実装状態であり、Claim Statusや実AIの性能・法的承認を意味しない。

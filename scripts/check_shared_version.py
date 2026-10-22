@@ -10,16 +10,16 @@ REVISION_PATH = ROOT / ".book-formatter" / "revision.json"
 
 EXPECTED = {
     "repository": "itdojp/book-formatter",
-    "commit": "c4dcd01e8450112f95002a454657d409cb3fa2f1",
-    "shared_version": "3.3.0",
-    "shared_version_blob": "6e74ea23d3d7e2c146791dac7bfb4c25a7b00ef7",
+    "commit": "fba61076a7d8171e8344c5d60119f737447214d1",
+    "shared_version": "3.3.3",
+    "shared_version_blob": "66d7d7b8cc6c11ab817603f5892d7cbe7b9726b6",
     "schema_blob": "87dcb44b0d4b543ba43ae3a8ebc27d2f3cfda3cd",
 }
 
 EXPECTED_COMPONENTS = {
     "bookLayout": (
         "shared/layouts/book.html",
-        "d25459b4785c404405dcde8c0e414404a3a2f17a",
+        "8c862d57ddd5cee0b0ba3cd4a9e2cc86884b29d9",
         "_layouts/book.html",
     ),
     "defaultLayout": (
@@ -44,7 +44,7 @@ EXPECTED_COMPONENTS = {
     ),
     "mobileResponsiveCss": (
         "shared/assets/css/mobile-responsive.css",
-        "15f64c136d976935a0d8b9439b67df3fb365fb80",
+        "cd8b92d1624d6f69286b73e8efe19839514d6475",
         "assets/css/mobile-responsive.css",
     ),
     "syntaxHighlightingCss": (
