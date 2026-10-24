@@ -34,6 +34,7 @@
 | ART-30 | Evidence and Source Evaluation Table | 24 | `templates/evidence-source-evaluation-table.md` |
 | ART-31 | AI / Agent Threat Model | 27 | `templates/ai-agent-threat-model.md` |
 | ART-32 | AI-Assisted Analysis Assurance Record | 28 | `templates/ai-assisted-analysis-assurance-record.md` |
+| ART-33 | Final Security Decision Portfolio Index | 29 | `templates/final-security-decision-portfolio-index.md` |
 
 `ART-05`は、Threat Hypothesis、Telemetry contract、Detection logic、fixture replay、Evidence、Triage / Incident handoff、Control / Reassessmentを一つの判断記録へ接続する。
 

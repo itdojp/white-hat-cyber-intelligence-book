@@ -80,12 +80,36 @@ def chapter_navigation_errors(site):
     return []
 
 
+ARTIFACT_INDEX = "artifact-index.md"
+EXPECTED_INDEX_ROW = (
+    "Artifact Index ID 成果物 主な章 テンプレート "
+    "ART-33 Final Security Decision Portfolio Index 29 "
+    "templates/final-security-decision-portfolio-index.md"
+)
+
+
+def artifact_index_errors(document):
+    """Check only Chapter 29's registration, using shared projected table rows.
+
+    A prose mention is not a catalog row. This is not a parser or a substitute
+    for a future whole-index safety/catalog contract.
+    """
+    rows = [field.text for field in document.fields
+            if field.element_kind == "table_row"
+            and "ART-33" in field.text.split()]
+    if document.diagnostics or rows != [EXPECTED_INDEX_ROW]:
+        return ["CAP29-artifact-index-registration"]
+    return []
+
+
 def repository_errors(root, data, bindings, pub):
     allowed = set(bindings["parents"]) | set(pub["inputDigests"]) | {
         "site-pages.json", "package.json", "references/sources.json", "book-config.json",
-        *DOCUMENTS, BINDINGS, PUBLICATION, DATA, SCHEMA,
+        *DOCUMENTS, BINDINGS, PUBLICATION, DATA, SCHEMA, ARTIFACT_INDEX,
     }
     inputs = {p: read_regular(root, p, allowed) for p in allowed}
+    index = project_documents({ARTIFACT_INDEX: inputs[ARTIFACT_INDEX].decode()}).documents[0]
+    require(not artifact_index_errors(index), "artifact-index-registration")
     for p, expected in {**bindings["parents"], **pub["inputDigests"]}.items():
         require(digest(inputs[p]) == expected, "reviewed-input-drift: " + p)
     for row in data["artifacts"]:

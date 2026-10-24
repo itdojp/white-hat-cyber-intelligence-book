@@ -11,3 +11,6 @@ The finite consumer adds no Markdown/HTML/URL parser, host suffix permission or 
 Regression families: Chapter 28 → Chapter 29 final navigation (including the reproduced order-72 misplacement, duplicate order and reversed predecessor); duplicate/missing/aliased artifacts; two roles per bundle; case/version/owner/Authority/evidence/receipt transfer; stage reachability; documentary observation vs system observation; missing vs inconclusive; options and gaps; brief parity; synthetic reviews; approval vs recommendation; actions/deadlines/reassessment; whole-field drift; unsafe preamble/tail and unsupported interpreted syntax; strict JSON and bounded regular-file access. No unbounded fuzz grammar, network collection or model execution.
 
 Run `python3 scripts/check_chapter29_contract.py` with PYTHONHASHSEED 0 / 1 / 7 / 42. `--no-regressions` is the publication preflight and still validates all canonical inputs; it is not a safety bypass. Generation, built-site bytes, browser/search/print/accessibility and actual main Pages are separate gates.
+
+ART-33の主索引表登録も、共有Projectionのtable_rowだけを使って確認する。表外の説明では代用せず、欠落・説明だけ・重複・誤名称・誤章・誤Templateの6負例を拒否する。全成果物の一般的な索引検査や索引全文の安全検査を再実装するものではない。
+同一policy fieldの重複除去は共有Projectionの契約として維持し、同一行の重複は索引正本のreviewed input hashで拒否する。索引の意味・構成を改訂するときはこの依存を再レビューする。
