@@ -3056,7 +3056,7 @@
       "targetId": "chapter-29",
       "issue": 51,
       "targetKind": "chapter",
-      "status": "canonical-pr-open",
+      "status": "consumed",
       "selectedCandidateId": "EIC-0051-a90f9092493f",
       "canonicalPr": 206,
       "intakeRecord": {
@@ -3110,9 +3110,9 @@
           "packageId": "EIP-0012",
           "inputPath": "chapter29-final-portfolio-blueprint.md",
           "inputSha256": "a90f9092493f64bcfbb3a36f269e83e686177203f276234b29cfd365e4444e04",
-          "disposition": "selected",
-          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/51#issuecomment-6306141945",
-          "dispositionReason": "登録された唯一のBlueprintを採否記録の対象として選択。raw実体未確認のため直接採用せず、現行Issueと正本・限定原典から新規制作。"
+          "disposition": "rewritten",
+          "dispositionEvidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/51#issuecomment-6378318846",
+          "dispositionReason": "PR206とART33索引修正PR209の利用者通常merge、実main CI/Pages・213公開filesのbyte一致・レビュー全件照合を確認。raw不在・未読・実体hash未照合・直接採用なしを保持し、現行契約と限定原典から新規制作した正本の公開完了だけを記録する。依存Issue205・全付録・Releaseの完了ではない。"
         }
       ],
       "statusHistory": [
@@ -3133,6 +3133,12 @@
           "effectiveAt": "2026-10-21",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/206",
           "reason": "専用Draft PR206へ本文/ART33/全欄Case/合成JSON/閉Schema/二Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開は未完、formatter HighはIssue205で留保しconsumedを先取りしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-10-24",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/51#issuecomment-6378318846",
+          "reason": "PR206/209利用者通常merge。main c7204ef90bc5bb827e51d47ee66566f6fce4017d は209 reviewed37a48f3と全tree一致、第29章六正本は206 reviewede7c440fとbyte一致。Book Contract40048204559 / Book QA40048204563 / Deploy Pages40048204564 success、213実公開filesがPages artifactと全byte一致。206/209の全レビュー・inline・thread照合は未解決/不整合/欠落0/0/0。元Intakeの作成時main/日付/制約/全欄、全Package/同梱22/他Target/旧履歴とraw不在・未読・実体hash未照合・直接採用なしを保持。旧表示証拠は同一入力だけ限定再利用。依存Issue205・全付録/PartV/Release・人間試行/法務承認の完了ではない。"
         }
       ]
     }
