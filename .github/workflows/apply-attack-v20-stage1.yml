@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          expected_parent='e3bd31b6785e5b836a1b2f8b4bee16a93f35ce22'
+          expected_parent='d90005482c9d05330db29dfa72141a7d5ca0da00'
           actual_parent="$(git rev-parse HEAD^)"
           if [[ "${actual_parent}" != "${expected_parent}" ]]; then
             echo "ERROR: unexpected parent ${actual_parent}; expected ${expected_parent}" >&2
@@ -44,8 +44,11 @@ jobs:
           git apply --check /tmp/attack-v20-stage1.patch
           git apply --index /tmp/attack-v20-stage1.patch
 
+          # Workflow file updates require the GitHub App workflow permission.
+          # Keep both workflow files unchanged in this Actions commit and apply
+          # the reviewed workflow update in a separate Connector commit.
+          git restore --source=HEAD --staged --worktree .github/workflows/generate-attack-v20-snapshot.yml
           rm -f .github/attack-v20-stage1.patch.gz.b64.*
-          rm -f .github/workflows/apply-attack-v20-stage1.yml
           git add --all
 
           git config user.name 'github-actions[bot]'
