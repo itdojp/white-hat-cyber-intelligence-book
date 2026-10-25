@@ -46,6 +46,7 @@ jobs:
         shell: bash
         env:
           BOOK_FORMATTER_DIR: .work/book-formatter
+          PYTHONPATH: scripts
         run: |
           set -euo pipefail
           mkdir -p .tmp/attack-v20-projections
