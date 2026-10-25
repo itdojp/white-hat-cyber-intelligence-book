@@ -1,5 +1,6 @@
 name: Export ATT&CK v20 migration worktree
 
+# Temporary migration workflow. Delete before the source PR is ready.
 on:
   pull_request:
     branches:
