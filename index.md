@@ -56,6 +56,18 @@
 
 Quick Startは一般初心者向けの短縮版ではありません。本書の厳密な記録体系へ、判断要求、仮説、Evidence gap、停止条件から入るためのオンボーディングです。
 
+### 主要章への直接導線
+
+1. [第2章 法、倫理、許可、責任ある開示](manuscript/02-law-ethics-authorization.md)
+2. [第3章 能力を分解し、証拠で学習する](manuscript/03-capability-evidence.md)
+3. [第4章 資産、信頼境界、攻撃面、脅威モデル](manuscript/04-assets-boundaries-threat-model.md)
+4. [第5章 攻撃者の行動をATT&CKで記述する](manuscript/05-attack-behavior.md)
+5. [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
+6. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
+7. [第25章 構造化分析、不確実性、アトリビューション](manuscript/25-structured-analysis-attribution.md)
+8. [Concept Map](concept-map.md)
+9. [詳細目次](TOC.md)
+
 ### 代表的な専門ルート
 
 - 評価・Threat Model: [第4章](manuscript/04-assets-boundaries-threat-model.md) → [第7章](manuscript/07-vulnerability-prioritization.md) → [第9〜15章](TOC.md)
