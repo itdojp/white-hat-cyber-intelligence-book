@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          expected_parent='0de2e33333b1a6810b60b84a38cc4c01fe11ff47'
+          expected_parent='78f0583e043119dfe2b3ebc4acee8a03ea39cc3d'
           actual_parent="$(git rev-parse HEAD^)"
           if [[ "${actual_parent}" != "${expected_parent}" ]]; then
             echo "ERROR: unexpected parent ${actual_parent}; expected ${expected_parent}" >&2
