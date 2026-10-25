@@ -83,16 +83,28 @@ Quick Startは一般初心者向けの短縮版ではありません。本書の
 - Executive Decision Brief
 - Final Security Decision Portfolio Index
 
-## 主要な公開成果物
+## 公開中の成果物
 
 - [Integrated Security Case Mapテンプレート](templates/integrated-security-case-map.md)
 - [第1章 合成記入例：請求書連携OAuthアプリの権限見直し](cases/ch01-integrated-security-case-example.md)
 - [Authorization Checklistテンプレート](templates/authorization-checklist.md)
-- [Rules of Engagementテンプレート](templates/rules-of-engagement.md)
+- [第2章 合成記入例：OAuth連携評価前のAuthorization判断](cases/ch02-authorization-decision-example.md)
+- [Capability Evidence Matrixテンプレート](templates/capability-evidence-matrix.md)
+- [第3章 合成記入例：Capability Evidence Matrix](cases/ch03-capability-evidence-example.md)
 - [Threat Modelテンプレート](templates/threat-model.md)
+- [第4章 合成記入例：資産・信頼境界・脅威モデル](cases/ch04-threat-model-example.md)
+- [ATT&CK Behavior Mapテンプレート](templates/attack-behavior-map.md)
+- [第5章 合成記入例：ATT&CK Behavior Map](cases/ch05-attack-behavior-example.md)
+- [Web/API Assessment Hypothesis Packテンプレート](templates/web-api-assessment-hypothesis-pack.md)
+- [第11章 合成記入例：マルチテナント受注Export APIとWebhook登録の評価](cases/ch11-web-api-assessment-example.md)
+- [第11章 読み取り専用の合成Request / Response Dataset](cases/fixtures/ch11-web-api-assessment-dataset.json)
 - [Detection Validation Recordテンプレート](templates/detection-validation.md)
-- [Incident Action Planテンプレート](templates/incident-action-plan.md)
+- [第17章 合成記入例：未承認管理者同意変更のDetection Validation](cases/ch17-detection-validation-example.md)
+- [第17章 オフラインfixture説明](cases/fixtures/ch17-detection-engineering-fixture.md)
 - [Analytic Judgment Recordテンプレート](templates/analytic-judgment-record.md)
+- [第25章 合成記入例：共同報告に埋もれた技術クラスタの判断](cases/ch25-structured-analysis-attribution-example.md)
+- [Rules of Engagementテンプレート](templates/rules-of-engagement.md)
+- [Incident Action Planテンプレート](templates/incident-action-plan.md)
 - [CTI Reportテンプレート](templates/cti-report.md)
 - [Executive Briefテンプレート](templates/executive-brief.md)
 - [AI / Agent Threat Modelテンプレート](templates/ai-agent-threat-model.md)
@@ -123,3 +135,19 @@ Quick Startは一般初心者向けの短縮版ではありません。本書の
 ## ライセンス
 
 本文、図表、演習課題、テンプレートは、特記がない限りCC BY-NC-SA 4.0です。商用利用には別途契約が必要です。自作コードの扱いは[LICENSE.md](LICENSE.md)を参照してください。
+
+## 第9章の成果物
+
+[第9章 Engagement DesignとRules of Engagement](manuscript/09-engagement-roe.md) / [ART-02](templates/rules-of-engagement.md) / [完全合成Case](cases/ch09-engagement-roe-example.md) / [計画JSON](cases/fixtures/ch09-engagement-roe.json)。親の許可期限を保持したDraftで、作業を始めない判断と再承認を学ぶ。
+
+## Intelligence Requirementから収集計画へ
+
+[第23章](manuscript/23-intelligence-requirements.md)、[ART-29](templates/intelligence-requirement-collection-plan.md)、[完全合成例](cases/ch23-intelligence-requirements-example.md)で、判断期限と未解決Gapを辿る。
+
+## 第24章の制作成果
+
+[OSINT、Provenance、情報源評価](manuscript/24-osint-provenance-sources.md)は、ART-30と完全合成資料で原典、版、変換、三つの評価軸とEvidence用途を学ぶ。
+
+## 第26章の制作成果
+
+[CTIを構造化し、技術・経営へ配布する](manuscript/26-cti-distribution.md)では、同じ根拠からART-08 / ART-09を作り、未配達・Gap・再評価を保持する。
