@@ -704,10 +704,53 @@
       "targetId": "appendices-b-c-i",
       "issue": 53,
       "targetKind": "appendix-group",
-      "status": "selected-for-intake",
+      "status": "canonical-pr-open",
       "selectedCandidateId": "EIC-0053-6a52b22b0613",
-      "canonicalPr": null,
-      "intakeRecord": null,
+      "canonicalPr": 211,
+      "intakeRecord": {
+        "recordVersion": "1.0.0",
+        "recordUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/211",
+        "packageId": "EIP-0014",
+        "packageSha256": "f6b11d439088d8e8571d7e8630b33a866b566a97815480ef7df074c45faa79a4",
+        "inputPath": "appendices-b-c-i-generation-blueprint.md",
+        "inputSha256": "6a52b22b061342c8f0c4fc58ec36822ea8c8958d76c691bcff5cd452c7b5268a",
+        "targetIssue": 53,
+        "canonicalPr": 211,
+        "currentMainSha": "aaabfd1f7af3fb04f9b345802f9c10f97758fff1",
+        "policyVersion": "1.2.0",
+        "publicationProjectionVersion": "1.1.0",
+        "inputReviewedAt": "2026-10-25",
+        "adoptedSections": [
+          "rawから直接採用なし。branch前選択: https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/53#issuecomment-6396261024"
+        ],
+        "rewrittenSections": [
+          "現行Issue53・主索引・33ArtifactのTemplate/章/合成記入例/供給Fixtureから横断metadataを新規制作。Bの目的/入力/出力/必須ID/Status対象/Owner/Review/Reassessment参照、CのAutomation/Limitation/Failure action/Owner、Iの学習目標/章DoD/八観点を接続する。",
+          "appendicesの説明本文とmanifest編集元の明示生成区画を区別。Template全文とenumを複製せず、共有Projection/Policyと親章の意味ownerを保持。第29章末尾の未作成案内だけを最小導線へ更新。"
+        ],
+        "rejectedOrDeferredSections": [
+          "Blueprintの実体を推測復元しない。原Package/同梱E/F/G/他Target/旧履歴を保持する。",
+          "新parser・安全例外・共通Status・実操作・実Data収集・実通知・実承認は追加しない。親Caseの時点/Authority/Statusを変更しない。",
+          "formatter pin/lock/依存修正は別件205/上流201。付録E/F/G/J・PartV・全書Releaseは別工程で、Ready/consumed/全書完成を先取りしない。"
+        ],
+        "sourceRevalidation": [
+          "本PRは内部正本への限定参照。current main aaabfd1の主索引、全Template/主章/合成例/Fixtureの124入力を固定し、実field/anchorと役割境界を照合した。",
+          "外部Sourceの追加規範・鮮度の再認定はしない。references/sources.json、既存Source Note、確認日・旧Case時点は保持する。全59Source・法務/Licenseの確認完了を主張しない。"
+        ],
+        "canonicalFiles": [
+          "appendices/appendix-b-templates.md",
+          "appendices/appendix-c-checklists.md",
+          "appendices/appendix-i-rubric.md",
+          "references/artifact-catalog.json",
+          "manuscript/29-capstone-case-study.md"
+        ],
+        "knownLimitations": [
+          "Input availability: not-present-in-authorized-workspace。登録4basenameの限定探索で不在。symlink/依存/cache/generated/Archive内/改名/領域外は探索しない。raw未読・実体hash未照合・直接採用なし。inputReviewedAtは採否記録日であり原文読了日ではない。",
+          "初期Draft時点で16新規unit methods/既存19章公開前検査/Editorial73+12/root install-audit/compile-Ruff成功。4seed/全文QA/表示・印刷/exactCI/独立reviewは未完、後続証拠と区別する。",
+          "有限snapshotはレビュー対象の版漂流を拒否するものであり、任意実務記録の意味・状態遷移・合法性を判定する一般器ではない。AI reviewと人間の読者試行・法務承認を区別する。",
+          "formatter advisoryは別件保留。現時点の固定formatterはroot High1 Moderate1 / isolated Critical2 High4 Moderate2、audit exit1。本書rootは0で、過去結果を現在値へ読み替えない。"
+        ],
+        "rawTrackedFiles": 0
+      },
       "candidates": [
         {
           "candidateId": "EIC-0053-6a52b22b0613",
@@ -731,6 +774,12 @@
           "effectiveAt": "2026-10-25",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/53#issuecomment-6396261024",
           "reason": "唯一登録Blueprintをbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを保持し、現行Issue53と正本の参照metadataから新規制作。原Package/同梱E/F/G/他Target/旧履歴を保持する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-10-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/211",
+          "reason": "付録B/C/Iの横断metadata・生成区画・説明本文・有限consumer・負例・公開routeを専用Draft PR211へ結合。全QA/独立review/通常採用/main公開は未完で、consumedを先取りしない。"
         }
       ]
     },
