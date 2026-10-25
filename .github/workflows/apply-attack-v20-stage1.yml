@@ -1,12 +1,6 @@
 name: Apply ATT&CK v20 stage 1
 
 on:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - .github/workflows/apply-attack-v20-stage1.yml
-      - .github/attack-v20-stage1.patch.gz.b64.*
   push:
     branches:
       - sources/attack-v20-migration
@@ -36,7 +30,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          expected_parent='5cdd603eff14c82ee2a09405b12d44033b7c83a3'
+          expected_parent='31cf46e7b87b78b6e70d5cc19f948c194e981c17'
           actual_parent="$(git rev-parse HEAD^)"
           if [[ "${actual_parent}" != "${expected_parent}" ]]; then
             echo "ERROR: unexpected parent ${actual_parent}; expected ${expected_parent}" >&2
