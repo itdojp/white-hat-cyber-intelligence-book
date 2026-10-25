@@ -1,4 +1,4 @@
-# 第18章 Source Review — 2026-09-22
+# 第18章 Source Review — 2026-09-22（ATT&CK v20再確認 2026-10-26）
 
 ## 確認範囲
 
@@ -6,7 +6,7 @@
 
 ## SRC-ATTACK-001
 
-[Version History](https://attack.mitre.org/resources/versions/)のcurrentは19.2。[Updates](https://attack.mitre.org/resources/updates/)の更新説明も確認した。Version Historyの2026-04-28という系列開始表示と、19.2の更新日表示は区別する。過去Issue設計の19.1を現在版として引用しない。
+2026-10-26に[MITRE/CTI v20.0 release](https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0)と固定bundleを用途限定再確認した。第5章の有限snapshotをv20.0へ移行したが、本章は仮説語彙だけを継承し、新しいTechnique割当て、Coverage認定、Actor attributionを追加しない。過去Issue設計の19.1と本記録の初回19.2確認は歴史として保持する。
 
 採用するのは、行動の共通語彙を版付きで利用するという範囲だけである。全Technique、Platform、CTI objectの完全監査、Actor attribution、手元のCoverageや検証成功の証明は行っていない。親第17章の版付き記録を本章の新規入力で書き換えない。
 

@@ -21,7 +21,7 @@ manuscript snapshot. Changes require editorial review alongside the owning text.
   and host exceptions are separate; no hostname-wide exemption is granted.
 - The machine-readable Case is `cases/fixtures/ch05-attack-behavior.json`.
   Displayed Case table rows must match typed values after shared projection.
-- Source metadata is `tests/fixtures/attack/ch05-v19.2.json`, a hash-fixed eight-
+- Source metadata is `tests/fixtures/attack/ch05-v20.0.json`, a hash-fixed eight-
   object subset. The full bundle is deliberately not tracked or fetched in CI.
   See the Chapter 5 Source Review Note for extraction and MITRE attribution.
 

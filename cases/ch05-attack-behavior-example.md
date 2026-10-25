@@ -17,7 +17,7 @@
 | decisionRequirementId | DR-2026-001 |
 | authorizationRecordId | AUTH-CASE-2026-001 |
 | scope | read-only-synthetic-data |
-| catalogVersion | 19.2 |
+| catalogVersion | 20.0 |
 | teachingModel | Office Suite teaching model only; parent product/environment remains unconfirmed. |
 | parentState | Chapter 4 source snapshot retained; no parent hypothesis, control, gap or decision is updated. |
 
@@ -51,7 +51,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | assetIds | ASSET-2026-002, ASSET-2026-005 |
 | boundaryIds | TB-2026-001, TB-2026-003 |
 | flowIds | FLOW-2026-002, FLOW-2026-004 |
-| catalogVersion | 19.2 |
+| catalogVersion | 20.0 |
 | techniqueId | T1671 |
 | tacticId | TA0003 |
 | subtechniqueId | なし |
@@ -70,7 +70,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | decisionContribution | T1671の候補対応を保持し、現在の前提を確認するまで結論を進めない |
 | gapId | GAP-BM-001 |
 | owner | SYNTH-SOC-REVIEWER |
-| reviewDate | 2026-09-20 |
+| reviewDate | 2026-10-26 |
 | reassessmentTrigger | 必要Field、承認記録、ScopeまたはATT&CK Objectの変更 |
 | controlIds | CTRL-2026-005, CTRL-2026-006 |
 
@@ -83,7 +83,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | assetIds | ASSET-2026-002, ASSET-2026-005 |
 | boundaryIds | TB-2026-001, TB-2026-003 |
 | flowIds | FLOW-2026-002, FLOW-2026-004 |
-| catalogVersion | 19.2 |
+| catalogVersion | 20.0 |
 | techniqueId | T1671 |
 | tacticId | TA0003 |
 | subtechniqueId | なし |
@@ -102,7 +102,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | decisionContribution | TH-2026-002のEventとRuleの問題を分離して引き渡す |
 | gapId | GAP-BM-002 |
 | owner | SYNTH-SOC-REVIEWER |
-| reviewDate | 2026-09-20 |
+| reviewDate | 2026-10-26 |
 | reassessmentTrigger | 必要Field、承認記録、ScopeまたはATT&CK Objectの変更 |
 | controlIds | CTRL-2026-007, CTRL-2026-008 |
 
@@ -115,7 +115,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | assetIds | ASSET-2026-001, ASSET-2026-003 |
 | boundaryIds | TB-2026-002, TB-2026-003 |
 | flowIds | FLOW-2026-004 |
-| catalogVersion | 19.2 |
+| catalogVersion | 20.0 |
 | techniqueId | なし |
 | tacticId | なし |
 | subtechniqueId | なし |
@@ -134,7 +134,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | decisionContribution | 発生有無はUnknownとして維持し、TH-2026-006と統合しない |
 | gapId | GAP-BM-003 |
 | owner | SYNTH-SOC-REVIEWER |
-| reviewDate | 2026-09-20 |
+| reviewDate | 2026-10-26 |
 | reassessmentTrigger | 必要Field、承認記録、ScopeまたはATT&CK Objectの変更 |
 | controlIds | なし |
 
@@ -147,7 +147,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | assetIds | ASSET-2026-002, ASSET-2026-005 |
 | boundaryIds | TB-2026-001, TB-2026-003 |
 | flowIds | FLOW-2026-002, FLOW-2026-004 |
-| catalogVersion | 19.2 |
+| catalogVersion | 20.0 |
 | techniqueId | T1671 |
 | tacticId | TA0003 |
 | subtechniqueId | なし |
@@ -166,7 +166,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | decisionContribution | 教材内の判定手続きを確認した。CTRL-2026-007と親Gapは変更しない |
 | gapId | GAP-BM-004 |
 | owner | SYNTH-SOC-REVIEWER |
-| reviewDate | 2026-09-20 |
+| reviewDate | 2026-10-26 |
 | reassessmentTrigger | 必要Field、承認記録、ScopeまたはATT&CK Objectの変更 |
 | controlIds | CTRL-2026-007, CTRL-2026-008 |
 
@@ -179,7 +179,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | assetIds | ASSET-2026-005, ASSET-2026-006, ASSET-2026-007 |
 | boundaryIds | TB-2026-004, TB-2026-008 |
 | flowIds | FLOW-2026-003, FLOW-2026-006 |
-| catalogVersion | 19.2 |
+| catalogVersion | 20.0 |
 | techniqueId | なし |
 | tacticId | なし |
 | subtechniqueId | なし |
@@ -198,7 +198,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | decisionContribution | summary-only refinementの判断を留保する |
 | gapId | GAP-BM-005 |
 | owner | SYNTH-SOC-REVIEWER |
-| reviewDate | 2026-09-20 |
+| reviewDate | 2026-10-26 |
 | reassessmentTrigger | 必要Field、承認記録、ScopeまたはATT&CK Objectの変更 |
 | controlIds | CTRL-2026-005, CTRL-2026-006 |
 
@@ -211,7 +211,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | assetIds | ASSET-2026-002, ASSET-2026-003, ASSET-2026-004 |
 | boundaryIds | TB-2026-003, TB-2026-007 |
 | flowIds | FLOW-2026-004, FLOW-2026-005 |
-| catalogVersion | 19.2 |
+| catalogVersion | 20.0 |
 | techniqueId | なし |
 | tacticId | なし |
 | subtechniqueId | なし |
@@ -230,7 +230,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | decisionContribution | 行動条件が具体化するまでTechniqueを割り当てない |
 | gapId | GAP-BM-006 |
 | owner | SYNTH-SOC-REVIEWER |
-| reviewDate | 2026-09-20 |
+| reviewDate | 2026-10-26 |
 | reassessmentTrigger | 必要Field、承認記録、ScopeまたはATT&CK Objectの変更 |
 | controlIds | CTRL-2026-007, CTRL-2026-008 |
 
@@ -243,7 +243,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | assetIds | ASSET-2026-001, ASSET-2026-003, ASSET-2026-006 |
 | boundaryIds | TB-2026-002, TB-2026-003, TB-2026-007, TB-2026-008 |
 | flowIds | FLOW-2026-003, FLOW-2026-004, FLOW-2026-005 |
-| catalogVersion | 19.2 |
+| catalogVersion | 20.0 |
 | techniqueId | なし |
 | tacticId | なし |
 | subtechniqueId | なし |
@@ -262,7 +262,7 @@ Office Suite向けAN1487を選ぶのは、この派生教材で仮置きした�
 | decisionContribution | TH-2026-003の発生有無とは別の情報ギャップとして渡す |
 | gapId | GAP-BM-007 |
 | owner | SYNTH-SOC-REVIEWER |
-| reviewDate | 2026-09-20 |
+| reviewDate | 2026-10-26 |
 | reassessmentTrigger | 必要Field、承認記録、ScopeまたはATT&CK Objectの変更 |
 | controlIds | CTRL-2026-009 |
 

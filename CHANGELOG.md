@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-26 — ATT&CK v20.0 Source migration
+
+- `SRC-ATTACK-001`と第5章の固定Enterprise metadataをATT&CK v20.0へ更新。公式release、commit、bundle SHA-256を固定した。
+- 8 Object / 1 relationの有限比較ではDC0038のversion・modified・hashだけが変化し、他の採用Fieldは不変。全Catalog監査、Coverage、Control有効性、帰属の証明には拡張しない。
+- 第6・16・18・21・26章のcurrent版表記と有限契約を同期し、第25章の歴史的v19.1記述は保持した。第27〜29章へ新しいAI mappingを自動追加しない。
+
+
 ## 2026-10-22 — formatter依存修復と共有navigationの採用（Issue #205）
 
 - 通常マージ済みformatter `fba61076a7d8171e8344c5d60119f737447214d1` / shared3.3.3へ固定し、Markdown・textlint内部依存と隔離出版toolchainの脆弱性修復を採用する。依存監査の結果は実行時点の証拠とし、過去のaudit成功を現在値へ流用しない。

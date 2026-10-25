@@ -1,4 +1,4 @@
-# 第26章 Source再監査（2026-09-28）
+# 第26章 Source再監査（2026-09-28、ATT&CK v20再確認 2026-10-26）
 
 対象は[第26章](../manuscript/26-cti-distribution.md)、ART-08 / ART-09と、独立した有限STIX/TAXII構造例です。確認日は日本時間2026-09-28、取得記録のUTC日は2026-09-27です。Registry全体や、既存章の全主張の再監査ではありません。
 
@@ -20,9 +20,9 @@ Discovery / API Root / Collection、Manifest / Objects / Status、版を含むMe
 
 ## ATT&CKと親Caseの版
 
-`SRC-ATTACK-001` の[公式Versions](https://attack.mitre.org/resources/versions/)はcurrent 19.2、[Updates](https://attack.mitre.org/resources/updates/)はAugust 2026の19.2を示しました。既存RegistryのCommit / Hash / 公開日精度を保持します。Versionsの表示期間とUpdatesの開始日を、そのlive Page自体の公開日に置き換えません。
+`SRC-ATTACK-001` は2026-10-26に[MITRE/CTI v20.0 release](https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0)と固定bundleを用途限定再確認しました。release公開日、commit、bundle digestを固定し、可変なVersions / Updatesの表示だけをidentityにしません。移行詳細は[第5章v20 Source Review](ch05-source-review-2026-10-26.md)を参照します。
 
-本章は版付きの挙動語彙という用途だけで、全ObjectやRelationshipの再監査をしていません。古いIssue設計の19.1を現在値として優先せず、親第25章が歴史的な19.1を使った記述は変更しません。ATT&CK対応付けをCoverage、Control効果、Actor帰属の証明にはしません。
+本章は版付きの挙動語彙という用途だけで、全ObjectやRelationshipの再監査をしていません。古いIssue設計の19.1を現在値として優先せず、親第25章が歴史的な19.1を使った記述は変更しません。v19.2の過去確認も履歴として保持します。ATT&CK対応付けをCoverage、Control効果、Actor帰属の証明にはしません。
 
 ## ICD 203
 

@@ -1,4 +1,4 @@
-# 第6章 Source Review Note — 2026-09-12
+# 第6章 Source Review Note — 2026-09-12（ATT&CK v20再確認 2026-10-26）
 
 ## 対象と採否
 
@@ -13,8 +13,8 @@ Issue #31 / ART-16を対象とする。base mainは`c83bf8a8cc02aa206c67ba178de6
 | SRC-NIST-LOG-001 | [NIST SP 800-92](https://csrc.nist.gov/pubs/sp/800/92/final)、Final、2006-09-13 | §2〜3の生成・転送・保存・分析、時刻差、正規化、保持の区別 |
 | SRC-NIST-LOG-DRAFT-001 | [NIST SP 800-92 Rev.1](https://csrc.nist.gov/pubs/sp/800/92/r1/ipd)、Initial Public Draft、2023-10-11 | 改訂監視のみ。Final規範としては不採用 |
 | SRC-IETF-OAUTH-CORE-001 | [RFC 6749](https://www.rfc-editor.org/rfc/rfc6749.html)、2012-10、Proposed Standard | §1.1と§1.3.4のRole、Client自身のための行動。操作例は不採用 |
-| SRC-ATTACK-001 | [MITRE Version History](https://attack.mitre.org/resources/versions/)、v19.2 | 第5章で採用した版を継承。新たなTechnique対応は作らない |
-| SRC-ATTACK-DET-001 | [Detection Strategies](https://attack.mitre.org/detectionstrategies/)、v19.2 | Strategyの参照と実際のData保有・Validationの分離 |
+| SRC-ATTACK-001 | [MITRE Version History](https://attack.mitre.org/resources/versions/)、v20.0 | 第5章で採用した版を継承。新たなTechnique対応は作らない |
+| SRC-ATTACK-DET-001 | [Detection Strategies](https://attack.mitre.org/detectionstrategies/)、v20.0 | Strategyの参照と実際のData保有・Validationの分離 |
 
 NISTの公開日はCSRCのDocument Historyを用い、PDF表紙の月表示から日を推測しない。RFCの公表日は月までのためRegistryではpublishedAtをnullとし、notesへ2012-10と不明理由を残す。
 
@@ -22,15 +22,15 @@ SP 800-92 Rev.1の出版記録と[Log Management project](https://csrc.nist.gov/
 
 RFC 6749の更新元である[RFC 9700](https://www.rfc-editor.org/rfc/rfc9700.html)、BCP 240、2025-01も確認した。RFC 6749の古いGrantの選択やSecurity recommendationを本章へ転用せず、採用はRole説明に限定する。実装選択は専門書へ委譲する。
 
-ATT&CKは公式HTTP取得とMITRE/CTIのreleaseでv19.2を確認した。検索経由のキャッシュに同版が表示されない場合があったため、キャッシュだけで現行版を決定していない。第5章の固定commit `8543c5b05bd9bbcace9fc37f30bba96b675b6f33`、既存の最小metadataと原典の意味を維持する。release時刻、Version Historyページ自体の日付不明、代表章の歴史的記述を混同しない。
+ATT&CKは2026-10-26にMITRE/CTI release v20.0と固定commit `50be388e93819a5d20e71cbaaeccfda157abc846`で用途限定再確認した。第5章の8 Object / 1 relationの有限差分だけを継承し、新しいTechnique対応、Coverage認定、親MapのStatus更新は行わない。v19.2当時の確認記録は履歴として保持し、移行詳細は[第5章v20 Source Review](ch05-source-review-2026-10-26.md)を参照する。
 
 ## Source変更の影響と限界
 
 SP 800-207系は論理的役割だけ、SP 800-92は観測経路だけ、OAuthは主体の区別だけを本文へ採用する。六つのCoverage status、完全合成受領票、Gap、Rubric、Build planeという補助分類は本書独自であり、標準の引用や適合認証ではない。
 
-ATT&CK二項目の確認日と第6章mappingを更新する。第5章・第17章・第25章の既存の限定命題は変わらず、親のObservation、Control、Gap、Decisionを昇格させない。Registry全体の一括監査日は更新しない。
+ATT&CK二項目の確認日と第6章mappingをv20.0へ更新する。第5章・第17章・第25章の既存の限定命題は変わらず、親のObservation、Control、Gap、Decisionを昇格させない。Registry全体の一括監査日は更新しない。
 
-Next reviewは2026-12-12。改訂版・Status・使用箇所の意味・ATT&CK release・委譲先routeの変更時には期限前でも確認する。出典を読んだことは、実環境のAudit schemaや監視性能を検証したことではない。
+ATT&CKの次回確認は2027-01-26、その他Sourceの既存期限はRegistryを正とする。改訂版・Status・使用箇所の意味・ATT&CK release・委譲先routeの変更時には期限前でも確認する。出典を読んだことは、実環境のAudit schemaや監視性能を検証したことではない。
 
 ## Editorial Input Record
 

@@ -1,10 +1,10 @@
 {
-  "bundleSha256": "f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259",
-  "bundleUrl": "https://raw.githubusercontent.com/mitre/cti/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json",
-  "catalogVersion": "19.2",
-  "checkedAt": "2026-09-06",
+  "bundleSha256": "66f3fe3f07ef1a2de0bd2fe4b3e8a9ea06c1d0bb2c46171bdbb57c7f7b666524",
+  "bundleUrl": "https://raw.githubusercontent.com/mitre/cti/50be388e93819a5d20e71cbaaeccfda157abc846/enterprise-attack/enterprise-attack.json",
+  "catalogVersion": "20.0",
+  "checkedAt": "2026-10-26",
   "domain": "enterprise-attack",
-  "licenseUrl": "https://github.com/mitre/cti/blob/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/LICENSE.txt",
+  "licenseUrl": "https://github.com/mitre/cti/blob/50be388e93819a5d20e71cbaaeccfda157abc846/LICENSE.txt",
   "notice": "Copyright 2026 The MITRE Corporation. See THIRD_PARTY_NOTICES.md. Metadata subset; not a complete STIX bundle.",
   "objectHashEncoding": "UTF-8 JSON, ensure_ascii=False, indent=2, sort_keys=True, trailing LF",
   "objects": [
@@ -70,15 +70,15 @@
         "mobile-attack"
       ],
       "externalId": "DC0038",
-      "modified": "2026-05-12T15:12:00.776Z",
+      "modified": "2026-10-13T17:43:41.733Z",
       "name": "Application Log Content",
-      "objectSha256": "c780ffd66e3681c344c231cc16ccaa44bbab9d453aa34bf6c87bab363626d8c9",
+      "objectSha256": "2b6c296e826642f1fce54c87f4ba8fb9766d2b9cb8790462d064f3af612bd178",
       "revoked": false,
       "revokedPropertyPresent": true,
       "stixId": "x-mitre-data-component--9c2fa0ae-7abc-485a-97f6-699e3b6cf9fa",
       "type": "x-mitre-data-component",
       "url": "https://attack.mitre.org/datacomponents/DC0038",
-      "version": "3.0"
+      "version": "3.1"
     },
     {
       "deprecated": false,
@@ -186,8 +186,8 @@
       "type": "detects"
     }
   ],
-  "releasePublishedAt": "2026-08-05T22:57:35Z",
+  "releasePublishedAt": "2026-10-13T18:56:14Z",
   "schemaVersion": "1.0.0",
-  "updateStartDate": "2026-08-06",
-  "upstreamCommit": "8543c5b05bd9bbcace9fc37f30bba96b675b6f33"
+  "updateStartDate": "2026-10-13",
+  "upstreamCommit": "50be388e93819a5d20e71cbaaeccfda157abc846"
 }

@@ -1,4 +1,4 @@
-# 第16章 Source Review（2026-09-21）
+# 第16章 Source Review（2026-09-21、ATT&CK v20再確認 2026-10-26）
 
 ## 確認範囲と前提
 
@@ -6,7 +6,7 @@
 
 ## ATT&CK
 
-- `SRC-ATTACK-001`: [公式Version History](https://attack.mitre.org/resources/versions/)はcurrent 19.2。ページのApril28表示をminor releaseの公開時刻と推定しない。第5章の既存固定snapshotと版契約は変更しない。
+- `SRC-ATTACK-001`: 2026-10-26に[MITRE/CTI v20.0 release](https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0)と固定bundleを再確認した。第5章の有限snapshotをv20.0へ移行したが、新しいTechnique割当てやCoverage認定は行わない。移行詳細は[第5章v20 Source Review](ch05-source-review-2026-10-26.md)を参照する。
 - `SRC-ATTACK-DET-001`: [Detection Strategies](https://attack.mitre.org/detectionstrategies/)の導入説明を確認。上位方針とplatform別Analyticsの整理に限定し、一覧の存在をCoverageやValidationの証明にしない。独立したページ版・公開日は不明のためnullを保持する。
 
 本章では新しいTechniqueやStrategyを割り当てず、親の行動と必要な観測を区別するために用いる。
