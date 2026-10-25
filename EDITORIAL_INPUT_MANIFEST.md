@@ -14,8 +14,7 @@
 
 | Status | Count |
 |---|---:|
-| `canonical-pr-open` | 1 |
-| `consumed` | 25 |
+| `consumed` | 26 |
 | `generator-blueprint-only` | 2 |
 | `registered-pending-prerequisites` | 1 |
 
@@ -71,7 +70,7 @@
 | `chapter-26` | #48 | `consumed` | `EIC-0048-38a432a5daf5` | #179 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/48#issuecomment-5871968211) |
 | `chapter-27` | #49 | `consumed` | `EIC-0049-32e8846cf56d` | #183 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/49#issuecomment-5901110059) |
 | `chapter-28` | #50 | `consumed` | `EIC-0050-313c092a3659` | #187 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/50#issuecomment-6228570538) |
-| `chapter-29` | #51 | `canonical-pr-open` | `EIC-0051-a90f9092493f` | #206 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/206) |
+| `chapter-29` | #51 | `consumed` | `EIC-0051-a90f9092493f` | #206 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/51#issuecomment-6378318846) |
 | `appendix-a` | #52 | `consumed` | `EIC-0052-d6932c1a4774` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212) |
 | `appendix-d` | #52 | `consumed` | `EIC-0052-a1d1ce13dd48` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212) |
 | `appendix-h` | #52 | `consumed` | `EIC-0052-390579c705e1` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212) |
@@ -218,7 +217,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0051-a90f9092493f` | `EIP-0012` | `chapter29-final-portfolio-blueprint.md` | `a90f9092493f64bcfbb3a36f269e83e686177203f276234b29cfd365e4444e04` | `selected` | 登録された唯一のBlueprintを採否記録の対象として選択。raw実体未確認のため直接採用せず、現行Issueと正本・限定原典から新規制作。 |
+| `EIC-0051-a90f9092493f` | `EIP-0012` | `chapter29-final-portfolio-blueprint.md` | `a90f9092493f64bcfbb3a36f269e83e686177203f276234b29cfd365e4444e04` | `rewritten` | PR206とART33索引修正PR209の利用者通常merge、実main CI/Pages・213公開filesのbyte一致・レビュー全件照合を確認。raw不在・未読・実体hash未照合・直接採用なしを保持し、現行契約と限定原典から新規制作した正本の公開完了だけを記録する。依存Issue205・全付録・Releaseの完了ではない。 |
 
 ### `appendix-a` / Issue #52
 

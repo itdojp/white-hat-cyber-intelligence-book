@@ -1506,6 +1506,12 @@
           "effectiveAt": "2026-10-21",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/206",
           "reason": "専用Draft PR206へ本文/ART33/全欄Case/合成JSON/閉Schema/二Source/有限Layer Aと正式Intakeを結合。全QA/独立review/通常merge/main公開は未完、formatter HighはIssue205で留保しconsumedを先取りしない。"
+        },
+        {
+          "status": "consumed",
+          "effectiveAt": "2026-10-24",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/51#issuecomment-6378318846",
+          "reason": "PR206/209利用者通常merge。main c7204ef90bc5bb827e51d47ee66566f6fce4017d は209 reviewed37a48f3と全tree一致、第29章六正本は206 reviewede7c440fとbyte一致。Book Contract40048204559 / Book QA40048204563 / Deploy Pages40048204564 success、213実公開filesがPages artifactと全byte一致。206/209の全レビュー・inline・thread照合は未解決/不整合/欠落0/0/0。元Intakeの作成時main/日付/制約/全欄、全Package/同梱22/他Target/旧履歴とraw不在・未読・実体hash未照合・直接採用なしを保持。旧表示証拠は同一入力だけ限定再利用。依存Issue205・全付録/PartV/Release・人間試行/法務承認の完了ではない。"
         }
       ]
     }
