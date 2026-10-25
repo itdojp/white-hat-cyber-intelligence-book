@@ -139,3 +139,16 @@ Phase 0は、Review Thread、Contract、Book QA、Pages workflow、管理者設�
 ## 第29章の公開前検査
 
 `scripts/check_chapter29_contract.py`はART-33の固定合成版、32成果物・親版・非継承、文書根拠、Gap、二Brief、Decision/Action/Reassessmentを有限検査する。`sync:docs`では生成先削除前に`--no-regressions`で実行する。構文と安全文法は共有Projection1.1.0 / Policy1.2.0が所有する。六状態比較は任意Workflowの承認器ではなく、実操作や人間承認を認定しない。
+
+## 付録B/C/Iの編集元と生成区画
+
+付録B/C/Iの説明本文は`appendices/`を正本とする。各文書の`BCI_GENERATED_START`から`BCI_GENERATED_END`までの一意な区画だけは、`references/artifact-catalog.json`が編集元である。Template全文や状態enumの複製は持たず、目的・入力・出力と元欄・学習目標・章の評価基準への参照を編集する。
+
+```bash
+python3 scripts/check_appendix_bci.py --write
+npm run check:appendix-bci
+```
+
+`--write`は明示的な著者操作として区画だけを更新する。通常の検査・sync・buildは付録を変更せず、生成差異で失敗する。metadataと親文書の固定版・読者fieldは`tests/fixtures/appendix-bci/publication-contract.json`へレビュー対象として束縛し、親版や索引が変われば参照の意味を再確認して契約を更新する。hash一致だけを意味の承認としない。契約snapshotを自動更新する公開コマンドは設けない。
+
+`check:appendix-bci`はlive主索引との全件対応、重複・欠落、参照先、Fixture/Download、Checklistの担当・限界・失敗時対応、Rubricの章DoD対応、公開routeと全読者fieldを検査する。元Templateの状態語彙・任意の実務記録・親Caseの意味評価は元章の検査が所有する。共通Statusや新parserを作らず、共有Projection/Policyを消費する。`sync:docs`では生成先削除前に一回実行する。
