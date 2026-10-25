@@ -1,0 +1,155 @@
+name: Apply ATT&CK v20 contract artifact
+
+on:
+  push:
+    branches:
+      - sources/attack-v20-migration
+    paths:
+      - .github/workflows/apply-attack-v20-contract-artifact.yml
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout migration branch
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: sources/attack-v20-migration
+          fetch-depth: 2
+          persist-credentials: true
+
+      - name: Checkout pinned book-formatter
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: itdojp/book-formatter
+          ref: fba61076a7d8171e8344c5d60119f737447214d1
+          path: .work/book-formatter
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+
+      - name: Set up Ruby and locked renderer
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Download failed-run evidence artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .tmp/contract-artifact
+          mkdir -p .tmp/contract-artifact
+          gh run download 40236735174 \
+            --repo itdojp/white-hat-cyber-intelligence-book \
+            --name attack-v20-contract-refresh \
+            --dir .tmp/contract-artifact
+
+      - name: Restore canonical document order
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp -a .tmp/contract-artifact/tests/fixtures/chapter*/publication-contract.json tests/fixtures/
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          documents = {
+              "05": [
+                  "manuscript/05-attack-behavior.md",
+                  "templates/attack-behavior-map.md",
+                  "cases/ch05-attack-behavior-example.md",
+                  "references/ch05-source-review-2026-10-26.md",
+              ],
+              "06": [
+                  "manuscript/06-observable-systems.md",
+                  "templates/signal-flow-diagram.md",
+                  "cases/ch06-signal-flow-example.md",
+                  "references/ch06-source-review-2026-09-12.md",
+              ],
+              "16": [
+                  "manuscript/16-telemetry-evidence-readiness.md",
+                  "templates/telemetry-coverage-map.md",
+                  "cases/ch16-telemetry-coverage-example.md",
+                  "references/ch16-source-review-2026-09-21.md",
+              ],
+              "18": [
+                  "manuscript/18-threat-hunting.md",
+                  "templates/hunt-report.md",
+                  "cases/ch18-hunt-plan-example.md",
+                  "references/ch18-source-review-2026-09-22.md",
+              ],
+              "21": [
+                  "manuscript/21-purple-team-validation.md",
+                  "templates/control-validation-plan.md",
+                  "cases/ch21-control-validation-example.md",
+                  "references/ch21-source-review-2026-09-25.md",
+              ],
+              "26": [
+                  "manuscript/26-cti-distribution.md",
+                  "templates/cti-report.md",
+                  "templates/executive-brief.md",
+                  "cases/ch26-cti-distribution-example.md",
+                  "references/ch26-source-review-2026-09-28.md",
+              ],
+          }
+          for chapter, order in documents.items():
+              path = Path(f"tests/fixtures/chapter{chapter}/publication-contract.json")
+              data = json.loads(path.read_text(encoding="utf-8"))
+              if set(data["documents"]) != set(order):
+                  raise SystemExit(f"ERROR: Chapter {chapter} document set drift")
+              data["documents"] = {key: data["documents"][key] for key in order}
+              path.write_text(
+                  json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+                  encoding="utf-8",
+              )
+          PY
+
+      - name: Validate refreshed chapter contracts
+        shell: bash
+        env:
+          BOOK_FORMATTER_DIR: .work/book-formatter
+          PYTHONPATH: scripts
+        run: |
+          set -euo pipefail
+          for chapter in 05 06 16 18 21 26; do
+            python3 "scripts/check_chapter${chapter}_contract.py" --no-regressions
+          done
+          git diff --check
+
+      - name: Upload validated contracts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: attack-v20-ordered-contracts
+          path: tests/fixtures/chapter*/publication-contract.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Commit validated contract refresh
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add \
+            tests/fixtures/chapter05/publication-contract.json \
+            tests/fixtures/chapter06/publication-contract.json \
+            tests/fixtures/chapter16/publication-contract.json \
+            tests/fixtures/chapter18/publication-contract.json \
+            tests/fixtures/chapter21/publication-contract.json \
+            tests/fixtures/chapter26/publication-contract.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'test: ATT&CK v20 publication contractsを同期'
+          git push origin HEAD:sources/attack-v20-migration
