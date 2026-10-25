@@ -1,6 +1,11 @@
 name: Generate ATT&CK v20 snapshot
 
 on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/generate-attack-v20-snapshot.yml
   push:
     branches:
       - sources/attack-v20-migration
