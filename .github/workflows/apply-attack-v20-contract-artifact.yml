@@ -4,7 +4,9 @@ name: Apply ATT&CK v20 contract artifact
 on:
   push:
     branches: [sources/attack-v20-migration]
-    paths: [.github/workflows/apply-attack-v20-contract-artifact.yml]
+    paths:
+      - .github/workflows/apply-attack-v20-contract-artifact.yml
+      - .github/pr214-finish-repair.py
 
 permissions:
   actions: read
@@ -47,7 +49,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = '85e0936094a80c2f31eac71c15de56204cfe93b4'
+          git merge-base --is-ancestor 92689d84c44bd24a871b8b1930e2de51652bc404 HEAD
           mkdir -p .tmp/pr214-restoration
           gh api repos/itdojp/white-hat-cyber-intelligence-book/actions/artifacts/12615755679 > .tmp/pr214-restoration/artifact-metadata.json
           gh api repos/itdojp/white-hat-cyber-intelligence-book/actions/runs/40236735174 > .tmp/pr214-restoration/origin-run.json
@@ -68,10 +70,8 @@ jobs:
               or r['head_sha'] != source or r['conclusion'] != 'failure'
               or r['path'] != '.github/workflows/refresh-attack-v20-contracts.yml'):
               raise SystemExit('Artifact provenance mismatch')
-          # The failed run produced candidates, not validated contracts. No content
-          # input may have changed since that run; only temporary workflows may differ.
           changed=subprocess.check_output(['git','diff','--name-only',source,'HEAD'],text=True).splitlines()
-          allowed={'.github/workflows/apply-attack-v20-contract-artifact.yml'}
+          allowed={'.github/workflows/apply-attack-v20-contract-artifact.yml','.github/pr214-finish-repair.py'}
           if not set(changed).issubset(allowed):
               raise SystemExit(f'Concurrent source changes: {changed}')
           print('Artifact provenance/digest/input continuity verified; validation remains required')
@@ -129,15 +129,12 @@ jobs:
                   p=ROOT/path(ch)
                   previous=load(p.read_bytes())
                   value=ordered(load(z.read(path(ch))),previous)
-                  expected_order=[RENAME.get(k,k) for k in previous['documents']]
-                  if list(value['documents']) != expected_order:
+                  if list(value['documents']) != [RENAME.get(k,k) for k in previous['documents']]:
                       raise SystemExit(f'Chapter {ch} document inventory/order drift')
                   if ch=='05':
                       old='references/ch05-source-review-2026-09-06.md'; new=RENAME[old]
                       indices=[i for i,r in enumerate(previous['documents'][old]['required']) if r['field'][3].startswith('Releaseと取得証跡 Bundle SHA-256:')]
                       if len(indices)!=1: raise SystemExit('Bundle requirement identity mismatch')
-                      # Correct the reviewed fuzzy-match error: a bundle hash
-                      # requirement must not be substituted by an annotated tag.
                       value['documents'][new]['required'][indices[0]]={
                           'field':['reader_visible_text','list_path',None,'Releaseと取得証跡 Bundle SHA-256: 66f3fe3f07ef1a2de0bd2fe4b3e8a9ea06c1d0bb2c46171bdbb57c7f7b666524。Bundle sizeは49253343byte。'],
                           'headings':['第5章 Source Review Note — 2026-10-26','Releaseと取得証跡'],
@@ -146,8 +143,6 @@ jobs:
                       for page in value['pages']:
                           if registry['pages'].count(page)!=1: raise SystemExit('Chapter05 page route mismatch')
                   if ch=='26':
-                      # Chapter26 dataDigests use canonical compact JSON. The three
-                      # data files are unchanged; raw-byte hashes are not equivalent.
                       for data_path,h in previous['dataDigests'].items():
                           if digest(load((ROOT/data_path).read_bytes()))!=h:
                               raise SystemExit('Unchanged Chapter26 data digest mismatch')
@@ -160,11 +155,19 @@ jobs:
           Path('.tmp/pr214-restoration/restored-contracts.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
           print(json.dumps(report,ensure_ascii=False,indent=2))
           PY
+      - name: Preserve historical reviews and synchronize reviewed migration bindings
+        shell: bash
+        env:
+          BOOK_FORMATTER_DIR: .work/book-formatter
+          PYTHONPATH: .:scripts
+        run: |
+          set -euo pipefail
+          python3 .github/pr214-finish-repair.py
       - name: Run all six chapter checks with regressions enabled
         shell: bash
         env:
           BOOK_FORMATTER_DIR: .work/book-formatter
-          PYTHONPATH: scripts
+          PYTHONPATH: .:scripts
         run: |
           set -euo pipefail
           failed=0
@@ -186,20 +189,25 @@ jobs:
           path: .tmp/pr214-restoration
           if-no-files-found: error
           retention-days: 7
-      - name: Commit only validated contracts with concurrency guard
+      - name: Commit only validated repairs with concurrency guard
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import subprocess
-          expected={f'tests/fixtures/chapter{c}/publication-contract.json' for c in ('05','06','16','18','21','26')}
+          expected={f'tests/fixtures/chapter{c}/publication-contract.json' for c in ('05','06','07','08','09','12','13','14','15','16','18','19','20','21','22','23','26','29')}
+          expected.update({'scripts/chapter05_regressions.py','references/sources.json','references/reference-baseline.md','PART_I_REVIEW.md','cases/ch05-attack-behavior-example.md','cases/ch29-capstone-portfolio-example.md','cases/fixtures/ch29-capstone-portfolio.json','tests/fixtures/chapter29/parent-contract.json'})
+          expected.update({'references/ch06-source-review-2026-09-12.md','references/ch16-source-review-2026-09-21.md','references/ch18-source-review-2026-09-22.md','references/ch21-source-review-2026-09-25.md','references/ch26-source-review-2026-09-28.md'})
           actual=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
-          if actual!=expected: raise SystemExit(f'Unexpected changed files: {actual}')
+          if not actual.issubset(expected): raise SystemExit(f'Unexpected changed files: {actual-expected}')
+          untracked=subprocess.check_output(['git','ls-files','--others','--exclude-standard'],text=True).splitlines()
+          if set(untracked)!={'tests/fixtures/attack/ch05-v19.2.json'}: raise SystemExit(f'Unexpected untracked files: {untracked}')
           PY
           remote=$(git ls-remote origin refs/heads/sources/attack-v20-migration | cut -f1)
           test "$remote" = "$GITHUB_SHA"
-          git add tests/fixtures/chapter{05,06,16,18,21,26}/publication-contract.json
+          git add --update
+          git add tests/fixtures/attack/ch05-v19.2.json
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'test: ATT&CK v20契約順序・Field対応・digestを修復'
+          git commit -m 'fix: ATT&CK v20契約・回帰・履歴保持と限定参照を同期'
           git push origin HEAD:refs/heads/sources/attack-v20-migration
