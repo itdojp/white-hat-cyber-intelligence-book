@@ -49,14 +49,14 @@
 | 章・監査記録 | 採用範囲 | 引き継がない主張 |
 |---|---|---|
 | [第4章Source Note](references/ch04-source-review-2026-08-08.md) | CSF 2.0、SP 800-30 Rev.1、OWASP Threat Modelingの判断・モデル化原則 | Framework対応、Threat数、単一手法による完全性 |
-| [第5章Source Note](references/ch05-source-review-2026-10-26.md) | ATT&CK catalog v20.0とObject別版、8 Objectの固定抽出、T1671 / DET0539 / AN1487・AN1488の関係 | Mappingによる侵害・主体帰属・実製品の検知有効性。旧Data SourceとData Componentの同一視 |
+| [第5章Source Note](references/ch05-source-review-2026-09-06.md) | ATT&CK catalog v19.2とObject別版、8 Objectの固定抽出、T1671 / DET0539 / AN1487・AN1488の関係 | Mappingによる侵害・主体帰属・実製品の検知有効性。旧Data SourceとData Componentの同一視 |
 | [第6章Source Note](references/ch06-source-review-2026-09-12.md) | SP 800-207 / 207Aの責任分離、SP 800-92のログ管理原則、RFC 6749の役割、第5章metadataの継承 | SP 800-92 Rev.1 IPDをFinalとして採用すること、旧OAuth Grantの実装推奨、NIST由来の六Statusという主張 |
 | [第7章Source Note](references/ch07-source-review-2026-09-12.md) | CVSS標準4.0と文書1.2、CWE 4.20、EPSS model v5の2026-09-11値、KEV 2026.09.11固定Catalog、OWASPのawareness用途 | 著者のCVSS仮定をvendor評価にすること、EPSSを自組織侵害確率にすること、KEV未掲載を未悪用証明にすること |
 | [第8章Source Note](references/ch08-source-review-2026-09-13.md) | SP 800-86（2006）、SP 800-190（2017）、Berkeley Protocol 2022 editionの限定した記録・境界原則 | 現行Runtimeの安全保証、古いHash方式の推奨、法的証拠能力・Chain of custodyの認定 |
 
 再照合可能な固定入力は次のとおりである。
 
-- ATT&CK: `mitre/cti@50be388e93819a5d20e71cbaaeccfda157abc846`。Enterprise bundle SHA-256は`66f3fe3f07ef1a2de0bd2fe4b3e8a9ea06c1d0bb2c46171bdbb57c7f7b666524`。章別抽出器と`tests/fixtures/attack/ch05-v20.0.json`を使い、可変Webページでminor版を推定しない。
+- ATT&CK: `mitre/cti@8543c5b05bd9bbcace9fc37f30bba96b675b6f33`。Enterprise bundle SHA-256は`f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259`。章別抽出器と`tests/fixtures/attack/ch05-v19.2.json`を使い、可変Webページでminor版を推定しない。
 - EPSS / KEV / CWE / CVSS: [第7章Source Snapshot](cases/fixtures/ch07-source-snapshot.json)が取得日、入力hash、選択行、計算器commitを所有する。再抽出は`scripts/verify_chapter07_sources.py`を用いる。Chapter7 fixtureの値から真値を再生成して一致と呼ばない。
 - 第4〜8章の本文・Source Note内のSource ID集合とRegistryの該当章mappingは、章別に`3 / 5 / 7 / 7 / 3`件、重複を除き23件で一致する。未公開章の将来mappingの整理はIssue #109の範囲であり、これを全Registryの完全性証明には使わない。
 
@@ -110,3 +110,7 @@ python3 -B scripts/replay_chapter08_lab.py --json
 レビュー担当は、(1) 技術・状態、(2) Authority・安全・法務の限定、(3) Sourceの版・用途、(4) 分析と代替説明、(5) 学習導線、(6) OWN / BRIDGE / DELEGATE、(7) ID追跡、(8) 再現性・決定性、(9) 公開・保守性を別々に確認する。既存の不変条件に反する具体例はblockingとして再現・修正し、仕様外の新機能や全体再設計を本PRへ混在させない。
 
 最終の検証結果は、対応PRのexact-head Book Contract / Book QA、全Review本文・Thread、通常マージ後のmain CI / Pages / 公開物に結び付ける。CIの緑表示だけ、review reactionだけ、一定時間の無応答だけでは独立レビュー完了としない。
+
+## 2026-10-26: 後続のATT&CK移行
+
+本記録のbaselineと当時の版は保持する。後続の現行参照への移行は[第5章Source Review](references/ch05-source-review-2026-10-26.md)を参照する。本記録を最新mainへの再承認として読み替えない。

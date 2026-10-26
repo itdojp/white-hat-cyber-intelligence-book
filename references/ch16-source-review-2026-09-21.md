@@ -1,4 +1,4 @@
-# 第16章 Source Review（2026-09-21、ATT&CK v20再確認 2026-10-26）
+# 第16章 Source Review（2026-09-21）
 
 ## 確認範囲と前提
 
@@ -6,7 +6,7 @@
 
 ## ATT&CK
 
-- `SRC-ATTACK-001`: 2026-10-26に[MITRE/CTI v20.0 release](https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0)と固定bundleを再確認した。第5章の有限snapshotをv20.0へ移行したが、新しいTechnique割当てやCoverage認定は行わない。移行詳細は[第5章v20 Source Review](ch05-source-review-2026-10-26.md)を参照する。
+- `SRC-ATTACK-001`: [公式Version History](https://attack.mitre.org/resources/versions/)はcurrent 19.2。ページのApril28表示をminor releaseの公開時刻と推定しない。第5章の既存固定snapshotと版契約は変更しない。
 - `SRC-ATTACK-DET-001`: [Detection Strategies](https://attack.mitre.org/detectionstrategies/)の導入説明を確認。上位方針とplatform別Analyticsの整理に限定し、一覧の存在をCoverageやValidationの証明にしない。独立したページ版・公開日は不明のためnullを保持する。
 
 本章では新しいTechniqueやStrategyを割り当てず、親の行動と必要な観測を区別するために用いる。
@@ -34,3 +34,9 @@
 これは取得したファイルの識別であり、本文全体の採用・適合性証明ではない。ATT&CK release、NIST改版・状態・Errata、採用節の意味、Consumer要件が変わった場合に本文・Template・Case・fixtureを再確認する。旧章の判断時点やSource確認範囲は遡及変更しない。
 
 OpenTelemetryは探索したが今回は採用しない。製品・形式への依存なしに、完全合成の読解課題を完了できるようにする。
+
+## 2026-10-26: ATT&CK移行の追記
+
+上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、[第5章の新しい確認記録](ch05-source-review-2026-10-26.md)に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。
+
+NIST、IETF、OASIS、FIRST等の既存資料を今回再監査したという記録ではない。合成Caseの状態、観測、権限、未配達、判断期限を変更しない。

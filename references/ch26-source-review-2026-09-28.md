@@ -1,4 +1,4 @@
-# 第26章 Source再監査（2026-09-28、ATT&CK v20再確認 2026-10-26）
+# 第26章 Source再監査（2026-09-28）
 
 対象は[第26章](../manuscript/26-cti-distribution.md)、ART-08 / ART-09と、独立した有限STIX/TAXII構造例です。確認日は日本時間2026-09-28、取得記録のUTC日は2026-09-27です。Registry全体や、既存章の全主張の再監査ではありません。
 
@@ -20,9 +20,9 @@ Discovery / API Root / Collection、Manifest / Objects / Status、版を含むMe
 
 ## ATT&CKと親Caseの版
 
-`SRC-ATTACK-001` は2026-10-26に[MITRE/CTI v20.0 release](https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0)と固定bundleを用途限定再確認しました。release公開日、commit、bundle digestを固定し、可変なVersions / Updatesの表示だけをidentityにしません。移行詳細は[第5章v20 Source Review](ch05-source-review-2026-10-26.md)を参照します。
+`SRC-ATTACK-001` の[公式Versions](https://attack.mitre.org/resources/versions/)はcurrent 19.2、[Updates](https://attack.mitre.org/resources/updates/)はAugust 2026の19.2を示しました。既存RegistryのCommit / Hash / 公開日精度を保持します。Versionsの表示期間とUpdatesの開始日を、そのlive Page自体の公開日に置き換えません。
 
-本章は版付きの挙動語彙という用途だけで、全ObjectやRelationshipの再監査をしていません。古いIssue設計の19.1を現在値として優先せず、親第25章が歴史的な19.1を使った記述は変更しません。v19.2の過去確認も履歴として保持します。ATT&CK対応付けをCoverage、Control効果、Actor帰属の証明にはしません。
+本章は版付きの挙動語彙という用途だけで、全ObjectやRelationshipの再監査をしていません。古いIssue設計の19.1を現在値として優先せず、親第25章が歴史的な19.1を使った記述は変更しません。ATT&CK対応付けをCoverage、Control効果、Actor帰属の証明にはしません。
 
 ## ICD 203
 
@@ -41,3 +41,9 @@ Discovery / API Root / Collection、Manifest / Objects / Status、版を含むMe
 公開一次資料のURL、取得応答、byte hashと読解範囲は制作時のlocal証拠へ保存しました。HTMLのbyte hashは規範の真正性や将来の不変性を保証しません。NIST SP800-150は候補としてlandingを探索しましたが、未読本文を採用したとは主張せず、本章のSource mappingに追加しません。
 
 再確認Triggerは正式版・Errata段階の変更、利用Propertyの訂正、ATT&CK版の変更、ICD改訂、TLPラベルや定義の改訂です。個別Sourceだけを更新し、既存notesのprefix、他章の意味、Registry全体の確認日を保持します。合成Caseの7月のProduct時刻と、独立構造例の10月の未来時刻は教材設定で、Source確認日・実観測・実配送ではありません。
+
+## 2026-10-26: ATT&CK移行の追記
+
+上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、[第5章の新しい確認記録](ch05-source-review-2026-10-26.md)に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。
+
+NIST、IETF、OASIS、FIRST等の既存資料を今回再監査したという記録ではない。合成Caseの状態、観測、権限、未配達、判断期限を変更しない。

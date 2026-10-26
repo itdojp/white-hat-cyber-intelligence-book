@@ -80,7 +80,7 @@
     },
     "cases/ch29-capstone-portfolio-example.md": {
       "fieldCount": 1363,
-      "sha256": "551f7fea68b9c3f57a55ed4fbb7773a074aae8a36dd5c710402eab0bb498d98c",
+      "sha256": "f6e14d827ab9f91a94a2157f0ff1d40e193050731dedf697aff48c35476c7ff6",
       "hostProvenance": [
         [
           "reader_visible_text",
@@ -684,9 +684,9 @@
     }
   },
   "inputDigests": {
-    "cases/fixtures/ch29-capstone-portfolio.json": "c82d364653c19b2d325833aefa65042a613e7df526b399c1e2d94dae54a99b65",
+    "cases/fixtures/ch29-capstone-portfolio.json": "6accfb5abea95dec7d687ea18b6a63260929e58b484b7e29d19aa0f8a88acabe",
     "schemas/ch29-capstone-portfolio.schema.json": "97fcb6215fa22a1071e18ea4a7d9b7271637dc8e393b05bc1e30987335fcecd9",
-    "tests/fixtures/chapter29/parent-contract.json": "4d97edc96997ff4b6f3a2acdce4dccb6cff1cbde7bdc556161b1144a670fbcbe",
+    "tests/fixtures/chapter29/parent-contract.json": "6d5c87e5df2c4c7dbf33c266b69561cbed93e8bc5715fc87c1387f762ad539e1",
     "tests/fixtures/chapter29/state-corpus.json": "3cf55263db3852057290a3c1135e947805fc45015dfa4fa3778e1960fcac6298",
     "artifact-index.md": "f28678e07e3d6408e1889c8bd0edc17ad799c9de664485ebf2050f20bb1bb50c"
   },

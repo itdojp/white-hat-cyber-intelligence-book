@@ -1,4 +1,4 @@
-# 第21章 Source Review — 2026-09-25（ATT&CK v20再確認 2026-10-26）
+# 第21章 Source Review — 2026-09-25
 
 ## 確認範囲
 
@@ -6,9 +6,9 @@ Control Validationの問い、対象・方法・結果、役割・権限と改�
 
 ## SRC-ATTACK-001
 
-2026-10-26に[MITRE/CTI v20.0 release](https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0)と固定bundleを用途限定再確認した。release公開日、commit、bundle digestを固定し、可変Pageの表示だけで版を決めない。
+[MITRE Version History](https://attack.mitre.org/resources/versions/)と[Updates](https://attack.mitre.org/resources/updates/)は現在版19.2を示す。Updatesの2026-08-06という更新開始の文脈と、4月のreleaseの文脈を混同しない。page全体の厳密な公表日を一つに決められないpublishedAt nullを保持する。
 
-本章の供給記録はATT&CK 20.0を版付き語彙として使う。第17章のT1098対応は親の方法参照であり、新しいCoverage判定ではない。v19.1 / v19.2の歴史的記録は保持し、今回の確認を全Object・全変更点の監査やControl有効性の証明にしない。移行詳細は[第5章v20 Source Review](ch05-source-review-2026-10-26.md)を参照する。
+既存mainが承認済みの19.2を使い、旧設計メモの19.1へ戻さない。第17章のT1098対応は親の方法参照であり、新しいCoverage判定ではない。既存CTI snapshotのcommitとHash、historicalな版の記録は更新しない。今回の確認は版と利用方法の範囲であり、全Object・全変更点を監査したという意味ではない。
 
 ## SRC-ATTACK-DET-001
 
@@ -46,3 +46,9 @@ Hashは取得Byteの識別であり、署名検証や全節監査ではない。
 ## 再確認条件
 
 版・Status・採用節、Control objective、Expected、対象・版・Scope、Authority、入力契約、Retest比較条件が変われば再確認する。実Target・実Data・実操作や個別の法的判断が必要なら本章の範囲外として停止する。Sourceごとの確認日・期限・過去用途はRegistryに残す。
+
+## 2026-10-26: ATT&CK移行の追記
+
+上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、[第5章の新しい確認記録](ch05-source-review-2026-10-26.md)に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。
+
+NIST、IETF、OASIS、FIRST等の既存資料を今回再監査したという記録ではない。合成Caseの状態、観測、権限、未配達、判断期限を変更しない。

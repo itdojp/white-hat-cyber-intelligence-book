@@ -21,7 +21,7 @@
 | teachingModel | Office Suite teaching model only; parent product/environment remains unconfirmed. |
 | parentState | Chapter 4 source snapshot retained; no parent hypothesis, control, gap or decision is updated. |
 
-[第4章の親Case](./ch04-threat-model-example.md)のTH-2026-001〜006は、同じ命題としてjoinしない。第1章の過去判断期限、REA-2026-001、第4章の各Gap / Control assuranceは元の時点と意味を維持する。本章の2026-09-20は教材Mapの再評価日であり、親Decisionの期限を更新するものではない。
+[第4章の親Case](./ch04-threat-model-example.md)のTH-2026-001〜006は、同じ命題としてjoinしない。第1章の過去判断期限、REA-2026-001、第4章の各Gap / Control assuranceは元の時点と意味を維持する。本章の2026-10-26はATT&CK参照版を移行した教材Mapの再評価日であり、親Decisionの期限を更新するものではない。
 
 ## 継承と条件
 
@@ -275,7 +275,7 @@ needs-reviewは悪意確定ではなく、benign-changeもシステム全体の�
 ## DataとGap
 
 TEL-BM-001〜007は行ごとに定義する。教材の必須Fieldはsynthetic、eventClass、tenant、application、approvalである。syntheticはtrueであることを確認する教材識別用の必須マーカーであり、製品のEvent schemaのFieldではない。TEL-BM-002 / TEL-BM-004は合成Dataだけがあり、他はNot collectedである。親Caseの90日Coverage、retention、API resource / operation Field、App lifecycle結果は未検証のままとする。
-GAP-BM-001〜007は各行の限界を保持する本章の情報ギャップであり、第4章GAP-2026-001〜004を閉じる記録ではない。OwnerはSYNTH-SOC-REVIEWER、Review dateは2026-09-20、必要Field・承認記録・Scope・ATT&CK Objectの変更を再評価Triggerとする。
+GAP-BM-001〜007は各行の限界を保持する本章の情報ギャップであり、第4章GAP-2026-001〜004を閉じる記録ではない。OwnerはSYNTH-SOC-REVIEWER、Review dateは2026-10-26、必要Field・承認記録・Scope・ATT&CK Objectの変更を再評価Triggerとする。
 
 ## DecisionとHandoff
 
