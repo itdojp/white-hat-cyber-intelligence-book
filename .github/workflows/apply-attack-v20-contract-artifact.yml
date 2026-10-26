@@ -1,12 +1,10 @@
 name: Apply ATT&CK v20 contract artifact
 
+# Temporary PR214 repair; remove before handoff. No ready/merge/deploy operation.
 on:
   push:
-    branches:
-      - sources/attack-v20-migration
-    paths:
-      - .github/workflows/apply-attack-v20-contract-artifact.yml
-  workflow_dispatch:
+    branches: [sources/attack-v20-migration]
+    paths: [.github/workflows/apply-attack-v20-contract-artifact.yml]
 
 permissions:
   actions: read
@@ -14,142 +12,194 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-  GH_TOKEN: ${{ github.token }}
 
 jobs:
   apply:
+    if: github.repository == 'itdojp/white-hat-cyber-intelligence-book' && github.ref == 'refs/heads/sources/attack-v20-migration'
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout migration branch
+      - name: Checkout exact event commit
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: sources/attack-v20-migration
-          fetch-depth: 2
+          ref: ${{ github.sha }}
+          fetch-depth: 0
           persist-credentials: true
-
-      - name: Checkout pinned book-formatter
+      - name: Checkout unchanged pinned formatter
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: itdojp/book-formatter
           ref: fba61076a7d8171e8344c5d60119f737447214d1
           path: .work/book-formatter
           persist-credentials: false
-
       - name: Set up Python
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.11'
-
-      - name: Set up Ruby and locked renderer
+      - name: Set up locked renderer
         uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
         with:
           ruby-version: '3.3'
           bundler-cache: true
-
-      - name: Download failed-run evidence artifact
+      - name: Verify artifact provenance and exact ZIP digest
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          rm -rf .tmp/contract-artifact
-          mkdir -p .tmp/contract-artifact
-          gh run download 40236735174 \
-            --repo itdojp/white-hat-cyber-intelligence-book \
-            --name attack-v20-contract-refresh \
-            --dir .tmp/contract-artifact
-
-      - name: Restore canonical document order
-        shell: bash
-        run: |
-          set -euo pipefail
-          cp -a .tmp/contract-artifact/tests/fixtures/chapter*/publication-contract.json tests/fixtures/
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '85e0936094a80c2f31eac71c15de56204cfe93b4'
+          mkdir -p .tmp/pr214-restoration
+          gh api repos/itdojp/white-hat-cyber-intelligence-book/actions/artifacts/12615755679 > .tmp/pr214-restoration/artifact-metadata.json
+          gh api repos/itdojp/white-hat-cyber-intelligence-book/actions/runs/40236735174 > .tmp/pr214-restoration/origin-run.json
+          gh api repos/itdojp/white-hat-cyber-intelligence-book/actions/artifacts/12615755679/zip > .tmp/pr214-restoration/contracts.zip
+          echo '0e35f83ad392fc8de2acc684876b21d700870863413c70e4b2cb762edd1cdae4  .tmp/pr214-restoration/contracts.zip' | sha256sum --check --strict
           python3 - <<'PY'
-          import json
+          import json, subprocess
           from pathlib import Path
-
-          documents = {
-              "05": [
-                  "manuscript/05-attack-behavior.md",
-                  "templates/attack-behavior-map.md",
-                  "cases/ch05-attack-behavior-example.md",
-                  "references/ch05-source-review-2026-10-26.md",
-              ],
-              "06": [
-                  "manuscript/06-observable-systems.md",
-                  "templates/signal-flow-diagram.md",
-                  "cases/ch06-signal-flow-example.md",
-                  "references/ch06-source-review-2026-09-12.md",
-              ],
-              "16": [
-                  "manuscript/16-telemetry-evidence-readiness.md",
-                  "templates/telemetry-coverage-map.md",
-                  "cases/ch16-telemetry-coverage-example.md",
-                  "references/ch16-source-review-2026-09-21.md",
-              ],
-              "18": [
-                  "manuscript/18-threat-hunting.md",
-                  "templates/hunt-report.md",
-                  "cases/ch18-hunt-plan-example.md",
-                  "references/ch18-source-review-2026-09-22.md",
-              ],
-              "21": [
-                  "manuscript/21-purple-team-validation.md",
-                  "templates/control-validation-plan.md",
-                  "cases/ch21-control-validation-example.md",
-                  "references/ch21-source-review-2026-09-25.md",
-              ],
-              "26": [
-                  "manuscript/26-cti-distribution.md",
-                  "templates/cti-report.md",
-                  "templates/executive-brief.md",
-                  "cases/ch26-cti-distribution-example.md",
-                  "references/ch26-source-review-2026-09-28.md",
-              ],
-          }
-          for chapter, order in documents.items():
-              path = Path(f"tests/fixtures/chapter{chapter}/publication-contract.json")
-              data = json.loads(path.read_text(encoding="utf-8"))
-              if set(data["documents"]) != set(order):
-                  raise SystemExit(f"ERROR: Chapter {chapter} document set drift")
-              data["documents"] = {key: data["documents"][key] for key in order}
-              path.write_text(
-                  json.dumps(data, ensure_ascii=False, indent=2) + "\n",
-                  encoding="utf-8",
-              )
+          d=Path('.tmp/pr214-restoration')
+          a=json.loads((d/'artifact-metadata.json').read_text())
+          r=json.loads((d/'origin-run.json').read_text())
+          source='62ec527abf55ac9250472f705211964e4be402c8'
+          expected_digest='sha256:0e35f83ad392fc8de2acc684876b21d700870863413c70e4b2cb762edd1cdae4'
+          if (a['id'] != 12615755679 or a['expired'] or a['digest'] != expected_digest
+              or a['workflow_run']['id'] != 40236735174
+              or a['workflow_run']['head_sha'] != source
+              or a['workflow_run']['repository_id'] != 1311726778
+              or r['head_sha'] != source or r['conclusion'] != 'failure'
+              or r['path'] != '.github/workflows/refresh-attack-v20-contracts.yml'):
+              raise SystemExit('Artifact provenance mismatch')
+          # The failed run produced candidates, not validated contracts. No content
+          # input may have changed since that run; only temporary workflows may differ.
+          changed=subprocess.check_output(['git','diff','--name-only',source,'HEAD'],text=True).splitlines()
+          allowed={'.github/workflows/apply-attack-v20-contract-artifact.yml'}
+          if not set(changed).issubset(allowed):
+              raise SystemExit(f'Concurrent source changes: {changed}')
+          print('Artifact provenance/digest/input continuity verified; validation remains required')
           PY
-
-      - name: Validate refreshed chapter contracts
+      - name: Restore six chapter contracts without sorting contractual inventories
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, zipfile
+          from pathlib import Path
+          ROOT=Path.cwd()
+          CHAPTERS=('05','06','16','18','21','26')
+          RENAME={
+              'references/ch05-source-review-2026-09-06.md':'references/ch05-source-review-2026-10-26.md',
+              'tests/fixtures/attack/ch05-v19.2.json':'tests/fixtures/attack/ch05-v20.0.json',
+          }
+          EXPECTED={
+              '05':'5a5d0ab81e96ed2b8c0264672044424cfe8b22df2ceb836cfe0c5021b65b0537',
+              '06':'8d88b67eb83b26fd303119864e7bd6f14b44a56289fb4405802c269286e8d73f',
+              '16':'0187a0b88dec98be81c375d45811d7b2b481fcc9fc33a57e46e16003ee2337a0',
+              '18':'609cb1b831b9c7f601f6b3820b78b36140e3625bcae0ed9292018a38508bfc6d',
+              '21':'361a15b514badf3a00d1b2488b49a0a4f029dfdfd533a630e8c431368b174faa',
+              '26':'1b53df91a0ee551633a6106df5ab2bfc5e45012d62210c736c12f4ee213fb0fa',
+          }
+          def unique(pairs):
+              result={}
+              for k,v in pairs:
+                  if k in result: raise ValueError(f'duplicate key: {k}')
+                  result[k]=v
+              return result
+          def reject(value): raise ValueError(f'nonstandard constant: {value}')
+          def load(raw): return json.loads(raw,object_pairs_hook=unique,parse_constant=reject)
+          def ordered(value,previous):
+              if isinstance(value,dict) and isinstance(previous,dict):
+                  result={}
+                  for oldkey,old in previous.items():
+                      key=RENAME.get(oldkey,oldkey)
+                      if key in value: result[key]=ordered(value[key],old)
+                  for k,v in value.items():
+                      if k not in result: result[k]=v
+                  return result
+              if isinstance(value,list) and isinstance(previous,list) and len(value)==len(previous):
+                  return [ordered(v,o) for v,o in zip(value,previous)]
+              return value
+          def digest(value):
+              return hashlib.sha256(json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+          def path(ch): return f'tests/fixtures/chapter{ch}/publication-contract.json'
+          report=[]
+          with zipfile.ZipFile('.tmp/pr214-restoration/contracts.zip') as z:
+              allowed={path(c) for c in CHAPTERS}|{'.tmp/attack-v20-contract-refresh/mapping-report.json'}
+              if len(z.namelist()) != len(allowed) or set(z.namelist()) != allowed:
+                  raise SystemExit('Unexpected/duplicate artifact members')
+              for ch in CHAPTERS:
+                  p=ROOT/path(ch)
+                  previous=load(p.read_bytes())
+                  value=ordered(load(z.read(path(ch))),previous)
+                  expected_order=[RENAME.get(k,k) for k in previous['documents']]
+                  if list(value['documents']) != expected_order:
+                      raise SystemExit(f'Chapter {ch} document inventory/order drift')
+                  if ch=='05':
+                      old='references/ch05-source-review-2026-09-06.md'; new=RENAME[old]
+                      indices=[i for i,r in enumerate(previous['documents'][old]['required']) if r['field'][3].startswith('Releaseと取得証跡 Bundle SHA-256:')]
+                      if len(indices)!=1: raise SystemExit('Bundle requirement identity mismatch')
+                      # Correct the reviewed fuzzy-match error: a bundle hash
+                      # requirement must not be substituted by an annotated tag.
+                      value['documents'][new]['required'][indices[0]]={
+                          'field':['reader_visible_text','list_path',None,'Releaseと取得証跡 Bundle SHA-256: 66f3fe3f07ef1a2de0bd2fe4b3e8a9ea06c1d0bb2c46171bdbb57c7f7b666524。Bundle sizeは49253343byte。'],
+                          'headings':['第5章 Source Review Note — 2026-10-26','Releaseと取得証跡'],
+                      }
+                      registry=load((ROOT/'site-pages.json').read_bytes())
+                      for page in value['pages']:
+                          if registry['pages'].count(page)!=1: raise SystemExit('Chapter05 page route mismatch')
+                  if ch=='26':
+                      # Chapter26 dataDigests use canonical compact JSON. The three
+                      # data files are unchanged; raw-byte hashes are not equivalent.
+                      for data_path,h in previous['dataDigests'].items():
+                          if digest(load((ROOT/data_path).read_bytes()))!=h:
+                              raise SystemExit('Unchanged Chapter26 data digest mismatch')
+                      value['dataDigests']=previous['dataDigests']
+                  raw=(json.dumps(value,ensure_ascii=False,indent=2)+'\n').encode()
+                  h=hashlib.sha256(raw).hexdigest()
+                  if h!=EXPECTED[ch]: raise SystemExit(f'Unreviewed output Chapter {ch}: {h}')
+                  p.write_bytes(raw)
+                  report.append({'path':path(ch),'sha256':h,'documents':list(value['documents'])})
+          Path('.tmp/pr214-restoration/restored-contracts.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+      - name: Run all six chapter checks with regressions enabled
         shell: bash
         env:
           BOOK_FORMATTER_DIR: .work/book-formatter
           PYTHONPATH: scripts
         run: |
           set -euo pipefail
+          failed=0
           for chapter in 05 06 16 18 21 26; do
-            python3 "scripts/check_chapter${chapter}_contract.py" --no-regressions
+            if python3 "scripts/check_chapter${chapter}_contract.py" > ".tmp/pr214-restoration/chapter${chapter}.log" 2>&1; then
+              cat ".tmp/pr214-restoration/chapter${chapter}.log"
+            else
+              cat ".tmp/pr214-restoration/chapter${chapter}.log"
+              failed=1
+            fi
           done
           git diff --check
-
-      - name: Upload validated contracts
+          test "$failed" -eq 0
+      - name: Save diagnostic evidence (not a pass declaration)
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: attack-v20-ordered-contracts
-          path: tests/fixtures/chapter*/publication-contract.json
+          name: pr214-contract-restoration-evidence
+          path: .tmp/pr214-restoration
           if-no-files-found: error
           retention-days: 7
-
-      - name: Commit validated contract refresh
+      - name: Commit only validated contracts with concurrency guard
         shell: bash
         run: |
           set -euo pipefail
-          git add \
-            tests/fixtures/chapter05/publication-contract.json \
-            tests/fixtures/chapter06/publication-contract.json \
-            tests/fixtures/chapter16/publication-contract.json \
-            tests/fixtures/chapter18/publication-contract.json \
-            tests/fixtures/chapter21/publication-contract.json \
-            tests/fixtures/chapter26/publication-contract.json
+          python3 - <<'PY'
+          import subprocess
+          expected={f'tests/fixtures/chapter{c}/publication-contract.json' for c in ('05','06','16','18','21','26')}
+          actual=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
+          if actual!=expected: raise SystemExit(f'Unexpected changed files: {actual}')
+          PY
+          remote=$(git ls-remote origin refs/heads/sources/attack-v20-migration | cut -f1)
+          test "$remote" = "$GITHUB_SHA"
+          git add tests/fixtures/chapter{05,06,16,18,21,26}/publication-contract.json
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'test: ATT&CK v20 publication contractsを同期'
-          git push origin HEAD:sources/attack-v20-migration
+          git commit -m 'test: ATT&CK v20契約順序・Field対応・digestを修復'
+          git push origin HEAD:refs/heads/sources/attack-v20-migration
