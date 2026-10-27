@@ -4,8 +4,8 @@
   "projection": "1.1.0",
   "documents": {
     "manuscript/29-capstone-case-study.md": {
-      "fieldCount": 160,
-      "sha256": "a6d3faf1e82fc436a457866f1949c9274386d9e3a6ea07b63c27a19cdf4089e2",
+      "fieldCount": 163,
+      "sha256": "a221e348274a76132a8ae1dae89ec885fe0a68ef94120feeab987b0876020fd1",
       "hostProvenance": [
         [
           "destination",
@@ -61,7 +61,7 @@
           null,
           null,
           "参考文献・Source Note ID SRC-CSF-001 — NIST CSWP 29 / CSF 2.0、2024-02-26。高位Outcomeと§5.1の情報の往復に限定。",
-          "manuscript/29-capstone-case-study.md:L206:F156"
+          "manuscript/29-capstone-case-study.md:L206:F159"
         ],
         [
           "reader_visible_text",
@@ -69,7 +69,7 @@
           null,
           null,
           "参考文献・Source Note ID SRC-NIST-RISK-001 — NIST SP 800-30 Rev.1、2012-09-17。§3.3の共有と§3.4の維持に限定。",
-          "manuscript/29-capstone-case-study.md:L207:F157"
+          "manuscript/29-capstone-case-study.md:L207:F160"
         ]
       ]
     },
