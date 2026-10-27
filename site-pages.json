@@ -837,6 +837,27 @@
       "section": "additional",
       "order": 343,
       "title": "第29章 Source Review — 2026-10-21"
+    },
+    {
+      "source": "appendices/appendix-b-templates.md",
+      "destination": "appendices/templates/index.md",
+      "section": "appendices",
+      "order": 431,
+      "title": "付録B 実務テンプレート集"
+    },
+    {
+      "source": "appendices/appendix-c-checklists.md",
+      "destination": "appendices/checklists/index.md",
+      "section": "appendices",
+      "order": 432,
+      "title": "付録C チェックリスト集"
+    },
+    {
+      "source": "appendices/appendix-i-rubric.md",
+      "destination": "appendices/rubric/index.md",
+      "section": "appendices",
+      "order": 451,
+      "title": "付録I 成果物評価ルーブリック"
     }
   ],
   "directoryRoutes": {

@@ -680,6 +680,18 @@
           "effectiveAt": "2026-08-09",
           "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231033156",
           "reason": "最終Graph安定後にlive mainから生成するBlueprintとして登録した。"
+        },
+        {
+          "status": "selected-for-intake",
+          "effectiveAt": "2026-10-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/53#issuecomment-6396261024",
+          "reason": "唯一登録Blueprintをbranch前に選択。raw不在・未読・実体hash未照合・直接採用なしを保持し、現行Issue53と正本の参照metadataから新規制作。原Package/同梱E/F/G/他Target/旧履歴を保持する。"
+        },
+        {
+          "status": "canonical-pr-open",
+          "effectiveAt": "2026-10-25",
+          "evidenceUrl": "https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/211",
+          "reason": "付録B/C/Iの横断metadata・生成区画・説明本文・有限consumer・負例・公開routeを専用Draft PR211へ結合。全QA/独立review/通常採用/main公開は未完で、consumedを先取りしない。"
         }
       ]
     },
