@@ -1,0 +1,2055 @@
+{
+  "version": "1.0.0",
+  "edition": "BCI-2026-10-25",
+  "artifacts": [
+    {
+      "artifactId": "ART-01",
+      "title": "Learning Route Plan",
+      "primaryOwnerChapter": 0,
+      "indexedChapters": [
+        0
+      ],
+      "chapter": "manuscript/00-reading-guide.md",
+      "template": "templates/learning-route-plan.md",
+      "example": "cases/ch03-capability-evidence-example.md",
+      "fixtures": [],
+      "purpose": "役割と学習の不足から読書順を選ぶ",
+      "inputs": "現在の役割、目標、前提知識",
+      "outputs": "学習Routeと月次に見直すEvidence",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/learning-route-plan.md",
+          "anchor": "learning-route-plan",
+          "note": "Plan IDとLearner Profile IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/learning-route-plan.md",
+          "anchor": "learning-route-plan",
+          "note": "共通Document Statusは未定義。月次レビュー日を進捗や能力のStatusへ変換しない。"
+        },
+        "owner": {
+          "path": "templates/learning-route-plan.md",
+          "anchor": "learning-route-plan",
+          "note": "共通Owner欄は未定義。Learner Profileと現在・目標の役割を確認する。業務上の承認者を推定しない。"
+        },
+        "review": {
+          "path": "templates/learning-route-plan.md",
+          "anchor": "learning-route-plan",
+          "note": "月次レビュー日と学習の証拠を使う。独立Reviewer欄は未定義で、学習者の記入を実承認へ読み替えない。"
+        },
+        "reassessment": {
+          "path": "templates/learning-route-plan.md",
+          "anchor": "learning-route-plan",
+          "note": "再評価ID欄は未定義。月次レビュー日で目的・前提知識・読書順を見直す。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/00-reading-guide.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/00-reading-guide.md",
+        "anchor": "9-learning-route-plan",
+        "note": "第0章は独立した数値Rubricを持たない。Planの必須項目と学習目標で確認する。"
+      }
+    },
+    {
+      "artifactId": "ART-02",
+      "title": "Rules of Engagement",
+      "primaryOwnerChapter": 9,
+      "indexedChapters": [
+        9
+      ],
+      "chapter": "manuscript/09-engagement-roe.md",
+      "template": "templates/rules-of-engagement.md",
+      "example": "cases/ch09-engagement-roe-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch09-engagement-roe.json",
+          "download": "downloads/ch09-engagement-roe.json"
+        }
+      ],
+      "purpose": "作業開始の可否と条件を記録する",
+      "inputs": "Authority根拠、対象、方法、時間・量の制約",
+      "outputs": "RoEのDecision、停止・変更・再承認条件",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/rules-of-engagement.md",
+          "anchor": "1-document-controlとdecision",
+          "note": "RoE ID・Version・Case・Decision Requirementから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/rules-of-engagement.md",
+          "anchor": "1-document-controlとdecision",
+          "note": "RoEのStatusとDecisionを分ける。Approvedだけで実作業を開始しない。"
+        },
+        "owner": {
+          "path": "templates/rules-of-engagement.md",
+          "anchor": "2-authorization-evidenceと役割",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/rules-of-engagement.md",
+          "anchor": "12-approval-checklist",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/rules-of-engagement.md",
+          "anchor": "10-changereauthorizationretest",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/09-engagement-roe.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/09-engagement-roe.md",
+        "anchor": "成果物とrubric",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-03",
+      "title": "Threat Model",
+      "primaryOwnerChapter": 4,
+      "indexedChapters": [
+        4
+      ],
+      "chapter": "manuscript/04-assets-boundaries-threat-model.md",
+      "template": "templates/threat-model.md",
+      "example": "cases/ch04-threat-model-example.md",
+      "fixtures": [],
+      "purpose": "守る対象と境界から必要なEvidenceを決める",
+      "inputs": "判断要求、Asset、Flow、既知のControl",
+      "outputs": "Threat仮説、Gap、Action、Handoff",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/threat-model.md",
+          "anchor": "0-document-control",
+          "note": "Threat Model ID・Parent Case IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/threat-model.md",
+          "anchor": "0-document-control",
+          "note": "Model、Knowledge、Hypothesis、Control、Evidence、Actionの状態は別の欄である。"
+        },
+        "owner": {
+          "path": "templates/threat-model.md",
+          "anchor": "0-document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/threat-model.md",
+          "anchor": "12-review-and-rubric",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/threat-model.md",
+          "anchor": "11-reassessment-and-handoff",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/04-assets-boundaries-threat-model.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/04-assets-boundaries-threat-model.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準と最小完成条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-04",
+      "title": "Finding Report",
+      "primaryOwnerChapter": 15,
+      "indexedChapters": [
+        15
+      ],
+      "chapter": "manuscript/15-findings-retest-risk.md",
+      "template": "templates/finding-report.md",
+      "example": "cases/ch15-findings-retest-risk-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch15-findings-retest-risk.json",
+          "download": "downloads/ch15-findings-retest-risk.json"
+        }
+      ],
+      "purpose": "Findingの根拠と対応判断を結ぶ",
+      "inputs": "同じ対象版のEvidenceとValidation記録",
+      "outputs": "影響、Treatment案、残余リスク、Decision",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/finding-report.md",
+          "anchor": "finding-report",
+          "note": "Finding ID・Case ID・対象版から記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/finding-report.md",
+          "anchor": "finding-report",
+          "note": "Finding StatusはRetest Resultや受容の根拠と別に記録する。"
+        },
+        "owner": {
+          "path": "templates/finding-report.md",
+          "anchor": "residual-risk-and-owner",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/finding-report.md",
+          "anchor": "residual-risk-and-owner",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/finding-report.md",
+          "anchor": "residual-risk-and-owner",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/15-findings-retest-risk.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/15-findings-retest-risk.md",
+        "anchor": "作成する成果物と評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-05",
+      "title": "Detection Validation Record",
+      "primaryOwnerChapter": 17,
+      "indexedChapters": [
+        17
+      ],
+      "chapter": "manuscript/17-detection-engineering.md",
+      "template": "templates/detection-validation.md",
+      "example": "cases/ch17-detection-validation-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch17-detection-engineering-fixture.json",
+          "download": "downloads/ch17-detection-engineering-fixture.json"
+        }
+      ],
+      "purpose": "Detectionの期待と供給結果を照合する",
+      "inputs": "仮説、Telemetry契約、合成Fixture、Ruleの版",
+      "outputs": "Validation結果、Coverage限界、次の改善",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/detection-validation.md",
+          "anchor": "0-document-control",
+          "note": "Detection Validation Record ID・Case IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/detection-validation.md",
+          "anchor": "0-document-control",
+          "note": "Document Statusは個々のValidation Result・Coverage・実Control有効性と別である。"
+        },
+        "owner": {
+          "path": "templates/detection-validation.md",
+          "anchor": "0-document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/detection-validation.md",
+          "anchor": "11-review",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/detection-validation.md",
+          "anchor": "9-control-improvement-and-reassessment",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/17-detection-engineering.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/17-detection-engineering.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-06",
+      "title": "Hunt Plan and Findings",
+      "primaryOwnerChapter": 18,
+      "indexedChapters": [
+        18
+      ],
+      "chapter": "manuscript/18-threat-hunting.md",
+      "template": "templates/hunt-report.md",
+      "example": "cases/ch18-hunt-plan-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch18-threat-hunting.json",
+          "download": "downloads/ch18-threat-hunting.json"
+        }
+      ],
+      "purpose": "Hunt仮説に対して言える範囲を記す",
+      "inputs": "Scope、Coverage、供給合成入力、反証条件",
+      "outputs": "Finding、Judgment、Gap、未配達Handoff",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/hunt-report.md",
+          "anchor": "hunt-plan-and-findings",
+          "note": "Hunt ID・Record revision・Case IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/hunt-report.md",
+          "anchor": "findings",
+          "note": "Hunt ResultとHandoffの配達状態を区別する。"
+        },
+        "owner": {
+          "path": "templates/hunt-report.md",
+          "anchor": "judgments",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/hunt-report.md",
+          "anchor": "judgments",
+          "note": "独立Review欄は未定義。Judgmentsの根拠・限界を第18章の評価基準と照合する。記入を実承認へ読み替えない。"
+        },
+        "reassessment": {
+          "path": "templates/hunt-report.md",
+          "anchor": "follow-up",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/18-threat-hunting.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/18-threat-hunting.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-07",
+      "title": "Incident Timeline",
+      "primaryOwnerChapter": 20,
+      "indexedChapters": [
+        20
+      ],
+      "chapter": "manuscript/20-dfir-timeline-causality.md",
+      "template": "templates/incident-timeline.md",
+      "example": "cases/ch20-dfir-timeline-causality-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch20-dfir-timeline-causality.json",
+          "download": "downloads/ch20-dfir-timeline-causality.json"
+        }
+      ],
+      "purpose": "時刻の不確かさを保ったTimelineを作る",
+      "inputs": "原Record、Clock条件、Cutoff",
+      "outputs": "時刻幅、Event間Relation、未確定事項",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/incident-timeline.md",
+          "anchor": "基本識別情報と境界",
+          "note": "Timeline ID・Version・Incident IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/incident-timeline.md",
+          "anchor": "analytic-judgments",
+          "note": "Event間Relationは文書全体の承認Statusではない。Scopeと原因未確定も別に記す。"
+        },
+        "owner": {
+          "path": "templates/incident-timeline.md",
+          "anchor": "基本識別情報と境界",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/incident-timeline.md",
+          "anchor": "review-and-cleanup",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/incident-timeline.md",
+          "anchor": "gaps-and-collection-actions",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/20-dfir-timeline-causality.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/20-dfir-timeline-causality.md",
+        "anchor": "評価ルーブリック",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-08",
+      "title": "CTI Report",
+      "primaryOwnerChapter": 26,
+      "indexedChapters": [
+        26
+      ],
+      "chapter": "manuscript/26-cti-distribution.md",
+      "template": "templates/cti-report.md",
+      "example": "cases/ch26-cti-distribution-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch26-cti-distribution.json",
+          "download": "downloads/ch26-cti-distribution.json"
+        },
+        {
+          "path": "cases/fixtures/ch26-stix-bundle.json",
+          "download": "downloads/ch26-stix-bundle.json"
+        },
+        {
+          "path": "cases/fixtures/ch26-taxii-exchange.json",
+          "download": "downloads/ch26-taxii-exchange.json"
+        }
+      ],
+      "purpose": "判断要求に答える技術向けProductを作る",
+      "inputs": "Requirement、Evidence、Source評価、Key Judgment",
+      "outputs": "技術・運用向けReportと配布制約",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/cti-report.md",
+          "anchor": "document-control--scope",
+          "note": "Product ID・Case・Versionから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/cti-report.md",
+          "anchor": "有限statusと教材の範囲",
+          "note": "Product StatusとFeedback Statusを分け、配達はReceiptで確認する。"
+        },
+        "owner": {
+          "path": "templates/cti-report.md",
+          "anchor": "document-control--scope",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/cti-report.md",
+          "anchor": "document-control--scope",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/cti-report.md",
+          "anchor": "feedback--correction--supersede",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/26-cti-distribution.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/26-cti-distribution.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-09",
+      "title": "Executive Brief",
+      "primaryOwnerChapter": 26,
+      "indexedChapters": [
+        26,
+        29
+      ],
+      "chapter": "manuscript/26-cti-distribution.md",
+      "template": "templates/executive-brief.md",
+      "example": "cases/ch26-cti-distribution-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch26-cti-distribution.json",
+          "download": "downloads/ch26-cti-distribution.json"
+        },
+        {
+          "path": "cases/fixtures/ch26-stix-bundle.json",
+          "download": "downloads/ch26-stix-bundle.json"
+        },
+        {
+          "path": "cases/fixtures/ch26-taxii-exchange.json",
+          "download": "downloads/ch26-taxii-exchange.json"
+        }
+      ],
+      "purpose": "同じ根拠を意思決定向けに整理する",
+      "inputs": "ART-08と共通のEvidenceとKey Judgment",
+      "outputs": "Option、推奨、条件、未決事項",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/executive-brief.md",
+          "anchor": "decision-required",
+          "note": "Product ID・Version・Requirement・Decision IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/executive-brief.md",
+          "anchor": "安全境界と有限status",
+          "note": "Product・Decision・Feedbackの状態を区別し、推奨を承認へ昇格させない。"
+        },
+        "owner": {
+          "path": "templates/executive-brief.md",
+          "anchor": "decision-required",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/executive-brief.md",
+          "anchor": "distribution--feedback",
+          "note": "独立Reviewer欄は未定義。配布条件・Feedbackと第26章の評価基準を照合し、未受領の回答を作らない。"
+        },
+        "reassessment": {
+          "path": "templates/executive-brief.md",
+          "anchor": "conditions-and-triggers",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/26-cti-distribution.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/26-cti-distribution.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-10",
+      "title": "Integrated Security Case Map",
+      "primaryOwnerChapter": 1,
+      "indexedChapters": [
+        1,
+        29
+      ],
+      "chapter": "manuscript/01-integrated-discipline.md",
+      "template": "templates/integrated-security-case-map.md",
+      "example": "cases/ch01-integrated-security-case-example.md",
+      "fixtures": [],
+      "purpose": "証拠から判断・再評価までの接続を記録する",
+      "inputs": "Caseの問い、許可境界、供給Evidence",
+      "outputs": "Case Map、判断できることと残るGap",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/integrated-security-case-map.md",
+          "anchor": "0-document-control",
+          "note": "Case IDとDecision Requirement IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/integrated-security-case-map.md",
+          "anchor": "0-document-control",
+          "note": "CaseのDocument Statusと個別Evidence・Control・Decisionを区別する。"
+        },
+        "owner": {
+          "path": "templates/integrated-security-case-map.md",
+          "anchor": "0-document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/integrated-security-case-map.md",
+          "anchor": "16-review",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/integrated-security-case-map.md",
+          "anchor": "12-reassessment",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/01-integrated-discipline.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/01-integrated-discipline.md",
+        "anchor": "13-評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-11",
+      "title": "Web/API Assessment Hypothesis Pack",
+      "primaryOwnerChapter": 11,
+      "indexedChapters": [
+        11
+      ],
+      "chapter": "manuscript/11-web-api-hypothesis.md",
+      "template": "templates/web-api-assessment-hypothesis-pack.md",
+      "example": "cases/ch11-web-api-assessment-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch11-web-api-assessment-dataset.json",
+          "download": "downloads/ch11-web-api-assessment-dataset.json"
+        }
+      ],
+      "purpose": "Web/API評価の問いと境界を具体化する",
+      "inputs": "Asset、Actor、Boundary、Workflow、親要求",
+      "outputs": "仮説、限定Validation案、Finding・Detectionへの接続",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/web-api-assessment-hypothesis-pack.md",
+          "anchor": "0-document-control",
+          "note": "Case IDとDecision Requirement IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/web-api-assessment-hypothesis-pack.md",
+          "anchor": "0-document-control",
+          "note": "Document StatusとHypothesis、Evidence、Handoffの状態を混ぜない。"
+        },
+        "owner": {
+          "path": "templates/web-api-assessment-hypothesis-pack.md",
+          "anchor": "0-document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/web-api-assessment-hypothesis-pack.md",
+          "anchor": "11-review",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/web-api-assessment-hypothesis-pack.md",
+          "anchor": "7-reassessment-plan",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/11-web-api-hypothesis.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/11-web-api-hypothesis.md",
+        "anchor": "10-評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-12",
+      "title": "Analytic Judgment Record",
+      "primaryOwnerChapter": 25,
+      "indexedChapters": [
+        25,
+        29
+      ],
+      "chapter": "manuscript/25-structured-analysis-attribution.md",
+      "template": "templates/analytic-judgment-record.md",
+      "example": "cases/ch25-structured-analysis-attribution-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch25-structured-analysis-attribution-dataset.json",
+          "download": "downloads/ch25-structured-analysis-attribution-dataset.json"
+        }
+      ],
+      "purpose": "競合仮説と不確実性を判断へ結ぶ",
+      "inputs": "判断要求、Source Note、Evidence、代替説明",
+      "outputs": "限定Judgment、確信度、指標、再評価条件",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/analytic-judgment-record.md",
+          "anchor": "0-document-control",
+          "note": "Case IDとDecision Requirement・Intelligence Requirementから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/analytic-judgment-record.md",
+          "anchor": "0-document-control",
+          "note": "Document Statusと個々のJudgment・Source用途を混ぜない。"
+        },
+        "owner": {
+          "path": "templates/analytic-judgment-record.md",
+          "anchor": "0-document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/analytic-judgment-record.md",
+          "anchor": "15-review",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/analytic-judgment-record.md",
+          "anchor": "13-reassessment-and-invalidation",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/25-structured-analysis-attribution.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/25-structured-analysis-attribution.md",
+        "anchor": "11-評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-13",
+      "title": "Authorization Checklist",
+      "primaryOwnerChapter": 2,
+      "indexedChapters": [
+        2,
+        9
+      ],
+      "chapter": "manuscript/02-law-ethics-authorization.md",
+      "template": "templates/authorization-checklist.md",
+      "example": "cases/ch02-authorization-decision-example.md",
+      "fixtures": [],
+      "purpose": "Authority・Scope・Safety・Disclosureを点検する",
+      "inputs": "権限根拠、対象、Data、停止・開示条件",
+      "outputs": "Gate判断、Condition、RoEへの差戻し条件",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/authorization-checklist.md",
+          "anchor": "0-document-control",
+          "note": "Authorization Record ID・Parent Case IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/authorization-checklist.md",
+          "anchor": "0-document-control",
+          "note": "Document Status、Gate、Decision、Conditionの状態を分ける。"
+        },
+        "owner": {
+          "path": "templates/authorization-checklist.md",
+          "anchor": "0-document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/authorization-checklist.md",
+          "anchor": "12-review",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/authorization-checklist.md",
+          "anchor": "10-reassessment",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/02-law-ethics-authorization.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/02-law-ethics-authorization.md",
+        "anchor": "11-評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-14",
+      "title": "Capability Evidence Matrix",
+      "primaryOwnerChapter": 3,
+      "indexedChapters": [
+        3,
+        29
+      ],
+      "chapter": "manuscript/03-capability-evidence.md",
+      "template": "templates/capability-evidence-matrix.md",
+      "example": "cases/ch03-capability-evidence-example.md",
+      "fixtures": [],
+      "purpose": "学習Evidenceから限定した能力判断を行う",
+      "inputs": "親Plan、Task、事前Rubric、Practice記録",
+      "outputs": "ArtifactのReview結果、能力Claim、Gapと次の学習",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/capability-evidence-matrix.md",
+          "anchor": "0-document-control",
+          "note": "Matrix ID・Learner Profile ID・Parent Plan IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/capability-evidence-matrix.md",
+          "anchor": "0-document-control",
+          "note": "学習Lifecycle、Artifact Review Result、Capability Claim Resultを分ける。"
+        },
+        "owner": {
+          "path": "templates/capability-evidence-matrix.md",
+          "anchor": "0-document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/capability-evidence-matrix.md",
+          "anchor": "5-review-result",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/capability-evidence-matrix.md",
+          "anchor": "7-reassessment",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/03-capability-evidence.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/03-capability-evidence.md",
+        "anchor": "10-評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-15",
+      "title": "ATT&CK Behavior Map",
+      "primaryOwnerChapter": 5,
+      "indexedChapters": [
+        5
+      ],
+      "chapter": "manuscript/05-attack-behavior.md",
+      "template": "templates/attack-behavior-map.md",
+      "example": "cases/ch05-attack-behavior-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch05-attack-behavior.json",
+          "download": "downloads/ch05-attack-behavior.json"
+        }
+      ],
+      "purpose": "行動のMappingと観測・検証を分離する",
+      "inputs": "Behavior、ATT&CKの版、Mapping根拠",
+      "outputs": "行ごとの状態、Evidence、Gap、判断寄与",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/attack-behavior-map.md",
+          "anchor": "document-control",
+          "note": "Map ID・Parent Case ID・Decision Requirementから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/attack-behavior-map.md",
+          "anchor": "statusとevidence-threshold",
+          "note": "行ごとのMapping・観測・検証の状態。件数だけでControlの有効性を認定しない。"
+        },
+        "owner": {
+          "path": "templates/attack-behavior-map.md",
+          "anchor": "document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/attack-behavior-map.md",
+          "anchor": "reviewとcleanup",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/attack-behavior-map.md",
+          "anchor": "decisionとreassessment",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/05-attack-behavior.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/05-attack-behavior.md",
+        "anchor": "11-評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-16",
+      "title": "Signal Flow Diagram",
+      "primaryOwnerChapter": 6,
+      "indexedChapters": [
+        6
+      ],
+      "chapter": "manuscript/06-observable-systems.md",
+      "template": "templates/signal-flow-diagram.md",
+      "example": "cases/ch06-signal-flow-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch06-signal-flow.json",
+          "download": "downloads/ch06-signal-flow.json"
+        }
+      ],
+      "purpose": "観測の各段階と不足を追跡する",
+      "inputs": "Flow、Event、Field、Scope、時点",
+      "outputs": "生成・収集・保持・検索・検証のEvidence対応",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/signal-flow-diagram.md",
+          "anchor": "document-control",
+          "note": "Signal Flow Map ID・Case ID・Parent Behaviorから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/signal-flow-diagram.md",
+          "anchor": "coverageと受入条件",
+          "note": "Flowの段階状態。前段のEvidenceだけで後段を満たしたとはしない。"
+        },
+        "owner": {
+          "path": "templates/signal-flow-diagram.md",
+          "anchor": "document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/signal-flow-diagram.md",
+          "anchor": "handoffとrubric",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/signal-flow-diagram.md",
+          "anchor": "flowの記入",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/06-observable-systems.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/06-observable-systems.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-17",
+      "title": "Vulnerability Prioritization Record",
+      "primaryOwnerChapter": 7,
+      "indexedChapters": [
+        7
+      ],
+      "chapter": "manuscript/07-vulnerability-prioritization.md",
+      "template": "templates/vulnerability-prioritization-record.md",
+      "example": "cases/ch07-vulnerability-prioritization-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch07-source-snapshot.json",
+          "download": "downloads/ch07-source-snapshot.json"
+        },
+        {
+          "path": "cases/fixtures/ch07-vulnerability-prioritization.json",
+          "download": "downloads/ch07-vulnerability-prioritization.json"
+        }
+      ],
+      "purpose": "公開指標を環境条件と判断へ結ぶ",
+      "inputs": "指標の版、導入・影響・到達条件、Control",
+      "outputs": "優先度の理由、Owner、期限、残余リスク",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/vulnerability-prioritization-record.md",
+          "anchor": "document-control",
+          "note": "Record Set・Item ID・Parent・Decision Requirementから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/vulnerability-prioritization-record.md",
+          "anchor": "decisionと再評価",
+          "note": "優先度判断とControl・Closureの根拠は別。公開指標の大小を共通Statusにしない。"
+        },
+        "owner": {
+          "path": "templates/vulnerability-prioritization-record.md",
+          "anchor": "document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/vulnerability-prioritization-record.md",
+          "anchor": "rubricと記入例",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/vulnerability-prioritization-record.md",
+          "anchor": "decisionと再評価",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/07-vulnerability-prioritization.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/07-vulnerability-prioritization.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-18",
+      "title": "Lab Safety and Evidence Plan",
+      "primaryOwnerChapter": 8,
+      "indexedChapters": [
+        8
+      ],
+      "chapter": "manuscript/08-safe-lab-evidence.md",
+      "template": "templates/lab-safety-evidence-plan.md",
+      "example": "cases/ch08-lab-evidence-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch08-control-receipts.json",
+          "download": "downloads/ch08-control-receipts.json"
+        },
+        {
+          "path": "cases/fixtures/ch08-evidence-manifest.json",
+          "download": "downloads/ch08-evidence-manifest.json"
+        },
+        {
+          "path": "cases/fixtures/ch08-lab-plan.json",
+          "download": "downloads/ch08-lab-plan.json"
+        }
+      ],
+      "purpose": "ラボの境界と供給Evidenceを確認する",
+      "inputs": "許可、Lab構成、合成Receipt、停止条件",
+      "outputs": "八状態と三判定、Evidence manifest、Cleanup・再評価",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/lab-safety-evidence-plan.md",
+          "anchor": "document-control",
+          "note": "Plan Set・Plan・Run・Lab IDとCaseから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/lab-safety-evidence-plan.md",
+          "anchor": "八状態と三判定",
+          "note": "Lab八状態と三判定を分ける。Runningを許可やCleanup成功へ読み替えない。"
+        },
+        "owner": {
+          "path": "templates/lab-safety-evidence-plan.md",
+          "anchor": "document-control",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/lab-safety-evidence-plan.md",
+          "anchor": "rubricと完全記入例",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/lab-safety-evidence-plan.md",
+          "anchor": "stop--cleanup--reassessment",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/08-safe-lab-evidence.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/08-safe-lab-evidence.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-19",
+      "title": "Attack Surface Register",
+      "primaryOwnerChapter": 10,
+      "indexedChapters": [
+        10
+      ],
+      "chapter": "manuscript/10-recon-osint-boundary.md",
+      "template": "templates/attack-surface-register.md",
+      "example": "cases/ch10-attack-surface-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch10-attack-surface.json",
+          "download": "downloads/ch10-attack-surface.json"
+        },
+        {
+          "path": "cases/fixtures/ch10-source-bundle.json",
+          "download": "downloads/ch10-source-bundle.json"
+        }
+      ],
+      "purpose": "Asset候補の所有と確認範囲を整理する",
+      "inputs": "Collection Requirement、Source、時点、Provenance",
+      "outputs": "候補のVerification、Gap、次Actionの承認不足",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/attack-surface-register.md",
+          "anchor": "1-document-controlと要求",
+          "note": "Register ID・Case ID・Decision / Collection Requirementから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/attack-surface-register.md",
+          "anchor": "5-verificationと許容結論",
+          "note": "Verification stateとOwnership statusは別の語彙である。"
+        },
+        "owner": {
+          "path": "templates/attack-surface-register.md",
+          "anchor": "1-document-controlと要求",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/attack-surface-register.md",
+          "anchor": "記入例と評価",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/attack-surface-register.md",
+          "anchor": "6-次actiongap再評価",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/10-recon-osint-boundary.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/10-recon-osint-boundary.md",
+        "anchor": "108-完全合成演習と評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-20",
+      "title": "Identity Attack Path Review",
+      "primaryOwnerChapter": 12,
+      "indexedChapters": [
+        12
+      ],
+      "chapter": "manuscript/12-enterprise-identity.md",
+      "template": "templates/identity-attack-path-review.md",
+      "example": "cases/ch12-identity-path-review-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch12-identity-paths.json",
+          "download": "downloads/ch12-identity-paths.json"
+        }
+      ],
+      "purpose": "Identityの必要Edgeと未確認点を評価する",
+      "inputs": "Principal、Role、Permission、Resource、対象版",
+      "outputs": "Path Review、Telemetry、Finding、Treatment案",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/identity-attack-path-review.md",
+          "anchor": "document-controlとdecision-requirement",
+          "note": "Review ID・Case ID・Decision Requirementから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/identity-attack-path-review.md",
+          "anchor": "path-review",
+          "note": "Path stateとPrincipal・Edge・認証条件の記録を区別する。"
+        },
+        "owner": {
+          "path": "templates/identity-attack-path-review.md",
+          "anchor": "document-controlとdecision-requirement",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/identity-attack-path-review.md",
+          "anchor": "提出前の確認",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/identity-attack-path-review.md",
+          "anchor": "telemetryfindingtreatmentreassessment",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/12-enterprise-identity.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/12-enterprise-identity.md",
+        "anchor": "作成する成果物と評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-21",
+      "title": "Platform and Supply Chain Assessment",
+      "primaryOwnerChapter": 13,
+      "indexedChapters": [
+        13
+      ],
+      "chapter": "manuscript/13-platform-supply-chain.md",
+      "template": "templates/platform-supply-chain-assessment.md",
+      "example": "cases/ch13-platform-supply-chain-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch13-supply-chain.json",
+          "download": "downloads/ch13-supply-chain.json"
+        }
+      ],
+      "purpose": "PlatformとSupply Chainの信頼主張を限定する",
+      "inputs": "Source、Lock、Builder、Artifact、Runtimeの供給資料",
+      "outputs": "状態別根拠、Finding、Decision、再評価",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/platform-supply-chain-assessment.md",
+          "anchor": "authority--scope--safety",
+          "note": "Assessment ID・Case ID・Service ID・RoE IDと版から記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/platform-supply-chain-assessment.md",
+          "anchor": "stateと判断の規則",
+          "note": "対象層の五状態は署名・Trust・Compliance・実許可と同義ではない。"
+        },
+        "owner": {
+          "path": "templates/platform-supply-chain-assessment.md",
+          "anchor": "authority--scope--safety",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/platform-supply-chain-assessment.md",
+          "anchor": "stop--cleanup--rubric",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/platform-supply-chain-assessment.md",
+          "anchor": "記入欄",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/13-platform-supply-chain.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/13-platform-supply-chain.md",
+        "anchor": "作成する成果物と評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-22",
+      "title": "Minimal-Impact Validation Record",
+      "primaryOwnerChapter": 14,
+      "indexedChapters": [
+        14
+      ],
+      "chapter": "manuscript/14-minimal-impact-validation.md",
+      "template": "templates/minimal-impact-validation-record.md",
+      "example": "cases/ch14-minimal-impact-validation-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch14-minimal-impact-validation.json",
+          "download": "downloads/ch14-minimal-impact-validation.json"
+        }
+      ],
+      "purpose": "最小十分なEvidenceと停止条件を結ぶ",
+      "inputs": "問い、Authority、対象版、供給Validation",
+      "outputs": "支持・反証・未観測、残存、Handoff",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/minimal-impact-validation-record.md",
+          "anchor": "識別と境界",
+          "note": "Record ID・Case・Hypothesis・Authority参照から記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/minimal-impact-validation-record.md",
+          "anchor": "判断とhandoff",
+          "note": "Resultと実施有無を分ける。未実施をSupportedにしない。"
+        },
+        "owner": {
+          "path": "templates/minimal-impact-validation-record.md",
+          "anchor": "識別と境界",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/minimal-impact-validation-record.md",
+          "anchor": "停止と残存確認",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/minimal-impact-validation-record.md",
+          "anchor": "判断とhandoff",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/14-minimal-impact-validation.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/14-minimal-impact-validation.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-23",
+      "title": "Retest Record",
+      "primaryOwnerChapter": 15,
+      "indexedChapters": [
+        15
+      ],
+      "chapter": "manuscript/15-findings-retest-risk.md",
+      "template": "templates/retest-record.md",
+      "example": "cases/ch15-findings-retest-risk-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch15-findings-retest-risk.json",
+          "download": "downloads/ch15-findings-retest-risk.json"
+        }
+      ],
+      "purpose": "変更後のRetest条件と限界を記録する",
+      "inputs": "Finding、Change参照、対象・変更前後版",
+      "outputs": "Retest結果、Residual、再評価条件",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/retest-record.md",
+          "anchor": "t-15-07-retestの記入欄",
+          "note": "Retest ID・Finding ID・変更前後の対象版から記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/retest-record.md",
+          "anchor": "判断を残す",
+          "note": "Retest ResultとFinding Statusを分ける。Closedの理由はART-04へ戻す。"
+        },
+        "owner": {
+          "path": "templates/retest-record.md",
+          "anchor": "t-15-07-retestの記入欄",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/retest-record.md",
+          "anchor": "判断を残す",
+          "note": "判断の根拠をART-04と第15章の評価基準へ戻す。Retestの記入をRisk acceptanceや実承認と同義にしない。"
+        },
+        "reassessment": {
+          "path": "templates/retest-record.md",
+          "anchor": "t-15-07-retestの記入欄",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/15-findings-retest-risk.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/15-findings-retest-risk.md",
+        "anchor": "作成する成果物と評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-24",
+      "title": "Telemetry Coverage Map",
+      "primaryOwnerChapter": 16,
+      "indexedChapters": [
+        16
+      ],
+      "chapter": "manuscript/16-telemetry-evidence-readiness.md",
+      "template": "templates/telemetry-coverage-map.md",
+      "example": "cases/ch16-telemetry-coverage-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch16-telemetry-coverage.json",
+          "download": "downloads/ch16-telemetry-coverage.json"
+        }
+      ],
+      "purpose": "問いに必要なTelemetryの充足を記す",
+      "inputs": "必要Field、Consumer、期間、品質根拠",
+      "outputs": "Coverage状態、Gap、有限ValidationとHandoff",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/telemetry-coverage-map.md",
+          "anchor": "1-document-controlと親参照",
+          "note": "Map ID・Case・Threat / Observation / Signal Flowから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/telemetry-coverage-map.md",
+          "anchor": "4-coverageとvalidation",
+          "note": "Coverage状態とHandoffの配達状態を分ける。"
+        },
+        "owner": {
+          "path": "templates/telemetry-coverage-map.md",
+          "anchor": "1-document-controlと親参照",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/telemetry-coverage-map.md",
+          "anchor": "6-読解の完了停止cleanup",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/telemetry-coverage-map.md",
+          "anchor": "4-coverageとvalidation",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/16-telemetry-evidence-readiness.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/16-telemetry-evidence-readiness.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-25",
+      "title": "Incident Action Plan",
+      "primaryOwnerChapter": 19,
+      "indexedChapters": [
+        19
+      ],
+      "chapter": "manuscript/19-incident-response.md",
+      "template": "templates/incident-action-plan.md",
+      "example": "cases/ch19-incident-action-plan-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch19-incident-response.json",
+          "download": "downloads/ch19-incident-response.json"
+        }
+      ],
+      "purpose": "対応判断の根拠と選択肢を分離する",
+      "inputs": "Signal、Scope、Evidence、判断権限の条件",
+      "outputs": "Decision Log、対応案、復旧検証条件、残余",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/incident-action-plan.md",
+          "anchor": "identity-and-roles",
+          "note": "Incident・Case・Parent Case ID・Decision IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/incident-action-plan.md",
+          "anchor": "classification-and-scope",
+          "note": "Incident StatusをClassification、Severity、PriorityやScopeと混ぜない。"
+        },
+        "owner": {
+          "path": "templates/incident-action-plan.md",
+          "anchor": "identity-and-roles",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/incident-action-plan.md",
+          "anchor": "traceability-and-reassessment",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/incident-action-plan.md",
+          "anchor": "traceability-and-reassessment",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/19-incident-response.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/19-incident-response.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-26",
+      "title": "Root Cause Analysis",
+      "primaryOwnerChapter": 20,
+      "indexedChapters": [
+        20
+      ],
+      "chapter": "manuscript/20-dfir-timeline-causality.md",
+      "template": "templates/root-cause-analysis.md",
+      "example": "cases/ch20-dfir-timeline-causality-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch20-dfir-timeline-causality.json",
+          "download": "downloads/ch20-dfir-timeline-causality.json"
+        }
+      ],
+      "purpose": "原因仮説と代替説明を照合する",
+      "inputs": "Timeline、機構Evidence、限定影響",
+      "outputs": "原因未確定の理由、改善案、検証と再評価",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/root-cause-analysis.md",
+          "anchor": "record-and-decision-requirement",
+          "note": "RCA ID・Version・Incident / Case・Evidence Questionから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/root-cause-analysis.md",
+          "anchor": "causal-analysis",
+          "note": "原因の主張と確信度は文書全体の承認Statusではない。未確定を保持する。"
+        },
+        "owner": {
+          "path": "templates/root-cause-analysis.md",
+          "anchor": "record-and-decision-requirement",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/root-cause-analysis.md",
+          "anchor": "review-checklist",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/root-cause-analysis.md",
+          "anchor": "control-and-reassessment",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/20-dfir-timeline-causality.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/20-dfir-timeline-causality.md",
+        "anchor": "評価ルーブリック",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-27",
+      "title": "Control Validation Plan",
+      "primaryOwnerChapter": 21,
+      "indexedChapters": [
+        21
+      ],
+      "chapter": "manuscript/21-purple-team-validation.md",
+      "template": "templates/control-validation-plan.md",
+      "example": "cases/ch21-control-validation-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch21-control-validation.json",
+          "download": "downloads/ch21-control-validation.json"
+        }
+      ],
+      "purpose": "ControlのExpectedと層別Actualを比較する",
+      "inputs": "Control objective、同一対象版、合成Scenario",
+      "outputs": "層別結果、Failure、Gap、改善・Retest条件",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/control-validation-plan.md",
+          "anchor": "plan-and-decision-requirement",
+          "note": "Plan ID・Version・Case・Decision参照から記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/control-validation-plan.md",
+          "anchor": "evidence-and-actual-by-layer",
+          "note": "層別Result、適用・未選択、Handoff状態を区別する。"
+        },
+        "owner": {
+          "path": "templates/control-validation-plan.md",
+          "anchor": "plan-and-decision-requirement",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/control-validation-plan.md",
+          "anchor": "review-checklist",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/control-validation-plan.md",
+          "anchor": "improvement-retest-and-handoff",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/21-purple-team-validation.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/21-purple-team-validation.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-28",
+      "title": "Security Improvement Backlog",
+      "primaryOwnerChapter": 22,
+      "indexedChapters": [
+        22
+      ],
+      "chapter": "manuscript/22-measurement-improvement.md",
+      "template": "templates/security-improvement-backlog.md",
+      "example": "cases/ch22-improvement-backlog-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch22-measurement-improvement.json",
+          "download": "downloads/ch22-measurement-improvement.json"
+        }
+      ],
+      "purpose": "Metricから改善の判断を追跡する",
+      "inputs": "母集団、品質、判断目的、受入条件",
+      "outputs": "改善Backlog、検証・受容・廃止の区別",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/security-improvement-backlog.md",
+          "anchor": "record-and-decision-purpose",
+          "note": "Backlog・Item ID・Revision・Caseから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/security-improvement-backlog.md",
+          "anchor": "seven-statuses",
+          "note": "七Statusに独自の進捗名を足さない。受容・廃止を改修成功へ算入しない。"
+        },
+        "owner": {
+          "path": "templates/security-improvement-backlog.md",
+          "anchor": "priority-and-action",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/security-improvement-backlog.md",
+          "anchor": "verification-and-risk-decision",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/security-improvement-backlog.md",
+          "anchor": "reassessment-and-metric-retirement",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/22-measurement-improvement.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/22-measurement-improvement.md",
+        "anchor": "成果物と評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-29",
+      "title": "Intelligence Requirement and Collection Plan",
+      "primaryOwnerChapter": 23,
+      "indexedChapters": [
+        23
+      ],
+      "chapter": "manuscript/23-intelligence-requirements.md",
+      "template": "templates/intelligence-requirement-collection-plan.md",
+      "example": "cases/ch23-intelligence-requirements-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch23-intelligence-requirements.json",
+          "download": "downloads/ch23-intelligence-requirements.json"
+        }
+      ],
+      "purpose": "判断に必要な問いと収集計画を分ける",
+      "inputs": "Decision Requirement、期限、充足条件",
+      "outputs": "Requirement、Collection案、Evidence・Gap対応",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/intelligence-requirement-collection-plan.md",
+          "anchor": "記入順序",
+          "note": "Plan ID・Case ID・Decision・Requirement IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/intelligence-requirement-collection-plan.md",
+          "anchor": "有限statusとpriority",
+          "note": "RequirementとCollectionの有限Statusを分け、Priorityで停止を解除しない。"
+        },
+        "owner": {
+          "path": "templates/intelligence-requirement-collection-plan.md",
+          "anchor": "記入順序",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/intelligence-requirement-collection-plan.md",
+          "anchor": "提出前確認",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/intelligence-requirement-collection-plan.md",
+          "anchor": "記入順序",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/23-intelligence-requirements.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/23-intelligence-requirements.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-30",
+      "title": "Evidence and Source Evaluation Table",
+      "primaryOwnerChapter": 24,
+      "indexedChapters": [
+        24
+      ],
+      "chapter": "manuscript/24-osint-provenance-sources.md",
+      "template": "templates/evidence-source-evaluation-table.md",
+      "example": "cases/ch24-source-evaluation-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch24-source-evaluation.json",
+          "download": "downloads/ch24-source-evaluation.json"
+        }
+      ],
+      "purpose": "原典と取得物・変換物・Claimを区別する",
+      "inputs": "Source、Item、時点、Provenance、利用条件",
+      "outputs": "用途限定評価、独立性、制約と再評価",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/evidence-source-evaluation-table.md",
+          "anchor": "記入欄",
+          "note": "Table ID・Case ID・Source・Item・Claim IDから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/evidence-source-evaluation-table.md",
+          "anchor": "有限な評価区分",
+          "note": "Source reliability、information credibility、independence、Evidence用途は別軸である。"
+        },
+        "owner": {
+          "path": "templates/evidence-source-evaluation-table.md",
+          "anchor": "記入欄",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/evidence-source-evaluation-table.md",
+          "anchor": "提出前確認",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/evidence-source-evaluation-table.md",
+          "anchor": "記入欄",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/24-osint-provenance-sources.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/24-osint-provenance-sources.md",
+        "anchor": "249-完全合成演習と評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-31",
+      "title": "AI / Agent Threat Model",
+      "primaryOwnerChapter": 27,
+      "indexedChapters": [
+        27
+      ],
+      "chapter": "manuscript/27-ai-agent-security.md",
+      "template": "templates/ai-agent-threat-model.md",
+      "example": "cases/ch27-ai-agent-threat-model-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch27-ai-agent-threat-model.json",
+          "download": "downloads/ch27-ai-agent-threat-model.json"
+        }
+      ],
+      "purpose": "AI・Agentの能力と境界を評価する",
+      "inputs": "Component、Data Flow、Instruction、Toolの供給モデル",
+      "outputs": "Threat、Control根拠、未確認点、停止・判断条件",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/ai-agent-threat-model.md",
+          "anchor": "document-controlと判断要求",
+          "note": "Threat Model ID・Case ID・Decision Requirementから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/ai-agent-threat-model.md",
+          "anchor": "componentとdata-flow",
+          "note": "Component六状態とToolの承認・停止は別の確認である。"
+        },
+        "owner": {
+          "path": "templates/ai-agent-threat-model.md",
+          "anchor": "document-controlと判断要求",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/ai-agent-threat-model.md",
+          "anchor": "完成確認",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/ai-agent-threat-model.md",
+          "anchor": "threatから判断まで",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/27-ai-agent-security.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/27-ai-agent-security.md",
+        "anchor": "作成する成果物と評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-32",
+      "title": "AI-Assisted Analysis Assurance Record",
+      "primaryOwnerChapter": 28,
+      "indexedChapters": [
+        28
+      ],
+      "chapter": "manuscript/28-ai-assisted-analysis-assurance.md",
+      "template": "templates/ai-assisted-analysis-assurance-record.md",
+      "example": "cases/ch28-ai-assisted-analysis-assurance-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch28-ai-assisted-analysis-assurance.json",
+          "download": "downloads/ch28-ai-assisted-analysis-assurance.json"
+        }
+      ],
+      "purpose": "AI補助の主張を原典と人間判断へ結ぶ",
+      "inputs": "Approved Source Set、Model・Input・Outputの版",
+      "outputs": "Claim Verification、Human採否、監査・再評価",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/ai-assisted-analysis-assurance-record.md",
+          "anchor": "document-control",
+          "note": "Record・Case・Task・Decision Requirementから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/ai-assisted-analysis-assurance-record.md",
+          "anchor": "claimとverification",
+          "note": "Claim StatusとHuman採否、記録の完成を区別する。"
+        },
+        "owner": {
+          "path": "templates/ai-assisted-analysis-assurance-record.md",
+          "anchor": "human-decision監査再評価",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/ai-assisted-analysis-assurance-record.md",
+          "anchor": "human-decision監査再評価",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/ai-assisted-analysis-assurance-record.md",
+          "anchor": "human-decision監査再評価",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/28-ai-assisted-analysis-assurance.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/28-ai-assisted-analysis-assurance.md",
+        "anchor": "成果物と評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    },
+    {
+      "artifactId": "ART-33",
+      "title": "Final Security Decision Portfolio Index",
+      "primaryOwnerChapter": 29,
+      "indexedChapters": [
+        29
+      ],
+      "chapter": "manuscript/29-capstone-case-study.md",
+      "template": "templates/final-security-decision-portfolio-index.md",
+      "example": "cases/ch29-capstone-portfolio-example.md",
+      "fixtures": [
+        {
+          "path": "cases/fixtures/ch29-capstone-portfolio.json",
+          "download": "downloads/ch29-capstone-portfolio.json"
+        }
+      ],
+      "purpose": "成果物の参照と最終判断をまとめる",
+      "inputs": "親32種の固定記録、今回の要求、文書Evidence",
+      "outputs": "Portfolio、二つのBrief、Gap、Action・再評価",
+      "fieldRefs": {
+        "identifiers": {
+          "path": "templates/final-security-decision-portfolio-index.md",
+          "anchor": "0-portfolio-identity",
+          "note": "Portfolio ID・Version・Final Case ID・Decision Requirementから記入し、関連IDの必須欄は元Template全体で確認する。"
+        },
+        "status": {
+          "path": "templates/final-security-decision-portfolio-index.md",
+          "anchor": "0-portfolio-identity",
+          "note": "Portfolio Statusは親Artifactの状態でも実行許可でもない。"
+        },
+        "owner": {
+          "path": "templates/final-security-decision-portfolio-index.md",
+          "anchor": "0-portfolio-identity",
+          "note": "記録・判断・取扱いの担当を区別し、参照だけで親Ownerを変更しない。"
+        },
+        "review": {
+          "path": "templates/final-security-decision-portfolio-index.md",
+          "anchor": "5-optionreviewdecision",
+          "note": "対象版と根拠・限界を確認する。記入例内のReviewは実承認ではない。"
+        },
+        "reassessment": {
+          "path": "templates/final-security-decision-portfolio-index.md",
+          "anchor": "6-actionとreassessment",
+          "note": "期限、変更条件、次の問いを元欄へ記録し、過去の判断を上書きしない。"
+        }
+      },
+      "learningObjective": {
+        "path": "manuscript/29-capstone-case-study.md",
+        "anchor": "学習目標",
+        "note": "学習目標と提出物を照合する。"
+      },
+      "chapterDoD": {
+        "path": "manuscript/29-capstone-case-study.md",
+        "anchor": "評価基準",
+        "note": "章の評価基準・重大な差戻し条件を優先する。"
+      }
+    }
+  ],
+  "checklists": [
+    {
+      "id": "BCI-C01",
+      "title": "最初の記入先を選ぶ",
+      "question": "判断する問いとArtifactを選び、ID・対象・版から記入する。",
+      "automation": "live索引とTemplateの対応、重複・欠落・参照版を検査する。",
+      "limitation": "IDの存在は判断目的の妥当性を保証しない。",
+      "failureAction": "不明なIDや版は推測で埋めず、元章へ戻して訂正する。",
+      "owner": "記入担当",
+      "artifacts": [
+        "ART-01",
+        "ART-10",
+        "ART-33"
+      ]
+    },
+    {
+      "id": "BCI-C02",
+      "title": "開始・停止条件を確かめる",
+      "question": "Authority・Scope・Data・停止条件を確認する。",
+      "automation": "参照版と共有Policyの公開面検査。実権限は自動認定しない。",
+      "limitation": "ChecklistのPASSは合法性や実作業の許可ではない。",
+      "failureAction": "許可・出所・対象範囲が不明、実Dataや外部接続要求があれば停止し、担当へ照会する。",
+      "owner": "判断担当と安全確認担当",
+      "artifacts": [
+        "ART-13",
+        "ART-02",
+        "ART-18"
+      ]
+    },
+    {
+      "id": "BCI-C03",
+      "title": "根拠と不足を分ける",
+      "question": "Evidenceの対象・版・時点・由来と、支持しない結論を記す。",
+      "automation": "正本参照の存在・版を検査する。",
+      "limitation": "同じ原典の複製は独立裏付けではない。Hashは真正性を保証しない。",
+      "failureAction": "未収集はNot collected、判断不能はInconclusiveとして区別し、Gap・担当・期限を残す。",
+      "owner": "Evidence確認担当",
+      "artifacts": [
+        "ART-30",
+        "ART-12",
+        "ART-10"
+      ]
+    },
+    {
+      "id": "BCI-C04",
+      "title": "状態の対象を確かめる",
+      "question": "Document・Result・Control・配達等のどの欄かを確認する。",
+      "automation": "元章・Templateの固定版と状態参照を検査する。",
+      "limitation": "任意の実務記録のStatusをこの索引で承認することはできない。",
+      "failureAction": "語彙や状態遷移が不明なら元章の有限契約へ戻し、独自状態を足さない。",
+      "owner": "記入担当と元章のReview担当",
+      "artifacts": [
+        "ART-14",
+        "ART-24",
+        "ART-28"
+      ]
+    },
+    {
+      "id": "BCI-C05",
+      "title": "期待と結果を照合する",
+      "question": "同じ対象版のExpected、Actual、範囲、反例を辿る。",
+      "automation": "各章の供給Fixture検査を再利用する。",
+      "limitation": "記入完了・供給Receipt・試験PASSは実Controlの検証ではない。",
+      "failureAction": "不足する観測と次の問いを残し、Expectedを結果へ合わせて変えない。",
+      "owner": "検証記録のReview担当",
+      "artifacts": [
+        "ART-22",
+        "ART-05",
+        "ART-27"
+      ]
+    },
+    {
+      "id": "BCI-C06",
+      "title": "評価と判断を記録する",
+      "question": "学習目標・章DoD・八観点を根拠へ結ぶ。",
+      "automation": "対応表と参照版の欠落を検査する。",
+      "limitation": "機械検査とAIレビューは人間の読者試行・法務確認・正式承認とは別である。",
+      "failureAction": "根拠不足や重大な境界違反を点数で相殺せず、変更要求と戻り先を記す。",
+      "owner": "Reviewerと判断担当",
+      "artifacts": [
+        "ART-14",
+        "ART-09",
+        "ART-33"
+      ]
+    },
+    {
+      "id": "BCI-C07",
+      "title": "引渡しと再評価を残す",
+      "question": "Owner、期限、受入条件、Receipt、変更時の戻り先を確認する。",
+      "automation": "参照欄と供給Caseの整合を検査する。",
+      "limitation": "送付予定は受領でも実行許可でもない。",
+      "failureAction": "未受領・期限切れ・親版変更を未完として保持し、再確認の条件を元欄へ戻す。",
+      "owner": "引渡し担当と受け手",
+      "artifacts": [
+        "ART-08",
+        "ART-23",
+        "ART-33"
+      ]
+    },
+    {
+      "id": "BCI-C08",
+      "title": "公開と整理の境界を確認する",
+      "question": "Template・Example・Fixtureを区別し、自分の作業Copyだけを整理する。",
+      "automation": "リンク、生成一致、構造、共有Policy、built-siteを検査する。",
+      "limitation": "自動検査は全PIIの検出や実端末・印刷の利用可能性を保証しない。",
+      "failureAction": "実Dataの疑い・公開範囲不明・リンク切れを残したまま共有せず、担当へ戻す。",
+      "owner": "公開確認担当",
+      "artifacts": [
+        "ART-13",
+        "ART-18",
+        "ART-33"
+      ]
+    }
+  ],
+  "reviewPasses": [
+    {
+      "id": "BCI-R01",
+      "title": "技術的正確性",
+      "evidence": "対象・版・状態の意味を元章へ戻して説明できる。"
+    },
+    {
+      "id": "BCI-R02",
+      "title": "安全・法・倫理",
+      "evidence": "Authorityと実操作を区別し、停止条件を説明できる。"
+    },
+    {
+      "id": "BCI-R03",
+      "title": "出典・鮮度",
+      "evidence": "SRCと事案内Evidenceを分け、版・Cutoff・再確認条件を辿れる。"
+    },
+    {
+      "id": "BCI-R04",
+      "title": "分析品質・不確実性",
+      "evidence": "事実・判断・仮定・予測・推奨、代替説明、Gapを区別できる。"
+    },
+    {
+      "id": "BCI-R05",
+      "title": "教育的明確さ",
+      "evidence": "最初の欄、期待出力、自己点検、戻り先を示せる。"
+    },
+    {
+      "id": "BCI-R06",
+      "title": "責任境界・追跡性",
+      "evidence": "親の意味・状態・権限を変えずに、参照の役割を説明できる。"
+    },
+    {
+      "id": "BCI-R07",
+      "title": "再現性・決定性",
+      "evidence": "固定入力と生成・配布物を照合し、検査の範囲と限界を説明できる。"
+    },
+    {
+      "id": "BCI-R08",
+      "title": "出版・利用可能性",
+      "evidence": "リンク・検索・表示・印刷・Editの導線を確認できる。"
+    }
+  ]
+}

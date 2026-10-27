@@ -199,7 +199,7 @@ python3 scripts/check_chapter29_contract.py
 
 ## 次に学ぶこと
 
-[成果物索引](../artifact-index.md)と[Quick Start](../quickstart.md)へ戻る。付録B/C/Iの最終確定は本章後の工程であり、未作成の正本へはリンクしない。最終整合と全書Releaseは第29章の実装だけでは完了しない。[読書ガイド](../manuscript/00-reading-guide.md)で自分の役割へ戻り、未達の確認条件を次の学習計画へ反映する。
+[成果物索引](../artifact-index.md)と[Quick Start](../quickstart.md)へ戻る。[付録Bの記入先索引](../appendices/appendix-b-templates.md)、[付録Cのチェックリスト](../appendices/appendix-c-checklists.md)、[付録Iの評価対応](../appendices/appendix-i-rubric.md)へ戻り、元Templateと章の基準を照合する。最終整合と全書Releaseは第29章の実装だけでは完了しない。[読書ガイド](../manuscript/00-reading-guide.md)で自分の役割へ戻り、未達の確認条件を次の学習計画へ反映する。
 
 ## 参考文献・Source Note ID
 
