@@ -90,6 +90,18 @@ class AppendixTests(unittest.TestCase):
                 with self.subTest(artifact=idx, role=role):
                     self.rejected(mutate, 'BCI-field-reference')
 
+    def test_rebound_metadata_cannot_restore_removed_learning_route_anchor(self):
+        # Regression for PR213 integrated with B/C/I: a refreshed hash is not
+        # proof that a Chapter DoD destination still exists in the parent.
+        catalog, inputs = self.mutated(
+            lambda j: j['artifacts'][0]['chapterDoD'].update(
+                anchor='6-learning-route-plan'))
+        contract = deepcopy(self.contract)
+        contract['catalogSha256'] = c.digest(inputs[c.CATALOG])
+        errors = c.manifest_errors(catalog, inputs, contract, self.projection)
+        self.assertIn('BCI-field-reference: ART-01/chapterDoD', errors)
+        self.assertNotIn('BCI-metadata-review-required', errors)
+
     def test_status_semantics_and_required_fields_are_review_bound(self):
         # This is an edition gate, NOT an arbitrary workflow or legal checker.
         for role in c.ROLES:

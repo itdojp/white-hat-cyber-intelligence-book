@@ -33,7 +33,7 @@ Not collectedは必要なEvidenceが未収集であること、Inconclusiveは�
 
 - Learning Objective: [主担当章の学習目標](../manuscript/00-reading-guide.md#学習目標)。
 - Artifact Evidence: [空Template](../templates/learning-route-plan.md)と[合成記入例](../cases/ch03-capability-evidence-example.md)を対比し、自分の記録の根拠箇所を示す。
-- Chapter DoD: [完成条件・評価基準](../manuscript/00-reading-guide.md#6-learning-route-plan)。第0章は独立した数値Rubricを持たない。Planの必須項目と学習目標で確認する。
+- Chapter DoD: [完成条件・評価基準](../manuscript/00-reading-guide.md#9-learning-route-plan)。第0章は独立した数値Rubricを持たない。Planの必須項目と学習目標で確認する。
 - Review / Reassessment: [確認先](../templates/learning-route-plan.md#learning-route-plan) / [不足を戻す先](../templates/learning-route-plan.md#learning-route-plan)。八観点の対象外には理由を記す。
 
 ### ART-02の評価対応

@@ -2,7 +2,79 @@
 
 ## 攻撃者の行動を理解し、検証・検知・対応・経営判断につなげる
 
-本書は、攻撃評価、Detection Engineering、Threat Hunting、Incident Response、DFIR、OSINT、Cyber Threat Intelligenceを、ひとつの意思決定ループとして学ぶ実践書です。
+本書は、攻撃評価、Detection Engineering、Threat Hunting、Incident Response、DFIR、OSINT、Cyber Threat Intelligence、AI Securityを、Evidenceと意思決定で接続する専門実務書です。
+
+第0章から第29章までの30章と、最終ポートフォリオ`ART-33`を公開しています。現在は、付録、Source freshness、Part V横断Review、人間の専門読者試行、配布物、`v1.0.0` Releaseを整備しています。30章の公開と、全書Release完了は同じ状態ではありません。
+
+## 本書の対象
+
+| 読者 | 主な目的 |
+|---|---|
+| SOC・CSIRT・Detection担当 | Telemetry、Detection、Hunting、IR、DFIRを一つのCaseとして接続する |
+| CTI・分析担当 | Source、Evidence、不確実性、代替仮説、帰属限界を判断へ変換する |
+| Security Architecture担当 | Asset、Identity、Cloud、Supply Chain、AI Agentの信頼境界を評価する |
+| インフラ・SRE・DevOps・開発技術者 | 既存の技術経験をセキュリティ評価、観測、改善へ接続する |
+| CISO室・Security Program責任者 | 技術的事実を優先順位、停止、投資、Risk acceptanceへ変換する |
+
+前提知識は、Linux、TCP/IP、DNS、HTTP、Gitの基礎と、インフラ、クラウド、Web、開発、運用のいずれかの実務経験です。
+
+本書は、コンピュータやネットワーク自体の入門書、CTF解法集、攻撃コマンド集、特定製品の操作手順書ではありません。詳細技術は既存の専門書へ委譲し、本書では分野間をつなぐ判断、証拠、成果物、責任、再評価を扱います。
+
+## 三つの利用層
+
+| 層 | 内容 | 主な入口 |
+|---|---|---|
+| 本文 | 概念、判断、根拠、反例、実務上の含意 | [第0章](manuscript/00-reading-guide.md)、[詳細目次](TOC.md) |
+| 実務成果物 | Template、完全合成Case、Checklist、Rubric | [成果物索引](artifact-index.md)、[合成Case索引](cases/index.md) |
+| 機械検証層 | JSON、Schema、fixture、contract、回帰検査 | [Fixture catalog](cases/fixtures/index.md)、Repositoryの`scripts/`・`schemas/` |
+
+機械検査は、参照、版、状態、安全境界、公開面の漂流を検出します。実環境の安全性、人間の承認、Controlの有効性を認定するものではありません。
+
+## 中心となるループ
+
+```text
+判断要求を定義する
+  → 資産・信頼境界・脅威を把握する
+  → 攻撃経路と観測仮説を立てる
+  → 許可された隔離環境で最小限に検証する
+  → ログ・証拠・痕跡を評価する
+  → 検知・対応・コントロールを改善する
+  → 確信度付きインテリジェンスに変換する
+  → 技術・運用・経営判断を記録する
+  → 再評価する
+```
+
+## 読み始める
+
+### 初回の最短ルート
+
+1. [第0章 本書の読み方](manuscript/00-reading-guide.md)
+2. [Quick Start](quickstart.md)
+3. [最初の成果物：判断と証拠不足の読解](cases/first-artifact-walkthrough.md)
+4. [第1章 攻撃・防御・インテリジェンスを一つの業務として捉える](manuscript/01-integrated-discipline.md)
+5. [成果物索引](artifact-index.md)
+
+Quick Startは一般初心者向けの短縮版ではありません。本書の厳密な記録体系へ、判断要求、仮説、Evidence gap、停止条件から入るためのオンボーディングです。
+
+### 主要章への直接導線
+
+1. [第2章 法、倫理、許可、責任ある開示](manuscript/02-law-ethics-authorization.md)
+2. [第3章 能力を分解し、証拠で学習する](manuscript/03-capability-evidence.md)
+3. [第4章 資産、信頼境界、攻撃面、脅威モデル](manuscript/04-assets-boundaries-threat-model.md)
+4. [第5章 攻撃者の行動をATT&CKで記述する](manuscript/05-attack-behavior.md)
+5. [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
+6. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
+7. [第25章 構造化分析、不確実性、アトリビューション](manuscript/25-structured-analysis-attribution.md)
+8. [Concept Map](concept-map.md)
+9. [詳細目次](TOC.md)
+
+### 代表的な専門ルート
+
+- 評価・Threat Model: [第4章](manuscript/04-assets-boundaries-threat-model.md) → [第7章](manuscript/07-vulnerability-prioritization.md) → [第9〜15章](TOC.md)
+- Detection・SOC: [第16章](manuscript/16-telemetry-evidence-readiness.md) → [第17章](manuscript/17-detection-engineering.md) → [第18〜22章](TOC.md)
+- CTI・分析: [第23章](manuscript/23-intelligence-requirements.md) → [第24章](manuscript/24-osint-provenance-sources.md) → [第25章](manuscript/25-structured-analysis-attribution.md) → [第26章](manuscript/26-cti-distribution.md)
+- AI Security: [第27章](manuscript/27-ai-agent-security.md) → [第28章](manuscript/28-ai-assisted-analysis-assurance.md) → [第29章](manuscript/29-capstone-case-study.md)
+- 統合・経営判断: [第1章](manuscript/01-integrated-discipline.md) → [第19章](manuscript/19-incident-response.md) → [第22章](manuscript/22-measurement-improvement.md) → [第29章](manuscript/29-capstone-case-study.md)
 
 ## 学習成果
 
@@ -14,36 +86,14 @@
 - Threat ModelとAttack Path
 - Finding ReportとRetest Record
 - Telemetry Coverage MapとDetection Validation Record
+- Hunt ReportとIncident Action Plan
 - Incident TimelineとRoot Cause Analysis
 - Evidence and Source TableとCTI Report
 - Analytic Judgment Record
+- AI / Agent Threat Model
+- AI-Assisted Analysis Assurance Record
 - Executive Decision Brief
-
-## 想定読者
-
-| 読者 | 主な目的 |
-|---|---|
-| インフラ・クラウド技術者 | 攻撃者視点、Identity、Cloud、Telemetryを防御設計へ接続する |
-| 開発・DevOps技術者 | Web/API、CI/CD、Supply Chain、AI Securityを評価する |
-| SOC・CSIRT・分析担当 | Detection、Hunting、IR、DFIR、CTIを統合する |
-| CTO・CISO・技術経営者 | 技術的事実を投資、優先順位、停止、リスク受容へ変換する |
-
-前提知識はLinux、TCP/IP、HTTP、Gitの基礎です。詳細技術は既存の専門書へ委譲し、本書では分野間をつなぐ判断、証拠、成果物を中心に扱います。
-
-## 読み始める
-
-1. [第0章 本書の読み方](manuscript/00-reading-guide.md)
-2. [第1章 攻撃・防御・インテリジェンスを一つの業務として捉える](manuscript/01-integrated-discipline.md)
-3. [第2章 法、倫理、許可、責任ある開示](manuscript/02-law-ethics-authorization.md)
-4. [第3章 能力を分解し、証拠で学習する](manuscript/03-capability-evidence.md)
-5. [第4章 資産、信頼境界、攻撃面、脅威モデル](manuscript/04-assets-boundaries-threat-model.md)
-6. [第5章 攻撃者の行動をATT&CKで記述する](manuscript/05-attack-behavior.md)
-7. [第11章 Web・APIを仮説駆動で評価する](manuscript/11-web-api-hypothesis.md)
-8. [第17章 Detection Engineering](manuscript/17-detection-engineering.md)
-9. [第25章 構造化分析、不確実性、アトリビューション](manuscript/25-structured-analysis-attribution.md)
-10. [Quick Start](quickstart.md)
-11. [Concept Map](concept-map.md)
-12. [詳細目次](TOC.md)
+- Final Security Decision Portfolio Index
 
 ## 公開中の成果物
 
@@ -65,10 +115,20 @@
 - [第17章 オフラインfixture説明](cases/fixtures/ch17-detection-engineering-fixture.md)
 - [Analytic Judgment Recordテンプレート](templates/analytic-judgment-record.md)
 - [第25章 合成記入例：共同報告に埋もれた技術クラスタの判断](cases/ch25-structured-analysis-attribution-example.md)
+- [Rules of Engagementテンプレート](templates/rules-of-engagement.md)
+- [Incident Action Planテンプレート](templates/incident-action-plan.md)
+- [CTI Reportテンプレート](templates/cti-report.md)
+- [Executive Briefテンプレート](templates/executive-brief.md)
+- [AI / Agent Threat Modelテンプレート](templates/ai-agent-threat-model.md)
+- [AI-Assisted Analysis Assurance Recordテンプレート](templates/ai-assisted-analysis-assurance-record.md)
+- [Final Security Decision Portfolio Indexテンプレート](templates/final-security-decision-portfolio-index.md)
+- [第29章 統合ケーススタディ](manuscript/29-capstone-case-study.md)
+- [第29章 完全合成Case](cases/ch29-capstone-portfolio-example.md)
+- [全成果物索引](artifact-index.md)
 - [合成Case索引](cases/index.md)
 - [Fixture catalog](cases/fixtures/index.md)
 
-これらの成果物は、Authorization、Capability Evidence、Threat Model、Assessment、Detection、Hunting、IR / DFIR、CTI、構造化分析、経営判断、再評価を、共通Case IDとEvidence IDで接続します。第2章では、Tool実行前にAuthority、Scope、Safety、Disclosureを評価し、条件付き許可・停止・EscalationをRules of Engagementへ引き渡します。第3章では、学習GoalをTask、Knowledge / Skill、許可されたPractice、Artifact Evidence、Review、Gap、Reassessmentへ分解し、限定されたCapability Judgmentを作ります。第4章では、Decision RequirementをAsset、Flow、Trust Boundary、Threat Hypothesis、非OperationalなAttack Path、Control assurance、Evidence Requirement、Reassessmentへ分解します。
+これらの成果物は、Authorization、Capability Evidence、Threat Model、Assessment、Detection、Hunting、IR / DFIR、CTI、AI Security、経営判断、再評価を、Case IDとEvidence IDで接続します。成果物の記入完了は、全Controlの合格、実作業の許可、実環境の安全確認を意味しません。
 
 ## 実務参照
 
@@ -78,6 +138,7 @@
 - [用語集](glossary.md)
 - [図表索引](figure-index.md)
 - [Source Baseline](references/reference-baseline.md)
+- [詳細目次](TOC.md)
 
 ## 安全と法的注意
 

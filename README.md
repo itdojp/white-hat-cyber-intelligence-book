@@ -2,16 +2,53 @@
 
 **攻撃者の行動を理解し、検証・検知・対応・経営判断につなげる**
 
-本リポジトリは、IT Engineer Knowledge Architectureシリーズの書籍制作リポジトリです。攻撃技術の習得自体を目的にせず、脅威を理解し、許可された範囲で安全に検証し、観測・検知・対応・サイバー脅威インテリジェンス・経営判断へ変換する方法を体系化します。
+本リポジトリは、IT Engineer Knowledge Architectureシリーズの専門実務書制作リポジトリです。攻撃技術の習得自体を目的にせず、脅威を理解し、許可された範囲で安全に評価し、観測・検知・対応・Cyber Threat Intelligence・経営判断へ変換する方法を体系化します。
 
 - Repository: <https://github.com/itdojp/white-hat-cyber-intelligence-book>
 - Public site: <https://itdojp.github.io/white-hat-cyber-intelligence-book/>
+- Status: `0.1.0` 公開Draft。第0章〜第29章の30章と`ART-33`を公開済み。付録、Source freshness、Part V横断Review、人間読者試行、配布物、`v1.0.0` Releaseは未完です。
+- Completion Roadmap: <https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/17>
+- v1.0 positioning and revision plan: <https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/212>
+- Release: <https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/25>
+- Whole-book review: [2026-09-06の全体レビューと改善計画](reviews/2026-09-06-whole-book-review.md)
 - Phase 0 Runbook: <https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/1>
 - Bootstrap PR: <https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/2>
 - Parent proposal: <https://github.com/itdojp/it-engineer-knowledge-architecture/issues/280>
-- Status: `0.1.0` 初版執筆中。出版基盤と代表章の初期Gateは完了していますが、全30章・付録の完成版ではありません。
-- Completion Roadmap: <https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/17>
-- Whole-book review: [2026-09-06の全体レビューと改善計画](reviews/2026-09-06-whole-book-review.md)
+
+## 本書の位置付け
+
+本書は、経験を持つIT・セキュリティ実務者が、攻撃評価、Telemetry、Detection Engineering、Threat Hunting、Incident Response、DFIR、CTI、AI Securityを、Evidenceと意思決定で接続するための専門実務リファレンスです。
+
+主な対象:
+
+- SOC、CSIRT、Detection、Hunt、IR、DFIR、CTIの実務者
+- Security Architecture、Cloud、Identity、Platform Securityの担当者
+- Pentestや脆弱性管理の成果を検知・改善・経営判断へ接続する担当者
+- セキュリティへ役割を広げる経験あるインフラ、SRE、DevOps、開発技術者
+- CISO室、Security Program責任者、CTO・CISO
+
+本書は、コンピュータやネットワーク自体の入門書、CTF解法集、攻撃コマンド集、特定製品の操作手順書ではありません。初心者向けの橋渡し書籍は、本書の短縮版ではなく、別の読者、Case、成果物を持つ独立書籍として計画します。
+
+## 三つの利用層
+
+| 層 | 内容 | 主な入口 |
+|---|---|---|
+| Human-readable manuscript | 概念、判断、根拠、反例、実務上の含意 | [第0章](manuscript/00-reading-guide.md)、[詳細目次](TOC.md) |
+| Professional artifacts | Template、完全合成Case、Checklist、Rubric | [成果物索引](artifact-index.md)、[合成Case索引](cases/index.md) |
+| Machine-verifiable knowledge layer | JSON、Schema、fixture、contract、回帰検査 | [Fixture catalog](cases/fixtures/index.md)、`schemas/`、`scripts/` |
+
+機械検査の成功は、実環境の安全性、人間の承認、Controlの有効性、未知入力への一般化を認定するものではありません。有限の記録契約と公開面の整合性を維持するために使用します。
+
+## 読み始める
+
+1. [第0章 本書の読み方](manuscript/00-reading-guide.md)
+2. [Quick Start](quickstart.md)
+3. [最初の成果物：判断と証拠不足の読解](cases/first-artifact-walkthrough.md)
+4. [第1章 攻撃・防御・インテリジェンスを一つの業務として捉える](manuscript/01-integrated-discipline.md)
+5. [成果物索引](artifact-index.md)
+6. [第29章 統合ケーススタディ](manuscript/29-capstone-case-study.md)
+
+Quick Startは一般初心者向けの短縮版ではありません。専門実務書の記録体系へ、判断要求、仮説、Evidence gap、停止条件から入るためのオンボーディングです。
 
 ## 中心となるループ
 
@@ -41,6 +78,8 @@
 | 演習環境 | `LAB_ARCHITECTURE.md` |
 | 章本文 | `manuscript/` |
 | 実務成果物 | `templates/` |
+| 合成Case | `cases/` |
+| Machine-readable教材 | `cases/fixtures/`, `schemas/` |
 | 出版設定 | `book-config.json` |
 | 共通部品固定 | `.book-formatter/revision.json` |
 
@@ -52,7 +91,7 @@
 
 詳細は`SAFETY_SCOPE.md`と`SECURITY.md`を参照してください。
 
-## ローカル検証
+## 保守者向けローカル検証
 
 前提:
 
