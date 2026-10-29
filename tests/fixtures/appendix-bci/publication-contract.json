@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "projection": "1.1.0",
   "policy": "1.2.0",
-  "catalogSha256": "a6e0eb39a7b978cca08375b72691ed67ef97fd5f29c142b6ed98ed813068028a",
+  "catalogSha256": "9dfc3695910586fcce16b6aa7a74919d0756657b6c3c5903626f300c9861b13e",
   "parentDigests": {
     "artifact-index.md": "f28678e07e3d6408e1889c8bd0edc17ad799c9de664485ebf2050f20bb1bb50c",
     "cases/ch01-integrated-security-case-example.md": "c72c0d149321a24f2b6901db381c069cff86a8536b5578eba285b9d17eb329b2",
@@ -65,7 +65,7 @@
     "cases/fixtures/ch27-ai-agent-threat-model.json": "1c5337d2ed5c199cb596b2b09a5f12b1a94baaf8a25dd5993f6fe75757095ac3",
     "cases/fixtures/ch28-ai-assisted-analysis-assurance.json": "942f71244429d14129fef038827e97ae2b5f1c731bdaee0eac7e147c125b0f1e",
     "cases/fixtures/ch29-capstone-portfolio.json": "c82d364653c19b2d325833aefa65042a613e7df526b399c1e2d94dae54a99b65",
-    "manuscript/00-reading-guide.md": "031c9eebeb85a4faa728573a8bc91e102aed5777345f4d5a21471d056d85cc52",
+    "manuscript/00-reading-guide.md": "b5650a9482f6840aa832bd2e38a0c0c092cd984583cc1a003ee071c2ba1cd8da",
     "manuscript/01-integrated-discipline.md": "344a00ec3342b30f687ece4797b6f786cb539cd2a55c00587fc0da49d62e8cfd",
     "manuscript/02-law-ethics-authorization.md": "60f5719bc9e1fc49df57fc20c5dcebed97b3a376adab220948a6515da39c6e2b",
     "manuscript/03-capability-evidence.md": "7bf6d50d6b4d61fda42eb1edfc0c8bfffb2aad498df87825b91799b7d37cadc9",
@@ -132,7 +132,7 @@
   "documents": {
     "appendices/appendix-b-templates.md": "b6032c72f48dab503a3c67ec20601801b2a0fcadc237605c87c228ba8931e5b9",
     "appendices/appendix-c-checklists.md": "7f06cdd652ac7bb72efff7cf691eaf058d120f84a646b5340d166c3b8d0da2ec",
-    "appendices/appendix-i-rubric.md": "f65a67f1839ca632b87f9a57540a7b2782f7f5274f80a6aaa89822415b17d8a2"
+    "appendices/appendix-i-rubric.md": "a090a93ce96cbefb64821e051c05fa97f3be2e1d5d03b224c37079ff5b83dc2d"
   },
   "routes": [
     {
