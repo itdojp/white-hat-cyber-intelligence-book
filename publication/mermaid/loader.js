@@ -5,6 +5,33 @@
   const blocks = [...document.querySelectorAll('article pre > code.language-mermaid')];
   if (!blocks.length) return;
 
+  // Only repair the initial fragment after this enhancement changes layout.
+  // A reader action or a new fragment takes priority over the initial target.
+  function initialFragmentRepair() {
+    const hash = location.hash;
+    if (!hash) return async () => {};
+    let interrupted = false;
+    const inputEvents = ['keydown', 'pointerdown', 'touchstart', 'wheel'];
+    const stop = event => { if (event.isTrusted) interrupted = true; };
+    const hashChanged = () => { interrupted = true; };
+    for (const name of inputEvents) addEventListener(name, stop, { capture: true, passive: true });
+    addEventListener('hashchange', hashChanged);
+    return async () => {
+      try {
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        if (interrupted || location.hash !== hash) return;
+        let id;
+        try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
+        const target = document.getElementById(id);
+        if (target?.closest('article')) target.scrollIntoView({ block: 'start', behavior: 'instant' });
+      } finally {
+        for (const name of inputEvents) removeEventListener(name, stop, true);
+        removeEventListener('hashchange', hashChanged);
+      }
+    };
+  }
+  const repairInitialFragment = initialFragmentRepair();
+
   function fail(code) {
     code.dataset.mermaidState = 'error';
     const notice = document.createElement('p');
@@ -93,10 +120,14 @@
   }
 
   (async () => {
-    try { await load(); } catch { blocks.forEach(fail); return; }
-    await document.fonts.ready;
-    for (const [index, code] of blocks.entries()) {
-      try { await render(code, index); } catch { fail(code); }
+    try {
+      try { await load(); } catch { blocks.forEach(fail); return; }
+      await document.fonts.ready;
+      for (const [index, code] of blocks.entries()) {
+        try { await render(code, index); } catch { fail(code); }
+      }
+    } finally {
+      await repairInitialFragment();
     }
   })();
 })();

@@ -24,6 +24,7 @@ const fixtureHtml = (fixture, broken = false) => `<html lang="ja"><head><meta ch
 <article><h1>図の回帰テスト</h1><p>文章による説明を保持。</p>${fixture.sources.map(source =>
   `<pre><code class="language-mermaid">${escape(source)}</code></pre>`).join('')}</article>
 <script defer src="${prefix}assets/js/mermaid-loader.js" data-mermaid-src="${prefix}assets/js/${broken ? 'missing' : 'mermaid-12.0.0.tiny'}.js"></script></body></html>`;
+let holdFragmentLibrary = false, fragmentLibraryRequested = false, releaseFragmentLibrary;
 const server = createServer(async (request, response) => {
   try {
     const route = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
@@ -40,6 +41,10 @@ const server = createServer(async (request, response) => {
     assert(path.startsWith(site + sep));
     const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json' };
     response.setHeader('Content-Type', `${types[extname(path)] || 'application/octet-stream'}; charset=utf-8`);
+    if (holdFragmentLibrary && route.endsWith('/mermaid-12.0.0.tiny.js')) {
+      fragmentLibraryRequested = true;
+      await new Promise(resolve => { releaseFragmentLibrary = resolve; });
+    }
     response.end(await readFile(path));
   } catch { response.writeHead(404); response.end('Not found'); }
 });
@@ -184,12 +189,106 @@ try {
   const noDiagram = await navigate(prefix + 'chapters/chapter-04/index.html', []);
   assert.equal(noDiagram.figures, 0);
   assert(!requests.slice(before).some(url => url.includes('mermaid-12.0.0.tiny.js')), 'Loaded library on diagram-free page');
+  // Issue215: publication-route regression, not chapter-specific renderer logic.
+  const fragmentId = '9-learning-route-plan';
+  await call('Page.addScriptToEvaluateOnNewDocument', { source: `
+    window.__fragmentCalls = [];
+    const original = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function(options) {
+      window.__fragmentCalls.push({ id: this.id, hash: location.hash, options });
+      return original.call(this, options);
+    };
+  ` });
+  await call('Network.setCacheDisabled', { cacheDisabled: true });
+  const fragmentChecks = [];
+  const waitForFragment = async predicate => {
+    for (let attempt = 0; attempt < 200; attempt++) {
+      if (await predicate()) return;
+      await sleep(50);
+    }
+    throw new Error('Bounded fragment fixture wait expired');
+  };
+  const fragmentModes = ['idle', 'encoded', 'tab', 'wheel', 'pointer', 'touch',
+    'new-hash', 'missing', 'malformed', 'outside', 'no-hash', 'same-page'];
+  for (const width of [320, 375, 1366]) for (const mode of fragmentModes) {
+    await call('Emulation.setDeviceMetricsOverride', { width, height: 900,
+      deviceScaleFactor: 1, mobile: width < 700 });
+    // Same-URL fragment navigation is not a fresh document or a library fetch.
+    await call('Page.navigate', { url: 'about:blank' });
+    await waitForFragment(() => evaluate("location.href === 'about:blank'"));
+    holdFragmentLibrary = true;
+    fragmentLibraryRequested = false;
+    releaseFragmentLibrary = undefined;
+    const hashes = { 'no-hash': '', 'same-page': '', missing: '#missing',
+      malformed: '#%E0%A4%A', outside: '#outside-article',
+      encoded: '#9%2Dlearning%2Droute%2Dplan' };
+    const hash = hashes[mode] ?? '#' + fragmentId;
+    await call('Page.navigate', { url: origin + prefix + 'reading-guide/' + hash });
+    await waitForFragment(() => fragmentLibraryRequested);
+    if (mode === 'outside') await evaluate("document.querySelector('header').id = 'outside-article'");
+    if (mode === 'tab') for (const type of ['keyDown', 'keyUp']) {
+      await call('Input.dispatchKeyEvent', { type, key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+    }
+    if (mode === 'wheel') await call('Input.dispatchMouseEvent', {
+      type: 'mouseWheel', x: width / 2, y: 450, deltaX: 0, deltaY: 300,
+    });
+    if (mode === 'pointer') {
+      await evaluate(`(() => {
+        const button = document.createElement('button');
+        button.id = 'reader-action'; button.textContent = 'reader';
+        button.style = 'position:fixed;top:150px;left:20px;z-index:99999';
+        document.body.append(button);
+      })()`);
+      for (const type of ['mousePressed', 'mouseReleased']) await call('Input.dispatchMouseEvent', {
+        type, x: 30, y: 160, button: 'left', clickCount: 1,
+      });
+    }
+    if (mode === 'touch') {
+      await call('Emulation.setTouchEmulationEnabled', { enabled: true });
+      await call('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 30, y: 450 }] });
+      await call('Input.dispatchTouchEvent', { type: 'touchCancel', touchPoints: [] });
+      await call('Emulation.setTouchEmulationEnabled', { enabled: false });
+    }
+    if (mode === 'new-hash') await evaluate("location.hash = document.querySelector('article h2').id");
+    await sleep(50);
+    const activeBefore = await evaluate('document.activeElement?.id');
+    holdFragmentLibrary = false;
+    releaseFragmentLibrary();
+    await waitForFragment(() => evaluate(`document.readyState === 'complete' &&
+      document.querySelectorAll('code.language-mermaid[data-mermaid-state="rendered"]').length === 1`));
+    await evaluate('new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))');
+    if (mode === 'same-page') {
+      await evaluate(`location.hash = ${JSON.stringify(fragmentId)}`);
+      await waitForFragment(() => evaluate(`(() => {
+        const rect = document.getElementById(${JSON.stringify(fragmentId)}).getBoundingClientRect();
+        return rect.top >= document.querySelector('header').getBoundingClientRect().bottom && rect.bottom < 900;
+      })()`));
+    }
+    await sleep(100);
+    const row = await evaluate(`(() => {
+      const rect = document.getElementById(${JSON.stringify(fragmentId)}).getBoundingClientRect();
+      return { width: innerWidth, top: rect.top, bottom: rect.bottom,
+        header: document.querySelector('header').getBoundingClientRect().bottom,
+        calls: window.__fragmentCalls, hash: location.hash, active: document.activeElement?.id };
+    })()`);
+    fragmentChecks.push({ mode, activeBefore, ...row });
+    if (mode === 'idle' || mode === 'encoded') {
+      assert.equal(row.calls.length, 1, JSON.stringify(row));
+      assert.equal(row.calls[0].id, fragmentId);
+      assert(row.top >= row.header && row.bottom < 900, JSON.stringify(row));
+    } else assert.equal(row.calls.length, 0, JSON.stringify(row));
+    if (mode !== 'same-page') assert.equal(row.active, activeBefore, 'Repair must not assign keyboard focus');
+  }
+  results.push(...fragmentChecks.map(row => ({ fixture: 'initial-fragment-' + row.mode, ...row })));
+  await writeFile(join(output, 'fragment-results.json'), JSON.stringify(fragmentChecks, null, 2) + '\n');
+
   assert.deepEqual(external, [], 'External page request attempted');
   assert.deepEqual(exceptions, [], 'Uncaught page exception');
   await writeFile(join(output, 'results.json'), JSON.stringify({ version: await call('Browser.getVersion'),
     pages: pages.length, diagrams: pages.reduce((n, page) => n + page.count, 0), results, external, exceptions,
     scope: 'Local Chrome viewport emulation; network interception covers page requests, not OS traffic.' }, null, 2) + '\n');
 } finally {
+  releaseFragmentLibrary?.();
   await writeFile(join(output, 'chrome.log'), stderr);
   socket?.close(); chrome.kill('SIGTERM');
   await new Promise(ok => { if (chrome.exitCode !== null || chrome.signalCode !== null || launchError) ok(); else chrome.once('exit', ok); });
@@ -197,4 +296,4 @@ try {
   await new Promise(ok => server.close(ok));
   await removeBrowserProfile(profile); // Only this process's mkdtemp.
 }
-console.log(`Mermaid browser gate passed: ${pages.length} pages / ${pages.reduce((n, p) => n + p.count, 0)} diagrams, desktop/mobile, ${fixtures.length} fixtures, JS-disabled, diagram-free page`);
+console.log(`Mermaid browser gate passed: ${pages.length} pages / ${pages.reduce((n, p) => n + p.count, 0)} diagrams, desktop/mobile, ${fixtures.length} fixtures, 36 fragment cases, JS-disabled, diagram-free page`);
