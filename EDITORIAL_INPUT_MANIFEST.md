@@ -14,8 +14,7 @@
 
 | Status | Count |
 |---|---:|
-| `canonical-pr-open` | 1 |
-| `consumed` | 26 |
+| `consumed` | 27 |
 | `generator-blueprint-only` | 1 |
 | `registered-pending-prerequisites` | 1 |
 
@@ -75,7 +74,7 @@
 | `appendix-a` | #52 | `consumed` | `EIC-0052-d6932c1a4774` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212) |
 | `appendix-d` | #52 | `consumed` | `EIC-0052-a1d1ce13dd48` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212) |
 | `appendix-h` | #52 | `consumed` | `EIC-0052-390579c705e1` | #197 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/52#issuecomment-6246261212) |
-| `appendices-b-c-i` | #53 | `canonical-pr-open` | `EIC-0053-6a52b22b0613` | #211 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/pull/211) |
+| `appendices-b-c-i` | #53 | `consumed` | `EIC-0053-6a52b22b0613` | #211 | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/53#issuecomment-6446900674) |
 | `appendices-e-f-g` | #54 | `generator-blueprint-only` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231033156) |
 | `appendix-j` | #55 | `registered-pending-prerequisites` | — | — | [status](https://github.com/itdojp/white-hat-cyber-intelligence-book/issues/63#issuecomment-5231023215) |
 
@@ -242,7 +241,7 @@
 
 | Candidate | Package | Input | Input SHA-256 | Disposition | Reason |
 |---|---|---|---|---|---|
-| `EIC-0053-6a52b22b0613` | `EIP-0014` | `appendices-b-c-i-generation-blueprint.md` | `6a52b22b061342c8f0c4fc58ec36822ea8c8958d76c691bcff5cd452c7b5268a` | `selected` | 正式採否記録の対象として唯一候補を選択。rawを推測復元せず、現行正本からB/C/Iを制作する。 |
+| `EIC-0053-6a52b22b0613` | `EIP-0014` | `appendices-b-c-i-generation-blueprint.md` | `6a52b22b061342c8f0c4fc58ec36822ea8c8958d76c691bcff5cd452c7b5268a` | `rewritten` | PR211の利用者通常merge、actual-main CI/Pages・216公開filesのbyte一致・全レビュー照合を確認。現行正本と正式Issueから新規制作したB/C/Iの公開完了だけを記録する。raw不在・未読・実体hash未照合・直接採用なし、同梱E/F/Gと他Targetは保持。全付録・Release・人間読者試行・Source鮮度/License承認の完了ではない。 |
 
 ### `appendices-e-f-g` / Issue #54
 
