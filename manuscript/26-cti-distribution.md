@@ -79,7 +79,7 @@ Confidenceだけを転記せず、Evidence / Source / Gap / Alternative / Invali
 
 Actorは行為主体、Campaignは一定の活動のまとまり、Malwareは悪意あるコードの概念、Infrastructureは活動に関係する資源、Attack Patternは挙動を表すための型です。型の定義を知っても、個別事象をその型へ割り当てる根拠は別に必要です。`SRC-STIX-001`
 
-`SRC-ATTACK-001` の挙動語彙は、検知・Huntとの対応付けを話し合う共通語として使います。現在のRegistryは19.2で、親25の歴史的な19.1記述はそのまま保持します。対応付けだけではCoverage、Controlの有効性、同一Actor、国家の関与を証明しません。本章の独立STIX例は実在ATT&CK objectの新規監査や写しではありません。
+`SRC-ATTACK-001` の挙動語彙は、検知・Huntとの対応付けを話し合う共通語として使います。現在のRegistryは20.0で、親25の歴史的な19.1記述はそのまま保持します。対応付けだけではCoverage、Controlの有効性、同一Actor、国家の関与を証明しません。本章の独立STIX例は実在ATT&CK objectの新規監査や写しではありません。
 
 **悪い例:** 型があるので、親の技術クラスタをCampaignにし、`attributed-to`でActorへ結ぶ。
 

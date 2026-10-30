@@ -37,10 +37,10 @@ DOCUMENTS = (
     "manuscript/05-attack-behavior.md",
     "templates/attack-behavior-map.md",
     "cases/ch05-attack-behavior-example.md",
-    "references/ch05-source-review-2026-09-06.md",
+    "references/ch05-source-review-2026-10-26.md",
 )
 CASE_PATH = "cases/fixtures/ch05-attack-behavior.json"
-SNAPSHOT_PATH = "tests/fixtures/attack/ch05-v19.2.json"
+SNAPSHOT_PATH = "tests/fixtures/attack/ch05-v20.0.json"
 CONTRACT_PATH = "tests/fixtures/chapter05/publication-contract.json"
 SOURCE_IDS = (
     "SRC-ATTACK-001",
@@ -209,20 +209,21 @@ def json_safety(value: object, location: str = CASE_PATH) -> list[str]:
 
 def stix_publication_date_errors(source: dict) -> list[str]:
     # CH05-SRC-PUB-001: the pinned source is a STIX release, not the Updates page.
-    if source.get("publishedAt") != "2026-08-05":
+    if source.get("publishedAt") != "2026-10-13":
         return [
-            "pinned STIX publication date must be the release UTC date, not update start date"
+            "pinned v20 STIX publication date must be the release UTC date, not update start date"
         ]
     return []
 
 
 def framework_publication_date_errors(source: dict) -> list[str]:
-    # CH05-SRC-PUB-002: a live Version History page is not the dated STIX release.
+    # CH05-SRC-PUB-002: the current framework identity is the fixed v20 release.
     if (
-        source.get("url") != "https://attack.mitre.org/resources/versions/"
-        or source.get("publishedAt", "missing") is not None
+        source.get("url")
+        != "https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0"
+        or source.get("publishedAt") != "2026-10-13"
     ):
-        return ["live Version History publication date must remain unknown (null)"]
+        return ["current ATT&CK framework identity must use the fixed v20 release"]
     return []
 
 
@@ -241,14 +242,14 @@ def repository_errors(contract: dict) -> list[str]:
     for sid in SOURCE_IDS:
         source = sources.get(sid, {})
         if (
-            not meets_audit_baseline(source.get("checkedAt"), "2026-09-06")
-            or not meets_audit_baseline(source.get("nextReviewAt"), "2026-12-06")
+            not meets_audit_baseline(source.get("checkedAt"), "2026-10-26")
+            or not meets_audit_baseline(source.get("nextReviewAt"), "2027-01-26")
             or 5 not in source.get("chapters", [])
         ):
             errors.append(f"{sid}: scoped source audit")
     errors.extend(stix_publication_date_errors(sources["SRC-ATTACK-T1671-001"]))
     errors.extend(framework_publication_date_errors(sources["SRC-ATTACK-001"]))
-    if sources["SRC-ATTACK-001"].get("version") != "19.2":
+    if sources["SRC-ATTACK-001"].get("version") != "20.0":
         errors.append("ATT&CK current catalog version")
     registry = load_json_strict(ROOT / "site-pages.json")
     for expected in contract["pages"]:

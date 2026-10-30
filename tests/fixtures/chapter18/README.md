@@ -9,7 +9,7 @@
 
 ## Exact host provenance exceptions
 
-Eleven exact field identities (type, element, attribute, heading level, text and location) are reviewed as non-target provenance: version prose for ATT&CK 19.2 and Python 3.12, the fixed local checker command, the registered cross-book delegate link, ATT&CK version/update/strategy links and version prose, and NIST Final/version/PDF provenance. The shared host scanner currently recognizes some version/path-like text as host tokens. These are not wildcard URL/host or paragraph-prefix permissions.
+Twelve exact field identities (type, element, attribute, heading level, text and location) are reviewed as non-target provenance: ATT&CK 20.0 in the current manuscript, historical 19.2 and the 2026-10-26 migration note in the dated source review, Python 3.12, the fixed local checker command, the registered cross-book delegate link, ATT&CK version/update/strategy links and version prose, and NIST Final/version/PDF provenance. The shared host scanner currently recognizes some version/path-like text as host tokens. These are not wildcard URL/host or paragraph-prefix permissions.
 
 Each exception must occur exactly once. Changed, moved, duplicated or extended fields fail the frozen contract. The action scanner always runs, including on host-exempt fields. No exception applies to JSON inputs. New prose or provenance requires explicit review; do not automatically collect current scanner findings into the exception list to silence failures. Issue #67 and shared Policy grammar remain separate and unchanged.
 

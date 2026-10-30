@@ -798,34 +798,49 @@
         ],
         "host": [
           {
+            "reason": "ATT&CK catalog/Object/教材の数値版の区別。接続先ではない。",
             "relation": {
               "field": [
                 "reader_visible_text",
                 "p",
                 null,
-                "T1671には、本章が固定した版でSub-techniqueがない。細かく見せる目的で小数付きIDを作らず、Sub-technique欄は「なし」とする。ATT&CK catalogの19.2、T1671 objectの1.0、教材fixtureの1.0.0は別の版である。SRC-ATTACK-T1671-001"
+                "T1671には、本章が固定した版でSub-techniqueがない。細かく見せる目的で小数付きIDを作らず、Sub-technique欄は「なし」とする。ATT&CK catalogの20.0、T1671 objectの1.0、教材fixtureの1.0.0は別の版である。SRC-ATTACK-T1671-001"
               ],
               "headings": [
                 "第5章 攻撃者の行動をATT&CKで記述する",
                 "2. ATT&CKオブジェクトを混同しない"
               ]
-            },
-            "reason": "ATT&CK catalog/Object/教材の数値版の区別。接続先ではない。"
+            }
           },
           {
+            "reason": "固定版と公表日差異の出典説明。数値版は接続先ではない。",
             "relation": {
               "field": [
                 "reader_visible_text",
                 "p",
                 null,
-                "7. 版固定とMigration記録 本章は2026-09-06に確認したATT&CK catalog v19.2を使用する。Updatesページの開始日は2026-08-06、GitHub releaseの公開時刻は2026-08-05T22:57:35Zである。Version HistoryにはApril 28の表示が残るため、それをv19.2固有の公開日と読み替えない。SRC-ATTACK-001"
+                "7. 版固定とMigration記録 本章は2026-10-26に確認したATT&CK catalog v20.0を使用する。GitHub releaseの公開時刻は2026-10-13T18:56:14Zであり、固定commitとEnterprise bundle hashで同一対象を識別する。可変なVersion HistoryやUpdatesの表示だけをrelease identityへ読み替えない。SRC-ATTACK-001"
               ],
               "headings": [
                 "第5章 攻撃者の行動をATT&CKで記述する",
                 "7. 版固定とMigration記録"
               ]
-            },
-            "reason": "固定版と公表日差異の出典説明。数値版は接続先ではない。"
+            }
+          },
+          {
+            "reason": "Reviewed version, hash, source metadata, or synthetic/documentation value; not an operational endpoint. Exact relation only.",
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "固定したEnterprise bundleから8 Objectと関連を最小抽出し、CIは保存済みfixtureだけを検査する。Website表示だけに依存せず、STIXのcommitとbundle hashで対象を固定する。v19.2からの有限差分、Objectごとのmodified、revoked / deprecated、利用条件はSource Review Noteへ記録した。SRC-ATTACK-T1671-001"
+              ],
+              "headings": [
+                "第5章 攻撃者の行動をATT&CKで記述する",
+                "7. 版固定とMigration記録"
+              ]
+            }
           }
         ],
         "destination": [
@@ -1641,7 +1656,7 @@
             "reader_visible_text",
             "p",
             null,
-            "DataとGap TEL-BM-001〜007は行ごとに定義する。教材の必須Fieldはsynthetic、eventClass、tenant、application、approvalである。syntheticはtrueであることを確認する教材識別用の必須マーカーであり、製品のEvent schemaのFieldではない。TEL-BM-002 / TEL-BM-004は合成Dataだけがあり、他はNot collectedである。親Caseの90日Coverage、retention、API resource / operation Field、App lifecycle結果は未検証のままとする。 GAP-BM-001〜007は各行の限界を保持する本章の情報ギャップであり、第4章GAP-2026-001〜004を閉じる記録ではない。OwnerはSYNTH-SOC-REVIEWER、Review dateは2026-09-20、必要Field・承認記録・Scope・ATT&CK Objectの変更を再評価Triggerとする。"
+            "DataとGap TEL-BM-001〜007は行ごとに定義する。教材の必須Fieldはsynthetic、eventClass、tenant、application、approvalである。syntheticはtrueであることを確認する教材識別用の必須マーカーであり、製品のEvent schemaのFieldではない。TEL-BM-002 / TEL-BM-004は合成Dataだけがあり、他はNot collectedである。親Caseの90日Coverage、retention、API resource / operation Field、App lifecycle結果は未検証のままとする。 GAP-BM-001〜007は各行の限界を保持する本章の情報ギャップであり、第4章GAP-2026-001〜004を閉じる記録ではない。OwnerはSYNTH-SOC-REVIEWER、Review dateは2026-10-26、必要Field・承認記録・Scope・ATT&CK Objectの変更を再評価Triggerとする。"
           ],
           "headings": [
             "第5章 合成記入例：ATT&CK Behavior Map",
@@ -1703,11 +1718,11 @@
         "destination": []
       }
     },
-    "references/ch05-source-review-2026-09-06.md": {
+    "references/ch05-source-review-2026-10-26.md": {
       "headings": [
         [
           1,
-          "第5章 Source Review Note — 2026-09-06"
+          "第5章 Source Review Note — 2026-10-26"
         ],
         [
           2,
@@ -1744,10 +1759,10 @@
             "reader_visible_text",
             "p",
             null,
-            "2026-09-06にMITREの公式Version History、Updates、FAQ、Detection Strategies、Data Sources、T1671、DET0539と固定Enterprise STIX bundleを確認した。本文へ採用するのは行動分類、版、関係、限界だけであり、Procedure exampleや実行手順を転載しない。"
+            "2026-10-26にMITRE/CTIの公式v20.0 release、FAQ、Detection Strategies、Data Sources、T1671、DET0539と固定Enterprise STIX bundleを確認した。Version Historyは可変Pageのため、currentの厳密なidentityには固定release、commit、bundle digestを用いる。本文へ採用するのは行動分類、版、関係、限界だけであり、Procedure exampleや実行手順を転載しない。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "対象と採否"
           ]
         },
@@ -1756,10 +1771,10 @@
             "reader_visible_text",
             "list_path",
             null,
-            "Releaseと取得証跡 Bundle SHA-256: f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259。"
+            "Releaseと取得証跡 Bundle SHA-256: 66f3fe3f07ef1a2de0bd2fe4b3e8a9ea06c1d0bb2c46171bdbb57c7f7b666524。Bundle sizeは49253343byte。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Releaseと取得証跡"
           ]
         },
@@ -1768,10 +1783,10 @@
             "reader_visible_text",
             "list_path",
             null,
-            "Releaseと取得証跡 Next review: 2026-12-06。Catalog release、対象Object・関係・有効性、Data model変更で期限前でも再確認する。"
+            "Releaseと取得証跡 Next review: 2027-01-26。Catalog release、対象Object・関係・有効性、Data model変更で期限前でも再確認する。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Releaseと取得証跡"
           ]
         },
@@ -1780,10 +1795,10 @@
             "reader_visible_text",
             "p",
             null,
-            "Version Historyの日付をminor releaseの公開日とみなさない。Updatesの表示日とGitHubのUTC時刻は別フィールドで保持し、表示日のタイムゾーンを推測しない。WebsiteのVersion Permalinkはv19単位であり、minor releaseは固定commitとbundle digestを正とする。"
+            "Version Historyの日付をminor releaseの公開日とみなさない。Updatesの表示日とGitHubのUTC時刻は別フィールドで保持し、表示日のタイムゾーンを推測しない。Websiteの可変表示やmajor単位のVersion Permalinkだけに依存せず、v20.0 release、固定commit、bundle digestを正とする。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Releaseと取得証跡"
           ]
         },
@@ -1795,7 +1810,7 @@
             "採用Object ID Type Object version modified (UTC) 状態 T1671 attack-pattern 1.0 2025-04-15T19:59:05.283Z active、Sub-techniqueなし"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "採用Object"
           ]
         },
@@ -1807,7 +1822,7 @@
             "採用Object ID Type Object version modified (UTC) 状態 TA0003 x-mitre-tactic 1.0 2025-04-25T14:45:33.492Z active、Persistence"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "採用Object"
           ]
         },
@@ -1819,7 +1834,7 @@
             "採用Object ID Type Object version modified (UTC) 状態 DET0539 x-mitre-detection-strategy 1.0 2026-05-12T16:34:50.684Z active"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "採用Object"
           ]
         },
@@ -1831,7 +1846,7 @@
             "採用Object ID Type Object version modified (UTC) 状態 AN1487 x-mitre-analytic 1.0 2025-10-21T15:10:28.402Z active、Office Suite"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "採用Object"
           ]
         },
@@ -1843,7 +1858,7 @@
             "採用Object ID Type Object version modified (UTC) 状態 AN1488 x-mitre-analytic 1.0 2025-10-21T15:10:28.402Z active、SaaS"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "採用Object"
           ]
         },
@@ -1855,7 +1870,7 @@
             "採用Object ID Type Object version modified (UTC) 状態 DC0066 x-mitre-data-component 2.0 2025-11-12T22:03:39.105Z active"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "採用Object"
           ]
         },
@@ -1867,7 +1882,7 @@
             "採用Object ID Type Object version modified (UTC) 状態 DC0069 x-mitre-data-component 2.0 2025-11-12T22:03:39.105Z active"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "採用Object"
           ]
         },
@@ -1876,10 +1891,10 @@
             "reader_visible_text",
             "table_row",
             null,
-            "採用Object ID Type Object version modified (UTC) 状態 DC0038 x-mitre-data-component 3.0 2026-05-12T15:12:00.776Z active"
+            "採用Object ID Type Object version modified (UTC) 状態 DC0038 x-mitre-data-component 3.1 2026-10-13T17:43:41.733Z active"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "採用Object"
           ]
         },
@@ -1891,7 +1906,7 @@
             "activeは固定bundle内でrevoked / x_mitre_deprecatedがtrueではないことを意味する。任意のrevokedプロパティがないObjectはfalseとして扱い、抽出fixtureに元のプロパティ有無を別途残す。全ObjectのSTIX ID、正規化したObject hash、domains、必要な参照関係もfixtureへ保存する。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "採用Object"
           ]
         },
@@ -1903,7 +1918,7 @@
             "AnalyticはDET0539ページ内のanchorを使う。推測した独立Analytic routeは使用しない。DET0539からT1671へのdetects関係、DET0539のanalytic refs、AN1487のDC0066 / DC0069、AN1488のDC0069 / DC0038を固定bundleで確認した。T1671のplatformはOffice Suite / SaaS、TacticはPersistenceである。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "採用Object"
           ]
         },
@@ -1915,7 +1930,7 @@
             "前提は上記SHA-256に一致する公式bundleである。hash不一致、Object欠落、抽出結果不一致では停止する。期待結果は8 Objectの一致であり、ATT&CK全体の完全性ではない。検証後は自分で取得した作業用bundleだけを整理し、追跡済みfixtureを手修正しない。CIではlive bundleを取得せず、fixtureの固定digestと章固有の関係・Status契約を検証する。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "最小fixtureと再現方法"
           ]
         },
@@ -1927,7 +1942,7 @@
             "Editorial Input Record Package SHA-256: caf8c73aa4e84c99f4062ac7cf85ac56794ad2cbb5d8ec5d9403138753eb6388"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Editorial Input Record"
           ]
         },
@@ -1939,7 +1954,7 @@
             "Editorial Input Record Input SHA-256: 11e256480c15771334cc3c9e8eb0933635c305604ba9302482ce627205e1ef12"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Editorial Input Record"
           ]
         },
@@ -1951,7 +1966,7 @@
             "Editorial Input Record Input確認状況: not-present-in-authorized-workspace"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Editorial Input Record"
           ]
         },
@@ -1963,7 +1978,7 @@
             "Editorial Input Record Adopted: raw predraftからの直接採用なし。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Editorial Input Record"
           ]
         },
@@ -1975,7 +1990,7 @@
             "Editorial Input Record Rejected: 草稿の未確認内容を読んだ、hash確認した、採用したという主張。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Editorial Input Record"
           ]
         },
@@ -1987,7 +2002,7 @@
             "Editorial Input Record Deferred: 実環境のDetection Rule、Control Validation、Chapter 6以降の実装。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Editorial Input Record"
           ]
         },
@@ -1999,7 +2014,7 @@
             "Editorial Input Record Raw tracked files: 0"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Editorial Input Record"
           ]
         },
@@ -2011,7 +2026,7 @@
             "Package不在を推測再構成で埋めない。canonical-pr-openのPR IDとIntake Recordは機械可読Manifestと専用Draft PRに記録し、通常merge・main/publication後の別更新までconsumedにしない。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "Editorial Input Record"
           ]
         },
@@ -2023,7 +2038,7 @@
             "利用条件 MITRE由来のmetadataの出所、固定commit、変更範囲とライセンスはThird-Party Noticesへ記録する。MITREによる本教材の推奨・承認を意味しない。合成Event、Map、判定条件は本書独自の教材であり、MITREの検証結果ではない。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "利用条件"
           ]
         },
@@ -2032,10 +2047,10 @@
             "reader_visible_text",
             "p",
             null,
-            "SRC-ATTACK-001のurlは随時更新されるVersion Historyであり、このページそのものの公表日時は確定できない。RegistryのpublishedAtはnullとし、関連するrelease公開時刻とUpdates開始日は別の情報として保存する。"
+            "SRC-ATTACK-001はv20.0の固定GitHub releaseを正本URLとし、publishedAtはreleaseのUTC日付2026-10-13を記録する。可変Version HistoryとUpdatesの表示は補助情報として扱い、固定release、commit、bundle digestを置き換えない。"
           ],
           "headings": [
-            "第5章 Source Review Note — 2026-09-06",
+            "第5章 Source Review Note — 2026-10-26",
             "原典の用途と限界"
           ]
         }
@@ -2044,6 +2059,7 @@
         "action": [],
         "host": [
           {
+            "reason": "Policy/Projectionの固定数値版。",
             "relation": {
               "field": [
                 "reader_visible_text",
@@ -2052,73 +2068,73 @@
                 "対象と採否 Issue #30、Editorial Input契約 #63 / #98を対象とする。Canonical baseは518ea8579439a2c29cfc0e4fbea4086995ada1c0、Content Safety Policyは1.2.0、Publication Projectionは1.1.0である。"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "対象と採否"
               ]
-            },
-            "reason": "Policy/Projectionの固定数値版。"
+            }
           },
           {
+            "reason": "Version Historyの表示された数値版。",
             "relation": {
               "field": [
                 "reader_visible_text",
                 "list_path",
                 null,
-                "Releaseと取得証跡 Version History: currentはv19.2。開始日の表示はApril 28, 2026のまま。"
+                "Releaseと取得証跡 Version History: 可変Page。current identityの唯一の根拠にはせず、下記v20.0 releaseと固定bundleで補う。"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "Releaseと取得証跡"
               ]
-            },
-            "reason": "Version Historyの表示された数値版。"
+            }
           },
           {
+            "reason": "RegistryのSource用途を限定する数値版。",
             "relation": {
               "field": [
                 "reader_visible_text",
                 "list_path",
                 null,
-                "原典の用途と限界 SRC-ATTACK-001: v19.2の版とrelease経緯。分類の網羅と防御有効性を同一視しない。"
+                "原典の用途と限界 SRC-ATTACK-001: v20.0の版、release、固定commit。分類の網羅と防御有効性を同一視しない。"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "原典の用途と限界"
               ]
-            },
-            "reason": "RegistryのSource用途を限定する数値版。"
+            }
           },
           {
+            "reason": "代表章の歴史的版と今回の版を区別する説明。",
             "relation": {
               "field": [
                 "reader_visible_text",
                 "p",
                 null,
-                "第17章のSource参照はDetectionとDataの区別、第25章のv19.1に関する歴史的な文章はBehavior mappingを帰属証拠としない限定命題である。今回の再確認でもこの意味は変わらない。Catalogのcurrent metadataを更新しても、代表章の当時の分析記録や本文をv19.2で再執筆したと主張しない。Registry-wideの一括監査日は更新しない。"
+                "第17章のSource参照はDetectionとDataの区別、第25章のv19.1に関する歴史的な文章はBehavior mappingを帰属証拠としない限定命題である。v19.2からv20.0への有限比較では、8 ObjectのうちDC0038だけがversion 3.1と新しいmodified/hashになり、他7 Objectと1 relationの採用Fieldは不変だった。これは全Catalog監査ではない。第27〜29章へ新しいAI mappingやEvidenceを追加せず、Registry-wideの未確認Source日付も更新しない。"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "原典の用途と限界"
               ]
-            },
-            "reason": "代表章の歴史的版と今回の版を区別する説明。"
+            }
           },
           {
+            "reason": "追跡済み有限metadata fixtureの相対パス。",
             "relation": {
               "field": [
                 "reader_visible_text",
                 "p",
                 null,
-                "最小fixtureと再現方法 tests/fixtures/attack/ch05-v19.2.jsonは8 Objectと1つのdetects relationの有限metadataであり、完全なSTIX bundleではない。Procedure descriptions、全Group / Software / Campaign、関連しないLog source一覧は含めない。Raw bundleはGitやPagesへ含めない。"
+                "最小fixtureと再現方法 tests/fixtures/attack/ch05-v20.0.jsonは8 Objectと1つのdetects relationの有限metadataであり、完全なSTIX bundleではない。Procedure descriptions、全Group / Software / Campaign、関連しないLog source一覧は含めない。Raw bundleはGitやPagesへ含めない。"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "最小fixtureと再現方法"
               ]
-            },
-            "reason": "追跡済み有限metadata fixtureの相対パス。"
+            }
           },
           {
+            "reason": "固定hash照合済み入力を読むだけの抽出比較コマンドと相対パス。",
             "relation": {
               "field": [
                 "reader_visible_text",
@@ -2127,13 +2143,13 @@
                 "python3 scripts/extract_chapter05_attack_snapshot.py \\ .work/source-input/enterprise-attack.json --check"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "最小fixtureと再現方法"
               ]
-            },
-            "reason": "固定hash照合済み入力を読むだけの抽出比較コマンドと相対パス。"
+            }
           },
           {
+            "reason": "実在未確認の入力Package名をManifest登録事実として表示。取得・接続指示ではない。",
             "relation": {
               "field": [
                 "reader_visible_text",
@@ -2142,13 +2158,13 @@
                 "Editorial Input Record Package: white-hat-book-parallel-drafts-2026-08-08.zip"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "Editorial Input Record"
               ]
-            },
-            "reason": "実在未確認の入力Package名をManifest登録事実として表示。取得・接続指示ではない。"
+            }
           },
           {
+            "reason": "実在未確認のpredraft名をManifest登録事実として表示。",
             "relation": {
               "field": [
                 "reader_visible_text",
@@ -2157,26 +2173,55 @@
                 "Editorial Input Record Input: chapter05-attack-behavior.predraft.md"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "Editorial Input Record"
               ]
-            },
-            "reason": "実在未確認のpredraft名をManifest登録事実として表示。"
+            }
           },
           {
+            "reason": "Issue/一次資料から新規執筆した対象の数値版。",
             "relation": {
               "field": [
                 "reader_visible_text",
                 "list_path",
                 null,
-                "Editorial Input Record Rewritten: Issue #30の構成・学習目的をcurrent contractとv19.2一次資料から新規に作成。"
+                "Editorial Input Record Rewritten: Issue #30の構成・学習目的をcurrent contractで保持し、v20.0一次資料への有限Source migrationを追加。"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "Editorial Input Record"
               ]
-            },
-            "reason": "Issue/一次資料から新規執筆した対象の数値版。"
+            }
+          },
+          {
+            "reason": "Reviewed version, hash, source metadata, or synthetic/documentation value; not an operational endpoint. Exact relation only.",
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "2026-10-26にMITRE/CTIの公式v20.0 release、FAQ、Detection Strategies、Data Sources、T1671、DET0539と固定Enterprise STIX bundleを確認した。Version Historyは可変Pageのため、currentの厳密なidentityには固定release、commit、bundle digestを用いる。本文へ採用するのは行動分類、版、関係、限界だけであり、Procedure exampleや実行手順を転載しない。"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-10-26",
+                "対象と採否"
+              ]
+            }
+          },
+          {
+            "reason": "Reviewed version, hash, source metadata, or synthetic/documentation value; not an operational endpoint. Exact relation only.",
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "SRC-ATTACK-001はv20.0の固定GitHub releaseを正本URLとし、publishedAtはreleaseのUTC日付2026-10-13を記録する。可変Version HistoryとUpdatesの表示は補助情報として扱い、固定release、commit、bundle digestを置き換えない。"
+              ],
+              "headings": [
+                "第5章 Source Review Note — 2026-10-26",
+                "原典の用途と限界"
+              ]
+            }
           }
         ],
         "destination": [
@@ -2189,14 +2234,14 @@
                 "https://attack.mitre.org/resources/versions/"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "Releaseと取得証跡"
               ],
               "owner": [
                 "reader_visible_text",
                 "list_path",
                 null,
-                "Releaseと取得証跡 Version History: currentはv19.2。開始日の表示はApril 28, 2026のまま。"
+                "Releaseと取得証跡 Version History: 可変Page。current identityの唯一の根拠にはせず、下記v20.0 releaseと固定bundleで補う。"
               ]
             },
             "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
@@ -2210,14 +2255,14 @@
                 "https://attack.mitre.org/resources/updates/"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "Releaseと取得証跡"
               ],
               "owner": [
                 "reader_visible_text",
                 "list_path",
                 null,
-                "Releaseと取得証跡 Updates: August 2026 update、開始日2026-08-06。"
+                "Releaseと取得証跡 Updates: October 2026 update。開始日は2026-10-13として固定Snapshotへ記録する。"
               ]
             },
             "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
@@ -2228,17 +2273,17 @@
                 "destination",
                 "link",
                 "href",
-                "https://github.com/mitre/cti/releases/tag/ATT%26CK-v19.2"
+                "https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "Releaseと取得証跡"
               ],
               "owner": [
                 "reader_visible_text",
                 "list_path",
                 null,
-                "Releaseと取得証跡 MITRE/CTI release: published_at=2026-08-05T22:57:35Z。"
+                "Releaseと取得証跡 MITRE/CTI release: published_at=2026-10-13T18:56:14Z。"
               ]
             },
             "reason": "本文のDELEGATEまたはSource/ライセンスの出典参照。操作対象ではない。所有文脈と一回性を固定する。"
@@ -2249,10 +2294,10 @@
                 "destination",
                 "link",
                 "href",
-                "https://raw.githubusercontent.com/mitre/cti/8543c5b05bd9bbcace9fc37f30bba96b675b6f33/enterprise-attack/enterprise-attack.json"
+                "https://raw.githubusercontent.com/mitre/cti/50be388e93819a5d20e71cbaaeccfda157abc846/enterprise-attack/enterprise-attack.json"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "Releaseと取得証跡"
               ],
               "owner": [
@@ -2270,10 +2315,10 @@
                 "destination",
                 "link",
                 "href",
-                "https://attack.mitre.org/versions/v19/techniques/T1671/"
+                "https://attack.mitre.org/versions/v20/techniques/T1671/"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "採用Object"
               ],
               "owner": [
@@ -2291,10 +2336,10 @@
                 "destination",
                 "link",
                 "href",
-                "https://attack.mitre.org/versions/v19/detectionstrategies/DET0539/"
+                "https://attack.mitre.org/versions/v20/detectionstrategies/DET0539/"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "採用Object"
               ],
               "owner": [
@@ -2312,10 +2357,10 @@
                 "destination",
                 "link",
                 "href",
-                "https://attack.mitre.org/versions/v19/detectionstrategies/DET0539/#AN1487"
+                "https://attack.mitre.org/versions/v20/detectionstrategies/DET0539/#AN1487"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "採用Object"
               ],
               "owner": [
@@ -2333,10 +2378,10 @@
                 "destination",
                 "link",
                 "href",
-                "https://attack.mitre.org/versions/v19/detectionstrategies/DET0539/#AN1488"
+                "https://attack.mitre.org/versions/v20/detectionstrategies/DET0539/#AN1488"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "採用Object"
               ],
               "owner": [
@@ -2357,7 +2402,7 @@
                 "https://attack.mitre.org/resources/faq/"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "原典の用途と限界"
               ],
               "owner": [
@@ -2378,7 +2423,7 @@
                 "https://attack.mitre.org/detectionstrategies/"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "原典の用途と限界"
               ],
               "owner": [
@@ -2399,7 +2444,7 @@
                 "https://attack.mitre.org/datasources/"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "原典の用途と限界"
               ],
               "owner": [
@@ -2420,7 +2465,7 @@
                 "https://github.com/itdojp/white-hat-cyber-intelligence-book/blob/main/THIRD_PARTY_NOTICES.md"
               ],
               "headings": [
-                "第5章 Source Review Note — 2026-09-06",
+                "第5章 Source Review Note — 2026-10-26",
                 "利用条件"
               ],
               "owner": [
@@ -2630,7 +2675,7 @@
       "title": "第5章 合成記入例：ATT&CK Behavior Map"
     },
     {
-      "source": "references/ch05-source-review-2026-09-06.md",
+      "source": "references/ch05-source-review-2026-10-26.md",
       "destination": "references/chapter-05-source-review/index.md",
       "section": "additional",
       "order": 245,

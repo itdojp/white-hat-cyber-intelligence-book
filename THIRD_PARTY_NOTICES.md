@@ -77,12 +77,12 @@ Material with unknown or incompatible redistribution terms must not be copied in
 
 ## MITRE ATT&CK metadata subset
 
-- Source: https://github.com/mitre/cti/tree/8543c5b05bd9bbcace9fc37f30bba96b675b6f33
-- Catalog: v19.2; verified 2026-09-06.
+- Source: https://github.com/mitre/cti/tree/50be388e93819a5d20e71cbaaeccfda157abc846
+- Catalog: v20.0; verified 2026-10-26.
 - Copyright holder: The MITRE Corporation.
-- Placement: `tests/fixtures/attack/ch05-v19.2.json`; metadata names and relationships are discussed in Chapter 5 and its Source Review Note.
+- Placement: `tests/fixtures/attack/ch05-v20.0.json`; metadata names and relationships are discussed in Chapter 5 and its Source Review Note.
 - Modification: deterministically selected metadata from 8 objects and 1 relationship; no procedure descriptions, executable material or full bundle.
-- Integrity: full Enterprise bundle SHA-256 `f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259`.
+- Integrity: full Enterprise bundle SHA-256 `66f3fe3f07ef1a2de0bd2fe4b3e8a9ea06c1d0bb2c46171bdbb57c7f7b666524`.
 - These excerpts remain under MITRE’s terms, not the book’s content license. MITRE does not endorse this book.
 - Applicable ATT&CK portion of the pinned `LICENSE.txt` follows without modification:
 

@@ -49,7 +49,7 @@ IOC検索は既知の値との一致を調べる。Alert調査は検知出力の
 
 IOC一致は調査の入口になりうるが、由来、更新時点、正当な利用、観測条件を省略できない。本章の`iocMatch`は供給された合成ラベルで、実Indicatorの照合ではない。IOCだけの検索から本章の行動仮説が支持されたとは判断せず、`Inconclusive`とする。
 
-ATT&CKは仮説の共通語彙として参照する。確認した版は19.2である。Detection Strategiesは複数のAnalyticsをまとめる検知方針であり、掲載自体は手元のCoverageや検証済みQueryの証明ではない。Actor attributionにも変換しない。`SRC-ATTACK-001` `SRC-ATTACK-DET-001`
+ATT&CKは仮説の共通語彙として参照する。確認した版は20.0である。Detection Strategiesは複数のAnalyticsをまとめる検知方針であり、掲載自体は手元のCoverageや検証済みQueryの証明ではない。Actor attributionにも変換しない。`SRC-ATTACK-001` `SRC-ATTACK-DET-001`
 
 ## 2. 反証可能な仮説とBaselineを置く
 
@@ -172,7 +172,7 @@ Huntの成果は、仮説、観測範囲、証拠、代替説明、許容結論�
 
 ## 参考文献・Source Note ID
 
-- `SRC-ATTACK-001`: ATT&CK 19.2。仮説の版付き語彙。Coverageや帰属の証明には使わない。
+- `SRC-ATTACK-001`: ATT&CK 20.0。仮説の版付き語彙。Coverageや帰属の証明には使わない。
 - `SRC-ATTACK-DET-001`: Detection Strategiesの役割。製品Queryや本書の算法の標準ではない。
 - `SRC-IR-001`: SP 800-61 Rev.3 Final。Incident基準、Triage、記録の来歴への限定参照。
 

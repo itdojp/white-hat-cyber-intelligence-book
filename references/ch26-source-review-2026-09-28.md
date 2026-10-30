@@ -41,3 +41,9 @@ Discovery / API Root / Collection、Manifest / Objects / Status、版を含むMe
 公開一次資料のURL、取得応答、byte hashと読解範囲は制作時のlocal証拠へ保存しました。HTMLのbyte hashは規範の真正性や将来の不変性を保証しません。NIST SP800-150は候補としてlandingを探索しましたが、未読本文を採用したとは主張せず、本章のSource mappingに追加しません。
 
 再確認Triggerは正式版・Errata段階の変更、利用Propertyの訂正、ATT&CK版の変更、ICD改訂、TLPラベルや定義の改訂です。個別Sourceだけを更新し、既存notesのprefix、他章の意味、Registry全体の確認日を保持します。合成Caseの7月のProduct時刻と、独立構造例の10月の未来時刻は教材設定で、Source確認日・実観測・実配送ではありません。
+
+## 2026-10-26: ATT&CK移行の追記
+
+上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、[第5章の新しい確認記録](ch05-source-review-2026-10-26.md)に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。
+
+NIST、IETF、OASIS、FIRST等の既存資料を今回再監査したという記録ではない。合成Caseの状態、観測、権限、未配達、判断期限を変更しない。

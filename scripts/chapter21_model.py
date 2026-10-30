@@ -735,7 +735,7 @@ def validate_semantics(data):
     )
     require(
         data["threat"]["attackTechniqueId"] == "T1098"
-        and data["threat"]["attackVersion"] == "19.2"
+        and data["threat"]["attackVersion"] == "20.0"
         and data["threat"]["coverageProof"] is False
         and data["threat"]["actorAttribution"] == "not-assessed",
         "mapping is not effectiveness or attribution",

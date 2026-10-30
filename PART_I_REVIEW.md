@@ -110,3 +110,7 @@ python3 -B scripts/replay_chapter08_lab.py --json
 レビュー担当は、(1) 技術・状態、(2) Authority・安全・法務の限定、(3) Sourceの版・用途、(4) 分析と代替説明、(5) 学習導線、(6) OWN / BRIDGE / DELEGATE、(7) ID追跡、(8) 再現性・決定性、(9) 公開・保守性を別々に確認する。既存の不変条件に反する具体例はblockingとして再現・修正し、仕様外の新機能や全体再設計を本PRへ混在させない。
 
 最終の検証結果は、対応PRのexact-head Book Contract / Book QA、全Review本文・Thread、通常マージ後のmain CI / Pages / 公開物に結び付ける。CIの緑表示だけ、review reactionだけ、一定時間の無応答だけでは独立レビュー完了としない。
+
+## 2026-10-26: 後続のATT&CK移行
+
+本記録のbaselineと当時の版は保持する。後続の現行参照への移行は[第5章Source Review](references/ch05-source-review-2026-10-26.md)を参照する。本記録を最新mainへの再承認として読み替えない。

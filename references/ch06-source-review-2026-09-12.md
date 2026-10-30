@@ -47,3 +47,9 @@ Next reviewは2026-12-12。改訂版・Status・使用箇所の意味・ATT&CK r
 - Raw tracked files: 0。
 
 登録候補の明示選択と専用PRは機械可読Manifestで追跡する。通常merge・main/publication前にはconsumedへ進めない。
+
+## 2026-10-26: ATT&CK移行の追記
+
+上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、[第5章の新しい確認記録](ch05-source-review-2026-10-26.md)に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。
+
+NIST、IETF、OASIS、FIRST等の既存資料を今回再監査したという記録ではない。合成Caseの状態、観測、権限、未配達、判断期限を変更しない。

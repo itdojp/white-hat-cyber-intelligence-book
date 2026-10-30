@@ -12,7 +12,7 @@
     "record": "7f43e91fb9bcc087a6284c66eb245841ccc0f9de40d7b89453b9d9d97220402c",
     "parentReferences": "1db4a5727d72244700476c3a64d73e1c12dff0101615e0e621fd0f85edf048f7",
     "authorityBoundary": "3b4f35e5287ab61bbab5dd1f4bfa0343d9fba75f230d7c0879bc025284cd9613",
-    "threat": "4f6d88da64f791727dd80e745643298fa5346eb07a91d114fae6d8c12be6dbae",
+    "threat": "dcee78b367735fc4ab3ae682c65d1756f0d650bec3038f2bf3a04c0725274e09",
     "roles": "1d50f734adb1a0fd43534ea3bc87218761c95ed2c38b5739264d7aa5b1a7057b",
     "controls": "00282352ddf0e739fd93cd3f5272da28b3ff3d64bbaec85ef6a0fe8206a82c88",
     "scenarios": "05c36a6c39d16c1a9f4603d8f1a8a46ee578676e583f6e486b0258fe43015476",
@@ -27,7 +27,7 @@
     "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
     "manuscript/14-minimal-impact-validation.md": "86d6d106ab64a38602f41d669bc6c66df47642f0e96cae292d047bf29253a8d3",
     "cases/fixtures/ch14-minimal-impact-validation.json": "0ef78c7e51a200de200c9293fe047dab95408c2353128bc75c6388448600e7bc",
-    "manuscript/16-telemetry-evidence-readiness.md": "96994707cac2add8c799298c5a97857e3447803904846c9b086708a843e4d9dc",
+    "manuscript/16-telemetry-evidence-readiness.md": "9df8a8ed5c83fa4fd8801a14cbea03006c56c9c139774a4af376105e462dfbd6",
     "cases/fixtures/ch16-telemetry-coverage.json": "e20586ce97dc892b8c965b919623133f122fd717943196153e4bd898f7e23f2c",
     "manuscript/17-detection-engineering.md": "955c4838a65a2fd60f1b0b95f0513979ce957ec44bf7bcc319a9d7a5b4556bef",
     "cases/fixtures/ch17-detection-engineering-fixture.json": "496a40b1b62fdee21adb1084f329ad4f4c11b35a2522581bbd184967f77c9192",
@@ -46,7 +46,7 @@
   },
   "documents": {
     "manuscript/21-purple-team-validation.md": {
-      "projectionSha256": "5bbbecd3c90ecfc1680ff826b8e26f6b4993205f427f96c7d5ea041a774473ad",
+      "projectionSha256": "e25983a7776b4a90083052c6a501b14ddad9bd2bb56eda439e37942b06fd6460",
       "fieldCount": 156,
       "headings": [
         [
@@ -152,7 +152,7 @@
           "p",
           null,
           null,
-          "2. Behaviorの対応付けと有効性を分ける ATT&CKは行動を共通語彙へ対応付ける入口として使う。現行Sourceで確認した版は19.2であり、親17のT1098対応は方法参照として保持する。掲載されたTechnique数を、本章で検証したControl数や実組織のCoverageへ読み替えない。SRC-ATTACK-001",
+          "2. Behaviorの対応付けと有効性を分ける ATT&CKは行動を共通語彙へ対応付ける入口として使う。現行Sourceで確認した版は20.0であり、親17のT1098対応は方法参照として保持する。掲載されたTechnique数を、本章で検証したControl数や実組織のCoverageへ読み替えない。SRC-ATTACK-001",
           "manuscript/21-purple-team-validation.md:L54:F37"
         ],
         [
@@ -225,7 +225,7 @@
       "hostProvenance": []
     },
     "cases/ch21-control-validation-example.md": {
-      "projectionSha256": "670886980de92b50cf2ec1326ae026016a26556b75ff65bc47c142d329dc525d",
+      "projectionSha256": "dc4f5e4f5f5c1e61a63fc6f05f670112e9c3a66e7bbedb629857f2e32e2682b2",
       "fieldCount": 856,
       "headings": [
         [
@@ -368,8 +368,8 @@
       "hostProvenance": []
     },
     "references/ch21-source-review-2026-09-25.md": {
-      "projectionSha256": "3382f3f0bc25c0d0f113a4cd603911a25ea0480e3308b68ccb8fa661129e3e13",
-      "fieldCount": 40,
+      "projectionSha256": "c5aaa8d7306bb754b6729ce66e64b94bb3a00b1b98f1c03e2ad173ac099ac23c",
+      "fieldCount": 45,
       "headings": [
         [
           1,
@@ -402,6 +402,10 @@
         [
           2,
           "再確認条件"
+        ],
+        [
+          2,
+          "2026-10-26: ATT&CK移行の追記"
         ]
       ],
       "hostProvenance": [
@@ -508,6 +512,14 @@
           null,
           "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r3.pdf",
           "references/ch21-source-review-2026-09-25.md:L31:F29"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "2026-10-26: ATT&CK移行の追記 上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、第5章の新しい確認記録に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。",
+          "references/ch21-source-review-2026-09-25.md:L52:F42"
         ]
       ]
     }
@@ -515,13 +527,13 @@
   "sourceIdentity": {
     "SRC-ATTACK-001": {
       "publisher": "MITRE",
-      "title": "MITRE ATT&CK Version History and August 2026 Updates",
+      "title": "MITRE ATT&CK v20.0 release and Version History",
       "kind": "framework",
       "status": "current",
-      "version": "19.2",
-      "url": "https://attack.mitre.org/resources/versions/",
-      "publishedAt": null,
-      "notes": "Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration. publishedAt is null because the live Version History page does not establish its own publication timestamp. The related release UTC timestamp and Updates effective/start date above are separate context, not the publication date of this live page. Publication date of the live page is unknown; monitor Version History and Updates on the recorded review triggers rather than guessing a date. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Version History19.2; inherited Chapter5 snapshot retained; behavior mapping is not telemetry coverage. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: 公式Version History current19.2とUpdatesを確認。版付き仮説語彙に限定し、全CTI object監査・Coverage認定・帰属推定ではない。詳細はch18-source-review-2026-09-22.md。 第21章（2026-09-25）では公式Versions/Updatesの現在版19.2と更新日の文脈を確認。既存CTI pin/Hashとhistorical版を保持し、親17のT1098を方法参照とする。全Object監査・Control有効性・Coverageの証明には使わない。 Chapter26 scoped review 2026-09-28 JST: official Versions/Updates still identify 19.2. Existing snapshot commit/hash, publication-date precision and historical Chapter25 v19.1 wording remain unchanged. Use is behavior vocabulary only, not object-wide audit, coverage/effectiveness or attribution proof. The independent STIX teaching example does not copy current ATT&CK objects. See references/ch26-source-review-2026-09-28.md."
+      "version": "20.0",
+      "url": "https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0",
+      "publishedAt": "2026-10-13",
+      "notes": "Historical record before 2026-10-26 (retained verbatim): Version History identifies current v19.2 but retains an April 28 date; Updates gives August 6, 2026. Release published_at is 2026-08-05T22:57:35Z. Fixed CTI commit 8543c5b05bd9bbcace9fc37f30bba96b675b6f33; enterprise SHA-256 f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259. Chapter 5 uses this current snapshot. Chapter 17 uses behavior mapping not coverage proof; Chapter 25 retains its historical v19.1 sentence and uses ATT&CK not as attribution proof. Those bounded meanings were checked unchanged, not a claim of full reauthoring of other chapters. Chapter 5 source review records this migration. publishedAt is null because the live Version History page does not establish its own publication timestamp. The related release UTC timestamp and Updates effective/start date above are separate context, not the publication date of this live page. Publication date of the live page is unknown; monitor Version History and Updates on the recorded review triggers rather than guessing a date. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Version History19.2; inherited Chapter5 snapshot retained; behavior mapping is not telemetry coverage. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: 公式Version History current19.2とUpdatesを確認。版付き仮説語彙に限定し、全CTI object監査・Coverage認定・帰属推定ではない。詳細はch18-source-review-2026-09-22.md。 第21章（2026-09-25）では公式Versions/Updatesの現在版19.2と更新日の文脈を確認。既存CTI pin/Hashとhistorical版を保持し、親17のT1098を方法参照とする。全Object監査・Control有効性・Coverageの証明には使わない。 Chapter26 scoped review 2026-09-28 JST: official Versions/Updates still identify 19.2. Existing snapshot commit/hash, publication-date precision and historical Chapter25 v19.1 wording remain unchanged. Use is behavior vocabulary only, not object-wide audit, coverage/effectiveness or attribution proof. The independent STIX teaching example does not copy current ATT&CK objects. See references/ch26-source-review-2026-09-28.md. Current migration, checked 2026-10-26: Official MITRE/CTI release ATT&CK-v20.0 was published at 2026-10-13T18:56:14Z. Annotated tag 30af4a670bec2f4cc38e048cf865c4ee00fa6522 resolves to commit 50be388e93819a5d20e71cbaaeccfda157abc846; Enterprise release asset size 49253343 bytes and SHA-256 66f3fe3f07ef1a2de0bd2fe4b3e8a9ea06c1d0bb2c46171bdbb57c7f7b666524. The mutable Version History and Updates pages are supporting context, not exact release identity. Chapter 5 uses the v20 finite snapshot. In the selected eight-object subset, DC0038 changed from 3.0 to 3.1 with a new modified time and object hash; the adopted fields of the other seven objects and the DET0539→T1671 relation are unchanged. Chapters 6, 16, 17, 18, 21 and 26 continue to use ATT&CK only as versioned behavior/detection vocabulary, not as coverage, control-effectiveness or attribution proof. Chapter 25 retains its historical v19.1 sentence. No v20 AI object is automatically adopted into Chapters 27–29. See references/ch05-source-review-2026-10-26.md."
     },
     "SRC-ATTACK-DET-001": {
       "publisher": "MITRE",
@@ -531,7 +543,7 @@
       "version": null,
       "url": "https://attack.mitre.org/detectionstrategies/",
       "publishedAt": null,
-      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt. Rechecked for Chapter 5 on 2026-09-06; DET0539 and analytic/data-component references are pinned separately in SRC-ATTACK-T1671-001. No product detection validation is implied. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Introductory definition of strategies grouping platform analytics only; no new object mapping or catalogue count. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: Strategyが複数Analyticsをまとめる導入説明を確認。五Resultと有限Hunt算法は本書独自で、製品Query・取得済みCoverageの証明ではない。詳細はch18-source-review-2026-09-22.md。 第21章（2026-09-25）では公式Page導入の上位方針とPlatform別Analyticsの区別に限定して確認。全Strategy/Analyticsや件数を固定せず、独立Page版・日付不明のnullを保持。掲載やmappingを実検知成功にしない。"
+      "notes": "Official page lists current DET-* detection strategies as high-level approaches that group analytics across platforms. The page does not publish a separate version or publication date; changes are tracked through the ATT&CK release trigger and checkedAt. Rechecked for Chapter 5 on 2026-09-06; DET0539 and analytic/data-component references are pinned separately in SRC-ATTACK-T1671-001. No product detection validation is implied. Chapter 6 scoped re-audit on 2026-09-12 preserves the inherited v19.2 mapping and the distinction between strategy and observed coverage; no parent observation/control is promoted. Chapter16 scoped review (2026-09-21): Introductory definition of strategies grouping platform analytics only; no new object mapping or catalogue count. Scope and PDF identifiers: references/ch16-source-review-2026-09-21.md. Prior chapter notes retained; seven states and synthetic receipts are book-owned. 第18章の限定確認（2026-09-22）: Strategyが複数Analyticsをまとめる導入説明を確認。五Resultと有限Hunt算法は本書独自で、製品Query・取得済みCoverageの証明ではない。詳細はch18-source-review-2026-09-22.md。 第21章（2026-09-25）では公式Page導入の上位方針とPlatform別Analyticsの区別に限定して確認。全Strategy/Analyticsや件数を固定せず、独立Page版・日付不明のnullを保持。掲載やmappingを実検知成功にしない。 Rechecked against the v20.0 fixed bundle on 2026-10-26. DET0539, AN1487 and AN1488 adopted fields are unchanged in the finite subset; strategy presence is not detection validation."
     },
     "SRC-NIST-ASSESS-001": {
       "publisher": "NIST",

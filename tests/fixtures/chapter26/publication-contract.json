@@ -15,7 +15,7 @@
   "corpusSha256": "ed0a833ee583c7d8d668162c58bbd5a19eebefb97e7e56fb5730f1940484ec6a",
   "documents": {
     "manuscript/26-cti-distribution.md": {
-      "projectionSha256": "71ad5e344d0bc9cd460fd9efdb2586cac506d5634bd48f274f29b1d62bc0855a",
+      "projectionSha256": "237a29e69c9beed168e90b17aed589b23ee619f5c898ea81370ada7d0feb23d5",
       "headings": [
         [
           1,
@@ -125,7 +125,7 @@
           "p",
           null,
           null,
-          "SRC-ATTACK-001 の挙動語彙は、検知・Huntとの対応付けを話し合う共通語として使います。現在のRegistryは19.2で、親25の歴史的な19.1記述はそのまま保持します。対応付けだけではCoverage、Controlの有効性、同一Actor、国家の関与を証明しません。本章の独立STIX例は実在ATT&CK objectの新規監査や写しではありません。",
+          "SRC-ATTACK-001 の挙動語彙は、検知・Huntとの対応付けを話し合う共通語として使います。現在のRegistryは20.0で、親25の歴史的な19.1記述はそのまま保持します。対応付けだけではCoverage、Controlの有効性、同一Actor、国家の関与を証明しません。本章の独立STIX例は実在ATT&CK objectの新規監査や写しではありません。",
           "manuscript/26-cti-distribution.md:L82:F54"
         ],
         [
@@ -468,7 +468,7 @@
       "hostProvenance": []
     },
     "references/ch26-source-review-2026-09-28.md": {
-      "projectionSha256": "f7a2f8a3a2df62641bff4e1f763e815340b90241f8ec42ea6d0c8be6e58fa96c",
+      "projectionSha256": "77c99703fd6f0fd1abbc87f8001cedfcfca4da52d4543bbeab4a52e8ed0d9027",
       "headings": [
         [
           1,
@@ -497,9 +497,13 @@
         [
           2,
           "記録の限界と再確認"
+        ],
+        [
+          2,
+          "2026-10-26: ATT&CK移行の追記"
         ]
       ],
-      "fieldCount": 40,
+      "fieldCount": 45,
       "hostProvenance": [
         [
           "reader_visible_text",
@@ -636,6 +640,14 @@
           null,
           "採用は共有の境界、AMBER+STRICT、指定より広い共有に必要な明示許可、分類・ライセンス・暗号化との違いに限定します。ラベルや色表を転載した図は作りません。TLP 2.0を古いSTIXのTLP Propertyへ機械的に当てはめる実装、全組織の情報分類規則、保持義務、実操作の許可は対象外です。",
           "references/ch26-source-review-2026-09-28.md:L37:F35"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "2026-10-26: ATT&CK移行の追記 上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、第5章の新しい確認記録に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。",
+          "references/ch26-source-review-2026-09-28.md:L47:F42"
         ]
       ]
     }
@@ -690,13 +702,13 @@
     "SRC-ATTACK-001": {
       "id": "SRC-ATTACK-001",
       "publisher": "MITRE",
-      "title": "MITRE ATT&CK Version History and August 2026 Updates",
+      "title": "MITRE ATT&CK v20.0 release and Version History",
       "kind": "framework",
       "status": "current",
-      "version": "19.2",
-      "url": "https://attack.mitre.org/resources/versions/",
-      "publishedAt": null,
-      "nextReviewAt": "2026-12-21"
+      "version": "20.0",
+      "url": "https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0",
+      "publishedAt": "2026-10-13",
+      "nextReviewAt": "2027-01-26"
     },
     "SRC-ICD203-001": {
       "id": "SRC-ICD203-001",

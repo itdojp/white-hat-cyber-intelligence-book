@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from scripts.source_audit import meets_audit_baseline
 
-SNAPSHOT_SHA256 = "960d0b76b018bdefae3958beaaf3cc2a30d73c034467cbe0941289ded4f4d44a"
+SNAPSHOT_SHA256 = "ee76b7d65fcc4c09bf13f2e7fd942b09b128b2c1e24d17eb52d56396e7cf8f48"
 IDENTITY = {
     "teachingModel": "Office Suite teaching model only; parent product/environment remains unconfirmed.",
     "schemaVersion": "1.0.0",
@@ -21,7 +21,7 @@ IDENTITY = {
     "decisionRequirementId": "DR-2026-001",
     "authorizationRecordId": "AUTH-CASE-2026-001",
     "scope": "read-only-synthetic-data",
-    "catalogVersion": "19.2",
+    "catalogVersion": "20.0",
     "sourceSnapshotSha256": SNAPSHOT_SHA256,
     "parentState": "Chapter 4 source snapshot retained; no parent hypothesis, control, gap or decision is updated.",
 }
@@ -181,9 +181,9 @@ def validate_case(data: object, snapshot: dict, bindings: list[dict]) -> list[st
             row["status"] in STATUSES and row["mappingBasis"] in BASES,
             f"{rid}: status/basis enum",
         )
-        require(row["catalogVersion"] == "19.2", f"{rid}: catalog version")
+        require(row["catalogVersion"] == "20.0", f"{rid}: catalog version")
         require(
-            meets_audit_baseline(row["reviewDate"], "2026-09-06"), f"{rid}: review date"
+            meets_audit_baseline(row["reviewDate"], "2026-10-26"), f"{rid}: review date"
         )
         require(row["owner"].startswith("SYNTH-"), f"{rid}: synthetic owner")
         require(row["gapId"] == "GAP-BM-" + rid[-3:], f"{rid}: separate gap")

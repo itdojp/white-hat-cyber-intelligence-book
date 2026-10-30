@@ -51,7 +51,7 @@ NIST SP 800-53A Rev.5は、評価対象、方法、目的と判定条件を結�
 
 ## 2. Behaviorの対応付けと有効性を分ける
 
-ATT&CKは行動を共通語彙へ対応付ける入口として使う。現行Sourceで確認した版は19.2であり、親17の`T1098`対応は方法参照として保持する。掲載されたTechnique数を、本章で検証したControl数や実組織のCoverageへ読み替えない。`SRC-ATTACK-001`
+ATT&CKは行動を共通語彙へ対応付ける入口として使う。現行Sourceで確認した版は20.0であり、親17の`T1098`対応は方法参照として保持する。掲載されたTechnique数を、本章で検証したControl数や実組織のCoverageへ読み替えない。`SRC-ATTACK-001`
 
 Detection Strategiesは、Platformに応じたAnalyticsをまとめる上位の検知方針として参照する。Strategy名を挙げただけでは、必要Field、正常系、相関条件、Triageの入力は埋まらない。本章では導入の定義だけを使い、全Strategyや全製品の実装を監査したとはしない。`SRC-ATTACK-DET-001`
 
@@ -209,7 +209,7 @@ Purple Teamの成果は操作数ではなく、どの目的がどのEvidenceで�
 
 ## 参考文献・Source Note ID
 
-- `SRC-ATTACK-001`: MITRE ATT&CK 19.2。版とBehaviorの共通語彙に限定し、mappingを有効性にしない。
+- `SRC-ATTACK-001`: MITRE ATT&CK 20.0。版とBehaviorの共通語彙に限定し、mappingを有効性にしない。
 - `SRC-ATTACK-DET-001`: Detection Strategiesの導入定義。全Strategy・全Analyticsの監査ではない。
 - `SRC-NIST-ASSESS-001`: NIST SP 800-53A Rev.5、January 2022。§2.4、§3.2.3.1、§3.3〜3.4の対象・方法・結果・再評価に限定。
 - `SRC-IR-001`: NIST SP 800-61 Rev.3 Final、2025-04-03。GV.RR-02とID.IM-01/02/03の役割・権限・改善に限定。
