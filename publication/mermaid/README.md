@@ -54,3 +54,25 @@ already absent profile, the old no-retry race, a recoverable late write, and
 persistent late writes that must reject. All cases preserve a sibling sentinel.
 The test injects real writes before `rmdir` in child processes; it does not depend
 on Chrome timing or a sleep-based race. Each child has a 30-second test deadline.
+
+### Initial fragments after enhancement (Issue #215)
+
+Expanding a source fence into a figure changes layout after native fragment
+navigation. The shared loader repairs the **initial** article fragment once,
+after all diagram attempts and a rendering frame. It uses the browser's native
+`scrollIntoView` and the layout's existing scroll padding; it does not parse
+chapter names, assign focus, change the URL, or maintain a scrolling loop.
+
+Trusted key, pointer, touch or wheel input, or a hash change during enhancement,
+cancels the repair. Missing/malformed fragments and targets outside an article
+are ignored. The listeners are removed after the attempt. Diagram-free pages
+are untouched. Source/error fallback remains available if the library fails.
+This is not a general late-image/layout observer or a guarantee for all browsers
+and assistive technologies. A reader's intentional later navigation takes
+priority over automatic alignment.
+
+The existing browser gate includes 36 real reading-guide cases: 320/375/1366px,
+initial/encoded alignment, Tab/wheel/pointer/touch interruption,
+changed/missing/malformed/outside-article targets, absent initial hash and
+post-render same-page navigation. The library response is explicitly held until each
+interruption is delivered, rather than racing a sleep against rendering.
