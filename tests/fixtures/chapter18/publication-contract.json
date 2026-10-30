@@ -33,7 +33,7 @@
     "WRITING_GUIDE.md": "7de62e48cbb0ca637548f6ff9d8f3c6cde0e9085f5dd42139f34f014820bbd95",
     "SAFETY_SCOPE.md": "e8ab5d61712004d16ef96f455d8224162f63296a056663d37cc5403639a184ff",
     "CROSS_BOOK_MAP.md": "2a1eb59113a76ef155eb57743b1af1152154793c0a03c5a6c2a8eaba918276a1",
-    "manuscript/16-telemetry-evidence-readiness.md": "96994707cac2add8c799298c5a97857e3447803904846c9b086708a843e4d9dc",
+    "manuscript/16-telemetry-evidence-readiness.md": "9df8a8ed5c83fa4fd8801a14cbea03006c56c9c139774a4af376105e462dfbd6",
     "templates/telemetry-coverage-map.md": "568764c444f2cacd7b499e9172428cb2a1ebdfc5d62d347fb3f7bfbbcdc89de5",
     "cases/ch16-telemetry-coverage-example.md": "c6feb2d518321779dbdc32d9245b26553ee619813dfbc9f50e8a28d2610914fe",
     "cases/fixtures/ch16-telemetry-coverage.json": "e20586ce97dc892b8c965b919623133f122fd717943196153e4bd898f7e23f2c",
@@ -308,7 +308,7 @@
           "p",
           null,
           null,
-          "ATT&CKは仮説の共通語彙として参照する。確認した版は19.2である。Detection Strategiesは複数のAnalyticsをまとめる検知方針であり、掲載自体は手元のCoverageや検証済みQueryの証明ではない。Actor attributionにも変換しない。SRC-ATTACK-001 SRC-ATTACK-DET-001",
+          "ATT&CKは仮説の共通語彙として参照する。確認した版は20.0である。Detection Strategiesは複数のAnalyticsをまとめる検知方針であり、掲載自体は手元のCoverageや検証済みQueryの証明ではない。Actor attributionにも変換しない。SRC-ATTACK-001 SRC-ATTACK-DET-001",
           "manuscript/18-threat-hunting.md:L52:F31"
         ],
         [
@@ -996,7 +996,7 @@
           "list_path",
           null,
           null,
-          "参考文献・Source Note ID SRC-ATTACK-001: ATT&CK 19.2。仮説の版付き語彙。Coverageや帰属の証明には使わない。",
+          "参考文献・Source Note ID SRC-ATTACK-001: ATT&CK 20.0。仮説の版付き語彙。Coverageや帰属の証明には使わない。",
           "manuscript/18-threat-hunting.md:L175:F117"
         ],
         [
@@ -1038,7 +1038,7 @@
           "p",
           null,
           null,
-          "ATT&CKは仮説の共通語彙として参照する。確認した版は19.2である。Detection Strategiesは複数のAnalyticsをまとめる検知方針であり、掲載自体は手元のCoverageや検証済みQueryの証明ではない。Actor attributionにも変換しない。SRC-ATTACK-001 SRC-ATTACK-DET-001",
+          "ATT&CKは仮説の共通語彙として参照する。確認した版は20.0である。Detection Strategiesは複数のAnalyticsをまとめる検知方針であり、掲載自体は手元のCoverageや検証済みQueryの証明ではない。Actor attributionにも変換しない。SRC-ATTACK-001 SRC-ATTACK-DET-001",
           "manuscript/18-threat-hunting.md:L52:F31"
         ],
         [
@@ -8926,6 +8926,46 @@
           null,
           "再確認条件 ATT&CK版、Strategy構造、NIST文書Status・採用節、本章の対象範囲・判断契約が変わったときに再確認する。次回期限は各Source Registryを参照する。新しい一次資料を採用する場合は用途と非採用範囲を追加し、AI出力や未読の先行草稿を根拠にしない。",
           "references/ch18-source-review-2026-09-22.md:L39:F31"
+        ],
+        [
+          "reader_visible_text",
+          "heading",
+          null,
+          2,
+          "2026-10-26: ATT&CK移行の追記",
+          "references/ch18-source-review-2026-09-22.md:L41:F32"
+        ],
+        [
+          "hidden_metadata",
+          "heading",
+          "id",
+          null,
+          "2026-10-26-attck移行の追記",
+          "references/ch18-source-review-2026-09-22.md:L41:F33"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "2026-10-26: ATT&CK移行の追記 上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、第5章の新しい確認記録に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。",
+          "references/ch18-source-review-2026-09-22.md:L43:F34"
+        ],
+        [
+          "destination",
+          "link",
+          "href",
+          null,
+          "../chapter-05-source-review/",
+          "references/ch18-source-review-2026-09-22.md:L43:F35"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "NIST、IETF、OASIS、FIRST等の既存資料を今回再監査したという記録ではない。合成Caseの状態、観測、権限、未配達、判断期限を変更しない。",
+          "references/ch18-source-review-2026-09-22.md:L45:F36"
         ]
       ],
       "hostProvenance": [
@@ -8984,6 +9024,14 @@
           null,
           "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r3.pdf",
           "references/ch18-source-review-2026-09-22.md:L21:F20"
+        ],
+        [
+          "reader_visible_text",
+          "p",
+          null,
+          null,
+          "2026-10-26: ATT&CK移行の追記 上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、第5章の新しい確認記録に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。",
+          "references/ch18-source-review-2026-09-22.md:L43:F34"
         ]
       ]
     }
@@ -9023,8 +9071,8 @@
   ],
   "sourceIdentity": {
     "SRC-ATTACK-001": {
-      "url": "https://attack.mitre.org/resources/versions/",
-      "version": "19.2",
+      "url": "https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0",
+      "version": "20.0",
       "status": "current"
     },
     "SRC-ATTACK-DET-001": {

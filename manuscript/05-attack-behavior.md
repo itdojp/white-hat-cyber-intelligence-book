@@ -76,7 +76,7 @@ Threat Hypothesis → Adversary objective → Tactic
 
 Tactic、Technique、Sub-technique、Procedureの区別は公式FAQに従う。Group / Software / CampaignはカタログのCTIオブジェクトとして扱い、組織内のEvidenceと結合せずに帰属判断へ転用しない。`SRC-ATTACK-FAQ-001` `SRC-ATTACK-001`
 
-T1671には、本章が固定した版でSub-techniqueがない。細かく見せる目的で小数付きIDを作らず、Sub-technique欄は「なし」とする。ATT&CK catalogの`19.2`、T1671 objectの`1.0`、教材fixtureの`1.0.0`は別の版である。`SRC-ATTACK-T1671-001`
+T1671には、本章が固定した版でSub-techniqueがない。細かく見せる目的で小数付きIDを作らず、Sub-technique欄は「なし」とする。ATT&CK catalogの`20.0`、T1671 objectの`1.0`、教材fixtureの`1.0.0`は別の版である。`SRC-ATTACK-T1671-001`
 
 ## 3. Detection Strategyを自組織のDataへ接続する
 
@@ -148,9 +148,9 @@ Telemetry不足は侵害不存在ではない。Response coverageを論じるな
 
 ## 7. 版固定とMigration記録
 
-本章は2026-09-06に確認したATT&CK catalog v19.2を使用する。Updatesページの開始日は2026-08-06、GitHub releaseの公開時刻は2026-08-05T22:57:35Zである。Version HistoryにはApril 28の表示が残るため、それをv19.2固有の公開日と読み替えない。`SRC-ATTACK-001`
+本章は2026-10-26に確認したATT&CK catalog v20.0を使用する。GitHub releaseの公開時刻は2026-10-13T18:56:14Zであり、固定commitとEnterprise bundle hashで同一対象を識別する。可変なVersion HistoryやUpdatesの表示だけをrelease identityへ読み替えない。`SRC-ATTACK-001`
 
-固定したEnterprise bundleから8 Objectと関連を最小抽出し、CIは保存済みfixtureだけを検査する。WebsiteのVersion Permalinkはv19単位なので、minor releaseの完全な固定はSTIXのcommitとbundle hashで補う。取得方法、Objectごとのmodified、revoked / deprecated、利用条件は[Source Review Note](../references/ch05-source-review-2026-09-06.md)へ記録した。`SRC-ATTACK-T1671-001`
+固定したEnterprise bundleから8 Objectと関連を最小抽出し、CIは保存済みfixtureだけを検査する。Website表示だけに依存せず、STIXのcommitとbundle hashで対象を固定する。v19.2からの有限差分、Objectごとのmodified、revoked / deprecated、利用条件は[Source Review Note](../references/ch05-source-review-2026-10-26.md)へ記録した。`SRC-ATTACK-T1671-001`
 
 Migration時は旧版を上書きして終わらせず、次を記録する。
 
@@ -236,10 +236,10 @@ ATT&CKはBehaviorの表現を揃えるために使い、Evidenceや判断の代�
 
 ## 参考文献・Source Note ID
 
-- `SRC-ATTACK-001`: catalog v19.2、releaseの追跡、Coverageの限界
+- `SRC-ATTACK-001`: catalog v20.0、releaseの追跡、Coverageの限界
 - `SRC-ATTACK-FAQ-001`: Tactic / Technique / Sub-technique / Procedureの定義
 - `SRC-ATTACK-T1671-001`: T1671、DET0539、Analytics、Data Componentsの固定metadata
 - `SRC-ATTACK-DET-001`: Detection Strategyの役割
 - `SRC-ATTACK-DS-001`: deprecated Data Sourcesの歴史的・移行上の扱い
 
-版、checkedAt、固定commit、採用範囲は[Source Review Note](../references/ch05-source-review-2026-09-06.md)を参照する。
+版、checkedAt、固定commit、採用範囲は[Source Review Note](../references/ch05-source-review-2026-10-26.md)を参照する。

@@ -496,7 +496,7 @@
 | relationToFinal | refines |
 | use | method-reference |
 | canonicalPath | cases/ch05-attack-behavior-example.md |
-| versionSha256 | 9bc5004441f6a7911106da6cba263297bf115814d7c644c80f776c7f0e7098ac |
+| versionSha256 | df0a513ca0f5f2dde30e4b055fa75d5503190f7f43bb7aafb0e73c22ac0c64c7 |
 | templatePath | templates/attack-behavior-map.md |
 | ownerChapter | 5 |
 | nativeState/scope | first-row |
@@ -796,7 +796,7 @@
 | relationToFinal | refines |
 | use | method-reference |
 | canonicalPath | cases/ch21-control-validation-example.md |
-| versionSha256 | 38d80638db23e8218a19dd718a19fb8196b1d06138e653af5da573352bb6ae5d |
+| versionSha256 | 68dcd60830964943854da18a5d9b4b41ee63a9a5757c671d8f252b786220ed83 |
 | templatePath | templates/control-validation-plan.md |
 | ownerChapter | 21 |
 | nativeState/scope | first-scenario |

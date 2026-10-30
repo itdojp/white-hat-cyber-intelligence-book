@@ -47,7 +47,7 @@ Eventは起きた事象、Logは事象について作られた記録である。
 
 NIST SP 800-92は生成、転送、保存、分析などを分け、必要な記録と保持条件の設計を扱う。2006年の資料であり、現行Cloud製品の設定や暗号方式の推奨としては使わない。`SRC-NIST-LOG-001`
 
-ATT&CKの対応付けは、必要な行動・観測を考える入口である。Strategyが掲載されていることと、この教材や自組織でデータを取得・検証できることは別である。確認時の版は 19.2 であり、Detection Strategiesは複数のAnalyticsをまとめる上位の検知方針として参照する。`SRC-ATTACK-001` `SRC-ATTACK-DET-001`
+ATT&CKの対応付けは、必要な行動・観測を考える入口である。Strategyが掲載されていることと、この教材や自組織でデータを取得・検証できることは別である。確認時の版は20.0であり、Detection Strategiesは複数のAnalyticsをまとめる上位の検知方針として参照する。`SRC-ATTACK-001` `SRC-ATTACK-DET-001`
 
 ## 2. 問いから必要Fieldを導く
 
@@ -187,7 +187,7 @@ Telemetryの設計は、問い、必要Field、取得から利用までの根拠
 
 ## 参考文献・Source Note ID
 
-- `SRC-ATTACK-001`: ATT&CK 19.2。行動と観測を考える版付きの入口。
+- `SRC-ATTACK-001`: ATT&CK 20.0。行動と観測を考える版付きの入口。
 - `SRC-ATTACK-DET-001`: Detection Strategiesの役割。存在をCoverageの証明にしない。
 - `SRC-NIST-LOG-001`: SP 800-92 Final。採用したライフサイクル・品質・保持・検査の限定節。
 - `SRC-NIST-LOG-DRAFT-001`: SP 800-92 Rev.1 IPDの状態確認。現行Finalとしては採用しない。

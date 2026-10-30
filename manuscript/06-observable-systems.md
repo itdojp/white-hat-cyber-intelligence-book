@@ -96,7 +96,7 @@ Event time、収集時刻、Query時刻を別に保存し、UTC offsetとClock u
 
 Correlation keyは合成Event ID・Tenant・Application・Request IDの組として扱う。同じApplication名だけの一致は因果関係を証明しない。Raw TokenやCookieを相関keyに使わない。正規化前後のField名と変換版、欠落したField、保持期限を記録し、変換による情報損失を明示する。
 
-Telemetryの分類は、第5章のATT&CK v19.2固定metadataとBehavior IDを継承する。Detection Strategyを参照できることと、必要Dataを実際に保有することは別である。新たなATT&CK対応付けや親MapのStatus更新は本章では行わない。`SRC-ATTACK-001`、`SRC-ATTACK-DET-001`
+Telemetryの分類は、第5章のATT&CK v20.0固定metadataとBehavior IDを継承する。Detection Strategyを参照できることと、必要Dataを実際に保有することは別である。新たなATT&CK対応付けや親MapのStatus更新は本章では行わない。`SRC-ATTACK-001`、`SRC-ATTACK-DET-001`
 
 ## 安全な分析課題
 
@@ -174,5 +174,5 @@ Signal Flowは、操作の経路と観測の経路をIDで接続する。Identit
 - `SRC-NIST-LOG-001`: NIST SP 800-92。生成・転送・保持・分析の区別。
 - `SRC-NIST-LOG-DRAFT-001`: NIST SP 800-92 Rev.1 IPD。改訂監視だけ。
 - `SRC-IETF-OAUTH-CORE-001`: RFC 6749。役割とClient自身のIdentityの区別だけ。
-- `SRC-ATTACK-001`: 第5章から継承するATT&CK v19.2の版と限定。
+- `SRC-ATTACK-001`: 第5章から継承するATT&CK v20.0の版と限定。
 - `SRC-ATTACK-DET-001`: StrategyとData保有・検証の分離。

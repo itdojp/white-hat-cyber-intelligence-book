@@ -1705,10 +1705,10 @@
     "cases/ch01-integrated-security-case-example.md": "c72c0d149321a24f2b6901db381c069cff86a8536b5578eba285b9d17eb329b2",
     "cases/ch02-authorization-decision-example.md": "74d1aa7a802525ee5f465ccbdc1404e26a974ed60e264b65978612bef8026f4a",
     "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
-    "cases/ch05-attack-behavior-example.md": "9bc5004441f6a7911106da6cba263297bf115814d7c644c80f776c7f0e7098ac",
+    "cases/ch05-attack-behavior-example.md": "df0a513ca0f5f2dde30e4b055fa75d5503190f7f43bb7aafb0e73c22ac0c64c7",
     "cases/ch06-signal-flow-example.md": "a062ba22f4f0e1eb28a08342b0173a02473e995062410986b51d1a6a4af7cf0a",
     "cases/fixtures/ch06-signal-flow.json": "73000db0a442d9be338a0e9834fe589ee387ee05ab280a9cc5f0e6fe0f0da6fb",
-    "cases/fixtures/ch05-attack-behavior.json": "1f51fa66fe82d72f28b73ed548bc669cf58f5ab30dd8674cad9ad0d5b315e781"
+    "cases/fixtures/ch05-attack-behavior.json": "497741c03b5937be9c331d591fd895bf07734c35e97cfccccc7c49d74d4f905a"
   },
   "pages": [
     {

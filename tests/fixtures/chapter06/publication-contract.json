@@ -575,7 +575,7 @@
             "reader_visible_text",
             "p",
             null,
-            "Telemetryの分類は、第5章のATT&CK v19.2固定metadataとBehavior IDを継承する。Detection Strategyを参照できることと、必要Dataを実際に保有することは別である。新たなATT&CK対応付けや親MapのStatus更新は本章では行わない。SRC-ATTACK-001、SRC-ATTACK-DET-001"
+            "Telemetryの分類は、第5章のATT&CK v20.0固定metadataとBehavior IDを継承する。Detection Strategyを参照できることと、必要Dataを実際に保有することは別である。新たなATT&CK対応付けや親MapのStatus更新は本章では行わない。SRC-ATTACK-001、SRC-ATTACK-DET-001"
           ],
           "headings": [
             "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
@@ -1034,7 +1034,7 @@
             "reader_visible_text",
             "list_path",
             null,
-            "SRC-ATTACK-001: 第5章から継承するATT&CK v19.2の版と限定。"
+            "SRC-ATTACK-001: 第5章から継承するATT&CK v20.0の版と限定。"
           ],
           "headings": [
             "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
@@ -1160,7 +1160,7 @@
                 "reader_visible_text",
                 "p",
                 null,
-                "Telemetryの分類は、第5章のATT&CK v19.2固定metadataとBehavior IDを継承する。Detection Strategyを参照できることと、必要Dataを実際に保有することは別である。新たなATT&CK対応付けや親MapのStatus更新は本章では行わない。SRC-ATTACK-001、SRC-ATTACK-DET-001"
+                "Telemetryの分類は、第5章のATT&CK v20.0固定metadataとBehavior IDを継承する。Detection Strategyを参照できることと、必要Dataを実際に保有することは別である。新たなATT&CK対応付けや親MapのStatus更新は本章では行わない。SRC-ATTACK-001、SRC-ATTACK-DET-001"
               ],
               "headings": [
                 "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
@@ -1192,7 +1192,7 @@
                 "reader_visible_text",
                 "list_path",
                 null,
-                "SRC-ATTACK-001: 第5章から継承するATT&CK v19.2の版と限定。"
+                "SRC-ATTACK-001: 第5章から継承するATT&CK v20.0の版と限定。"
               ],
               "headings": [
                 "第6章 通信・Identity・Cloudを観測可能なシステムとして読む",
@@ -1839,6 +1839,10 @@
         [
           2,
           "Editorial Input Record"
+        ],
+        [
+          2,
+          "2026-10-26: ATT&CK移行の追記"
         ]
       ],
       "required": [
@@ -2174,6 +2178,42 @@
             "第6章 Source Review Note — 2026-09-12",
             "Editorial Input Record"
           ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "heading",
+            null,
+            "2026-10-26: ATT&CK移行の追記"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "Editorial Input Record"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "2026-10-26: ATT&CK移行の追記 上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、第5章の新しい確認記録に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "2026-10-26: ATT&CK移行の追記"
+          ]
+        },
+        {
+          "field": [
+            "reader_visible_text",
+            "p",
+            null,
+            "NIST、IETF、OASIS、FIRST等の既存資料を今回再監査したという記録ではない。合成Caseの状態、観測、権限、未配達、判断期限を変更しない。"
+          ],
+          "headings": [
+            "第6章 Source Review Note — 2026-09-12",
+            "2026-10-26: ATT&CK移行の追記"
+          ]
         }
       ],
       "exceptions": {
@@ -2268,6 +2308,21 @@
               ]
             },
             "reason": "Reviewed source version/section, local repository path or immutable provenance, not an endpoint. Exact field + heading + cardinality only."
+          },
+          {
+            "relation": {
+              "field": [
+                "reader_visible_text",
+                "p",
+                null,
+                "2026-10-26: ATT&CK移行の追記 上記は記載日の確認履歴であり、当時の版・取得条件・採用範囲を保持する。現行本文のATT&CK参照は、第5章の新しい確認記録に従って20.0へ移行した。固定commitとbundle digest、八Objectと一関係の差分は新しい確認記録を正とする。本章は行動と観測の語彙を参照し、対応付けをCoverage、統制の有効性、主体帰属の証明へ転用しない。"
+              ],
+              "headings": [
+                "第6章 Source Review Note — 2026-09-12",
+                "2026-10-26: ATT&CK移行の追記"
+              ]
+            },
+            "reason": "Reviewed dated source-migration addendum; exact field, no operation or exercise target."
           }
         ],
         "destination": [
@@ -2467,16 +2522,16 @@
   "parentDigests": {
     "manuscript/04-assets-boundaries-threat-model.md": "b20d25c51f0fa27c0404a8c5d2a4753a0a5b96a7152df67be985479590940084",
     "cases/ch04-threat-model-example.md": "297e28b6f3437f80fbdacdd02d21fff4f0d00465faad03df5278724ad8f638ac",
-    "cases/fixtures/ch05-attack-behavior.json": "1f51fa66fe82d72f28b73ed548bc669cf58f5ab30dd8674cad9ad0d5b315e781",
-    "manuscript/05-attack-behavior.md": "f07c93373b0931a513937ef8668d8980b90c92b542fcac257d9e63c57a84e1e2",
-    "tests/fixtures/attack/ch05-v19.2.json": "960d0b76b018bdefae3958beaaf3cc2a30d73c034467cbe0941289ded4f4d44a"
+    "cases/fixtures/ch05-attack-behavior.json": "497741c03b5937be9c331d591fd895bf07734c35e97cfccccc7c49d74d4f905a",
+    "manuscript/05-attack-behavior.md": "a8dbaf37b09caad790f8af99e87c163238544d1ff71bc4a97e39ef9d1f258c52",
+    "tests/fixtures/attack/ch05-v20.0.json": "ee76b7d65fcc4c09bf13f2e7fd942b09b128b2c1e24d17eb52d56396e7cf8f48"
   },
   "sourceIdentity": {
     "SRC-ATTACK-001": {
-      "url": "https://attack.mitre.org/resources/versions/",
-      "version": "19.2",
+      "url": "https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0",
+      "version": "20.0",
       "status": "current",
-      "publishedAt": null
+      "publishedAt": "2026-10-13"
     },
     "SRC-ATTACK-DET-001": {
       "url": "https://attack.mitre.org/detectionstrategies/",

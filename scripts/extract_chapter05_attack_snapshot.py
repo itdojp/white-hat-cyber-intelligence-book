@@ -14,9 +14,9 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "tests/fixtures/attack/ch05-v19.2.json"
-COMMIT = "8543c5b05bd9bbcace9fc37f30bba96b675b6f33"
-BUNDLE_SHA256 = "f7eaf37fe53b50404084fe1fe67237278f7317e61c11ad550295722d13ede259"
+OUTPUT = ROOT / "tests/fixtures/attack/ch05-v20.0.json"
+COMMIT = "50be388e93819a5d20e71cbaaeccfda157abc846"
+BUNDLE_SHA256 = "66f3fe3f07ef1a2de0bd2fe4b3e8a9ea06c1d0bb2c46171bdbb57c7f7b666524"
 OBJECT_IDS = (
     "AN1487",
     "AN1488",
@@ -116,11 +116,11 @@ def extract(raw: bytes) -> dict:
         )
     return {
         "schemaVersion": "1.0.0",
-        "catalogVersion": "19.2",
+        "catalogVersion": "20.0",
         "domain": "enterprise-attack",
-        "checkedAt": "2026-09-06",
-        "updateStartDate": "2026-08-06",
-        "releasePublishedAt": "2026-08-05T22:57:35Z",
+        "checkedAt": "2026-10-26",
+        "updateStartDate": "2026-10-13",
+        "releasePublishedAt": "2026-10-13T18:56:14Z",
         "upstreamCommit": COMMIT,
         "bundleSha256": BUNDLE_SHA256,
         "bundleUrl": f"https://raw.githubusercontent.com/mitre/cti/{COMMIT}/enterprise-attack/enterprise-attack.json",

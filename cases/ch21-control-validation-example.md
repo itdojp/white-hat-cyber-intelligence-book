@@ -140,7 +140,7 @@ RT-CV21-003はSCN-CV21-003からSCN-CV21-010への供給比較である。CTLREV
 |---|---|
 | `behavior` | `業務上未承認のscope追加という親17の仮説を方法参照する。` |
 | `attackTechniqueId` | `T1098` |
-| `attackVersion` | `19.2` |
+| `attackVersion` | `20.0` |
 | `mappingBasis` | `parent17-method-reference` |
 | `coverageProof` | `false` |
 | `actorAttribution` | `not-assessed` |

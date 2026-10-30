@@ -226,26 +226,29 @@ def run_regressions(
 
     from scripts.check_chapter05_contract import stix_publication_date_errors
 
-    for date, valid in (("2026-08-05", True), ("2026-08-06", False), (None, False)):
+    for date, valid in (("2026-10-13", True), ("2026-08-05", False), ("2026-08-06", False), (None, False)):
         check(
             (not stix_publication_date_errors({"publishedAt": date})) is valid,
             f"CH05-SRC-PUB-001 release versus update {date}",
         )
     from scripts.check_chapter05_contract import framework_publication_date_errors
 
-    for date, valid in (
-        (None, True),
-        ("2026-08-05", False),
-        ("2026-08-06", False),
-        ("2026-04-28", False),
+    release_url = "https://github.com/mitre/cti/releases/tag/ATT%26CK-v20.0"
+    history_url = "https://attack.mitre.org/resources/versions/"
+    for url, date, valid in (
+        (release_url, "2026-10-13", True),
+        (release_url, None, False),
+        (release_url, "2026-08-05", False),
+        (history_url, None, False),
+        (history_url, "2026-10-13", False),
+        (history_url, "2026-08-05", False),
+        (history_url, "2026-08-06", False),
+        (history_url, "2026-04-28", False),
     ):
-        record = {
-            "url": "https://attack.mitre.org/resources/versions/",
-            "publishedAt": date,
-        }
+        record = {"url": url, "publishedAt": date}
         check(
             (not framework_publication_date_errors(record)) is valid,
-            f"CH05-SRC-PUB-002 live page versus release/update {date}",
+            f"CH05-SRC-PUB-002 fixed release versus live page {url} {date}",
         )
     from scripts.extract_chapter05_attack_snapshot import extract
 

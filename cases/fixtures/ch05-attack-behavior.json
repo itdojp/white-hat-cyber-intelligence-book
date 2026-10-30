@@ -9,8 +9,8 @@
   "decisionRequirementId": "DR-2026-001",
   "authorizationRecordId": "AUTH-CASE-2026-001",
   "scope": "read-only-synthetic-data",
-  "catalogVersion": "19.2",
-  "sourceSnapshotSha256": "960d0b76b018bdefae3958beaaf3cc2a30d73c034467cbe0941289ded4f4d44a",
+  "catalogVersion": "20.0",
+  "sourceSnapshotSha256": "ee76b7d65fcc4c09bf13f2e7fd942b09b128b2c1e24d17eb52d56396e7cf8f48",
   "parentState": "Chapter 4 source snapshot retained; no parent hypothesis, control, gap or decision is updated.",
   "rows": [
     {
@@ -28,7 +28,7 @@
         "FLOW-2026-002",
         "FLOW-2026-004"
       ],
-      "catalogVersion": "19.2",
+      "catalogVersion": "20.0",
       "techniqueId": "T1671",
       "tacticId": "TA0003",
       "subtechniqueId": null,
@@ -52,7 +52,7 @@
       "decisionContribution": "T1671の候補対応を保持し、現在の前提を確認するまで結論を進めない",
       "gapId": "GAP-BM-001",
       "owner": "SYNTH-SOC-REVIEWER",
-      "reviewDate": "2026-09-20",
+      "reviewDate": "2026-10-26",
       "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
       "controlIds": [
         "CTRL-2026-005",
@@ -74,7 +74,7 @@
         "FLOW-2026-002",
         "FLOW-2026-004"
       ],
-      "catalogVersion": "19.2",
+      "catalogVersion": "20.0",
       "techniqueId": "T1671",
       "tacticId": "TA0003",
       "subtechniqueId": null,
@@ -100,7 +100,7 @@
       "decisionContribution": "TH-2026-002のEventとRuleの問題を分離して引き渡す",
       "gapId": "GAP-BM-002",
       "owner": "SYNTH-SOC-REVIEWER",
-      "reviewDate": "2026-09-20",
+      "reviewDate": "2026-10-26",
       "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
       "controlIds": [
         "CTRL-2026-007",
@@ -121,7 +121,7 @@
       "flowIds": [
         "FLOW-2026-004"
       ],
-      "catalogVersion": "19.2",
+      "catalogVersion": "20.0",
       "techniqueId": null,
       "tacticId": null,
       "subtechniqueId": null,
@@ -140,7 +140,7 @@
       "decisionContribution": "発生有無はUnknownとして維持し、TH-2026-006と統合しない",
       "gapId": "GAP-BM-003",
       "owner": "SYNTH-SOC-REVIEWER",
-      "reviewDate": "2026-09-20",
+      "reviewDate": "2026-10-26",
       "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
       "controlIds": []
     },
@@ -159,7 +159,7 @@
         "FLOW-2026-002",
         "FLOW-2026-004"
       ],
-      "catalogVersion": "19.2",
+      "catalogVersion": "20.0",
       "techniqueId": "T1671",
       "tacticId": "TA0003",
       "subtechniqueId": null,
@@ -185,7 +185,7 @@
       "decisionContribution": "教材内の判定手続きを確認した。CTRL-2026-007と親Gapは変更しない",
       "gapId": "GAP-BM-004",
       "owner": "SYNTH-SOC-REVIEWER",
-      "reviewDate": "2026-09-20",
+      "reviewDate": "2026-10-26",
       "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
       "controlIds": [
         "CTRL-2026-007",
@@ -208,7 +208,7 @@
         "FLOW-2026-003",
         "FLOW-2026-006"
       ],
-      "catalogVersion": "19.2",
+      "catalogVersion": "20.0",
       "techniqueId": null,
       "tacticId": null,
       "subtechniqueId": null,
@@ -227,7 +227,7 @@
       "decisionContribution": "summary-only refinementの判断を留保する",
       "gapId": "GAP-BM-005",
       "owner": "SYNTH-SOC-REVIEWER",
-      "reviewDate": "2026-09-20",
+      "reviewDate": "2026-10-26",
       "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
       "controlIds": [
         "CTRL-2026-005",
@@ -250,7 +250,7 @@
         "FLOW-2026-004",
         "FLOW-2026-005"
       ],
-      "catalogVersion": "19.2",
+      "catalogVersion": "20.0",
       "techniqueId": null,
       "tacticId": null,
       "subtechniqueId": null,
@@ -269,7 +269,7 @@
       "decisionContribution": "行動条件が具体化するまでTechniqueを割り当てない",
       "gapId": "GAP-BM-006",
       "owner": "SYNTH-SOC-REVIEWER",
-      "reviewDate": "2026-09-20",
+      "reviewDate": "2026-10-26",
       "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
       "controlIds": [
         "CTRL-2026-007",
@@ -295,7 +295,7 @@
         "FLOW-2026-004",
         "FLOW-2026-005"
       ],
-      "catalogVersion": "19.2",
+      "catalogVersion": "20.0",
       "techniqueId": null,
       "tacticId": null,
       "subtechniqueId": null,
@@ -314,7 +314,7 @@
       "decisionContribution": "TH-2026-003の発生有無とは別の情報ギャップとして渡す",
       "gapId": "GAP-BM-007",
       "owner": "SYNTH-SOC-REVIEWER",
-      "reviewDate": "2026-09-20",
+      "reviewDate": "2026-10-26",
       "reassessmentTrigger": "必要Field、承認記録、ScopeまたはATT&CK Objectの変更",
       "controlIds": [
         "CTRL-2026-009"
